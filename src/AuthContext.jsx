@@ -1,22 +1,24 @@
-import axios from "axios";
+import api from "./config/apiClient";
 import React, { createContext, useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { DataContext } from "./MyContext";
 import { useJwt } from "react-jwt";
+import { hydrateFavoritesFromServer } from "./Utils/favorites";
+
 export const AuthContext = createContext();
 const localStorageToken = localStorage.getItem("myToken");
 
-
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(null);
-  const {admin} =useContext(DataContext)
+  const { admin = '' } = useContext(DataContext) || {}; 
   const [loading, setLoading] = useState(false);
-  const [decodedTokenState,setDecodedTokenState] = useState(null);
+  const [decodedTokenState, setDecodedTokenState] = useState(null);
   const history = useNavigate();
   const [token, setToken] = useState("");
   const { decodedToken } = useJwt(localStorageToken);
-  const [isAdmin, setIsAdmin] = useState(false);  
-  const [isContentWriter, setIsContentWriter] = useState(false);  
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [isContentWriter, setIsContentWriter] = useState(false);
+  const [isHr, setIsHr] = useState(false);
 
   const [agentData, setAgentData] = useState({
     name: "",
@@ -27,51 +29,62 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const checkAuthStatus = () => {
       const token = localStorage.getItem("myToken");
-      //console.log(token,"token")
       setDecodedTokenState(decodedToken);
       setIsAuthenticated(!!token);
+      if (token) {
+        try { hydrateFavoritesFromServer(); } catch (_) { }
+      }
     };
     checkAuthStatus();
   }, [decodedToken]);
 
-  useEffect(() => {
-    const agentDataFromLocalStorage = localStorage.getItem("agentData");
-    if (agentDataFromLocalStorage) {
-      const agentDataJSON = JSON.parse(agentDataFromLocalStorage);
-      setAgentData(agentDataJSON);
-    }
-  }, []);
-
-  const login = async (formData,messageApi) => {
+  const login = async (formData, messageApi) => {
     try {
       const { email, password } = formData;
       messageApi.open({
-        key:"loginLoading",
+        key: "loginLoading",
         type: "loading",
         content: "Logging in...",
         duration: 0,
       })
       if (email && password) {
         try {
-          const loginResponse = await axios.post(
-            "https://api.100acress.com/postPerson/verify_Login",
+          const loginResponse = await api.post(
+            `/postPerson/verify_Login`,
             { email, password }
           );
-          const newToken = loginResponse.data.token;
-          // Check if user's email is verified or not
-
-          localStorage.setItem("myToken", JSON.stringify(newToken));
+          const newToken = loginResponse?.data?.token;
+          if (!newToken || typeof newToken !== 'string') {
+            messageApi.destroy("loginLoading");
+            messageApi.open({
+              key: "loginError",
+              type: "error",
+              content: "Login failed: token not received.",
+              duration: 3,
+            })
+            return;
+          }
+          localStorage.setItem("myToken", newToken);
           setToken(newToken);
-  
+
           if (loginResponse.status === 200) {
-            const roleResponse = await axios.get(
-              `https://api.100acress.com/postPerson/Role/${email}`
+            const roleResponse = await api.get(
+              `/postPerson/Role/${email}`
             );
             setAgentData(roleResponse.data.User);
             localStorage.setItem(
               "agentData",
               JSON.stringify(roleResponse.data.User)
             );
+            try {
+              const userName = roleResponse?.data?.User?.name || "";
+              const first = (userName || "").toString().trim().split(/\s+/)[0] || "";
+              if (first) {
+                localStorage.setItem("firstName", first);
+              } else {
+                localStorage.removeItem("firstName");
+              }
+            } catch (_) { }
             if (roleResponse.status === 200) {
               localStorage.setItem(
                 "userRole",
@@ -79,13 +92,22 @@ export const AuthProvider = ({ children }) => {
               );
               const sellerId = roleResponse.data.User._id;
               localStorage.setItem("mySellerId", JSON.stringify(sellerId));
-              if (roleResponse.data.User.role === "Admin" || roleResponse.data.User.role === admin) {
-                history("/Admin/user");
+              try { hydrateFavoritesFromServer(); } catch (_) { }
+              const roleRaw = (roleResponse?.data?.User?.role || "").toString();
+              const roleNormalized = roleRaw.replace(/\s+/g, "").toLowerCase();
+              try { console.debug("[login redirect] role:", roleRaw, "normalized:", roleNormalized); } catch { }
+              if (roleRaw === "Admin" || roleRaw === admin) {
+                setIsAdmin(true);
+                history("/admin/user");
+              } else if (roleNormalized === "contentwriter" || roleNormalized === "blog") {
+                setIsContentWriter(true);
+                history("/seo/blogs");
+              } else if (roleNormalized === "hr") {
+                setIsHr(true);
+                history("/hr/dashboard");
               } else {
                 history("/userdashboard/");
-                window.location.reload()
               }
-             
             } else {
               console.error("Role fetch failed:", roleResponse);
               alert(
@@ -101,51 +123,55 @@ export const AuthProvider = ({ children }) => {
         } catch (error) {
           if (error.response) {
             const { status, data } = error.response;
-      
+
             if (status === 403) {
-              // Email not verified
               messageApi.destroy("loginLoading");
               messageApi.open({
-                key:"loginError",
+                key: "loginError",
                 type: "error",
                 content: "Please verify your email before logging in.",
                 duration: 3,
               })
               const newToken = data.token;
               const User = data.User;
-              localStorage.setItem("myToken", JSON.stringify(newToken));
+              localStorage.setItem("myToken", newToken);
               setToken(newToken);
-                setAgentData(User);
-                localStorage.setItem(
-                  "agentData",
-                  JSON.stringify(User)
+              setAgentData(User);
+              localStorage.setItem(
+                "agentData",
+                JSON.stringify(User)
               );
-              history("/auth/signup/email-verification"); // Redirect to verification page
+              try {
+                const userName = User?.name || "";
+                const first = (userName || "").toString().trim().split(/\s+/)[0] || "";
+                if (first) {
+                  localStorage.setItem("firstName", first);
+                } else {
+                  localStorage.removeItem("firstName");
+                }
+              } catch (_) { }
+              history("/auth/signup/email-verification");
             } else if (status === 401) {
-              // Invalid credentials
               messageApi.destroy("loginLoading");
               messageApi.open({
-                key:"loginError",
+                key: "loginError",
                 type: "error",
                 content: "Invalid email or password.",
                 duration: 3,
               })
             } else {
-              // Other errors (500, etc.)
               messageApi.destroy("loginLoading");
               messageApi.open({
-                key:"loginError",
+                key: "loginError",
                 type: "error",
                 content: "An error occurred. Please try again later.",
                 duration: 3,
               })
             }
           } else {
-            // Network or unexpected errors
-            
             messageApi.destroy("loginLoading");
             messageApi.open({
-              key:"loginError",
+              key: "loginError",
               type: "error",
               content: "An error occurred. Please try again later.",
               duration: 3,
@@ -155,7 +181,7 @@ export const AuthProvider = ({ children }) => {
       } else {
         messageApi.destroy("loginLoading");
         messageApi.open({
-          key:"loginError",
+          key: "loginError",
           type: "error",
           content: "Please enter email and password.",
           duration: 3,
@@ -163,10 +189,9 @@ export const AuthProvider = ({ children }) => {
       }
       setIsAuthenticated(true);
     } catch (error) {
-      
       messageApi.destroy("loginLoading");
       messageApi.open({
-        key:"loginError",
+        key: "loginError",
         type: "error",
         content: "Invalid Username or Password.",
         duration: 3,
@@ -174,22 +199,20 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const signup = async (userSignUp,messageApi,resetData,setResponseMessage)=>{
+  const signup = async (userSignUp, messageApi, resetData, setResponseMessage) => {
     const { name, mobile, password, cpassword, email } = userSignUp;
     try {
       messageApi.open({
         key: "SignUpLoading",
         type: "loading",
         content: "Creating your account...",
-        duration: 0, // No auto-close
+        duration: 0,
       });
 
       if (name && mobile && email && password && password === cpassword) {
-        axios
-          .post("https://api.100acress.com/postPerson/register", userSignUp)
+        api
+          .post(`/postPerson/register`, userSignUp)
           .then((registrationResponse) => {
-
-            // if error 409 User already Exist
             if (registrationResponse.status === 409) {
               messageApi.destroy("SignUpLoading");
               messageApi.error({
@@ -199,75 +222,78 @@ export const AuthProvider = ({ children }) => {
               return;
             }
 
-            //Create token for user to login
             const newToken = registrationResponse.data.token;
-            localStorage.setItem("myToken", JSON.stringify(newToken));
+            localStorage.setItem("myToken", newToken);
             setToken(newToken);
             setAgentData(registrationResponse.data.User);
             localStorage.setItem(
               "agentData",
               JSON.stringify(registrationResponse.data.User)
             );
-
-            //generate otp for the user to to verify the email
-            return axios.post("https://api.100acress.com/postPerson/verifyEmail", { 
-              email: email // Pass relevant data for OTP
+            try {
+              const userName = registrationResponse?.data?.User?.name || "";
+              const first = (userName || "").toString().trim().split(/\s+/)[0] || "";
+              if (first) {
+                localStorage.setItem("firstName", first);
+              } else {
+                localStorage.removeItem("firstName");
+              }
+            } catch (_) { }
+            return api.post(`/postPerson/verifyEmail`, {
+              email: email
             })
           })
           .then(() => {
-              messageApi.destroy("SignUpLoading");
-              messageApi.success({
-                content: "Account created. Please Confirm your email to login.",
-                duration: 2,
+            messageApi.destroy("SignUpLoading");
+            messageApi.success({
+              content: "Account created. Please Confirm your email to login.",
+              duration: 2,
             });
             history("/auth/signup/otp-verification/");
             resetData();
           })
           .catch((error) => {
-              // Close loading immediately on error
-              messageApi.destroy("SignUpLoading");
-              console.error("Registration failed:", error);
-              messageApi.open({
-                type: "error",
-                content: "Registration failed. Please try again.",
-                duration: 3,
-              });
+            messageApi.destroy("SignUpLoading");
+            console.error("Registration failed:", error);
+            messageApi.open({
+              type: "error",
+              content: "Registration failed. Please try again.",
+              duration: 3,
+            });
           });
       } else {
         messageApi.destroy("SignUpLoading");
         messageApi.error({
-          content:"Please fill the details properly",
-          duration:3
+          content: "Please fill the details properly",
+          duration: 3
         })
       }
     } catch (error) {
       messageApi.destroy("SignUpLoading");
       messageApi.error({
-        content:"Internal Sever Error, Something went wrong",
-        duration:3
+        content: "Internal Sever Error, Something went wrong",
+        duration: 3
       })
     }
   }
-  
-  
+
   const handleDeleteUser = async (id) => {
     try {
       const confirmDelete = window.confirm(
         "Are you sure you want to delete this user?"
       );
       if (confirmDelete) {
-        const res = await axios.delete(
-          `https://api.100acress.com/postPerson/propertyDelete/${id}`
+        const res = await api.delete(
+          `/postPerson/propertyDelete/${id}`
         );
         if (res.status >= 200 && res.status < 300) {
-
           setAgentData(prevData => ({
             ...prevData,
             postProperty: prevData.postProperty.filter(item => item._id !== id)
           }));
           const updatedAgentData = {
-          ...agentData,
-          postProperty: agentData.postProperty.filter(item => item._id !== id)
+            ...agentData,
+            postProperty: agentData.postProperty.filter(item => item._id !== id)
           };
           localStorage.setItem("agentData", JSON.stringify(updatedAgentData));
         } else {
@@ -278,7 +304,17 @@ export const AuthProvider = ({ children }) => {
       console.error("An error occurred while deleting user:", error.message);
     }
   };
-  
+
+  const showLogin = () => {
+    // You can implement your login modal logic here
+    // For example, if you're using a state to control the login modal:
+    // setShowLoginModal(true);
+    
+    // Or if you're using a global modal:
+    if (typeof window !== 'undefined' && window.dispatchEvent) {
+      window.dispatchEvent(new CustomEvent('showLoginModal'));
+    }
+  };
 
   return (
     <AuthContext.Provider
@@ -297,10 +333,12 @@ export const AuthProvider = ({ children }) => {
         setIsAdmin,
         isContentWriter,
         setIsContentWriter,
+        isHr,
+        setIsHr,
+        showLogin,
       }}
     >
       {children}
     </AuthContext.Provider>
   );
-
 };

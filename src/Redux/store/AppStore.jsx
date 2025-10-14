@@ -10,6 +10,11 @@ import primelocationReducer from "../slice/PrimeLocation.jsx";
 import PossessionReducer from "../slice/PossessionSlice.jsx";
 import ProjectOverviewReducer from "../slice/ProjectOverviewSlice.jsx";
 import PriceBasedReducer from "../slice/PriceBasedSlice.jsx";
+import projectOrderReducer from "../slice/ProjectOrderSlice.jsx";
+import favoritesReducer from "../slice/FavoritesSlice.jsx";
+import viewedReducer from "../slice/ViewedSlice.jsx";
+import bannerReducer from "../slice/BannerSlice.jsx";
+import smallBannerReducer from "../slice/SmallBannerSlice.jsx";
 
 const AppStore = configureStore({
     reducer: {
@@ -24,6 +29,11 @@ const AppStore = configureStore({
         possession : PossessionReducer,
         ProjectOverview : ProjectOverviewReducer,
         PriceBased : PriceBasedReducer,
+        projectOrder: projectOrderReducer,
+        favorites: favoritesReducer,
+        viewed: viewedReducer,
+        banner: bannerReducer,
+        smallBanner: smallBannerReducer,
     },
     devTools: process.env.NODE_ENV !== 'production',
 });

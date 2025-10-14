@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Nav from "../aadharhomes/Nav";
+import Navbar from "../aadharhomes/navbar/Navbar";
 import Footer from "../Components/Actual_Components/Footer";
 
 const Contact = () => {
@@ -21,7 +21,7 @@ const Contact = () => {
   };
   return (
     <div>
-      <Nav />
+      <Navbar />
       <>
       <div className="object-fit  ">
         <img src="https://img.jamesedition.com/listing_images/2023/12/14/21/42/59/62acdff9-583e-427c-b246-bb4c567c903a/je/1100xxs.jpg"

@@ -1,38 +1,60 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { EyeIcon } from "lucide-react";
 import AOS from 'aos';
 import 'aos/dist/aos.css';
-import { budgetPlots } from "./datafeed/Desiredorder";
+import { getBudgetPlots } from "../Utils/ProjectOrderData";
 
 const BudgetPlotsInGurugraon = () => {
+  const [budgetPlots, setBudgetPlots] = useState([]);
+
+  useEffect(() => {
+    const loadBudgetPlots = async () => {
+      try {
+        const plots = await getBudgetPlots();
+        setBudgetPlots(plots);
+      } catch (error) {
+        console.error('Error loading budget plots:', error);
+        setBudgetPlots([]);
+      }
+    };
+    
+    loadBudgetPlots();
+  }, []);
 
   useEffect(() => { AOS.init(); }, []);
 
   return (
     <Wrapper className="section">
     <div data-aos="zoom-in-up" className="container" style={{ boxShadow: "0px 0px 0px 0px #0000001a" }}>
-      <div className="flex items-center justify-between mx-3 sm:mx-4 lg:mx-4 xl:mx-14 md:mx-4">
-        <h2 className="text-3xl xl:text-4xl lg:text-3xl md:text-2xl sm:text-left pt-4 ">
-        Budget Plots in Gurugram
+      <div className="flex items-center justify-between mx-3 sm:mx-4 lg:mx-4 xl:mx-14 md:mx-4 py-3 sm:py-5 lg:py-6 mb-3 sm:mb-4">
+        <h2 className="text-3xl xl:text-4xl lg:text-3xl md:text-2xl sm:text-left font-extrabold mb-1 text-neutral-900">
+          <span className="bg-gradient-to-r from-[#f43f5e] to-[#dc2626] bg-clip-text text-transparent">Best Budget</span>
+          <span> Plots in Gurugram</span>
         </h2>
         <div className=" ml-2 hidden sm:block">
         <Link to="/plots-in-gurugram/" target="_top">
-        <span className="flex items-center text-white text-sm px-3 py-0 rounded-full bg-red-600">
+        <span className="flex items-center text-white text-sm px-3 py-1 rounded-full bg-red-600 hover:bg-red-700 shadow-md transition-all duration-300">
           <EyeIcon />
           <span className="ml-2">View All</span>
         </span>
         </Link>
       </div>
       </div>
-      <div className="grid  lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-1 grid-cols-1 mx-0 gap-3 pb-2 pt-3">
-        {budgetPlots.map((project, index) => (
-          <Link to={project.link} key={index} className="card">
-            <img src={project.image} alt={project.title} className="card-image" />
-            <button className="card-button bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800">{project.title}</button>
-          </Link>
-        ))}
+      <div className="grid  lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-1 grid-cols-1 mx-0 gap-3 lg:gap-4 pb-2 pt-3">
+        {budgetPlots.length === 0 ? (
+          <div className="col-span-full text-center py-8">
+            <div className="text-gray-500">Loading budget plots...</div>
+          </div>
+        ) : (
+          budgetPlots.map((project, index) => (
+            <Link to={project.link} key={index} className="card group" aria-label={project.title}>
+              <img src={project.image} alt={project.title} loading="lazy" className="card-image transition-transform duration-300 group-hover:scale-105" />
+              <button className="card-button bg-red-600 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-500/30 transition-all duration-300">{project.title}</button>
+            </Link>
+          ))
+        )}
       </div>
     </div>
   </Wrapper>
@@ -79,44 +101,46 @@ const Wrapper = styled.section`
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
+    border: 1px solid #e5e7eb; /* gray-200 */
+    border-radius: 12px;
     overflow: hidden;
     text-decoration: none;
     background: #fff;
-    padding: 10px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease;
+    padding: 12px;
+    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
   }
 
   .card:hover {
-    transform: translateY(-5px);
+    transform: translateY(-3px);
+    border-color: #dc2626; /* red-600 */
+    box-shadow: 0px 8px 16px rgba(220, 38, 38, 0.18);
   }
 
   .card-image {
     width: 100%;
-    height: 180px;
+    height: 176px; /* ~h-44 */
     object-fit: cover;
-    border-radius: 8px;
+    border-radius: 10px;
   }
 
   .card-button {
     width: 100%;
     margin-top: 10px;
-    border-radius:10px;
-    padding: 10px 0px;
-    background-color: #C13B44;
+    border-radius: 10px;
+    padding: 10px 0px; /* ~py-3 */
     color: white;
     font-size: 1rem;
     font-weight: bold;
     border: none;
     cursor: pointer;
     text-transform: capitalize;
-    transition: background-color 0.3s ease;
+    transition: all 0.3s ease;
   }
 
   .card-button:hover {
-    background-color: #7C1920;
+    transform: translateY(-2px);
+    box-shadow: 0px 4px 12px rgba(255, 153, 51, 0.3);
   }
 
   @media (max-width: 768px) {
@@ -125,7 +149,7 @@ const Wrapper = styled.section`
     }
 
     .card-image {
-      height: 150px;
+      height: 160px; /* slightly tighter but keeps aspect */
     }
 
     .card-button {
@@ -133,12 +157,6 @@ const Wrapper = styled.section`
     }
   }
 `;
-
-// <div className="mt-4 mb-4">
-// <div className="flex items-center justify-between mx-6 lg:mx-6 xl:mx-14 md:mx-6">
-//   <h1 className="text-xl xl:text-4xl lg:text-3xl md:text-2xl sm:text-left">
-//     Budget Plots in Gurugram
-//   </h1>
 //   <div className="hidden sm:block">
 //     <Link to="/plots-in-gurugram/" target="_top">
 //     <span className="flex items-center text-white text-sm px-3 py-0 rounded-full bg-red-600">

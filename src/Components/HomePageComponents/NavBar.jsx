@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "../../Images/100acress.png";
 import { BsFolder } from "react-icons/bs";
 import styled from "styled-components";
@@ -8,66 +8,126 @@ import { MdRocketLaunch } from "react-icons/md";
 import { GiSpectacles } from "react-icons/gi";
 import { GiVillage } from "react-icons/gi";
 import { HiBars3 } from "react-icons/hi2";
+import { FiUser } from "react-icons/fi";
 import { ABOUT, BLOG, KNOWABOUT, LOGIN, ROOT } from "../../lib/route";
 import { Link, Navigate } from "react-router-dom";
+import AuthModal from "../AuthModal";
 import { RxCross2 } from "react-icons/rx";
 
 function FinalNavBar() {
   const [showNav, setShowNav] = useState(false);
+  const [showAuth, setShowAuth] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  
   const URL="/projects"
+
+  useEffect(() => {
+    const onScroll = () => {
+      try {
+        setIsScrolled((window?.scrollY || 0) > 10);
+      } catch (_) {}
+    };
+    onScroll(); // set initial state
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
   return (
-    <Wrapper className='section'>
-      <div className='Mflx'>
-      
-        <div className='1euNB' style={{cursor:"pointer"}}>
-          <Link to={ROOT}>
-            <img src="../../Images/mainLogo.png" alt='' width='200' loading="lazy"/>
-          </Link>
+    <Wrapper className='section' data-scrolled={isScrolled ? '1' : '0'}>
+       
+       
+      <div className={`Mflx ${isScrolled ? 'scrolled' : ''}`}>
+
+        {/* Left: Hamburger (visible <=920px) */}
+        <div className='hdrLeft'>
+          <div
+            className='barDotMenu'
+            style={{ width: "fit-content", marginBottom: "5px", marginTop: "5px" }}
+          >
+            <button
+              type="button"
+              aria-label={showNav ? 'Close menu' : 'Open menu'}
+              title={showNav ? 'Close menu' : 'Open menu'}
+              onClick={() => setShowNav(!showNav)}
+              className='barDotMenuBtn'
+            >
+              <HiBars3 size={28} color='white' aria-hidden="true" focusable="false" />
+            </button>
+          </div>
         </div>
-        <div
-          className='barDotMenu'
-          style={{ width: "fit-content", marginBottom: "5px",marginTop: "5px" }}>
-          <HiBars3 size={35} color='white' onClick={() => setShowNav(!showNav)} />
+
+        {/* Center: Logo (always) */}
+        <div className='hdrCenter'>
+          <div className='1euNB' style={{ cursor: "pointer" }}>
+            <Link to={ROOT}>
+              <img 
+                src={isScrolled 
+                  ? "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/white-logo.webp"
+                  : "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/red-logo.webp"
+                } 
+                alt='100acress' 
+                width='140' 
+                loading="lazy" 
+              />
+            </Link>
+          </div>
+        </div>
+
+        {/* Right: Profile + Post Property (visible <=920px) */}
+        <div className='hdrRight'>
+          <button className='profBtn' aria-label='Profile/Login' onClick={() => setShowAuth(true)}>
+            <FiUser size={18} />
+          </button>
         </div>
 
         {showNav && (
           <div
             className='position-absolute h-100 '
             style={{
-              background: "red",
+              background: "#e53e3e",
               zIndex: "999",
               width: "97%",
             }}>
             <div className='d-flex align-items-center justify-content-between  pr-3'>
               <div className='1euNB'>
-                <img src="../../Images/mainLogo.png" alt='' width='200' loading="lazy"/>
+                <img 
+                  src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/white-logo.webp" 
+                  alt='100acress' 
+                  width='140' 
+                  loading="lazy"
+                />
+                
               </div>
               <div
                 className='barDotMenu'
                 style={{ width: "fit-content", marginBottom: "10px" }}>
-                <RxCross2
-                  size={30}
-                  color='white'
+                <button
+                  type="button"
+                  aria-label="Close menu"
+                  title="Close menu"
                   onClick={() => setShowNav(!showNav)}
-                />
+                  className='barDotMenuBtn'
+                >
+                  <RxCross2 size={30} color='white' aria-hidden="true" focusable="false" />
+                </button>
               </div>
             </div>
-            <div className='MBflx' style={{background:"red"}}>
+            <div className='MBflx' style={{background:"#e53e3e"}}>
           <ul className='ulfx _1grx flex-column'>
             <li className='pxrE el1'>
               <span className='pxrETXT'>
-                <a>Buy</a>
+                <a role="button" tabIndex="0" aria-haspopup="true" aria-expanded="false" aria-label="Buy">Buy</a>
               </span>
             </li>
             <li>
               <span className='pxrETXT'>
-                <a>Rent</a>
+                <a role="button" tabIndex="0" aria-haspopup="true" aria-expanded="false" aria-label="Rent">Rent</a>
               </span>
               
             </li>
             <li className='_3px49x '>
               <span className='pxrETXT'>
-                <a>Sell</a>
+                <a role="button" tabIndex="0" aria-haspopup="true" aria-expanded="false" aria-label="Sell">Sell</a>
               </span>
             </li>
 
@@ -83,14 +143,21 @@ function FinalNavBar() {
             </li>
             <li className='_3px49x'>
               <span className='pxrETXT'>
-                <a>New Launches</a>
+                <a role="button" tabIndex="0" aria-haspopup="true" aria-expanded="false" aria-label="New Launches">New Launches</a>
               </span>
-              
             </li>
             <li className='_3px49x'>
               <span className='pxrETXT'>
-                <a>Properties</a>
+                <a role="button" tabIndex="0" aria-haspopup="true" aria-expanded="false" aria-label="Properties">Properties</a>
               </span>
+            </li>
+
+            {/* Inserted primary nav links */}
+            <li>
+              <Link to="/rental" className='linkEl'>Rental</Link>
+            </li>
+            <li>
+              <Link to="/resale" className='linkEl'>Resale</Link>
             </li>
 
             <li>
@@ -100,24 +167,24 @@ function FinalNavBar() {
             </li>
           </ul>
           <ul className='ulfx _2grx flex-column'>
-            <li className='_6bnYTum'>
-              <span>Post Properties </span>
-              <span className='_73exMP'>FREE</span>
+            <li>
+              <Link to="/rental" className='linkEl'>Rental</Link>
             </li>
             <li>
-              <Link to={LOGIN} className='linkEl'>
-                Login
-              </Link>
+              <Link to="/resale" className='linkEl'>Resale</Link>
+            </li>
+            <li>
+              <a className='linkEl' onClick={() => setShowAuth(true)} role="button">Login</a>
             </li>
           </ul>
         </div>
           </div>
         )}
         <div className='NBflx'>
-          <ul className='ulfx _1grx' style={{marginTop:"8px"}}>
+          <ul className='ulfx _1grx' style={{marginTop:"2px"}}>
             <li className='pxrE el1'>
               <span className='pxrETXT'>
-                <a>Buy</a>
+                <a role="button" tabIndex="0" aria-haspopup="true" aria-expanded="false" aria-label="Buy">Buy</a>
               </span>
               <ul className='_2emBLM'>
                 <li className='_3emBLMe'>
@@ -149,7 +216,7 @@ function FinalNavBar() {
             </li>
             <li>
               <span className='pxrETXT'>
-                <a>Rent</a>
+                <a role="button" tabIndex="0" aria-haspopup="true" aria-expanded="false" aria-label="Rent">Rent</a>
               </span>
               <ul className='_2emBLM'>
                 <li className='_3emBLMe'>
@@ -181,7 +248,7 @@ function FinalNavBar() {
             </li>
             <li className='_3px49x _exJRE'>
               <span className='pxrETXT'>
-                <a>Sell</a>
+                <a role="button" tabIndex="0" aria-haspopup="true" aria-expanded="false" aria-label="Sell">Sell</a>
               </span>
               <ul className='_2emBLM'>
                 <li className='_3emBLMe'>
@@ -222,7 +289,7 @@ function FinalNavBar() {
             </li>
             <li className='_3px49x'>
               <span className='pxrETXT'>
-                <a>New Launches</a>
+                <a role="button" tabIndex="0" aria-haspopup="true" aria-expanded="false" aria-label="New Launches">New Launches</a>
               </span>
               <ul className='_2emBLM _nEXRT'>
                 <li className='_3emBLMe'>
@@ -259,7 +326,7 @@ function FinalNavBar() {
             </li>
             <li className='_3px49x'>
               <span className='pxrETXT'>
-                <a>Projects</a>
+                <a role="button" tabIndex="0" aria-haspopup="true" aria-expanded="false" aria-label="Projects">Projects</a>
               </span>
               <ul className='_2emBLM _nEXRT'>
                 <li className='_3emBLMe'>
@@ -292,27 +359,32 @@ function FinalNavBar() {
             <li>
               <BsFolder />
             </li>
-            <li className='_6bnYTum'>
-              <span>Post Properties </span>
-              <span className='_73exMP'>FREE</span>
+            <li>
+              <Link to="/rental" className='linkEl'>Rental</Link>
             </li>
             <li>
-              <Link to={LOGIN} className='linkEl'>
-                Login
-              </Link>
+              <Link to="/resale" className='linkEl'>Resale</Link>
+            </li>
+            <li>
+              <a className='linkEl' onClick={() => setShowAuth(true)} role="button">Login</a>
             </li>
           </ul>
         </div>
       </div>
+      {/* Auth Modal */}
+      <AuthModal open={showAuth} onClose={() => setShowAuth(false)} defaultView="register" />
     </Wrapper>
   );
 }
-
 export default FinalNavBar;
 const Wrapper = styled.section`
-position:sticky;
-top:0px;
-z-index:999;
+  position: sticky;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 9999;
+  margin: 0;
+  padding: 0;
   .ieuNB {
     display: flex;
   }
@@ -332,18 +404,52 @@ z-index:999;
     margin-bottom: 5px;
     margin-top: 0px;
     color:white;
+    transition: color 0.3s ease-in-out;
+  }
+  
+  .pxrETXT {
+    transition: color 0.3s ease-in-out;
+  }
+  
+  .barDotMenu svg {
+    transition: color 0.3s ease-in-out;
   }
   .NBflx {
     display: flex;
     color: red;
     width: 100%;
   }
+  /* Nav text readability on image backgrounds */
+  .ulfx, .ulfx .linkEl { 
+    text-shadow: 0 1px 2px rgba(0,0,0,0.35);
+  }
+  /* Ensure right action links are visible on desktop (white header bg) */
+  .NBflx ._2grx .linkEl {
+    color: #ffffff !important; /* transparent header over image */
+    font-weight: 600;
+  }
+  .NBflx ._2grx .linkEl:hover {
+    color: #e5e7eb !important; /* light gray on hover */
+  }
+  /* Keep mobile drawer links white on red background */
+  .MBflx ._2grx.flex-column .linkEl {
+    color: #ffffff !important;
+  }
   .Mflx {
     display: flex;
     align-items: center;
-    background:red;
-    padding: 0px 10px;
-    border-radius:0px 0px 10px 10px;
+    background: transparent !important; /* default transparent navbar */
+    padding: 0 12px !important; /* horizontal spacing */
+    border-radius: 0; /* remove rounded bottom so hero shows cleanly */
+    box-shadow: none;
+    min-height: var(--nav-h);
+    position: relative; /* for centered logo on mobile */
+    transition: background 0.25s ease-in-out, box-shadow 0.25s ease-in-out;
+  }
+  /* Solid red navbar after scroll */
+  .Mflx.scrolled {
+    background: #e53e3e !important; /* solid red */
+    box-shadow: 0 6px 18px rgba(0,0,0,0.12);
   }
   hr{
     color:black !important;
@@ -356,13 +462,14 @@ z-index:999;
   ._2grx {
     justify-content: flex-end;
     flex-grow: 1;
-    padding-right: 20px;
+    padding-right: 0; /* flush to right edge */
     margin-top: 8px;
   }
   .linkEl {
     color: inherit;
     display: inherit;
     align-items: inherit;
+    transition: color 0.3s ease-in-out;
   }
   ._1grx > li > ul {
     opacity: 0;
@@ -517,45 +624,112 @@ z-index:999;
     min-width: 340px;
     width: auto;
   }
+  /* List Property pill */
   ._6bnYTum {
-    display: inline;
-    background-color: white;
-    color: red;
-    border-radius: 8px;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 22px 6px 14px; /* extra right space for badge */
+    color: #e53e3e;
+    border: 1.6px solid #e53e3e;
+    background: #ffffff; /* ensure contrast on red navbar */
+    border-radius: 9999px;
+    font-weight: 600;
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+    overflow: visible; /* allow badge to show */
+    z-index: 3;
   }
+  ._6bnYTum:hover {
+    box-shadow: 0 6px 16px rgba(229, 62, 62, 0.15);
+    background: #ffffff;
+  }
+  ._lpText {
+    letter-spacing: 0.4px;
+    font-size: 12px;
+  }
+  /* FREE badge */
   ._73exMP {
-    background-color: red;
-    color: white;
-    padding: 1px 3px;
-    font-size: small;
-    border-radius: 5px;
+    position: static; /* inline inside pill */
+    background-color: #facc15; /* yellow-400 */
+    color: #111827; /* gray-900 */
+    padding: 2px 6px;
+    font-size: 10px;
+    font-weight: 800;
+    border-radius: 4px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    line-height: 1;
+    margin-left: 6px;
+    pointer-events: none; /* do not block clicks */
+  }
+  /* Ensure nav items don't clip the badge */
+  .ulfx._2grx li,
+  .ulfx._2grx.flex-column li {
+    overflow: visible;
+    position: relative;
   }
   .barDotMenu {
-    display: none;
+    display: none; /* shown at <=920px */
   }
   .mob_view_sde {
     display: none;
   }
-  @media screen and (max-width: 1100px) and (min-width: 400px) {
-    .NBflx {
-      display: none;
-    }
-    .barDotMenu {
-      display: block;
-    }
-    .Mflx {
-      justify-content: space-between;
-    }
+  /* Mobile/tablet layout at <=920px */
+  .hdrLeft, .hdrCenter, .hdrRight { display: none; }
+  .profBtn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.8);
+    color: #fff;
+    width: 44px;
+    height: 44px;
+    border-radius: 9999px;
+    padding: 0;
+    transition: all 0.3s ease-in-out;
   }
-  @media screen and (max-width: 400px) {
-    .NBflx {
-      display: none;
-    }
-    .barDotMenu {
-      display: block;
-    }
+  .barDotMenuBtn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 9999px;
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.0);
+    cursor: pointer;
+  }
+  .barDotMenuBtn:hover { background: rgba(255,255,255,0.08); }
+  .barDotMenuBtn:focus-visible,
+  .profBtn:focus-visible,
+  ._6bnYTum:focus-visible,
+  .linkEl:focus-visible {
+    outline: 2px solid #facc15; /* high-contrast focus ring */
+    outline-offset: 2px;
+  }
+  @media screen and (max-width: 920px) {
+    .NBflx { display: none; }
+    .barDotMenu { display: block; }
+    /* Switch to 3-column grid for perfect alignment */
     .Mflx {
-      justify-content: space-between;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      width: 100%;
+      padding: 0 10px !important;
+      min-height: 60px; /* slightly shorter navbar on mobile */
     }
+    .hdrLeft, .hdrCenter, .hdrRight { display: flex; align-items: center; }
+    .hdrLeft { grid-column: 1 / 2; justify-content: flex-start; }
+    .hdrCenter { grid-column: 2 / 3; justify-content: center; align-items: center; position: static; transform: none; }
+    .hdrRight { grid-column: 3 / 4; justify-content: flex-end; gap: 8px; }
+    /* Force smaller logo on mobile */
+    .hdrCenter img { width: 100px !important; height: auto !important; display: block; }
+    .profBtn { width: 44px; height: 44px; }
+    .barDotMenu svg { width: 26px; height: 26px; }
+    ._6bnYTum { padding: 6px 14px; }
+    :root { --nav-h: 60px; }
   }
 `;

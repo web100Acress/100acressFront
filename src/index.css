@@ -1,6 +1,168 @@
+@import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Crimson Elegance Footer Styles */
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+
+    --primary: 0 72% 45%;
+    --primary-foreground: 0 0% 98%;
+
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+
+    /* Elegant Red Theme */
+    --crimson: 0 72% 45%;
+    --crimson-dark: 0 65% 35%;
+    --crimson-light: 0 75% 55%;
+    --burgundy: 345 85% 25%;
+    --burgundy-dark: 345 90% 18%;
+    --wine: 350 75% 32%;
+    --rose-gold: 15 65% 60%;
+    --champagne: 45 55% 85%;
+    
+    /* Footer specific colors */
+    --footer-primary: 0 65% 35%;
+    --footer-secondary: 345 85% 25%;
+    --footer-accent: 15 65% 60%;
+    --footer-text: 0 0% 95%;
+    --footer-text-muted: 0 0% 75%;
+    
+    /* Gradients */
+    --gradient-crimson: linear-gradient(135deg, hsl(var(--crimson)), hsl(var(--burgundy)));
+    --gradient-elegant: linear-gradient(180deg, hsl(var(--footer-primary)), hsl(var(--footer-secondary)));
+    --gradient-accent: linear-gradient(45deg, hsl(var(--rose-gold)), hsl(var(--champagne)));
+    
+    /* Shadows */
+    --shadow-elegant: 0 20px 40px -10px hsl(var(--burgundy) / 0.3);
+    --shadow-soft: 0 4px 20px hsl(var(--crimson) / 0.15);
+    
+    /* Transitions */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 0 75% 55%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    
+    /* Dark mode footer adjustments */
+    --footer-primary: 0 70% 40%;
+    --footer-secondary: 345 80% 30%;
+    --footer-text: 0 0% 90%;
+    --footer-text-muted: 0 0% 70%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Footer specific utility classes */
+.bg-gradient-elegant {
+  background: var(--gradient-elegant);
+}
+
+.bg-gradient-accent {
+  background: var(--gradient-accent);
+}
+
+.text-footer-text {
+  color: hsl(var(--footer-text));
+}
+
+.text-footer-text-muted {
+  color: hsl(var(--footer-text-muted));
+}
+
+.text-footer-accent {
+  color: hsl(var(--footer-accent));
+}
+
+.bg-footer-accent {
+  background-color: hsl(var(--footer-accent));
+}
+
+.bg-rose-gold {
+  background-color: hsl(var(--rose-gold));
+}
+
+.bg-champagne {
+  background-color: hsl(var(--champagne));
+}
+
+.text-burgundy-dark {
+  color: hsl(var(--burgundy-dark));
+}
+
+.shadow-elegant {
+  box-shadow: var(--shadow-elegant);
+}
+
+.shadow-soft {
+  box-shadow: var(--shadow-soft);
+}
+
+.transition-smooth {
+  transition: var(--transition-smooth);
+}
 
 html {
   scroll-behavior: smooth;
@@ -100,4 +262,63 @@ html {
 
 .custom-step-red .ant-steps-item-tail::after {
   background-color: #ef4444 !important;
+}
+
+*, *::before, *::after {
+  transition: none !important;
+  animation: none !important;
+}
+
+html {
+  scroll-behavior: auto !important;
+}
+
+/* Common libraries/components */
+.slick-slider *, .ant-modal *, .ant-drawer *, .ant-message *, .ant-notification * {
+  transition: none !important;
+  animation: none !important;
+}
+
+/* Disable CSS View Transitions API if present */
+::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) {
+  animation-duration: 0s !important;
+}
+
+/* LuxuryFooter animation keyframes and utilities */
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-5px) rotate(3deg); }
+}
+
+@keyframes glow {
+  0%, 100% { box-shadow: 0 0 15px rgba(220, 38, 38, 0.2); }
+  50% { box-shadow: 0 0 25px rgba(220, 38, 38, 0.4); }
+}
+
+@keyframes pulse-slow {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.85; transform: scale(1.02); }
+}
+
+.animate-shimmer {
+  background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite linear !important;
+}
+
+.animate-float-subtle {
+  animation: float 4s ease-in-out infinite !important;
+}
+
+.animate-glow-subtle {
+  animation: glow 3s ease-in-out infinite !important;
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 4s ease-in-out infinite !important;
 }

@@ -1,12 +1,19 @@
-import React, { useState, Suspense } from 'react';
+import React, { useState, Suspense, useContext, useMemo } from 'react';
 import { lazy } from 'react';
 const ReactQuill = lazy(() => import('react-quill'));
 import 'react-quill/dist/quill.snow.css';
-import axios from "axios";
+import api from "../config/apiClient";
+import { AuthContext } from "../AuthContext";
 
 const BlogWrite = () => {
   const [content, setContent] = useState('');
-  const token = JSON.parse(localStorage.getItem("myToken"));
+  const { agentData } = useContext(AuthContext) || {};
+  const localAgent = useMemo(() => {
+    try { return JSON.parse(window.localStorage.getItem('agentData') || 'null'); } catch { return null; }
+  }, []);
+  const currentName = (agentData?.name || localAgent?.name || "").toString().trim();
+  const currentEmail = (agentData?.email || localAgent?.email || "").toString().trim().toLowerCase();
+  const currentId = (agentData?._id || localAgent?._id || "").toString();
   
 
   const handleContent = (value) => {
@@ -21,7 +28,9 @@ const BlogWrite = () => {
   const [editForm, setEditForm] = useState({
     blog_Title: "",
     blog_Description: "",
-    author: "Admin",
+    author: currentName || "",
+    authorEmail: currentEmail || "",
+    authorId: currentId || "",
     blog_Category: "",
   });
 
@@ -62,28 +71,23 @@ const BlogWrite = () => {
     }
 
     const formDataAPI = new FormData();
-    const apiEndpoint = "https://api.100acress.com/blog/insert";
+    const apiEndpoint = "blog/insert";
     
     // Add form data to formDataAPI
     for (const key in editForm) {
       if (key !== 'blog_Description') {
-        formDataAPI.append(key, editForm[key]);
+        formDataAPI.append(key, editForm[key] ?? "");
       }
     }
     
     // Add the blog image
-    formDataAPI.append("blog_Image", fileData.blog_Image);
+    formDataAPI.append("blogImage", fileData.blog_Image);
     
     // Add the HTML content from the editor
     formDataAPI.append("blog_Description", content);
 
     try {
-      const response = await axios.post(apiEndpoint, formDataAPI,{
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          'Authorization': `Bearer ${token}`,
-        },
-      });
+      const response = await api.post(apiEndpoint, formDataAPI);
       if (response.status === 200) {
         console.log(response.data, "response");
         alert("Blog post submitted successfully");
@@ -113,7 +117,9 @@ const BlogWrite = () => {
     setEditForm({
       blog_Title: "",
       blog_Description: "",
-      author: "Admin",
+      author: currentName || "",
+      authorEmail: currentEmail || "",
+      authorId: currentId || "",
       blog_Category: "",
     });
     setContent('');
@@ -176,7 +182,7 @@ const BlogWrite = () => {
                       Front Image
                       <input
                         type="file"
-                        name="blog_Image"
+                        name="blogImage"
                         accept="image/*"
                         onChange={(e) => handleFileChange(e, "blog_Image")}
                         className="mx-2 border-gray-200 mt-1"

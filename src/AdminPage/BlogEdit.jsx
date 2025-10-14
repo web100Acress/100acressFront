@@ -1,7 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext, useMemo } from "react";
+import { message, Modal, notification } from "antd";
 import Sidebar from "./Sidebar";
-import { useParams, Link } from "react-router-dom";
-import axios from "axios";
+import { useParams, Link, useNavigate } from "react-router-dom";
+import api from "../config/apiClient";
+import { MdEdit, MdImage, MdTitle, MdDescription, MdCategory, MdPerson } from "react-icons/md";
+import Tippy from '@tippyjs/react';
+import 'tippy.js/dist/tippy.css';
+import 'tippy.js/animations/scale.css';
+import { AuthContext } from "../AuthContext";
 
 const customStyle = {
   position: "absolute",
@@ -20,37 +26,106 @@ const BlogEdit = () => {
     author: "",
   });
   const { id } = useParams();
-  const token = localStorage.getItem("myToken");
+  const navigate = useNavigate();
+  const { agentData, isAdmin } = useContext(AuthContext) || {};
+  const localAgent = useMemo(() => {
+    try { return JSON.parse(window.localStorage.getItem('agentData') || 'null'); } catch { return null; }
+  }, []);
+  const currentUserName = (agentData?.name || localAgent?.name || "").toString().trim();
+  const currentUserEmail = (agentData?.email || localAgent?.email || "").toString().trim().toLowerCase();
+  const currentUserId = (agentData?._id || localAgent?._id || "").toString();
+  
+
+  // Theme state
+  const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'light');
+  useEffect(() => {
+    document.documentElement.classList.toggle('dark', theme === 'dark');
+    localStorage.setItem('theme', theme);
+  }, [theme]);
 
   const handleUpdateUser = async () => {
     try {
+      const toastKey = 'blogUpdate';
+      message.loading({ content: 'Updating blog...', key: toastKey, duration: 0 });
       const formData = new FormData();
-
-      for (const key in viewDetails) {
-        formData.append(key, viewDetails[key]);
+      // Append only scalar fields (avoid sending objects like blog_Image)
+      formData.append("blog_Title", viewDetails.blog_Title || "");
+      formData.append("blog_Description", viewDetails.blog_Description || "");
+      formData.append("author", viewDetails.author || "");
+      formData.append("blog_Category", viewDetails.blog_Category || "");
+      // Preserve current publish status if available to avoid unintended changes on backend
+      if (typeof viewDetails.isPublished !== 'undefined') {
+        formData.append("isPublished", String(viewDetails.isPublished));
       }
-      if (viewDetails.frontImage) {
-        formData.append("frontImage", viewDetails.frontImage.file);
+      // If a new image is chosen, send under the correct field name expected by backend: blog_Image
+      if (viewDetails.frontImage && viewDetails.frontImage.file) {
+        formData.append("blog_Image", viewDetails.frontImage.file);
       }
       
-      const response = await axios.put(
-        `https://api.100acress.com/blog/update/${id}`,
-        formData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-            'Authorization': `Bearer ${token}`,
-          }
-        }
+      const response = await api.put(
+        `blog/update/${id}`,
+        formData
       );
+      console.debug('[BlogEdit] Update response:', response?.data);
       if (response.status === 200) {
-        alert("Data updated successfully");
+        message.destroy(toastKey);
+        notification.success({
+          message: 'Blog updated',
+          description: 'Your changes have been saved successfully.',
+          placement: 'topRight',
+        });
+        // Re-fetch latest blog data to reflect updates in real-time
+        try {
+          const refreshed = await api.get(
+            `blog/edit/${id}`
+          );
+          console.debug('[BlogEdit] Refetched blog after update:', refreshed.data);
+          const payload = refreshed.data;
+          const safe = payload && typeof payload.data === 'object' && payload.data !== null ? payload.data : {};
+          setViewDetails(prev => ({
+            blog_Category: "",
+            blog_Description: "",
+            blog_Title: "",
+            blog_Image: "",
+            author: "",
+            ...safe,
+          }));
+        } catch (refetchErr) {
+          console.error('Refetch failed:', refetchErr);
+        }
+        // Navigate to Admin blog list after applying updates
+        navigate('/Admin/blog');
       } else {
         console.error("Failed to update user");
+        message.destroy(toastKey);
+        notification.error({
+          message: 'Update failed',
+          description: 'Could not update the blog. Please try again.',
+          placement: 'topRight',
+        });
       }
     } catch (error) {
       console.error("Error updating user:", error);
+      message.destroy('blogUpdate');
+      notification.error({
+        message: 'Error',
+        description: 'An unexpected error occurred while updating the blog.',
+        placement: 'topRight',
+      });
     }
+  };
+
+  const handleConfirmAndUpdate = () => {
+    Modal.confirm({
+      title: 'Confirm Update',
+      content: 'Are you sure you want to save these changes to the blog?',
+      okText: 'Yes, Update',
+      cancelText: 'Cancel',
+      okButtonProps: { className: 'bg-red-500' },
+      onOk: async () => {
+        await handleUpdateUser();
+      },
+    });
   };
 
   // const handleUpdateUser = async () => {
@@ -64,7 +139,7 @@ const BlogEdit = () => {
   //     formData.append("frontImage", values.frontImage.file);
 
   //     const response = await axios.post(
-  //       `https://api.100acress.com/postPerson/propertyoneUpdate/${id}`,
+  //       `/postPerson/propertyoneUpdate/${id}`,
   //       formData,
   //       {
   //         headers: {
@@ -115,169 +190,179 @@ const BlogEdit = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get(
-          `https://api.100acress.com/blog/edit/${id}`
+        console.log('Fetching blog data for ID:', id);
+        const res = await api.get(
+          `blog/edit/${id}`
         );
-        setViewDetails(res.data.data);
+        console.log('Blog data received:', res.data);
+        const payload = res.data;
+        const safe = payload && typeof payload.data === 'object' && payload.data !== null ? payload.data : {};
+        setViewDetails(prev => ({
+          blog_Category: "",
+          blog_Description: "",
+          blog_Title: "",
+          blog_Image: "",
+          author: "",
+          ...safe,
+        }));
+
+        // Ownership check: allow if admin or matches by name/email/id
+        const authorName = (safe?.author || "").toString().trim();
+        const authorEmail = (safe?.authorEmail || "").toString().trim().toLowerCase();
+        const authorId = (safe?.authorId || safe?.userId || safe?.postedBy || "").toString();
+        const nameMatch = currentUserName && authorName && authorName.toLowerCase() === currentUserName.toLowerCase();
+        const emailMatch = currentUserEmail && authorEmail && authorEmail === currentUserEmail;
+        const idMatch = currentUserId && authorId && authorId === currentUserId;
+        const allowed = isAdmin || nameMatch || emailMatch || idMatch;
+        if (!allowed) {
+          notification.error({
+            message: 'Unauthorized',
+            description: 'You are not allowed to edit this blog.',
+            placement: 'topRight',
+          });
+          navigate('/seo/blogs');
+          return;
+        }
       } catch (error) {
-        console.log(error);
+        console.error('Error fetching blog data:', error);
+        
+        let errorMessage = 'Failed to load blog data';
+        if (error.response) {
+          errorMessage = error.response.data?.message || `Server error: ${error.response.status}`;
+        } else if (error.request) {
+          errorMessage = 'Network error. Please check your connection.';
+        }
+        
+        alert(errorMessage);
       }
     };
     fetchData();
-  }, []);
+  }, [id, currentUserName, currentUserEmail, currentUserId, isAdmin, navigate]);
+
+  // Defensive UI guard for actions
+  const canEdit = useMemo(() => {
+    const authorName = (viewDetails?.author || "").toString().trim();
+    const authorEmail = (viewDetails?.authorEmail || "").toString().trim().toLowerCase();
+    const authorId = (viewDetails?.authorId || viewDetails?.userId || viewDetails?.postedBy || "").toString();
+    const nameMatch = currentUserName && authorName && authorName.toLowerCase() === currentUserName.toLowerCase();
+    const emailMatch = currentUserEmail && authorEmail && authorEmail === currentUserEmail;
+    const idMatch = currentUserId && authorId && authorId === currentUserId;
+    return !!(isAdmin || nameMatch || emailMatch || idMatch);
+  }, [viewDetails, currentUserName, currentUserEmail, currentUserId, isAdmin]);
 
 
   return (
     <>
       <Sidebar />
-      <div style={customStyle}>
-        <div className="mx-auto max-w-4xl px-2 sm:px-6 lg:px-8">
-          <div className="card-body">
-            <table className="table table-striped table-bordered">
-              <tbody>
-                <tr>
-                  <th>
-                    {" "}
-                    <span className="text-red-600 font-semibold ">
-                      Blog Image :{" "}
-                    </span>
-                  </th>
-                </tr>
-                {/* <tr>
-                  <td>
-                    <img
-                      src={
-                        viewDetails.blog_Image ? viewDetails.blog_Image.url : ""
-                      }
-                      alt="blog_Image"
-                      style={{ maxWidth: "20%" }}
-                      id="previewImage"
-                    />
-                    <br />
-                    <input type="file" onChange={(e) => handleFileChange(e)} />
-                  </td>
-                </tr> */}
-
-                <tr>
-                  <td>
-                    <img
-                      src={viewDetails.blog_Image ? viewDetails.blog_Image.url : ""}
-                      alt="blog_Image"
-                      style={{ maxWidth: "20%" }}
-                      id="previewImage"
-                    />
-                    <br />
-                    <input type="file" onChange={(e) => handleFileChange(e)} />
-                  </td>
-                </tr>
-                <tr>
-                  <th>
-                    <span className="text-red-600 font-semibold ">
-                      Blog Title :{" "}
-                    </span>
+      <div className={`flex min-h-screen ${theme === 'dark' ? 'bg-gray-900' : 'bg-gray-50'}`}>
+        <div className="flex-1 p-8 ml-64 overflow-auto font-sans">
+          <div className="w-full space-y-10">
+            {/* Header */}
+            <div className="flex items-center gap-2 mb-8 justify-between">
+              <div className="flex items-center gap-2">
+                <MdEdit className="text-3xl text-blue-500 animate-pulse" />
+                <h1 className={`text-3xl font-bold ${theme === 'dark' ? 'text-gray-100' : 'text-gray-800'}`}>Edit Blog</h1>
+              </div>
+              {/* <button
+                onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+                className={`px-4 py-2 rounded-lg shadow-md font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 ${theme === 'dark' ? 'bg-gray-800 text-gray-100 hover:bg-gray-700' : 'bg-gray-200 text-gray-800 hover:bg-gray-300'}`}
+                aria-label="Toggle theme"
+              >
+                {theme === 'dark' ? '🌙 Dark' : '☀️ Light'}
+              </button> */}
+            </div>
+            {/* Card Form */}
+            <section className={`${theme === 'dark' ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-100'} rounded-xl shadow-2xl overflow-hidden border p-8 w-full`}> 
+              {/* Blog Image */}
+              <div className="mb-6">
+                <Tippy content={<span>Blog Image</span>} animation="scale" theme="light-border">
+                  <label className={`block font-semibold mb-2 flex items-center gap-2 ${theme === 'dark' ? 'text-blue-300' : 'text-red-700'}`}><MdImage />Blog Image</label>
+                </Tippy>
+                <div className="flex items-center gap-4">
+                  <div className={`flex items-center justify-center h-32 w-32 overflow-hidden rounded-lg ${theme === 'dark' ? 'bg-gray-700 border-gray-600' : 'bg-gray-50 border-gray-200'} border`}>
+                    {viewDetails.frontImage && viewDetails.frontImage.url ? (
+                      <img src={viewDetails.frontImage.url} alt="blog_Image_preview" className="max-h-full max-w-full object-contain" id="previewImage" />
+                    ) : viewDetails.blog_Image && (viewDetails.blog_Image.cdn_url || viewDetails.blog_Image.url) ? (
+                      <img src={(viewDetails.blog_Image.cdn_url || viewDetails.blog_Image.url)} alt="blog_Image" className="max-h-full max-w-full object-contain" id="previewImage" />
+                    ) : (
+                      <span className="text-gray-500 text-sm italic">No Blog Image</span>
+                    )}
+                  </div>
+                  <input type="file" onChange={handleFileChange} className="mt-2" />
+                </div>
+              </div>
+              {/* Blog Title */}
+              <div className="mb-6">
+                <Tippy content={<span>Blog Title</span>} animation="scale" theme="light-border">
+                  <label className={`block font-semibold mb-2 flex items-center gap-2 ${theme === 'dark' ? 'text-blue-300' : 'text-red-700'}`}><MdTitle />Blog Title</label>
+                </Tippy>
                     <input
                       name="blog_Title"
                       placeholder="Blog Title"
-                      className="w-full p-2 outline-none border-2 placeholder-black mt-4 rounded-md  text-black  border-gray-200  mobile-input"
+                  className={`w-full rounded-lg border ${theme === 'dark' ? 'border-gray-600 bg-gray-900 text-gray-100 placeholder-gray-400' : 'border-gray-300'} px-4 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none`}
                       value={viewDetails.blog_Title}
-                      onChange={(e) =>
-                        setViewDetails({
-                          ...viewDetails,
-                          blog_Title: e.target.value,
-                        })
-                      }
+                  onChange={(e) => setViewDetails({ ...viewDetails, blog_Title: e.target.value })}
                     />
-                  </th>
-                </tr>
-                <tr>
-                  <th>
-                    <span className="text-red-600 font-semibold ">
-                      Blog Description :{" "}
+              </div>
+              {/* Blog Description */}
+              <div className="mb-6">
+                <Tippy content={<span>Blog Description</span>} animation="scale" theme="light-border">
+                  <label className={`block font-semibold mb-2 flex items-center gap-2 ${theme === 'dark' ? 'text-blue-300' : 'text-red-700'}`}><MdDescription />Blog Description</label>
+                </Tippy>
                       <textarea
                         name="blog_Description"
                         placeholder="Blog Description"
-                        className="w-full p-2 outline-none border-2 placeholder-black mt-4 rounded-md  text-black  border-gray-200  mobile-input"
+                  className={`w-full rounded-lg border ${theme === 'dark' ? 'border-gray-600 bg-gray-900 text-gray-100 placeholder-gray-400' : 'border-gray-300'} px-4 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none min-h-[120px]`}
                         value={viewDetails.blog_Description}
-                        onChange={(e) =>
-                          setViewDetails({
-                            ...viewDetails,
-                            blog_Description: e.target.value,
-                          })
-                        }
+                  onChange={(e) => setViewDetails({ ...viewDetails, blog_Description: e.target.value })}
                       />
-                    </span>
-                  </th>
-                </tr>
-                <tr>
-                  <th>
-                    <span className="text-red-600 font-semibold ">
-                      Blog Category :{" "}
+              </div>
+              {/* Blog Category */}
+              <div className="mb-6">
+                <Tippy content={<span>Blog Category</span>} animation="scale" theme="light-border">
+                  <label className={`block font-semibold mb-2 flex items-center gap-2 ${theme === 'dark' ? 'text-blue-300' : 'text-red-700'}`}><MdCategory />Blog Category</label>
+                </Tippy>
                       <select
-                        className="text-black border-2 p-2 outline-none w-full border-gray-200 mt-4 rounded-md"
+                  className={`w-full rounded-lg border ${theme === 'dark' ? 'border-gray-600 bg-gray-900 text-gray-100' : 'border-gray-300'} px-4 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none`}
                         value={viewDetails.blog_Category}
-                        onChange={(e) =>
-                          setViewDetails({
-                            ...viewDetails,
-                            blog_Category: e.target.value,
-                          })
-                        }
+                  onChange={(e) => setViewDetails({ ...viewDetails, blog_Category: e.target.value })}
                       >
-                        <option value="" className="text-gray-600">
-                          Blog Category
-                        </option>
-                        <option value="Commercial Property">
-                          Commercial Property
-                        </option>
-                        <option value="Residential Flats">
-                          Residential Flats
-                        </option>
+                  <option value="" className="text-gray-600">Blog Category</option>
+                  <option value="Commercial Property">Commercial Property</option>
+                  <option value="Residential Flats">Residential Flats</option>
                         <option value="SCO Plots">SCO Plots</option>
-                        <option value="Deendayal Plots">
-                          Deen Dayal Plots
-                        </option>
-                        <option value="Residential Plots">
-                          Residential Plots
-                        </option>
-                        <option value="Independent Floors">
-                          Independent Floors
-                        </option>
+                  <option value="Deendayal Plots">Deen Dayal Plots</option>
+                  <option value="Residential Plots">Residential Plots</option>
+                  <option value="Independent Floors">Independent Floors</option>
                         <option value="Builder Floors">Builder Floors</option>
-                        <option value="Affordable Homes">
-                          Affordable Homes
-                        </option>
+                  <option value="Affordable Homes">Affordable Homes</option>
                       </select>
-                    </span>
-                  </th>
-                </tr>
-                <tr>
-                  <th>
-                    <span className="text-red-600 font-semibold ">
-                      Author :{" "}
+              </div>
+              {/* Author */}
+              <div className="mb-6">
+                <Tippy content={<span>Author</span>} animation="scale" theme="light-border">
+                  <label className={`block font-semibold mb-2 flex items-center gap-2 ${theme === 'dark' ? 'text-blue-300' : 'text-red-700'}`}><MdPerson />Author</label>
+                </Tippy>
                       <input
                         name="author"
-                        placeholder="author"
-                        className="w-full p-2 outline-none border-2 placeholder-black mt-4 rounded-md  text-black  border-gray-200  mobile-input"
+                  placeholder="Author"
+                  className={`w-full rounded-lg border ${theme === 'dark' ? 'border-gray-600 bg-gray-900 text-gray-100 placeholder-gray-400' : 'border-gray-300'} px-4 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none`}
                         value={viewDetails.author}
-                        onChange={(e) =>
-                          setViewDetails({
-                            ...viewDetails,
-                            author: e.target.value,
-                          })
-                        }
+                  onChange={(e) => setViewDetails({ ...viewDetails, author: e.target.value })}
                       />
-                    </span>
-                  </th>
-                </tr>
-              </tbody>
-            </table>
           </div>
+              <div className="flex justify-end mt-8">
           <button
             type="button"
-            onClick={handleUpdateUser}
-            class="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
+            onClick={handleConfirmAndUpdate}
+            className={`flex items-center gap-2 text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-lg px-8 py-3 shadow-lg transition-all ${theme === 'dark' ? 'bg-gradient-to-r from-blue-700 via-blue-800 to-gray-900' : ''}`}
+            disabled={!canEdit}
           >
-            Update
+                  <MdEdit className="text-xl" /> Update
           </button>
+              </div>
+            </section>
+          </div>
         </div>
       </div>
     </>

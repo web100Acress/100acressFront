@@ -4,7 +4,7 @@ import styled from "styled-components";
 import FinalNavBar from "../Components/HomePageComponents/NavBar";
 import {useProductContext} from "../Context/productContext"
 import { InfinitySpin } from  'react-loader-spinner'
-import Nav from "../aadharhomes/Nav";
+import Navbar from "../aadharhomes/navbar/Navbar";
 import Footer from "../Components/Actual_Components/Footer";
 
 function Properties() {
@@ -25,7 +25,7 @@ function Properties() {
   
   return (
     <Wrapper className='Section'>
-      <Nav/>
+      <Navbar/>
       <div className='d-flex flex-wrap' style={{ padding: "0px" }}>
         <div className='li_options w-25 position-relative'>
           <div className='fi_space'>

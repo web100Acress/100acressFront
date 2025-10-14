@@ -17,6 +17,8 @@ const QRGenerator = () => {
   const [qrSize, setQrSize] = useState(256);
   const [qrColor, setQrColor] = useState('#1a365d');
   const [bgColor, setBgColor] = useState('#ffffff');
+  const [showLogo, setShowLogo] = useState(true);
+  const [logoSize, setLogoSize] = useState('medium');
   const [propertyDetails, setPropertyDetails] = useState({
     title: '',
     location: '',
@@ -74,23 +76,99 @@ const QRGenerator = () => {
       format: 'png',
       color: qrColor.replace('#', ''),
       bgcolor: bgColor.replace('#', ''),
-      qzone: '1',
-      margin: '10'
+      qzone: '2',
+      margin: '4',
+      ecc: 'M'
     });
 
     return `https://api.qrserver.com/v1/create-qr-code/?${params.toString()}`;
   };
 
-  const downloadQR = () => {
-    const link = document.createElement('a');
-    link.href = generateQRURL();
-    link.download = `100acress-qr-${Date.now()}.png`;
-    link.click();
+    const downloadQR = async () => {
+    try {
+      if (showLogo) {
+        // Create canvas to combine QR code with logo
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Set canvas size
+        canvas.width = qrSize;
+        canvas.height = qrSize;
+        
+        // Load QR code image
+        const qrImage = new Image();
+        qrImage.crossOrigin = 'anonymous';
+        
+        qrImage.onload = () => {
+          // Draw QR code
+          ctx.drawImage(qrImage, 0, 0, qrSize, qrSize);
+          
+          // Load and draw logo
+          const logoImage = new Image();
+          logoImage.crossOrigin = 'anonymous';
+          
+          logoImage.onload = () => {
+            // Calculate logo position (center) - optimized for scannability
+            const logoSizePercent = logoSize === 'small' ? 0.12 : logoSize === 'medium' ? 0.15 : 0.18;
+            const logoSizePixels = qrSize * logoSizePercent;
+            const logoX = (qrSize - logoSizePixels) / 2;
+            const logoY = (qrSize - logoSizePixels) / 2;
+            
+            // Draw logo
+            ctx.drawImage(logoImage, logoX, logoY, logoSizePixels, logoSizePixels);
+            
+            // Download the combined image
+            canvas.toBlob((blob) => {
+              const url = URL.createObjectURL(blob);
+              const link = document.createElement('a');
+              link.href = url;
+              link.download = `100acress-qr-${Date.now()}.png`;
+              link.click();
+              URL.revokeObjectURL(url);
+              
+              toast({
+                title: "QR Code Downloaded!",
+                description: "Your QR code with logo has been saved successfully.",
+              });
+            });
+          };
+          
+          logoImage.onerror = () => {
+            // If logo fails, download QR code without logo
+            const link = document.createElement('a');
+            link.href = generateQRURL();
+            link.download = `100acress-qr-${Date.now()}.png`;
+            link.click();
+            
+            toast({
+              title: "QR Code Downloaded!",
+              description: "Your QR code has been saved successfully.",
+            });
+          };
+          
+          logoImage.src = '/Images/100logo.jpg';
+        };
+        
+        qrImage.src = generateQRURL();
+      } else {
+        // Download QR code without logo
+        const link = document.createElement('a');
+        link.href = generateQRURL();
+        link.download = `100acress-qr-${Date.now()}.png`;
+        link.click();
 
-    toast({
-      title: "QR Code Downloaded!",
-      description: "Your QR code has been saved successfully.",
-    });
+        toast({
+          title: "QR Code Downloaded!",
+          description: "Your QR code has been saved successfully.",
+        });
+      }
+    } catch (error) {
+      console.error('Download error:', error);
+      toast({
+        title: "Download Failed!",
+        description: "There was an error downloading the QR code.",
+      });
+    }
   };
 
   const copyQRLink = () => {
@@ -385,6 +463,46 @@ const QRGenerator = () => {
                   />
                 </div>
               </div>
+
+              {/* Logo Overlay Toggle */}
+              <div className="flex items-center justify-between">
+                <Label className="text-sm font-medium">Show Logo in Center</Label>
+                <div className="flex items-center space-x-2">
+                                     <input
+                     type="checkbox"
+                     id="showLogo"
+                     checked={showLogo}
+                                           onChange={(e) => {
+                        setShowLogo(e.target.checked);
+                      }}
+                     className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+                   />
+                  <label htmlFor="showLogo" className="text-sm text-gray-600">
+                    {showLogo ? 'Enabled' : 'Disabled'}
+                  </label>
+                </div>
+              </div>
+
+              {/* Logo Size Selection */}
+              {showLogo && (
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium">Logo Size</Label>
+                                                         <Select value={logoSize} onValueChange={(value) => {
+                      setLogoSize(value);
+                    }}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                                           <SelectItem value="small">Small (12%)</SelectItem>
+                     <SelectItem value="medium">Medium (15%)</SelectItem>
+                     <SelectItem value="large">Large (18%)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                             )}
+
+
             </CardContent>
           </Card>
 
@@ -397,11 +515,11 @@ const QRGenerator = () => {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
-              {/* QR Code Display */}
+              {/* QR Code Display with Logo Overlay */}
               <div className="flex justify-center">
                 <div
                   ref={qrRef}
-                  className="p-6 bg-white rounded-2xl shadow-lg border-2 border-gray-100"
+                  className="p-6 bg-white rounded-2xl shadow-lg border-2 border-gray-100 relative"
                   style={{ backgroundColor: bgColor }}
                 >
                   <img
@@ -410,6 +528,20 @@ const QRGenerator = () => {
                     className="max-w-full h-auto"
                     style={{ width: qrSize, height: qrSize }}
                   />
+                                                           {/* Logo Overlay in Center */}
+                      {showLogo && (
+                        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                          <img
+                            src="/Images/100logo.jpg"
+                            alt="100Acress Logo"
+                            className={`object-contain ${
+                              logoSize === 'small' ? 'w-12 h-12' :
+                              logoSize === 'medium' ? 'w-16 h-16' :
+                              'w-20 h-20'
+                            }`}
+                          />
+                        </div>
+                      )}
                 </div>
               </div>
 
@@ -443,12 +575,16 @@ const QRGenerator = () => {
               {/* Usage Tips */}
               <div className="bg-blue-50 rounded-lg p-4 border border-blue-100">
                 <h4 className="font-medium text-blue-900 mb-2">Usage Tips:</h4>
-                <ul className="text-sm text-blue-700 space-y-1">
-                  <li>• Use high contrast colors for better scanning</li>
-                  <li>• Test QR codes before printing</li>
-                  <li>• Larger sizes work better for print materials</li>
-                  <li>• Include your brand logo for recognition</li>
-                </ul>
+                                 <ul className="text-sm text-blue-700 space-y-1">
+                   <li>• Use high contrast colors for better scanning</li>
+                   <li>• Test QR codes before printing</li>
+                   <li>• Larger sizes work better for print materials</li>
+                   <li>• Enable logo overlay for brand recognition</li>
+                   <li>• Logo automatically centers on QR code</li>
+                   <li>• <strong>Optimized for better scanning</strong></li>
+                   <li>• <strong>Reduced logo size for improved readability</strong></li>
+                   <li>• <strong>Enhanced error correction for reliability</strong></li>
+                 </ul>
               </div>
             </CardContent>
           </Card>

@@ -16,7 +16,9 @@ const StateProjectSlice = createSlice({
     kasauli: [],
     karnal: [],
     jalandhar: [],
+    alwar: [], // ✅ Added Alwar city support
     dubai: [],
+    
   },
   reducers: {
     gurugram: (state, action) => {
@@ -55,6 +57,9 @@ const StateProjectSlice = createSlice({
     jalandhar: (state, action) => {
       state.jalandhar = action.payload;
     },
+    alwar: (state, action) => {
+      state.alwar = action.payload;
+    },
     dubai: (state, action) => {
       state.dubai = action.payload;
     },
@@ -77,6 +82,7 @@ export const {
   karnal,
   jalandhar,
   sonipat,
+  alwar, // ✅ Added Alwar action export
   dubai,
   pushkar, // ✅ Correct export name
 } = StateProjectSlice.actions;

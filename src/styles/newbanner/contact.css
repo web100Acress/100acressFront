@@ -1,0 +1,24 @@
+/* Contact Section styles */
+.nb-contact-section { background: transparent; padding: 56px 16px; }
+.nb-contact-grid { max-width: 960px; margin: 0 auto; display: grid; grid-template-columns: 1fr; gap: 40px; }
+@media (min-width: 1024px) { .nb-contact-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.nb-contact-left { display: flex; flex-direction: column; justify-content: center; gap: 16px; }
+.nb-contact-eyebrow { display: flex; align-items: center; justify-content: flex-start; gap: 8px; color: #B8985A; font-weight: 600; font-size: clamp(1rem, 2vw, 1.25rem); }
+.nb-contact-eyebrow-icon { display: flex; align-items: center; justify-content: center; padding: 4px; }
+.nb-contact-title { font-size: clamp(2rem, 4vw, 3rem); font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif; font-weight: 700; color: #111827; margin: 0; }
+.nb-contact-call { color: #1f2937; font-size: 1.125rem; }
+.nb-contact-call-link { display: flex; align-items: center; justify-content: center; color: #111827; font-size: 1.875rem; text-decoration: none; }
+.nb-contact-call-icon { font-size: 1.25rem; }
+.nb-contact-call-number { font-size: 1.25rem; }
+
+.nb-contact-card { padding: 32px; border-radius: 16px; box-shadow: 0 25px 45px rgba(0,0,0,0.15); background: rgba(255,255,255,0.8); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); border: 1px solid rgba(217,180,85,0.5); }
+.nb-contact-form { display: flex; flex-direction: column; gap: 20px; }
+.nb-contact-input { width: 100%; padding: 12px 16px; border-radius: 12px; background: #fff; color: #1f2937; border: 1px solid rgba(217,180,85,0.7); outline: none; transition: box-shadow 150ms ease; }
+.nb-contact-input::placeholder { color: #6b7280; }
+.nb-contact-input:focus { box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.25); }
+.nb-input-error { color: #ef4444; font-size: 0.875rem; margin-top: 4px; }
+.nb-contact-privacy { font-size: 0.75rem; color: #4b5563; }
+.nb-contact-submit { width: 100%; background: linear-gradient(to right, #CFAF6E, #E5C78A); color: #fff; font-weight: 600; padding: 12px; border-radius: 9999px; transition: box-shadow 200ms ease, background 200ms ease; box-shadow: 0 10px 25px rgba(0,0,0,0.12); }
+.nb-contact-submit:hover { box-shadow: 0 14px 32px rgba(0,0,0,0.16); background: linear-gradient(to right, #B8985A, #D4B373); }
+
+.nb-visually-hidden { position: absolute !important; clip: rect(1px, 1px, 1px, 1px); padding: 0 !important; border: 0 !important; height: 1px !important; width: 1px !important; overflow: hidden; white-space: nowrap; }

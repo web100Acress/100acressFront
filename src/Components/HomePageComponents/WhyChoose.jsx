@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "aos/dist/aos.css";
 import AOS from "aos";
+import CountUp from "react-countup";
 
 import {
   MonthlyVisitIcon,
@@ -9,9 +10,7 @@ import {
   CommercialProjectIcon,
   ScoPlotsIcon,
   PlotnFloorIcon,
-} from "../../Assets/icons";
-
-
+} from "../../Assets/icons"; // Ensure these paths are correct
 
 function WhyChoose() {
   const [expanded, setExpanded] = useState(false);
@@ -20,17 +19,39 @@ function WhyChoose() {
   const toggleParagraph = () => {
     setExpanded(!expanded);
   };
+
   useEffect(() => {
-    AOS.init();
+    AOS.init({ duration: 1000, once: true });
   }, []);
 
   const monthlydata = [
-    { title: "Residential Projects", count: "1245+", icon: <ResidentialProjectIcon /> },
-    { title: "Commercial Projects", count: "550+", icon: <CommercialProjectIcon /> },
-    { title: "SCO Plots", count: "54+", icon: <ScoPlotsIcon /> },
-    { title: "Plots & Floors", count: "250+", icon: <PlotnFloorIcon /> },
-    { title: "Monthly Visitors", count: "2.25L+", icon: <MonthlyVisitIcon /> },
-    { title: "Awards", count: "300+", icon: <AwardsIcon /> },
+    {
+      title: "Residential Projects",
+      count: 1600,
+      suffix: "+",
+      icon: <ResidentialProjectIcon />,
+    },
+    {
+      title: "Commercial Projects",
+      count: 900,
+      suffix: "+",
+      icon: <CommercialProjectIcon />,
+    },
+    { title: "SCO Plots", count: 90, suffix: "+", icon: <ScoPlotsIcon /> },
+    {
+      title: "Plots & Floors",
+      count: 400,
+      suffix: "+",
+      icon: <PlotnFloorIcon />,
+    },
+    {
+      title: "Monthly Visitors",
+      count: 2.45,
+      suffix: "L+",
+      decimals: 2,
+      icon: <MonthlyVisitIcon />,
+    },
+    { title: "Awards", count: 1000, suffix: "+", icon: <AwardsIcon /> },
   ];
 
   useEffect(() => {
@@ -39,49 +60,89 @@ function WhyChoose() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const paragraphText = `100acress is transforming the real estate landscape by connecting thousands to their ideal homes, workspaces, and more. Emphasizing a warm, family-like approach, the platform is dedicated to offering personalized services and fostering a supportive environment. To ensure trustworthiness and accuracy, 100acress diligently verifies property listings, reducing fraud and enhancing reliability. Known for its vast database, the platform serves as a crucial resource for those looking to buy, sell, or rent properties. By maintaining high standards and a user-centered focus, 100acress stands out as a valuable tool in the real estate market, simplifying the property search process.`;
+  const paragraphText = `Why Choose 100acress.com for Real Estate in Gurgaon & Delhi NCR?
+100acress is transforming property buying, selling, and renting by offering verified property listings for flats, villas, apartments, SCO plots, commercial spaces, and budget-friendly homes. Whether you’re looking for affordable housing projects, under-construction apartments, ready-to-move flats, or investment properties, 100acress makes your journey simple, safe, and transparent. With a huge database of residential and commercial real estate projects in India, the platform ensures trusted builders, genuine deals, and expert guidance every step of the way.
+`;
 
   const truncateText = (text, limit) => {
     const words = text.split(" ");
-    return words.length > limit ? words.slice(0, limit).join(" ") + "..." : text;
+    return words.length > limit
+      ? words.slice(0, limit).join(" ") + "..."
+      : text;
   };
 
   return (
-    <section className="font-sans px-0 sm:px-6 lg:px-12 py-8 max-w-[1250px] mx-auto">
-      <div className="flex flex-col md:flex-row items-center bg-white">
+    <section className="font-sans px-4 sm:px-6 lg:px-12 py-16 max-w-[1250px] mx-auto">
+      <div className="flex flex-col md:flex-row items-center bg-white rounded-3xl shadow-2xl overflow-hidden">
         {/* Left Section */}
-        <div className="w-full md:w-1/2 p-4">
-          <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-semibold mb-4">
+        <div className="w-full md:w-1/2 p-6 md:p-12 flex flex-col justify-center bg-gradient-to-r  to-white">
+          <p
+            className="text-2xl sm:text-3xl lg:text-4xl font-extrabold mb-5 leading-tight text-black"
+            data-aos="fade-right"
+          >
             Why 100acress.com?
           </p>
-          <div className="text-justify text-gray-700">
-            <p className="mb-4">
-              {isMobile ? (expanded ? paragraphText : truncateText(paragraphText, 18)) : paragraphText}
+
+          <div className="text-justify text-gray-700 leading-relaxed text-base">
+            <p className="mb-6">
+              {isMobile
+                ? expanded
+                  ? paragraphText
+                  : truncateText(paragraphText, 25)
+                : paragraphText}
             </p>
             {isMobile && (
               <button
-                className="rounded-md mt-2 px-4 justify-center py-2 bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 text-white text-sm sm:text-base ml-auto mr-auto transition duration-200"
+                className="inline-flex items-center justify-center px-6 py-2 border border-transparent text-sm font-medium rounded-full shadow-lg text-white
+                           bg-gradient-to-r from-[#FF9933] to-[#138808] hover:from-[#e67e22] hover:to-[#107c07]
+                           focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#FF9933] transition duration-300 ease-in-out transform hover:scale-105"
                 onClick={toggleParagraph}
               >
                 {expanded ? "Read less" : "Read more"}
               </button>
             )}
-            <p className="mt-4 text-red-500 font-medium">Rajesh Aggarwal, Founder</p>
+            <div className="mt-8 space-y-1">
+              <h3 className="text-xl font-semibold text-gray-800">
+                Rajesh Aggarwal
+              </h3>
+              <p className="text-lg text-gray-600">
+                Founder & CEO
+              </p>
+            </div>
           </div>
         </div>
 
         {/* Right Section */}
-        <div className="w-full md:w-1/2 p-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="w-full md:w-1/2 p-6 md:p-12 bg-white">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             {monthlydata.map((data, index) => (
               <div
-                data-aos="zoom-in" data-aos-delay="200"
+                data-aos="zoom-in"
+                data-aos-delay={index * 150 + 200}
                 key={index}
-                className="relative bg-white shadow rounded-lg pl-4 flex flex-col justify-center items-start"
+                className="relative bg-white p-6 rounded-2xl shadow-lg flex flex-col items-start justify-center
+                           hover:shadow-2xl hover:shadow-[#FF9933]/40 border border-gray-100 hover:border-[#FF9933]/50
+                           transition-all duration-300 ease-in-out transform hover:-translate-y-2"
               >
-                <div className="absolute -top-5 left-4 ">{data.icon}</div>
-                <div className="mt-8 text-gray-800 font-bold text-xl">{data.count}</div>
-                <p className="text-gray-600 text-sm">{data.title}</p>
+                <div
+                  className="absolute -top-7 left-5 p-3 rounded-full bg-white backdrop-blur-sm
+                             shadow-xl flex items-center justify-center"
+                >
+                  <div className="text-[#FF9933] text-3xl">{data.icon}</div>
+                </div>
+                <div className="mt-8 text-gray-900 font-extrabold text-4xl leading-none tracking-tight">
+                  <CountUp
+                    end={data.count}
+                    duration={3}
+                    decimals={data.decimals || 0}
+                    suffix={data.suffix}
+                    enableScrollSpy={true}
+                    scrollSpyOnce={true}
+                  />
+                </div>
+                <p className="mt-2 text-gray-600 text-sm md:text-base font-medium">
+                  {data.title}
+                </p>
               </div>
             ))}
           </div>

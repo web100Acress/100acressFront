@@ -36,10 +36,11 @@ const NewLaunch = () => {
           name="description"
           content="Real Estate Properties in New Panipat- Get Details for Residential &amp; Commercial Properties"
         />
+        <link rel="canonical" href="https://www.100acress.com/new-launch-projects-in-gurgaon/" />
       </Helmet>
       <div className="mt-auto">
       <div className="max-w-screen pt-2 sm:pt-2 md:pt-2" target="_top">
-        <h1 className=" p-1 text-center text-2xl mt-16 sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold  tracking-[0.1em]">
+        <h1 className=" p-1 text-center text-2xl mt-4 sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold  tracking-[0.1em]">
           New Launch Projects in Gurgaon
         </h1> 
 

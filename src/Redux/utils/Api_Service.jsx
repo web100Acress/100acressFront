@@ -1,47 +1,87 @@
 import { useDispatch } from "react-redux";
 import { spotlight, trending ,featured,upcoming,affordable,luxury,scoplots,commercial,budget,projectindelhi} from "../slice/projectSlice";
-import {gurugram,delhi,noida,goa,ayodhya,mumbai,panipat,panchkula,kasauli,karnal,jalandhar, sonipat, dubai, pushkar} from "../slice/StateProject";  
-import {allupcomingproject,builderindependentfloor,commercialProjectAll,deendayalplots,dlfsco,luxuryAll,luxuryvillas,newlaunch, readytomove, residential, scoplotsall, underconstruction,possessionafter2026} from "../slice/AllSectionData";
-import { signatureglobal,m3m,dlf,experion,elan,bptp,adani,smartworld,trevoc,indiabulls,centralpark,emaarindia, godrej, whiteland, aipl } from "../slice/BuilderSlice";
+import {gurugram,delhi,noida,goa,ayodhya,mumbai,panipat,panchkula,kasauli,karnal,jalandhar, sonipat, alwar, dubai, pushkar} from "../slice/StateProject";  
+import {allupcomingproject,builderindependentfloor,commercialProjectAll,deendayalplots,dlfsco,luxuryAll,luxuryvillas,newlaunch, readytomove, residential, scoplotsall, underconstruction,possessionafter2026,plotsingurugram,farmhouse,industrialplots,industrialprojects} from "../slice/AllSectionData";
+import { signatureglobal,m3m,dlf,experion,elan,bptp,adani,smartworld,trevoc,indiabulls,centralpark,emaarindia, godrej, whiteland, aipl, birla, sobha, trump, puri, aarize} from "../slice/BuilderSlice";
 import {Possessionin2025,Possessionin2026} from "../slice/PossessionSlice";
 import {bptpplots,orrisplots} from "../slice/ProjectOverviewSlice";
 
 import {sohnaroad,golfcourseextensionroad,golfcourseroad,mgroad,nprroad,dwarkaexpressway,newgurgaon,sohna,sprroad,nh48} from "../slice/PrimeLocation"
 import {resale} from "../slice/ResaleSlice";
-import axios from "axios";
+import api from "../../config/apiClient";
 import { API_ROUTES, API_ROUTES_PROJECTS } from "./Constant_Service";
 import { sortByDesiredOrder } from "../../Utils/ProjectSorting";
-import { Affordable_Desired_Order, COMMERCIAL_DESIRED_ORDER, DesiredLuxuryOrder, SCO_DESIRED_ORDER, Trending_Desired_Order } from "../../Pages/datafeed/Desiredorder";
+import { getAffordableDesiredOrder, getBudgetDesiredOrder, getCommercialDesiredOrder, getLuxuryDesiredOrder, getRecommendedDesiredOrder, getSCODesiredOrder, getTrendingDesiredOrder } from "../../Utils/ProjectOrderData";
 import { emaar } from "../slice/ProjectstatusSlice";
 import { useCallback } from "react";
 import { maxpriceproject,minpriceproject } from "../slice/PriceBasedSlice";
+
+// Maintain per-builder abort controllers to prevent overlapping requests
+const propertyOrderControllers = new Map();
+// De-dup in-flight requests per builder and provide a small cache to avoid rapid repeated calls
+const propertyOrderInFlight = new Map(); // key -> Promise
+const propertyOrderCache = new Map();    // key -> { data, ts }
+const requestThrottle = new Map();       // key -> timestamp
 
 const Api_service = () => {
   const dispatch = useDispatch();
 
   const getTrending = async () => {
     try {
-      const response = await axios.get(`${API_ROUTES_PROJECTS}/trending`);
-      const Trendingprojects = response.data.data;
-      dispatch(trending(sortByDesiredOrder((Trendingprojects),Trending_Desired_Order,"projectName")));
+      // Throttle requests to prevent 429 errors
+      const now = Date.now();
+      const lastCall = requestThrottle.get('trending') || 0;
+      if (now - lastCall < 2000) { // 2 second throttle
+        console.log('Trending request throttled, skipping');
+        return;
+      }
+      requestThrottle.set('trending', now);
+      
+      let trendingOrder = [];
+      try {
+        trendingOrder = await getTrendingDesiredOrder() || [];
+        console.log('📋 Trending order:', trendingOrder);
+      } catch (orderError) {
+        console.warn('Could not get trending order, will use default order:', orderError);
+      }
+      
+      await getProjectsByCategory('trending', trendingOrder, trending);
     } catch (error) {
-      console.error("Error fetching trending data:", error);
+      console.error("❌ Error in getTrending:", error);
     }
   };
 
-  const getSpotlight = async () => {
+  const getSpotlight = useCallback(async () => {
     try {
-      const response = await axios.get(`${API_ROUTES_PROJECTS}/spotlight`);
-      const Spotlightprojects = response.data.data;
-      dispatch(spotlight(Spotlightprojects));
+      console.log('🔍 getSpotlight called');
+      // Throttle requests to prevent 429 errors
+      const now = Date.now();
+      const lastCall = requestThrottle.get('spotlight') || 0;
+      if (now - lastCall < 2000) { // 2 second throttle
+        console.log('Spotlight request throttled, skipping');
+        return;
+      }
+      requestThrottle.set('spotlight', now);
+      
+      // Try to get recommended order, but don't fail if it doesn't exist
+      let recommendedOrder = [];
+      try {
+        recommendedOrder = await getRecommendedDesiredOrder() || [];
+        console.log('📋 Recommended order:', recommendedOrder);
+      } catch (orderError) {
+        console.warn('Could not get recommended order, will use default order:', orderError);
+      }
+      
+      await getProjectsByCategory('spotlight', recommendedOrder, spotlight);
+      console.log('✅ getSpotlight completed');
     } catch (error) {
-      console.error("Error fetching spotlight data:", error);
+      console.error("❌ Error in getSpotlight:", error);
     }
-  };
+  }, [dispatch]);
 
   const getFeatured = async() =>{
     try {
-        const response = await axios.get(`${API_ROUTES_PROJECTS}/featured`);
+        const response = await api.get(`${API_ROUTES.projectsBase()}/featured`);
         const Featuredprojects = response.data.data;
         dispatch(featured(Featuredprojects));
 
@@ -53,7 +93,7 @@ const Api_service = () => {
 
   const getUpcoming = async() =>{
     try{
-        const response = await axios.get(`${API_ROUTES_PROJECTS}/upcoming`);
+        const response = await api.get(`${API_ROUTES.projectsBase()}/upcoming`);
         const Featuredprojects = response.data.data;
         dispatch(upcoming(Featuredprojects));
     }catch(error){
@@ -63,9 +103,18 @@ const Api_service = () => {
 
   const getAffordable = async() =>{
     try{
-        const response = await axios.get(`${API_ROUTES_PROJECTS}/affordable`);
-        const Featuredprojects = response.data.data;
-        dispatch(affordable(sortByDesiredOrder((Featuredprojects),Affordable_Desired_Order,"projectName")));
+      // Throttle requests to prevent 429 errors
+      const now = Date.now();
+      const lastCall = requestThrottle.get('affordable') || 0;
+      if (now - lastCall < 2000) { // 2 second throttle
+        console.log('Affordable request throttled, skipping');
+        return;
+      }
+      requestThrottle.set('affordable', now);
+      
+      // Use dynamic project ordering
+      const affordableOrder = await getAffordableDesiredOrder();
+      await getProjectsByCategory('affordable', affordableOrder, affordable);
     }catch(error){
         console.error("Error fetching Affordable data:", error);
     }
@@ -73,9 +122,9 @@ const Api_service = () => {
 
   const getLuxury = async() =>{
     try{
-        const response = await axios.get(`${API_ROUTES_PROJECTS}/luxury`);
-        const Featuredprojects = response.data.data;
-        dispatch(luxury(Featuredprojects));
+        // Use dynamic project ordering
+        const luxuryOrder = await getLuxuryDesiredOrder();
+        await getProjectsByCategory('luxury', luxuryOrder, luxury);
     }catch(error){
         console.error("Error fetching Luxury data:", error);
     }
@@ -83,9 +132,9 @@ const Api_service = () => {
 
   const getScoplots = async() =>{
     try{
-        const response = await axios.get(`${API_ROUTES_PROJECTS}/scoplots`);
-        const Featuredprojects = response.data.data;
-        dispatch(scoplots(sortByDesiredOrder((Featuredprojects),SCO_DESIRED_ORDER,"projectName")));
+        // Use dynamic project ordering
+        const scoOrder = await getSCODesiredOrder();
+        await getProjectsByCategory('sco', scoOrder, scoplots);
     }catch(error){
         console.error("Error fetching Sco data:", error);
     }
@@ -93,27 +142,91 @@ const Api_service = () => {
 
   const getCommercial = async() =>{
     try{
-        const response = await axios.get(`${API_ROUTES_PROJECTS}/commercial`);
-        const Featuredprojects = response.data.data;
-        dispatch(commercial(sortByDesiredOrder((Featuredprojects),COMMERCIAL_DESIRED_ORDER,"projectName")));
+        // Use dynamic project ordering
+        const commercialOrder = await getCommercialDesiredOrder();
+        await getProjectsByCategory('commercial', commercialOrder, commercial);
     }catch(error){
         console.error("Error fetching Commercial data:", error);
     }
   }
-
-  const getBudgetHomes = async() =>{
-    try{
-        const response = await axios.get(`${API_ROUTES_PROJECTS}/budgethomes`);
+// weeeeeeeeeeeeeeeeeehfeiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii
+  const getBudgetHomes = async() => {
+    try {
+        // Get dynamic budget project names from ProjectOrderData
+        const budgetOrder = await getBudgetDesiredOrder();
+        const budgetProjectNames = budgetOrder.join(',');
+        
+        const response = await api.get(`${API_ROUTES.projectsBase()}/budgethomes?projects=${budgetProjectNames}`);
         const Featuredprojects = response.data.data;
-        dispatch(budget(Featuredprojects));
-    }catch(error){
+        console.log('Budget Projects:', Featuredprojects.map(p => p.projectName));
+        
+        // Sort projects according to the desired order
+        const sortedProjects = sortByDesiredOrder(
+            Featuredprojects,
+            budgetOrder,
+            "projectName"
+        );
+        
+        dispatch(budget(sortedProjects));
+    } catch(error) {
         console.error("Error fetching BudgetHomes data:", error);
     }
   }
 
+  // Generic function to get projects by category with dynamic ordering
+  const getProjectsByCategory = async (category, projectNames = [], dispatchAction) => {
+    try {
+      // If no project names are provided, use the category-specific endpoint
+      if (!projectNames || projectNames.length === 0) {
+        console.log(`📡 No project names provided for ${category}, using direct endpoint`);
+        try {
+          const response = await api.get(`${API_ROUTES.projectsBase()}/${category}`);
+          console.log(`✅ Successfully fetched ${category} projects directly`);
+          dispatch(dispatchAction(response.data.data || []));
+          return;
+        } catch (directError) {
+          console.error(`❌ Direct ${category} endpoint failed:`, directError);
+          throw directError; // Re-throw to be caught by the outer catch
+        }
+      }
+
+      // If we have project names, try the category endpoint with specific projects
+      try {
+        const projectNamesString = projectNames.join(',');
+        const apiUrl = `${API_ROUTES.projectsBase()}/category?category=${category}&projects=${projectNamesString}`;
+        console.log('🌐 API URL:', apiUrl);
+        
+        const response = await api.get(apiUrl);
+        console.log('📡 API Response:', response.data);
+        const projects = response.data.data || [];
+        
+        // Sort projects according to the desired order if we have projects to sort
+        let sortedProjects = projects;
+        if (projects.length > 0 && projectNames.length > 0) {
+          sortedProjects = sortByDesiredOrder(projects, projectNames, "projectName") || projects;
+          console.log('📊 Sorted projects:', sortedProjects);
+        }
+        
+        dispatch(dispatchAction(sortedProjects));
+        console.log(`✅ Dispatched ${category} projects to Redux store`);
+      } catch (categoryError) {
+        console.error(`❌ Category endpoint failed for ${category}, falling back to direct endpoint`);
+        // Fallback to direct endpoint if category endpoint fails
+        const response = await api.get(`${API_ROUTES.projectsBase()}/${category}`);
+        console.log(`✅ Successfully fetched ${category} projects via fallback`);
+        dispatch(dispatchAction(response.data.data || []));
+      }
+    } catch (error) {
+      console.error(`❌ Error in getProjectsByCategory (${category}):`, error);
+      console.error('❌ Error details:', error.response?.data || error.message);
+      // Dispatch empty array to prevent UI errors
+      dispatch(dispatchAction([]));
+    }
+  }
+// //////////////////////////////////////////////////////////////////////////////////////////
   const getProjectIndelhi = async()=>{
     try{
-      const response = await axios.get(`${API_ROUTES_PROJECTS}/city`);
+      const response = await api.get(`${API_ROUTES.projectsBase()}/city`);
       const Delhiprojects = response.data.data;
       dispatch(projectindelhi(Delhiprojects));
   }catch(error){
@@ -123,7 +236,7 @@ const Api_service = () => {
 
   const getProjectfind = async(query ,page ,limit )=>{
     try{
-      const response = await axios.get(`${API_ROUTES_PROJECTS}/projectsearch?${query}=1&page=${page}&limit=${limit}`);
+      const response = await api.get(`${API_ROUTES.projectsBase()}/projectsearch?${query}=1&page=${page}&limit=${limit}`);
       const ProjectFind = response.data.data;
     }catch(error){
       console.error("Error fetching ")
@@ -132,7 +245,7 @@ const Api_service = () => {
 
   const getResaleProperties = async()=>{
     try {
-            const res = await axios.get(`${API_ROUTES}property/buy/ViewAll`);
+            const res = await api.get(`property/buy/ViewAll`);
             const responsedata = res.data.ResaleData;
             dispatch(resale(responsedata));
           } catch (error) {
@@ -143,7 +256,7 @@ const Api_service = () => {
 
  const getProjectbyState = async (query, limit) => {
   try {
-    const response = await axios.get(`${API_ROUTES_PROJECTS}/projectsearch?city=${query}&limit=${limit}`);
+    const response = await api.get(`${API_ROUTES.projectsBase()}/projectsearch?city=${query}&limit=${limit}`);
     const ProjectbyState = response.data.data;
 
     if (query === 'Gurugram') {
@@ -171,10 +284,12 @@ const Api_service = () => {
     } else if (query === 'Sonipat') {
       dispatch(sonipat(ProjectbyState));
     } else if (query === 'Dubai') {
-      dispatch(dubai(ProjectbyState)); // ✅ this was missing
+      dispatch(dubai(ProjectbyState)); 
     } if (query === 'Pushkar') {
   dispatch(pushkar(ProjectbyState));
-}
+} else if (query === 'Alwar') {
+      dispatch(alwar(ProjectbyState));
+    }
 
   } catch (error) {
     console.error("Error fetching project data based on state:", error);
@@ -186,7 +301,7 @@ const Api_service = () => {
   const getAllProjects= async(query ,limit )=>{
 
     try{
-      const response = await axios.get(`${API_ROUTES_PROJECTS}/projectsearch?${query}=1&limit=${limit}`);
+      const response = await api.get(`${API_ROUTES.projectsBase()}/projectsearch?${query}=1&limit=${limit}`);
       const AllProjectbyQuery = response.data.data;
       if (query === 'allupcomingproject') {
         dispatch(allupcomingproject(AllProjectbyQuery));
@@ -210,7 +325,8 @@ const Api_service = () => {
         dispatch(scoplotsall(AllProjectbyQuery));
       }else
       if(query === "luxury"){
-        dispatch(luxuryAll(sortByDesiredOrder((AllProjectbyQuery),DesiredLuxuryOrder,"projectName")));
+        const luxuryOrder = await getLuxuryDesiredOrder();
+        dispatch(luxuryAll(sortByDesiredOrder((AllProjectbyQuery),luxuryOrder,"projectName")));
       }else
       if(query === "deendayalplots"){
         dispatch(deendayalplots(AllProjectbyQuery));
@@ -226,6 +342,18 @@ const Api_service = () => {
       }else
       if(query === "dlfsco"){
         dispatch(dlfsco(AllProjectbyQuery))
+      }else
+      if(query === "plotsingurugram"){
+        dispatch(plotsingurugram(AllProjectbyQuery))
+      }else
+      if(query === "farmhouse"){
+        dispatch(farmhouse(AllProjectbyQuery))
+      }else
+      if(query === "industrialplots"){
+        dispatch(industrialplots(AllProjectbyQuery))
+      }else
+      if(query === "industrialprojects"){
+        dispatch(industrialprojects(AllProjectbyQuery))
       }
     }catch(error){
       console.error("Error fetching ",error);
@@ -236,7 +364,7 @@ const Api_service = () => {
   const getPrimeLocation = useCallback(async(query ,limit ) => {
 
     try{
-      const response = await axios.get(`${API_ROUTES_PROJECTS}/projectsearch?${query}=1&limit=${limit}`);
+      const response = await api.get(`${API_ROUTES.projectsBase()}/projectsearch?${query}=1&limit=${limit}`);
       const PrimeLocation = response.data.data;
       if (query === "sohnaroad") {
         dispatch(sohnaroad(PrimeLocation))
@@ -277,7 +405,7 @@ const Api_service = () => {
   const getProjectOnStatus = async(query )=>{
 
     try{
-      const response = await axios.get(`${API_ROUTES_PROJECTS}/projectsearch?projectStatus=${query}`);
+      const response = await api.get(`${API_ROUTES.projectsBase()}/projectsearch?projectStatus=${query}`);
       const ProjectbyStatus = response.data.data;
       if(query === "emaar"){
         dispatch(emaar(ProjectbyStatus));
@@ -291,7 +419,7 @@ const Api_service = () => {
   const getProjectOnOverview = async(query )=>{
 
     try{
-      const response = await axios.get(`${API_ROUTES_PROJECTS}/projectsearch?projectOverview=${query}`);
+      const response = await api.get(`${API_ROUTES.projectsBase()}/projectsearch?projectOverview=${query}`);
       const ProjectByOverview =  response.data.data;
       if(query === "bptp"){
         dispatch(bptpplots(ProjectByOverview))
@@ -306,9 +434,15 @@ const Api_service = () => {
 
   const getProjectbyBuilder = useCallback(async (query ,limit ) => {
     try {
-      const response = await axios.get(`${API_ROUTES_PROJECTS}/projectsearch?builderName=${query}&limit=${limit}`);
-      console.log(response,"response from api")
+      if (!query || (typeof query === 'string' && query.trim() === '')) {
+        console.warn('getProjectbyBuilder: missing builder name');
+        return [];
+      }
+      console.log('🟦 getProjectbyBuilder: start', { query, limit });
+      const response = await api.get(`${API_ROUTES.projectsBase()}/projectsearch?builderName=${query}&limit=${limit}` , { timeout: 15000 });
+      console.log('🟦 getProjectbyBuilder: success', { count: Array.isArray(response?.data?.data) ? response.data.data.length : 'n/a' });
       const BuilderbyQuery = response.data.data;
+
       switch (query) {
         case 'Signature Global':
           dispatch(signatureglobal(BuilderbyQuery));
@@ -355,19 +489,46 @@ const Api_service = () => {
         case 'AIPL':
         dispatch(aipl(BuilderbyQuery));
         break;
+        case 'Birla Estate':
+        case 'Birla Estates':
+          dispatch(birla(BuilderbyQuery));
+          break;
+        case 'Sobha':
+        case 'Sobha Developers':
+          console.log('🔍 Dispatching sobha action with data:', BuilderbyQuery);
+          dispatch(sobha(BuilderbyQuery));
+          break;
+        case 'Trump Towers':
+        case 'trump':
+          dispatch(trump(BuilderbyQuery));
+          break;
+        case 'Puri Constructions':
+        case 'Puri':
+        case 'Puri Developers': 
+          console.log('🔍 Dispatching puri action with data:', BuilderbyQuery);
+          dispatch(puri(BuilderbyQuery));
+          break;
+        case 'Aarize Group':
+        case 'Aarize':
+        case 'Aarize Developers':
+          console.log('🔍 Dispatching aarize action with data:', BuilderbyQuery);
+          dispatch(aarize(BuilderbyQuery));
+          break;
+
         default:
           console.warn('Unknown builder:', query);
       }
       return BuilderbyQuery;
     } catch (error) {
-      console.error("Error fetching project data:", error);
+      console.error("🟥 getProjectbyBuilder: error", error);
+      return [];
     }
   }, [dispatch]);
 
 
   const getPossessionByYear = useCallback(async(query ) =>{
     try{
-      const response = await axios.get(`${API_ROUTES_PROJECTS}/projectsearch?possessiondate=${query}`);
+      const response = await api.get(`${API_ROUTES.projectsBase()}/projectsearch?possessiondate=${query}`);
       const Possessionbyyear = response?.data?.data;
       if(query === "2025"){
         dispatch(Possessionin2025(Possessionbyyear))
@@ -385,7 +546,7 @@ const Api_service = () => {
   const getProjectBasedOnminPrice = useCallback(async(query ,limit ) =>{
 
     try{
-      const response = await axios.get(`${API_ROUTES_PROJECTS}/projectsearch?minPrice=${query}&limit=${limit}`);
+      const response = await api.get(`${API_ROUTES.projectsBase()}/projectsearch?minPrice=${query}&limit=${limit}`);
       const minpriceprojectresponse = response.data.data;
       dispatch(minpriceproject(minpriceprojectresponse));
 
@@ -398,7 +559,7 @@ const Api_service = () => {
   const getProjectBasedOnmaxPrice = useCallback(async(query ,limit ) =>{
 
     try{
-      const response = await axios.get(`${API_ROUTES_PROJECTS}/projectsearch?maxPrice=${query}&limit=${limit}`);
+      const response = await api.get(`${API_ROUTES.projectsBase()}/projectsearch?maxPrice=${query}&limit=${limit}`);
       const maxpriceprojectresponse = response.data.data;
       dispatch(maxpriceproject(maxpriceprojectresponse));
     }catch(error){
@@ -406,6 +567,102 @@ const Api_service = () => {
 
     }
   },[dispatch]);
+
+  const getPropertyOrder = async (builderName) => {
+    const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
+    try {
+      if (!builderName) return null;
+
+      const key = String(builderName).trim().toLowerCase();
+
+      // Serve from cache if fresh
+      const cached = propertyOrderCache.get(key);
+      if (cached && (Date.now() - cached.ts) < CACHE_TTL_MS) {
+        console.log('🟩 getPropertyOrder: cache hit for', builderName);
+        return cached.data;
+      }
+
+      // If a request is already in-flight for this builder, return the same promise
+      const inflight = propertyOrderInFlight.get(key);
+      if (inflight) {
+        console.log('🟨 getPropertyOrder: reusing in-flight promise for', builderName);
+        return inflight;
+      }
+
+      // Abort any previous (stuck) controller for the same builder to avoid overlaps
+      const prev = propertyOrderControllers.get(key);
+      if (prev) {
+        try { prev.abort(); console.log('🟨 getPropertyOrder: aborted previous request for', builderName); } catch {}
+      }
+
+      const controller = new AbortController();
+      propertyOrderControllers.set(key, controller);
+      console.log('🟦 getPropertyOrder: start', builderName);
+
+      // Create a shared promise and store it as in-flight
+      const promise = (async () => {
+        const res = await api.get(`propertyOrder/builder/${encodeURIComponent(builderName)}`, {
+          signal: controller.signal,
+          timeout: 15000,
+        });
+        const data = res?.data?.data || null;
+        console.log('🟦 getPropertyOrder: success', builderName, { hasData: !!data, count: Array.isArray(data?.customOrder) ? data.customOrder.length : 'n/a' });
+        // Cache result
+        propertyOrderCache.set(key, { data, ts: Date.now() });
+        return data;
+      })();
+
+      propertyOrderInFlight.set(key, promise);
+      const result = await promise;
+      return result;
+    } catch (error) {
+      if (error?.name === 'CanceledError' || error?.message === 'canceled') {
+        console.warn('🟨 getPropertyOrder: request canceled for', builderName);
+        return null;
+      }
+      console.error('🟥 getPropertyOrder: error', builderName, error);
+      return null;
+    } finally {
+      // Clear controller and in-flight entry for this builder
+      const key = String(builderName || '').trim().toLowerCase();
+      propertyOrderControllers.delete(key);
+      propertyOrderInFlight.delete(key);
+      console.log('🟦 getPropertyOrder: end', builderName);
+    }
+  };
+
+  const savePropertyOrder = async ({ builderName, customOrder, hasCustomOrder = true, randomSeed = null }) => {
+    try {
+      if (!builderName) throw new Error('builderName required');
+      const res = await api.post(`propertyOrder/save`, {
+        builderName,
+        customOrder: Array.isArray(customOrder) ? customOrder : [],
+        hasCustomOrder: !!hasCustomOrder,
+        randomSeed,
+      });
+      return res?.data?.data || null;
+    } catch (error) {
+      console.error('Error saving property order:', error);
+      throw error;
+    }
+  };
+
+  // Fallback fetch: get all properties then filter by builder if a dedicated endpoint doesn't exist
+  const getPropertiesByBuilder = async (builderName, limit = 200) => {
+    try {
+      if (!builderName) return [];
+      const res = await api.get(`property/buy/ViewAll`);
+      const all = res?.data?.ResaleData || res?.data?.data || [];
+      const filtered = all.filter((p) => {
+        const b = p.builderName || p.builder || p.builder_name;
+        return b && String(b).toLowerCase() === String(builderName).toLowerCase();
+      });
+      return filtered.slice(0, limit);
+    } catch (error) {
+      console.error('Error fetching properties by builder:', error);
+      return [];
+    }
+  };
 
   return {
     getTrending,
@@ -428,7 +685,11 @@ const Api_service = () => {
     getPrimeLocation,
     getPossessionByYear,
     getProjectBasedOnminPrice,
-    getProjectBasedOnmaxPrice
+    getProjectBasedOnmaxPrice,
+    // Property order & fetch helpers
+    getPropertyOrder,
+    savePropertyOrder,
+    getPropertiesByBuilder,
   };
 };
 

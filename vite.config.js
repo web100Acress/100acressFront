@@ -4,7 +4,29 @@ import viteCompression from 'vite-plugin-compression';
 
 export default defineConfig(() => {
   return {
-    server:{port:3000},
+    server: {
+      port: 3000,
+      allowedHosts: ['30eb0c089ea5.ngrok-free.app', '.ngrok-free.app'],
+      fs: {
+        // Allow serving files from one level up to the project root
+        allow: ['..']
+      },
+      proxy: {
+        // In dev, route all '/api' requests to the backend
+        '/api': {
+          target: 'http://localhost:3500',
+          changeOrigin: true,
+          secure: false,
+          rewrite: (path) => {
+            // Only rewrite if it's not already the full URL
+            if (!path.startsWith('http://')) {
+              return path.replace(/^\/api/, '');
+            }
+            return path;
+          }
+        }
+      }
+    },
     preview:{port:4000},
     build: {
       outDir: 'build',
@@ -68,12 +90,17 @@ export default defineConfig(() => {
         'country-state-city',
         '@tanstack/react-query',
         'react-lazyload',
-        'animate.css'
+        'animate.css',
+        'dompurify'
       ],
       exclude: [
         // Exclude large dependencies that should be lazy loaded
         'jodit-react'
       ]
     },
+    // Ensure proper handling of dynamic imports
+    resolve: {
+      extensions: ['.js', '.jsx', '.ts', '.tsx', '.json']
+    }
   };
 });

@@ -32,8 +32,8 @@ const [trendingProject, setTrendingProject] = useState([]);
     if (!hasFetchedData) {
       const fetchData = async () => {
         try {
-          const res = await axios.get('https://acre.onrender.com/project/trending');
-          setTrendingProject(res.data.data);
+          const res = await axios.get('/api/property/buy/ViewAll');
+          setTrendingProject(res.data.ResaleData);
           setHasFetchedData(true);
         } catch (error) {
           console.log(error || error.message);
@@ -59,7 +59,7 @@ const [trendingProject, setTrendingProject] = useState([]);
                 <img
                   src={item.frontImage.url}
                   alt='image'
-                  className="w-100 h-100"
+                  className="w-100 h-100 object-cover"
                 />
               </div>
               <div className='eoiU d-flex align-items-center'>
@@ -118,10 +118,17 @@ const Wrapper=styled.section`
   font-family: 'DM Sans', sans-serif;
 }
 .w9HDn0 {
-    height: 280px;
+    height: auto;
+    min-height: 280px;
     border-radius: 15px;
-    margin-left:10px;
-    margin-right:5px;
+    margin: 0 5px 12px 10px;
+    background-color: #FFF8F0;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+  }
+  .w9HDn0:hover {
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
   }
   .sQoIH {
     margin-bottom:10px;
@@ -130,7 +137,10 @@ const Wrapper=styled.section`
     height: 200px;
   }
   .xjNJ img {
-    border-radius: 15px;
+    border-radius: 15px 15px 0 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
   .dsfds43{
     padding:2px;
@@ -140,7 +150,7 @@ const Wrapper=styled.section`
     padding:0px 7px;
   }
   .w238N h2{
-    color:#3a3a3a;
+    color:#000000;
     font-size:1.3vw;
     font-weight:600;
     padding-left:8px;
@@ -152,18 +162,45 @@ const Wrapper=styled.section`
   .w238N p{
     font-size:1vw;
     font-weight:400;
-    color:#3a3a3a;
+    color:#000000;
     padding-left:8px;
     line-height:0;
   }
   .w238N p span{
-    color:#3a3a3a;
+    color:#000000;
     font-size:1.2vw;
     font-weight:600;
     padding-left:8px;
   }
   .w9HDn0:hover{
     cursor:pointer;
+  }
+  @media screen and (max-width:768px){
+    .w9HDn0 {
+      margin: 0 8px 16px 8px;
+      border-radius: 12px;
+    }
+    .xjNJ {
+      height: 200px;
+    }
+    .xjNJ img {
+      border-radius: 12px 12px 0 0;
+    }
+    .w238N h2{
+      font-size: 16px;
+      padding-left: 12px;
+      padding-right: 12px;
+    }
+    .w238N p{
+      font-size: 14px;
+      padding-left: 12px;
+      padding-right: 12px;
+    }
+    .w238N p span{
+      font-size: 16px;
+      padding-left: 12px;
+      padding-right: 12px;
+    }
   }
   @media screen and (max-width:600px){
     .w238N h2{

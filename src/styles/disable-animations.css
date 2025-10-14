@@ -1,0 +1,128 @@
+/* Global overrides to disable hover/transition animations on homepage cards */
+
+/* ModernRecommendedSection cards (class applied on wrapper) */
+body:not(.enable-card-animations) .property-card,
+body:not(.enable-card-animations) .property-card * {
+  transition: none !important;
+}
+body:not(.enable-card-animations) .property-card:hover {
+  transform: none !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1) !important; /* keep base shadow */
+}
+body:not(.enable-card-animations) .property-card:hover .image-container .property-image {
+  transform: none !important;
+}
+body:not(.enable-card-animations) .property-card:hover .image-container .image-overlay {
+  opacity: 0 !important;
+}
+body:not(.enable-card-animations) .property-card.hovered { /* defensive: component may add this class */
+  transform: none !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1) !important;
+}
+body:not(.enable-card-animations) .property-card .image-container .property-image { /* prevent any fade-in animation */
+  opacity: 1 !important;
+}
+body:not(.enable-card-animations) .property-card .share-btn:hover,
+body:not(.enable-card-animations) .property-card .wishlist-btn:hover,
+body:not(.enable-card-animations) .property-card .view-details-btn:hover {
+  transform: none !important;
+  background: inherit !important;
+  color: inherit !important;
+  box-shadow: inherit !important;
+}
+
+/* CommonProject cards (Tailwind group-based) */
+body:not(.enable-card-animations) article.group,
+body:not(.enable-card-animations) article.group * {
+  transition: none !important;
+}
+body:not(.enable-card-animations) article.group:hover {
+  transform: none !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06) !important; /* base shadow from component */
+}
+body:not(.enable-card-animations) article.group:hover img {
+  transform: none !important;
+}
+body:not(.enable-card-animations) article.group:hover * { /* kill any nested transform animations */
+  transform: none !important;
+}
+body:not(.enable-card-animations) article.group:hover h2,
+body:not(.enable-card-animations) article.group:hover h3 {
+  color: inherit !important;
+}
+
+/* ModernRealEstate ProjectCard (also uses group-hover) */
+body:not(.enable-card-animations) .group:hover img { transform: none !important; }
+/* Keep overlay actions visible without animation */
+body:not(.enable-card-animations) .group .group-hover\:opacity-100 { opacity: 1 !important; transition: none !important; }
+
+/* ModernCard wrapper added class "modern-card" in render */
+body:not(.enable-card-animations) .modern-card,
+body:not(.enable-card-animations) .modern-card * {
+  transition: none !important;
+}
+body:not(.enable-card-animations) .modern-card:hover {
+  transform: none !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important; /* keep base */
+}
+body:not(.enable-card-animations) .modern-card:hover .image-section .property-image,
+body:not(.enable-card-animations) .modern-card:hover .image-overlay {
+  transform: none !important;
+  opacity: unset !important;
+}
+
+/* Older Card.jsx classes */
+body:not(.enable-card-animations) .w9HDn0,
+body:not(.enable-card-animations) .w9HDn0 * {
+  transition: none !important;
+}
+body:not(.enable-card-animations) .w9HDn0:hover {
+  transform: none !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important; /* keep base */
+}
+
+/* Disable AOS (scroll-in) animations used on home sections/cards */
+[data-aos],
+.aos-init,
+.aos-animate {
+  opacity: 1 !important;
+  transform: none !important;
+  transition: none !important;
+}
+
+/* Neutralize Swiper slide/card transitions in the Recommended carousel */
+.modern-swiper .swiper-slide,
+.modern-swiper .swiper-wrapper,
+.modern-swiper * {
+  transition: none !important;
+}
+
+/* Neutralize react-slick (hero banner) transitions/animations */
+.slick-slider *,
+.slick-slider .slick-list,
+.slick-slider .slick-track,
+.slick-slider .slick-slide,
+.slick-dots li button:before,
+.slick-arrow {
+  transition: none !important;
+  animation: none !important;
+}
+.slick-track { transition: none !important; }
+.slick-slide { transition: none !important; }
+.slick-dots li button:before { transition: none !important; }
+
+/* Hero strips - only disable when animations are not enabled */
+body:not(.enable-card-animations) .hero-strip-99-dynamic,
+body:not(.enable-card-animations) .hero-strip-99-default {
+  transition: none !important;
+  transform: none !important;
+}
+
+/* Prevent hover color/transform on CommonProject card buttons/links */
+body:not(.enable-card-animations) article.group a:hover,
+body:not(.enable-card-animations) article.group button:hover {
+  color: inherit !important;
+  background: inherit !important;
+  transform: none !important;
+  box-shadow: inherit !important;
+}

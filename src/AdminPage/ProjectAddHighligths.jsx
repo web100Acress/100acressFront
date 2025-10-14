@@ -1,83 +1,128 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../config/apiClient";
 import Modal from "react-modal";
 import Sidebar from "./Sidebar";
 import { Link, useParams } from "react-router-dom";
+import { message } from "antd"; // Import Ant Design message
+import { MdStar, MdAddCircle, MdTableRows, MdEdit, MdDelete, MdExpandMore, MdExpandLess } from "react-icons/md";
+import Tippy from '@tippyjs/react';
+import 'tippy.js/dist/tippy.css';
+import 'tippy.js/animations/scale.css';
 
-const customStyle = {
-  position: "absolute",
-  top: "100px",
-  marginLeft: "250px",
-  right: "auto",
-  width: "80%",
-};
+// Set app element for react-modal to prevent accessibility issues
+Modal.setAppElement('#root'); // Assuming your root element id is 'root'
 
-const customStyles = {
+const customModalStyles = {
   content: {
-    top: "50%",
-    left: "50%",
-    right: "auto",
-    bottom: "auto",
-    padding: "10px",
-    marginTop: "0px",
-    width: "500px",
-    marginRight: "-50%",
-    transform: "translate(-50%, -50%)",
-    paddingTop: "0px",
+    top: '50%',
+    left: '50%',
+    right: 'auto',
+    bottom: 'auto',
+    transform: 'translate(-50%, -50%)',
+    backgroundColor: '#fff',
+    borderRadius: '12px', // More rounded corners
+    padding: '0px', // No internal padding as content handles it
+    border: 'none', // Remove default border
+    boxShadow: '0 10px 30px rgba(0, 0, 0, 0.1)', // Deeper shadow
+    width: '450px', // Fixed width for the modal content
+    overflow: 'hidden', // Ensures rounded corners are respected
   },
+  overlay: {
+    backgroundColor: 'rgba(0, 0, 0, 0.6)', // Darker overlay
+    zIndex: 1000 // Ensure it's above other content
+  }
 };
 
 const ProjectAddHighligths = () => {
   const [viewAll, setViewAll] = useState([]);
   const [modalIsOpen, setIsOpen] = React.useState(false);
+  const [messageApi, contextHolder] = message.useMessage(); // Ant Design message hook
+  const [modalSectionOpen, setModalSectionOpen] = useState(true);
 
   const [highlights, setHighlights] = useState({
     highlight_Point: "",
   });
 
-  const resetData = () =>{
+  const resetData = () => {
     setHighlights({
       highlight_Point: "",
-    })
-  }
+    });
+  };
 
   const { id } = useParams();
+
   const handleHighlightChange = (e) => {
     const { name, value } = e.target;
     setHighlights({ ...highlights, [name]: value });
   };
 
+  // Function to fetch highlight data (can be called on initial load and after mutations)
   const ViewHighLights = async () => {
     try {
-      const fetchData = await axios.get(
-        `https://api.100acress.com/highlight/view/${id}`
+      const fetchData = await api.get(
+        `/highlight/view/${id}`
       );
-      setViewAll(fetchData.data.data);
+      const data = fetchData?.data?.data;
+      setViewAll(Array.isArray(data) ? data : []);
     } catch (error) {
-      console.error("Error inserting user data:", error.message);
+      console.error("Error fetching highlights:", error.message);
+      messageApi.open({
+        type: 'error',
+        content: 'Failed to load highlights.',
+        duration: 2,
+      });
     }
   };
 
   useEffect(() => {
     ViewHighLights();
-  }, []);
+  }, [id]); // Depend on 'id' to re-fetch if it changes
 
   const submitAddHighlight = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); // Prevent default form submission behavior
+
+    messageApi.open({
+      key: "insertingHighlight",
+      type: 'loading',
+      content: 'Adding highlight...',
+    });
+
     try {
-      const res = await axios.post(
-        `https://api.100acress.com/highlight/${id}`,
+      const res = await api.post(
+        `/highlight/${id}`,
         highlights
       );
-      alert("User data inserted successfully");
-      resetData();
-      
+      if (res.status >= 200 && res.status < 300) {
+        messageApi.destroy('insertingHighlight');
+        messageApi.open({
+          type: 'success',
+          content: 'Highlight added successfully!',
+          duration: 2,
+        });
+        resetData(); // Clear the form
+        closeModal(); // Close the modal
+        ViewHighLights(); // Re-fetch to update the table
+      } else {
+        messageApi.destroy('insertingHighlight');
+        messageApi.open({
+          type: 'error',
+          content: 'Something went wrong while adding the highlight.',
+          duration: 2,
+        });
+      }
     } catch (error) {
-      console.error("Error inserting user data:", error.message);
+      messageApi.destroy('insertingHighlight');
+      messageApi.open({
+        type: 'error',
+        content: 'An error occurred while adding the highlight.',
+        duration: 2,
+      });
+      console.error("Error inserting highlight:", error.message);
     }
   };
 
   function openModal() {
+    resetData(); // Reset form data when opening modal for a new entry
     setIsOpen(true);
   }
 
@@ -85,143 +130,198 @@ const ProjectAddHighligths = () => {
     setIsOpen(false);
   }
 
-  const handleDeleteUser = async (id) => {
-   
+  const handleDeleteUser = async (_id) => {
+    messageApi.open({
+      key: "deletingHighlight",
+      type: 'loading',
+      content: 'Deleting highlight...',
+    });
 
     try {
-      const response = await axios.delete(
-        `https://api.100acress.com/highlight/delete/${id}`
+      const response = await api.delete(
+        `/highlight/delete/${_id}`
       );
       if (response.status >= 200 && response.status < 300) {
-        window.location.reload();
+        messageApi.destroy('deletingHighlight');
+        messageApi.open({
+          type: 'success',
+          content: 'Highlight deleted successfully!',
+          duration: 2,
+        });
+        ViewHighLights(); // Re-fetch to update the table
       } else {
-        console.error("Failed to delete user. Server returned an error.");
+        messageApi.destroy('deletingHighlight');
+        messageApi.open({
+          type: 'error',
+          content: 'Failed to delete highlight. Server returned an error.',
+          duration: 2,
+        });
+        console.error("Failed to delete highlight. Server returned an error.");
       }
     } catch (error) {
-      console.error("An error occurred while deleting user:", error.message);
+      messageApi.destroy('deletingHighlight');
+      messageApi.open({
+        type: 'error',
+        content: 'An error occurred while deleting highlight.',
+        duration: 2,
+      });
+      console.error("An error occurred while deleting highlight:", error.message);
     }
   };
 
-  const handleDeleteButtonClick = (id) => {
+  const handleDeleteButtonClick = (_id) => {
     const confirmDeletion = window.confirm(
-      "Are you sure you want to delete this user?"
+      "Are you sure you want to delete this highlight?"
     );
     if (confirmDeletion) {
-      handleDeleteUser(id);
+      handleDeleteUser(_id);
     }
   };
 
   return (
     <>
       <Sidebar />
-      <div style={customStyle}>
-        <div
-          className="flex items-center mb-2 mt-2"
-          style={{ marginLeft: "100px" }}
-        >
-          <span>
-            <div className="flex justify-start ml-80 ">
-              <button
-                onClick={openModal}
-                className="bg-blue-700 p-2 sm:rounded-lg text-white ml-2"
-              >
-                Add Highlights
-              </button>
-            </div>
-          </span>
+      {/* Main content area */}
+      <div className="flex-1 p-8 ml-64 bg-gray-50 min-h-screen font-sans">
+        {contextHolder} {/* Ant Design message context holder */}
+
+        {/* Header and Controls */}
+        <div className="flex justify-between items-center mb-8">
+          <div className="flex items-center gap-2">
+            <MdStar className="text-3xl text-yellow-500 animate-pulse" />
+            <h1 className="text-3xl font-bold text-gray-800">Project Highlights</h1>
+          </div>
+          <Tippy content={<span>Add new highlight</span>} animation="scale" theme="light-border">
+            <button
+              onClick={openModal}
+              className="flex items-center gap-2 px-6 py-2 bg-gradient-to-r from-blue-500 to-blue-700 text-white rounded-lg shadow-md hover:from-blue-600 hover:to-blue-800 transition duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            >
+              <MdAddCircle className="text-xl" /> Add Highlights
+            </button>
+          </Tippy>
         </div>
 
-        <div className="flex justify-center items-center mt-0">
-          <div className="relative overflow-x-auto shadow-md sm:rounded-lg w-5/6 mt-0">
-            <table className="w-full text-sm text-left rtl:text-right text-black-100 dark:text-black-100 ">
-              <thead className="text-xs text-black uppercase dark:text-black border-b-2  border-red-400">
+        {/* Highlights Table */}
+        <div className="bg-white rounded-xl shadow-2xl border-l-4 border-gradient-to-r from-yellow-400 to-purple-400 mb-10">
+          <div className="flex items-center gap-2 px-8 py-6 border-b border-gray-200 bg-gradient-to-r from-gray-50 to-white rounded-t-xl">
+            <MdTableRows className="text-2xl text-purple-500" />
+            <h2 className="text-2xl font-bold text-gray-800 flex-1 text-left">Highlights List</h2>
+          </div>
+          <div className="overflow-x-auto p-8">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
                 <tr>
-                  <th scope="col" className="px-6 py-3">
-                    S No.
-                  </th>
-                  <th scope="col" className="px-6 py-3">
-                    Highlights Points
-                  </th>
-
-                  <th scope="col" className="px-6 py-3">
-                    Action
-                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">S No.</th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Highlight Points</th>
+                  <th scope="col" className="px-6 py-3 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Action</th>
                 </tr>
               </thead>
-              <tbody>
-                {viewAll.map((item, index) => {
-                  const id1 = item._id;
-                  return (
-                    <tr
-                      key={index}
-                      className="bg-white-500 border-b border-red-400"
-                    >
-                      <td className="px-2 py-1">{index + 1}</td>
-                      <td className="px-2 py-1">{item.highlight_Point}</td>
-
-                      <td className="px-2 py-1 flex space-x-1">
-                        <Link to={`/Admin/projectedithighlight/${id1}`}>
-                          <button
-                            type="button"
-                            className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-2 py-1.5 text-center"
-                          >
-                            Edit
-                          </button>
-                        </Link>
-
-                        <button
-                          type="button"
-                          onClick={() => handleDeleteButtonClick(id1)}
-                          className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 focus:outline-none dark:focus:ring-red-800 font-medium rounded-lg text-sm px-2 py-1.5 text-center"
-                        >
-                          Delete
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                })}
+              <tbody className="bg-white divide-y divide-gray-200">
+                {(() => { const list = Array.isArray(viewAll) ? viewAll : []; return list.length > 0 ? (
+                  list.map((item, index) => {
+                    const id1 = item._id;
+                    return (
+                      <tr
+                        key={index}
+                        className="group even:bg-gray-50 hover:bg-gray-100 transition-colors duration-200"
+                      >
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{index + 1}</td>
+                        <td className="px-6 py-4 text-sm text-gray-800 break-words max-w-lg">
+                          {item.highlight_Point}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-center text-sm font-medium space-x-2">
+                          <Link to={`/Admin/projectedithighlight/${id1}`}>
+                            <Tippy content={<span>Edit highlight</span>} animation="scale" theme="light-border">
+                              <button
+                                type="button"
+                                className="inline-flex items-center gap-1 px-3 py-1.5 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-200 group"
+                              >
+                                <MdEdit className="text-lg group-hover:animate-bounce" /> Edit
+                              </button>
+                            </Tippy>
+                          </Link>
+                          <Tippy content={<span>Delete highlight</span>} animation="scale" theme="light-border">
+                            <button
+                              type="button"
+                              onClick={() => handleDeleteButtonClick(id1)}
+                              className="inline-flex items-center gap-1 px-3 py-1.5 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition duration-200 group"
+                            >
+                              <MdDelete className="text-lg group-hover:animate-pulse" /> Delete
+                            </button>
+                          </Tippy>
+                        </td>
+                      </tr>
+                    );
+                  })
+                ) : (
+                  <tr>
+                    <td colSpan="3" className="px-6 py-12 text-center text-gray-500 italic">
+                      <div className="flex flex-col items-center justify-center gap-2">
+                        <MdTableRows className="text-4xl text-gray-300 mb-2 animate-pulse" />
+                        No highlights found.
+                      </div>
+                    </td>
+                  </tr>
+                ); })()}
               </tbody>
             </table>
-
-            <Modal
-              isOpen={modalIsOpen}
-              onRequestClose={closeModal}
-              style={customStyles}
-              contentLabel="Example Modal"
-            >
-              <div className="">
-                <div className=" sm:w-[38rem] lg:w-full mx-auto lg:h-auto my-10 overflow-hidden rounded-2xl mt-0 mb-0 bg-white shadow-lg sm:max-w-lg">
-                  <div className="bg-red-500 pb-1 pt-2 text-center text-white">
-                    <p className="font-serif text-2xl font-semibold tracking-wider">
-                      Add Highlights
-                    </p>
-                  </div>
-
-                  <div className="space-y-4 px-8 py-3 pt-3 ">
-                    <label className="block" for="name">
-                      <input
-                        className="w-full  rounded-md border bg-white px-2 py-1 outline-none ring-black focus:ring-1"
-                        type="text"
-                        placeholder="Add Highlights"
-                        name="highlight_Point"
-                        value={highlights.highlight_Point}
-                        onChange={handleHighlightChange}
-                        required
-                      />
-                    </label>
-
-                    <button
-                      onClick={submitAddHighlight}
-                      className="mt-4 rounded-full bg-red-500 px-5 py-2 font-semibold text-white"
-                    >
-                      Insert
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </Modal>
           </div>
         </div>
+
+        {/* Add Highlights Modal (Collapsible Section) */}
+        <Modal
+          isOpen={modalIsOpen}
+          onRequestClose={closeModal}
+          style={customModalStyles}
+          contentLabel="Add Highlights"
+        >
+          <div className="bg-white rounded-xl">
+            <button
+              className="w-full flex items-center gap-2 bg-red-600 rounded-t-xl px-6 py-4 text-center text-white focus:outline-none focus:ring-2 focus:ring-red-400 transition"
+              onClick={() => setModalSectionOpen((open) => !open)}
+              aria-expanded={modalSectionOpen}
+              aria-controls="modal-form-section"
+              type="button"
+              style={{ borderBottomLeftRadius: modalSectionOpen ? 0 : '0.75rem', borderBottomRightRadius: modalSectionOpen ? 0 : '0.75rem' }}
+            >
+              <MdAddCircle className={`text-2xl transition-transform duration-300 ${modalSectionOpen ? 'rotate-0' : 'rotate-90 scale-110'}`} />
+              <h2 className="font-serif text-2xl font-semibold tracking-wide flex-1 text-left">Add Highlights</h2>
+              {modalSectionOpen ? <MdExpandLess className="text-2xl text-white transition-transform duration-300" /> : <MdExpandMore className="text-2xl text-white transition-transform duration-300" />}
+            </button>
+            <div
+              id="modal-form-section"
+              className={`transition-all duration-300 ${modalSectionOpen ? 'max-h-[1000px] opacity-100 p-8' : 'max-h-0 opacity-0 p-0'}`}
+              style={{ willChange: 'max-height, opacity, padding' }}
+              aria-hidden={!modalSectionOpen}
+            >
+              <form onSubmit={submitAddHighlight} className="space-y-5">
+                <div>
+                  <label htmlFor="highlight_Point" className="sr-only">Highlight Point</label>
+                  <Tippy content={<span>Enter the highlight point (e.g., "Near Metro Station")</span>} animation="scale" theme="light-border">
+                    <textarea
+                      id="highlight_Point"
+                      className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 outline-none ring-blue-500 focus:ring-1 shadow-sm transition duration-200 min-h-[100px]"
+                      placeholder="Add Highlight Point"
+                      name="highlight_Point"
+                      value={highlights.highlight_Point}
+                      onChange={handleHighlightChange}
+                      required
+                    ></textarea>
+                  </Tippy>
+                </div>
+
+                <Tippy content={<span>Insert new highlight</span>} animation="scale" theme="light-border">
+                  <button
+                    type="submit"
+                    className="mt-6 w-full flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-red-500 to-red-700 px-6 py-3 font-semibold text-white shadow-md hover:from-red-600 hover:to-red-800 transition duration-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 group"
+                  >
+                    <MdAddCircle className="text-xl group-hover:animate-bounce" /> Insert
+                  </button>
+                </Tippy>
+              </form>
+            </div>
+          </div>
+        </Modal>
       </div>
     </>
   );

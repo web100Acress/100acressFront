@@ -6,7 +6,7 @@ import { ForwardIcon, BackwardIcon,SpotlightPriceIcon, SpotlightHomeIcon } from 
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { sortByDesiredOrder } from '../../Utils/ProjectSorting';
-import { Recommendedreordered } from '../datafeed/Desiredorder';
+import { getRecommendedDesiredOrder } from '../../Utils/ProjectOrderData';
 import Api_service from '../../Redux/utils/Api_Service';
 
 
@@ -36,6 +36,7 @@ const ImageWrapper = styled.div`
   overflow: hidden;
   transition: transform 0.5s ease-in-out;
   cursor: pointer;
+  background-color: #ffffff;
 
   &:hover img {
     opacity: 0.7;
@@ -118,16 +119,30 @@ const ImageGallery = React.memo(() => {
   const {getSpotlight} = Api_service();
   const [visibleIndex, setVisibleIndex] = useState(0);
   const [columnsPerPage, setColumnsPerPage] = useState(4);
+  const [recommendedOrder, setRecommendedOrder] = useState([]);
   const hotproject = useSelector(store => store?.project?.spotlight);
 
 
   useEffect(() => {
     getSpotlight();
+    
+    // Load recommended order data
+    const loadRecommendedOrder = async () => {
+      try {
+        const order = await getRecommendedDesiredOrder();
+        setRecommendedOrder(order);
+      } catch (error) {
+        console.error('Error loading recommended order:', error);
+        setRecommendedOrder([]);
+      }
+    };
+    
+    loadRecommendedOrder();
   }, []);
 
   const spotlight = sortByDesiredOrder(
     hotproject.filter((project) => project != null), 
-    Recommendedreordered,
+    recommendedOrder,
     "projectName"
   );
   
@@ -182,8 +197,8 @@ const ImageGallery = React.memo(() => {
   return (
     <div className="rounded-tl-3xl rounded-tr-3xl bg-white">
       <div className="flex items-center justify-between mx-6 lg:mx-6 xl:mx-14 md:mx-6 pt-3">
-        <h2 className="text-lg  xl:text-4xl lg:text-3xl md:text-3xl sm:text-xl">
-          100acress - Recommended
+        <h2 className="text-lg  xl:text-4xl lg:text-3xl md:text-3xl sm:text-xl text-black ">
+          morden 100acress - Recommended
         </h2>
         <div>
           <span className="mr-4" onClick={handlePrev} disabled={visibleIndex === 0}>
@@ -223,11 +238,11 @@ const ImageGallery = React.memo(() => {
                   </p>
 
                   <p className="font-semibold mt-2 mb-0 text-gray-800"></p>
-                  <button className="text-white bg-gradient-to-r from-[#C13B44] via-red-500 to-[#C13B44] hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-xs px-4 py-1.5 drip-effect w-full md:w-auto   flex justify-center items-center" >View Details</button>
+                                     <button className="text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-500 font-medium rounded-lg text-xs px-4 py-1.5 drip-effect w-full md:w-auto   flex justify-center items-center shadow-lg" >View Details</button>
                 </InfoContainer>
                 <CityText className="py-2 px-auto text-xl visible font-Sans text-center">{image.projectName}</CityText>
                 <CityText className="">{truncateText(image.projectAddress, 4)}</CityText>
-                <CityText className="py-2 px-auto"><button className="text-white bg-gradient-to-r from-[#C13B44] via-red-500 to-[#C13B44] hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-xs px-6 py-2 drip-effect w-full md:w-auto   flex justify-center items-center md:auto sm:w-1/2 max-[600px]:w-2/4 " >View Details</button>
+                <CityText className="py-2 px-auto"><button className="text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-500 font-medium rounded-lg text-xs px-6 py-2 drip-effect w-full md:w-auto   flex justify-center items-center md:auto sm:w-1/2 max-[600px]:w-2/4 shadow-lg" >View Details</button>
                 </CityText>
                 {/* <CityText>{image.city}</CityText> */}
               </ImageWrapper>

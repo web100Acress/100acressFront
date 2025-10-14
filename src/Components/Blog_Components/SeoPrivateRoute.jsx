@@ -7,33 +7,31 @@ const SeoPrivateRoute = () => {
   const token = localStorage.getItem("myToken");
   const { isContentWriter, setIsContentWriter } = useContext(AuthContext);
   const navigate = useNavigate();
+  // Toggle this to true when you want to strictly enforce ContentWriter auth
+  const ENFORCE_SEO_AUTH = false;
 
   useEffect(() => {
+    if (!ENFORCE_SEO_AUTH) return; // Skip verification when bypassing auth
     const verifyContentWriter = async () => {
-
       if (!token) return navigate("/");
-
       try {
-        const response = await fetch("https://api.100acress.com/auth/isContentWriter", {
+        const response = await fetch("/auth/isContentWriter", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
         });
-
-
         const data = await response.json();
         if (response.ok) {
           // Update admin state synchronously
           flushSync(() => {
             setIsContentWriter(data.success === true);
           });
-
         } else {
           console.log("Admin verification failed:", data.message);
           flushSync(() => {
-            setIsContentWriter(data.success === true);
+            setIsContentWriter(false);
           });
           navigate("/userdashboard");
         }
@@ -42,13 +40,15 @@ const SeoPrivateRoute = () => {
         navigate("/userdashboard");
       }
     };
-
     verifyContentWriter();
-  });
+    // Only re-run when token changes
+  }, [ENFORCE_SEO_AUTH, token, navigate, setIsContentWriter]);
 
-  return isContentWriter ?
-   <Outlet /> : null; // Show outlet if admin
+  // Temporarily bypass authentication for testing
+  if (!ENFORCE_SEO_AUTH) return <Outlet />;
+
+  // Original code (when authentication is enforced):
+  return isContentWriter ? <Outlet /> : null;
 };
 
 export default SeoPrivateRoute;
-

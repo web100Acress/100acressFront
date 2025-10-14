@@ -1,53 +1,55 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { AuthContext } from "../AuthContext";
 import { flushSync } from "react-dom";
+import axios from "axios";
+import LoadingSpinner from "./LoadingSpinner";
 
 const PrivateRoute = () => {
-  const token = localStorage.getItem("myToken");
+  const rawToken = localStorage.getItem("myToken");
   const { isAdmin, setIsAdmin } = useContext(AuthContext);
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
 
-  // Admin Verification on Component Mount
+  // Admin Verification on Component Mount or token change
   useEffect(() => {
-    const verifyAdmin = async () => {
-
-      if (!token) return navigate("/");
-
+    const verifyAccess = async () => {
+      if (!rawToken) {
+        setLoading(false);
+        return navigate("/");
+      }
       try {
-        const response = await fetch("https://api.100acress.com/auth/isAdmin", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
+        // Sanitize token from localStorage: remove quotes and any leading 'Bearer '
+        const cleaned = (rawToken || "").replace(/^"|"$/g, "").replace(/^Bearer\s+/i, "");
+
+        // Check if admin
+        const { data: adminData } = await axios.get("auth/isAdmin", {
+          headers: cleaned ? { Authorization: `Bearer ${cleaned}` } : undefined,
         });
 
+        flushSync(() => {
+          setIsAdmin(adminData?.success === true);
+        });
 
-        const data = await response.json();
-        if (response.ok) {
-          // Update admin state synchronously
-          flushSync(() => {
-            setIsAdmin(data.success === true);
-          });
-
-        } else {
-          console.log("Admin verification failed:", data.message);
-          flushSync(() => {
-            setIsAdmin(data.success === true);
-          });
+        // If not admin, redirect to user dashboard
+        if (adminData?.success !== true) {
           navigate("/userdashboard");
         }
+        setLoading(false);
       } catch (error) {
-        console.error("Admin verification error:", error);
-        navigate("/userdashboard");
+        console.error("Admin access verification error:", error);
+        flushSync(() => {
+          setIsAdmin(false);
+        });
+        navigate("/");
+        setLoading(false);
       }
     };
+    verifyAccess();
+  }, [rawToken, navigate, setIsAdmin]);
 
-    verifyAdmin();
-  });
-
-  return isAdmin ? <Outlet /> : null; // Show outlet if admin
+  if (loading) return <LoadingSpinner />;
+  return isAdmin ? <Outlet /> : null; // Show outlet only if admin
 };
 
 export default PrivateRoute;

@@ -1,5 +1,7 @@
 import React from "react";
-import { Carousel } from "@trendyol-js/react-carousel";
+import Carousel from "react-multi-carousel";
+import "react-multi-carousel/lib/styles.css";
+
 import styled from "styled-components";
 import StarCard from "./Card";
 import { useProductContext } from "../../Context/productContext";
@@ -17,26 +19,26 @@ function SimilarCarousel() {
     );
   }
 
-  var number=4;
-  function updateNumber(){
-  const screenWidth =window.innerWidth;
-    if(screenWidth<480){
-      number=1;
-    }else if(screenWidth <768){
-      number=2;
-    }else if(screenWidth <992){
-      number=3;
-    }else{
-      number=4;
-  }
-  }
-  updateNumber();
-  window.addEventListener('resize', updateNumber);
+  const responsive = {
+    superLargeDesktop: { breakpoint: { max: 4000, min: 1200 }, items: 4 },
+    desktop: { breakpoint: { max: 1200, min: 992 }, items: 3 },
+    tablet: { breakpoint: { max: 992, min: 768 }, items: 2 },
+    mobile: { breakpoint: { max: 768, min: 0 }, items: 1 }
+  };
 
   return (
     <Wrapper className="section">
     <div className="caroStyle">
-      <Carousel swiping={true} show={number} leftArrow={<div className="slMJOW">{"←"}</div>} rightArrow={<div className="slMJOW">{"→"}</div>} slide={1} transition={0.5}>
+      <Carousel
+        swipeable
+        draggable
+        arrows
+        infinite={false}
+        responsive={responsive}
+        slidesToSlide={1}
+        customTransition="transform 500ms ease"
+        transitionDuration={500}
+      >
         {Elem.map((elem)=>{
             return <StarCard key={elem.id} {...elem}/>
         })}

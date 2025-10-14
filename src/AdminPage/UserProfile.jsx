@@ -18,7 +18,7 @@ const UserProfile = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get("https://api.100acress.com/preLaunch/viewAll");
+        const res = await axios.get("/preLaunch/viewAll");
         setViewAll(res.data.data);
         console.log(res);
       } catch (error) {
@@ -54,7 +54,7 @@ const UserProfile = () => {
       </div>
       <div className="flex justify-center items-center mt-0">
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg w-5/6 mt-0">
-          <table className="w-full text-sm text-left rtl:text-right text-black-100 dark:text-black-100 ">
+          <table className="w-full text-sm text-left rtl:text-right text-black-100 dark:text-white ">
             <thead className="text-xs text-black uppercase dark:text-black border-b-2  border-red-400">
               <tr className="">
                 <th scope="col" className="px-6 py-3">

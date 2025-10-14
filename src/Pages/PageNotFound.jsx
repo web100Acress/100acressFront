@@ -1,9 +1,9 @@
 import React from "react";
-import Nav from "../aadharhomes/Nav";
 import Footer from "../Components/Actual_Components/Footer";
 import { IoMdArrowBack } from "react-icons/io";
 import { Link } from "react-router-dom";
-import Navbar from "../aadharhomes/Navbar";
+import Navbar from "../aadharhomes/navbar/Navbar";
+
 const PageNotFound = () => {
   return (
     <>

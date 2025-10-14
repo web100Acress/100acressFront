@@ -389,32 +389,59 @@ const BannerPage = () => {
       </Helmet>
 
       <>
-        {/* Modern Fixed Header */}
-        <header className="fixed top-0 left-0 right-0 z-50 bg-white shadow flex items-center justify-between px-4 h-16 md:h-20 w-full">
-          {/* Logo Left */}
-          <div className="flex items-center h-full">
-            <img
-              src={projectViewDetails?.logo?.url}
-              alt={projectViewDetails.projectName}
-              className="h-10 w-auto md:h-14 object-contain"
-              loading="lazy"
-            />
-          </div>
+        <div
+          className="px-4"
+          style={{
+            position: "fixed",
+            top: -4,
+            left: 0,
+            right: 0,
+            padding: "5px",
+            backgroundColor: "#fff",
+            boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            zIndex: 1000,
+          }}
+        >
+          <img
+            src={projectViewDetails?.logo?.url}
+            style={{ height: "40px", width: "200px" }}
+            alt={projectViewDetails.projectName}
+            loading="lazy"
+          />
 
-          {/* CTA Button Right */}
-          <a
-            href={`tel:${projectViewDetails.mobileNumber ? projectViewDetails.mobileNumber : "+919811750130"}`}
-            className="flex items-center gap-2 bg-[#012e29] hover:bg-[#01443a] text-white font-semibold rounded-full px-4 py-2 md:px-6 md:py-3 transition-colors duration-200 shadow-lg focus:outline-none focus:ring-2 focus:ring-[#012e29] focus:ring-offset-2"
-            style={{ textDecoration: 'none' }}
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 md:h-6 md:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h2.28a2 2 0 011.94 1.515l.3 1.2a2 2 0 01-.45 1.95l-.96.96a16.001 16.001 0 006.586 6.586l.96-.96a2 2 0 011.95-.45l1.2.3A2 2 0 0121 18.72V21a2 2 0 01-2 2h-1C9.163 23 1 14.837 1 5V4a2 2 0 012-2z" />
-            </svg>
-            <span className="hidden sm:inline">{projectViewDetails.mobileNumber ? projectViewDetails.mobileNumber : "9811750130"}</span>
-            <span className="inline sm:hidden">Call</span>
-          </a>
-        </header>
-        <div className="h-16 md:h-20" /> {/* Spacer for fixed header */}
+          <span className="text-[#012e29] text-3xl sm:text-xl lg:text-3xl md:text-2xl sm:pt-2 md:m-2 text-right hidden lg:inline-block">
+            <Link
+              to={`tel:${
+                projectViewDetails.mobileNumber
+                  ? projectViewDetails.mobileNumber
+                  : "+919811750130"
+              }`}
+            >
+              <i className="fa-solid fa-phone"></i>{" "}
+              {projectViewDetails.mobileNumber
+                ? projectViewDetails.mobileNumber
+                : "9811750130"}
+            </Link>
+          </span>
+
+          <span className="text-[#012e29] text-lg pt-2 md:text-2xl lg:hidden block text-right">
+            <Link
+              to={`tel:${
+                projectViewDetails.mobileNumber
+                  ? projectViewDetails.mobileNumber
+                  : "9811750130"
+              }`}
+            >
+              <i className="fa-solid fa-phone"></i>
+              {projectViewDetails.mobileNumber
+                ? projectViewDetails.mobileNumber
+                : "9811750130"}
+            </Link>
+          </span>
+        </div>
 
         <div className="w-full mt-0 lg:mt-16 md:mt-10 sm:mt-24  bg-cover bg-no-repeat text-center">
           <div className="w-full overflow-hidden object-fit">

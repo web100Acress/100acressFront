@@ -94,7 +94,7 @@ const Snapshot = () => {
             <Slider {...carouselSettings}>
               <div className="backdrop-blur-sm relative mb-3 rounded-3xl border bg-white/70 px-2 py-4 text-left lg:px-4">
                 <p className="relative text-3xl text-center font-black text-black">
-                  1245+
+                  1600+
                 </p>
                 <p className="relative mt-2 text-gray-600 text-center mb-0 px-2">
                   Residential Projects
@@ -103,7 +103,7 @@ const Snapshot = () => {
 
               <div className="backdrop-blur-lg relative mb-3 rounded-3xl border bg-white/70 px-2 py-4 text-left lg:px-4">
                 <p className="relative text-3xl text-center font-black text-black">
-                  550+
+                  900+
                 </p>
                 <p className="relative mt-2 text-gray-600 text-center mb-0 px-2">
                   Commercial Projects
@@ -112,7 +112,7 @@ const Snapshot = () => {
 
               <div className="backdrop-blur-lg relative mb-3 rounded-3xl border bg-white/70 px-2 py-4 text-left lg:px-4">
                 <p className="relative text-3xl text-center font-black text-black">
-                  54+
+                  90+
                 </p>
                 <p className="relative mt-2 text-gray-600 text-center mb-0 px-2">
                   SCO Plots
@@ -121,7 +121,7 @@ const Snapshot = () => {
 
               <div className="backdrop-blur-lg relative mb-3 rounded-3xl border bg-white/70 px-2 py-4 text-left lg:px-4">
                 <p className="relative text-3xl text-center font-black text-black">
-                  250+
+                  400+
                 </p>
                 <p className="relative mt-2 text-gray-600 text-center mb-0 px-2">
                   Plots & Floors
@@ -130,7 +130,7 @@ const Snapshot = () => {
 
               <div className="backdrop-blur-lg relative mb-3 rounded-3xl border bg-white/70 px-2 py-4 text-left lg:px-4">
                 <p className="relative text-3xl text-center font-black text-black">
-                  2.25L+
+                  2.45L+
                 </p>
                 <p className="relative mt-2 text-gray-600 text-center mb-0 px-2">
                   Monthly Visitors
@@ -139,7 +139,7 @@ const Snapshot = () => {
 
               <div className="backdrop-blur-lg relative mb-3 rounded-3xl border bg-white/70 px-2 py-4 text-left lg:px-4">
                 <p className="relative text-3xl text-center font-black text-black">
-                  150+
+                  1000+
                 </p>
                 <p className="relative mt-2 text-gray-600 text-center mb-0 px-2 flex justify-center items-center">
                   <FaAward className="mr-2" /> Awards
@@ -164,7 +164,7 @@ const Snapshot = () => {
           <div className="hidden md:grid px-4 mt-4 max-w-full h-30 grid-cols-1 gap-x-2 gap-y-12 text-center sm:text-left lg:grid-cols-6 md:grid-cols-3 sm:grid-cols-1 xs:grid-cols-1">
             <div className="backdrop-blur-sm relative mb-3 rounded-3xl border bg-white/70 px-2 py-4 text-left shadow lg:px-4">
               <p className="relative text-3xl text-center font-black text-black">
-                1245+
+                1600+
               </p>
               <p className="relative mt-2 text-gray-600 text-center mb-0 px-2">
                 Residential Projects
@@ -173,7 +173,7 @@ const Snapshot = () => {
 
             <div className="backdrop-blur-lg relative mb-3 rounded-3xl border bg-white/70 px-2 py-4 text-left shadow lg:px-4">
               <p className="relative text-3xl text-center font-black text-black">
-                550+
+                900+
               </p>
               <p className="relative mt-2 text-gray-600 text-center mb-0 px-2">
                 Commercial Projects

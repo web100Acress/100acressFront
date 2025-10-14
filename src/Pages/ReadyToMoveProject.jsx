@@ -27,7 +27,7 @@ const ReadyToMoveProject = () => {
   return (
     <div style={{ overflowX: "hidden" }} className="mt-auto">
             <div className="max-w-screen pt-2 sm:pt-2 md:pt-2" target="_top">
-        <h1 className=" p-1 text-center text-2xl mt-16 sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold tracking-[0.1em] ">
+        <h1 className=" p-1 text-center text-2xl mt-4 sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold tracking-[0.1em] ">
         Ready To Move Projects in Gurgaon
         </h1> 
 
@@ -62,7 +62,7 @@ const ReadyToMoveProject = () => {
         </title>
         <link
           rel="canonical"
-          href="https://www.100acress.com/projects-in-gurugram/ready-to-move/property/"
+          href="https://www.100acress.com/projects-in-gurugram/property-ready-to-move/"
         />
       </Helmet>
       <ProjectSearching searchdata={readyToMoveData} sendDatatoparent={handleDatafromSearch}/>

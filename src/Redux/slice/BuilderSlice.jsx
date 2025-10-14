@@ -18,6 +18,11 @@ const builderslice = createSlice({
     godrej:[],
     whiteland:[],
     aipl:[],
+    birla:[],
+    sobha:[],
+    trump:[],
+    puri:[],
+    aarize:[],
   },
   reducers: {
     signatureglobal: (state, action) => {
@@ -64,10 +69,25 @@ const builderslice = createSlice({
     },
     aipl:(state,action) =>{
         state.aipl = action.payload;
-    }
+    },
+    birla:(state,action) =>{
+        state.birla = action.payload;
+    },
+    sobha:(state,action) =>{
+        state.sobha = action.payload;
+    },
+    trump:(state,action) =>{
+        state.trump = action.payload;
+    },
+    puri:(state,action) =>{ 
+        state.puri = action.payload;
+    },
+    aarize:(state,action) =>{
+        state.aarize = action.payload;
+    },
   },
 });
 
-export const { signatureglobal,m3m,dlf,experion,elan,bptp,adani,smartworld,trevoc,indiabulls,centralpark,emaarindia,godrej,whiteland,aipl} = builderslice.actions;
+export const { signatureglobal,m3m,dlf,experion,elan,bptp,adani,smartworld,trevoc,indiabulls,centralpark,emaarindia,godrej,whiteland,aipl,birla,sobha,trump,puri,aarize} = builderslice.actions;
 
 export default builderslice.reducer;

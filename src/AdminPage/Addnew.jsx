@@ -113,12 +113,12 @@ const AddNew = () => {
     handleInputChange(event, "projectRedefine_Connectivity");
   };
 
-  // Education
+  // Education in dbdb
   const handleChangeValueprojectRedefine_Education = (event) => {
     handleInputChange(event, "projectRedefine_Education");
   };
 
-  // Business
+  // Business develop by aman and alll 
   const handleChangeValueprojectRedefine_Business = (event) => {
     handleInputChange(event, "projectRedefine_Business");
   };
@@ -169,7 +169,7 @@ const AddNew = () => {
 
   const handleSubmitProject = async (e) => {
     e.preventDefault();
-    const apiEndpoint = "https://api.100acress.com/project/Insert";
+    const apiEndpoint = "/project/Insert";
 
     const formDataAPI = new FormData();
 

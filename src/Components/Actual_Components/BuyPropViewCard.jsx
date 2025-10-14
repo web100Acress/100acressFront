@@ -1,14 +1,39 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Footer from "./Footer";
-import axios from "axios";
-import { Link, useLocation } from "react-router-dom";
+import api from "../../config/apiClient";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import CustomSkeleton from "../../Utils/CustomSkeleton";
 import { FilterIcon, PropertyIcon, RupeeIcon } from "../../Assets/icons";
 import { use } from "react";
+import { PaginationControls } from "../../Components/Blog_Components/BlogManagement";
+import { MdFavoriteBorder } from "react-icons/md";
+import { LOGIN } from "../../lib/route";
+
+// Price formatting function
+function formatPrice(price) {
+  if (!price || isNaN(price)) return 'Contact for price';
+  const num = Number(price);
+  if (num < 10) {
+    // User probably means crores
+    return `${num} Cr`;
+  } else if (num < 100) {
+    // User probably means lakhs
+    return `${num} LAC`;
+  } else if (num < 10000000) {
+    // Less than 1 crore, treat as rupees and show in LAC
+    const lakhs = num / 100000;
+    return `${lakhs.toFixed(2)} LAC`;
+  } else {
+    // 1 crore or more, show in Cr
+    const crores = num / 10000000;
+    return `${crores.toFixed(1)} Cr`;
+  }
+}
 
 const BuyPropViewCard = () => {
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [toOpen, setToOpen] = useState(false);
   const [show, setShow] = useState(false);
@@ -42,7 +67,37 @@ const BuyPropViewCard = () => {
   const [maxPrice, setMaxPrice] = useState("");
   const [activeIndex, setActiveIndex] = useState('propertyType');
   const [selectedValues, setSelectedValues] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 18;
+  const [filterModalOpen, setFilterModalOpen] = useState(false);
+  // Check and redirect if URL is missing trailing slash
+  useEffect(() => {
+    const currentPath = window.location.pathname;
+    if (!currentPath.endsWith('/')) {
+      const newPath = currentPath + '/';
+      navigate(newPath, { replace: true });
+    }
+  }, [navigate]);
 
+  // Accordion state for modal
+  const [accordion, setAccordion] = useState({
+    propertyType: true,
+    unitType: false,
+    city: false,
+    price: false,
+  });
+  const toggleAccordion = (key) => setAccordion((prev) => ({ ...prev, [key]: !prev[key] }));
+
+  // Add search state
+  const [searchTerm, setSearchTerm] = useState("");
+
+  // Filtered and searched data (guard against undefined)
+  const filteredAndSearchedData = (Array.isArray(filterData) ? filterData : []).filter(property =>
+    property.propertyName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    property.city?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+  const paginatedData = filteredAndSearchedData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+  const totalPages = Math.ceil(filteredAndSearchedData.length / itemsPerPage);
 
   const minPriceOptions = [
     "1Cr",
@@ -84,6 +139,7 @@ const BuyPropViewCard = () => {
     const value = e.target.value;
     setMaxPrice(value);
   };
+  
   const propertyTypes = [
     "Independent/Builder Floor",
     "Flat/Apartment",
@@ -136,29 +192,53 @@ const BuyPropViewCard = () => {
     setSelectedPropertyTypes([]);
     setSelectedAreas([]);
     setSelectedCities([]);
+    setSelectedQuickFilters([]);
     setMinPrice("");
     setMaxPrice("");
     setMinRangeValue("1Cr");
     setMaxRangeValue("8Cr");
   };
+  
   const removePropertyType = (propertyType) => {
     setSelectedPropertyTypes(
       selectedPropertyTypes.filter((item) => item !== propertyType)
+    );
+    // Also remove from quick filters if it exists
+    setSelectedQuickFilters(prev => 
+      prev.filter(filter => {
+        const quickFilter = quickFilters.find(qf => qf.value === propertyType && qf.type === 'property');
+        return !quickFilter || filter !== quickFilter.label;
+      })
     );
   };
 
   const removeArea = (area) => {
     setSelectedAreas(selectedAreas.filter((item) => item !== area));
+    // Also remove from quick filters if it exists
+    setSelectedQuickFilters(prev => 
+      prev.filter(filter => {
+        const quickFilter = quickFilters.find(qf => qf.value === area && qf.type === 'unit');
+        return !quickFilter || filter !== quickFilter.label;
+      })
+    );
   };
 
   const removeCity = (city) => {
     setSelectedCities(selectedCities.filter((item) => item !== city));
+    // Also remove from quick filters if it exists
+    setSelectedQuickFilters(prev => 
+      prev.filter(filter => {
+        const quickFilter = quickFilters.find(qf => qf.value === city && qf.type === 'city');
+        return !quickFilter || filter !== quickFilter.label;
+      })
+    );
   };
 
   const removePrice = () => {
     setMinPrice(null);
     setMaxPrice(null);
   };
+
   const toggle5 = () => {
     setDrop5(!drop5);
     setPosition5(position5 === "down" ? "up" : "down");
@@ -176,25 +256,22 @@ const BuyPropViewCard = () => {
     setIsRightbarOpen(!isRightbarOpen); 
   };
 
-
   const fetchData = async () => {
     try {
-      const res = await axios.get(
-        "https://api.100acress.com/property/buy/ViewAll"
-      );
-
-      setBuyData(res.data.ResaleData);
-      setFilterData(res.data.ResaleData);
+      const res = await api.get("/property/buy/ViewAll");
+      const list = Array.isArray(res?.data?.ResaleData) ? res.data.ResaleData : [];
+      setBuyData(list);
+      setFilterData(list);
     } catch (error) {
       console.error("Error fetching data:", error);
+      setBuyData([]);
+      setFilterData([]);
     }
   };
 
   useEffect(() => {
     fetchData();
   }, []);
-
-
 
   useEffect(() => {
     updateFilteredData();
@@ -205,13 +282,14 @@ const BuyPropViewCard = () => {
   }
   
   function updateFilteredData() {
-    const filteredData = buyData.filter((data) => {
+    const source = Array.isArray(buyData) ? buyData : [];
+    const filteredData = source.filter((data) => {
       const matchPropertyType =
         selectedPropertyTypes.length === 0 ||
         selectedPropertyTypes.some(
           (type) => normalize(type) === normalize(data.propertyType)
         );
-  
+
       const matchArea =
         selectedAreas.length === 0 ||
         selectedAreas.some(
@@ -230,8 +308,23 @@ const BuyPropViewCard = () => {
     setFilterData(filteredData);
   }
 
+  useEffect(() => {
+    setCurrentPage(1); // Reset to first page when filters change
+  }, [selectedPropertyTypes, selectedAreas, selectedCities]);
 
+  // Add click outside handler for dropdown
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (isOpen && !event.target.closest('.dropdown-container')) {
+        setIsOpen(false);
+      }
+    };
 
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isOpen]);
 
   const toggle = () => {
     setDrop(!drop);
@@ -292,769 +385,607 @@ const BuyPropViewCard = () => {
     });
   };
 
+  // Ref for property grid
+  const propertyGridRef = React.useRef(null);
 
-  console.log(buyData,"Resale data");
+  // Scroll to top of grid on page change
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
   
+  // Dropdown state for filter bar
+  const [openFilterDropdown, setOpenFilterDropdown] = useState(null);
+
+  // Click outside handler for filter bar dropdowns
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        openFilterDropdown &&
+        !event.target.closest('.filterbar-dropdown') &&
+        !event.target.closest('.filterbar-btn')
+      ) {
+        setOpenFilterDropdown(null);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [openFilterDropdown]);
+  
+  const quickFilters = [
+    { label: 'Gurgaon', icon: '🏢', type: 'city', value: 'Gurugram' },
+    { label: 'Delhi', icon: '🏛️', type: 'city', value: 'Delhi' },
+    { label: 'Noida', icon: '🏙️', type: 'city', value: 'Noida' },
+    { label: 'Plot', icon: '🏞️', type: 'property', value: 'Plot / Land' },
+    { label: 'Flat', icon: '🏠', type: 'property', value: 'Flat/Apartment' },
+    { label: 'Villa', icon: '🏡', type: 'property', value: 'Independent House / Villa' },
+    { label: '3 BHK', icon: '🏘️', type: 'unit', value: '3 BHK' },
+    { label: '2 BHK', icon: '🏘️', type: 'unit', value: '2 BHK' },
+    { label: '4 BHK', icon: '🏘️', type: 'unit', value: '4 BHK' },
+  ];
+  const [selectedQuickFilters, setSelectedQuickFilters] = useState([]);
+
+  function handleQuickFilterClick(filter) {
+    // Toggle quick filter selection
+    setSelectedQuickFilters((prev) =>
+      prev.includes(filter.label)
+        ? prev.filter((f) => f !== filter.label)
+        : [...prev, filter.label]
+    );
+
+    // Apply the actual filter based on type
+    if (filter.type === 'city') {
+      setSelectedCities((prev) =>
+        prev.includes(filter.value)
+          ? prev.filter((city) => city !== filter.value)
+          : [...prev, filter.value]
+      );
+    } else if (filter.type === 'property') {
+      setSelectedPropertyTypes((prev) =>
+        prev.includes(filter.value)
+          ? prev.filter((type) => type !== filter.value)
+          : [...prev, filter.value]
+      );
+    } else if (filter.type === 'unit') {
+      setSelectedAreas((prev) =>
+        prev.includes(filter.value)
+          ? prev.filter((area) => area !== filter.value)
+          : [...prev, filter.value]
+      );
+    }
+  }
+
+  // Collapsible filter panel state
+  const [filterSections, setFilterSections] = useState({
+    city: true,
+    propertyType: true,
+    budget: true,
+    area: false,
+    bedrooms: false,
+    amenities: false,
+    verified: false,
+  });
+
+  const toggleSection = (key) => {
+    setFilterSections((prev) => ({ ...prev, [key]: !prev[key] }));
+  };
+
   return (
     <>
-      <Wrapper className="Section mt-12">
+      {/* SEO Meta Tags */}
       <Helmet>
-            <title>Best Resale Properties in Gurugram at Great Prices: 100acress</title>
-            <meta
-              name="description"
-              content="Explore premium resale properties in Gurugram at affordable prices. 100acress offers the best deals for homes and investments. Call now!"
-            />
-            <link
-              rel="canonical"
-              href="https://www.100acress.com/buy-properties/best-resale-property-in-gurugram/"
-            />
-          </Helmet>
-        <nav className="navbar d-lg-none d-xl-none d-xxl-none">
-          <div className="container-fluid">
-            {/* on tablet screen */}
-            <div className="">
-              <ul className="w-full md:w-[740px] mb-0 mb-lg-0 shadow-none flex flex-wrap justify-center space-x-2 pl-0">
-                <li className="flex-1 mb-2 relative d-none d-sm-block">
-                  <button
-                    type="button"
-                    className="w-full btn btn-outline-danger"
-                    aria-expanded={isOpen}
-                    onClick={toggleDropdown}
-                  >
+        <title>Best Resale Properties in India | 100Acress</title>
+        <meta name="description" content="Discover premium resale properties across India. Find verified properties with detailed information, pricing, and location details. Your trusted partner for property investment." />
+        <meta name="keywords" content="resale properties, property for sale, real estate, property investment, buy property, residential properties, commercial properties" />
+        <link rel="canonical" href="https://www.100acress.com/buy-properties/best-resale-property-in-gurugram/" />
+        <meta property="og:title" content="Best Resale Properties in India | 100Acress" />
+        <meta property="og:description" content="Discover premium resale properties across India. Find verified properties with detailed information, pricing, and location details." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://www.100acress.com/buy-properties" />
+        <meta property="og:image" content="https://www.100acress.com/logo.png" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Best Resale Properties in India | 100Acress" />
+        <meta name="twitter:description" content="Discover premium resale properties across India. Find verified properties with detailed information, pricing, and location details." />
+      </Helmet>
+
+
+
+      {/* Filter Modal */}
+      {filterModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm" onClick={() => setFilterModalOpen(false)}>
+          <div
+            className="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-md max-h-[90vh] overflow-y-auto relative animate-fade-in mx-4"
+            onClick={e => e.stopPropagation()}
+            tabIndex={-1}
+          >
+            <button
+              className="absolute top-4 right-4 text-gray-400 hover:text-red-500 text-2xl font-bold"
+              onClick={() => setFilterModalOpen(false)}
+              aria-label="Close Filters"
+            >
+              ×
+            </button>
+            <h2 className="text-xl font-semibold mb-6 text-center text-gray-900">Filters</h2>
+            
+            {/* Accordion Sections */}
+            <div className="space-y-4">
+              {/* Property Type */}
+              <div className="border border-gray-200 rounded-xl overflow-hidden">
+                <button className="w-full flex justify-between items-center py-4 px-4 font-semibold text-left bg-gray-50" onClick={() => toggleAccordion('propertyType')}>
+                  <span className="flex items-center gap-2">
+                    <span className="text-lg">🏠</span>
                     Property Type
-                  </button>
-                  {isOpen && (
-                    <div className="absolute left-0 mt-2 w-56 z-10 origin-top-right bg-white border border-gray-200 divide-y divide-gray-100 rounded-md shadow-lg outline-none">
-                      <Link
-                        to=""
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                      >
-                        Independent Floor
-                      </Link>
-                      <Link
-                        to=""
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                      >
-                        Apartment
-                      </Link>
-                      <Link
-                        to=""
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                      >
-                        Builder Floor
-                      </Link>
-                      <Link
-                        to=""
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                      >
-                        Plot
-                      </Link>
-                      <Link
-                        to=""
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                      >
-                        Residential
-                      </Link>
-                      <Link
-                        to=""
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                      >
-                        Studio
-                      </Link>
-                      <Link
-                        to=""
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                      >
-                        Villas
-                      </Link>
-                    </div>
-                  )}
-                </li>
-                <li className="flex-1 mb-2 relative d-none d-sm-block">
-                  <button
-                    type="button"
-                    className="w-full btn btn-outline-danger"
-                    aria-expanded={toOpen}
-                    onClick={openDropdown}
-                  >
-                    Area
-                  </button>
-                  {toOpen && (
-                    <div className="absolute left-0 mt-2 w-56 z-10 origin-top-right bg-white border border-gray-200 divide-y divide-gray-100 rounded-md shadow-lg outline-none">
-                      <Link
-                        to=""
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                      >
-                        1 BHK
-                      </Link>
-                    </div>
-                  )}
-                </li>
-                <li className="flex-1 mb-2 relative d-none d-sm-block">
-                  <button
-                    type="button"
-                    className="w-full btn btn-outline-danger"
-                    aria-expanded={show}
-                    onClick={showDropdown}
-                  >
-                    City
-                  </button>
-                  {show && (
-                    <div className="absolute left-0 mt-2 w-56 z-10 origin-top-right bg-white border border-gray-200 divide-y divide-gray-100 rounded-md shadow-lg outline-none">
-                      <Link
-                        to=""
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                      >
-                        Gurugram
-                      </Link>
-                    </div>
-                  )}
-                </li>
-              </ul>
-              <div>
-                {/* on mobile screen  */}
-                <div className="w-[94vw] flex items-center justify-end p-2">
-                <button
-                    className="relative text-white bg-black py-2 rounded-md px-4 md:hidden lg:block sm:mt-9"
-                    onClick={toggleSidebar}
-                  >
-                    {selectedValues.length > 0 && (
-                      <span className="absolute left-0 top-0 size-3">
-                        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primaryRed opacity-75"></span>
-                        <span className="relative inline-flex size-3 rounded-full bg-primaryRed"></span>
-                      </span>
-                    )}
-                    <FilterIcon/>
-                  </button>
-                </div>
-
-<div className="absolute w-[100vw] h-[100vh] flex items-center">
-                <div
-                  className={`fixed top-0 left-0 w-auto h-full bg-white text-black z-10  p-4 mt-[5vh] transform ${
-                    isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-                  } transition-transform duration-300 ease-in-out`}
-                >
-                  <div className="w-full flex justify-start items-center gap-2 py-4 border-b-2">
-                  <button
-                      className="text-white bg-red-500 py-1 px-2 rounded mt-0"
-                      onClick={toggleSidebar}
-                    >
-                      ✖
-                    </button>
-                    <h2 className="text-xl font-semibold mb-0">Filters</h2>
-                   
-                  </div>
-
-                  <div
-                          className={`py-2 px-0 fi_head cursor-pointer ${
-                            activeIndex === "propertyType" ? "bg-red-300" : ""
-                          }`}
-                          onClick={() => {
-                            toggle();
-                            setActiveIndex("propertyType");
-                          }}
-                        >
-                          Property Type
-                  </div>
-
-
-                  <div className="fi_acc">
-                    <div className={`py-2 px-0 fi_head cursor-pointer ${
-                            activeIndex === "area" ? "bg-red-300" : ""
-                          }`} onClick={()=>{
-                      toggle4();
-                      setActiveIndex("area");
-                    }}>
-                     Unit Type
-                    </div>
-                  </div>
-
-                  
-                  <div className="fi_acc">
-                    <div className={`py-2 px-0 fi_head cursor-pointer ${
-                            activeIndex === "city" ? "bg-red-300" : ""
-                          }`} onClick={()=>{
-                      toggle1();
-                      setActiveIndex("city");
-                    }}>
-                      City
-                    </div>
-                  </div>
-
-                  <div className="fi_acc">
-                    <span className={`py-2 px-0 fi_head cursor-pointer ${
-                            activeIndex === "price" ? "bg-red-300" : ""
-                          }`} onClick={()=>{
-                      toggle5();
-                      setActiveIndex("price");
-                    }}>
-                      Price Criteria
-                    </span>
-  
-                  </div>
-                </div>
-
-                <div
-                     className={`fixed  flex top-0 right-0 w-[66%] h-full bg-white text-black z-10 border-l-2 mt-[5vh] p-4 transform ${
-                      isSidebarOpen ? "translate-x-0" : "translate-x-full"
-                    } transition-transform duration-300 ease-in sm:block`}
->
-               
-                  <div className="w-auto grid gap-2 py-4">
-          
-                  {activeIndex === "propertyType" && (
-                      <div
-                        className=""
-                        style={{ borderBottom: "1px solid #d9d9d9" }}
-                      >
-                        <div className="mb-3 mt-5">
+                  </span>
+                  <span className="text-gray-500">{accordion.propertyType ? '−' : '+'}</span>
+                </button>
+                {accordion.propertyType && (
+                  <div className="p-4 bg-white">
+                    <div className="grid grid-cols-1 gap-3">
                       {propertyTypes.map((type) => (
-                        <li key={type} style={{ listStyle: "none" }}>
+                        <label key={type} className="flex items-center gap-3 text-sm cursor-pointer p-2 rounded-lg hover:bg-gray-50">
                           <input
                             type="checkbox"
-                            id={type.toLowerCase().replace(" ", "_")}
-                            name="property_type"
-                            className="filter-choice"
+                            className="accent-red-500 w-4 h-4"
                             value={type}
                             checked={selectedPropertyTypes.includes(type)}
-                            onChange={(e) =>
-                              handleCheckboxChange(e, setSelectedPropertyTypes)
-                            }
+                            onChange={e => handleCheckboxChange(e, setSelectedPropertyTypes)}
                           />
-                          <label
-                            htmlFor={type.toLowerCase().replace(" ", "_")}
-                            className="filter ml-2 text-lg"
-                          >
-                            {type}
-                          </label>
-                        </li>
+                          <span className="text-gray-700">{type}</span>
+                        </label>
                       ))}
                     </div>
-                      </div>
-                    )}
-               
-                  
-                  {activeIndex === "area" && (
-                      <div
-                        className=""
-                        style={{ borderBottom: "1px solid #d9d9d9" }}
-                      >
-                       <div className="mb-2 mt-5">
-                        {areas.map((area) => (
-                          <li key={area} style={{ listStyle: "none" }}>
-                            <input
-                              type="checkbox"
-                              id={area.toLowerCase().replace(" ", "_")}
-                              name="area"
-                              className="filter-choice"
-                              value={area}
-                              checked={selectedAreas.includes(area)}
-                              onChange={(e) =>
-                                handleCheckboxChange(e, setSelectedAreas)
-                              }
-                            />
-                            <label
-                              htmlFor={area.toLowerCase().replace(" ", "_")}
-                              className="filter ml-2"
-                            >
-                              {area}
-                            </label>
-                          </li>
-                        ))}
-                      </div>
-                      </div>
-                    )}
-                  
-
-                    {activeIndex === "city" && (
-                      <div
-                        className=""
-                        style={{ borderBottom: "1px solid #d9d9d9" }}
-                      >
-                        <div className="mb-2 mt-5">
-                        {cities.map((city) => (
-                          <li key={city} style={{ listStyle: "none" }}>
-                            <input
-                              type="checkbox"
-                              id={city.toLowerCase().replace(" ", "_")}
-                              name="city"
-                              className="filter-choice"
-                              value={city}
-                              checked={selectedCities.includes(city)}
-                              onChange={(e) =>
-                                handleCheckboxChange(e, setSelectedCities)
-                              }
-                            />
-                            <label
-                              htmlFor={city.toLowerCase().replace(" ", "_")}
-                              className="filter ml-2"
-                            >
-                              {city}
-                            </label>
-                          </li>
-                        ))}
-                      </div>
-                      </div>
-                    )}
-
-
-                      {activeIndex ==="price" && (
-                      <>
-                      <div className="grid mt-5">
-                        <div className="flex items-center mt-2">
-                          <span className="font-medium">Min: ₹{minPrice}</span>
-                          <input
-                            className="accent-blue-900 mr-2 h-2 w-full appearance-none rounded-full bg-blue-100"
-                            value={parseInt(minPrice)}
-                            min="1"
-                            max="8"
-                            step="1"
-                            type="range"
-                            onChange={handleMinRangeChange}
-                          />
-                          <span className="font-medium">Max: ₹{maxPrice}</span>
-                          <input
-                            className="accent-blue-900 ml-2 h-2 w-full appearance-none rounded-full bg-blue-100"
-                            value={parseInt(maxPrice)}
-                            min="1"
-                            max="8"
-                            step="1"
-                            type="range"
-                            onChange={handleMaxRangeChange}
-                          />
-                        </div>
-
-                        <div className="mt-4 d-flex">
-                          <div className="mb-4 mx-2">
-                            <label className="block text-gray-700">
-                              Min Price:
-                            </label>
-                            <select
-                              value={minPrice}
-                              onChange={handleMinPriceChange}
-                              className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                            >
-                              <option value="">Min Price</option>
-                              {minPriceOptions.map((price) => (
-                                <option key={price} value={price}>
-                                  ₹{price}
-                                </option>
-                              ))}
-                            </select>
-                          </div>
-                          <div className="mx-2">
-                            <label className="block text-gray-700">
-                              Max Price:
-                            </label>
-                            <select
-                              value={maxPrice}
-                              onChange={handleMaxPriceChange}
-                              className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                            >
-                              <div className="w-auto ml-[-10vw]">
-                              <option value="">Max Price</option>
-                              {maxPriceOptions.map((price) => (
-                                <option key={price} value={price}>
-                                  ₹{price}
-                                </option>
-                                
-                              ))}
-                              </div>
-                            </select>
-                          </div>
-                        </div>
-                        </div>
-                      </>
-                    )}   
-
-                <div className=" fixed top-[75vh] left-[40vw] w-6 grid items-center gap-2 py-4 border-b-2">
-                  <button
-                      className="text-white bg-red-500 py-1 px-2 rounded mt-0"
-                      onClick={toggleSidebar}
-                    >
-                      Apply
-                    </button>
-                    </div>
-                  </div>
-
-                  
-                 </div>
-</div>
-
-              </div>
-            </div>
-          </div>
-        </nav>
-        {/* on larger screen  */}
-        <div className="container-fluid bg-white">
-          <div className="row ">
-            <div className="col-lg-3 col-md-4 col-sm-6 d-none d-lg-block bg-white shadow-md">
-              <div className="d-flex flex-wrap">
-                <div className="li_options w-100 position-relative">
-                  <div className="fi_space md:p-1 sm:p-1 flex justify-end text-red-600">
-                    <button
-                      type="button"
-                      className="text-end"
-                      onClick={handleClearFilters}
-                    >
-                      Clear All
-                    </button>
-                  </div>
-
-                  <div className="selected-filters mb-4">
-                    {selectedPropertyTypes.length > 0 &&
-                      selectedPropertyTypes.map((propertyType, index) => (
-                        <div
-                          key={index}
-                          className="border-2 w-50 border-red-300 text-sm rounded-xl p-0 mb-2 flex justify-between items-center"
-                        >
-                          <span className="pl-4"> {propertyType}</span>
-                          <button
-                            onClick={() => removePropertyType(propertyType)}
-                            className="mr-2 text-red-600 text-2xl"
-                          >
-                            &times;
-                          </button>
-                        </div>
-                      ))}
-                    {selectedAreas.length > 0 &&
-                      selectedAreas.map((area, index) => (
-                        <div
-                          key={index}
-                          className="border-2 w-1/2 border-red-300 text-sm rounded-xl p-0 mb-2 flex justify-between items-center"
-                        >
-                          <span className="pl-4"> {area}</span>
-                          <button
-                            onClick={() => removeArea(area)}
-                            className="mr-2 text-red-500 text-2xl"
-                          >
-                            &times;
-                          </button>
-                        </div>
-                      ))}
-                    {selectedCities.length > 0 &&
-                      selectedCities.map((city, index) => (
-                        <div
-                          key={index}
-                          className="border-2 w-1/2 rounded-xl border-red-300 text-sm  p-0 mb-2 flex justify-between items-center"
-                        >
-                          <span className="pl-4"> {city}</span>
-                          <button
-                            onClick={() => removeCity(city)}
-                            className="mr-2 text-red-500 text-2xl "
-                          >
-                            &times;
-                          </button>
-                        </div>
-                      ))}
-                    {(minPrice || maxPrice) && (
-                      <div className="border-2 rounded-xl w-1/2 border-red-300 text-sm p-0 mb-2 flex justify-between items-center">
-                        <span className="pl-4">
-                          {" "}
-                          ₹{minPrice} - ₹{maxPrice}
-                        </span>
-                        <button
-                          onClick={removePrice}
-                          className="mr-2 text-red-500 text-2xl"
-                        >
-                          &times;
-                        </button>
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="fi_acc">
-                    <div className="fi_head" onClick={toggle2}>
-                      Property Type
-                      <i
-                        className={`fa-solid fa-chevron-up pr-2 text-black text-sm`}
-                      ></i>
-                    </div>
-
-                    <div className="mb-3">
-                      {propertyTypes.map((type) => (
-                        <li key={type} style={{ listStyle: "none" }}>
-                          <input
-                            type="checkbox"
-                            id={type.toLowerCase().replace(" ", "_")}
-                            name="property_type"
-                            className="filter-choice"
-                            value={type}
-                            checked={selectedPropertyTypes.includes(type)}
-                            onChange={(e) =>
-                              handleCheckboxChange(e, setSelectedPropertyTypes)
-                            }
-                          />
-                          <label
-                            htmlFor={type.toLowerCase().replace(" ", "_")}
-                            className="filter ml-2 text-lg"
-                          >
-                            {type}
-                          </label>
-                        </li>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="fi_acc">
-                    <div className="fi_head" onClick={toggle3}>
-                      Unit Type
-                      <i
-                        className={`fa-solid fa-chevron-${position3} pr-2 text-black text-sm`}
-                      ></i>
-                    </div>
-                    {drop3 && (
-                      <div className="mb-2">
-                        {areas.map((area) => (
-                          <li key={area} style={{ listStyle: "none" }}>
-                            <input
-                              type="checkbox"
-                              id={area.toLowerCase().replace(" ", "_")}
-                              name="area"
-                              className="filter-choice"
-                              value={area}
-                              checked={selectedAreas.includes(area)}
-                              onChange={(e) =>
-                                handleCheckboxChange(e, setSelectedAreas)
-                              }
-                            />
-                            <label
-                              htmlFor={area.toLowerCase().replace(" ", "_")}
-                              className="filter ml-2"
-                            >
-                              {area}
-                            </label>
-                          </li>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="fi_acc">
-                    <div className="fi_head" onClick={toggle6}>
-                      City
-                      <i
-                        className={`fa-solid fa-chevron-${position6} pr-2 text-black text-sm`}
-                      ></i>
-                    </div>
-                    {drop6 && (
-                      <div className="mb-2">
-                        {cities.map((city) => (
-                          <li key={city} style={{ listStyle: "none" }}>
-                            <input
-                              type="checkbox"
-                              id={city.toLowerCase().replace(" ", "_")}
-                              name="city"
-                              className="filter-choice"
-                              value={city}
-                              checked={selectedCities.includes(city)}
-                              onChange={(e) =>
-                                handleCheckboxChange(e, setSelectedCities)
-                              }
-                            />
-                            <label
-                              htmlFor={city.toLowerCase().replace(" ", "_")}
-                              className="filter ml-2"
-                            >
-                              {city}
-                            </label>
-                          </li>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="fi_acc ">
-                    <span className="fi_head " onClick={toggle7}>
-                      Price Criteria
-                      <i
-                        className={`fa-solid fa-chevron-${position7} pr-2 text-black text-sm`}
-                      ></i>
-                    </span>
-                    {drop7 && (
-                      <>
-                        <div className="flex items-center mt-2">
-                          <span className="font-medium">Min: ₹{minPrice}</span>
-                          <input
-                            className="accent-blue-900 mr-2 h-2 w-full appearance-none rounded-full bg-blue-100"
-                            value={parseInt(minPrice)}
-                            min="1"
-                            max="8"
-                            step="1"
-                            type="range"
-                            onChange={handleMinRangeChange}
-                          />
-                          <span className="font-medium">Max: ₹{maxPrice}</span>
-                          <input
-                            className="accent-blue-900 ml-2 h-2 w-full appearance-none rounded-full bg-blue-100"
-                            value={parseInt(maxPrice)}
-                            min="1"
-                            max="8"
-                            step="1"
-                            type="range"
-                            onChange={handleMaxRangeChange}
-                          />
-                        </div>
-
-                        <div className="mt-4 d-flex">
-                          <div className="mb-4 mx-2">
-                            <label className="block text-gray-700">
-                              Min Price:
-                            </label>
-                            <select
-                              value={minPrice}
-                              onChange={handleMinPriceChange}
-                              className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                            >
-                              <option value="">Select Min Price</option>
-                              {minPriceOptions.map((price) => (
-                                <option key={price} value={price}>
-                                  ₹{price}
-                                </option>
-                              ))}
-                            </select>
-                          </div>
-                          <div className="mx-2">
-                            <label className="block text-gray-700">
-                              Max Price:
-                            </label>
-                            <select
-                              value={maxPrice}
-                              onChange={handleMaxPriceChange}
-                              className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                            >
-                              <option value="">Select Max Price</option>
-                              {maxPriceOptions.map((price) => (
-                                <option key={price} value={price}>
-                                  ₹{price}
-                                </option>
-                              ))}
-                            </select>
-                          </div>
-                        </div>
-                      </>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="col-lg-9 col-md-12 col-sm-12">
-              <div className="li_items xl:px-8 lg:px-6 md:px-4 px-2">
-                <div className="li_head_row">
-                  <div className="heading relative">
-                    <h3 className="title mt-4">Best Resale Properties in Gurugram</h3>
-
-                    <>
-                      {isVisible && (
-                        <div
-                          className="fixed bottom-4 right-4 z-10"
-                          onClick={scrollToTop}
-                        >
-                          <button className="bg-red-600 border-white text-white p-3 flex items-center rounded-full animate-bounce">
-                            <i className="fa-solid fa-arrow-up transform rotate-360"></i>
-                          </button>
-                        </div>
-                      )}
-                    </>
-                  </div>
-                </div>
-
-               
-                <section className="flex flex-col items-center bg-white mb-4">
-                    {filterData.length === 0 ? (
-                      <p><CustomSkeleton /></p>
-                    ) :  
-                        (
-                    <div className="grid max-w-md  grid-cols-1 px-2 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-3 lg:grid-cols-3 sm:gap-4 lg:gap-4 w-full mb-4">
-  {     
-                            filterData.map((nestedItem, nestedIndex) => (
-                              <div key={nestedIndex} className="shadow-lg rounded-lg">
-                                <Link
-                                  to={
-                                    nestedItem.propertyName &&
-                                      nestedItem._id
-                                      ? `/buy-properties/${nestedItem.propertyName.replace(
-                                        /\s+/g,
-                                        "-"
-                                      )}/${nestedItem._id}/`
-                                      : "#"
-                                  }
-                                  target="_top"
-                                >
-                                  <div className="relative p-3">
-                                    <div >
-                                      {nestedItem.frontImage &&
-                                        nestedItem.frontImage.url ? (
-                                        <img
-                                          src={nestedItem.frontImage.url}
-                                          alt="frontImage"
-                                          className="w-full h-48 object-cover overflow-hidden rounded-lg transition-transform duration-500 ease-in-out hover:scale-110"
-                                        />
-                                      ) : (
-                                        <span>Image not available</span>
-                                      )}
-                                    </div>
-                                    <div className="pt-2 p-1" >
-                                      <div className="pb-2">
-                                        <span className="text-sm font-semibold block truncate overflow-hidden whitespace-nowrap hover:text-red-600 duration-500 ease-in-out">
-                                          {nestedItem.propertyName}
-                                        </span>
-                                        <span className="text-sm text-gray-400 hover:text-red-600  duration-500 ease-in-out">
-                                          {nestedItem.city}, {nestedItem.state}
-                                        </span>
-                                      </div>
-                                      <ul className="box-border flex list-none items-center border-b border-solid border-gray-200 px-0 py-2">
-                                        <li className="mr-4 flex items-center text-left">
-                                          <li className="text-left">
-                                            <p className="m-0 text-sm font-medium ">
-                                              <PropertyIcon />{" "}{nestedItem.propertyType}
-                                            </p>
-                                            <span className="text-[10px] text-gray-600 block truncate text-sm hover:overflow-visible hover:white-space-normal hover:bg-white">
-                                              {/* <LocationRedIcon />{" "}{item.projectAddress} */}
-                                            </span>
-
-                                          </li>
-                                        </li>
-                                      </ul>
-                                      <ul className="m-0  flex list-none items-center justify-between px-0  pb-0">
-                                        <li className="text-left">
-                                          <span className="text-sm font-extrabold text-red-600 block truncate">
-                                            <span style={{display: 'flex', alignItems: 'center', color: 'red', fontWeight: 'bold'}}><RupeeIcon style={{marginRight: 4}} />{nestedItem?.price}</span>
-                                          </span>
-                                        </li>
-                                        <li className="text-left">
-                                          <button
-                                            type="button"
-                                            className="text-white bg-gradient-to-r from-[#C13B44] via-red-500 to-[#C13B44] hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-xs px-4 py-1.5  text-center me-2"
-                                          >
-                                            View Details
-                                          </button>
-                                        </li>
-                                      </ul>
-                                    </div>
-                                  </div>
-                                </Link>
-                              </div>
-                            )
-                            )
-                        }
                   </div>
                 )}
-                </section>
               </div>
+
+              {/* Unit Type */}
+              <div className="border border-gray-200 rounded-xl overflow-hidden">
+                <button className="w-full flex justify-between items-center py-4 px-4 font-semibold text-left bg-gray-50" onClick={() => toggleAccordion('unitType')}>
+                  <span className="flex items-center gap-2">
+                    <span className="text-lg">🏡</span>
+                    Unit Type
+                  </span>
+                  <span className="text-gray-500">{accordion.unitType ? '−' : '+'}</span>
+                </button>
+                {accordion.unitType && (
+                  <div className="p-4 bg-white">
+                    <div className="grid grid-cols-1 gap-3">
+                      {areas.map((area) => (
+                        <label key={area} className="flex items-center gap-3 text-sm cursor-pointer p-2 rounded-lg hover:bg-gray-50">
+                          <input
+                            type="checkbox"
+                            className="accent-red-500 w-4 h-4"
+                            value={area}
+                            checked={selectedAreas.includes(area)}
+                            onChange={e => handleCheckboxChange(e, setSelectedAreas)}
+                          />
+                          <span className="text-gray-700">{area}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* City */}
+              <div className="border border-gray-200 rounded-xl overflow-hidden">
+                <button className="w-full flex justify-between items-center py-4 px-4 font-semibold text-left bg-gray-50" onClick={() => toggleAccordion('city')}>
+                  <span className="flex items-center gap-2">
+                    <span className="text-lg">📍</span>
+                    City
+                  </span>
+                  <span className="text-gray-500">{accordion.city ? '−' : '+'}</span>
+                </button>
+                {accordion.city && (
+                  <div className="p-4 bg-white max-h-60 overflow-y-auto">
+                    <div className="grid grid-cols-1 gap-3">
+                      {cities.map((city) => (
+                        <label key={city} className="flex items-center gap-3 text-sm cursor-pointer p-2 rounded-lg hover:bg-gray-50">
+                          <input
+                            type="checkbox"
+                            className="accent-red-500 w-4 h-4"
+                            value={city}
+                            checked={selectedCities.includes(city)}
+                            onChange={e => handleCheckboxChange(e, setSelectedCities)}
+                          />
+                          <span className="text-gray-700">{city}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Price Criteria */}
+              <div className="border border-gray-200 rounded-xl overflow-hidden">
+                <button className="w-full flex justify-between items-center py-4 px-4 font-semibold text-left bg-gray-50" onClick={() => toggleAccordion('price')}>
+                  <span className="flex items-center gap-2">
+                    <span className="text-lg">💰</span>
+                    Price Range
+                  </span>
+                  <span className="text-gray-500">{accordion.price ? '−' : '+'}</span>
+                </button>
+                {accordion.price && (
+                  <div className="p-4 bg-white">
+                    <div className="space-y-4">
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium text-gray-700">Minimum Price</label>
+                        <select
+                          value={minPrice}
+                          onChange={handleMinPriceChange}
+                          className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                        >
+                          <option value="">Select Min Price</option>
+                          {minPriceOptions.map((price) => (
+                            <option key={price} value={price}>₹{price}</option>
+                          ))}
+                        </select>
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium text-gray-700">Maximum Price</label>
+                        <select
+                          value={maxPrice}
+                          onChange={handleMaxPriceChange}
+                          className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                        >
+                          <option value="">Select Max Price</option>
+                          {maxPriceOptions.map((price) => (
+                            <option key={price} value={price}>₹{price}</option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Modal Actions */}
+            <div className="flex justify-between mt-8 gap-3">
+              <button
+                className="flex-1 bg-gray-100 text-gray-700 px-4 py-3 rounded-xl hover:bg-gray-200 transition font-medium"
+                onClick={handleClearFilters}
+              >
+                Clear All
+              </button>
+              <button
+                className="flex-1 bg-red-500 text-white px-6 py-3 rounded-xl shadow-lg hover:bg-red-600 transition font-semibold"
+                onClick={() => setFilterModalOpen(false)}
+              >
+                Apply Filters
+              </button>
             </div>
           </div>
         </div>
-      </Wrapper>
+      )}
+
+      {/* Main Content */}
+      <main className="min-h-screen bg-gray-50 pt-8 pb-10">
+        <div className="max-w-7xl mx-auto px-4">
+          
+          {/* Enhanced Header Title Section */}
+          <div className="relative text-center py-6 mb-4 px-2">
+            {/* Background blur/gradient effect */}
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-50/40 via-white to-purple-50/30 rounded-3xl blur-2xl opacity-70"></div>
+            
+            {/* Content container */}
+            <div className="relative z-10 max-w-5xl mx-auto pt-4">
+              {/* Main Title with gradient effect and enhanced styling */}
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-3 tracking-wide leading-tight" style={{ fontFamily: 'DM Sans, sans-serif' }}>
+                <span className="bg-gradient-to-r from-red-600 via-red-500 to-orange-500 bg-clip-text text-transparent drop-shadow-sm">
+                  Best
+                </span>
+                <span className="text-gray-900 drop-shadow-sm"> Resale Properties</span>
+              </h1>
+              
+              {/* Decorative underline */}
+              <div className="w-32 h-1.5 bg-gradient-to-r from-red-500 via-red-400 to-orange-500 mx-auto mb-3 rounded-full shadow-lg"></div>
+              
+              {/* Subtitle with reduced size */}
+              <p className="text-base md:text-lg text-slate-600 max-w-4xl mx-auto leading-relaxed font-medium tracking-wide" style={{ fontFamily: 'DM Sans, sans-serif' }}>
+                Premium Resale Properties — Value, Location, and Trust Redefined.
+              </p>
+            </div>
+            
+            {/* Subtle glow effect */}
+            <div className="absolute inset-0 bg-gradient-to-r from-red-500/10 via-transparent to-orange-500/10 rounded-3xl blur-3xl"></div>
+          </div>
+
+
+
+          {/* Responsive 2-Column Layout */}
+          <div className="flex flex-col lg:flex-row gap-6 max-w-7xl mx-auto px-2 md:px-4">
+            {/* Filter Sidebar (Desktop) */}
+            <aside className="hidden lg:block w-[280px] bg-gray-50 rounded-2xl shadow border border-gray-100 px-5 py-6 sticky top-20 self-start">
+              {/* Property Type */}
+              <div className="mb-3">
+                <div className="font-semibold text-gray-800 mb-3">Property Type</div>
+                <div className="flex flex-wrap gap-2 items-start">
+                  {propertyTypes.map(type => (
+                    <label
+                      key={type}
+                      className="flex items-start gap-2 text-sm min-w-0 whitespace-nowrap"
+                    >
+                      <input
+                        type="checkbox"
+                        className="accent-red-500 w-4 h-4 mt-0.5 flex-shrink-0"
+                        value={type}
+                        checked={selectedPropertyTypes.includes(type)}
+                        onChange={e => handleCheckboxChange(e, setSelectedPropertyTypes)}
+                      />
+                      <span className="whitespace-nowrap">{type}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+              {/* Unit Type */}
+              <div className="mb-3">
+                <div className="font-semibold text-gray-800 mb-3">Unit Type</div>
+                <div className="grid grid-cols-2 gap-x-4 gap-y-2 items-start">
+                  {areas.map(area => (
+                    <label
+                      key={area}
+                      className="flex items-start gap-2 text-sm min-w-0 whitespace-normal break-words"
+                    >
+                      <input
+                        type="checkbox"
+                        className="accent-red-500 w-4 h-4 mt-0.5 flex-shrink-0"
+                        value={area}
+                        checked={selectedAreas.includes(area)}
+                        onChange={e => handleCheckboxChange(e, setSelectedAreas)}
+                      />
+                      <span className="break-words whitespace-normal">{area}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+              {/* City */}
+              <div className="mb-3">
+                <div className="font-semibold text-gray-800 mb-3">City</div>
+                <div className="grid grid-cols-2 gap-x-4 gap-y-2 items-start">
+                  {cities.map(city => (
+                    <label
+                      key={city}
+                      className="flex items-start gap-2 text-sm min-w-0 whitespace-normal break-words"
+                    >
+                      <input
+                        type="checkbox"
+                        className="accent-red-500 w-4 h-4 mt-0.5 flex-shrink-0"
+                        value={city}
+                        checked={selectedCities.includes(city)}
+                        onChange={e => handleCheckboxChange(e, setSelectedCities)}
+                      />
+                      <span className="break-words whitespace-normal">{city}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+              {/* Price Criteria */}
+              <div>
+                <div className="font-semibold text-gray-800 mb-3">Price Criteria</div>
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between text-sm font-medium text-gray-700 mb-2">
+                    <span>Min: ₹{minPrice || minPriceOptions[0]} Cr</span>
+                    <span>Max: ₹{maxPrice || maxPriceOptions[maxPriceOptions.length - 1]} Cr</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="range"
+                      min={minPriceOptions[0]}
+                      max={maxPriceOptions[maxPriceOptions.length - 1]}
+                      step={1}
+                      value={minPrice || minPriceOptions[0]}
+                      onChange={e => {
+                        const value = e.target.value;
+                        setMinPrice(value);
+                        if (!maxPrice || parseInt(value) > parseInt(maxPrice)) setMaxPrice(value);
+                      }}
+                      className="w-full accent-red-500"
+                    />
+                    <input
+                      type="range"
+                      min={minPriceOptions[0]}
+                      max={maxPriceOptions[maxPriceOptions.length - 1]}
+                      step={1}
+                      value={maxPrice || maxPriceOptions[maxPriceOptions.length - 1]}
+                      onChange={e => {
+                        const value = e.target.value;
+                        setMaxPrice(value);
+                        if (!minPrice || parseInt(value) < parseInt(minPrice)) setMinPrice(value);
+                      }}
+                      className="w-full accent-red-500"
+                    />
+                  </div>
+                </div>
+              </div>
+            </aside>
+
+
+            {/* TODO: Implement mobile filter drawer/modal here if needed */}
+
+            {/* Main Content Area (Listings) */}
+            <main className="flex-1 min-w-0">
+              {/* Search Bar */}
+              <div className="mb-2">
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="Search properties by name or city..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all duration-200 shadow-sm hover:shadow-md"
+                  />
+                  {searchTerm && (
+                    <button
+                      onClick={() => setSearchTerm("")}
+                      className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
+                    >
+                      <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  )}
+                </div>
+                {searchTerm && (
+                  <div className="mt-2 text-sm text-gray-600">
+                    Showing {filteredAndSearchedData.length} results for "{searchTerm}"
+                  </div>
+                )}
+              </div>
+
+              {/* Mobile Filter Button */}
+              <div className="lg:hidden flex justify-end mb-4">
+                <button 
+                  onClick={() => setFilterModalOpen(true)}
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gray-100 text-gray-700 font-medium shadow hover:bg-gray-200 border border-gray-200 transition-colors"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" /></svg>
+                  Filters
+                </button>
+              </div>
+
+              {/* Grid/List Toggle Placeholder */}
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4 gap-2">
+                <div className="text-gray-700 font-semibold flex-shrink-0">Showing Properties</div>
+                <div className="flex flex-wrap gap-2">
+                  {selectedCities.map(city => (
+                    <span key={city} className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1">
+                      {city}
+                      <button className="ml-1 hover:text-green-900" onClick={() => setSelectedCities(selectedCities.filter(c => c !== city))}>×</button>
+                    </span>
+                  ))}
+                  {selectedPropertyTypes.map(type => (
+                    <span key={type} className="bg-red-100 text-red-700 px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1">
+                      {type}
+                      <button className="ml-1 hover:text-red-900" onClick={() => setSelectedPropertyTypes(selectedPropertyTypes.filter(t => t !== type))}>×</button>
+                    </span>
+                  ))}
+                  {selectedAreas.map(area => (
+                    <span key={area} className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1">
+                      {area}
+                      <button className="ml-1 hover:text-blue-900" onClick={() => setSelectedAreas(selectedAreas.filter(a => a !== area))}>×</button>
+                    </span>
+                  ))}
+                  {(minPrice || maxPrice) && (
+                    <span className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1">
+                      ₹{minPrice || '0'} - ₹{maxPrice || 'Any'}
+                      <button className="ml-1 hover:text-gray-900" onClick={() => { setMinPrice(''); setMaxPrice(''); }}>×</button>
+                    </span>
+                  )}
+                </div>
+              </div>
+              {/* Property Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                {filteredAndSearchedData.length === 0 ? (
+                  <div className="col-span-full"><CustomSkeleton /></div>
+                ) : (
+                  paginatedData.map((property, idx) => (
+                    <Link
+                      key={property._id || idx}
+                      to={property.propertyName && property._id
+                        ? `/buy-properties/${property.propertyName.replace(/\s+/g, '-')}/${property._id}/`
+                        : "#"}
+                      target="_top"
+                      className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden flex flex-col transition-all duration-300 hover:shadow-lg hover:scale-[1.02] group cursor-pointer focus:outline-none focus:ring-2 focus:ring-red-400"
+                      style={{ animationDelay: `${idx * 50}ms` }}
+                      tabIndex={0}
+                    >
+                      {/* Property Image */}
+                      <div className="relative overflow-hidden">
+                        <img
+                          src={property.frontImage?.url}
+                          alt={property.propertyName}
+                          className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-105"
+                          loading="lazy"
+                        />
+                        {/* Heart/Wishlist Button */}
+                        <button
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            navigate(LOGIN);
+                          }}
+                          className="absolute top-3 right-3 w-10 h-10 bg-white/90 hover:bg-white rounded-full flex items-center justify-center shadow-md transition"
+                          aria-label="Add to wishlist (login required)"
+                          title="Login to add to wishlist"
+                        >
+                          <MdFavoriteBorder className="text-gray-600 hover:text-red-500 text-xl" />
+                        </button>
+                        <div className="absolute top-3 right-3">
+                          <span className="bg-red-500 text-white px-2 py-1 rounded-full text-xs font-semibold">
+                            Resale
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Property Details */}
+                      <div className="flex flex-col flex-1 p-4">
+                        {/* Property Name */}
+                        <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2 leading-tight">
+                          {property.propertyName}
+                        </h3>
+
+                        {/* Location */}
+                        <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
+                          <svg className="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                          </svg>
+                          <span className="truncate">{property.city}, {property.state}</span>
+                        </div>
+
+                        {/* Property Type */}
+                        <div className="flex items-center gap-2 text-sm text-gray-600 mb-4">
+                          <svg className="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                          </svg>
+                          <span className="truncate">{property.propertyType || 'Property'}</span>
+                        </div>
+
+                        {/* Price and CTA */}
+                        <div className="mt-auto">
+                          <div className="text-red-500 font-bold text-xl mb-3 flex items-center gap-1">
+                            ₹
+                            {formatPrice(property.price)}
+                          </div>
+                          <button className="w-full bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-lg font-semibold transition-colors text-sm">
+                            View Details
+                          </button>
+                        </div>
+                      </div>
+                    </Link>
+                  ))
+                )}
+              </div>
+              {/* Pagination */}
+              <div className="mt-8 flex justify-center">
+                <PaginationControls
+                  currentPage={currentPage}
+                  setCurrentPage={handlePageChange}
+                  totalPages={totalPages}
+                />
+              </div>
+            </main>
+          </div>
+        </div>
+      </main>
       <Footer />
     </>
   );
 };
+
 export default BuyPropViewCard;
+
 const Wrapper = styled.section`
   box-sizing: border-box;
   font-family: DM Sans, sans-serif;
+
+
 
   .li_options {
     padding: 30px 0;
@@ -1076,7 +1007,7 @@ const Wrapper = styled.section`
     cursor: pointer;
   }
   .li_options .fi_heading {
-    font-family: DM Sans;
+    font-family: DM Sans, sans-serif;
     font-size: 12px;
     font-weight: 500;
     line-height: 16px;
@@ -1175,6 +1106,123 @@ const Wrapper = styled.section`
   label {
     font-size: 14px;
   }
+  
+  /* Custom scrollbar styles */
+  .scrollbar-thin {
+    scrollbar-width: thin;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar {
+    height: 6px;
+  }
+  
+  .scrollbar-thumb-gray-300::-webkit-scrollbar-thumb {
+    background-color: #d1d5db;
+    border-radius: 3px;
+  }
+  
+  .scrollbar-track-gray-100::-webkit-scrollbar-track {
+    background-color: #f3f4f6;
+    border-radius: 3px;
+  }
+  
+  .scrollbar-thumb-gray-400::-webkit-scrollbar-thumb {
+    background-color: #9ca3af;
+  }
+  
+  /* Hide scrollbar for mobile when needed */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Line clamp utility */
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* Animation for fade in */
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease-in-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Enhanced search bar animations */
+  .search-input:focus {
+    transform: scale(1.02);
+  }
+
+  /* Filter chip animations */
+  .filter-chip {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .filter-chip:hover {
+    transform: translateY(-2px);
+  }
+
+  .filter-chip.active {
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% {
+      box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+    }
+    50% {
+      box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+    }
+  }
+
+  /* Smooth transitions for all interactive elements */
+  * {
+    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
+  }
+
+  /* Mobile-specific improvements */
+  @media (max-width: 768px) {
+    /* Touch-friendly button sizes */
+    .filter-chip {
+      min-height: 44px; /* iOS recommended touch target */
+      min-width: 44px;
+    }
+    
+    /* Improved scroll experience on mobile */
+    .mobile-scroll {
+      -webkit-overflow-scrolling: touch;
+      scroll-behavior: smooth;
+    }
+    
+    /* Better focus states for mobile */
+    .mobile-focus:focus {
+      outline: 2px solid #ef4444;
+      outline-offset: 2px;
+    }
+    
+    /* Active state for touch feedback */
+    .filter-chip:active {
+      transform: scale(0.95);
+    }
+  }
+
   @media only screen and (max-width: 570px) {
     .li_options {
       display: none;

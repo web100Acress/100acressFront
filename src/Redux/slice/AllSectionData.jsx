@@ -16,6 +16,10 @@ const AllSectionDataSlice = createSlice({
         builderindependentfloor:[],
         luxuryvillas:[],
         dlfsco:[],
+        plotsingurugram:[],
+        farmhouse:[],
+        industrialplots:[],
+        industrialprojects:[],
     },
     reducers: {
         allupcomingproject: (state, action) => {
@@ -37,7 +41,7 @@ const AllSectionDataSlice = createSlice({
             state.commercialProjectAll = action.payload;
         },
         scoplotsall:(state,action)=>{
-            state.scoplots = action.payload;
+            state.scoplotsall = action.payload;
         },
         luxuryAll:(state,action) =>{
             state.luxuryAll = action.payload;
@@ -56,11 +60,23 @@ const AllSectionDataSlice = createSlice({
         },
         dlfsco:(state,action)=>{
             state.dlfsco = action.payload;
+        },
+        plotsingurugram:(state,action)=>{
+            state.plotsingurugram = action.payload;
+        },
+        farmhouse:(state,action)=>{
+            state.farmhouse = action.payload;
+        },
+        industrialplots:(state,action)=>{
+            state.industrialplots = action.payload;
+        },
+        industrialprojects:(state,action)=>{
+            state.industrialprojects = action.payload;
         }
 
     },
 });
 
-export const { allupcomingproject,newlaunch,underconstruction,readytomove,commercialProjectAll,scoplotsall,luxuryAll,deendayalplots,residential,builderindependentfloor,luxuryvillas,dlfsco,possessionafter2026 } = AllSectionDataSlice.actions; 
+export const { allupcomingproject,newlaunch,underconstruction,readytomove,commercialProjectAll,scoplotsall,luxuryAll,deendayalplots,residential,builderindependentfloor,luxuryvillas,dlfsco,possessionafter2026,plotsingurugram,farmhouse,industrialplots,industrialprojects } = AllSectionDataSlice.actions; 
 
 export default AllSectionDataSlice.reducer;

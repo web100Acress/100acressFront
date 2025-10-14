@@ -1,0 +1,30 @@
+/* --- Amenities Section --- */
+.nb-amenities-section { padding: 32px 16px 0; max-width: 1120px; margin: 0 auto; }
+@media (min-width: 1024px) { .nb-amenities-section { padding: 48px 24px 0; } }
+.nb-amenities-header { margin-bottom: 8px; }
+.nb-amenities-title { margin: 0; font-size: 1.75rem; line-height: 1.2; }
+.nb-amenities-subtitle { display: inline; color: #B8985A; margin-left: 8px; font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif; }
+
+.nb-amenities-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 16px; margin-top: 16px; }
+@media (min-width: 640px) { .nb-amenities-grid { grid-template-columns: repeat(3, minmax(0,1fr)); } }
+@media (min-width: 768px) { .nb-amenities-grid { grid-template-columns: repeat(4, minmax(0,1fr)); } }
+@media (min-width: 1024px) { .nb-amenities-grid { grid-template-columns: repeat(6, minmax(0,1fr)); gap: 20px; } }
+
+.nb-amenity-card { position: relative; background: rgba(255,255,255,0.8); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); border-radius: 12px; padding: 16px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); border: 1px solid rgba(217, 180, 85, 0.4); overflow: hidden; transition: all 0.3s ease; }
+.nb-amenity-card:hover { box-shadow: 0 25px 45px rgba(0,0,0,0.18); transform: scale(1.05); border-color: rgba(207, 175, 110, 0.5); }
+
+.nb-amenity-overlay { position: absolute; inset: 0; border-radius: 16px; background: linear-gradient(135deg, rgba(207,175,110,0.10), rgba(229,199,138,0.10)); opacity: 0; transition: opacity .3s ease; }
+.nb-amenity-card:hover .nb-amenity-overlay { opacity: 1; }
+
+.nb-amenity-iconwrap { position: relative; z-index: 1; display: flex; justify-content: center; margin-bottom: 12px; }
+.nb-amenity-icon { width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: linear-gradient(to right, #CFAF6E, #E5C78A); box-shadow: 0 4px 8px rgba(0,0,0,0.1); transition: all 0.3s ease; }
+.nb-amenity-card:hover .nb-amenity-icon { transform: scale(1.1); box-shadow: 0 20px 25px rgba(0,0,0,0.2); }
+.nb-amenity-svg { color: #ffffff; font-size: 1.5rem; }
+.nb-amenity-image { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+
+.nb-amenity-text { position: relative; z-index: 1; text-align: center; }
+.nb-amenity-title { margin: 0; color: #1f2937; font-weight: 500; font-size: 0.85rem; line-height: 1.25; transition: color .2s ease; }
+.nb-amenity-card:hover .nb-amenity-title { color: #B8985A; }
+
+.nb-amenity-shine { position: absolute; top: -8px; right: -8px; width: 16px; height: 16px; background: linear-gradient(to right, #CFAF6E, #E5C78A); border-radius: 9999px; opacity: 0.2; transition: opacity .3s ease; }
+.nb-amenity-card:hover .nb-amenity-shine { opacity: 0.4; }
