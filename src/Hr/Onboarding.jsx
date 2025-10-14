@@ -3,6 +3,19 @@ import HrSidebar from "./HrSidebar";
 import api from "../config/apiClient";
 import { CheckCircle, Circle, Clock, Calendar, User, Mail, ChevronRight } from "lucide-react";
 
+// Simple modal component
+const Modal = ({ open, onClose, children }) => {
+  if (!open) return null;
+  return (
+    <div className="fixed inset-0 z-[1000] flex items-center justify-center">
+      <div className="absolute inset-0 bg-black/40" onClick={onClose}></div>
+      <div className="relative bg-white w-full max-w-3xl rounded-xl shadow-xl border border-gray-200 overflow-hidden">
+        {children}
+      </div>
+    </div>
+  );
+};
+
 const stageLabels = [
   { key: "interview1", label: "Interview 1" },
   { key: "hrDiscussion", label: "HR Discussion" },
@@ -84,6 +97,69 @@ const Onboarding = () => {
     }
   };
 
+  const inviteStage = async (id, stage) => {
+    try {
+      const type = prompt("Invite type: online/offline", "online");
+      if (!type) return;
+      let payload = { stage, type };
+      if (type === 'online') {
+        const meetingLink = prompt("Enter meeting link (URL)", "");
+        const scheduledAt = prompt("Start datetime (YYYY-MM-DD HH:mm)", "");
+        const endsAt = prompt("End datetime (YYYY-MM-DD HH:mm)", "");
+        payload.meetingLink = meetingLink || undefined;
+        payload.scheduledAt = scheduledAt ? new Date(scheduledAt) : undefined;
+        payload.endsAt = endsAt ? new Date(endsAt) : undefined;
+      } else {
+        const location = prompt("Enter location", "");
+        const scheduledAt = prompt("Schedule datetime (YYYY-MM-DD HH:mm)", "");
+        payload.location = location || undefined;
+        payload.scheduledAt = scheduledAt ? new Date(scheduledAt) : undefined;
+      }
+      const content = prompt("Message to candidate (optional)", "");
+      payload.content = content || undefined;
+      await api.post(`/api/hr/onboarding/${id}/invite`, payload);
+      alert('Invite sent');
+      fetchList();
+    } catch (e) {
+      alert(e?.response?.data?.message || 'Failed to send invite');
+    }
+  };
+
+  const completeStage = async (id, stage) => {
+    try {
+      const feedback = prompt("Enter feedback/notes", "");
+      await api.post(`/api/hr/onboarding/${id}/complete-stage`, { stage, feedback });
+      fetchList();
+    } catch (e) {
+      alert(e?.response?.data?.message || 'Failed to complete stage');
+    }
+  };
+
+  const sendDocsInvite = async (id) => {
+    try {
+      const uploadLink = prompt("Document upload link (URL)", "");
+      const content = prompt("Message to candidate (optional)", "Please upload your documents for verification.");
+      await api.post(`/api/hr/onboarding/${id}/docs-invite`, { uploadLink, content });
+      alert('Documentation invite sent');
+      fetchList();
+    } catch (e) {
+      alert(e?.response?.data?.message || 'Failed to send docs invite');
+    }
+  };
+
+  const recordDocument = async (id) => {
+    try {
+      const docType = prompt("Document type (e.g., aadhaar, pan, degree)", "");
+      if (!docType) return;
+      const url = prompt("Document URL", "");
+      if (!url) return;
+      await api.post(`/api/hr/onboarding/${id}/docs`, { docType, url });
+      fetchList();
+    } catch (e) {
+      alert(e?.response?.data?.message || 'Failed to record document');
+    }
+  };
+
   const filteredList = list.filter(it => {
     if (filterStatus === "all") return true;
     if (filterStatus === "active") return it.status !== "completed";
@@ -95,6 +171,185 @@ const Onboarding = () => {
     total: list.length,
     active: list.filter(it => it.status !== "completed").length,
     completed: list.filter(it => it.status === "completed").length,
+  };
+
+  // Wizard modal state
+  const [wizardOpen, setWizardOpen] = useState(false);
+  const [activeItem, setActiveItem] = useState(null);
+  const [form, setForm] = useState({
+    stage: 'interview1',
+    mode: 'online',
+    meetingLink: '',
+    location: '',
+    start: '',
+    end: '',
+    message: '',
+    tasksRaw: '',
+    // docs
+    panUrl: '',
+    aadhaarUrl: '',
+    photoUrl: '',
+    marksheetUrl: '',
+    other1: '',
+    other2: '',
+    joiningDate: '',
+    rejectReason: '',
+  });
+
+  const openWizard = (it) => {
+    setActiveItem(it);
+    const stage = it.stages[it.currentStageIndex];
+    setForm((f) => ({
+      ...f,
+      stage,
+      mode: 'online',
+      meetingLink: '',
+      location: '',
+      start: '',
+      end: '',
+      message: '',
+      tasksRaw: '',
+      panUrl: '', aadhaarUrl: '', photoUrl: '', marksheetUrl: '', other1: '', other2: '',
+      joiningDate: '', rejectReason: ''
+    }));
+    setWizardOpen(true);
+  };
+  const closeWizard = () => { setWizardOpen(false); setActiveItem(null); };
+
+  const submitInviteFromWizard = async () => {
+    if (!activeItem) return;
+    const stage = form.stage;
+    const type = form.mode;
+    const tasks = (form.tasksRaw || '').split('\n').map(l => l.trim()).filter(Boolean).map(t => ({ title: t }));
+    const payload = {
+      stage,
+      type,
+      meetingLink: type === 'online' ? (form.meetingLink || undefined) : undefined,
+      location: type === 'offline' ? (form.location || undefined) : undefined,
+      scheduledAt: form.start ? new Date(form.start) : undefined,
+      endsAt: form.end ? new Date(form.end) : undefined,
+      content: form.message || undefined,
+      tasks,
+    };
+    await api.post(`/api/hr/onboarding/${activeItem._id}/invite`, payload);
+    fetchList();
+  };
+
+  const submitCompleteFromWizard = async () => {
+    if (!activeItem) return;
+    if (form.stage === 'documentation') {
+      const body = {};
+      if (form.joiningDate) body.joiningDate = form.joiningDate;
+      await api.post(`/api/hr/onboarding/${activeItem._id}/docs-complete`, body);
+    } else {
+      await api.post(`/api/hr/onboarding/${activeItem._id}/complete-stage`, { stage: form.stage, feedback: form.message });
+    }
+    fetchList();
+  };
+
+  const submitDocsFromWizard = async () => {
+    if (!activeItem) return;
+    const docs = [];
+    if (form.panUrl) docs.push({ docType: 'pan', url: form.panUrl });
+    if (form.aadhaarUrl) docs.push({ docType: 'aadhaar', url: form.aadhaarUrl });
+    if (form.photoUrl) docs.push({ docType: 'photo', url: form.photoUrl });
+    if (form.marksheetUrl) docs.push({ docType: 'marksheet', url: form.marksheetUrl });
+    if (form.other1) docs.push({ docType: 'other', url: form.other1 });
+    if (form.other2) docs.push({ docType: 'other', url: form.other2 });
+    await api.post(`/api/hr/onboarding/${activeItem._id}/docs-submit`, { documents: docs });
+    fetchList();
+  };
+
+  const submitRejectFromWizard = async () => {
+    if (!activeItem) return;
+    await api.post(`/api/hr/onboarding/${activeItem._id}/reject-stage`, { stage: form.stage, reason: form.rejectReason });
+    fetchList();
+  };
+
+  const renderStageForm = () => {
+    if (!activeItem) return null;
+    const stage = form.stage;
+    if (stage === 'interview1' || stage === 'hrDiscussion') {
+      return (
+        <div className="space-y-4">
+          <div className="flex items-center space-x-3">
+            <label className="font-medium text-sm text-gray-700">Mode</label>
+            <select value={form.mode} onChange={(e)=>setForm({...form, mode:e.target.value})} className="border rounded-md px-3 py-2 text-sm">
+              <option value="online">Online</option>
+              <option value="offline">Offline</option>
+            </select>
+          </div>
+          {form.mode === 'online' ? (
+            <div className="space-y-3">
+              <div>
+                <label className="block text-sm text-gray-700 mb-1">Meeting link</label>
+                <input value={form.meetingLink} onChange={(e)=>setForm({...form, meetingLink:e.target.value})} className="w-full border rounded-md px-3 py-2 text-sm" placeholder="https://..." />
+              </div>
+            </div>
+          ) : (
+            <div>
+              <label className="block text-sm text-gray-700 mb-1">Location</label>
+              <input value={form.location} onChange={(e)=>setForm({...form, location:e.target.value})} className="w-full border rounded-md px-3 py-2 text-sm" placeholder="Office address" />
+            </div>
+          )}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div>
+              <label className="block text-sm text-gray-700 mb-1">Start (YYYY-MM-DD HH:mm)</label>
+              <input value={form.start} onChange={(e)=>setForm({...form, start:e.target.value})} className="w-full border rounded-md px-3 py-2 text-sm" placeholder="2025-10-15 10:30" />
+            </div>
+            <div>
+              <label className="block text-sm text-gray-700 mb-1">End (optional)</label>
+              <input value={form.end} onChange={(e)=>setForm({...form, end:e.target.value})} className="w-full border rounded-md px-3 py-2 text-sm" placeholder="2025-10-15 11:30" />
+            </div>
+          </div>
+          <div>
+            <label className="block text-sm text-gray-700 mb-1">Tasks (one per line)</label>
+            <textarea value={form.tasksRaw} onChange={(e)=>setForm({...form, tasksRaw:e.target.value})} className="w-full border rounded-md px-3 py-2 text-sm" rows={4} placeholder="Upload assignment A\nPrepare case study" />
+          </div>
+          <div>
+            <label className="block text-sm text-gray-700 mb-1">Message to candidate</label>
+            <textarea value={form.message} onChange={(e)=>setForm({...form, message:e.target.value})} className="w-full border rounded-md px-3 py-2 text-sm" rows={3} placeholder="Custom note" />
+          </div>
+        </div>
+      );
+    }
+    if (stage === 'documentation') {
+      return (
+        <div className="space-y-3">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div>
+              <label className="block text-sm text-gray-700 mb-1">PAN URL</label>
+              <input value={form.panUrl} onChange={(e)=>setForm({...form, panUrl:e.target.value})} className="w-full border rounded-md px-3 py-2 text-sm" />
+            </div>
+            <div>
+              <label className="block text-sm text-gray-700 mb-1">Aadhaar URL</label>
+              <input value={form.aadhaarUrl} onChange={(e)=>setForm({...form, aadhaarUrl:e.target.value})} className="w-full border rounded-md px-3 py-2 text-sm" />
+            </div>
+            <div>
+              <label className="block text-sm text-gray-700 mb-1">Photo URL</label>
+              <input value={form.photoUrl} onChange={(e)=>setForm({...form, photoUrl:e.target.value})} className="w-full border rounded-md px-3 py-2 text-sm" />
+            </div>
+            <div>
+              <label className="block text-sm text-gray-700 mb-1">Marksheet URL</label>
+              <input value={form.marksheetUrl} onChange={(e)=>setForm({...form, marksheetUrl:e.target.value})} className="w-full border rounded-md px-3 py-2 text-sm" />
+            </div>
+            <div>
+              <label className="block text-sm text-gray-700 mb-1">Other Doc URL</label>
+              <input value={form.other1} onChange={(e)=>setForm({...form, other1:e.target.value})} className="w-full border rounded-md px-3 py-2 text-sm" />
+            </div>
+            <div>
+              <label className="block text-sm text-gray-700 mb-1">Other Doc URL</label>
+              <input value={form.other2} onChange={(e)=>setForm({...form, other2:e.target.value})} className="w-full border rounded-md px-3 py-2 text-sm" />
+            </div>
+          </div>
+          <div>
+            <label className="block text-sm text-gray-700 mb-1">Joining Date (optional, set when marking verified)</label>
+            <input value={form.joiningDate} onChange={(e)=>setForm({...form, joiningDate:e.target.value})} className="w-full border rounded-md px-3 py-2 text-sm" placeholder="YYYY-MM-DD" />
+          </div>
+        </div>
+      );
+    }
+    return null;
   };
 
   return (
@@ -242,6 +497,7 @@ const Onboarding = () => {
 
                       {/* Actions */}
                       <div className="flex items-center space-x-3 lg:w-auto">
+                        <button onClick={() => openWizard(it)} className="px-4 py-2.5 rounded-lg bg-white border border-gray-200 text-gray-700 hover:bg-gray-50">Manage</button>
                         {it.status !== 'completed' ? (
                           <button 
                             onClick={() => advance(it._id)} 
@@ -256,6 +512,27 @@ const Onboarding = () => {
                             <span>Completed</span>
                           </div>
                         )}
+
+                        {/* Stage-specific manage actions */}
+                        {it.stages[it.currentStageIndex] === 'interview1' && it.status !== 'completed' && (
+                          <>
+                            <button onClick={() => inviteStage(it._id, 'interview1')} className="px-4 py-2.5 rounded-lg bg-white border border-gray-200 text-gray-700 hover:bg-gray-50">Invite Interview</button>
+                            <button onClick={() => completeStage(it._id, 'interview1')} className="px-4 py-2.5 rounded-lg bg-white border border-gray-200 text-gray-700 hover:bg-gray-50">Mark Done</button>
+                          </>
+                        )}
+                        {it.stages[it.currentStageIndex] === 'hrDiscussion' && it.status !== 'completed' && (
+                          <>
+                            <button onClick={() => inviteStage(it._id, 'hrDiscussion')} className="px-4 py-2.5 rounded-lg bg-white border border-gray-200 text-gray-700 hover:bg-gray-50">Invite HR</button>
+                            <button onClick={() => completeStage(it._id, 'hrDiscussion')} className="px-4 py-2.5 rounded-lg bg-white border border-gray-200 text-gray-700 hover:bg-gray-50">Mark Done</button>
+                          </>
+                        )}
+                        {it.stages[it.currentStageIndex] === 'documentation' && it.status !== 'completed' && (
+                          <>
+                            <button onClick={() => sendDocsInvite(it._id)} className="px-4 py-2.5 rounded-lg bg-white border border-gray-200 text-gray-700 hover:bg-gray-50">Send Docs Invite</button>
+                            <button onClick={() => recordDocument(it._id)} className="px-4 py-2.5 rounded-lg bg-white border border-gray-200 text-gray-700 hover:bg-gray-50">Record Doc</button>
+                          </>
+                        )}
+
                         <button 
                           onClick={() => setJoining(it._id)} 
                           className="flex items-center px-4 py-2.5 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors font-medium"
@@ -286,6 +563,39 @@ const Onboarding = () => {
           )}
         </div>
       </div>
+
+      {/* Wizard Modal */}
+      <Modal open={wizardOpen} onClose={closeWizard}>
+        <div className="px-6 py-5 border-b bg-gray-50">
+          <h3 className="text-lg font-semibold text-gray-900">{activeItem?.candidateName}</h3>
+          <div className="mt-3">
+            {activeItem && (
+              <StageProgress stages={activeItem.stages} currentIndex={activeItem.currentStageIndex} status={activeItem.status} />
+            )}
+          </div>
+        </div>
+        <div className="p-6 max-h-[70vh] overflow-auto">
+          {renderStageForm()}
+          {/* Reject reason */}
+          <div className="mt-6">
+            <label className="block text-sm text-gray-700 mb-1">Reject reason (optional)</label>
+            <input value={form.rejectReason} onChange={(e)=>setForm({...form, rejectReason:e.target.value})} className="w-full border rounded-md px-3 py-2 text-sm" placeholder="Reason if rejecting at this stage" />
+          </div>
+        </div>
+        <div className="px-6 py-4 bg-gray-50 border-t flex items-center justify-between">
+          <button onClick={closeWizard} className="px-4 py-2 rounded-md bg-white border border-gray-200 text-gray-700 hover:bg-gray-100">Cancel</button>
+          <div className="space-x-2">
+            {form.stage !== 'documentation' && (
+              <button onClick={submitInviteFromWizard} className="px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700">Send Invite</button>
+            )}
+            {form.stage === 'documentation' && (
+              <button onClick={submitDocsFromWizard} className="px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700">Submit Documents</button>
+            )}
+            <button onClick={submitCompleteFromWizard} className="px-4 py-2 rounded-md bg-green-600 text-white hover:bg-green-700">Mark Done</button>
+            <button onClick={submitRejectFromWizard} className="px-4 py-2 rounded-md bg-red-600 text-white hover:bg-red-700">Reject</button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 };
