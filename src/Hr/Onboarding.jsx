@@ -194,11 +194,14 @@ const Onboarding = () => {
     other2: '',
     joiningDate: '',
     rejectReason: '',
+    resetStage: 'interview1',
+    resetReason: '',
   });
 
   const openWizard = (it) => {
     setActiveItem(it);
-    const stage = it.stages[it.currentStageIndex];
+    const current = it.stages[it.currentStageIndex];
+    const stage = current === 'success' ? 'documentation' : current;
     setForm((f) => ({
       ...f,
       stage,
@@ -210,60 +213,100 @@ const Onboarding = () => {
       message: '',
       tasksRaw: '',
       panUrl: '', aadhaarUrl: '', photoUrl: '', marksheetUrl: '', other1: '', other2: '',
-      joiningDate: '', rejectReason: ''
+      joiningDate: '', rejectReason: '',
+      resetStage: 'interview1',
+      resetReason: ''
     }));
     setWizardOpen(true);
   };
   const closeWizard = () => { setWizardOpen(false); setActiveItem(null); };
 
   const submitInviteFromWizard = async () => {
-    if (!activeItem) return;
-    const stage = form.stage;
-    const type = form.mode;
-    const tasks = (form.tasksRaw || '').split('\n').map(l => l.trim()).filter(Boolean).map(t => ({ title: t }));
-    const payload = {
-      stage,
-      type,
-      meetingLink: type === 'online' ? (form.meetingLink || undefined) : undefined,
-      location: type === 'offline' ? (form.location || undefined) : undefined,
-      scheduledAt: form.start ? new Date(form.start) : undefined,
-      endsAt: form.end ? new Date(form.end) : undefined,
-      content: form.message || undefined,
-      tasks,
-    };
-    await api.post(`/api/hr/onboarding/${activeItem._id}/invite`, payload);
-    fetchList();
+    try {
+      if (!activeItem) return;
+      if (!['interview1','hrDiscussion'].includes(form.stage)) {
+        alert('Invites are only for Interview 1 or HR Discussion stages.');
+        return;
+      }
+      const stage = form.stage;
+      const type = form.mode;
+      const tasks = (form.tasksRaw || '').split('\n').map(l => l.trim()).filter(Boolean).map(t => ({ title: t }));
+      const payload = {
+        stage,
+        type,
+        meetingLink: type === 'online' ? (form.meetingLink || undefined) : undefined,
+        location: type === 'offline' ? (form.location || undefined) : undefined,
+        scheduledAt: form.start ? new Date(form.start) : undefined,
+        endsAt: form.end ? new Date(form.end) : undefined,
+        content: form.message || undefined,
+        tasks,
+      };
+      await api.post(`/api/hr/onboarding/${activeItem._id}/invite`, payload);
+      fetchList();
+    } catch (e) {
+      alert(e?.response?.data?.message || 'Failed to send invite');
+    }
   };
 
   const submitCompleteFromWizard = async () => {
-    if (!activeItem) return;
-    if (form.stage === 'documentation') {
-      const body = {};
-      if (form.joiningDate) body.joiningDate = form.joiningDate;
-      await api.post(`/api/hr/onboarding/${activeItem._id}/docs-complete`, body);
-    } else {
-      await api.post(`/api/hr/onboarding/${activeItem._id}/complete-stage`, { stage: form.stage, feedback: form.message });
+    try {
+      if (!activeItem) return;
+      if (form.stage === 'documentation') {
+        const body = {};
+        if (form.joiningDate) body.joiningDate = form.joiningDate;
+        await api.post(`/api/hr/onboarding/${activeItem._id}/docs-complete`, body);
+      } else if (['interview1','hrDiscussion'].includes(form.stage)) {
+        await api.post(`/api/hr/onboarding/${activeItem._id}/complete-stage`, { stage: form.stage, feedback: form.message });
+      } else {
+        alert('Invalid stage to complete.');
+        return;
+      }
+      fetchList();
+    } catch (e) {
+      alert(e?.response?.data?.message || 'Failed to complete stage');
     }
-    fetchList();
   };
 
   const submitDocsFromWizard = async () => {
-    if (!activeItem) return;
-    const docs = [];
-    if (form.panUrl) docs.push({ docType: 'pan', url: form.panUrl });
-    if (form.aadhaarUrl) docs.push({ docType: 'aadhaar', url: form.aadhaarUrl });
-    if (form.photoUrl) docs.push({ docType: 'photo', url: form.photoUrl });
-    if (form.marksheetUrl) docs.push({ docType: 'marksheet', url: form.marksheetUrl });
-    if (form.other1) docs.push({ docType: 'other', url: form.other1 });
-    if (form.other2) docs.push({ docType: 'other', url: form.other2 });
-    await api.post(`/api/hr/onboarding/${activeItem._id}/docs-submit`, { documents: docs });
-    fetchList();
+    try {
+      if (!activeItem) return;
+      const docs = [];
+      if (form.panUrl) docs.push({ docType: 'pan', url: form.panUrl });
+      if (form.aadhaarUrl) docs.push({ docType: 'aadhaar', url: form.aadhaarUrl });
+      if (form.photoUrl) docs.push({ docType: 'photo', url: form.photoUrl });
+      if (form.marksheetUrl) docs.push({ docType: 'marksheet', url: form.marksheetUrl });
+      if (form.other1) docs.push({ docType: 'other', url: form.other1 });
+      if (form.other2) docs.push({ docType: 'other', url: form.other2 });
+      await api.post(`/api/hr/onboarding/${activeItem._id}/docs-submit`, { documents: docs });
+      fetchList();
+    } catch (e) {
+      alert(e?.response?.data?.message || 'Failed to submit documents');
+    }
   };
 
   const submitRejectFromWizard = async () => {
-    if (!activeItem) return;
-    await api.post(`/api/hr/onboarding/${activeItem._id}/reject-stage`, { stage: form.stage, reason: form.rejectReason });
-    fetchList();
+    try {
+      if (!activeItem) return;
+      if (!['interview1','hrDiscussion','documentation'].includes(form.stage)) {
+        alert('Invalid stage to reject.');
+        return;
+      }
+      await api.post(`/api/hr/onboarding/${activeItem._id}/reject-stage`, { stage: form.stage, reason: form.rejectReason });
+      fetchList();
+    } catch (e) {
+      alert(e?.response?.data?.message || 'Failed to reject stage');
+    }
+  };
+
+  const submitResetFromWizard = async () => {
+    try {
+      if (!activeItem) return;
+      await api.post(`/api/hr/onboarding/${activeItem._id}/reset`, { stage: form.resetStage, reason: form.resetReason });
+      alert('Onboarding reset to selected stage');
+      fetchList();
+    } catch (e) {
+      alert(e?.response?.data?.message || 'Failed to reset onboarding');
+    }
   };
 
   const renderStageForm = () => {
@@ -581,6 +624,21 @@ const Onboarding = () => {
             <label className="block text-sm text-gray-700 mb-1">Reject reason (optional)</label>
             <input value={form.rejectReason} onChange={(e)=>setForm({...form, rejectReason:e.target.value})} className="w-full border rounded-md px-3 py-2 text-sm" placeholder="Reason if rejecting at this stage" />
           </div>
+          {/* Reset controls */}
+          <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-3 p-3 rounded-md bg-gray-50 border border-gray-200">
+            <div>
+              <label className="block text-sm text-gray-700 mb-1">Reset to stage</label>
+              <select value={form.resetStage} onChange={(e)=>setForm({...form, resetStage:e.target.value})} className="w-full border rounded-md px-3 py-2 text-sm">
+                <option value="interview1">Interview 1</option>
+                <option value="hrDiscussion">HR Discussion</option>
+                <option value="documentation">Documentation</option>
+              </select>
+            </div>
+            <div className="md:col-span-2">
+              <label className="block text-sm text-gray-700 mb-1">Reset reason (optional)</label>
+              <input value={form.resetReason} onChange={(e)=>setForm({...form, resetReason:e.target.value})} className="w-full border rounded-md px-3 py-2 text-sm" placeholder="Describe why you are resetting" />
+            </div>
+          </div>
         </div>
         <div className="px-6 py-4 bg-gray-50 border-t flex items-center justify-between">
           <button onClick={closeWizard} className="px-4 py-2 rounded-md bg-white border border-gray-200 text-gray-700 hover:bg-gray-100">Cancel</button>
@@ -593,6 +651,7 @@ const Onboarding = () => {
             )}
             <button onClick={submitCompleteFromWizard} className="px-4 py-2 rounded-md bg-green-600 text-white hover:bg-green-700">Mark Done</button>
             <button onClick={submitRejectFromWizard} className="px-4 py-2 rounded-md bg-red-600 text-white hover:bg-red-700">Reject</button>
+            <button onClick={submitResetFromWizard} className="px-4 py-2 rounded-md bg-amber-600 text-white hover:bg-amber-700">Reset to Stage</button>
           </div>
         </div>
       </Modal>

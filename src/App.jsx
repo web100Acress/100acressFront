@@ -184,6 +184,7 @@ const Onboarding = lazy(() => import("./Hr/Onboarding"));
 const Offboarding = lazy(() => import("./Hr/Offboarding"));
 const ItDashboard = lazy(() => import("./Hr/ItDashboard"));
 const AccountsDashboard = lazy(() => import("./Hr/AccountsDashboard"));
+const OnboardingUpload = lazy(() => import("./OnboardingUpload"));
 // Initialize QueryClient
 const queryClient = new QueryClient();
 
@@ -465,6 +466,7 @@ function App() {
                         path="/microtek-infra-sco-plots-gurugram/"
                         element={<Microtek />}
                       />
+                      <Route path="/onboarding/upload" element={<OnboardingUpload />} />
                     </Route>
 
                     {/* Admin Routing */}
