@@ -371,7 +371,7 @@ const PropertyCard = ({
           <div className="info-item">
             <MdSquareFoot className="info-icon" />
             <div className="info-content">
-              <span className="info-value">{project?.totalLandArea || project?.projectArea || project?.landArea || '5 Acres'}</span>
+              <span className="info-value">{project?.totalLandArea || project?.projectArea || project?.landArea || '5 Acres'} Acres</span>
               <span className="info-label">Land Area</span>
             </div>
           </div>
