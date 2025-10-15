@@ -185,6 +185,8 @@ const Offboarding = lazy(() => import("./Hr/Offboarding"));
 const ItDashboard = lazy(() => import("./Hr/ItDashboard"));
 const AccountsDashboard = lazy(() => import("./Hr/AccountsDashboard"));
 const OnboardingUpload = lazy(() => import("./OnboardingUpload"));
+const DocumentUpload = lazy(() => import("./Pages/DocumentUpload"));
+const UploadSuccess = lazy(() => import("./Pages/UploadSuccess"));
 // Initialize QueryClient
 const queryClient = new QueryClient();
 
@@ -467,6 +469,8 @@ function App() {
                         element={<Microtek />}
                       />
                       <Route path="/onboarding/upload" element={<OnboardingUpload />} />
+                      <Route path="/document-upload/:token" element={<DocumentUpload />} />
+                      <Route path="/upload-success" element={<UploadSuccess />} />
                     </Route>
 
                     {/* Admin Routing */}

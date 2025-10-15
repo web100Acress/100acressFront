@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import apiClient from "../config/apiClient";
 import Modal from "react-modal";
 import Sidebar from "./Sidebar";
 import { Link, useParams } from "react-router-dom";
@@ -59,9 +59,17 @@ const ProjectsAddBhk = () => {
 
   // Function to fetch BHK data (can be called on initial load and after mutations)
   const fetchBhkData = async () => {
+    if (!id || id === 'undefined') {
+      messageApi.open({
+        type: 'error',
+        content: 'Project ID is missing or invalid.',
+        duration: 2,
+      });
+      return;
+    }
     try {
-      const res = await axios.get(`bhk_view/${id}`);
-      setViewAll(res.data.data);
+      const res = await apiClient.get(`bhk_view/${id}`);
+      setViewAll(res.data.data || []);
     } catch (error) {
       console.error("Error fetching BHK details:", error);
       messageApi.open({
@@ -89,7 +97,7 @@ const ProjectsAddBhk = () => {
       content: 'Inserting...',
     });
     try {
-      const response = await axios.post(`bhk_insert/${id}`, editFromData);
+      const response = await apiClient.post(`bhk_insert/${id}`, editFromData);
       if (response.status >= 200 && response.status < 300) {
         messageApi.destroy('insertingBHK');
         messageApi.open({
@@ -135,7 +143,7 @@ const ProjectsAddBhk = () => {
         type: 'loading',
         content: 'Deleting...',
       });
-      const response = await axios.delete(`bhk_delete/${_id}`);
+      const response = await apiClient.delete(`bhk_delete/${_id}`);
       if (response.status >= 200 && response.status < 300) {
         messageApi.destroy('deletingBHK');
         messageApi.open({
