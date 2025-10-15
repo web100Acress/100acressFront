@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import HrSidebar from "./HrSidebar";
 import api from "../config/apiClient";
-import { CheckCircle, Circle, Clock, Calendar, User, Mail, ChevronRight } from "lucide-react";
+import { CheckCircle, Circle, Clock, Calendar, User, Mail, ChevronRight, FileText } from "lucide-react";
+import { toast } from 'react-hot-toast';
 
 // Simple modal component
 const Modal = ({ open, onClose, children }) => {
@@ -160,6 +161,22 @@ const Onboarding = () => {
     }
   };
 
+  const sendUploadLink = async (onboardingId) => {
+    try {
+      const res = await api.post(`/api/hr-onboarding/internal/generate-link/${onboardingId}`, { expiresInHours: 48 });
+      const link = res?.data?.link;
+      if (link) {
+        try { await navigator.clipboard.writeText(link); } catch {}
+        toast?.success ? toast.success('Upload link copied to clipboard') : alert('Link: ' + link);
+        window.open(link, '_blank');
+      } else {
+        alert('Link sent to candidate email.');
+      }
+    } catch (e) {
+      alert(e?.response?.data?.message || 'Failed to send link');
+    }
+  };
+
   const filteredList = list.filter(it => {
     if (filterStatus === "all") return true;
     if (filterStatus === "active") return it.status !== "completed";
@@ -176,6 +193,12 @@ const Onboarding = () => {
   // Wizard modal state
   const [wizardOpen, setWizardOpen] = useState(false);
   const [activeItem, setActiveItem] = useState(null);
+  const [currentStep, setCurrentStep] = useState(0);
+  const [wizardMode, setWizardMode] = useState('view'); // 'view' or 'manage'
+
+  // Documents modal state
+  const [documentsOpen, setDocumentsOpen] = useState(false);
+  const [documentsItem, setDocumentsItem] = useState(null);
   const [form, setForm] = useState({
     stage: 'interview1',
     mode: 'online',
@@ -198,13 +221,25 @@ const Onboarding = () => {
     resetReason: '',
   });
 
-  const openWizard = (it) => {
+  const openWizard = (it, mode = 'view') => {
     setActiveItem(it);
-    const current = it.stages[it.currentStageIndex];
-    const stage = current === 'success' ? 'documentation' : current;
+    setWizardMode(mode);
+
+    let stepIndex = 0;
+    if (mode === 'view') {
+      // For view mode, show current stage
+      const current = it.stages[it.currentStageIndex];
+      const stage = current === 'success' ? 'documentation' : current;
+      stepIndex = it.stages.indexOf(stage);
+    } else {
+      // For manage mode, start from beginning
+      stepIndex = 0;
+    }
+
+    setCurrentStep(stepIndex);
     setForm((f) => ({
       ...f,
-      stage,
+      stage: it.stages[stepIndex],
       mode: 'online',
       meetingLink: '',
       location: '',
@@ -219,16 +254,23 @@ const Onboarding = () => {
     }));
     setWizardOpen(true);
   };
-  const closeWizard = () => { setWizardOpen(false); setActiveItem(null); };
+
+  const openDocumentsModal = (it) => {
+    setDocumentsItem(it);
+    setDocumentsOpen(true);
+  };
+
+  const closeWizard = () => { setWizardOpen(false); setActiveItem(null); setCurrentStep(0); setWizardMode('view'); };
+  const closeDocumentsModal = () => { setDocumentsOpen(false); setDocumentsItem(null); };
 
   const submitInviteFromWizard = async () => {
     try {
       if (!activeItem) return;
-      if (!['interview1','hrDiscussion'].includes(form.stage)) {
+      const stage = activeItem.stages[currentStep];
+      if (!['interview1','hrDiscussion'].includes(stage)) {
         alert('Invites are only for Interview 1 or HR Discussion stages.');
         return;
       }
-      const stage = form.stage;
       const type = form.mode;
       const tasks = (form.tasksRaw || '').split('\n').map(l => l.trim()).filter(Boolean).map(t => ({ title: t }));
       const payload = {
@@ -251,12 +293,13 @@ const Onboarding = () => {
   const submitCompleteFromWizard = async () => {
     try {
       if (!activeItem) return;
-      if (form.stage === 'documentation') {
+      const stage = activeItem.stages[currentStep];
+      if (stage === 'documentation') {
         const body = {};
         if (form.joiningDate) body.joiningDate = form.joiningDate;
         await api.post(`/api/hr/onboarding/${activeItem._id}/docs-complete`, body);
-      } else if (['interview1','hrDiscussion'].includes(form.stage)) {
-        await api.post(`/api/hr/onboarding/${activeItem._id}/complete-stage`, { stage: form.stage, feedback: form.message });
+      } else if (['interview1','hrDiscussion'].includes(stage)) {
+        await api.post(`/api/hr/onboarding/${activeItem._id}/complete-stage`, { stage, feedback: form.message });
       } else {
         alert('Invalid stage to complete.');
         return;
@@ -287,11 +330,12 @@ const Onboarding = () => {
   const submitRejectFromWizard = async () => {
     try {
       if (!activeItem) return;
-      if (!['interview1','hrDiscussion','documentation'].includes(form.stage)) {
+      const stage = activeItem.stages[currentStep];
+      if (!['interview1','hrDiscussion','documentation'].includes(stage)) {
         alert('Invalid stage to reject.');
         return;
       }
-      await api.post(`/api/hr/onboarding/${activeItem._id}/reject-stage`, { stage: form.stage, reason: form.rejectReason });
+      await api.post(`/api/hr/onboarding/${activeItem._id}/reject-stage`, { stage, reason: form.rejectReason });
       fetchList();
     } catch (e) {
       alert(e?.response?.data?.message || 'Failed to reject stage');
@@ -304,6 +348,7 @@ const Onboarding = () => {
       await api.post(`/api/hr/onboarding/${activeItem._id}/reset`, { stage: form.resetStage, reason: form.resetReason });
       alert('Onboarding reset to selected stage');
       fetchList();
+      closeWizard();
     } catch (e) {
       alert(e?.response?.data?.message || 'Failed to reset onboarding');
     }
@@ -311,47 +356,134 @@ const Onboarding = () => {
 
   const renderStageForm = () => {
     if (!activeItem) return null;
-    const stage = form.stage;
-    if (stage === 'interview1' || stage === 'hrDiscussion') {
+    const stage = activeItem.stages[currentStep];
+
+    // For view mode, show all completed stages up to current stage
+    if (wizardMode === 'view') {
+      return (
+        <div className="space-y-6">
+          <div className="text-center">
+            <h4 className="text-xl font-semibold text-gray-900 mb-2">Current Stage: {stageLabels.find((x) => x.key === stage)?.label || stage}</h4>
+            <p className="text-gray-600">Viewing onboarding progress for {activeItem.candidateName}</p>
+          </div>
+
+          {/* Show all stages up to current */}
+          <div className="space-y-4">
+            {activeItem.stages.slice(0, currentStep + 1).map((stageItem, index) => {
+              const isCompleted = index < currentStep || (index === currentStep && activeItem.status === 'completed');
+              const isCurrent = index === currentStep && activeItem.status !== 'completed';
+
+              return (
+                <div key={stageItem} className={`border rounded-lg p-4 ${isCurrent ? 'border-blue-500 bg-blue-50' : isCompleted ? 'border-green-500 bg-green-50' : 'border-gray-200 bg-gray-50'}`}>
+                  <div className="flex items-center space-x-3 mb-2">
+                    {isCompleted ? (
+                      <CheckCircle className="text-green-500" size={20} />
+                    ) : isCurrent ? (
+                      <Clock className="text-blue-500" size={20} />
+                    ) : (
+                      <Circle className="text-gray-400" size={20} />
+                    )}
+                    <span className={`font-medium ${isCurrent ? 'text-blue-900' : isCompleted ? 'text-green-900' : 'text-gray-700'}`}>
+                      {stageLabels.find((x) => x.key === stageItem)?.label || stageItem}
+                    </span>
+                  </div>
+                  {stageItem === 'success' && activeItem.joiningDate && (
+                    <p className="text-sm text-gray-600 ml-8">Joining Date: {new Date(activeItem.joiningDate).toLocaleDateString()}</p>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      );
+    }
+
+    if (stage === 'interview1') {
       return (
         <div className="space-y-4">
+          <h4 className="text-lg font-semibold text-gray-900 mb-4">Interview 1 Setup</h4>
           <div className="flex items-center space-x-3">
-            <label className="font-medium text-sm text-gray-700">Mode</label>
+            <label className="font-medium text-sm text-gray-700">Interview Mode</label>
             <select value={form.mode} onChange={(e)=>setForm({...form, mode:e.target.value})} className="border rounded-md px-3 py-2 text-sm">
-              <option value="online">Online</option>
-              <option value="offline">Offline</option>
+              <option value="online">Online Interview</option>
+              <option value="offline">Offline Interview</option>
             </select>
           </div>
           {form.mode === 'online' ? (
             <div className="space-y-3">
               <div>
-                <label className="block text-sm text-gray-700 mb-1">Meeting link</label>
-                <input value={form.meetingLink} onChange={(e)=>setForm({...form, meetingLink:e.target.value})} className="w-full border rounded-md px-3 py-2 text-sm" placeholder="https://..." />
+                <label className="block text-sm text-gray-700 mb-1">Interview Link</label>
+                <input value={form.meetingLink} onChange={(e)=>setForm({...form, meetingLink:e.target.value})} className="w-full border rounded-md px-3 py-2 text-sm" placeholder="https://meet.google.com/..." />
               </div>
             </div>
           ) : (
             <div>
-              <label className="block text-sm text-gray-700 mb-1">Location</label>
-              <input value={form.location} onChange={(e)=>setForm({...form, location:e.target.value})} className="w-full border rounded-md px-3 py-2 text-sm" placeholder="Office address" />
+              <label className="block text-sm text-gray-700 mb-1">Interview Location</label>
+              <input value={form.location} onChange={(e)=>setForm({...form, location:e.target.value})} className="w-full border rounded-md px-3 py-2 text-sm" placeholder="Conference Room A, Office Building" />
             </div>
           )}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <div>
-              <label className="block text-sm text-gray-700 mb-1">Start (YYYY-MM-DD HH:mm)</label>
+              <label className="block text-sm text-gray-700 mb-1">Interview Start Time</label>
               <input value={form.start} onChange={(e)=>setForm({...form, start:e.target.value})} className="w-full border rounded-md px-3 py-2 text-sm" placeholder="2025-10-15 10:30" />
             </div>
             <div>
-              <label className="block text-sm text-gray-700 mb-1">End (optional)</label>
+              <label className="block text-sm text-gray-700 mb-1">Interview End Time (optional)</label>
               <input value={form.end} onChange={(e)=>setForm({...form, end:e.target.value})} className="w-full border rounded-md px-3 py-2 text-sm" placeholder="2025-10-15 11:30" />
             </div>
           </div>
           <div>
-            <label className="block text-sm text-gray-700 mb-1">Tasks (one per line)</label>
-            <textarea value={form.tasksRaw} onChange={(e)=>setForm({...form, tasksRaw:e.target.value})} className="w-full border rounded-md px-3 py-2 text-sm" rows={4} placeholder="Upload assignment A\nPrepare case study" />
+            <label className="block text-sm text-gray-700 mb-1">Interview Preparation Tasks</label>
+            <textarea value={form.tasksRaw} onChange={(e)=>setForm({...form, tasksRaw:e.target.value})} className="w-full border rounded-md px-3 py-2 text-sm" rows={4} placeholder="Review resume\nPrepare technical questions\nSet up coding environment" />
           </div>
           <div>
-            <label className="block text-sm text-gray-700 mb-1">Message to candidate</label>
-            <textarea value={form.message} onChange={(e)=>setForm({...form, message:e.target.value})} className="w-full border rounded-md px-3 py-2 text-sm" rows={3} placeholder="Custom note" />
+            <label className="block text-sm text-gray-700 mb-1">Interview Instructions</label>
+            <textarea value={form.message} onChange={(e)=>setForm({...form, message:e.target.value})} className="w-full border rounded-md px-3 py-2 text-sm" rows={3} placeholder="Please come prepared with your resume and portfolio. The interview will cover technical skills and problem-solving." />
+          </div>
+        </div>
+      );
+    }
+    if (stage === 'hrDiscussion') {
+      return (
+        <div className="space-y-4">
+          <h4 className="text-lg font-semibold text-gray-900 mb-4">HR Discussion Setup</h4>
+          <div className="flex items-center space-x-3">
+            <label className="font-medium text-sm text-gray-700">Discussion Mode</label>
+            <select value={form.mode} onChange={(e)=>setForm({...form, mode:e.target.value})} className="border rounded-md px-3 py-2 text-sm">
+              <option value="online">Online Discussion</option>
+              <option value="offline">Offline Discussion</option>
+            </select>
+          </div>
+          {form.mode === 'online' ? (
+            <div className="space-y-3">
+              <div>
+                <label className="block text-sm text-gray-700 mb-1">Discussion Link</label>
+                <input value={form.meetingLink} onChange={(e)=>setForm({...form, meetingLink:e.target.value})} className="w-full border rounded-md px-3 py-2 text-sm" placeholder="https://teams.microsoft.com/..." />
+              </div>
+            </div>
+          ) : (
+            <div>
+              <label className="block text-sm text-gray-700 mb-1">Discussion Location</label>
+              <input value={form.location} onChange={(e)=>setForm({...form, location:e.target.value})} className="w-full border rounded-md px-3 py-2 text-sm" placeholder="HR Meeting Room, 3rd Floor" />
+            </div>
+          )}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div>
+              <label className="block text-sm text-gray-700 mb-1">Discussion Start Time</label>
+              <input value={form.start} onChange={(e)=>setForm({...form, start:e.target.value})} className="w-full border rounded-md px-3 py-2 text-sm" placeholder="2025-10-15 14:00" />
+            </div>
+            <div>
+              <label className="block text-sm text-gray-700 mb-1">Discussion End Time (optional)</label>
+              <input value={form.end} onChange={(e)=>setForm({...form, end:e.target.value})} className="w-full border rounded-md px-3 py-2 text-sm" placeholder="2025-10-15 15:00" />
+            </div>
+          </div>
+          <div>
+            <label className="block text-sm text-gray-700 mb-1">Discussion Topics/Agenda</label>
+            <textarea value={form.tasksRaw} onChange={(e)=>setForm({...form, tasksRaw:e.target.value})} className="w-full border rounded-md px-3 py-2 text-sm" rows={4} placeholder="Company culture discussion\nSalary expectations\nBenefits overview\nQ&A session" />
+          </div>
+          <div>
+            <label className="block text-sm text-gray-700 mb-1">Discussion Notes</label>
+            <textarea value={form.message} onChange={(e)=>setForm({...form, message:e.target.value})} className="w-full border rounded-md px-3 py-2 text-sm" rows={3} placeholder="This discussion will cover company culture, compensation package, and answer any questions you may have about joining our team." />
           </div>
         </div>
       );
@@ -389,6 +521,18 @@ const Onboarding = () => {
             <label className="block text-sm text-gray-700 mb-1">Joining Date (optional, set when marking verified)</label>
             <input value={form.joiningDate} onChange={(e)=>setForm({...form, joiningDate:e.target.value})} className="w-full border rounded-md px-3 py-2 text-sm" placeholder="YYYY-MM-DD" />
           </div>
+        </div>
+      );
+    }
+    if (stage === 'success') {
+      return (
+        <div className="text-center py-8">
+          <CheckCircle size={48} className="text-green-500 mx-auto mb-4" />
+          <h3 className="text-xl font-semibold text-gray-900 mb-2">Onboarding Completed!</h3>
+          <p className="text-gray-600">The candidate has successfully completed all stages.</p>
+          {activeItem.joiningDate && (
+            <p className="text-blue-600 mt-2">Joining Date: {new Date(activeItem.joiningDate).toLocaleDateString()}</p>
+          )}
         </div>
       );
     }
@@ -506,83 +650,30 @@ const Onboarding = () => {
                     key={it._id} 
                     className="px-6 py-6 hover:bg-gray-50 transition-colors"
                   >
-                    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+                    <div className="flex items-center justify-between">
                       {/* Candidate Info */}
-                      <div className="flex items-start space-x-4 lg:w-1/4">
-                        <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
-                          <span className="text-white font-semibold text-lg">
+                      <div className="flex items-center space-x-4">
+                        <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
+                          <span className="text-white font-semibold text-sm">
                             {it.candidateName?.charAt(0).toUpperCase()}
                           </span>
                         </div>
-                        <div className="flex-1 min-w-0">
-                          <h3 className="font-semibold text-gray-900 text-lg truncate">{it.candidateName}</h3>
-                          <div className="flex items-center text-sm text-gray-500 mt-1">
+                        <div className="min-w-0">
+                          <h3 className="font-semibold text-gray-900 truncate">{it.candidateName}</h3>
+                          <div className="flex items-center text-sm text-gray-500">
                             <Mail size={14} className="mr-1.5" />
                             <span className="truncate">{it.candidateEmail}</span>
                           </div>
-                          {it.joiningDate && (
-                            <div className="flex items-center text-sm text-blue-600 mt-1">
-                              <Calendar size={14} className="mr-1.5" />
-                              <span>Joins: {new Date(it.joiningDate).toLocaleDateString()}</span>
-                            </div>
-                          )}
                         </div>
                       </div>
 
-                      {/* Progress */}
-                      <div className="lg:flex-1 overflow-x-auto">
-                        <StageProgress 
-                          stages={it.stages} 
-                          currentIndex={it.currentStageIndex} 
-                          status={it.status} 
-                        />
-                      </div>
-
-                      {/* Actions */}
-                      <div className="flex items-center space-x-3 lg:w-auto">
-                        <button onClick={() => openWizard(it)} className="px-4 py-2.5 rounded-lg bg-white border border-gray-200 text-gray-700 hover:bg-gray-50">Manage</button>
-                        {it.status !== 'completed' ? (
-                          <button 
-                            onClick={() => advance(it._id)} 
-                            className="flex items-center px-4 py-2.5 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors shadow-sm hover:shadow-md font-medium"
-                          >
-                            <span>Advance</span>
-                            <ChevronRight size={18} className="ml-1" />
-                          </button>
-                        ) : (
-                          <div className="flex items-center px-4 py-2.5 rounded-lg bg-green-50 text-green-700 font-semibold">
-                            <CheckCircle size={18} className="mr-2" />
-                            <span>Completed</span>
-                          </div>
-                        )}
-
-                        {/* Stage-specific manage actions */}
-                        {it.stages[it.currentStageIndex] === 'interview1' && it.status !== 'completed' && (
-                          <>
-                            <button onClick={() => inviteStage(it._id, 'interview1')} className="px-4 py-2.5 rounded-lg bg-white border border-gray-200 text-gray-700 hover:bg-gray-50">Invite Interview</button>
-                            <button onClick={() => completeStage(it._id, 'interview1')} className="px-4 py-2.5 rounded-lg bg-white border border-gray-200 text-gray-700 hover:bg-gray-50">Mark Done</button>
-                          </>
-                        )}
-                        {it.stages[it.currentStageIndex] === 'hrDiscussion' && it.status !== 'completed' && (
-                          <>
-                            <button onClick={() => inviteStage(it._id, 'hrDiscussion')} className="px-4 py-2.5 rounded-lg bg-white border border-gray-200 text-gray-700 hover:bg-gray-50">Invite HR</button>
-                            <button onClick={() => completeStage(it._id, 'hrDiscussion')} className="px-4 py-2.5 rounded-lg bg-white border border-gray-200 text-gray-700 hover:bg-gray-50">Mark Done</button>
-                          </>
-                        )}
-                        {it.stages[it.currentStageIndex] === 'documentation' && it.status !== 'completed' && (
-                          <>
-                            <button onClick={() => sendDocsInvite(it._id)} className="px-4 py-2.5 rounded-lg bg-white border border-gray-200 text-gray-700 hover:bg-gray-50">Send Docs Invite</button>
-                            <button onClick={() => recordDocument(it._id)} className="px-4 py-2.5 rounded-lg bg-white border border-gray-200 text-gray-700 hover:bg-gray-50">Record Doc</button>
-                          </>
-                        )}
-
-                        <button 
-                          onClick={() => setJoining(it._id)} 
-                          className="flex items-center px-4 py-2.5 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors font-medium"
-                        >
-                          <Calendar size={18} className="mr-2" />
-                          <span className="hidden sm:inline">Set Joining</span>
-                          <span className="sm:hidden">Date</span>
+                      {/* Action Buttons */}
+                      <div className="flex items-center space-x-3">
+                        <button onClick={() => openWizard(it, 'view')} className="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors font-medium">
+                          View Details
+                        </button>
+                        <button onClick={() => openDocumentsModal(it)} className="px-4 py-2 rounded-lg bg-gray-600 text-white hover:bg-gray-700 transition-colors font-medium">
+                          View Documents
                         </button>
                       </div>
                     </div>
@@ -613,46 +704,112 @@ const Onboarding = () => {
           <h3 className="text-lg font-semibold text-gray-900">{activeItem?.candidateName}</h3>
           <div className="mt-3">
             {activeItem && (
-              <StageProgress stages={activeItem.stages} currentIndex={activeItem.currentStageIndex} status={activeItem.status} />
+              <StageProgress stages={activeItem.stages} currentIndex={currentStep} status={activeItem.status} />
             )}
           </div>
         </div>
         <div className="p-6 max-h-[70vh] overflow-auto">
-          {renderStageForm()}
-          {/* Reject reason */}
-          <div className="mt-6">
-            <label className="block text-sm text-gray-700 mb-1">Reject reason (optional)</label>
-            <input value={form.rejectReason} onChange={(e)=>setForm({...form, rejectReason:e.target.value})} className="w-full border rounded-md px-3 py-2 text-sm" placeholder="Reason if rejecting at this stage" />
-          </div>
-          {/* Reset controls */}
-          <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-3 p-3 rounded-md bg-gray-50 border border-gray-200">
-            <div>
-              <label className="block text-sm text-gray-700 mb-1">Reset to stage</label>
-              <select value={form.resetStage} onChange={(e)=>setForm({...form, resetStage:e.target.value})} className="w-full border rounded-md px-3 py-2 text-sm">
-                <option value="interview1">Interview 1</option>
-                <option value="hrDiscussion">HR Discussion</option>
-                <option value="documentation">Documentation</option>
-              </select>
-            </div>
-            <div className="md:col-span-2">
-              <label className="block text-sm text-gray-700 mb-1">Reset reason (optional)</label>
-              <input value={form.resetReason} onChange={(e)=>setForm({...form, resetReason:e.target.value})} className="w-full border rounded-md px-3 py-2 text-sm" placeholder="Describe why you are resetting" />
-            </div>
-          </div>
+          {activeItem ? renderStageForm() : <div className="text-center py-8">Loading...</div>}
         </div>
         <div className="px-6 py-4 bg-gray-50 border-t flex items-center justify-between">
-          <button onClick={closeWizard} className="px-4 py-2 rounded-md bg-white border border-gray-200 text-gray-700 hover:bg-gray-100">Cancel</button>
+          <button
+            onClick={() => setCurrentStep(Math.max(0, currentStep - 1))}
+            disabled={currentStep === 0 || wizardMode === 'view'}
+            className="px-4 py-2 rounded-md bg-white border border-gray-200 text-gray-700 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Back
+          </button>
           <div className="space-x-2">
-            {form.stage !== 'documentation' && (
-              <button onClick={submitInviteFromWizard} className="px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700">Send Invite</button>
+            {wizardMode === 'view' ? (
+              <>
+                {activeItem && activeItem.status !== 'completed' && (
+                  <button onClick={() => openWizard(activeItem, 'manage')} className="px-4 py-2 rounded-md bg-purple-600 text-white hover:bg-purple-700">
+                    Proceed to Manage
+                  </button>
+                )}
+                <button onClick={closeWizard} className="px-4 py-2 rounded-md bg-gray-600 text-white hover:bg-gray-700">
+                  Close
+                </button>
+              </>
+            ) : (
+              <>
+                {activeItem && activeItem.status !== 'completed' && activeItem.stages && activeItem.stages[currentStep] !== 'success' && (
+                  <>
+                    {(activeItem.stages[currentStep] === 'interview1' || activeItem.stages[currentStep] === 'hrDiscussion') ? (
+                      <button onClick={submitInviteFromWizard} className="px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700">Send Invite</button>
+                    ) : null}
+                    {activeItem.stages[currentStep] === 'documentation' ? (
+                      <button onClick={submitDocsFromWizard} className="px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700">Submit Documents</button>
+                    ) : null}
+                    <button onClick={submitCompleteFromWizard} className="px-4 py-2 rounded-md bg-green-600 text-white hover:bg-green-700">Mark Done</button>
+                    <button onClick={submitRejectFromWizard} className="px-4 py-2 rounded-md bg-red-600 text-white hover:bg-red-700">Reject</button>
+                    <button onClick={submitResetFromWizard} className="px-4 py-2 rounded-md bg-amber-600 text-white hover:bg-amber-700">Reset to Stage</button>
+                  </>
+                )}
+                {activeItem && activeItem.status === 'completed' && activeItem.stages && currentStep === activeItem.stages.length - 1 ? (
+                  <button onClick={closeWizard} className="px-4 py-2 rounded-md bg-green-600 text-white hover:bg-green-700">Complete Onboarding</button>
+                ) : (
+                  activeItem && activeItem.stages && (
+                    <button
+                      onClick={() => setCurrentStep(Math.min(activeItem.stages.length - 1, currentStep + 1))}
+                      disabled={currentStep === activeItem.stages.length - 1}
+                      className="px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      Next
+                    </button>
+                  )
+                )}
+              </>
             )}
-            {form.stage === 'documentation' && (
-              <button onClick={submitDocsFromWizard} className="px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700">Submit Documents</button>
-            )}
-            <button onClick={submitCompleteFromWizard} className="px-4 py-2 rounded-md bg-green-600 text-white hover:bg-green-700">Mark Done</button>
-            <button onClick={submitRejectFromWizard} className="px-4 py-2 rounded-md bg-red-600 text-white hover:bg-red-700">Reject</button>
-            <button onClick={submitResetFromWizard} className="px-4 py-2 rounded-md bg-amber-600 text-white hover:bg-amber-700">Reset to Stage</button>
           </div>
+        </div>
+      </Modal>
+
+      {/* Documents Modal */}
+      <Modal open={documentsOpen} onClose={closeDocumentsModal}>
+        <div className="px-6 py-5 border-b bg-gray-50">
+          <h3 className="text-lg font-semibold text-gray-900">{documentsItem?.candidateName} - Documents</h3>
+        </div>
+        <div className="p-6 max-h-[70vh] overflow-auto">
+          {documentsItem ? (
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {documentsItem.documents && documentsItem.documents.length > 0 ? (
+                  documentsItem.documents.map((doc, index) => (
+                    <div key={index} className="border rounded-lg p-4 bg-gray-50">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="font-medium text-gray-900 capitalize">{doc.docType}</span>
+                        <a
+                          href={doc.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                        >
+                          View Document
+                        </a>
+                      </div>
+                      <p className="text-sm text-gray-600 truncate">{doc.url}</p>
+                    </div>
+                  ))
+                ) : (
+                  <div className="col-span-full text-center py-8">
+                    <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <FileText className="text-gray-400" size={32} />
+                    </div>
+                    <p className="text-gray-500 text-lg font-medium">No documents uploaded yet</p>
+                    <p className="text-gray-400 text-sm mt-1">Documents will appear here once uploaded by the candidate</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          ) : (
+            <div className="text-center py-8">Loading...</div>
+          )}
+        </div>
+        <div className="px-6 py-4 bg-gray-50 border-t flex justify-end">
+          <button onClick={closeDocumentsModal} className="px-4 py-2 rounded-md bg-gray-600 text-white hover:bg-gray-700">
+            Close
+          </button>
         </div>
       </Modal>
     </div>
