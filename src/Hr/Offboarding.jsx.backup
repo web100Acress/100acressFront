@@ -1,0 +1,125 @@
+import React, { useEffect, useState } from "react";
+import HrSidebar from "./HrSidebar";
+import api from "../config/apiClient";
+import { CheckCircle, Circle, Clock, Calendar, User, Mail, ChevronRight, FileText, X } from "lucide-react";
+import { toast } from 'react-hot-toast';
+
+// Simple modal component
+const Modal = ({ open, onClose, children }) => {
+  if (!open) return null;
+  return (
+    <div className="fixed inset-0 z-[1000] flex items-center justify-center">
+      <div className="absolute inset-0 bg-black/40" onClick={onClose}></div>
+      <div className="relative bg-white w-full max-w-3xl rounded-xl shadow-xl border border-gray-200 overflow-hidden">
+        {children}
+      </div>
+    </div>
+  );
+};
+
+const stageLabels = [
+  { key: "exitInterview", label: "Exit Interview" },
+  { key: "assetReturn", label: "Asset Return" },
+  { key: "documentation", label: "Documentation" },
+  { key: "finalSettlement", label: "Final Settlement" },
+  { key: "success", label: "Completed" },
+];
+
+const StageProgress = ({ stages, currentIndex, status }) => {
+  return (
+    <div className="flex items-center space-x-1">
+      {stages.map((s, idx) => {
+        const done = status === "completed" || idx < currentIndex;
+        const current = idx === currentIndex && status !== "completed";
+        const isLast = idx === stages.length - 1;
+        return (
+          <div key={s} className="flex items-center">
+            <div className="flex flex-col items-center">
+              <div className={`flex items-center justify-center w-8 h-8 rounded-full transition-all duration-300 ${
+                done ? "bg-green-500 text-white" : current ? "bg-blue-500 text-white animate-pulse" : "bg-gray-200 text-gray-400"
+              }`}>
+                {done ? <CheckCircle size={18} /> : current ? <Clock size={18} /> : <Circle size={18} />}
+              </div>
+              <div className={`mt-1 text-xs font-medium text-center ${
+                done ? "text-green-700" : current ? "text-blue-700" : "text-gray-400"
+              }`}>
+                {stageLabels.find((x) => x.key === s)?.label || s}
+              </div>
+            </div>
+            {!isLast && (
+              <div className={`mx-3 h-0.5 w-16 transition-all duration-300 ${
+                done ? "bg-green-500" : "bg-gray-200"
+              }`}></div>
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
+const Offboarding = () => {
+  const [list, setList] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [filterStatus, setFilterStatus] = useState("all");
+
+  // Wizard modal states
+  const [wizardMode, setWizardMode] = useState(null); // 'view', 'manage', 'completed', 'stage-details'
+  const [activeItem, setActiveItem] = useState(null);
+  const [currentStep, setCurrentStep] = useState(0);
+  const [selectedStage, setSelectedStage] = useState(null);
+  const [form, setForm] = useState({});
+
+  const fetchList = async () => {
+    setLoading(true);
+    setError("");
+    try {
+      const res = await api.get(`/api/hr/offboarding`);
+      setList(res?.data?.data || []);
+    } catch (e) {
+      setError(e?.response?.data?.message || e.message || "Failed to load offboarding list");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => { fetchList(); }, []);
+
+  const advance = async (id) => {
+    try {
+      await api.post(`/api/hr/offboarding/${id}/advance`);
+      fetchList();
+    } catch (e) {
+      alert(e?.response?.data?.message || "Failed to advance");
+    }
+  };
+
+  const setLastWorking = async (id) => {
+    const val = prompt("Enter last working date (YYYY-MM-DD)");
+    if (!val) return;
+    try {
+      await api.post(`/api/hr/offboarding/${id}/last-working`, { lastWorkingDate: val });
+      fetchList();
+    } catch (e) {
+      alert(e?.response?.data?.message || "Failed to set last working date");
+    }
+  };
+
+  const inviteStage = async (id, stage) => {
+    try {
+      const type = prompt("Invite type: online/offline", "online");
+      if (!type) return;
+      let payload = { stage, type };
+      if (type === 'online') {
+        const meetingLink = prompt("Enter meeting link (URL)", "");
+        const scheduledAt = prompt("Start datetime (YYYY-MM-DD HH:mm)", "");
+        const endsAt = prompt("End datetime (YYYY-MM-DD HH:mm)", "");
+        payload.meetingLink = meetingLink || undefined;
+        payload.scheduledAt = scheduledAt ? new Date(scheduledAt) : undefined;
+        payload.endsAt = endsAt ? new Date(endsAt) : undefined;
+      } else {
+        const location = prompt("Enter location", "");
+        const scheduledAt = prompt("Schedule datetime (YYYY-MM-DD HH:mm)", "");
+        payload.location = location || undefined;
+        payload.scheduledAt = scheduledAt ? new Date(scheduledAt) : undefined;
