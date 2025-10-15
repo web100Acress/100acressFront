@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import HrSidebar from "./HrSidebar";
 import api from "../config/apiClient";
-import { CheckCircle, Circle, Clock, Calendar, User, Mail, ChevronRight } from "lucide-react";
+import { CheckCircle, Circle, Clock, Calendar, User, Mail, ChevronRight, FileText } from "lucide-react";
 import { toast } from 'react-hot-toast';
 
 // Simple modal component
@@ -194,6 +194,11 @@ const Onboarding = () => {
   const [wizardOpen, setWizardOpen] = useState(false);
   const [activeItem, setActiveItem] = useState(null);
   const [currentStep, setCurrentStep] = useState(0);
+  const [wizardMode, setWizardMode] = useState('view'); // 'view' or 'manage'
+
+  // Documents modal state
+  const [documentsOpen, setDocumentsOpen] = useState(false);
+  const [documentsItem, setDocumentsItem] = useState(null);
   const [form, setForm] = useState({
     stage: 'interview1',
     mode: 'online',
@@ -216,15 +221,25 @@ const Onboarding = () => {
     resetReason: '',
   });
 
-  const openWizard = (it) => {
+  const openWizard = (it, mode = 'view') => {
     setActiveItem(it);
-    const current = it.stages[it.currentStageIndex];
-    const stage = current === 'success' ? 'documentation' : current;
-    const stepIndex = it.stages.indexOf(stage);
+    setWizardMode(mode);
+
+    let stepIndex = 0;
+    if (mode === 'view') {
+      // For view mode, show current stage
+      const current = it.stages[it.currentStageIndex];
+      const stage = current === 'success' ? 'documentation' : current;
+      stepIndex = it.stages.indexOf(stage);
+    } else {
+      // For manage mode, start from beginning
+      stepIndex = 0;
+    }
+
     setCurrentStep(stepIndex);
     setForm((f) => ({
       ...f,
-      stage,
+      stage: it.stages[stepIndex],
       mode: 'online',
       meetingLink: '',
       location: '',
@@ -239,7 +254,14 @@ const Onboarding = () => {
     }));
     setWizardOpen(true);
   };
-  const closeWizard = () => { setWizardOpen(false); setActiveItem(null); setCurrentStep(0); };
+
+  const openDocumentsModal = (it) => {
+    setDocumentsItem(it);
+    setDocumentsOpen(true);
+  };
+
+  const closeWizard = () => { setWizardOpen(false); setActiveItem(null); setCurrentStep(0); setWizardMode('view'); };
+  const closeDocumentsModal = () => { setDocumentsOpen(false); setDocumentsItem(null); };
 
   const submitInviteFromWizard = async () => {
     try {
@@ -335,6 +357,47 @@ const Onboarding = () => {
   const renderStageForm = () => {
     if (!activeItem) return null;
     const stage = activeItem.stages[currentStep];
+
+    // For view mode, show all completed stages up to current stage
+    if (wizardMode === 'view') {
+      return (
+        <div className="space-y-6">
+          <div className="text-center">
+            <h4 className="text-xl font-semibold text-gray-900 mb-2">Current Stage: {stageLabels.find((x) => x.key === stage)?.label || stage}</h4>
+            <p className="text-gray-600">Viewing onboarding progress for {activeItem.candidateName}</p>
+          </div>
+
+          {/* Show all stages up to current */}
+          <div className="space-y-4">
+            {activeItem.stages.slice(0, currentStep + 1).map((stageItem, index) => {
+              const isCompleted = index < currentStep || (index === currentStep && activeItem.status === 'completed');
+              const isCurrent = index === currentStep && activeItem.status !== 'completed';
+
+              return (
+                <div key={stageItem} className={`border rounded-lg p-4 ${isCurrent ? 'border-blue-500 bg-blue-50' : isCompleted ? 'border-green-500 bg-green-50' : 'border-gray-200 bg-gray-50'}`}>
+                  <div className="flex items-center space-x-3 mb-2">
+                    {isCompleted ? (
+                      <CheckCircle className="text-green-500" size={20} />
+                    ) : isCurrent ? (
+                      <Clock className="text-blue-500" size={20} />
+                    ) : (
+                      <Circle className="text-gray-400" size={20} />
+                    )}
+                    <span className={`font-medium ${isCurrent ? 'text-blue-900' : isCompleted ? 'text-green-900' : 'text-gray-700'}`}>
+                      {stageLabels.find((x) => x.key === stageItem)?.label || stageItem}
+                    </span>
+                  </div>
+                  {stageItem === 'success' && activeItem.joiningDate && (
+                    <p className="text-sm text-gray-600 ml-8">Joining Date: {new Date(activeItem.joiningDate).toLocaleDateString()}</p>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      );
+    }
+
     if (stage === 'interview1') {
       return (
         <div className="space-y-4">
@@ -604,10 +667,15 @@ const Onboarding = () => {
                         </div>
                       </div>
 
-                      {/* View Details Button */}
-                      <button onClick={() => openWizard(it)} className="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors font-medium">
-                        View Details
-                      </button>
+                      {/* Action Buttons */}
+                      <div className="flex items-center space-x-3">
+                        <button onClick={() => openWizard(it, 'view')} className="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors font-medium">
+                          View Details
+                        </button>
+                        <button onClick={() => openDocumentsModal(it)} className="px-4 py-2 rounded-lg bg-gray-600 text-white hover:bg-gray-700 transition-colors font-medium">
+                          View Documents
+                        </button>
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -646,39 +714,102 @@ const Onboarding = () => {
         <div className="px-6 py-4 bg-gray-50 border-t flex items-center justify-between">
           <button
             onClick={() => setCurrentStep(Math.max(0, currentStep - 1))}
-            disabled={currentStep === 0}
+            disabled={currentStep === 0 || wizardMode === 'view'}
             className="px-4 py-2 rounded-md bg-white border border-gray-200 text-gray-700 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Back
           </button>
           <div className="space-x-2">
-            {activeItem && activeItem.status !== 'completed' && activeItem.stages && activeItem.stages[currentStep] !== 'success' && (
+            {wizardMode === 'view' ? (
               <>
-                {(activeItem.stages[currentStep] === 'interview1' || activeItem.stages[currentStep] === 'hrDiscussion') ? (
-                  <button onClick={submitInviteFromWizard} className="px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700">Send Invite</button>
-                ) : null}
-                {activeItem.stages[currentStep] === 'documentation' ? (
-                  <button onClick={submitDocsFromWizard} className="px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700">Submit Documents</button>
-                ) : null}
-                <button onClick={submitCompleteFromWizard} className="px-4 py-2 rounded-md bg-green-600 text-white hover:bg-green-700">Mark Done</button>
-                <button onClick={submitRejectFromWizard} className="px-4 py-2 rounded-md bg-red-600 text-white hover:bg-red-700">Reject</button>
-                <button onClick={submitResetFromWizard} className="px-4 py-2 rounded-md bg-amber-600 text-white hover:bg-amber-700">Reset to Stage</button>
+                {activeItem && activeItem.status !== 'completed' && (
+                  <button onClick={() => openWizard(activeItem, 'manage')} className="px-4 py-2 rounded-md bg-purple-600 text-white hover:bg-purple-700">
+                    Proceed to Manage
+                  </button>
+                )}
+                <button onClick={closeWizard} className="px-4 py-2 rounded-md bg-gray-600 text-white hover:bg-gray-700">
+                  Close
+                </button>
+              </>
+            ) : (
+              <>
+                {activeItem && activeItem.status !== 'completed' && activeItem.stages && activeItem.stages[currentStep] !== 'success' && (
+                  <>
+                    {(activeItem.stages[currentStep] === 'interview1' || activeItem.stages[currentStep] === 'hrDiscussion') ? (
+                      <button onClick={submitInviteFromWizard} className="px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700">Send Invite</button>
+                    ) : null}
+                    {activeItem.stages[currentStep] === 'documentation' ? (
+                      <button onClick={submitDocsFromWizard} className="px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700">Submit Documents</button>
+                    ) : null}
+                    <button onClick={submitCompleteFromWizard} className="px-4 py-2 rounded-md bg-green-600 text-white hover:bg-green-700">Mark Done</button>
+                    <button onClick={submitRejectFromWizard} className="px-4 py-2 rounded-md bg-red-600 text-white hover:bg-red-700">Reject</button>
+                    <button onClick={submitResetFromWizard} className="px-4 py-2 rounded-md bg-amber-600 text-white hover:bg-amber-700">Reset to Stage</button>
+                  </>
+                )}
+                {activeItem && activeItem.status === 'completed' && activeItem.stages && currentStep === activeItem.stages.length - 1 ? (
+                  <button onClick={closeWizard} className="px-4 py-2 rounded-md bg-green-600 text-white hover:bg-green-700">Complete Onboarding</button>
+                ) : (
+                  activeItem && activeItem.stages && (
+                    <button
+                      onClick={() => setCurrentStep(Math.min(activeItem.stages.length - 1, currentStep + 1))}
+                      disabled={currentStep === activeItem.stages.length - 1}
+                      className="px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      Next
+                    </button>
+                  )
+                )}
               </>
             )}
-            {activeItem && activeItem.status === 'completed' && activeItem.stages && currentStep === activeItem.stages.length - 1 ? (
-              <button onClick={closeWizard} className="px-4 py-2 rounded-md bg-green-600 text-white hover:bg-green-700">Complete Onboarding</button>
-            ) : (
-              activeItem && activeItem.stages && (
-                <button
-                  onClick={() => setCurrentStep(Math.min(activeItem.stages.length - 1, currentStep + 1))}
-                  disabled={currentStep === activeItem.stages.length - 1}
-                  className="px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  Next
-                </button>
-              )
-            )}
           </div>
+        </div>
+      </Modal>
+
+      {/* Documents Modal */}
+      <Modal open={documentsOpen} onClose={closeDocumentsModal}>
+        <div className="px-6 py-5 border-b bg-gray-50">
+          <h3 className="text-lg font-semibold text-gray-900">{documentsItem?.candidateName} - Documents</h3>
+        </div>
+        <div className="p-6 max-h-[70vh] overflow-auto">
+          {documentsItem ? (
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {documentsItem.documents && documentsItem.documents.length > 0 ? (
+                  documentsItem.documents.map((doc, index) => (
+                    <div key={index} className="border rounded-lg p-4 bg-gray-50">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="font-medium text-gray-900 capitalize">{doc.docType}</span>
+                        <a
+                          href={doc.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                        >
+                          View Document
+                        </a>
+                      </div>
+                      <p className="text-sm text-gray-600 truncate">{doc.url}</p>
+                    </div>
+                  ))
+                ) : (
+                  <div className="col-span-full text-center py-8">
+                    <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <FileText className="text-gray-400" size={32} />
+                    </div>
+                    <p className="text-gray-500 text-lg font-medium">No documents uploaded yet</p>
+                    <p className="text-gray-400 text-sm mt-1">Documents will appear here once uploaded by the candidate</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          ) : (
+            <div className="text-center py-8">Loading...</div>
+          )}
+        </div>
+        <div className="px-6 py-4 bg-gray-50 border-t flex justify-end">
+          <button onClick={closeDocumentsModal} className="px-4 py-2 rounded-md bg-gray-600 text-white hover:bg-gray-700">
+            Close
+          </button>
         </div>
       </Modal>
     </div>
