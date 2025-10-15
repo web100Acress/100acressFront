@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+  import React, { useEffect, useState } from "react";
 import HrSidebar from "./HrSidebar";
 import api from "../config/apiClient";
-import { CheckCircle, Circle, Clock, Calendar, User, Mail, ChevronRight, FileText } from "lucide-react";
+import { CheckCircle, Circle, Clock, Calendar, User, Mail, ChevronRight, FileText, X } from "lucide-react";
 import { toast } from 'react-hot-toast';
 
 // Simple modal component
@@ -194,7 +194,8 @@ const Onboarding = () => {
   const [wizardOpen, setWizardOpen] = useState(false);
   const [activeItem, setActiveItem] = useState(null);
   const [currentStep, setCurrentStep] = useState(0);
-  const [wizardMode, setWizardMode] = useState('view'); // 'view' or 'manage'
+  const [wizardMode, setWizardMode] = useState('view'); // 'view', 'manage', 'completed', or 'stage-details'
+  const [selectedStage, setSelectedStage] = useState(null);
 
   // Documents modal state
   const [documentsOpen, setDocumentsOpen] = useState(false);
@@ -232,14 +233,19 @@ const Onboarding = () => {
       const stage = current === 'success' ? 'documentation' : current;
       stepIndex = it.stages.indexOf(stage);
     } else {
-      // For manage mode, start from beginning
-      stepIndex = 0;
+      // For manage mode, start from current stage or next pending stage
+      stepIndex = it.currentStageIndex;
+      if (it.status === 'completed') {
+        stepIndex = it.stages.length - 1; // Show success stage
+      }
     }
 
     setCurrentStep(stepIndex);
-    setForm((f) => ({
-      ...f,
-      stage: it.stages[stepIndex],
+
+    // Pre-populate form with existing data if available
+    const currentStage = it.stages[stepIndex];
+    let formData = {
+      stage: currentStage,
       mode: 'online',
       meetingLink: '',
       location: '',
@@ -248,10 +254,40 @@ const Onboarding = () => {
       message: '',
       tasksRaw: '',
       panUrl: '', aadhaarUrl: '', photoUrl: '', marksheetUrl: '', other1: '', other2: '',
-      joiningDate: '', rejectReason: '',
+      joiningDate: it.joiningDate || '',
+      rejectReason: '',
       resetStage: 'interview1',
       resetReason: ''
-    }));
+    };
+
+    // Load existing data from the item if available
+    if (it.invites && it.invites.length > 0) {
+      // Find the most recent invite for the current stage
+      const stageInvite = it.invites.find(invite => invite.stage === currentStage);
+      if (stageInvite) {
+        formData.mode = stageInvite.type || 'online';
+        formData.meetingLink = stageInvite.meetingLink || '';
+        formData.location = stageInvite.location || '';
+        formData.start = stageInvite.scheduledAt ? new Date(stageInvite.scheduledAt).toISOString().slice(0, 16) : '';
+        formData.end = stageInvite.endsAt ? new Date(stageInvite.endsAt).toISOString().slice(0, 16) : '';
+        formData.message = stageInvite.content || '';
+        formData.tasksRaw = stageInvite.tasks ? stageInvite.tasks.map(t => t.title).join('\n') : '';
+      }
+    }
+
+    // Load document data if available
+    if (it.documents && it.documents.length > 0) {
+      it.documents.forEach(doc => {
+        if (doc.docType === 'pan') formData.panUrl = doc.url;
+        if (doc.docType === 'aadhaar') formData.aadhaarUrl = doc.url;
+        if (doc.docType === 'photo') formData.photoUrl = doc.url;
+        if (doc.docType === 'marksheet') formData.marksheetUrl = doc.url;
+        if (doc.docType === 'other' && !formData.other1) formData.other1 = doc.url;
+        if (doc.docType === 'other' && formData.other1) formData.other2 = doc.url;
+      });
+    }
+
+    setForm(formData);
     setWizardOpen(true);
   };
 
@@ -260,7 +296,20 @@ const Onboarding = () => {
     setDocumentsOpen(true);
   };
 
-  const closeWizard = () => { setWizardOpen(false); setActiveItem(null); setCurrentStep(0); setWizardMode('view'); };
+  const closeWizard = () => { setWizardOpen(false); setActiveItem(null); setCurrentStep(0); setWizardMode('view'); setSelectedStage(null); };
+
+  const openCompletedSteps = (it) => {
+    setActiveItem(it);
+    setWizardMode('completed');
+    setWizardOpen(true);
+  };
+
+  const openStageDetails = (it, stage) => {
+    setActiveItem(it);
+    setSelectedStage(stage);
+    setWizardMode('stage-details');
+    setWizardOpen(true);
+  };
   const closeDocumentsModal = () => { setDocumentsOpen(false); setDocumentsItem(null); };
 
   const submitInviteFromWizard = async () => {
@@ -398,48 +447,301 @@ const Onboarding = () => {
       );
     }
 
+    // For completed mode, show only completed steps
+    if (wizardMode === 'completed') {
+      const completedStages = activeItem.stages.slice(0, activeItem.currentStageIndex);
+
+      return (
+        <div className="space-y-6">
+          <div className="text-center">
+            <h4 className="text-xl font-semibold text-gray-900 mb-2">Completed Steps</h4>
+            <p className="text-gray-600">All completed stages for {activeItem.candidateName}</p>
+          </div>
+
+          {/* Show only completed stages */}
+          <div className="space-y-4">
+            {completedStages.map((stageItem, index) => (
+              <div key={stageItem} className="border rounded-lg p-4 border-green-500 bg-green-50">
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center space-x-3">
+                    <CheckCircle className="text-green-500" size={20} />
+                    <span className="font-medium text-green-900">
+                      {stageLabels.find((x) => x.key === stageItem)?.label || stageItem}
+                    </span>
+                  </div>
+                  <button
+                    onClick={() => openStageDetails(activeItem, stageItem)}
+                    className="px-3 py-1 bg-green-600 text-white text-sm rounded-md hover:bg-green-700 transition-colors"
+                  >
+                    View Details
+                  </button>
+                </div>
+                {stageItem === 'success' && activeItem.joiningDate && (
+                  <p className="text-sm text-gray-600 ml-8">Joining Date: {new Date(activeItem.joiningDate).toLocaleDateString()}</p>
+                )}
+              </div>
+            ))}
+
+            {completedStages.length === 0 && (
+              <div className="text-center py-8">
+                <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Circle className="text-gray-400" size={32} />
+                </div>
+                <p className="text-gray-500 text-lg font-medium">No completed steps yet</p>
+                <p className="text-gray-400 text-sm mt-1">Steps will appear here as they are completed</p>
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    // For stage-details mode, show detailed information about a specific completed stage
+    if (wizardMode === 'stage-details') {
+      const stage = selectedStage;
+      // Show all invites and documents for now, as stage filtering might not be working properly
+      const stageInvites = activeItem.invites || [];
+      const stageDocuments = activeItem.documents || [];
+
+      return (
+        <div className="space-y-6">
+          <div className="text-center">
+            <h4 className="text-xl font-semibold text-gray-900 mb-2">
+              {stageLabels.find((x) => x.key === stage)?.label || stage} Details
+            </h4>
+            <p className="text-gray-600">Complete details for {activeItem.candidateName}</p>
+          </div>
+
+          {/* Invites Section */}
+          {stageInvites.length > 0 && (
+            <div className="space-y-4">
+              <h5 className="text-lg font-medium text-gray-800">Invites Sent</h5>
+              {stageInvites.map((invite, index) => (
+                <div key={index} className="border rounded-lg p-4 bg-blue-50 border-blue-200">
+                  <div className="flex items-center space-x-3 mb-3">
+                    <Mail className="text-blue-600" size={20} />
+                    <span className="font-medium text-blue-900">Invite #{index + 1}</span>
+                    <span className="text-sm text-blue-700 bg-blue-100 px-2 py-1 rounded">
+                      {invite.type === 'online' ? 'Online' : 'Offline'}
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                    {invite.type === 'online' && invite.meetingLink && (
+                      <div>
+                        <span className="font-medium text-gray-700">Meeting Link:</span>
+                        <a
+                          href={invite.meetingLink}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-600 hover:text-blue-800 ml-2 underline"
+                        >
+                          {invite.meetingLink}
+                        </a>
+                      </div>
+                    )}
+                    {invite.type === 'offline' && invite.location && (
+                      <div>
+                        <span className="font-medium text-gray-700">Location:</span>
+                        <span className="text-gray-900 ml-2">{invite.location}</span>
+                      </div>
+                    )}
+                    {invite.scheduledAt && (
+                      <div>
+                        <span className="font-medium text-gray-700">Start Time:</span>
+                        <span className="text-gray-900 ml-2">
+                          {new Date(invite.scheduledAt).toLocaleString()}
+                        </span>
+                      </div>
+                    )}
+                    {invite.endsAt && (
+                      <div>
+                        <span className="font-medium text-gray-700">End Time:</span>
+                        <span className="text-gray-900 ml-2">
+                          {new Date(invite.endsAt).toLocaleString()}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+
+                  {invite.tasks && invite.tasks.length > 0 && (
+                    <div className="mt-3">
+                      <span className="font-medium text-gray-700">Preparation Tasks:</span>
+                      <ul className="list-disc list-inside mt-1 text-gray-900">
+                        {invite.tasks.map((task, taskIndex) => (
+                          <li key={taskIndex} className="text-sm">{task.title}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {invite.content && (
+                    <div className="mt-3">
+                      <span className="font-medium text-gray-700">Message:</span>
+                      <p className="text-gray-900 mt-1 text-sm bg-white p-2 rounded border">
+                        {invite.content}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Documents Section */}
+          {stageDocuments.length > 0 && (
+            <div className="space-y-4">
+              <h5 className="text-lg font-medium text-gray-800">Documents Submitted</h5>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {stageDocuments.map((doc, index) => (
+                  <div key={index} className="border rounded-lg p-4 bg-green-50 border-green-200">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="font-medium text-green-900 capitalize">{doc.docType}</span>
+                      <a
+                        href={doc.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-green-600 hover:text-green-800 text-sm font-medium underline"
+                      >
+                        View Document
+                      </a>
+                    </div>
+                    <p className="text-sm text-green-700 truncate">{doc.url}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* No Data Message */}
+          {stageInvites.length === 0 && stageDocuments.length === 0 && (
+            <div className="text-center py-8">
+              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <FileText className="text-gray-400" size={32} />
+              </div>
+              <p className="text-gray-500 text-lg font-medium">No details available</p>
+              <p className="text-gray-400 text-sm mt-1">No invites or documents found for this stage</p>
+            </div>
+          )}
+        </div>
+      );
+    }
+
     if (stage === 'interview1') {
+      const isCompleted = activeItem.currentStageIndex > activeItem.stages.indexOf('interview1');
+      const isCurrent = activeItem.currentStageIndex === activeItem.stages.indexOf('interview1') && activeItem.status !== 'completed';
+
       return (
         <div className="space-y-4">
-          <h4 className="text-lg font-semibold text-gray-900 mb-4">Interview 1 Setup</h4>
+          <div className="flex items-center justify-between">
+            <h4 className="text-lg font-semibold text-gray-900">Interview 1 Setup</h4>
+            {isCompleted && (
+              <span className="px-3 py-1 bg-green-100 text-green-800 text-sm font-medium rounded-full">
+                ✓ Completed
+              </span>
+            )}
+            {isCurrent && (
+              <span className="px-3 py-1 bg-blue-100 text-blue-800 text-sm font-medium rounded-full">
+                In Progress
+              </span>
+            )}
+          </div>
+
           <div className="flex items-center space-x-3">
             <label className="font-medium text-sm text-gray-700">Interview Mode</label>
-            <select value={form.mode} onChange={(e)=>setForm({...form, mode:e.target.value})} className="border rounded-md px-3 py-2 text-sm">
+            <select
+              value={form.mode}
+              onChange={(e)=>setForm({...form, mode:e.target.value})}
+              className="border rounded-md px-3 py-2 text-sm"
+              disabled={isCompleted}
+            >
               <option value="online">Online Interview</option>
               <option value="offline">Offline Interview</option>
             </select>
           </div>
+
           {form.mode === 'online' ? (
             <div className="space-y-3">
               <div>
                 <label className="block text-sm text-gray-700 mb-1">Interview Link</label>
-                <input value={form.meetingLink} onChange={(e)=>setForm({...form, meetingLink:e.target.value})} className="w-full border rounded-md px-3 py-2 text-sm" placeholder="https://meet.google.com/..." />
+                <input
+                  value={form.meetingLink}
+                  onChange={(e)=>setForm({...form, meetingLink:e.target.value})}
+                  className="w-full border rounded-md px-3 py-2 text-sm"
+                  placeholder="https://meet.google.com/..."
+                  disabled={isCompleted}
+                />
               </div>
             </div>
           ) : (
             <div>
               <label className="block text-sm text-gray-700 mb-1">Interview Location</label>
-              <input value={form.location} onChange={(e)=>setForm({...form, location:e.target.value})} className="w-full border rounded-md px-3 py-2 text-sm" placeholder="Conference Room A, Office Building" />
+              <input
+                value={form.location}
+                onChange={(e)=>setForm({...form, location:e.target.value})}
+                className="w-full border rounded-md px-3 py-2 text-sm"
+                placeholder="Conference Room A, Office Building"
+                disabled={isCompleted}
+              />
             </div>
           )}
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <div>
               <label className="block text-sm text-gray-700 mb-1">Interview Start Time</label>
-              <input value={form.start} onChange={(e)=>setForm({...form, start:e.target.value})} className="w-full border rounded-md px-3 py-2 text-sm" placeholder="2025-10-15 10:30" />
+              <input
+                value={form.start}
+                onChange={(e)=>setForm({...form, start:e.target.value})}
+                className="w-full border rounded-md px-3 py-2 text-sm"
+                placeholder="2025-10-15 10:30"
+                disabled={isCompleted}
+              />
             </div>
             <div>
               <label className="block text-sm text-gray-700 mb-1">Interview End Time (optional)</label>
-              <input value={form.end} onChange={(e)=>setForm({...form, end:e.target.value})} className="w-full border rounded-md px-3 py-2 text-sm" placeholder="2025-10-15 11:30" />
+              <input
+                value={form.end}
+                onChange={(e)=>setForm({...form, end:e.target.value})}
+                className="w-full border rounded-md px-3 py-2 text-sm"
+                placeholder="2025-10-15 11:30"
+                disabled={isCompleted}
+              />
             </div>
           </div>
+
           <div>
             <label className="block text-sm text-gray-700 mb-1">Interview Preparation Tasks</label>
-            <textarea value={form.tasksRaw} onChange={(e)=>setForm({...form, tasksRaw:e.target.value})} className="w-full border rounded-md px-3 py-2 text-sm" rows={4} placeholder="Review resume\nPrepare technical questions\nSet up coding environment" />
+            <textarea
+              value={form.tasksRaw}
+              onChange={(e)=>setForm({...form, tasksRaw:e.target.value})}
+              className="w-full border rounded-md px-3 py-2 text-sm"
+              rows={4}
+              placeholder="Review resume\nPrepare technical questions\nSet up coding environment"
+              disabled={isCompleted}
+            />
           </div>
+
           <div>
             <label className="block text-sm text-gray-700 mb-1">Interview Instructions</label>
-            <textarea value={form.message} onChange={(e)=>setForm({...form, message:e.target.value})} className="w-full border rounded-md px-3 py-2 text-sm" rows={3} placeholder="Please come prepared with your resume and portfolio. The interview will cover technical skills and problem-solving." />
+            <textarea
+              value={form.message}
+              onChange={(e)=>setForm({...form, message:e.target.value})}
+              className="w-full border rounded-md px-3 py-2 text-sm"
+              rows={3}
+              placeholder="Please come prepared with your resume and portfolio. The interview will cover technical skills and problem-solving."
+              disabled={isCompleted}
+            />
           </div>
+
+          {isCompleted && (
+            <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+              <div className="flex items-center space-x-2">
+                <CheckCircle className="text-green-600" size={20} />
+                <span className="text-green-800 font-medium">Interview 1 has been completed</span>
+              </div>
+              <p className="text-green-700 text-sm mt-1">Ready to proceed to HR Discussion</p>
+            </div>
+          )}
         </div>
       );
     }
@@ -700,11 +1002,25 @@ const Onboarding = () => {
 
       {/* Wizard Modal */}
       <Modal open={wizardOpen} onClose={closeWizard}>
-        <div className="px-6 py-5 border-b bg-gray-50">
-          <h3 className="text-lg font-semibold text-gray-900">{activeItem?.candidateName}</h3>
+        <div className="px-6 py-5 border-b bg-gray-50 relative">
+          <button
+            onClick={closeWizard}
+            className="absolute top-4 right-4 p-1 rounded-full hover:bg-gray-200 transition-colors"
+            title="Close"
+          >
+            <X size={20} className="text-gray-500" />
+          </button>
+          <h3 className="text-lg font-semibold text-gray-900 pr-8">{activeItem?.candidateName}</h3>
           <div className="mt-3">
-            {activeItem && (
+            {activeItem && wizardMode === 'manage' && (
               <StageProgress stages={activeItem.stages} currentIndex={currentStep} status={activeItem.status} />
+            )}
+            {activeItem && wizardMode === 'stage-details' && (
+              <div className="flex items-center justify-center">
+                <span className="px-3 py-1 bg-green-100 text-green-800 text-sm font-medium rounded-full">
+                  ✓ {stageLabels.find((x) => x.key === selectedStage)?.label || selectedStage} Completed
+                </span>
+              </div>
             )}
           </div>
         </div>
@@ -722,6 +1038,9 @@ const Onboarding = () => {
           <div className="space-x-2">
             {wizardMode === 'view' ? (
               <>
+                <button onClick={() => openCompletedSteps(activeItem)} className="px-4 py-2 rounded-md bg-green-600 text-white hover:bg-green-700">
+                  Completed Steps
+                </button>
                 {activeItem && activeItem.status !== 'completed' && (
                   <button onClick={() => openWizard(activeItem, 'manage')} className="px-4 py-2 rounded-md bg-purple-600 text-white hover:bg-purple-700">
                     Proceed to Manage
@@ -731,6 +1050,14 @@ const Onboarding = () => {
                   Close
                 </button>
               </>
+            ) : wizardMode === 'completed' ? (
+              <button onClick={closeWizard} className="px-4 py-2 rounded-md bg-gray-600 text-white hover:bg-gray-700">
+                Close
+              </button>
+            ) : wizardMode === 'stage-details' ? (
+              <button onClick={closeWizard} className="px-4 py-2 rounded-md bg-gray-600 text-white hover:bg-gray-700">
+                Close
+              </button>
             ) : (
               <>
                 {activeItem && activeItem.status !== 'completed' && activeItem.stages && activeItem.stages[currentStep] !== 'success' && (
@@ -767,8 +1094,15 @@ const Onboarding = () => {
 
       {/* Documents Modal */}
       <Modal open={documentsOpen} onClose={closeDocumentsModal}>
-        <div className="px-6 py-5 border-b bg-gray-50">
-          <h3 className="text-lg font-semibold text-gray-900">{documentsItem?.candidateName} - Documents</h3>
+        <div className="px-6 py-5 border-b bg-gray-50 relative">
+          <button
+            onClick={closeDocumentsModal}
+            className="absolute top-4 right-4 p-1 rounded-full hover:bg-gray-200 transition-colors"
+            title="Close"
+          >
+            <X size={20} className="text-gray-500" />
+          </button>
+          <h3 className="text-lg font-semibold text-gray-900 pr-8">{documentsItem?.candidateName} - Documents</h3>
         </div>
         <div className="p-6 max-h-[70vh] overflow-auto">
           {documentsItem ? (
