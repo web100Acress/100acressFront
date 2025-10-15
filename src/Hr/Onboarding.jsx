@@ -138,7 +138,13 @@ const Onboarding = () => {
 
   const sendDocsInvite = async (id) => {
     try {
-      const uploadLink = prompt("Document upload link (URL)", "");
+      // Generate the upload link automatically
+      const res = await api.post(`/api/hr-onboarding/internal/generate-link/${id}`, { expiresInHours: 48 });
+      const uploadLink = res?.data?.link;
+      if (!uploadLink) {
+        alert('Failed to generate upload link');
+        return;
+      }
       const content = prompt("Message to candidate (optional)", "Please upload your documents for verification.");
       await api.post(`/api/hr/onboarding/${id}/docs-invite`, { uploadLink, content });
       alert('Documentation invite sent');
@@ -210,12 +216,12 @@ const Onboarding = () => {
     message: '',
     tasksRaw: '',
     // docs
-    panUrl: '',
-    aadhaarUrl: '',
-    photoUrl: '',
-    marksheetUrl: '',
-    other1: '',
-    other2: '',
+    panFile: null,
+    aadhaarFile: null,
+    photoFile: null,
+    marksheetFile: null,
+    otherFile1: null,
+    otherFile2: null,
     joiningDate: '',
     rejectReason: '',
     resetStage: 'interview1',
@@ -260,22 +266,19 @@ const Onboarding = () => {
       resetReason: ''
     };
 
-    // Load existing data from the item if available
-    if (it.invites && it.invites.length > 0) {
-      // Find the most recent invite for the current stage
-      const stageInvite = it.invites.find(invite => invite.stage === currentStage);
-      if (stageInvite) {
-        formData.mode = stageInvite.type || 'online';
-        formData.meetingLink = stageInvite.meetingLink || '';
-        formData.location = stageInvite.location || '';
-        formData.start = stageInvite.scheduledAt ? new Date(stageInvite.scheduledAt).toISOString().slice(0, 16) : '';
-        formData.end = stageInvite.endsAt ? new Date(stageInvite.endsAt).toISOString().slice(0, 16) : '';
-        formData.message = stageInvite.content || '';
-        formData.tasksRaw = stageInvite.tasks ? stageInvite.tasks.map(t => t.title).join('\n') : '';
-      }
+    // Load existing data from the item if available (stageData.invite)
+    if (it.stageData && it.stageData[currentStage] && it.stageData[currentStage].invite) {
+      const stageInvite = it.stageData[currentStage].invite;
+      formData.mode = stageInvite.type || 'online';
+      formData.meetingLink = stageInvite.meetingLink || '';
+      formData.location = stageInvite.location || '';
+      formData.start = stageInvite.scheduledAt ? new Date(stageInvite.scheduledAt).toISOString().slice(0, 16) : '';
+      formData.end = stageInvite.endsAt ? new Date(stageInvite.endsAt).toISOString().slice(0, 16) : '';
+      formData.message = stageInvite.content || '';
+      formData.tasksRaw = stageInvite.tasks ? stageInvite.tasks.map(t => t.title).join('\n') : '';
     }
 
-    // Load document data if available
+    // Load document data if available (for viewing existing documents)
     if (it.documents && it.documents.length > 0) {
       it.documents.forEach(doc => {
         if (doc.docType === 'pan') formData.panUrl = doc.url;
@@ -362,17 +365,32 @@ const Onboarding = () => {
   const submitDocsFromWizard = async () => {
     try {
       if (!activeItem) return;
-      const docs = [];
-      if (form.panUrl) docs.push({ docType: 'pan', url: form.panUrl });
-      if (form.aadhaarUrl) docs.push({ docType: 'aadhaar', url: form.aadhaarUrl });
-      if (form.photoUrl) docs.push({ docType: 'photo', url: form.photoUrl });
-      if (form.marksheetUrl) docs.push({ docType: 'marksheet', url: form.marksheetUrl });
-      if (form.other1) docs.push({ docType: 'other', url: form.other1 });
-      if (form.other2) docs.push({ docType: 'other', url: form.other2 });
-      await api.post(`/api/hr/onboarding/${activeItem._id}/docs-submit`, { documents: docs });
+
+      // Create FormData for file uploads
+      const formData = new FormData();
+
+      // Add files to FormData
+      if (form.panFile) formData.append('pan', form.panFile);
+      if (form.aadhaarFile) formData.append('aadhaar', form.aadhaarFile);
+      if (form.photoFile) formData.append('photo', form.photoFile);
+      if (form.marksheetFile) formData.append('marksheet', form.marksheetFile);
+      if (form.otherFile1) formData.append('other1', form.otherFile1);
+      if (form.otherFile2) formData.append('other2', form.otherFile2);
+
+      // Add joining date if provided
+      if (form.joiningDate) formData.append('joiningDate', form.joiningDate);
+
+      // Use apiClient with FormData support
+      await api.post(`/api/hr/onboarding/${activeItem._id}/docs-submit`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
       fetchList();
+      alert('Documents uploaded successfully!');
     } catch (e) {
-      alert(e?.response?.data?.message || 'Failed to submit documents');
+      alert(e?.response?.data?.message || 'Failed to upload documents');
     }
   };
 
@@ -499,9 +517,10 @@ const Onboarding = () => {
     // For stage-details mode, show detailed information about a specific completed stage
     if (wizardMode === 'stage-details') {
       const stage = selectedStage;
-      // Show all invites and documents for now, as stage filtering might not be working properly
-      const stageInvites = activeItem.invites || [];
-      const stageDocuments = activeItem.documents || [];
+      // Get stage-specific invite
+      const stageInvite = activeItem.stageData && activeItem.stageData[stage] && activeItem.stageData[stage].invite ? [activeItem.stageData[stage].invite] : [];
+      // Show documents only for documentation stage
+      const stageDocuments = stage === 'documentation' ? (activeItem.documents || []) : [];
 
       return (
         <div className="space-y-6">
@@ -513,10 +532,10 @@ const Onboarding = () => {
           </div>
 
           {/* Invites Section */}
-          {stageInvites.length > 0 && (
+          {stageInvite.length > 0 && (
             <div className="space-y-4">
               <h5 className="text-lg font-medium text-gray-800">Invites Sent</h5>
-              {stageInvites.map((invite, index) => (
+              {stageInvite.map((invite, index) => (
                 <div key={index} className="border rounded-lg p-4 bg-blue-50 border-blue-200">
                   <div className="flex items-center space-x-3 mb-3">
                     <Mail className="text-blue-600" size={20} />
@@ -588,7 +607,7 @@ const Onboarding = () => {
             </div>
           )}
 
-          {/* Documents Section */}
+          {/* Documents Section - Only show for documentation stage */}
           {stageDocuments.length > 0 && (
             <div className="space-y-4">
               <h5 className="text-lg font-medium text-gray-800">Documents Submitted</h5>
@@ -614,7 +633,7 @@ const Onboarding = () => {
           )}
 
           {/* No Data Message */}
-          {stageInvites.length === 0 && stageDocuments.length === 0 && (
+          {stageInvite.length === 0 && stageDocuments.length === 0 && (
             <div className="text-center py-8">
               <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <FileText className="text-gray-400" size={32} />
@@ -792,36 +811,83 @@ const Onboarding = () => {
     }
     if (stage === 'documentation') {
       return (
-        <div className="space-y-3">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div className="space-y-4">
+          <div className="text-center mb-4">
+            <h4 className="text-lg font-semibold text-gray-900">Document Upload</h4>
+            <p className="text-gray-600 text-sm">Upload the required documents for verification</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm text-gray-700 mb-1">PAN URL</label>
-              <input value={form.panUrl} onChange={(e)=>setForm({...form, panUrl:e.target.value})} className="w-full border rounded-md px-3 py-2 text-sm" />
+              <label className="block text-sm font-medium text-gray-700 mb-2">PAN Card</label>
+              <input
+                type="file"
+                accept=".pdf,.jpg,.jpeg,.png"
+                onChange={(e) => setForm({ ...form, panFile: e.target.files[0] })}
+                className="w-full border rounded-md px-3 py-2 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-l-md file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+              />
+              {form.panFile && <p className="text-xs text-green-600 mt-1">Selected: {form.panFile.name}</p>}
             </div>
             <div>
-              <label className="block text-sm text-gray-700 mb-1">Aadhaar URL</label>
-              <input value={form.aadhaarUrl} onChange={(e)=>setForm({...form, aadhaarUrl:e.target.value})} className="w-full border rounded-md px-3 py-2 text-sm" />
+              <label className="block text-sm font-medium text-gray-700 mb-2">Aadhaar Card</label>
+              <input
+                type="file"
+                accept=".pdf,.jpg,.jpeg,.png"
+                onChange={(e) => setForm({ ...form, aadhaarFile: e.target.files[0] })}
+                className="w-full border rounded-md px-3 py-2 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-l-md file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+              />
+              {form.aadhaarFile && <p className="text-xs text-green-600 mt-1">Selected: {form.aadhaarFile.name}</p>}
             </div>
             <div>
-              <label className="block text-sm text-gray-700 mb-1">Photo URL</label>
-              <input value={form.photoUrl} onChange={(e)=>setForm({...form, photoUrl:e.target.value})} className="w-full border rounded-md px-3 py-2 text-sm" />
+              <label className="block text-sm font-medium text-gray-700 mb-2">Photo</label>
+              <input
+                type="file"
+                accept=".jpg,.jpeg,.png"
+                onChange={(e) => setForm({ ...form, photoFile: e.target.files[0] })}
+                className="w-full border rounded-md px-3 py-2 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-l-md file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+              />
+              {form.photoFile && <p className="text-xs text-green-600 mt-1">Selected: {form.photoFile.name}</p>}
             </div>
             <div>
-              <label className="block text-sm text-gray-700 mb-1">Marksheet URL</label>
-              <input value={form.marksheetUrl} onChange={(e)=>setForm({...form, marksheetUrl:e.target.value})} className="w-full border rounded-md px-3 py-2 text-sm" />
+              <label className="block text-sm font-medium text-gray-700 mb-2">Marksheet/Degree</label>
+              <input
+                type="file"
+                accept=".pdf,.jpg,.jpeg,.png"
+                onChange={(e) => setForm({ ...form, marksheetFile: e.target.files[0] })}
+                className="w-full border rounded-md px-3 py-2 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-l-md file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+              />
+              {form.marksheetFile && <p className="text-xs text-green-600 mt-1">Selected: {form.marksheetFile.name}</p>}
             </div>
             <div>
-              <label className="block text-sm text-gray-700 mb-1">Other Doc URL</label>
-              <input value={form.other1} onChange={(e)=>setForm({...form, other1:e.target.value})} className="w-full border rounded-md px-3 py-2 text-sm" />
+              <label className="block text-sm font-medium text-gray-700 mb-2">Other Document 1</label>
+              <input
+                type="file"
+                accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
+                onChange={(e) => setForm({ ...form, otherFile1: e.target.files[0] })}
+                className="w-full border rounded-md px-3 py-2 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-l-md file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+              />
+              {form.otherFile1 && <p className="text-xs text-green-600 mt-1">Selected: {form.otherFile1.name}</p>}
             </div>
             <div>
-              <label className="block text-sm text-gray-700 mb-1">Other Doc URL</label>
-              <input value={form.other2} onChange={(e)=>setForm({...form, other2:e.target.value})} className="w-full border rounded-md px-3 py-2 text-sm" />
+              <label className="block text-sm font-medium text-gray-700 mb-2">Other Document 2</label>
+              <input
+                type="file"
+                accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
+                onChange={(e) => setForm({ ...form, otherFile2: e.target.files[0] })}
+                className="w-full border rounded-md px-3 py-2 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-l-md file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+              />
+              {form.otherFile2 && <p className="text-xs text-green-600 mt-1">Selected: {form.otherFile2.name}</p>}
             </div>
           </div>
-          <div>
-            <label className="block text-sm text-gray-700 mb-1">Joining Date (optional, set when marking verified)</label>
-            <input value={form.joiningDate} onChange={(e)=>setForm({...form, joiningDate:e.target.value})} className="w-full border rounded-md px-3 py-2 text-sm" placeholder="YYYY-MM-DD" />
+
+          <div className="mt-6">
+            <label className="block text-sm font-medium text-gray-700 mb-2">Joining Date (optional, set when marking verified)</label>
+            <input
+              type="date"
+              value={form.joiningDate}
+              onChange={(e) => setForm({ ...form, joiningDate: e.target.value })}
+              className="w-full border rounded-md px-3 py-2 text-sm"
+            />
           </div>
         </div>
       );
@@ -1066,7 +1132,11 @@ const Onboarding = () => {
                       <button onClick={submitInviteFromWizard} className="px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700">Send Invite</button>
                     ) : null}
                     {activeItem.stages[currentStep] === 'documentation' ? (
-                      <button onClick={submitDocsFromWizard} className="px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700">Submit Documents</button>
+                      <>
+                        <button onClick={() => sendDocsInvite(activeItem._id)} className="px-4 py-2 rounded-md bg-purple-600 text-white hover:bg-purple-700">Invite to Candidate</button>
+                        <button onClick={() => sendUploadLink(activeItem._id)} className="px-4 py-2 rounded-md bg-orange-600 text-white hover:bg-orange-700">Open Upload Form</button>
+                        <button onClick={submitDocsFromWizard} className="px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700">Submit Documents</button>
+                      </>
                     ) : null}
                     <button onClick={submitCompleteFromWizard} className="px-4 py-2 rounded-md bg-green-600 text-white hover:bg-green-700">Mark Done</button>
                     <button onClick={submitRejectFromWizard} className="px-4 py-2 rounded-md bg-red-600 text-white hover:bg-red-700">Reject</button>
