@@ -7,13 +7,11 @@ import api from "../config/apiClient";
 const HrDashboard = () => {
   const [dashboardData, setDashboardData] = useState({
     totalEmployees: 0,
-    monthlyPayroll: 0,
     attendanceRate: 0,
     openPositions: 0,
     leaveRequests: 0,
     performanceReviews: 0,
     newHires: 0,
-    trainingPrograms: 0,
     loading: true
   });
 
