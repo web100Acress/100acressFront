@@ -6,7 +6,8 @@ const VideoSection = ({
   youtubeVideoUrl, 
   youtubeVideoTitle, 
   youtubeVideoDescription,
-  onShowCallback 
+  onShowCallback,
+  backgroundImage
 }) => {
   const [isVideoLoaded, setIsVideoLoaded] = useState(false);
 
@@ -32,7 +33,7 @@ const VideoSection = ({
     return null;
   }
 
-  const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=0&rel=0&modestbranding=1`;
+  const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1`;
   const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
 
   return (
@@ -40,21 +41,67 @@ const VideoSection = ({
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <motion.div 
-          className="text-center mb-12"
+          className="text-center mb-6"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           viewport={{ once: true }}
         >
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4 tracking-tight">
-            Project Walkthrough
+          <div className="inline-flex items-center bg-gradient-to-r from-amber-500/10 to-orange-500/10 backdrop-blur-sm border border-amber-400/20 rounded-full px-4 py-2 mb-3">
+            <svg className="w-4 h-4 text-amber-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+            </svg>
+            <span className="text-amber-300 text-xs font-semibold tracking-wide uppercase">Video Gallery</span>
+          </div>
+
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-2 tracking-tight">
+            <span className="bg-gradient-to-r from-white via-gray-100 to-white bg-clip-text text-transparent">
+              Project Walkthrough
+            </span>
           </h2>
-          <div className="w-24 h-1 bg-gradient-to-r from-amber-500 to-orange-600 rounded-full mx-auto mb-4"></div>
+
+          <div className="flex items-center justify-center mb-2">
+            <div className="h-0.5 w-20 bg-gradient-to-r from-transparent via-amber-400 to-transparent"></div>
+          </div>
+
           {youtubeVideoTitle && (
-            <p className="text-xl text-gray-300 font-light max-w-3xl mx-auto">
+            <motion.p 
+              className="text-lg text-gray-300 font-light max-w-2xl mx-auto leading-relaxed mb-3"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              viewport={{ once: true }}
+            >
               {youtubeVideoTitle}
-            </p>
+            </motion.p>
           )}
+
+          <motion.div 
+            className="flex items-center justify-center space-x-4 text-xs text-gray-400"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            viewport={{ once: true }}
+          >
+            <div className="flex items-center">
+              <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+              <span>Verified</span>
+            </div>
+            <div className="flex items-center">
+              <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z"/>
+              </svg>
+              <span>HD</span>
+            </div>
+            <div className="flex items-center">
+              <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+              <span>Tour</span>
+            </div>
+          </motion.div>
         </motion.div>
 
         {/* Video Container */}
@@ -71,7 +118,7 @@ const VideoSection = ({
               {!isVideoLoaded && (
                 <div 
                   className="absolute inset-0 bg-cover bg-center cursor-pointer group"
-                  style={{ backgroundImage: `url(${thumbnailUrl})` }}
+                  style={{ backgroundImage: `url(${backgroundImage || thumbnailUrl})` }}
                   onClick={() => setIsVideoLoaded(true)}
                 >
                   {/* Dark overlay */}
@@ -97,13 +144,45 @@ const VideoSection = ({
                   </div>
 
                   {/* Video title overlay */}
-                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6">
-                    <h3 className="text-white text-xl font-semibold mb-2">
-                      {youtubeVideoTitle || `${projectName} - Project Walkthrough`}
-                    </h3>
-                    <p className="text-gray-200 text-sm">
-                      Click to watch the complete project tour
-                    </p>
+                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent p-8">
+                    <motion.div
+                      className="max-w-4xl mx-auto"
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.8, delay: 0.3 }}
+                    >
+                      {/* Project badge */}
+                      <div className="inline-flex items-center bg-amber-500/20 backdrop-blur-sm border border-amber-400/30 rounded-full px-4 py-2 mb-4">
+                        <svg className="w-4 h-4 text-amber-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"/>
+                        </svg>
+                        <span className="text-amber-300 text-sm font-medium">Featured Project</span>
+                      </div>
+
+                      {/* Main title */}
+                      <h3 className="text-white text-2xl md:text-3xl font-bold mb-3 leading-tight">
+                        {youtubeVideoTitle || `${projectName} - Project Walkthrough`}
+                      </h3>
+
+                      {/* Subtitle with icon */}
+                      <div className="flex items-center text-gray-200">
+                        <svg className="w-5 h-5 text-amber-400 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                        </svg>
+                        <p className="text-lg font-medium">
+                          Click to watch the complete project tour
+                        </p>
+                      </div>
+
+                      {/* Duration indicator */}
+                      <div className="flex items-center mt-4 text-sm text-gray-300">
+                        <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        <span>Full project walkthrough • HD Quality</span>
+                      </div>
+                    </motion.div>
                   </div>
                 </div>
               )}
@@ -122,7 +201,7 @@ const VideoSection = ({
           </div>
 
           {/* Video Description */}
-          {youtubeVideoDescription && (
+          {/* {youtubeVideoDescription && (
             <motion.div 
               className="mt-8 text-center"
               initial={{ opacity: 0, y: 20 }}
@@ -136,7 +215,7 @@ const VideoSection = ({
                 </p>
               </div>
             </motion.div>
-          )}
+          )} */}
         </motion.div>
 
         {/* Call to Action */}

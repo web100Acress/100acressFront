@@ -120,7 +120,7 @@ function ProjectLayout2() {
     : projectViewDetails?.city || "";
   const phoneNumber = projectViewDetails?.mobileNumber || "9811750130";
   const companyLogo = projectViewDetails?.logo?.url || null;
-  // Format price display based on min/max values
+
   const formatPrice = () => {
     if (!projectViewDetails?.minPrice && !projectViewDetails?.maxPrice) {
       return 'Call For Price';
@@ -405,6 +405,16 @@ function ProjectLayout2() {
       {/* Gallery */}
       <Gallery galleryImages={projectViewDetails?.projectGallery || []} />
 
+      {/* Video Section - Positioned before Floor Plan */}
+      <VideoSection
+        projectName={projectViewDetails?.projectName}
+        youtubeVideoUrl={projectViewDetails?.youtubeVideoUrl}
+        youtubeVideoTitle={projectViewDetails?.youtubeVideoTitle}
+        youtubeVideoDescription={projectViewDetails?.youtubeVideoDescription}
+        onShowCallback={handleShowCallback}
+        backgroundImage={projectViewDetails?.frontImage?.url}
+      />
+
       {/* Brochure Section */}
       <div className="bg-black py-12">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -472,15 +482,6 @@ function ProjectLayout2() {
         educationPoints={projectViewDetails?.projectRedefine_Education || []}
         entertainmentPoints={projectViewDetails?.projectRedefine_Entertainment || []}
         projectViewDetails={projectViewDetails}
-        onShowCallback={handleShowCallback}
-      />
-
-      {/* Video Section */}
-      <VideoSection 
-        projectName={projectViewDetails?.projectName}
-        youtubeVideoUrl={projectViewDetails?.youtubeVideoUrl}
-        youtubeVideoTitle={projectViewDetails?.youtubeVideoTitle}
-        youtubeVideoDescription={projectViewDetails?.youtubeVideoDescription}
         onShowCallback={handleShowCallback}
       />
 
