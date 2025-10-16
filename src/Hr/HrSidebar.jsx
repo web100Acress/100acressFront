@@ -36,18 +36,8 @@ const HrSidebar = () => {
       icon: <BiSolidGraduation className="text-xl" />
     },
     {
-      name: 'User',
+      name: 'All User',
       path: '/hr/it',
-      icon: <FaTachometerAlt className="text-xl" />
-    },
-    {
-      name: 'Accounts Dashboard',
-      path: '/hr/accounts',
-      icon: <FaTachometerAlt className="text-xl" />
-    },
-    {
-      name: 'Leave Management',
-      path: '/hr/leave',
       icon: <FaTachometerAlt className="text-xl" />
     }
   ];

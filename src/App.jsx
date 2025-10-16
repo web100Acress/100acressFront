@@ -403,6 +403,7 @@ function App() {
                       <Route path="/plots-in-gurugram/" element={<ProjectTypeGlobal />} />
                       <Route path="/projects/villas/" element={<ProjectTypeGlobal />} />
                       <Route path="/projects/farmhouse/" element={<ProjectTypeGlobal />} />
+                      <Route path="/projects/farmhouses/" element={<ProjectTypeGlobal />} />
                       <Route path="/projects/industrial-plots/" element={<ProjectTypeGlobal />} />
                       <Route path="/projects/industrial-projects/" element={<ProjectTypeGlobal />} />
                       <Route path="/news-and-articals/" element={<NewsandArtical />} />
