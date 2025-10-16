@@ -139,7 +139,7 @@ const DynamicHeroBanner = () => {
             style={{
               backfaceVisibility: "hidden",
               backgroundImage: windowWidth <= 768 
-                ? 'url("/Images/Signature banner for mobile 2.jpg")' 
+                ? 'url("/Images/m3m-jacob-noida-mobile.webp")' 
                 : 'url("/Images/Website-Hero-Image.jpg")',
               backgroundSize: "cover",
               backgroundPosition: "center",
@@ -220,7 +220,7 @@ const DynamicHeroBanner = () => {
                 // 1. Use mobile image if available
                 // 2. Fall back to default mobile image if no mobile image set
                 // 3. Fall back to desktop image as last resort
-                imageUrl = mobileUrl || "/Images/Signature banner for mobile 2.jpg" || desktopUrl;
+                imageUrl = mobileUrl || "/Images/m3m-jacob-noida-mobile.webp" || desktopUrl;
               } else {
                 // For desktop view: use desktop image
                 imageUrl = desktopUrl;
@@ -262,7 +262,7 @@ const DynamicHeroBanner = () => {
                         backfaceVisibility: "hidden",
                         backgroundImage: imageUrl
                           ? `url("${imageUrl}")`
-                          : 'url("/Images/Signature banner for mobile 2.jpg")',
+                          : 'url("/Images/m3m-jacob-noida-mobile.webp")',
                         backgroundSize: "cover",
                         backgroundPosition: "center",
                         backgroundRepeat: "no-repeat",

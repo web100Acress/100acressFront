@@ -1045,7 +1045,7 @@ function SearchBar() {
           
 
         {/* Desktop Banner */}
-        <div className="hidden md:block mt-2 lg:w-[1060px] lg:h-[132px] md:h-[132px] md:w-[600px] mx-auto">
+        <div className="hidden md:block mt-8 lg:w-[1150px] lg:h-[155px] md:h-[155px] md:w-[700px] mx-auto">
           <div className="section pt-4 md:pt-6">
             <SmallBannerSection />
           </div>
