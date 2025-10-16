@@ -8,6 +8,7 @@ import Footer from "../Actual_Components/Footer";
 import { getApiBase as sharedGetApiBase } from "../../config/apiBase";
 
 
+
 const UserEdit = () => {
   // --- User profile (name/email/mobile) and avatar ---
   const navigate = useNavigate();
@@ -540,7 +541,8 @@ const UserEdit = () => {
             </div>
           </div>
 
-        
+
+
         </div>
       </div>
 
