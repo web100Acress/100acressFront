@@ -1,7 +1,7 @@
 import React, { Suspense, useCallback, useEffect, useMemo, useRef, useState, useContext } from "react";
 import PopupForm from "./HomePages/PopupForm";
 import Cities from "../Components/HomePageComponents/Cities";
-import FormHome from "../Components/HomePageComponents/FormHome";
+// import FormHome from "../Components/HomePageComponents/FormHome";
 import WhyChoose from "../Components/HomePageComponents/WhyChoose";
 import SpacesAvailable from "../Components/HomePageComponents/Spaces";
 import SearchBar from "../Components/HomePageComponents/SearchBar";
@@ -533,7 +533,7 @@ const Home = () => {
                 {/* Image block with button immediately below */}
                 <div className="mt-3">
                   <img
-                    src="/Images/POST%20PROPERITES%20BANNER.webp"
+                    src="/Images/Shubh_Deepawali_Hindi_Greeting_PNG___Happy_Diwali_Clipart-PNGLove.com.png"
                     alt="Post property illustration"
                     className="w-full h-auto object-contain max-h-44 md:max-h-56"
                     loading="lazy"
@@ -791,7 +791,7 @@ const Home = () => {
         <AuthModal open={authOpen} onClose={() => setAuthOpen(false)} defaultView={authDefaultView} />
  
         {/* Place FormHome below the two-column layout */}
-        <FormHome />
+        {/* <FormHome /> */}
  
         <PossessionProperty />
         <BackToTopButton />

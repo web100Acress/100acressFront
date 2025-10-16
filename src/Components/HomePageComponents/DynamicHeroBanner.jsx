@@ -16,6 +16,7 @@ const DynamicHeroBanner = () => {
     (state) => state.banner
   );
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1024);
 
   // Helper function to filter hero banners
   const filterHeroBanners = (banners) => {
@@ -24,12 +25,22 @@ const DynamicHeroBanner = () => {
         banner.size ||
         banner.position ||
         banner.desktopImage ||
-        banner.mobileImage ||
         banner.type === "small" ||
         banner.bannerType === "small";
 
       const hasHeroBannerStructure =
         banner.image && (banner.image.url || banner.image.cdn_url);
+
+      console.log('Banner check:', {
+        bannerId: banner._id,
+        title: banner.title,
+        hasImage: !!banner.image,
+        imageUrl: banner.image?.url || banner.image?.cdn_url,
+        hasMobileImage: !!banner.mobileImage,
+        hasSmallBannerProperties,
+        hasHeroBannerStructure,
+        willShow: hasHeroBannerStructure && !hasSmallBannerProperties
+      });
 
       return hasHeroBannerStructure && !hasSmallBannerProperties;
     });
@@ -40,6 +51,12 @@ const DynamicHeroBanner = () => {
     console.log("Fetching active banners...");
     dispatch(fetchActiveBanners());
   }, [dispatch]);
+
+  useEffect(() => {
+    const onResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
 
   useEffect(() => {
     if (activeBanners.length > 0) {
@@ -121,7 +138,9 @@ const DynamicHeroBanner = () => {
             aria-hidden="true"
             style={{
               backfaceVisibility: "hidden",
-              backgroundImage: 'url("/Images/Website-Hero-Image.jpg")',
+              backgroundImage: windowWidth <= 768 
+                ? 'url("/Images/m3m-jacob-noida-mobile.webp")' 
+                : 'url("/Images/Website-Hero-Image.jpg")',
               backgroundSize: "cover",
               backgroundPosition: "center",
               backgroundRepeat: "no-repeat",
@@ -181,14 +200,42 @@ const DynamicHeroBanner = () => {
         {heroBanners.length > 0 ? (
           <Slider {...sliderSettings}>
             {heroBanners.map((banner, index) => {
-              // Try multiple ways to get the image URL
-              const imageUrl =
+              // Resolve desktop and mobile image URLs from hero banner shape
+              const desktopUrl =
                 banner.image?.cdn_url ||
                 banner.image?.url ||
                 banner.cdn_url ||
                 banner.imageUrl;
+              const mobileUrl =
+                banner.mobileImage?.cdn_url ||
+                banner.mobileImage?.url ||
+                null;
+
+              const isMobile = windowWidth <= 768;
+
+              // Enhanced mobile image logic with fallback
+              let imageUrl;
+              if (isMobile) {
+                // For mobile view:
+                // 1. Use mobile image if available
+                // 2. Fall back to default mobile image if no mobile image set
+                // 3. Fall back to desktop image as last resort
+                imageUrl = mobileUrl || "/Images/m3m-jacob-noida-mobile.webp" || desktopUrl;
+              } else {
+                // For desktop view: use desktop image
+                imageUrl = desktopUrl;
+              }
+
+              console.log(`Banner ${index} mobile logic:`, {
+                isMobile,
+                hasMobileUrl: !!mobileUrl,
+                desktopUrl,
+                mobileUrl,
+                finalImageUrl: imageUrl
+              });
               console.log(`Banner ${index} full object:`, banner);
               console.log(`Banner ${index} image object:`, banner.image);
+              console.log(`Banner ${index} mobileImage object:`, banner.mobileImage);
               console.log(`Banner ${index} resolved imageUrl:`, imageUrl);
               console.log(`Banner ${index} slug:`, banner.slug);
               console.log(`Banner ${index} link:`, banner.link);
@@ -215,7 +262,7 @@ const DynamicHeroBanner = () => {
                         backfaceVisibility: "hidden",
                         backgroundImage: imageUrl
                           ? `url("${imageUrl}")`
-                          : 'url("/Images/Website-Hero-Image.jpg")',
+                          : 'url("/Images/m3m-jacob-noida-mobile.webp")',
                         backgroundSize: "cover",
                         backgroundPosition: "center",
                         backgroundRepeat: "no-repeat",

@@ -175,7 +175,7 @@ const UnderConstructionSearching = () => {
                 <option value="Builder Floors">Builder Floors</option>
                 <option value="Affordable Homes">Affordable Homes</option>
                 <option value="Villas">Villas</option>
-                <option value="Farm Houses">Farm House</option>
+                <option value="Farm Houses">Farm Houses</option>
               </select>
             </div>
 

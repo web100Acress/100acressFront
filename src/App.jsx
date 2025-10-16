@@ -184,7 +184,11 @@ const Onboarding = lazy(() => import("./Hr/Onboarding"));
 const Offboarding = lazy(() => import("./Hr/Offboarding"));
 const ItDashboard = lazy(() => import("./Hr/ItDashboard"));
 const AccountsDashboard = lazy(() => import("./Hr/AccountsDashboard"));
+const LeaveManagement = lazy(() => import("./Hr/LeaveManagement"));
+const HrEmployees = lazy(() => import("./Hr/HrEmployees"));
 const OnboardingUpload = lazy(() => import("./OnboardingUpload"));
+const DocumentUpload = lazy(() => import("./Pages/DocumentUpload"));
+const UploadSuccess = lazy(() => import("./Pages/UploadSuccess"));
 // Initialize QueryClient
 const queryClient = new QueryClient();
 
@@ -467,6 +471,8 @@ function App() {
                         element={<Microtek />}
                       />
                       <Route path="/onboarding/upload" element={<OnboardingUpload />} />
+                      <Route path="/document-upload/:token" element={<DocumentUpload />} />
+                      <Route path="/upload-success" element={<UploadSuccess />} />
                     </Route>
 
                     {/* Admin Routing */}
@@ -596,7 +602,8 @@ function App() {
                       <Route path="offboarding" element={<LazyLoad><Offboarding /></LazyLoad>} />
                       <Route path="it" element={<LazyLoad><ItDashboard /></LazyLoad>} />
                       <Route path="accounts" element={<LazyLoad><AccountsDashboard /></LazyLoad>} />
-                      <Route path="employees" element={<div className="p-6"><h1 className="text-3xl font-bold text-gray-800 dark:text-white">Employee Management</h1><p className="mt-4 text-gray-600 dark:text-gray-300">Manage employee records and information.</p></div>} />
+                      <Route path="leave" element={<LazyLoad><LeaveManagement /></LazyLoad>} />
+                      <Route path="employees" element={<LazyLoad><HrEmployees /></LazyLoad>} />
                       <Route path="payroll" element={<div className="p-6"><h1 className="text-3xl font-bold text-gray-800 dark:text-white">Payroll Management</h1><p className="mt-4 text-gray-600 dark:text-gray-300">Handle payroll processing and salary management.</p></div>} />
                       <Route path="attendance" element={<div className="p-6"><h1 className="text-3xl font-bold text-gray-800 dark:text-white">Attendance Management</h1><p className="mt-4 text-gray-600 dark:text-gray-300">Track employee attendance and working hours.</p></div>} />
                       <Route path="recruitment" element={<div className="p-6"><h1 className="text-3xl font-bold text-gray-800 dark:text-white">Recruitment</h1><p className="mt-4 text-gray-600 dark:text-gray-300">Manage job postings and recruitment process.</p></div>} />

@@ -173,6 +173,14 @@ const GlobalFilterTemplate = ({
   const readyToMoveProjects = useSelector(store => store?.allsectiondata?.readytomove);
   const newLaunchProjects = useSelector(store => store?.allsectiondata?.newlaunch);
 
+  // Selector for project type pages
+  const typeProjects = useSelector(store => {
+    if (currentConfig.query) {
+      return store?.allsectiondata?.[currentConfig.query] || [];
+    }
+    return [];
+  });
+
   // Get the appropriate project data based on status
   const getProjectData = () => {
     console.log('Getting project data for status:', projectStatus);
@@ -207,8 +215,12 @@ const GlobalFilterTemplate = ({
       return projects;
     }
     
-    // If no project status (for type/city/budget pages), return empty array
+    // If no project status (for type/city/budget pages), use typeProjects if available
     if (!projectStatus) {
+      if (typeProjects && typeProjects.length > 0) {
+        console.log('Using typeProjects for project type page:', typeProjects.length);
+        return typeProjects;
+      }
       console.log('No project status detected, returning empty array');
       return [];
     }
@@ -274,12 +286,90 @@ const GlobalFilterTemplate = ({
     });
   };
 
+  // Enhanced filter change handler that detects when data refetch is needed
   const handleFilterChange = (key, value) => {
-    setFilters(prev => ({ ...prev, [key]: value }));
-    // Auto-filter when filter changes
-    setTimeout(() => {
-      handleSearch();
-    }, 100);
+    const newFilters = { ...filters, [key]: value };
+
+    // Check if this filter change requires different data fetching
+    const requiresDataRefetch = shouldRefetchData(key, value, newFilters);
+
+    setFilters(newFilters);
+
+    if (requiresDataRefetch) {
+      console.log(`Filter change requires data refetch for ${key}: ${value}`);
+      // Update the query based on the new filter context
+      updateQueryForFilters(newFilters);
+    } else {
+      // Auto-filter when filter changes (client-side filtering only)
+      setTimeout(() => {
+        handleSearch();
+      }, 100);
+    }
+  };
+
+  // Determine if a filter change requires data refetch
+  const shouldRefetchData = (key, value, newFilters) => {
+    // If we're on a status page and user changes project type, we need to refetch
+    if (projectStatus && (key === 'projectType' && value !== filters.projectType)) {
+      return true;
+    }
+
+    // If we're on a project type page and user changes status-like filters, we need to refetch
+    if (pageType === 'type' && (key === 'projectType' && value !== filters.projectType)) {
+      return true;
+    }
+
+    // If switching from one major filter context to another
+    if (key === 'projectType' && value !== '' && filters.projectType === '') {
+      return true; // First time selecting a project type
+    }
+
+    return false;
+  };
+
+  // Update query and refetch data based on new filter context
+  const updateQueryForFilters = (newFilters) => {
+    let newQuery = currentConfig.query;
+
+    // If user selected a specific project type, use the corresponding query
+    if (newFilters.projectType && newFilters.projectType !== '') {
+      // Map project types to their corresponding queries
+      const projectTypeToQuery = {
+        'Farm Houses': 'farmhouse',
+        'Commercial Property': 'commercial',
+        'Residential Flats': 'residentiaProject',
+        'SCO Plots': 'scoplots',
+        'Villas': 'villas',
+        'Independent Floors': 'builderindepedentfloor',
+        'Residential Plots': 'plotsingurugram',
+        'Industrial Projects': 'industrialprojects',
+        'Industrial Plots': 'industrialplots'
+      };
+
+      if (projectTypeToQuery[newFilters.projectType]) {
+        newQuery = projectTypeToQuery[newFilters.projectType];
+      }
+    } else if (projectStatus) {
+      // Fall back to status-based queries
+      const statusToQuery = {
+        'upcoming': 'allupcomingproject',
+        'underconstruction': 'underconstruction',
+        'readytomove': 'readytomove',
+        'newlaunch': 'newlaunch'
+      };
+      newQuery = statusToQuery[projectStatus] || 'allupcomingproject';
+    }
+
+    if (newQuery && newQuery !== currentConfig.query) {
+      console.log(`Updating query from ${currentConfig.query} to ${newQuery}`);
+      // Trigger new data fetch with updated query
+      throttledGetAllProjects(newQuery, 0);
+    } else {
+      // Fallback to client-side filtering
+      setTimeout(() => {
+        handleSearch();
+      }, 100);
+    }
   };
 
   const handleSearch = (resetPagination = true) => {
@@ -391,13 +481,17 @@ const GlobalFilterTemplate = ({
   }, []);
 
   useEffect(() => {
-    console.log('Loading projects for status:', projectStatus, 'with query:', currentConfig.query);
-    throttledGetAllProjects(currentConfig.query, 0);
-  }, [projectStatus, currentConfig.query, throttledGetAllProjects]);
+    if (currentConfig.query) {
+      console.log('Loading projects for query:', currentConfig.query);
+      throttledGetAllProjects(currentConfig.query, 0);
+    }
+  }, [currentConfig.query, throttledGetAllProjects]);
 
   useEffect(() => {
     console.log('Project data updated:', projectData, 'for status:', projectStatus);
     setDatafromsearch({ [projectStatus]: projectData });
+    // Clear filtered results when underlying data changes (from refetch)
+    setFilteredProjects([]);
   }, [projectData, projectStatus]);
 
   // Force re-render when project status changes

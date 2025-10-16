@@ -1466,7 +1466,7 @@ export const staticData = {
         }
       ]
     },
-    above50cr: {
+        above50cr: {
       title: "Properties Above 50 Cr - Ultra Elite Luxury Homes in Gurgaon",
       description: "Discover ultra-elite luxury properties above 50 crore in Gurgaon with palatial designs, extraordinary amenities, and unmatched exclusivity. For those who seek perfection.",
       metaTitle: "Properties Above 50 Cr in Gurgaon - Ultra Elite Luxury | 100acress",
@@ -1513,8 +1513,53 @@ export const staticData = {
           description: "Exceptional value appreciation and global appeal"
         }
       ]
+    },
+    farmhouse: {
+      title: "Farm Houses - Serene Living and Agricultural Investment",
+      description: "Discover premium farm houses with serene living, agricultural opportunities, and modern amenities. Perfect for peaceful living and investment.",
+      metaTitle: "Farm Houses - Serene Living and Agricultural Investment | 100acress",
+      canonical: "https://www.100acress.com/projects/farmhouse/",
+      keywords: "farm houses, farm house properties, agricultural investment, serene living, farm house investment",
+      heroTitle: "Farm Houses - Serene Living and Agricultural Investment",
+      heroSubtitle: "Discover premium farm houses with modern amenities and agricultural opportunities",
+      faqs: [
+        {
+          question: "What are farm houses?",
+          answer: "Farm houses are properties that combine residential living with agricultural land, offering a peaceful lifestyle with opportunities for farming and investment."
+        },
+        {
+          question: "What amenities are available in farm houses?",
+          answer: "Farm houses typically include modern homes, agricultural land, water facilities, and sometimes swimming pools, gardens, and security."
+        },
+        {
+          question: "Are farm houses good for investment?",
+          answer: "Yes, farm houses offer excellent investment potential due to land appreciation, agricultural income, and the growing demand for peaceful living."
+        },
+        {
+          question: "What is the price range for farm houses?",
+          answer: "Farm houses typically range from ₹1-10 crores depending on location, size, and amenities."
+        }
+      ],
+      trustBoosters: [
+        {
+          icon: "🌾",
+          title: "Agricultural Opportunity",
+          description: "Properties with agricultural land for farming and investment"
+        },
+        {
+          icon: "🏠",
+          title: "Serene Living",
+          description: "Peaceful living away from city hustle"
+        },
+        {
+          icon: "💰",
+          title: "Investment Potential",
+          description: "Excellent appreciation and rental yields"
+        }
+      ]
     }
   },
+
   commonFAQs: [
     {
       question: "How do I verify the authenticity of a project?",

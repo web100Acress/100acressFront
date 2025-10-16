@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Sidebar from "./Sidebar";
 import { useParams, useNavigate } from "react-router-dom"; // Import useNavigate
-import axios from "axios";
+import apiClient from "../config/apiClient";
 import { message } from "antd"; // Import Ant Design message
 import { MdEdit, MdHome } from "react-icons/md";
 import Tippy from '@tippyjs/react';
@@ -23,9 +23,9 @@ const ProjectEditBHK = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get(`bhk_edit/${id}`);
+        const res = await apiClient.get(`bhk_edit/${id}`);
         // Ensure data exists before setting state
-        if (res.data.data.BhK_Details && res.data.data.BhK_Details.length > 0) {
+        if (res.data?.data?.BhK_Details && res.data.data.BhK_Details.length > 0) {
           setViewBHK(res.data.data.BhK_Details[0]);
         } else {
           messageApi.open({
@@ -64,7 +64,7 @@ const ProjectEditBHK = () => {
     });
 
     try {
-      const res = await axios.post(
+      const res = await apiClient.post(
         `bhk_update/${id}`,
         viewBHK
       );
