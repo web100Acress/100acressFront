@@ -145,7 +145,7 @@ const ModernRecommendedSection = () => {
         onClose={() => setShowAuth(false)} 
         defaultView="Login" 
       />
-      <div className="w-full px-4 pt-0 pb-4">
+      <div className="w-full px-4 pt-12 pb-4">
         <div className="text-center mb-0 px-2 pt-0">
           <div className="inline-flex items-center gap-4 mb-0">
             <div className="w-16 h-0.5 bg-gradient-to-r from-transparent via-red-500 to-red-600 hidden sm:block"></div>
