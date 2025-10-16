@@ -9,6 +9,8 @@ import SuggestedProjects from "./SuggestedProjects";
 import { hydrateFavoritesFromServer, subscribe, getFavorites, getFavoritesData } from "../../Utils/favorites";
 import api from "../../config/apiClient";
 import axios from 'axios';
+import { Modal } from 'antd';
+import LeaveForm from '../LeaveForm';
 
 const UserDashBoard = () => {
   const navigate = useNavigate();
@@ -17,6 +19,7 @@ const UserDashBoard = () => {
   const [favData, setFavData] = useState(() => getFavoritesData());
   const [isLoading, setIsLoading] = useState(true);
   const [userData, setUserData] = useState(null);
+  const [isLeaveModalOpen, setIsLeaveModalOpen] = useState(false);
 
   // Fetch user data on component mount
   useEffect(() => {
@@ -206,8 +209,8 @@ const UserDashBoard = () => {
                   </div>
                 </div>
                 
-                {/* Edit Button */}
-                <div className="pt-4">
+                {/* Edit and Leave Buttons */}
+                <div className="pt-4 flex flex-col sm:flex-row gap-3">
                   <button
                     onClick={goUserEdit}
                     className="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3 border border-transparent text-sm font-medium rounded-lg text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-all duration-200 transform hover:scale-105"
@@ -217,6 +220,17 @@ const UserDashBoard = () => {
                     </svg>
                     Edit / Change Password
                   </button>
+                  {displayData?.status === 'authorized' && (
+                    <button
+                      onClick={() => setIsLeaveModalOpen(true)}
+                      className="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3 border border-transparent text-sm font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 transform hover:scale-105"
+                    >
+                      <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
+                      Apply for Leave
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
@@ -326,6 +340,18 @@ const UserDashBoard = () => {
         </div>
       </div>
       
+      {/* Leave Modal */}
+      <Modal
+        title="Apply for Leave"
+        open={isLeaveModalOpen}
+        onCancel={() => setIsLeaveModalOpen(false)}
+        footer={null}
+        width={600}
+        centered
+      >
+        <LeaveForm />
+      </Modal>
+
       {/* Footer */}
       <LuxuryFooter />
     </div>
