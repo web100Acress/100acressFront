@@ -50,8 +50,8 @@ const DEFAULT_BASE = (() => {
       }
       
       // In production (non-localhost domain)
-      console.log('Using production API: https://backend-1-jfdt.onrender.com');
-      return 'https://backend-1-jfdt.onrender.com';
+      console.log('Using production API: https://api.100acress.com');
+      return 'https://api.100acress.com';
     }
     
     // Fallback for server-side rendering or other environments
