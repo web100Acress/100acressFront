@@ -226,6 +226,18 @@ const InsertProject = () => {
     }
   };
 
+  // Handle city selection
+  const handleCitySelect = (cityName) => {
+    setEditFromData((prev) => ({
+      ...prev,
+      city: cityName,
+    }));
+    setCitySearchTerm(cityName);
+    setIsCityDropdownOpen(false);
+  };
+
+  
+
   // Handle state input change - allow direct typing of new states
   const handleStateInputChange = (e) => {
     const value = e.target.value;

@@ -1,7 +1,7 @@
 import React, { Suspense, useCallback, useEffect, useMemo, useRef, useState, useContext } from "react";
 import PopupForm from "./HomePages/PopupForm";
 import Cities from "../Components/HomePageComponents/Cities";
-import FormHome from "../Components/HomePageComponents/FormHome";
+// import FormHome from "../Components/HomePageComponents/FormHome";
 import WhyChoose from "../Components/HomePageComponents/WhyChoose";
 import SpacesAvailable from "../Components/HomePageComponents/Spaces";
 import SearchBar from "../Components/HomePageComponents/SearchBar";
@@ -791,7 +791,7 @@ const Home = () => {
         <AuthModal open={authOpen} onClose={() => setAuthOpen(false)} defaultView={authDefaultView} />
  
         {/* Place FormHome below the two-column layout */}
-        <FormHome />
+        {/* <FormHome /> */}
  
         <PossessionProperty />
         <BackToTopButton />

@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+import apiClient from '../config/apiClient';
 import { getApiBase } from '../config/apiBase';
 import Sidebar from './Sidebar'; // Assuming Sidebar is correctly imported
 import { MdBarChart, MdAssignment, MdHome, MdShoppingCart, MdBusiness, MdContactMail, MdPerson, MdPeople, MdLibraryBooks, MdWork, MdAccountCircle } from 'react-icons/md';
@@ -183,7 +183,7 @@ const AdminDashboard = () => {
           // Special handling for merged Career card
           if (section.name === 'Career' && section.openingsApi && section.applicationsApi) {
             return Promise.all([
-              axios.get(`${base}${section.openingsApi.replace(/^\/api/, '')}`, {
+              apiClient.get(`${base}${section.openingsApi.replace(/^\/api/, '')}`, {
                 headers: {
                   "Content-Type": "application/json",
                   ...(cleanedToken ? { Authorization: `Bearer ${cleanedToken}` } : {}),
@@ -197,7 +197,7 @@ const AdminDashboard = () => {
                 console.error('Career openings API error:', err);
                 return 0;
               }),
-              axios.get(`${base}${section.applicationsApi.replace(/^\/api/, '')}`, {
+              apiClient.get(`${base}${section.applicationsApi.replace(/^\/api/, '')}`, {
                 headers: {
                   "Content-Type": "application/json",
                   ...(cleanedToken ? { Authorization: `Bearer ${cleanedToken}` } : {}),
@@ -215,7 +215,7 @@ const AdminDashboard = () => {
           }
 
           // Default single-endpoint handling
-          return axios.get(
+          return apiClient.get(
             `${base}${(section.api || '').replace(/^\/api/, '')}`,
             {
               headers: {

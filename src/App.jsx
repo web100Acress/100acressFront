@@ -180,6 +180,13 @@ const AdminGuides = lazy(() => import("./Insight/pages/Admin/AdminGuides"));
 const AdminJobPosting = lazy(() => import("./AdminPage/AdminJobPosting"));
 const AdminJobPostingView = lazy(() => import("./AdminPage/AdminJobPostingView"));
 const AdminJobPostingEdit = lazy(() => import("./AdminPage/AdminJobPostingEdit"));
+const Onboarding = lazy(() => import("./Hr/Onboarding"));
+const Offboarding = lazy(() => import("./Hr/Offboarding"));
+const ItDashboard = lazy(() => import("./Hr/ItDashboard"));
+const AccountsDashboard = lazy(() => import("./Hr/AccountsDashboard"));
+const OnboardingUpload = lazy(() => import("./OnboardingUpload"));
+const DocumentUpload = lazy(() => import("./Pages/DocumentUpload"));
+const UploadSuccess = lazy(() => import("./Pages/UploadSuccess"));
 // Initialize QueryClient
 const queryClient = new QueryClient();
 
@@ -461,6 +468,9 @@ function App() {
                         path="/microtek-infra-sco-plots-gurugram/"
                         element={<Microtek />}
                       />
+                      <Route path="/onboarding/upload" element={<OnboardingUpload />} />
+                      <Route path="/document-upload/:token" element={<DocumentUpload />} />
+                      <Route path="/upload-success" element={<UploadSuccess />} />
                     </Route>
 
                     {/* Admin Routing */}
@@ -586,6 +596,10 @@ function App() {
                       <Route path="jobposting/view/:id" element={<LazyLoad><JobPostingView /></LazyLoad>} />
                       <Route path="jobposting/applications/:id" element={<LazyLoad><JobApplications /></LazyLoad>} />
                       <Route path="jobposting/edit/:id" element={<LazyLoad><JobPostingEdit /></LazyLoad>} />
+                      <Route path="onboarding" element={<LazyLoad><Onboarding /></LazyLoad>} />
+                      <Route path="offboarding" element={<LazyLoad><Offboarding /></LazyLoad>} />
+                      <Route path="it" element={<LazyLoad><ItDashboard /></LazyLoad>} />
+                      <Route path="accounts" element={<LazyLoad><AccountsDashboard /></LazyLoad>} />
                       <Route path="employees" element={<div className="p-6"><h1 className="text-3xl font-bold text-gray-800 dark:text-white">Employee Management</h1><p className="mt-4 text-gray-600 dark:text-gray-300">Manage employee records and information.</p></div>} />
                       <Route path="payroll" element={<div className="p-6"><h1 className="text-3xl font-bold text-gray-800 dark:text-white">Payroll Management</h1><p className="mt-4 text-gray-600 dark:text-gray-300">Handle payroll processing and salary management.</p></div>} />
                       <Route path="attendance" element={<div className="p-6"><h1 className="text-3xl font-bold text-gray-800 dark:text-white">Attendance Management</h1><p className="mt-4 text-gray-600 dark:text-gray-300">Track employee attendance and working hours.</p></div>} />

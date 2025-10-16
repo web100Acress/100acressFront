@@ -102,32 +102,26 @@ const ModernRecommendedSection = () => {
 
   const parsePaymentPlan = (paymentPlan) => {
     if (!paymentPlan) return null;
-    
-    // Handle string format (e.g., "20:40:40" or "20-40-40")
+
+    // Handle string format (e.g., "20:40:30:10" or "20-40-30-10")
     if (typeof paymentPlan === 'string') {
       const parts = paymentPlan.split(/[:-]/).map(p => p.trim()).filter(Boolean);
       if (parts.length >= 3) {
-        return [
-          { percentage: parts[0] + '%', label: 'Booking' },
-          { percentage: parts[1] + '%', label: 'Construction' },
-          { percentage: parts[2] + '%', label: 'Possession' }
-        ];
+        return parts.slice(0, 4).map((part) => ({
+          percentage: part + '%'
+        }));
       }
       // If it's a descriptive string, show it as-is
-      return [{ percentage: paymentPlan, label: '' }];
+      return [{ percentage: paymentPlan }];
     }
-    
+
     // Handle array format
     if (Array.isArray(paymentPlan) && paymentPlan.length > 0) {
-      return paymentPlan.map((plan, idx) => {
-        const labels = ['Booking', 'Construction', 'Possession'];
-        return {
-          percentage: plan.includes('%') ? plan : plan + '%',
-          label: labels[idx] || ''
-        };
-      });
+      return paymentPlan.slice(0, 4).map((plan) => ({
+        percentage: plan.includes('%') ? plan : plan + '%'
+      }));
     }
-    
+
     return null;
   };
 
@@ -377,7 +371,7 @@ const PropertyCard = ({
           <div className="info-item">
             <MdSquareFoot className="info-icon" />
             <div className="info-content">
-              <span className="info-value">{project?.totalLandArea || project?.projectArea || project?.landArea || '5 Acres'}</span>
+              <span className="info-value">{project?.totalLandArea || project?.projectArea || project?.landArea || '5 Acres'} Acres</span>
               <span className="info-label">Land Area</span>
             </div>
           </div>
@@ -400,7 +394,6 @@ const PropertyCard = ({
                 <React.Fragment key={index}>
                   <div className="payment-option">
                     <div className="payment-percentage">{plan.percentage}</div>
-                    {plan.label && <div className="payment-label">{plan.label}</div>}
                   </div>
                   {index < paymentPlanData.length - 1 && (
                     <div className="payment-divider">→</div>
@@ -860,14 +853,6 @@ const CardWrapper = styled.div`
             color: #059669;
             line-height: 1;
           }
-
-          .payment-label {
-            font-size: 8px;
-            font-weight: 600;
-            color: #6b7280;
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
-          }
         }
 
         .payment-divider {
@@ -1023,10 +1008,6 @@ const CardWrapper = styled.div`
 
             .payment-percentage {
               font-size: 14px;
-            }
-
-            .payment-label {
-              font-size: 7px;
             }
           }
 
