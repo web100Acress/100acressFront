@@ -562,7 +562,7 @@ export default function LeftSection({
           <MenuItem as={Link} to="/property/residential/">Residential Projects</MenuItem>
           <MenuItem as={Link} to="/projects/independentfloors/">Independent Floors</MenuItem>
           <MenuItem as={Link} to="/projects/commercial/">Commercial Projects</MenuItem>
-          <MenuItem as={Link} to="/projects/farmhouses/">FarmHouses</MenuItem>
+          <MenuItem as={Link} to="/projects/farmhouse/">FarmHouses</MenuItem>
           <MenuItem as={Link} to="/projects/industrial-plots/">Industrial Plots</MenuItem>
        
         </MenuList>

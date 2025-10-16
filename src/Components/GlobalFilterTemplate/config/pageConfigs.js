@@ -198,6 +198,7 @@ export const projectTypeConfigs = {
     description: "Discover Premium Farm Houses Projects – Your Gateway to Serene Living and Agricultural Investment.",
     query: "farmhouse",
     reduxKey: "farmhouse",
+    canonical: "https://www.100acress.com/projects/farmhouse/",
     badgeColor: "bg-green-500",
     badgeText: "Farm Houses",
     typeFilter: (project) => {
