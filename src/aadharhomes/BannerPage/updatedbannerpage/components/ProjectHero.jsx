@@ -88,17 +88,23 @@ const ProjectHero = ({
           
           {/* Right side container */}
           <div className="flex items-center gap-4">
-            {/* Get in Touch Button - Hidden on mobile */}
-            <button 
-              onClick={onShowCallback}
-              className="hidden sm:block bg-white text-gray-900 px-6 py-2 rounded-lg font-medium hover:bg-gray-100 transition-colors"
-              aria-label={`Open contact form for ${projectTitle}`}
+            {/* WhatsApp Button - Visible on all screen sizes */}
+            <a
+              href={`https://wa.me/91${phoneNumber}?text=Hi%2C%20I%27m%20interested%20in%20${encodeURIComponent(projectTitle)}%20property.%20Can%20you%20provide%20more%20details%3F`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center w-12 h-12 border-2 border-green-500 text-green-500 rounded-full hover:bg-green-500 hover:text-white transition-all duration-300 transform hover:scale-110"
+              aria-label={`Chat on WhatsApp for ${projectTitle}`}
             >
-              Get in Touch
-            </button>
-            
-            {/* Phone Number Button - Luxury Golden Design */}
-            <a href={`tel:+91${phoneNumber}`} aria-label={`Call +91${phoneNumber}`} rel="nofollow">
+              <img
+                src="/icons/social.webp"
+                alt="WhatsApp"
+                className="w-6 h-6"
+              />
+            </a>
+
+            {/* Phone Number Button - Hidden on mobile, visible on tablet and desktop */}
+            <a href={`tel:+91${phoneNumber}`} aria-label={`Call +91${phoneNumber}`} rel="nofollow" className="hidden sm:block">
               <div className="flex items-center bg-gradient-to-br from-yellow-400 via-yellow-500 to-yellow-600 rounded-full shadow-[0_4px_15px_rgba(212,175,55,0.35)] hover:shadow-[0_6px_20px_rgba(212,175,55,0.5)] transition-all duration-300 transform hover:scale-105 border-2 border-yellow-400 pr-4 gap-3">
                 {/* Circular phone icon */}
                 <div className="w-10 h-10 bg-gradient-to-br from-yellow-400 via-yellow-500 to-yellow-600 border-2 border-white rounded-full flex items-center justify-center flex-shrink-0 shadow-[0_3px_8px_rgba(212,175,55,0.5)]">
@@ -106,9 +112,21 @@ const ProjectHero = ({
                     <path d="M6.62 10.79a15.05 15.05 0 006.59 6.59l2.2-2.2a1 1 0 011.01-.24 11.36 11.36 0 003.55.57 1 1 0 011 1v3.61a1 1 0 01-.91 1A16 16 0 014 5.92 1 1 0 015 5h3.61a1 1 0 011 1 11.36 11.36 0 00.57 3.55 1 1 0 01-.24 1.01l-2.32 2.23z"/>
                   </svg>
                 </div>
-                
+
                 {/* Phone number text */}
                 <span className="text-white text-lg font-semibold tracking-wide whitespace-nowrap" style={{ textShadow: '0px 0px 5px rgba(0, 0, 0, 0.3)' }}>{phoneNumber}</span>
+              </div>
+            </a>
+
+            {/* Mobile Phone Button - Golden circle with telephone icon only - Visible only on mobile */}
+            <a href={`tel:+91${phoneNumber}`} aria-label={`Call +91${phoneNumber}`} rel="nofollow" className="block sm:hidden">
+              <div className="flex items-center justify-center bg-gradient-to-br from-yellow-400 via-yellow-500 to-yellow-600 rounded-full shadow-[0_4px_15px_rgba(212,175,55,0.35)] hover:shadow-[0_6px_20px_rgba(212,175,55,0.5)] transition-all duration-300 transform hover:scale-105 border-2 border-yellow-400 w-12 h-12">
+                {/* Telephone icon */}
+                <img
+                  src="/icons/telephone-call.webp"
+                  alt="Call"
+                  className="w-6 h-6"
+                />
               </div>
             </a>
           </div>
