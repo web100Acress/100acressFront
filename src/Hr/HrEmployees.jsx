@@ -116,6 +116,23 @@ const HrEmployees = () => {
     setCurrentPage(1);
   };
 
+  const handleStatusUpdate = async (userId, newStatus) => {
+    try {
+      const myToken = localStorage.getItem("myToken");
+      await api.post(`/hr/user/${userId}/status`, { status: newStatus }, {
+        headers: {
+          Authorization: `Bearer ${myToken}`,
+          "Content-Type": "application/json",
+        },
+      });
+      // Update the local state
+      setViewAll(prev => prev.map(user => user._id === userId ? { ...user, status: newStatus } : user));
+    } catch (error) {
+      console.log("❌ Failed to update user status:", error);
+      alert("Failed to update user status");
+    }
+  };
+
   const getRoleMeta = (role) => {
     const r = (role || "user").toLowerCase();
     switch (r) {
@@ -238,6 +255,12 @@ const HrEmployees = () => {
                     <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                       Email Verified
                     </th>
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                      Authorized
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                      Action
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
@@ -283,6 +306,29 @@ const HrEmployees = () => {
                           >
                             {item.emailVerified ? 'Verified' : 'Unverified'}
                           </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
+                          <span
+                            className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium shadow-sm ${
+                              item.status === 'authorized'
+                                ? 'bg-emerald-100 text-emerald-700'
+                                : 'bg-yellow-100 text-yellow-700'
+                            }`}
+                          >
+                            {item.status === 'authorized' ? 'Authorized' : 'Unauthorized'}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
+                          <button
+                            onClick={() => handleStatusUpdate(item._id, item.status === 'authorized' ? 'unauthorized' : 'authorized')}
+                            className={`px-3 py-1 rounded-full text-xs font-medium shadow-sm ${
+                              item.status === 'authorized'
+                                ? 'bg-red-100 text-red-700 hover:bg-red-200'
+                                : 'bg-green-100 text-green-700 hover:bg-green-200'
+                            }`}
+                          >
+                            {item.status === 'authorized' ? 'Unauthorize' : 'Authorize'}
+                          </button>
                         </td>
                       </tr>
                     );
