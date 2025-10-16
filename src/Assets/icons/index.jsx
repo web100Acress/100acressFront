@@ -78,12 +78,15 @@ import ShareIconSVG from "../icons/svg/ShareIcon.svg";
 import HeartIconSVG from "../icons/svg/HeartIcon.svg";
 import ForwardIconSVG from "../icons/svg/ForwardIcon.svg";
 import BackwardIconSVG from "../icons/svg/BackwardIcon.svg";
-import FilterIconSVG from "../icons/svg/FilterIcon.svg";
+import DiscussionIconSVG from '/icons/discussion.png';
+import MaleStudentIconSVG from '/icons/male-student.webp';
+import InteriorWebpIconSVG from '/icons/interior.webp';
+import ApplicantIconSVG from '/icons/applicant.webp';
+import ConstructionSiteIconSVG from '/icons/construction-site.webp';
 
 const getSVG = (path, style) => (
   <img src={path} alt="Icon" style={{ ...style }} />
 );
-
 
 export const LocationIcon = (props) => {
   return <Icon component={()=>getSVG(LocationIconSVG,props.iconstyle)} {...props}  />;
@@ -388,6 +391,26 @@ export const LegalIcon = (props) => {
 export const InteriorIcon = (props) => {
   return <Icon component={() => getSVG(InteriorSVG, props.iconstyle)} {...props} />;
 }
+
+export const DiscussionIcon = (props) => {
+  return <Icon component={() => getSVG(DiscussionIconSVG, props.iconstyle)} {...props} />;
+};
+
+export const MaleStudentIcon = (props) => {
+  return <Icon component={() => getSVG(MaleStudentIconSVG, props.iconstyle)} {...props} />;
+};
+
+export const InteriorWebpIcon = (props) => {
+  return <Icon component={() => getSVG(InteriorWebpIconSVG, props.iconstyle)} {...props} />;
+};
+
+export const ApplicantIcon = (props) => {
+  return <Icon component={() => getSVG(ApplicantIconSVG, props.iconstyle)} {...props} />;
+};
+
+export const ConstructionSiteIcon = (props) => {
+  return <Icon component={() => getSVG(ConstructionSiteIconSVG, props.iconstyle)} {...props} />;
+};
 
 export const HomeloanIcon = (props) => {
   return <Icon component={() => getSVG(HomeloanSVG, props.iconstyle)} {...props} />;

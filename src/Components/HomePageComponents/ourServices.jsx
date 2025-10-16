@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { RealestateIcon, LegalIcon, HomeloanIcon, InteriorIcon } from "../../Assets/icons";
+import { RealestateIcon, LegalIcon, HomeloanIcon, InteriorIcon, DiscussionIcon, MaleStudentIcon, InteriorWebpIcon, ApplicantIcon, ConstructionSiteIcon } from "../../Assets/icons";
 import "aos/dist/aos.css";
 import AOS from "aos";
 import CraneTool from "../Actual_Components/cranetool.svg";
@@ -79,7 +79,7 @@ function OurServices() {
   const services = [
     {
       id: 'realestate',
-      Icon: RealestateIcon,
+      Icon: DiscussionIcon,
       title: 'Real Estate Consulting',
       description: 'Get expert real estate consulting to find the right property, whether it\'s flats, apartments, or new residential projects.',
       color: 'from-red-500 to-red-600',
@@ -87,7 +87,7 @@ function OurServices() {
     },
     {
       id: 'legal',
-      Icon: LegalIcon,
+      Icon: MaleStudentIcon,
       title: 'Legal Assistance',
       description: 'Buying property needs trusted legal support. We guide you with property documents, agreements, and safe transactions.',
       color: 'from-red-600 to-red-700',
@@ -95,7 +95,7 @@ function OurServices() {
     },
     {
       id: 'interior',
-      Icon: InteriorIcon,
+      Icon: InteriorWebpIcon,
       title: 'Interior Design',
       description: 'Transform your house into a dream home with affordable interior design solutions for flats, villas, and apartments.',
       color: 'from-red-500 to-pink-600',
@@ -103,7 +103,7 @@ function OurServices() {
     },
     {
       id: 'loan',
-      Icon: HomeloanIcon,
+      Icon: ApplicantIcon,
       title: 'Property Loan',
       description: 'We help you choose the best home loan options and guide you through the process to buy your property with ease.',
       color: 'from-red-700 to-red-800',
@@ -111,7 +111,7 @@ function OurServices() {
     },
     {
       id: 'construction',
-      image: CraneTool,
+      Icon: ConstructionSiteIcon,
       title: 'Construction',
       description: 'End-to-end construction solutions with quality, timelines, and transparency.',
       color: 'from-red-600 to-red-700',
