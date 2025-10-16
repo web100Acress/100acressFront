@@ -23,7 +23,7 @@ const LeaveManagement = () => {
         return;
       }
 
-      const response = await axios.get(`${getApiBase()}/hr/leave/all`, {
+      const response = await axios.get(`${getApiBase()}/api/hr/leave-requests`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -45,7 +45,7 @@ const LeaveManagement = () => {
         return;
       }
 
-      await axios.put(`${getApiBase()}/hr/leave/${id}/status`, { status }, {
+      await axios.patch(`${getApiBase()}/api/hr/leave/${id}/status`, { status }, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
