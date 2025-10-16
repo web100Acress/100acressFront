@@ -349,7 +349,7 @@ const PropertyCard = ({
       <div className="image-container">
         <div className="image-overlay"></div>
         <img
-          src={project?.frontImage?.url}
+          src={project?.thumbnailImage?.url || project?.frontImage?.url}
           alt={project?.projectName}
           className={`property-image ${imageLoaded ? 'loaded' : ''}`}
           onLoad={() => setImageLoaded(true)}
