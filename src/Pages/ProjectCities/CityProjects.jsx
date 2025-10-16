@@ -198,7 +198,7 @@ const CityProjects = () => {
                 <div className="mb-4">
                   <div className="text-sm font-medium text-gray-700 mb-2">Project Type</div>
                   <div className="space-y-2 text-sm text-gray-600">
-                    {['Commercial Property','Residential Flats','SCO Plots','Deen Dayal Plots','Residential Plots','Independent Floors','Builder Floors','Affordable Homes','Villas','Farm House'].map(opt => (
+                    {['Commercial Property','Residential Flats','SCO Plots','Deen Dayal Plots','Residential Plots','Independent Floors','Builder Floors','Affordable Homes','Villas','Farm Houses'].map(opt => (
                       <label key={opt} className="flex items-center gap-2 cursor-pointer">
                         <input type="checkbox" className="rounded border-gray-300" checked={sideFilters.type.includes(opt)} onChange={() => toggleFilter('type', opt)} />
                         {opt}

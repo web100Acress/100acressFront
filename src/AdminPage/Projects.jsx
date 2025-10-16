@@ -171,7 +171,7 @@ const Projects = () => {
   // Unique options for filters
   const typeOptions = useMemo(() => {
     if (!viewAll || viewAll.length === 0) {
-      return ['Industrial Plots', 'Farm House'];
+      return ['Industrial Plots', 'Farm Houses'];
     }
 
     const uniqueTypes = Array.from(new Set((viewAll || []).map(v => v?.type).filter(Boolean)));
@@ -180,8 +180,8 @@ const Projects = () => {
     if (!uniqueTypes.includes('Industrial Plots')) {
       uniqueTypes.push('Industrial Plots');
     }
-    if (!uniqueTypes.includes('Farm House')) {
-      uniqueTypes.push('Farm House');
+    if (!uniqueTypes.includes('Farm Houses')) {
+      uniqueTypes.push('Farm Houses');
     }
     if (!uniqueTypes.includes('Residential Plots')) {
       uniqueTypes.push('Residential Plots');
