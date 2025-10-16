@@ -27,7 +27,7 @@
 
     useEffect(() => {
       if (id) fetchApplications();
-      // eslint-disable-next-line react-hooks/exhaustive-deps
+      // esflint-disable-next-line react-hooks/exhaustive-deps
     }, [id]);
 
     const approve = async (appId) => {
