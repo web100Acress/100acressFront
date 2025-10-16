@@ -20,13 +20,13 @@ const ItDashboard = () => {
         return;
       }
 
-      const response = await api.get('/postPerson/all', {
+      const response = await api.get('/postPerson/view/allusers', {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
-      setUsers(response.data.users || []);
+      setUsers(response.data.data || []);
     } catch (error) {
       message.error(error.response?.data?.message || 'Failed to fetch users');
     } finally {
