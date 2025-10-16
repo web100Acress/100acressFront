@@ -173,6 +173,14 @@ const GlobalFilterTemplate = ({
   const readyToMoveProjects = useSelector(store => store?.allsectiondata?.readytomove);
   const newLaunchProjects = useSelector(store => store?.allsectiondata?.newlaunch);
 
+  // Selector for project type pages
+  const typeProjects = useSelector(store => {
+    if (currentConfig.query) {
+      return store?.allsectiondata?.[currentConfig.query] || [];
+    }
+    return [];
+  });
+
   // Get the appropriate project data based on status
   const getProjectData = () => {
     console.log('Getting project data for status:', projectStatus);
@@ -207,8 +215,12 @@ const GlobalFilterTemplate = ({
       return projects;
     }
     
-    // If no project status (for type/city/budget pages), return empty array
+    // If no project status (for type/city/budget pages), use typeProjects if available
     if (!projectStatus) {
+      if (typeProjects && typeProjects.length > 0) {
+        console.log('Using typeProjects for project type page:', typeProjects.length);
+        return typeProjects;
+      }
       console.log('No project status detected, returning empty array');
       return [];
     }
@@ -391,9 +403,11 @@ const GlobalFilterTemplate = ({
   }, []);
 
   useEffect(() => {
-    console.log('Loading projects for status:', projectStatus, 'with query:', currentConfig.query);
-    throttledGetAllProjects(currentConfig.query, 0);
-  }, [projectStatus, currentConfig.query, throttledGetAllProjects]);
+    if (currentConfig.query) {
+      console.log('Loading projects for query:', currentConfig.query);
+      throttledGetAllProjects(currentConfig.query, 0);
+    }
+  }, [currentConfig.query, throttledGetAllProjects]);
 
   useEffect(() => {
     console.log('Project data updated:', projectData, 'for status:', projectStatus);

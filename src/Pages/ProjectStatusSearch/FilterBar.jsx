@@ -41,7 +41,7 @@ export default function FilterBar({
       { value: 'Builder Floors', label: 'Builder Floors' },
       { value: 'Affordable Homes', label: 'Affordable Homes' },
       { value: 'Villas', label: 'Villas' },
-      { value: 'Farm Houses', label: 'Farm House' },
+      { value: 'Farm Houses', label: 'Farm Houses' },
     ],
     price: [
       { value: '', label: 'All Prices' },

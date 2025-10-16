@@ -533,7 +533,7 @@ const Home = () => {
                 {/* Image block with button immediately below */}
                 <div className="mt-3">
                   <img
-                    src="/Images/POST%20PROPERITES%20BANNER.webp"
+                    src="/Images/Shubh_Deepawali_Hindi_Greeting_PNG___Happy_Diwali_Clipart-PNGLove.com.png"
                     alt="Post property illustration"
                     className="w-full h-auto object-contain max-h-44 md:max-h-56"
                     loading="lazy"

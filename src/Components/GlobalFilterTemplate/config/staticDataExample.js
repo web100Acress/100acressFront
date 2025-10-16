@@ -1,5 +1,5 @@
 // Example of how to use static data in GlobalFilterTemplate
-import { getStaticData, getFAQData, getTrustBoosters, getBudgetPageData } from './staticData';
+import { getStaticData, getFAQData, getTrustBoosters, getBudgetPageData } from './staticData.jsx';
 
 // Example usage for different page types:
 
@@ -95,12 +95,16 @@ export const getPageDataFromURL = (pathname, searchParams = {}) => {
     return getTypePageData('residential');
   }
   
-  if (pathname.includes('/projects/commercial')) {
-    return getTypePageData('commercial');
+  if (pathname.includes('/projects/farmhouse')) {
+    return getTypePageData('farmhouse');
   }
   
-  if (pathname.includes('/plots-in-')) {
-    return getTypePageData('plots-in-gurugram');
+  if (pathname.includes('/projects/industrial-plots')) {
+    return getTypePageData('industrial-plots');
+  }
+  
+  if (pathname.includes('/projects/industrial-projects')) {
+    return getTypePageData('industrial-projects');
   }
   
   if (pathname.includes('/sco/plots')) {

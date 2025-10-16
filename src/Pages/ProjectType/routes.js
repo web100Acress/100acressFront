@@ -32,7 +32,7 @@ export const projectTypeRoutes = {
   },
   "farmhouse": {
     path: "/projects/farmhouse/",
-    title: "Farm House Projects",
+    title: "Farm Houses Projects",
     description: "Discover Premium Farm House Projects – Your Gateway to Serene Living and Agricultural Investment."
   },
   "industrial-plots": {

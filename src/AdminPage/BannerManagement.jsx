@@ -12,6 +12,8 @@ const BannerManagement = () => {
   const [uploading, setUploading] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
+  const [selectedMobileFile, setSelectedMobileFile] = useState(null);
+  const [mobilePreviewUrl, setMobilePreviewUrl] = useState(null);
   const [bannerData, setBannerData] = useState({
     title: '',
     subtitle: '',
@@ -73,6 +75,23 @@ const BannerManagement = () => {
     }
   };
 
+  const handleMobileFileSelect = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (!file.type.startsWith('image/')) {
+        toast.error('Please select an image file');
+        return;
+      }
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error('File size should be less than 5MB');
+        return;
+      }
+      setSelectedMobileFile(file);
+      const url = URL.createObjectURL(file);
+      setMobilePreviewUrl(url);
+    }
+  };
+
   const handleUpload = async () => {
     if (!selectedFile) {
       toast.error('Please select an image file');
@@ -84,6 +103,9 @@ const BannerManagement = () => {
       const token = localStorage.getItem('myToken');
       const formData = new FormData();
       formData.append('bannerImage', selectedFile);
+      if (selectedMobileFile) {
+        formData.append('mobileBannerImage', selectedMobileFile);
+      }
       formData.append('title', bannerData.title);
       formData.append('subtitle', bannerData.subtitle);
       formData.append('slug', bannerData.slug || ''); // Ensure slug is always a string
@@ -114,6 +136,8 @@ const BannerManagement = () => {
         // Reset form
         setSelectedFile(null);
         setPreviewUrl(null);
+        setSelectedMobileFile(null);
+        setMobilePreviewUrl(null);
         setBannerData({
           title: '',
           subtitle: '',
@@ -354,7 +378,7 @@ const BannerManagement = () => {
 
               <div>
                 <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
-                  Banner Image *
+                  Desktop Image *
                 </label>
                 <div className="relative">
                   <input
@@ -370,6 +394,27 @@ const BannerManagement = () => {
                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-1">
                   <AlertCircle className="w-3 h-3" />
                   Recommended: 1920x340px, Max size: 5MB
+                </p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
+                  Mobile Image (Optional)
+                </label>
+                <div className="relative">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleMobileFileSelect}
+                    className="w-full px-4 py-3 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-all duration-200 hover:border-blue-400"
+                  />
+                  <div className="absolute inset-y-0 right-0 flex items-center pr-3">
+                    <Upload className="w-5 h-5 text-gray-400" />
+                  </div>
+                </div>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-1">
+                  <AlertCircle className="w-3 h-3" />
+                  Recommended: 1080x720px, Max size: 5MB
                 </p>
               </div>
             </div>
@@ -409,6 +454,19 @@ const BannerManagement = () => {
                     <ImageIcon className="w-16 h-16 mx-auto mb-4 opacity-50" />
                     <p className="text-lg font-medium">No image selected</p>
                     <p className="text-sm">Choose an image to see preview</p>
+                  </div>
+                </div>
+              )}
+
+              {mobilePreviewUrl && (
+                <div className="relative group">
+                  <img
+                    src={mobilePreviewUrl}
+                    alt="Mobile banner preview"
+                    className="w-full h-64 object-cover rounded-xl border-2 border-gray-200 dark:border-gray-600 shadow-lg"
+                  />
+                  <div className="absolute bottom-3 left-3 right-3 bg-black bg-opacity-50 text-white p-2 rounded-lg">
+                    <p className="text-sm font-medium">Mobile Preview</p>
                   </div>
                 </div>
               )}

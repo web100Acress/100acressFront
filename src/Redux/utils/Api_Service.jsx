@@ -301,7 +301,16 @@ const Api_service = () => {
   const getAllProjects= async(query ,limit )=>{
 
     try{
-      const response = await api.get(`${API_ROUTES.projectsBase()}/projectsearch?${query}=1&limit=${limit}`);
+      let response;
+      if (query === "farmhouse") {
+        response = await api.get(`${API_ROUTES.projectsBase()}/projectsearch?type=Farm Houses&limit=${limit}`);
+      } else if (query === "industrialplots") {
+        response = await api.get(`${API_ROUTES.projectsBase()}/projectsearch?type=Industrial Plots&limit=${limit}`);
+      } else if (query === "industrialprojects") {
+        response = await api.get(`${API_ROUTES.projectsBase()}/projectsearch?type=Industrial Projects&limit=${limit}`);
+      } else {
+        response = await api.get(`${API_ROUTES.projectsBase()}/projectsearch?${query}=1&limit=${limit}`);
+      }
       const AllProjectbyQuery = response.data.data;
       if (query === 'allupcomingproject') {
         dispatch(allupcomingproject(AllProjectbyQuery));

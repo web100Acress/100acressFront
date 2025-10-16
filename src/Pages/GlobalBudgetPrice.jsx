@@ -111,11 +111,12 @@ const GlobalBudgetPrice = () => {
     const filtered = filterProjectsByBudget(allProjects, currentBudgetRange);
     console.log('Budget page - filtered projects:', filtered.length);
     setFilteredProjects(filtered);
-  }, [allProjects, location.pathname]);
+  }, [allProjects, location.pathname, location.search]); // Add location.search to catch query param changes too
 
   return (
     <>
       <GlobalFilterTemplate
+        key={location.pathname} // Force re-render when route changes
         pageType="budget"
         pageConfig={{ budgetRange: (() => {
           const path = location.pathname;
