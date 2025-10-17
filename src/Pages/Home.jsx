@@ -15,7 +15,7 @@ import { Link } from "react-router-dom";
 import BackToTopButton from "./BackToTopButton";
 import PossessionProperty from "../Components/PossessionProperty";
 import BudgetPlotsInGurugraon from "./BudgetPlotsInGurugraon";
-import TopSeoPlots from "./TopSeoPlots";
+// import TopSeoPlots from "./TopSeoPlots";
 import { useMediaQuery } from "@chakra-ui/react";
 import { EyeIcon, HomeIcon, MessageCircle, PhoneIcon, User as UserIcon, ArrowUpRight } from "lucide-react";
 import ModernRecommendedSection from "../Components/HomePageComponents/ModernRecommendedSection";
@@ -740,7 +740,7 @@ const Home = () => {
               )}
             </div>
 
-            <TopSeoPlots />
+            {/* <TopSeoPlots /> */}
 
             {/* Feature Projects */}
             <div ref={setRef("feature")} data-section="feature" style={{ height: "10px" }}></div>
