@@ -5,7 +5,8 @@ import {
   FaTachometerAlt,
   FaBars,
   FaTimes,
-  FaSignOutAlt
+  FaSignOutAlt,
+  FaCalendarAlt
 } from 'react-icons/fa';
 import { BiSolidGraduation } from 'react-icons/bi';
 
@@ -39,6 +40,11 @@ const HrSidebar = () => {
       name: 'All User',
       path: '/hr/it',
       icon: <FaTachometerAlt className="text-xl" />
+    },
+    {
+      name: 'Leave Requests',
+      path: '/hr/leave-management',
+      icon: <FaCalendarAlt className="text-xl" />
     }
   ];
 
