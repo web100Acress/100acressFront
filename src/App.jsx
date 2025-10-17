@@ -424,6 +424,11 @@ function App() {
                       <Route path="/blog/" element={<Blogging />} />
                       {/* Place static path before dynamic ones to avoid '/blog/write' matching ':slug' */}
                       <Route path="/blog/write" element={<BlogWrite />} />
+                      {/* Handle slug-only URLs like /blog/my-blog-slug */}
+                      <Route path="/blog/:slug" element={<BlogView />} />
+                      {/* Handle slug/id URLs like /blog/my-blog-slug/67f7bd08edb6d0442ad0012e */}
+                      <Route path="/blog/:slug/:id" element={<BlogView />} />
+                      {/* Legacy fallback for direct ID access */}
                       <Route path="/blog/:id" element={<BlogView />} />
                       <Route path="/blogging" element={<Blogging />} />
                       <Route path="/blog-insights" element={<BlogInsights />} />

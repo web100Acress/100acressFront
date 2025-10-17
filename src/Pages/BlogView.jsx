@@ -361,20 +361,36 @@ const BlogView = () => {
       try {
         setLoadError("");
 
-        // Prefer explicit id param or ?id, else resolve from slug
-        let effectiveId = id || getQueryId();
-        if (!effectiveId && slug) {
+        // Handle different URL patterns:
+        // 1. /blog/slug/id - both slug and id in URL params
+        // 2. /blog/slug?id=xxx - slug in URL, id in query
+        // 3. /blog/slug - only slug, need to resolve ID
+        // 4. /blog/id - legacy direct ID access
+        
+        let effectiveId = null;
+        let effectiveSlug = null;
+        
+        // Check if we have both slug and id from URL params (pattern: /blog/slug/id)
+        if (slug && id) {
+          // URL pattern: /blog/a-dream-address-awaits-at-dlf-the-arbour-sector-63/67f7bd08edb6d0442ad0012e
+          effectiveSlug = slug;
+          effectiveId = id;
+          console.log('[BlogView] Using slug/id pattern:', { slug: effectiveSlug, id: effectiveId });
+        }
+        // Check if we have slug and id from query params
+        else if (slug && getQueryId()) {
+          effectiveSlug = slug;
+          effectiveId = getQueryId();
+          console.log('[BlogView] Using slug with query id:', { slug: effectiveSlug, id: effectiveId });
+        }
+        // Check if we have only slug, need to resolve ID
+        else if (slug && !id) {
+          effectiveSlug = slug;
           try {
             const slugResp = await api.get(`blog/slug/${encodeURIComponent(slug)}`);
             if (slugResp?.data?.data?.exists && slugResp?.data?.data?.id) {
               effectiveId = slugResp.data.data.id;
-              // Update URL to include id param for shareability without reload
-              try {
-                const params = new URLSearchParams(location.search);
-                params.set('id', effectiveId);
-                const newUrl = `${location.pathname}?${params.toString()}`;
-                window.history.replaceState({}, '', newUrl);
-              } catch (_) {}
+              console.log('[BlogView] Resolved ID from slug:', { slug: effectiveSlug, id: effectiveId });
             } else {
               setLoadError('Blog not found');
               return;
@@ -385,31 +401,40 @@ const BlogView = () => {
             return;
           }
         }
+        // Legacy: direct ID access (check if it's actually an ID, not a slug)
+        else if (id && !slug) {
+          // Check if 'id' is actually a MongoDB ObjectId (24 hex chars) or looks like an ID
+          if (/^[0-9a-fA-F]{24}$/.test(id)) {
+            effectiveId = id;
+            console.log('[BlogView] Using direct ID access:', { id: effectiveId });
+          } else {
+            // 'id' might actually be a slug, treat it as such
+            effectiveSlug = id;
+            try {
+              const slugResp = await api.get(`blog/slug/${encodeURIComponent(id)}`);
+              if (slugResp?.data?.data?.exists && slugResp?.data?.data?.id) {
+                effectiveId = slugResp.data.data.id;
+                console.log('[BlogView] Resolved ID from slug (in id param):', { slug: effectiveSlug, id: effectiveId });
+              } else {
+                setLoadError('Blog not found');
+                return;
+              }
+            } catch (e) {
+              console.warn('[BlogView] Failed to resolve ID from slug (in id param):', e?.message || e);
+              setLoadError('Blog not found');
+              return;
+            }
+          }
+        }
 
         if (!effectiveId) {
           setLoadError('Blog not found');
           return;
         }
 
-        // First get blog data without counting view
+        // Fetch the blog data directly using the resolved effectiveId
         let blogResponse;
         try {
-          // First check if blog exists by slug
-          try {
-            const slugCheck = await api.get(`blog/slug/${encodeURIComponent(effectiveId)}`);
-            if (slugCheck?.data?.data?.exists === false) {
-              setLoadError('Blog not found');
-              return;
-            }
-            // If we get here, the slug exists but we need to use its ID
-            if (slugCheck?.data?.data?.id) {
-              effectiveId = slugCheck.data.data.id;
-            }
-          } catch (slugErr) {
-            console.warn('Error checking blog slug:', slugErr);
-          }
-
-          // Now fetch the blog data
           blogResponse = await api.get(`blog/view/${effectiveId}`);
           
           if (!blogResponse?.data?.data) {
