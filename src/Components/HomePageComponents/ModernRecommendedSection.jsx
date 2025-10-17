@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useContext } from "react";
 import { useSelector } from "react-redux";
 import { Skeleton } from 'antd';
 import { format } from 'date-fns';
+import { getPossessionInfo } from '../../Utils/possessionUtils';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, Autoplay, Navigation } from 'swiper/modules';
 import { 
@@ -89,15 +90,13 @@ const ModernRecommendedSection = () => {
   };
 
   const formatPossession = (project) => {
-    if (project?.possessionDate) {
-      try {
-        return format(new Date(project.possessionDate), 'MMM yyyy');
-      } catch (error) {
-        console.error('Error formatting possession date:', error);
-        return project?.project_Status || 'Ready to Move';
-      }
-    }
-    return project?.project_Status || project?.possession || 'Ready to Move';
+    const possessionInfo = getPossessionInfo(project);
+    return possessionInfo.value;
+  };
+
+  const getPossessionLabel = (project) => {
+    const possessionInfo = getPossessionInfo(project);
+    return possessionInfo.label;
   };
 
   const parsePaymentPlan = (paymentPlan) => {
@@ -226,6 +225,7 @@ const ModernRecommendedSection = () => {
                   formatPrice={formatPrice}
                   formatLocation={formatLocation}
                   formatPossession={formatPossession}
+                  getPossessionLabel={getPossessionLabel}
                   parsePaymentPlan={parsePaymentPlan}
                   favTick={favTick}
                   isAuthenticated={isAuthenticated}
@@ -251,6 +251,7 @@ const PropertyCard = ({
   formatPrice,
   formatLocation,
   formatPossession,
+  getPossessionLabel,
   parsePaymentPlan,
   favTick,
   isAuthenticated,
@@ -379,7 +380,7 @@ const PropertyCard = ({
             <MdBed className="info-icon" />
             <div className="info-content">
               <span className="info-value">{formatPossession(project)}</span>
-              <span className="info-label">Possession</span>
+              <span className="info-label">{getPossessionLabel(project)}</span>
             </div>
           </div>
         </div>

@@ -16,6 +16,7 @@ import "react-responsive-carousel/lib/styles/carousel.min.css";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import { format, isValid, parseISO } from "date-fns";
+import { getPossessionInfo } from '../../Utils/possessionUtils';
 
 import { DataContext } from "../../MyContext";
 const BannerPage = () => {
@@ -582,9 +583,9 @@ const BannerPage = () => {
             </div>
 
             <div className="flex flex-col">
-              <span className="text-center font-normal ">Possession</span>
+              <span className="text-center font-normal ">{getPossessionInfo(projectViewDetails).label}</span>
               <span className="text-center font-semibold text-xl uppercase">
-                {formatDate(projectViewDetails.possessionDate)}
+                {getPossessionInfo(projectViewDetails).value}
               </span>
             </div>
 

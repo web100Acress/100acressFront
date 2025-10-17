@@ -3,7 +3,8 @@ import { Button, Collapse, message } from 'antd';
 import api from '../../../config/apiClient';
 import React, { useContext, useEffect, useRef, useState, useCallback } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import {  format, isValid, parseISO } from "date-fns";
+import { parseISO, isValid, format } from 'date-fns';
+import { getPossessionInfo } from '../../../Utils/possessionUtils';
 import styled from "styled-components";
 import { Helmet } from 'react-helmet';
 import {
@@ -981,9 +982,9 @@ const items =text.map((item, index) => ({
                   <TowerIcon className="mr-2" />
                   <div className='mt-2 text-center'>
                     <span className="text-2xl font-AbrialFatFace" >
-                      {formatDate(projectViewDetails.possessionDate)}
+                      {getPossessionInfo(projectViewDetails).value}
                     </span>
-                    <h6 className='text-sm'>Possession</h6>
+                    <h6 className='text-sm'>{getPossessionInfo(projectViewDetails).label}</h6>
                   </div>
                 </section>
 

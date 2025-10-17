@@ -1,4 +1,6 @@
 import React from 'react';
+import { format } from 'date-fns';
+import { getPossessionInfo } from '../../../Utils/possessionUtils';
 import '../../../styles/newbanner/AboutSection.css';
 import { AcresIcon, CalenderIcon, PriceIcon, TowerIcon } from '../../../Assets/icons';
 
@@ -68,8 +70,8 @@ const AboutSection = ({
             <div className="nb-stats-icon-wrap">
               <TowerIcon className="nb-stats-icon" />
             </div>
-            <span className="nb-stats-value">{formatDate(projectViewDetails.possessionDate) || 'N/A'}</span>
-            <span className="nb-stats-label">Possession</span>
+            <span className="nb-stats-value">{getPossessionInfo(projectViewDetails).value || 'N/A'}</span>
+            <span className="nb-stats-label">{getPossessionInfo(projectViewDetails).label}</span>
           </div>
 
           <div className="nb-stats-card">
