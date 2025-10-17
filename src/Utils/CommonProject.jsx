@@ -124,50 +124,56 @@ const CommonProject = ({
                 />
               </div>
             </Link>
+
             {/* like button ui */}
-            <div className="absolute top-2 right-3 z-[1]">
-              <button
-                type="button"
-                aria-label={
-                  isFav
-                    ? "Remove from wishlist"
-                    : isAuthenticated
-                    ? "Add to wishlist"
-                    : "Login to add to wishlist"
-                }
-                title={
-                  isFav
-                    ? "Remove from wishlist"
-                    : isAuthenticated
-                    ? "Add to wishlist"
-                    : "Login to add to wishlist"
-                }
-                className={`inline-flex items-center justify-center w-1 h-1 rounded-full ${
-                  isFav ? 'bg-red-500' : 'bg-transparent'
-                } hover:bg-white/40  border-white transition`}
-                onClick={(e) =>
-                  handleFavoriteClick(e, id, item)
-                }
-              >
-              {favCheck(id) ? (
-                <img
-                  src="https://static.99acres.com/universalapp/img/Shortlist.webp"
-                  width="24"
-                  height="24"
-                  alt="Shortlisted"
-                  className="filter invert-[0.5] sepia saturate-[5] hue-rotate-[0deg]"
-                />
-              ) : (
-                <img
-                  src="https://static.99acres.com/universalapp/img/Shortlist.webp"
-                  width="24"
-                  height="24"
-                  alt="Shortlist"
-                  className="opacity-50"
-                />
-              )}
-              </button>
-            </div>
+<div className="absolute top-0 right-0 z-[2]">
+  <button
+    type="button"
+    aria-label={
+      isFav
+        ? "Remove from wishlist"
+        : isAuthenticated
+        ? "Add to wishlist"
+        : "Login to add to wishlist"
+    }
+    title={
+      isFav
+        ? "Remove from wishlist"
+        : isAuthenticated
+        ? "Add to wishlist"
+        : "Login to add to wishlist"
+    }
+    className={`inline-flex items-center justify-center w-1 h-1 rounded-full ${
+      isFav ? "" : "bg-transparent"
+    }border-white transition`}
+    onClick={(e) => handleFavoriteClick(e, id, item)}
+  >
+    {favCheck(id) ? (
+      <svg
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="red"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+      </svg>
+    ) : (
+      <svg
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="#d1d5db"
+        strokeWidth="2"
+        xmlns="http://www.w3.org/2000/svg"
+        className="opacity-100"
+      >
+        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+      </svg>
+    )}
+  </button>
+</div>
             {/* subtle gradient bottom overlay */}
             <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/10 to-transparent"></div>
           </div>
@@ -182,9 +188,7 @@ const CommonProject = ({
               {item?.projectName && (
                 <HeadingTag
                   className={`${
-                    compact
-                      ? "text-[15px]"
-                      : "text-base md:text-[17px]"
+                    compact ? "text-[15px]" : "text-base md:text-[17px]"
                   } font-semibold tracking-[-0.2px] text-gray-900 mb-1 group-hover:text-red-600 transition-colors truncate whitespace-nowrap font-['Rubik',sans-serif]`}
                 >
                   {item.projectName}
@@ -195,14 +199,9 @@ const CommonProject = ({
                   compact ? "text-[12px]" : "text-[13px]"
                 } text-gray-600 truncate max-w-full`}
               >
-                <span
-                  title={item.projectAddress}
-                  className="truncate"
-                >
+                <span title={item.projectAddress} className="truncate">
                   {(item.projectAddress || "").slice(0, 48)}
-                  {(item.projectAddress || "").length > 48
-                    ? "…"
-                    : ""}
+                  {(item.projectAddress || "").length > 48 ? "…" : ""}
                 </span>
               </div>
               <p
@@ -231,9 +230,7 @@ const CommonProject = ({
                 <RupeeIcon />
                 {item.minPrice && item.maxPrice
                   ? (item.minPrice < 1
-                      ? `${(item.minPrice * 100).toFixed(
-                          2
-                        )} L`
+                      ? `${(item.minPrice * 100).toFixed(2)} L`
                       : `${item.minPrice} Cr`) +
                     " - " +
                     `${item.maxPrice} Cr`
@@ -248,9 +245,7 @@ const CommonProject = ({
                 to={`/${pUrl}/`}
                 target="_top"
                 className={`flex-1 flex items-center justify-center text-white bg-[#ee1c25] hover:bg-[#d11922] focus:ring-2 focus:ring-[#ee1c25] focus:outline-none font-medium rounded-full ${
-                  compact
-                    ? "text-[11px] px-3 py-1.5"
-                    : "text-[12px] px-4 py-2"
+                  compact ? "text-[11px] px-3 py-1.5" : "text-[12px] px-4 py-2"
                 } shadow-md hover:shadow-lg transition`}
                 onClick={() => addViewedProject(item)}
               >
@@ -274,18 +269,12 @@ const CommonProject = ({
                 target="_blank"
                 rel="noopener noreferrer"
                 className={`flex-1 flex items-center justify-center text-white bg-[#ee1c25] hover:bg-[#d11922] focus:ring-2 focus:ring-[#ee1c25] focus:outline-none font-medium rounded-full ${
-                  compact
-                    ? "text-[11px] px-3 py-1.5"
-                    : "text-[12px] px-4 py-2"
+                  compact ? "text-[11px] px-3 py-1.5" : "text-[12px] px-4 py-2"
                 } shadow-md hover:shadow-lg transition`}
                 title="Chat on WhatsApp"
               >
                 <i className="fab fa-whatsapp text-lg"></i>
-                <span
-                  className={`ml-1 ${
-                    compact ? "text-[11px]" : "text-xs"
-                  }`}
-                >
+                <span className={`ml-1 ${compact ? "text-[11px]" : "text-xs"}`}>
                   WhatsApp
                 </span>
               </a>
@@ -374,7 +363,9 @@ const CommonProject = ({
                         : "grid grid-cols-1 w-full px-4 md:px-4 md:grid-cols-2 lg:grid-cols-4 mb-6 gap-4 lg:gap-6"
                     }`}
                   >
-                    {response?.map((item, index) => renderProjectItem(item, index))}
+                    {response?.map((item, index) =>
+                      renderProjectItem(item, index)
+                    )}
                   </div>
                 ) : (
                   response?.map((item, index) => renderProjectItem(item, index))
