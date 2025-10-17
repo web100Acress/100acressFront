@@ -9,7 +9,6 @@ import SuggestedProjects from "./SuggestedProjects";
 import { hydrateFavoritesFromServer, subscribe, getFavorites, getFavoritesData } from "../../Utils/favorites";
 import api from "../../config/apiClient";
 import axios from 'axios';
-import { Modal } from 'antd';
 import LeaveForm from '../LeaveForm';
 
 const UserDashBoard = () => {
@@ -340,17 +339,11 @@ const UserDashBoard = () => {
         </div>
       </div>
       
-      {/* Leave Modal */}
-      <Modal
-        title="Apply for Leave"
-        open={isLeaveModalOpen}
-        onCancel={() => setIsLeaveModalOpen(false)}
-        footer={null}
-        width={600}
-        centered
-      >
-        <LeaveForm />
-      </Modal>
+      {/* Leave Modal - Simple JSX Modal */}
+      <LeaveForm
+        isOpen={isLeaveModalOpen}
+        onClose={() => setIsLeaveModalOpen(false)}
+      />
 
       {/* Footer */}
       <LuxuryFooter />

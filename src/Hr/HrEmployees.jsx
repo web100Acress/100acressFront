@@ -116,20 +116,39 @@ const HrEmployees = () => {
     setCurrentPage(1);
   };
 
-  const handleStatusUpdate = async (userId, newStatus) => {
+  const handleStatusUpdate = async (userId, currentStatus) => {
     try {
       const myToken = localStorage.getItem("myToken");
-      await api.post(`/hr/user/${userId}/status`, { status: newStatus }, {
+      if (!myToken) {
+        message.error('You are not logged in');
+        return;
+      }
+
+      console.log('HrEmployees handleStatusUpdate called with:', { userId, currentStatus });
+
+      // Ensure we have a valid status value
+      const validStatuses = ['authorized', 'unauthorized'];
+      const currentStatusValue = validStatuses.includes(currentStatus) ? currentStatus : 'unauthorized';
+
+      const newStatus = currentStatusValue === 'authorized' ? 'unauthorized' : 'authorized';
+      console.log('Calculated newStatus:', newStatus, 'for user:', userId);
+
+      const requestData = { status: newStatus };
+      console.log('HrEmployees Request data:', requestData);
+
+      await api.post(`/api/hr/user/${userId}/status`, requestData, {
         headers: {
           Authorization: `Bearer ${myToken}`,
           "Content-Type": "application/json",
         },
       });
+
       // Update the local state
       setViewAll(prev => prev.map(user => user._id === userId ? { ...user, status: newStatus } : user));
+      message.success(`User ${newStatus} successfully`);
     } catch (error) {
       console.log("❌ Failed to update user status:", error);
-      alert("Failed to update user status");
+      message.error(error.response?.data?.message || "Failed to update user status");
     }
   };
 
@@ -320,7 +339,7 @@ const HrEmployees = () => {
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
                           <button
-                            onClick={() => handleStatusUpdate(item._id, item.status === 'authorized' ? 'unauthorized' : 'authorized')}
+                            onClick={() => handleStatusUpdate(item._id, item.status)}
                             className={`px-3 py-1 rounded-full text-xs font-medium shadow-sm ${
                               item.status === 'authorized'
                                 ? 'bg-red-100 text-red-700 hover:bg-red-200'
