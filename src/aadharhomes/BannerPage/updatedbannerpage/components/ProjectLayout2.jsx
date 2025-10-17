@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { format } from 'date-fns';
+import { getPossessionInfo } from '../../../../Utils/possessionUtils';
 import { motion } from 'framer-motion';
 import ProjectHero from "./ProjectHero";
 import AboutSection from "./AboutSection";
@@ -175,11 +176,12 @@ function ProjectLayout2() {
     return '—';
   };
 
+  const possessionInfo = getPossessionInfo(projectViewDetails);
+  
   const bottomInfo = {
     landArea: projectViewDetails?.totalLandArea ? `${projectViewDetails.totalLandArea} Acres` : "—",
-    possession: projectViewDetails?.possessionDate 
-      ? format(new Date(projectViewDetails.possessionDate), 'MMM yyyy')
-      : projectViewDetails?.project_Status || "—",
+    possession: possessionInfo.value,
+    possessionLabel: possessionInfo.label,
     aboutProject: getAboutSummary(),
     price: formatPrice()
   };

@@ -56,7 +56,7 @@ const VideoSection = ({
 
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-2 tracking-tight">
             <span className="bg-gradient-to-r from-white via-gray-100 to-white bg-clip-text text-transparent">
-              Project Walkthrough
+              {projectName ? `${projectName} Walkthrough` : 'Project Walkthrough'}
             </span>
           </h2>
 
@@ -64,16 +64,18 @@ const VideoSection = ({
             <div className="h-0.5 w-20 bg-gradient-to-r from-transparent via-amber-400 to-transparent"></div>
           </div>
 
-          {youtubeVideoTitle && (
-            <motion.p 
-              className="text-lg text-gray-300 font-light max-w-2xl mx-auto leading-relaxed mb-3"
+          {youtubeVideoDescription && (
+            <motion.div
+              className="max-w-4xl mx-auto mb-4"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
               viewport={{ once: true }}
             >
-              {youtubeVideoTitle}
-            </motion.p>
+              <p className="text-gray-300 text-sm leading-relaxed text-center">
+                {youtubeVideoDescription}
+              </p>
+            </motion.div>
           )}
 
           <motion.div 
