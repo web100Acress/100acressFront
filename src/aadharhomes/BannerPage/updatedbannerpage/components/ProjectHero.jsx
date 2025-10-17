@@ -11,6 +11,7 @@ const ProjectHero = ({
   bottomInfo = {
     landArea: "",
     possession: "",
+    possessionLabel: "POSSESSION",
     aboutProject: "",
     price: ""
   },
@@ -169,7 +170,7 @@ const ProjectHero = ({
             {/* Possession */}
             <div className="px-4 py-6 text-center relative group cursor-pointer transition-all duration-300 hover:bg-yellow-400/10 hover:scale-105 hover:shadow-lg">
               <div className="text-xs font-medium text-white/80 uppercase tracking-widest mb-2 group-hover:text-yellow-400 transition-colors duration-300">
-                POSSESSION
+                {bottomInfo.possessionLabel || 'POSSESSION'}
               </div>
               <div className="text-xl font-bold text-white group-hover:text-yellow-300 transition-colors duration-300">
                 {bottomInfo.possession}
@@ -218,6 +219,7 @@ ProjectHero.propTypes = {
   bottomInfo: PropTypes.shape({
     landArea: PropTypes.string,
     possession: PropTypes.string,
+    possessionLabel: PropTypes.string,
     aboutProject: PropTypes.string,
     price: PropTypes.string
   }),
@@ -234,6 +236,7 @@ ProjectHero.defaultProps = {
   bottomInfo: {
     landArea: '',
     possession: '',
+    possessionLabel: 'POSSESSION',
     aboutProject: '',
     price: ''
   },

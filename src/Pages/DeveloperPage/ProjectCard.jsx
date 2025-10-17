@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { gradients, tokens } from './DesignTokens';
+import { formatPossession, getPossessionLabel } from '../../Utils/possessionUtils';
 
 export default function ProjectCard({ project, view = 'grid', onExplore, onFavorite, onShare, isFav = false, onCompareToggle, compared, onPhone, onWhatsApp }) {
   const [hovered, setHovered] = useState(false);
@@ -116,7 +117,7 @@ export default function ProjectCard({ project, view = 'grid', onExplore, onFavor
         <div className="mt-2 flex flex-wrap gap-1.5">
           {priceText && <span className="px-2 py-0.5 rounded-full text-xs bg-red-50 text-red-700 border border-red-100">{priceText}</span>}
           {project?.type && <span className="px-2 py-0.5 rounded-full text-xs bg-gray-50 text-gray-700 border">{project.type}</span>}
-          {project?.possessiondate && <span className="px-2 py-0.5 rounded-full text-xs bg-gray-50 text-gray-700 border">Possession {project.possessiondate}</span>}
+          {project?.possessiondate && <span className="px-2 py-0.5 rounded-full text-xs bg-gray-50 text-gray-700 border">{getPossessionLabel(project)} {formatPossession(project)}</span>}
           {project?.projectAddress && <span className="px-2 py-0.5 rounded-full text-xs bg-gray-50 text-gray-700 border">{project.projectAddress}</span>}
         </div>
 
