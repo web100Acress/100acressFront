@@ -131,17 +131,18 @@ const Builder = () => {
       title: "Maxestates",
       link: "/developers/maxestates/",
       image:
-        "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/maxestates-logo.webp",
+        "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/maxestate.webp",
     },
   ];
 
     return (
         <Wrapper className="section">
             <div className="container">
-               <div className="flex items-center justify-between mx-3 lg:mx-3 xl:mx-14 md:mx-6 py-2">
-                         <div className="flex items-center ">
-                           <h2 className="text-2xl xl:text-4xl lg:text-3xl md:text-2xl text-center sm:text-left font-bold">
-                             Top Real Estate Developers 
+               <div className="flex items-center justify-between mx-3 lg:mx-3 xl:mx-14 md:mx-6 py-6">
+                         <div className="flex items-center">
+                           <div className="w-1 h-12 bg-gradient-to-b from-red-500 to-red-600 rounded-full mr-4"></div>
+                           <h2 className="text-2xl xl:text-4xl lg:text-3xl md:text-2xl text-center sm:text-left font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">
+                             Top Real Estate Developers
                            </h2>
                          </div>
                          {/* <div className="ml-2 hidden sm:block">
@@ -160,14 +161,14 @@ const Builder = () => {
               data-aos="flip-up"
               to={project.link}
               key={index}
-              className="group relative bg-white rounded-2xl shadow-[0_4px_12px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_25px_rgba(0,0,0,0.15)] hover:scale-105 transition-all duration-300 ease-in-out overflow-hidden"
+              className="group relative bg-white rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.12)] hover:shadow-[0_16px_48px_rgba(0,0,0,0.2)] hover:scale-105 transition-all duration-300 ease-in-out overflow-hidden ring-2 ring-red-200 hover:ring-red-400"
             >
               <div className="flex flex-col items-center justify-center p-4 h-28">
                 <div className="flex items-center justify-center w-full h-20 mb-2">
                   <img
                     src={project.image}
                     alt={project.title}
-                    className="w-24 h-24 object-contain rounded-xl"
+                    className="w-28 h-28 object-contain rounded-xl"
                     loading="lazy"
                   />
                 </div>
