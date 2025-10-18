@@ -65,13 +65,6 @@ export default function BlogManagement() {
     "Do you want to delete this Blog?"
   );
   const [isPublishedLoading, setIsPublishedLoading] = useState(false);
-
-  // Remove pagination state variables
-  // const [currentPage, setCurrentPage] = useState(1);
-  // const [totalPages, setTotalPages] = useState(1);
-  // const [pageSize, setPageSize] = useState(10);
-
-  // State for search and sorting
   const [searchTerm, setSearchTerm] = useState("");
   const [sortField, setSortField] = useState("date");
   const [sortDirection, setSortDirection] = useState("desc");
@@ -414,28 +407,7 @@ export default function BlogManagement() {
     <>
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-4 sm:p-6 lg:p-8 w-full">
         <div className="w-full max-w-none">
-          {/* Header Section */}
-          {/* <div className="bg-white rounded-2xl shadow-xl p-8 mb-8 border border-gray-100">
-            <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
-              <div className="space-y-2">
-                <h1 className="text-4xl lg:text-5xl font-bold bg-gradient-to-r from-gray-800 via-blue-600 to-indigo-600 bg-clip-text text-transparent">
-                  Blog Management Dashboard
-            </h1>
-                <p className="text-gray-600 text-lg">
-                  Comprehensive analytics and management for your blog content
-                </p>
-              </div>
-            <Link to="/seo/blogs/write">
-                <button className="group relative inline-flex items-center gap-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold px-8 py-4 rounded-xl shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 hover:shadow-2xl">
-                  <Plus size={24} className="group-hover:rotate-90 transition-transform duration-300" />
-                  <span className="text-lg">Add New Blog</span>
-                  <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 rounded-xl transition-opacity duration-300"></div>
-              </button>
-            </Link>
-            </div>
-          </div> */}
-
-          {/* Performance Metrics */}
+         
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 mb-4">
             <Card className="bg-white border border-gray-100 shadow-sm" bodyStyle={{ padding: '12px' }}>
               <div className="flex items-center justify-between mb-1">
@@ -488,41 +460,6 @@ export default function BlogManagement() {
               </p>
             </Card>
           </div>
-
-          {/* Debug Section */}
-          {/* <div className="mb-4 flex justify-center">
-            <button
-              onClick={async () => {
-                console.log('=== MANUAL DEBUG - BLOG MANAGEMENT ===');
-                console.log('All blogs:', blogs);
-                console.log('Current user:', { currentUserName, currentUserEmail, currentUserId, isAdmin });
-                
- 
-                console.log('=== TRYING ALTERNATIVE API CALLS ===');
-                try {
-                
-                  const res1 = await api.get('/blog/view');
-                  console.log('API call without params:', res1.data);
-                  
-              
-                  const res2 = await api.get('/blog/view?limit=50');
-                  console.log('API call with limit=50:', res2.data);
-                  
-            
-                  const res3 = await api.get('/blog/view?author=Khushi Singh');
-                  console.log('API call with author filter:', res3.data);
-                  
-                } catch (error) {
-                  console.error('Alternative API calls failed:', error);
-                }
-              }}
-              className="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg text-sm font-medium transition-colors duration-200"
-            >
-              Debug Blog Data
-            </button>
-          </div> */}
-
-          {/* Modal */}
           {openModal && (
             <Modal
               title={
@@ -633,8 +570,8 @@ export default function BlogManagement() {
                     </div>
 
                     {/* Action Buttons */}
-                    <div className="flex items-center justify-between pt-1 border-t border-gray-100">
-                      <div className="flex items-center gap-1.5">
+                    <div className="flex items-center justify-between border-t border-gray-100 -mx-0.5 -mt-0.5">
+                      <div className="flex items-center -space-x-0.5">
                         {/* View Blog */}
                         <button
                           onClick={() =>
@@ -643,11 +580,11 @@ export default function BlogManagement() {
                               "_blank"
                             )
                           }
-                          className="group p-1 rounded-full transition-all duration-300 hover:scale-110"
+                          className="group p-0.25 rounded-full transition-all duration-300 hover:scale-110"
                           title="View Blog"
                         >
                           <Eye
-                            size={12}
+                            size={10}
                             className="text-blue-600 group-hover:text-blue-700 transition-colors duration-300"
                           />
                         </button>
@@ -661,11 +598,11 @@ export default function BlogManagement() {
                             }
                             history(`/seo/blogs/edit/${blog._id}`);
                           }}
-                          className="group p-1 rounded-full transition-all duration-300 hover:scale-110"
+                          className="group p-0.25 rounded-full transition-all duration-300 hover:scale-110"
                           title="Edit Blog"
                         >
                           <Edit
-                            size={12}
+                            size={10}
                             className="text-indigo-600 group-hover:text-indigo-700 transition-colors duration-300"
                           />
                         </button>
@@ -680,73 +617,55 @@ export default function BlogManagement() {
                             setBlogToDelete(blog);
                             showModal();
                           }}
-                          className="group p-1 rounded-full transition-all duration-300 hover:scale-110"
+                          className="group p-0.25 rounded-full transition-all duration-300 hover:scale-110"
                           title="Delete Blog"
                         >
                           <Trash2
-                            size={12}
+                            size={10}
                             className="text-red-600 group-hover:text-red-700 transition-colors duration-300"
                           />
                         </button>
                       </div>
 
-                      {/* Publish Toggle */}
-                      <div className="flex items-center space-x-1">
-                        <Tooltip
-                          title={
-                            blog?.isPublished
-                              ? "Click to Unpublish"
-                              : "Click to Publish"
-                          }
-                          placement="top"
+                      {/* Publish Toggle - Made more compact and responsive */}
+                      <div className="flex-shrink-0 ml-0.5">
+                        <div 
+                          className={`relative inline-flex items-center cursor-pointer select-none transition-all duration-200 ${
+                            isOwnedByMe(blog) ? 'opacity-100' : 'opacity-60 cursor-not-allowed'
+                          }`}
+                          onClick={() => {
+                            if (!isOwnedByMe(blog)) {
+                              message.warning("For publish/unpublish, contact admin");
+                              return;
+                            }
+                            handleIsPublished(!blog?.isPublished, blog._id);
+                          }}
+                          title={blog?.isPublished ? "Click to Unpublish" : "Click to Publish"}
                         >
-                          <div className="flex items-center gap-2">
-                            {/* Toggle Wrapper */}
-                            <div
-                              className={`relative flex items-center cursor-pointer select-none transition-all duration-300 
-        ${isOwnedByMe(blog) ? "opacity-100" : "opacity-60 cursor-not-allowed"}
-      `}
-                              onClick={() => {
-                                if (!isOwnedByMe(blog)) {
-                                  message.warning(
-                                    "For publish/unpublish, contact admin"
-                                  );
-                                  return;
-                                }
-                                handleIsPublished(!blog?.isPublished, blog._id);
-                              }}
-                            >
-                              {/* Smooth Toggle Base */}
-                              <div
-                                className={`w-11 h-6 rounded-full transition-colors duration-300 ease-in-out 
-          ${
-            blog?.isPublished
-              ? "bg-green-500 shadow-md shadow-green-300/40"
-              : "bg-gray-300 hover:bg-gray-400"
-          }
-        `}
-                              ></div>
-
-                              {/* Toggle Circle */}
-                              <div
-                                className={`absolute left-0 top-0 w-6 h-6 bg-white rounded-full shadow-sm transform transition-transform duration-300 ease-in-out
-          ${blog?.isPublished ? "translate-x-5" : "translate-x-0"}
-        `}
-                              ></div>
+                          {/* Toggle Container */}
+                          <div className="flex items-center min-w-[60px]">
+                            {/* Toggle Switch */}
+                            <div className={`w-9 h-5 rounded-full transition-colors duration-200 ${
+                              blog?.isPublished 
+                                ? 'bg-green-500 shadow-inner' 
+                                : 'bg-gray-300 hover:bg-gray-400'
+                            }`}>
+                              {/* Toggle Knob */}
+                              <div className={`absolute left-0.5 top-0.5 w-4 h-4 bg-white rounded-full shadow-sm transform transition-transform duration-200 ${
+                                blog?.isPublished ? 'translate-x-4' : 'translate-x-0'
+                              }`}></div>
                             </div>
-
-                            {/* Label */}
-                            <span
-                              className={`text-xs font-medium transition-all duration-300 ${
-                                blog?.isPublished
-                                  ? "text-green-600 drop-shadow-[0_0_2px_rgba(34,197,94,0.4)]"
-                                  : "text-gray-500"
-                              }`}
-                            >
-                              {blog?.isPublished ? "Live" : "Draft"}
+                            
+                            {/* Status Text */}
+                            <span className={`ml-1.5 text-[10px] font-medium whitespace-nowrap ${
+                              blog?.isPublished 
+                                ? 'text-green-600' 
+                                : 'text-gray-500'
+                            }`}>
+                              {blog?.isPublished ? '' : 'Draft'}
                             </span>
                           </div>
-                        </Tooltip>
+                        </div>
                       </div>
                     </div>
                   </div>
