@@ -600,11 +600,24 @@ export default function BlogDashboard() {
               const direct = typeof img.url === 'string' && img.url.trim();
               const src = cdn || direct || (typeof img === 'string' ? img : '');
               return src ? (
-                <img
-                  src={src}
-                  alt={record.blog_Title || "Blog Image"}
-                  className="w-20 h-15 object-cover rounded-lg shadow-sm border border-gray-200"
-                />
+                <>
+                  <img
+                    src={src}
+                    alt={record.blog_Title || "Blog Image"}
+                    className="w-20 h-15 object-cover rounded-lg shadow-sm border border-gray-200"
+                    onError={(e) => {
+                      console.log('Image failed to load:', src);
+                      e.target.style.display = 'none';
+                      e.target.nextSibling.style.display = 'flex';
+                    }}
+                  />
+                  <div 
+                    className="w-20 h-15 rounded-lg border border-gray-200 bg-gray-100 flex items-center justify-center text-xs text-gray-500" 
+                    style={{ display: 'none' }}
+                  >
+                    No Image
+                  </div>
+                </>
               ) : (
                 <div className="w-20 h-15 rounded-lg border border-gray-200 bg-gray-100" />
               );
