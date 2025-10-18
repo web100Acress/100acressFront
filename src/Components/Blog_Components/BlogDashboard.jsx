@@ -105,7 +105,6 @@ import {
   InputNumber as AntInputNumber
 } from "antd";
 import { Link, useNavigate } from "react-router-dom";
-import { BlogPaginationControls } from "./BlogManagement";
 import { AuthContext } from "../../AuthContext";
 
 const { Option } = Select;
@@ -132,7 +131,9 @@ export default function BlogDashboard() {
   const currentUserId = (agentData?._id || localAgent?._id || "").toString();
 
   const [blogs, setBlogs] = useState([]);
+  const [filteredBlogs, setFilteredBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
   const [analytics, setAnalytics] = useState({
     totalViews: 0,
     totalLikes: 0,
@@ -181,22 +182,100 @@ export default function BlogDashboard() {
     pageSpeed: 0
   });
 
-  // Pagination state
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  // Remove pagination state variables since we're fetching all blogs
+  // const [currentPage, setCurrentPage] = useState(1);
+  // const [totalPages, setTotalPages] = useState(1);
+  // const [pageSize, setPageSize] = useState(10);
 
   useEffect(() => {
     fetchDashboardData();
-  }, [timeRange, currentPage, pageSize, currentUserName, currentUserEmail, currentUserId, isAdmin]);
+  }, [timeRange, currentUserName, currentUserEmail, currentUserId, isAdmin]);
+
+  // Search functionality - Enhanced to search in multiple fields
+  useEffect(() => {
+    if (!searchQuery.trim()) {
+      setFilteredBlogs(blogs);
+    } else {
+      const searchTerm = searchQuery.toLowerCase();
+      const filtered = blogs.filter(blog => 
+        blog.blog_Title?.toLowerCase().includes(searchTerm) ||
+        blog.author?.toLowerCase().includes(searchTerm) ||
+        blog.authorEmail?.toLowerCase().includes(searchTerm) ||
+        blog.blog_Content?.toLowerCase().includes(searchTerm) ||
+        blog.blog_Description?.toLowerCase().includes(searchTerm) ||
+        blog.category?.toLowerCase().includes(searchTerm) ||
+        blog.tags?.some(tag => tag?.toLowerCase().includes(searchTerm))
+      );
+      console.log(`Search for "${searchQuery}" found ${filtered.length} blogs`);
+      setFilteredBlogs(filtered);
+    }
+  }, [blogs, searchQuery]);
 
   const fetchDashboardData = async () => {
     try {
       setLoading(true);
-      // Use admin endpoint for admins to include drafts and all authors
+      // Try multiple approaches to fetch all blogs
       const listPath = isAdmin ? `/blog/admin/view` : `/blog/view`;
-      const res = await api.get(`${listPath}?page=${currentPage}&limit=${pageSize}`);
+      console.log('API endpoint being called:', `${listPath}?limit=10000&page=1`);
+      
+      // Try with both limit and page parameters
+      let res;
+      try {
+        // First try with high limit and page 1
+        res = await api.get(`${listPath}?limit=10000&page=1`);
+      } catch (error) {
+        console.log('First attempt failed, trying without page parameter');
+        // If that fails, try without page parameter
+        res = await api.get(`${listPath}?limit=10000`);
+      }
+      
       const fetchedBlogs = res.data.data || [];
+      
+      console.log('=== BLOG FETCH DEBUG ===');
+      console.log('Total blogs fetched from API:', fetchedBlogs.length);
+      console.log('API Response structure:', res.data);
+      console.log('API Response pagination info:', {
+        totalPages: res.data.totalPages,
+        currentPage: res.data.currentPage,
+        totalBlogs: res.data.totalBlogs,
+        hasMore: res.data.hasMore
+      });
+      
+      // If we didn't get all blogs, try to fetch more pages
+      if (res.data.totalPages && res.data.totalPages > 1) {
+        console.log('Multiple pages detected, fetching all pages...');
+        const allBlogs = [...fetchedBlogs];
+        
+        for (let page = 2; page <= res.data.totalPages; page++) {
+          try {
+            console.log(`Fetching page ${page}...`);
+            const pageRes = await api.get(`${listPath}?limit=10000&page=${page}`);
+            const pageBlogs = pageRes.data.data || [];
+            allBlogs.push(...pageBlogs);
+            console.log(`Page ${page} fetched: ${pageBlogs.length} blogs`);
+          } catch (pageError) {
+            console.error(`Error fetching page ${page}:`, pageError);
+          }
+        }
+        
+        console.log('Total blogs after fetching all pages:', allBlogs.length);
+        fetchedBlogs.splice(0, fetchedBlogs.length, ...allBlogs);
+      }
+      
+      // Log all Khushi Singh blogs specifically
+      const khushiBlogs = fetchedBlogs.filter(blog => 
+        blog.author?.toLowerCase().includes('khushi') || 
+        blog.authorEmail?.toLowerCase().includes('khushi')
+      );
+      console.log('Khushi Singh blogs found:', khushiBlogs.length);
+      console.log('Khushi blogs details:', khushiBlogs.map(b => ({
+        title: b.blog_Title,
+        author: b.author,
+        authorEmail: b.authorEmail,
+        createdAt: b.createdAt,
+        isPublished: b.isPublished
+      })));
+      
       // Scope: if not Admin, show only my blogs
       const myBlogs = (isAdmin ? fetchedBlogs : fetchedBlogs.filter((b) => {
         const authorName = (b?.author || "").toString().trim();
@@ -205,22 +284,39 @@ export default function BlogDashboard() {
         const nameMatch = currentUserName && authorName && authorName.toLowerCase() === currentUserName.toLowerCase();
         const emailMatch = currentUserEmail && authorEmail && authorEmail === currentUserEmail;
         const idMatch = currentUserId && authorId && authorId === currentUserId;
+        
+        console.log('Blog filter check:', {
+          blogTitle: b.blog_Title,
+          blogAuthor: authorName,
+          blogEmail: authorEmail,
+          currentUser: currentUserName,
+          currentEmail: currentUserEmail,
+          nameMatch,
+          emailMatch,
+          idMatch,
+          finalMatch: nameMatch || emailMatch || idMatch
+        });
+        
         return nameMatch || emailMatch || idMatch;
       }));
+      
+      console.log('Filtered blogs for current user:', myBlogs.length);
+      console.log('Current user name:', currentUserName);
+      console.log('Current user email:', currentUserEmail);
+      console.log('Is admin:', isAdmin);
+      
       // If no blogs match current user (common when author fields are missing), show all as a fallback
       const listToShow = (isAdmin || myBlogs.length > 0) ? myBlogs : fetchedBlogs;
 
-      // Debug: Log the first blog to see the image structure
-      if (fetchedBlogs.length > 0) {
-        console.log('First blog data:', fetchedBlogs[0]);
-        console.log('Blog image structure:', fetchedBlogs[0].blog_Image);
-      }
+      console.log('Final blogs to show:', listToShow.length);
+      console.log('Final blog titles:', listToShow.map(b => b.blog_Title));
 
       setBlogs(listToShow);
-      setTotalPages(res.data.totalPages || 1);
+      setFilteredBlogs(listToShow);
       calculateAnalytics(listToShow);
     } catch (error) {
       console.error("Error fetching dashboard data:", error);
+      console.error("Error details:", error.response?.data);
     } finally {
       setLoading(false);
     }
@@ -306,6 +402,12 @@ export default function BlogDashboard() {
           blog._id === blogId ? { ...blog, isPublished: checked } : blog
         );
         setBlogs(updatedBlogs);
+        setFilteredBlogs(updatedBlogs.filter(blog => 
+          !searchQuery.trim() || 
+          blog.blog_Title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          blog.author?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          blog.blog_Content?.toLowerCase().includes(searchQuery.toLowerCase())
+        ));
         calculateAnalytics(updatedBlogs);
       }
     } catch (error) {
@@ -327,6 +429,12 @@ export default function BlogDashboard() {
       if (response.status >= 200 && response.status < 300) {
         const updatedBlogs = blogs.filter(blog => blog._id !== blogId);
         setBlogs(updatedBlogs);
+        setFilteredBlogs(updatedBlogs.filter(blog => 
+          !searchQuery.trim() || 
+          blog.blog_Title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          blog.author?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          blog.blog_Content?.toLowerCase().includes(searchQuery.toLowerCase())
+        ));
         calculateAnalytics(updatedBlogs);
         setDeleteModalVisible(false);
         setSelectedBlog(null);
@@ -347,17 +455,6 @@ export default function BlogDashboard() {
       message.error(errorMessage);
     }
   };
-
-  const filteredBlogs = blogs.filter(blog => {
-    const matchesSearch = blog.blog_Title?.toLowerCase().includes(filters.search.toLowerCase()) ||
-                         blog.author?.toLowerCase().includes(filters.search.toLowerCase());
-    const matchesStatus = filters.status === 'all' || 
-                         (filters.status === 'published' && blog.isPublished) ||
-                         (filters.status === 'draft' && !blog.isPublished);
-    const matchesType = filters.type === 'all' || ((blog.type || 'blog').toLowerCase() === filters.type);
-    
-    return matchesSearch && matchesStatus && matchesType;
-  });
 
   const getGrowthIcon = (value) => {
     return value > 0 ? <TrendingUp size={16} className="text-green-500" /> : <TrendingDown size={16} className="text-red-500" />;
@@ -616,7 +713,7 @@ export default function BlogDashboard() {
     {
       title: 'Actions',
       key: 'actions',
-      width: 180,
+      width: 220,
       fixed: 'right',
       render: (_, record) => (
         <Space size="small">
@@ -644,22 +741,46 @@ export default function BlogDashboard() {
               }}
             />
           </Tooltip>
-          <Tooltip title={record.isPublished ? "Unpublish Blog" : "Publish Blog"}>
-            <Switch
-              checked={record.isPublished}
-              loading={publishLoading && selectedBlog?._id === record._id}
-              onChange={(checked) => {
-                if (!isOwnedByMe(record)) {
-                  message.warning('For publish, contact admin');
-                  return;
-                }
-                setSelectedBlog(record);
-                handlePublishToggle(checked, record._id);
-              }}
-              size="small"
-              className="ml-2"
-            />
-          </Tooltip>
+          <Tooltip title={record.isPublished ? "Click to Unpublish" : "Click to Publish"}>
+  <div className="flex items-center gap-2">
+    <div
+      className={`relative flex items-center cursor-pointer select-none transition-all duration-300 
+        ${isOwnedByMe(record) ? 'opacity-100' : 'opacity-60 cursor-not-allowed'}
+      `}
+      onClick={() => {
+        if (!isOwnedByMe(record)) {
+          message.warning('For publish/unpublish, contact admin');
+          return;
+        }
+        setSelectedBlog(record);
+        handlePublishToggle(!record.isPublished, record._id);
+      }}
+    >
+      {/* Smooth Toggle Base */}
+      <div
+        className={`w-11 h-6 rounded-full transition-colors duration-300 ease-in-out 
+          ${record.isPublished ? 'bg-green-500 shadow-md shadow-green-300/40' : 'bg-gray-300'}
+        `}
+      />
+      {/* Toggle Circle */}
+      <div
+        className={`absolute left-0 top-0 w-6 h-6 bg-white rounded-full shadow-sm transform transition-transform duration-300
+          ${record.isPublished ? 'translate-x-5' : 'translate-x-0'}
+        `}
+      />
+    </div>
+
+    {/* Label */}
+    <span
+      className={`text-xs font-medium transition-all duration-300 ${
+        record.isPublished ? 'text-green-600' : 'text-gray-500'
+      }`}
+    >
+      {record.isPublished ? 'Published' : 'Draft'}
+    </span>
+  </div>
+</Tooltip>
+
           <Tooltip title="Delete Blog">
             <Button
               type="text"
@@ -894,69 +1015,6 @@ export default function BlogDashboard() {
           </Card>
         )}
 
-        {/* Professional Filters and Search */}
-        <Card className="bg-white border border-gray-100 shadow-lg rounded-lg mb-4 p-4">
-          <div className="flex flex-col lg:flex-row gap-4 items-center">
-            <div className="flex-1 w-full">
-              <Input
-                placeholder="Search blogs by title or author..."
-                prefix={<Search size={18} className="text-gray-400" />}
-                value={filters.search}
-                onChange={(e) => setFilters({ ...filters, search: e.target.value })}
-                size="large"
-                className="rounded-lg"
-              />
-            </div>
-            <Select
-              value={filters.status}
-              onChange={(value) => setFilters({ ...filters, status: value })}
-              size="large"
-              style={{ minWidth: 150 }}
-              className="rounded-lg"
-            >
-              <Option value="all">
-                <Filter size={14} className="inline-block mr-2 align-text-bottom" />
-                All Status
-              </Option>
-              <Option value="published">
-                <Badge status="success" className="mr-2" />
-                Published
-              </Option>
-              <Option value="draft">
-                <Badge status="default" className="mr-2" />
-                Draft
-              </Option>
-            </Select>
-            <Select
-              value={filters.type}
-              onChange={(value) => setFilters({ ...filters, type: value })}
-              size="large"
-              style={{ minWidth: 150 }}
-              className="rounded-lg"
-            >
-              <Option value="all">All Types</Option>
-              <Option value="blog">Blog</Option>
-              <Option value="news">News</Option>
-            </Select>
-            <Select
-              value={filters.dateRange}
-              onChange={(value) => setFilters({ ...filters, dateRange: value })}
-              size="large"
-              style={{ minWidth: 150 }}
-              className="rounded-lg"
-              disabled
-            >
-              <Option value="all">
-                <Calendar size={14} className="inline-block mr-2 align-text-bottom" />
-                All Time
-              </Option>
-              <Option value="week">This Week</Option>
-              <Option value="month">This Month</Option>
-              <Option value="year">This Year</Option>
-            </Select>
-          </div>
-        </Card>
-
         {/* Professional Blogs Table */}
         <Card className="bg-white border border-gray-100 shadow-lg rounded-lg p-4">
           <div className="flex items-center justify-between mb-6">
@@ -968,66 +1026,45 @@ export default function BlogDashboard() {
               <div className="text-base text-gray-600 font-medium">
                 Showing {filteredBlogs.length} of {blogs.length} posts
               </div>
-              <Tag color="blue" className="font-medium">
-                {analytics.publishedBlogs} Published
-              </Tag>
-              <Tag color="orange" className="font-medium">
-                {analytics.draftBlogs} Drafts
-              </Tag>
             </div>
           </div>
-          
-          {loading ? (
-            <div className="space-y-4">
-              {[1, 2, 3].map(i => (
-                <Skeleton key={i} active paragraph={{ rows: 1 }} />
-              ))}
-            </div>
-          ) : filteredBlogs.length === 0 ? (
-            <Empty
-              description={
-                <div className="text-center">
-                  <Text className="text-gray-500">No blogs found</Text>
-                  <br />
-                  <Text className="text-gray-400">
-                    {filters.search ? "No blogs match your search criteria." : "Start by creating your first blog post."}
-                  </Text>
-                </div>
-              }
-            >
-              <Link to="/seo/blogs/write">
-                <Button type="primary" icon={<Plus size={16} />}>
-                  Create Your First Blog
-                </Button>
-              </Link>
-            </Empty>
-          ) : (
-            <>
-              <Table
-                columns={columns}
-                dataSource={filteredBlogs}
-                loading={loading}
-                pagination={false}
-                rowKey="_id"
-                className="professional-table"
-                scroll={{ x: 'max-content' }}
-                rowClassName={(record, index) => 
-                  index % 2 === 0 ? 'bg-gray-50' : 'bg-white'
-                }
-              />
-              
-              {/* Custom Pagination */}
-              {totalPages > 1 && (
-                <div className="mt-6 flex justify-center">
-                  <BlogPaginationControls
-                    currentPage={currentPage}
-                    setCurrentPage={setCurrentPage}
-                    totalPages={totalPages}
-                  />
-                </div>
-              )}
-            </>
-          )}
+
+          {/* Search Bar */}
+          <div className="mb-6">
+            <Input
+              placeholder="Search blogs by title, author, email, content, category, or tags..."
+              prefix={<Search size={16} className="text-gray-400" />}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="max-w-lg"
+              size="large"
+              allowClear
+            />
+            {searchQuery && (
+              <div className="mt-2 text-sm text-gray-600">
+                Found {filteredBlogs.length} blog(s) matching "{searchQuery}"
+              </div>
+            )}
+          </div>
+
+          <Table
+            columns={columns}
+            dataSource={filteredBlogs}
+            rowKey="_id"
+            loading={loading}
+            className="shadow-sm"
+            scroll={{ x: 1300 }}
+            rowSelection={{
+              selectedRowKeys: selectedBlogs,
+              onChange: setSelectedBlogs,
+            }}
+            locale={{
+              emptyText: searchQuery ? 
+                <Empty description={`No blogs found matching "${searchQuery}"`} /> :
+                <Empty description="No blog posts found" />
+            }}
+          />
+
         </Card>
 
         {/* Professional Delete Modal */}

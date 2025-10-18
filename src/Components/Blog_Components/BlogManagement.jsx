@@ -1,7 +1,38 @@
 import { useState, useEffect, useContext } from "react";
 import api from "../../config/apiClient";
-import { ArrowDown, ArrowUp, Edit, Eye, Plus, Trash2, Search, Calendar, User, FileText, TrendingUp, BarChart3, Activity, Clock, Users, Eye as EyeIcon, ThumbsUp, Share2, MessageCircle } from "lucide-react";
-import { Modal, Switch, Badge, Progress, Card, Row, Col, Statistic, message } from "antd";
+import {
+  ArrowDown,
+  ArrowUp,
+  Edit,
+  Eye,
+  Plus,
+  Trash2,
+  Search,
+  Calendar,
+  User,
+  FileText,
+  TrendingUp,
+  BarChart3,
+  Activity,
+  Clock,
+  Users,
+  Eye as EyeIcon,
+  ThumbsUp,
+  Share2,
+  MessageCircle,
+} from "lucide-react";
+import {
+  Modal,
+  Switch,
+  Badge,
+  Progress,
+  Card,
+  Row,
+  Col,
+  Statistic,
+  message,
+  Tooltip,
+} from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../AuthContext";
 
@@ -12,26 +43,43 @@ export default function BlogManagement() {
 
   // Resolve current user identity (fallback to localStorage for robustness)
   const localAgent = (() => {
-    try { return JSON.parse(window.localStorage.getItem("agentData") || "null"); } catch { return null; }
+    try {
+      return JSON.parse(window.localStorage.getItem("agentData") || "null");
+    } catch {
+      return null;
+    }
   })();
-  const currentUserName = (agentData?.name || localAgent?.name || "").toString().trim();
-  const currentUserEmail = (agentData?.email || localAgent?.email || "").toString().trim().toLowerCase();
+  const currentUserName = (agentData?.name || localAgent?.name || "")
+    .toString()
+    .trim();
+  const currentUserEmail = (agentData?.email || localAgent?.email || "")
+    .toString()
+    .trim()
+    .toLowerCase();
   const currentUserId = (agentData?._id || localAgent?._id || "").toString();
 
   const [blogs, setBlogs] = useState([]);
   const [openModal, setOpenModal] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
-  const [modalText, setModalText] = useState("Do you want to delete this Blog?");
+  const [modalText, setModalText] = useState(
+    "Do you want to delete this Blog?"
+  );
   const [isPublishedLoading, setIsPublishedLoading] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+
+  // Remove pagination state variables
+  // const [currentPage, setCurrentPage] = useState(1);
+  // const [totalPages, setTotalPages] = useState(1);
+  // const [pageSize, setPageSize] = useState(10);
 
   // State for search and sorting
   const [searchTerm, setSearchTerm] = useState("");
   const [sortField, setSortField] = useState("date");
   const [sortDirection, setSortDirection] = useState("desc");
   const [blogToDelete, setBlogToDelete] = useState(null);
+  
+  // State for showing limited blogs
+  const [showAllBlogs, setShowAllBlogs] = useState(false);
+  const INITIAL_BLOG_LIMIT = 50;
 
   // Analytics state
   const [analytics, setAnalytics] = useState({
@@ -40,7 +88,7 @@ export default function BlogManagement() {
     totalShares: 0,
     totalComments: 0,
     monthlyGrowth: 0,
-    topPerformingBlog: null
+    topPerformingBlog: null,
   });
 
   // Handle delete blog modal
@@ -52,10 +100,22 @@ export default function BlogManagement() {
   const isOwnedByMe = (blog) => {
     if (!blog) return false;
     const authorName = (blog?.author || "").toString().trim();
-    const authorEmail = (blog?.authorEmail || "").toString().trim().toLowerCase();
-    const authorId = (blog?.authorId || blog?.userId || blog?.postedBy || "").toString();
-    const nameMatch = currentUserName && authorName && authorName.toLowerCase() === currentUserName.toLowerCase();
-    const emailMatch = currentUserEmail && authorEmail && authorEmail === currentUserEmail;
+    const authorEmail = (blog?.authorEmail || "")
+      .toString()
+      .trim()
+      .toLowerCase();
+    const authorId = (
+      blog?.authorId ||
+      blog?.userId ||
+      blog?.postedBy ||
+      ""
+    ).toString();
+    const nameMatch =
+      currentUserName &&
+      authorName &&
+      authorName.toLowerCase() === currentUserName.toLowerCase();
+    const emailMatch =
+      currentUserEmail && authorEmail && authorEmail === currentUserEmail;
     const idMatch = currentUserId && authorId && authorId === currentUserId;
     return isAdmin || nameMatch || emailMatch || idMatch;
   };
@@ -108,39 +168,154 @@ export default function BlogManagement() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await api.get(`blog/view?page=${currentPage}&limit=${pageSize}`);
-        const list = Array.isArray(res?.data?.data) ? res.data.data : [];
+        // Try multiple approaches to fetch all blogs
+        console.log("=== BLOG MANAGEMENT FETCH DEBUG ===");
+
+        // First try with high limit and page 1
+        let res;
+        try {
+          res = await api.get(`blog/view?limit=10000&page=1`);
+        } catch (error) {
+          console.log("First attempt failed, trying without page parameter");
+          res = await api.get(`blog/view?limit=10000`);
+        }
+
+        let list = Array.isArray(res?.data?.data) ? res.data.data : [];
+
+        console.log("Total blogs fetched from API:", list.length);
+        console.log("API Response pagination info:", {
+          totalPages: res.data.totalPages,
+          currentPage: res.data.currentPage,
+          totalBlogs: res.data.totalBlogs,
+          hasMore: res.data.hasMore,
+        });
+
+        // If we didn't get all blogs, try to fetch more pages
+        if (res.data.totalPages && res.data.totalPages > 1) {
+          console.log("Multiple pages detected, fetching all pages...");
+          const allBlogs = [...list];
+
+          for (let page = 2; page <= res.data.totalPages; page++) {
+            try {
+              console.log(`Fetching page ${page}...`);
+              const pageRes = await api.get(
+                `blog/view?limit=10000&page=${page}`
+              );
+              const pageBlogs = pageRes.data.data || [];
+              allBlogs.push(...pageBlogs);
+              console.log(`Page ${page} fetched: ${pageBlogs.length} blogs`);
+            } catch (pageError) {
+              console.error(`Error fetching page ${page}:`, pageError);
+            }
+          }
+
+          console.log("Total blogs after fetching all pages:", allBlogs.length);
+          list = allBlogs;
+        }
+
+        // Log all Khushi Singh blogs specifically
+        const khushiBlogs = list.filter(
+          (blog) =>
+            blog.author?.toLowerCase().includes("khushi") ||
+            blog.authorEmail?.toLowerCase().includes("khushi")
+        );
+        console.log("Khushi Singh blogs found in API:", khushiBlogs.length);
+        console.log(
+          "Khushi blogs details:",
+          khushiBlogs.map((b) => ({
+            title: b.blog_Title,
+            author: b.author,
+            authorEmail: b.authorEmail,
+            createdAt: b.createdAt,
+            isPublished: b.isPublished,
+          }))
+        );
+
         // Scope to my blogs if not admin
-        const myBlogs = (isAdmin ? list : list.filter((b) => {
-          const authorName = (b?.author || "").toString().trim();
-          const authorEmail = (b?.authorEmail || "").toString().trim().toLowerCase();
-          const authorId = (b?.authorId || b?.userId || b?.postedBy || "").toString();
-          const nameMatch = currentUserName && authorName && authorName.toLowerCase() === currentUserName.toLowerCase();
-          const emailMatch = currentUserEmail && authorEmail && authorEmail === currentUserEmail;
-          const idMatch = currentUserId && authorId && authorId === currentUserId;
-          return nameMatch || emailMatch || idMatch;
-        }));
+        const myBlogs = isAdmin
+          ? list
+          : list.filter((b) => {
+              const authorName = (b?.author || "").toString().trim();
+              const authorEmail = (b?.authorEmail || "")
+                .toString()
+                .trim()
+                .toLowerCase();
+              const authorId = (
+                b?.authorId ||
+                b?.userId ||
+                b?.postedBy ||
+                ""
+              ).toString();
+              const nameMatch =
+                currentUserName &&
+                authorName &&
+                authorName.toLowerCase() === currentUserName.toLowerCase();
+              const emailMatch =
+                currentUserEmail &&
+                authorEmail &&
+                authorEmail === currentUserEmail;
+              const idMatch =
+                currentUserId && authorId && authorId === currentUserId;
+
+              console.log("Blog filter check:", {
+                blogTitle: b.blog_Title,
+                blogAuthor: authorName,
+                blogEmail: authorEmail,
+                currentUser: currentUserName,
+                currentEmail: currentUserEmail,
+                nameMatch,
+                emailMatch,
+                idMatch,
+                finalMatch: nameMatch || emailMatch || idMatch,
+              });
+
+              return nameMatch || emailMatch || idMatch;
+            });
+
+        console.log("Filtered blogs for current user:", myBlogs.length);
+        console.log("Current user name:", currentUserName);
+        console.log("Current user email:", currentUserEmail);
+        console.log("Is admin:", isAdmin);
+        console.log(
+          "Final blog titles:",
+          myBlogs.map((b) => b.blog_Title)
+        );
+
         setBlogs(myBlogs);
-        setTotalPages(res?.data?.totalPages || 1);
 
         // Calculate analytics on filtered list
         calculateAnalytics(myBlogs);
       } catch (error) {
         console.error("Error fetching blogs:", error);
+        console.error("Error details:", error.response?.data);
       }
     };
     fetchData();
-  }, [currentPage, pageSize, currentUserName, currentUserEmail, currentUserId, isAdmin]);
+  }, [currentUserName, currentUserEmail, currentUserId, isAdmin]);
 
   const calculateAnalytics = (blogData) => {
-    const totalViews = blogData.reduce((sum, blog) => sum + (blog.views || 0), 0);
-    const totalLikes = blogData.reduce((sum, blog) => sum + (blog.likes || 0), 0);
-    const totalShares = blogData.reduce((sum, blog) => sum + (blog.shares || 0), 0);
-    const totalComments = blogData.reduce((sum, blog) => sum + (blog.comments || 0), 0);
-    
+    const totalViews = blogData.reduce(
+      (sum, blog) => sum + (blog.views || 0),
+      0
+    );
+    const totalLikes = blogData.reduce(
+      (sum, blog) => sum + (blog.likes || 0),
+      0
+    );
+    const totalShares = blogData.reduce(
+      (sum, blog) => sum + (blog.shares || 0),
+      0
+    );
+    const totalComments = blogData.reduce(
+      (sum, blog) => sum + (blog.comments || 0),
+      0
+    );
+
     const topPerformingBlog = blogData.reduce((top, blog) => {
-      const blogScore = (blog.views || 0) + (blog.likes || 0) * 2 + (blog.shares || 0) * 3;
-      const topScore = (top?.views || 0) + (top?.likes || 0) * 2 + (top?.shares || 0) * 3;
+      const blogScore =
+        (blog.views || 0) + (blog.likes || 0) * 2 + (blog.shares || 0) * 3;
+      const topScore =
+        (top?.views || 0) + (top?.likes || 0) * 2 + (top?.shares || 0) * 3;
       return blogScore > topScore ? blog : top;
     }, null);
 
@@ -150,7 +325,7 @@ export default function BlogManagement() {
       totalShares,
       totalComments,
       monthlyGrowth: 12.5, // Mock data
-      topPerformingBlog
+      topPerformingBlog,
     });
   };
 
@@ -168,9 +343,9 @@ export default function BlogManagement() {
     setIsPublishedLoading(true);
 
     try {
-      const res = await api.patch(`blog/update/${id}`,
-        { isPublished: checked }
-      );
+      const res = await api.patch(`blog/update/${id}`, {
+        isPublished: checked,
+      });
       if (res.status >= 200 && res.status < 300) {
         setBlogs((prevBlogs) =>
           prevBlogs.map((blog) =>
@@ -178,7 +353,10 @@ export default function BlogManagement() {
           )
         );
       } else {
-        console.error("Something went wrong while updating the blog status", res.data);
+        console.error(
+          "Something went wrong while updating the blog status",
+          res.data
+        );
       }
     } catch (error) {
       console.error("Error updating blog published status:", error);
@@ -220,9 +398,7 @@ export default function BlogManagement() {
   };
 
   function cleanString(str) {
-    return str
-      .replace(/\s+/g, "-")
-      .replace(/[?!,\.;:\{\}\(\)\$\@]+/g, "");
+    return str.replace(/\s+/g, "-").replace(/[?!,\.;:\{\}\(\)\$\@]+/g, "");
   }
   // Prefer slug-based blog link with fallback to legacy title/id route
   const blogLink = (blog) => {
@@ -260,49 +436,91 @@ export default function BlogManagement() {
           </div> */}
 
           {/* Performance Metrics */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-            <Card className="bg-white border border-gray-100 shadow-lg">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-gray-800">Monthly Growth</h3>
-                <TrendingUp size={20} className="text-green-500" />
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 mb-4">
+            <Card className="bg-white border border-gray-100 shadow-sm" bodyStyle={{ padding: '12px' }}>
+              <div className="flex items-center justify-between mb-1">
+                <h3 className="text-xs font-semibold text-gray-800">
+                  Monthly Growth
+                </h3>
+                <TrendingUp size={14} className="text-green-500" />
               </div>
-              <Progress 
-                percent={analytics.monthlyGrowth} 
+              <Progress
+                percent={analytics.monthlyGrowth}
                 strokeColor="#10B981"
                 showInfo={false}
+                size="small"
+                strokeWidth={4}
               />
-              <p className="text-sm text-gray-600 mt-2">+{analytics.monthlyGrowth}% from last month</p>
+              <p className="text-xs text-gray-600 mt-1">
+                +{analytics.monthlyGrowth}% from last month
+              </p>
             </Card>
-            
-            <Card className="bg-white border border-gray-100 shadow-lg">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-gray-800">Published Blogs</h3>
-                <FileText size={20} className="text-blue-500" />
+
+            <Card className="bg-white border border-gray-100 shadow-sm" bodyStyle={{ padding: '12px' }}>
+              <div className="flex items-center justify-between mb-1">
+                <h3 className="text-xs font-semibold text-gray-800">
+                  Published Blogs
+                </h3>
+                <FileText size={14} className="text-blue-500" />
               </div>
-              <div className="text-3xl font-bold text-blue-600">
+              <div className="text-xl font-bold text-blue-600">
                 {(blogs || []).filter((blog) => blog?.isPublished).length}
               </div>
-              <p className="text-sm text-gray-600 mt-2">Out of {blogs.length} total blogs</p>
+              <p className="text-xs text-gray-600 mt-1">
+                Out of {blogs.length} total blogs
+              </p>
             </Card>
-            
-            <Card className="bg-white border border-gray-100 shadow-lg">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-gray-800">Top Performing</h3>
-                <BarChart3 size={20} className="text-purple-500" />
+
+            <Card className="bg-white border border-gray-100 shadow-sm" bodyStyle={{ padding: '12px' }}>
+              <div className="flex items-center justify-between mb-1">
+                <h3 className="text-xs font-semibold text-gray-800">
+                  Top Performing
+                </h3>
+                <BarChart3 size={14} className="text-purple-500" />
               </div>
-              <div className="text-lg font-semibold text-gray-800 truncate">
+              <div className="text-sm font-semibold text-gray-800 truncate">
                 {analytics.topPerformingBlog?.blog_Title || "No data"}
-            </div>
-              <p className="text-sm text-gray-600 mt-2">
-                {analytics.topPerformingBlog ? 
-                  `${analytics.topPerformingBlog.views || 0} views` : 
-                  "No performance data"
-                }
+              </div>
+              <p className="text-xs text-gray-600 mt-1">
+                {analytics.topPerformingBlog
+                  ? `${analytics.topPerformingBlog.views || 0} views`
+                  : "No performance data"}
               </p>
             </Card>
           </div>
 
-        
+          {/* Debug Section */}
+          {/* <div className="mb-4 flex justify-center">
+            <button
+              onClick={async () => {
+                console.log('=== MANUAL DEBUG - BLOG MANAGEMENT ===');
+                console.log('All blogs:', blogs);
+                console.log('Current user:', { currentUserName, currentUserEmail, currentUserId, isAdmin });
+                
+ 
+                console.log('=== TRYING ALTERNATIVE API CALLS ===');
+                try {
+                
+                  const res1 = await api.get('/blog/view');
+                  console.log('API call without params:', res1.data);
+                  
+              
+                  const res2 = await api.get('/blog/view?limit=50');
+                  console.log('API call with limit=50:', res2.data);
+                  
+            
+                  const res3 = await api.get('/blog/view?author=Khushi Singh');
+                  console.log('API call with author filter:', res3.data);
+                  
+                } catch (error) {
+                  console.error('Alternative API calls failed:', error);
+                }
+              }}
+              className="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg text-sm font-medium transition-colors duration-200"
+            >
+              Debug Blog Data
+            </button>
+          </div> */}
 
           {/* Modal */}
           {openModal && (
@@ -318,9 +536,9 @@ export default function BlogManagement() {
               onCancel={handleCancel}
               okText="Delete"
               cancelText="Cancel"
-              okButtonProps={{ 
+              okButtonProps={{
                 danger: true,
-                className: "bg-red-600 hover:bg-red-700 border-red-600"
+                className: "bg-red-600 hover:bg-red-700 border-red-600",
               }}
               className="modern-modal"
             >
@@ -330,8 +548,12 @@ export default function BlogManagement() {
                     <Trash2 size={24} className="text-red-600" />
                   </div>
                   <div>
-                    <p className="text-lg font-medium text-gray-800">{modalText}</p>
-                    <p className="text-sm text-gray-500">This action cannot be undone.</p>
+                    <p className="text-lg font-medium text-gray-800">
+                      {modalText}
+                    </p>
+                    <p className="text-sm text-gray-500">
+                      This action cannot be undone.
+                    </p>
                   </div>
                 </div>
               </div>
@@ -339,149 +561,210 @@ export default function BlogManagement() {
           )}
 
           {/* Blog Cards Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
-                  {filteredAndSortedBlogs.length > 0 ? (
-                    filteredAndSortedBlogs.map((blog) => (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
+            {filteredAndSortedBlogs?.length > 0 ? (
+              (showAllBlogs ? filteredAndSortedBlogs : filteredAndSortedBlogs?.slice(0, INITIAL_BLOG_LIMIT))?.map((blog, index) => (
                 <div
                   key={blog._id}
-                  className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 ease-in-out transform hover:-translate-y-2 border border-gray-100 overflow-hidden"
+                  className="group bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 ease-in-out transform hover:-translate-y-1 border border-gray-100 overflow-hidden"
                 >
                   {/* Blog Image */}
-                  <div className="relative h-48 overflow-hidden">
-                    { (blog?.blog_Image?.cdn_url || blog?.blog_Image?.url) ? (
-                      <img
-                        src={blog.blog_Image?.cdn_url || blog.blog_Image?.url}
-                        alt={blog.blog_Title || "Blog Image"}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                        onError={(e) => {
-                          console.log('Image failed to load for blog:', blog._id, 'URL:', blog.blog_Image?.cdn_url || blog.blog_Image?.url);
-                          // Hide the broken image element; container will show fallback UI below if needed
-                          e.currentTarget.style.display = 'none';
-                        }}
-                      />
-                    ) : (
-                      <div className="w-full h-full bg-gray-100 flex items-center justify-center text-gray-500 text-sm">
-                        No image
-                      </div>
-                    )}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                    
-                    {/* Published Badge */}
-                    <div className="absolute top-4 right-4">
+                  <div className="relative h-20 overflow-hidden">
+                    <img
+                      src={blog?.blog_Image?.url || "/api/placeholder/400/200"}
+                      alt={blog?.blog_Title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+
+                    {/* Status Badge */}
+                    <div className="absolute top-1 right-1">
                       <Badge
                         status={blog?.isPublished ? "success" : "default"}
                         text={blog?.isPublished ? "Published" : "Draft"}
-                        className="bg-white/90 backdrop-blur-sm rounded-full px-3 py-1 text-xs font-medium"
+                        className="bg-white/90 backdrop-blur-sm rounded-full px-1 py-0.5 text-xs font-medium"
                       />
-                    </div>
-
-                    {/* Performance Metrics Overlay */}
-                    <div className="absolute bottom-4 left-4 right-4 flex justify-between text-white text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <div className="flex items-center gap-1">
-                        <EyeIcon size={12} />
-                        <span>{blog.views || 0}</span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <ThumbsUp size={12} />
-                        <span>{blog.likes || 0}</span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <Share2 size={12} />
-                        <span>{blog.shares || 0}</span>
-                      </div>
                     </div>
                   </div>
 
                   {/* Blog Content */}
-                  <div className="p-6">
-                    <div className="flex items-center gap-2 mb-3">
-                      <User size={16} className="text-gray-400" />
-                      <span className="text-sm text-gray-500">{blog.author}</span>
-                      <Calendar size={16} className="text-gray-400 ml-2" />
-                      <span className="text-sm text-gray-500">
-                        {blog.createdAt ? new Date(blog.createdAt).toLocaleDateString() : "N/A"}
-                      </span>
-                          </div>
-
-                    <h3
-                      className="text-xl font-bold text-gray-800 mb-3 line-clamp-2 hover:text-blue-600 cursor-pointer transition-colors duration-200"
-                      onClick={() => handleBlogView(blog)}
-                    >
-                      {blog.blog_Title}
+                  <div className="p-2">
+                    {/* Title */}
+                    <h3 className="text-xs font-bold text-gray-900 mb-1 line-clamp-2 group-hover:text-blue-600 transition-colors duration-300">
+                      {blog?.blog_Title}
                     </h3>
 
-                    <p className="text-gray-600 text-sm mb-4 line-clamp-3">
-                            {BlogPreview(blog.blog_Description)}
-                    </p>
+                    {/* Meta Info */}
+                    <div className="flex items-center justify-between text-xs text-gray-500 mb-1">
+                      <div className="flex items-center space-x-1">
+                        <User size={8} />
+                        <span className="truncate max-w-12 text-xs">
+                          {blog?.author}
+                        </span>
+                      </div>
+                      <div className="flex items-center space-x-1">
+                        <Calendar size={8} />
+                        <span className="text-xs">
+                          {new Date(blog?.createdAt).toLocaleDateString(
+                            "en-GB",
+                            { day: "2-digit", month: "2-digit" }
+                          )}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Stats */}
+                    <div className="flex items-center justify-between text-xs text-gray-500 mb-1">
+                      <div className="flex items-center space-x-1">
+                        <div className="flex items-center space-x-0.5">
+                          <EyeIcon size={8} />
+                          <span className="text-xs">{blog?.views || 0}</span>
+                        </div>
+                        <div className="flex items-center space-x-0.5">
+                          <ThumbsUp size={8} />
+                          <span className="text-xs">{blog?.likes || 0}</span>
+                        </div>
+                      </div>
+                      <div
+                        className={`w-1 h-1 rounded-full ${
+                          blog?.isPublished ? "bg-green-500" : "bg-gray-400"
+                        }`}
+                      />
+                    </div>
 
                     {/* Action Buttons */}
-                    <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-                      <div className="flex items-center gap-2">
+                    <div className="flex items-center justify-between pt-1 border-t border-gray-100">
+                      <div className="flex items-center gap-1.5">
+                        {/* View Blog */}
                         <button
-                          className="p-2 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-all duration-200"
-                          onClick={() => handleBlogView(blog)}
+                          onClick={() =>
+                            window.open(
+                              `/blog/${blog?.slug || blog?._id}`,
+                              "_blank"
+                            )
+                          }
+                          className="group p-1 rounded-full transition-all duration-300 hover:scale-110"
                           title="View Blog"
                         >
-                          <Eye size={18} />
+                          <Eye
+                            size={12}
+                            className="text-blue-600 group-hover:text-blue-700 transition-colors duration-300"
+                          />
                         </button>
+
+                        {/* Edit Blog */}
                         <button
-                          className="p-2 text-indigo-600 hover:text-indigo-800 hover:bg-indigo-50 rounded-lg transition-all duration-200"
-                          title="Edit Blog"
-                          onClick={(e) => {
+                          onClick={() => {
                             if (!isOwnedByMe(blog)) {
-                              e.preventDefault();
                               message.warning("For edit, contact admin");
                               return;
                             }
                             history(`/seo/blogs/edit/${blog._id}`);
                           }}
+                          className="group p-1 rounded-full transition-all duration-300 hover:scale-110"
+                          title="Edit Blog"
                         >
-                          <Edit size={18} />
+                          <Edit
+                            size={12}
+                            className="text-indigo-600 group-hover:text-indigo-700 transition-colors duration-300"
+                          />
                         </button>
+
+                        {/* Delete Blog */}
                         <button
-                          className="p-2 text-red-600 hover:text-red-800 hover:bg-red-50 rounded-lg transition-all duration-200"
                           onClick={() => {
                             if (!isOwnedByMe(blog)) {
                               message.warning("For delete, contact admin");
                               return;
                             }
-                            handleDeleteButtonClick(blog._id);
+                            setBlogToDelete(blog);
+                            showModal();
                           }}
+                          className="group p-1 rounded-full transition-all duration-300 hover:scale-110"
                           title="Delete Blog"
                         >
-                          <Trash2 size={18} />
+                          <Trash2
+                            size={12}
+                            className="text-red-600 group-hover:text-red-700 transition-colors duration-300"
+                          />
                         </button>
                       </div>
 
-                      {/* Published Toggle */}
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs text-gray-500">Status</span>
-                        <Switch
-                          checked={blog?.isPublished}
-                          loading={isPublishedLoading}
-                          onChange={(checked) => {
-                            if (!isOwnedByMe(blog)) {
-                              message.warning("For publish, contact admin");
-                              return;
-                            }
-                            handleIsPublished(checked, blog._id);
-                          }}
-                          className="custom-switch"
-                        />
+                      {/* Publish Toggle */}
+                      <div className="flex items-center space-x-1">
+                        <Tooltip
+                          title={
+                            blog?.isPublished
+                              ? "Click to Unpublish"
+                              : "Click to Publish"
+                          }
+                          placement="top"
+                        >
+                          <div className="flex items-center gap-2">
+                            {/* Toggle Wrapper */}
+                            <div
+                              className={`relative flex items-center cursor-pointer select-none transition-all duration-300 
+        ${isOwnedByMe(blog) ? "opacity-100" : "opacity-60 cursor-not-allowed"}
+      `}
+                              onClick={() => {
+                                if (!isOwnedByMe(blog)) {
+                                  message.warning(
+                                    "For publish/unpublish, contact admin"
+                                  );
+                                  return;
+                                }
+                                handleIsPublished(!blog?.isPublished, blog._id);
+                              }}
+                            >
+                              {/* Smooth Toggle Base */}
+                              <div
+                                className={`w-11 h-6 rounded-full transition-colors duration-300 ease-in-out 
+          ${
+            blog?.isPublished
+              ? "bg-green-500 shadow-md shadow-green-300/40"
+              : "bg-gray-300 hover:bg-gray-400"
+          }
+        `}
+                              ></div>
+
+                              {/* Toggle Circle */}
+                              <div
+                                className={`absolute left-0 top-0 w-6 h-6 bg-white rounded-full shadow-sm transform transition-transform duration-300 ease-in-out
+          ${blog?.isPublished ? "translate-x-5" : "translate-x-0"}
+        `}
+                              ></div>
+                            </div>
+
+                            {/* Label */}
+                            <span
+                              className={`text-xs font-medium transition-all duration-300 ${
+                                blog?.isPublished
+                                  ? "text-green-600 drop-shadow-[0_0_2px_rgba(34,197,94,0.4)]"
+                                  : "text-gray-500"
+                              }`}
+                            >
+                              {blog?.isPublished ? "Live" : "Draft"}
+                            </span>
+                          </div>
+                        </Tooltip>
                       </div>
                     </div>
                   </div>
                 </div>
-                    ))
-                  ) : (
+              ))
+            ) : (
               <div className="col-span-full">
                 <div className="bg-white rounded-2xl shadow-lg p-12 text-center">
                   <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
                     <FileText size={48} className="text-gray-400" />
                   </div>
-                  <h3 className="text-2xl font-semibold text-gray-800 mb-2">No blogs found</h3>
+                  <h3 className="text-2xl font-semibold text-gray-800 mb-2">
+                    No blogs found
+                  </h3>
                   <p className="text-gray-600 mb-6">
-                    {searchTerm ? "No blogs match your search criteria." : "Start by creating your first blog post."}
+                    {searchTerm
+                      ? "No blogs match your search criteria."
+                      : "Start by creating your first blog post."}
                   </p>
                   <Link to="/seo/blogs/write">
                     <button className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold px-6 py-3 rounded-xl shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105">
@@ -492,227 +775,111 @@ export default function BlogManagement() {
                 </div>
               </div>
             )}
-            </div>
-
-          {/* Pagination */}
-          {totalPages > 1 && (
-            <div className="mt-8">
-              <BlogPaginationControls
-                  currentPage={currentPage}
-                  setCurrentPage={setCurrentPage}
-                  totalPages={totalPages}
-                />
+            
+            {/* View All Button */}
+            {!showAllBlogs && filteredAndSortedBlogs?.length > INITIAL_BLOG_LIMIT && (
+              <div className="col-span-full mt-8">
+                <div className="flex justify-center">
+                  <button
+                    onClick={() => setShowAllBlogs(true)}
+                    className="group relative inline-flex items-center gap-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold px-8 py-4 rounded-xl shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 hover:shadow-2xl"
+                  >
+                    <Eye size={20} className="group-hover:scale-110 transition-transform duration-300" />
+                    <span className="text-lg">View All Blogs ({filteredAndSortedBlogs?.length})</span>
+                    <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 rounded-xl transition-opacity duration-300"></div>
+                  </button>
+                </div>
               </div>
             )}
+          </div>
         </div>
       </div>
     </>
   );
 }
 
+// Simple BlogPaginationControls component for backward compatibility
 export const BlogPaginationControls = ({
   currentPage,
   setCurrentPage,
   totalPages,
 }) => {
-  // Calculate page range to show
-  const getPageRange = () => {
-    const delta = 2; // Number of pages to show on each side
-    const range = [];
-    const rangeWithDots = [];
-
-    for (let i = Math.max(2, currentPage - delta); i <= Math.min(totalPages - 1, currentPage + delta); i++) {
-      range.push(i);
-    }
-
-    if (currentPage - delta > 2) {
-      rangeWithDots.push(1, '...');
-    } else {
-      rangeWithDots.push(1);
-    }
-
-    rangeWithDots.push(...range);
-
-    if (currentPage + delta < totalPages - 1) {
-      rangeWithDots.push('...', totalPages);
-    } else {
-      rangeWithDots.push(totalPages);
-    }
-
-    return rangeWithDots;
-  };
-
-  const pageRange = getPageRange();
+  if (totalPages <= 1) return null;
 
   return (
-    <div className="bg-white rounded-2xl shadow-xl p-6 border border-gray-100">
-      {/* Page Info - Top */}
-      <div className="flex justify-center items-center space-x-2 text-sm text-gray-600 mb-4">
-        <div className="flex items-center space-x-1">
-          <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-          <span className="font-medium">Page {currentPage}</span>
-          <span className="text-gray-400">of {totalPages}</span>
-        </div>
-        {totalPages > 1 && (
-          <div className="hidden sm:flex items-center space-x-1 text-xs text-gray-400">
-            <span>•</span>
-            <span>{totalPages} total pages</span>
-          </div>
-        )}
+    <div className="flex justify-center items-center space-x-2 mt-8">
+      <button
+        className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 flex items-center space-x-1 ${
+          currentPage === 1
+            ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+            : "bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-700 hover:from-blue-100 hover:to-indigo-100 border border-blue-200"
+        }`}
+        onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+        disabled={currentPage === 1}
+      >
+        <ArrowUp size={16} className="rotate-90" />
+        <span className="hidden sm:inline">Previous</span>
+      </button>
+
+      <div className="flex items-center space-x-1">
+        <span className="px-4 py-2 text-sm text-gray-600">
+          Page {currentPage} of {totalPages}
+        </span>
       </div>
 
-      {/* Centered Navigation Controls */}
-      <div className="flex justify-center items-center space-x-2">
-        {/* First Page */}
-        {totalPages > 1 && (
-          <button
-            className={`p-2 rounded-lg transition-all duration-200 ${
-              currentPage === 1
-                ? "text-gray-300 cursor-not-allowed"
-                : "text-gray-600 hover:text-blue-600 hover:bg-blue-50"
-            }`}
-            onClick={() => setCurrentPage(1)}
-            disabled={currentPage === 1}
-            title="First page"
-          >
-            <ArrowUp size={16} className="rotate-90" />
-          </button>
-        )}
-
-        {/* Previous Page */}
-        <button
-          className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 flex items-center space-x-1 ${
-            currentPage === 1
-              ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-              : "bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-700 hover:from-blue-100 hover:to-indigo-100 border border-blue-200"
-          }`}
-          onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
-          disabled={currentPage === 1}
-        >
-          <ArrowUp size={16} className="rotate-90" />
-          <span className="hidden sm:inline">Previous</span>
-        </button>
-
-        {/* Page Numbers */}
-        <div className="flex items-center space-x-1">
-          {pageRange.map((page, index) => (
-            <div key={index}>
-              {page === '...' ? (
-                <span className="px-3 py-2 text-gray-400">...</span>
-              ) : (
-                <button
-                  className={`w-10 h-10 rounded-lg font-semibold transition-all duration-200 ${
-                    currentPage === page
-                      ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg transform scale-105"
-                      : "bg-gray-50 text-gray-700 hover:bg-gray-100 hover:text-blue-600"
-                  }`}
-                  onClick={() => setCurrentPage(page)}
-                >
-                  {page}
-                </button>
-              )}
-            </div>
-          ))}
-        </div>
-
-        {/* Next Page */}
-        <button
-          className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 flex items-center space-x-1 ${
-            currentPage === totalPages
-              ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-              : "bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-700 hover:from-blue-100 hover:to-indigo-100 border border-blue-200"
-          }`}
-          onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
-          disabled={currentPage === totalPages}
-        >
-          <span className="hidden sm:inline">Next</span>
-          <ArrowDown size={16} className="rotate-90" />
-        </button>
-
-        {/* Last Page */}
-        {totalPages > 1 && (
-          <button
-            className={`p-2 rounded-lg transition-all duration-200 ${
-              currentPage === totalPages
-                ? "text-gray-300 cursor-not-allowed"
-                : "text-gray-600 hover:text-blue-600 hover:bg-blue-50"
-            }`}
-            onClick={() => setCurrentPage(totalPages)}
-            disabled={currentPage === totalPages}
-            title="Last page"
-          >
-            <ArrowDown size={16} className="rotate-90" />
-          </button>
-        )}
-      </div>
-
-      {/* Quick Jump - Bottom */}
-      {totalPages > 5 && (
-        <div className="flex justify-center items-center space-x-2 text-sm mt-4">
-          <span className="text-gray-500">Go to:</span>
-          <select
-            className="px-3 py-1 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            value={currentPage}
-            onChange={(e) => setCurrentPage(Number(e.target.value))}
-          >
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
-              <option key={page} value={page}>
-                Page {page}
-              </option>
-            ))}
-          </select>
-        </div>
-      )}
-
-      {/* Progress Bar - Bottom */}
-      {/* {totalPages > 1 && (
-        <div className="mt-4">
-          <div className="w-full bg-gray-200 rounded-full h-1">
-            <div 
-              className="bg-gradient-to-r from-blue-500 to-indigo-500 h-1 rounded-full transition-all duration-300"
-              style={{ width: `${(currentPage / totalPages) * 100}%` }}
-            ></div>
-          </div>
-        </div>
-      )} */}
+      <button
+        className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 flex items-center space-x-1 ${
+          currentPage === totalPages
+            ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+            : "bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-700 hover:from-blue-100 hover:to-indigo-100 border border-blue-200"
+        }`}
+        onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+        disabled={currentPage === totalPages}
+      >
+        <span className="hidden sm:inline">Next</span>
+        <ArrowDown size={16} className="rotate-90" />
+      </button>
     </div>
   );
 };
 
-
-// Simple pagination for other components
+// Simple PaginationControls component for backward compatibility
 export const PaginationControls = ({
   currentPage,
   setCurrentPage,
   totalPages,
-}) => (
-  <div className="flex justify-center items-center space-x-2 mt-6">
-    <button
-      className={`px-4 py-2 rounded-md font-medium transition-colors ${
-        currentPage === 1
-          ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-          : "bg-blue-600 text-white hover:bg-blue-700"
-      }`}
-      onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
-      disabled={currentPage === 1}
-    >
-      Previous
-    </button>
-    
-    <span className="px-4 py-2 text-gray-600">
-      Page {currentPage} of {totalPages}
-    </span>
-    
-    <button
-      className={`px-4 py-2 rounded-md font-medium transition-colors ${
-        currentPage === totalPages
-          ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-          : "bg-blue-600 text-white hover:bg-blue-700"
-      }`}
-      onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
-      disabled={currentPage === totalPages}
-    >
-      Next
-    </button>
-  </div>
-);
+}) => {
+  if (totalPages <= 1) return null;
+
+  return (
+    <div className="flex justify-center items-center space-x-2 mt-6">
+      <button
+        className={`px-4 py-2 rounded-md font-medium transition-colors ${
+          currentPage === 1
+            ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+            : "bg-blue-600 text-white hover:bg-blue-700"
+        }`}
+        onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+        disabled={currentPage === 1}
+      >
+        Previous
+      </button>
+
+      <span className="px-4 py-2 text-gray-600">
+        Page {currentPage} of {totalPages}
+      </span>
+
+      <button
+        className={`px-4 py-2 rounded-md font-medium transition-colors ${
+          currentPage === totalPages
+            ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+            : "bg-blue-600 text-white hover:bg-blue-700"
+        }`}
+        onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+        disabled={currentPage === totalPages}
+      >
+        Next
+      </button>
+    </div>
+  );
+};
