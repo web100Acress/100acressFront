@@ -33,82 +33,14 @@ import {
   Monitor,
   Smartphone,
   Tablet,
-  Download
+  Download,
+  
 } from "lucide-react";
-import { 
-  Card, 
-  Statistic, 
-  Progress, 
-  Badge, 
-  Table, 
-  Button, 
-  Input, 
-  Select,
-  Modal,
-  Switch,
-  Tooltip,
-  Row,
-  Col,
-  Spin,
-  Avatar,
-  Tag,
-  Divider,
-  Space,
-  Typography,
-  Alert,
-  Empty,
-  Skeleton,
-  Tabs,
-  Timeline,
-  notification,
-  Drawer,
-  Form,
-  DatePicker,
-  Checkbox,
-  Radio,
-  Slider,
-  Rate,
-  Upload,
-  message,
-  Popconfirm,
-  Dropdown,
-  Menu,
-  Breadcrumb,
-  Steps,
-  Result,
-  Descriptions,
-  List,
-  Tree,
-  Transfer,
-  Cascader,
-  AutoComplete,
-  Mentions,
-  InputNumber,
-  Switch as AntSwitch,
-  Slider as AntSlider,
-  Rate as AntRate,
-  Upload as AntUpload,
-  message as AntMessage,
-  Popconfirm as AntPopconfirm,
-  Dropdown as AntDropdown,
-  Menu as AntMenu,
-  Breadcrumb as AntBreadcrumb,
-  Steps as AntSteps,
-  Result as AntResult,
-  Descriptions as AntDescriptions,
-  List as AntList,
-  Tree as AntTree,
-  Transfer as AntTransfer,
-  Cascader as AntCascader,
-  AutoComplete as AntAutoComplete,
-  Mentions as AntMentions,
-  InputNumber as AntInputNumber
-} from "antd";
+// Removed all Ant Design imports - using simple JSX with Tailwind CSS
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../AuthContext";
 
-const { Option } = Select;
-const { Title, Text, Paragraph } = Typography;
+// Removed Ant Design destructured variables
 
 // Prefer slug-based blog link with fallback to legacy title/id route
 const getSlugFromTitle = (title) =>
@@ -440,7 +372,7 @@ export default function BlogDashboard() {
         setSelectedBlog(null);
         
         // Show success message
-        message.success('Blog deleted successfully');
+        console.log('Blog deleted successfully');
       }
     } catch (error) {
       console.error("Error deleting blog:", error);
@@ -452,7 +384,7 @@ export default function BlogDashboard() {
         errorMessage = 'Network error. Please check your connection.';
       }
       
-      message.error(errorMessage);
+      console.error(errorMessage);
     }
   };
 
@@ -534,7 +466,7 @@ export default function BlogDashboard() {
 
   const handleBulkAction = async (action) => {
     if (selectedBlogs.length === 0) {
-      message.warning('Please select blogs first');
+      console.warn('Please select blogs first');
       return;
     }
 
@@ -542,20 +474,20 @@ export default function BlogDashboard() {
       switch (action) {
         case 'publish':
           await Promise.all(selectedBlogs.map(id => handlePublishToggle(true, id)));
-          message.success(`${selectedBlogs.length} blogs published`);
+          console.log(`${selectedBlogs.length} blogs published`);
           break;
         case 'unpublish':
           await Promise.all(selectedBlogs.map(id => handlePublishToggle(false, id)));
-          message.success(`${selectedBlogs.length} blogs unpublished`);
+          console.log(`${selectedBlogs.length} blogs unpublished`);
           break;
         case 'delete':
           await Promise.all(selectedBlogs.map(id => handleDeleteBlog(id)));
-          message.success(`${selectedBlogs.length} blogs deleted`);
+          console.log(`${selectedBlogs.length} blogs deleted`);
           break;
       }
       setSelectedBlogs([]);
     } catch (error) {
-      message.error('Bulk action failed');
+      console.error('Bulk action failed');
     }
   };
 
@@ -568,7 +500,7 @@ export default function BlogDashboard() {
     
     if (exportFormat === 'pdf') {
       // Mock PDF export
-      message.success('PDF export started');
+      console.log('PDF export started');
     } else {
       // Mock Excel export
       const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
@@ -577,7 +509,7 @@ export default function BlogDashboard() {
       a.href = url;
       a.download = `blog-dashboard-${new Date().toISOString().split('T')[0]}.json`;
       a.click();
-      message.success('Data exported successfully');
+      console.log('Data exported successfully');
     }
   };
 
@@ -604,7 +536,7 @@ export default function BlogDashboard() {
                   <img
                     src={src}
                     alt={record.blog_Title || "Blog Image"}
-                    className="w-20 h-15 object-cover rounded-lg shadow-sm border border-gray-200"
+                    className="w-16 h-12 object-cover rounded-md shadow-sm border border-gray-200"
                     onError={(e) => {
                       console.log('Image failed to load:', src);
                       e.target.style.display = 'none';
@@ -612,14 +544,14 @@ export default function BlogDashboard() {
                     }}
                   />
                   <div 
-                    className="w-20 h-15 rounded-lg border border-gray-200 bg-gray-100 flex items-center justify-center text-xs text-gray-500" 
+                    className="w-16 h-12 rounded-md border border-gray-200 bg-gray-100 flex items-center justify-center text-xs text-gray-500" 
                     style={{ display: 'none' }}
                   >
                     No Image
                   </div>
                 </>
               ) : (
-                <div className="w-20 h-15 rounded-lg border border-gray-200 bg-gray-100" />
+                <div className="w-16 h-12 rounded-md border border-gray-200 bg-gray-100" />
               );
             })()}
             {record.isPublished && (
@@ -633,15 +565,15 @@ export default function BlogDashboard() {
               {record.blog_Title}
             </div>
             <div className="text-sm text-gray-600 flex items-center mt-1">
-              <Avatar size={16} className="mr-2">
-                <User size={10} />
-              </Avatar>
+              <div className="w-4 h-4 bg-blue-500 rounded-full flex items-center justify-center mr-2">
+                <User size={8} className="text-white" />
+              </div>
               {record.author}
               <span className="mx-2 text-gray-400">•</span>
               <Calendar size={14} className="mr-1 text-gray-400" />
               {record.createdAt ? new Date(record.createdAt).toLocaleDateString() : 'N/A'}
               {(record.type || 'blog').toLowerCase() === 'news' && (
-                <Tag color="gold" className="ml-2">News</Tag>
+                <span className="ml-2 bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full">News</span>
               )}
             </div>
           </div>
@@ -747,7 +679,7 @@ export default function BlogDashboard() {
               onClick={(e) => {
                 if (!isOwnedByMe(record)) {
                   e.preventDefault();
-                  message.warning('For edit, contact admin');
+                  console.warn('For edit, contact admin');
                   return;
                 }
                 history(`/seo/blogs/edit/${record._id}`);
@@ -762,7 +694,7 @@ export default function BlogDashboard() {
       `}
       onClick={() => {
         if (!isOwnedByMe(record)) {
-          message.warning('For publish/unpublish, contact admin');
+          console.warn('For publish/unpublish, contact admin');
           return;
         }
         setSelectedBlog(record);
@@ -801,7 +733,7 @@ export default function BlogDashboard() {
               icon={<Trash2 size={18} />}
               onClick={() => {
                 // Always block deletion: require contacting admin
-                message.warning('For delete, contact admin');
+                console.warn('For delete, contact admin');
                 return;
               }}
               className="hover:bg-red-50 rounded-full"
@@ -813,160 +745,141 @@ export default function BlogDashboard() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 p-3 sm:p-4 lg:p-6">
-      <div className="w-full mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 p-2 sm:p-3 lg:p-4">
+      <div className="w-full max-w-7xl mx-auto">
         {/* Professional Header */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 sm:p-8 mb-2 border border-gray-100 dark:border-gray-700 backdrop-blur-sm bg-opacity-90 dark:bg-opacity-90">
-          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
-            <div className="space-y-2">
-              <div className="flex items-center space-x-3">
-                <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center">
-                  <BarChart3 size={24} className="text-white" />
-                </div>
-                <div>
-                  <Title level={2} className="!mb-0 bg-gradient-to-r from-gray-800 via-blue-600 to-indigo-600 dark:from-gray-100 dark:via-blue-400 dark:to-indigo-400 bg-clip-text text-transparent">
-                    Blog Analytics Dashboard
-                  </Title>
-                  <Text className="text-gray-600 dark:text-gray-300 text-lg">
-                    Professional insights and management overview
-                  </Text>
-                </div>
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-3 sm:p-4 mb-2 border border-gray-100 dark:border-gray-700 backdrop-blur-sm bg-opacity-90 dark:bg-opacity-90">
+  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+    <div className="space-y-1">
+      <div className="flex items-center space-x-2">
+        <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-md flex items-center justify-center">
+          <BarChart3 size={16} className="text-white" />
+        </div>
+        <div>
+          <h2 className="text-lg sm:text-xl font-bold mb-0 bg-gradient-to-r from-gray-800 via-blue-600 to-indigo-600 dark:from-gray-100 dark:via-blue-400 dark:to-indigo-400 bg-clip-text text-transparent">
+            Blog Analytics
+          </h2>
+          <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300">
+            Professional insights overview
+          </p>
+        </div>
+      </div>
+    </div>
+    <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto mt-2 sm:mt-0">
+      <select
+        value={timeRange}
+        onChange={(e) => setTimeRange(e.target.value)}
+        className="text-xs sm:text-sm px-2 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+      >
+        <option value="7d">7d</option>
+        <option value="30d">30d</option>
+        <option value="90d">90d</option>
+        <option value="1y">1y</option>
+      </select>
+      <Link to="/seo/blogs/write" className="flex-1 sm:flex-none">
+        <button className="flex items-center justify-center space-x-1 sm:space-x-2 w-full sm:w-auto text-xs sm:text-sm px-3 py-1.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-md shadow hover:shadow-md transition-all duration-200">
+          <Plus size={14} />
+          <span>New Blog</span>
+        </button>
+      </Link>
+      <Link to="/seo/blogs/manage" className="flex-1 sm:flex-none">
+        <button className="flex items-center justify-center space-x-1 sm:space-x-2 w-full sm:w-auto text-xs sm:text-sm px-3 py-1.5 border border-gray-300 text-gray-700 rounded-md hover:border-blue-500 hover:text-blue-500 transition-all duration-200">
+          <FileText size={14} />
+          <span>Manage</span>
+        </button>
+      </Link>
+    </div>
+  </div>
+</div>
+
+        {/* Enhanced Blog Statistics */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 mb-3">
+          <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border border-blue-200 dark:border-blue-700 shadow-sm rounded-lg p-2 hover:shadow-md transition-all duration-300">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-sm font-medium text-blue-800 dark:text-blue-200 mb-0">Blog Statistics</h3>
+              <div className="w-6 h-6 bg-blue-100 dark:bg-blue-800 rounded-md flex items-center justify-center">
+                <PieChart size={14} className="text-blue-600 dark:text-blue-300" />
               </div>
             </div>
-            <div className="flex items-center space-x-4">
-              <Select
-                value={timeRange}
-                onChange={setTimeRange}
-                size="large"
-                style={{ width: 120 }}
-                className="rounded-lg"
-              >
-                <Option value="7d">Last 7 days</Option>
-                <Option value="30d">Last 30 days</Option>
-                <Option value="90d">Last 90 days</Option>
-                <Option value="1y">Last year</Option>
-              </Select>
-              <Link to="/seo/blogs/write">
-                <Button
-                  type="primary"
-                  size="large"
-                  icon={<Plus size={20} />}
-                  className="bg-gradient-to-r from-blue-600 to-indigo-600 border-0 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
-                >
-                  Create New Blog
-                </Button>
-              </Link>
-              <Link to="/seo/blogs/manage">
-                <Button
-                  size="large"
-                  icon={<FileText size={20} />}
-                  className="border-gray-300 hover:border-blue-500 hover:text-blue-500 transition-all duration-300 transform hover:-translate-y-1"
-                >
-                  Manage Blogs
-                </Button>
-              </Link>
+            <div className="grid grid-cols-3 gap-1">
+              <div className="text-center p-1.5 bg-white dark:bg-gray-700 rounded-md shadow-sm">
+                <div className="text-lg font-bold text-blue-600 dark:text-blue-400">{analytics.totalBlogs}</div>
+                <span className="text-gray-600 dark:text-gray-300 text-xs">Total</span>
+              </div>
+              <div className="text-center p-1.5 bg-white dark:bg-gray-700 rounded-md shadow-sm">
+                <div className="text-lg font-bold text-green-600 dark:text-green-400">{analytics.publishedBlogs}</div>
+                <span className="text-gray-600 dark:text-gray-300 text-xs">Published</span>
+              </div>
+              <div className="text-center p-1.5 bg-white dark:bg-gray-700 rounded-md shadow-sm">
+                <div className="text-lg font-bold text-orange-600 dark:text-orange-400">{analytics.draftBlogs}</div>
+                <span className="text-gray-600 dark:text-gray-300 text-xs">Drafts</span>
+              </div>
+            </div>
+            <div className="border-t border-gray-200 my-2"></div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                <span className="text-xs text-gray-600 dark:text-gray-300">Published ({Math.round((analytics.publishedBlogs / analytics.totalBlogs) * 100)}%)</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
+                <span className="text-xs text-gray-600 dark:text-gray-300">Drafts ({Math.round((analytics.draftBlogs / analytics.totalBlogs) * 100)}%)</span>
+              </div>
+            </div>
+          </div>
+          <div className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border border-green-200 dark:border-green-700 shadow-sm rounded-lg p-2 hover:shadow-md transition-all duration-300">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-sm font-medium text-green-800 dark:text-green-200 mb-0">Performance Metrics</h3>
+              <div className="w-6 h-6 bg-green-100 dark:bg-green-800 rounded-md flex items-center justify-center">
+                <ActivityIcon size={14} className="text-green-600 dark:text-green-300" />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <div className="flex items-center justify-between p-1.5 bg-white dark:bg-gray-700 rounded-md shadow-sm">
+                <div className="flex items-center space-x-2">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                  <span className="text-xs text-gray-600 dark:text-gray-300">Bounce Rate</span>
+                </div>
+                <div className="flex items-center space-x-1">
+                  <span className="font-semibold text-xs text-gray-700 dark:text-gray-200">{analytics.bounceRate}%</span>
+                  <TrendingDown size={12} className="text-red-500" />
+                </div>
+              </div>
+              <div className="flex items-center justify-between p-1.5 bg-white dark:bg-gray-700 rounded-md shadow-sm">
+                <div className="flex items-center space-x-2">
+                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                  <span className="text-xs text-gray-600 dark:text-gray-300">Avg. Time</span>
+                </div>
+                <div className="flex items-center space-x-1">
+                  <span className="font-semibold text-xs text-gray-700 dark:text-gray-200">{analytics.avgTimeOnPage}m</span>
+                  <TrendingUp size={12} className="text-green-500" />
+                </div>
+              </div>
+              <div className="flex items-center justify-between p-1.5 bg-white dark:bg-gray-700 rounded-md shadow-sm">
+                <div className="flex items-center space-x-2">
+                  <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+                  <span className="text-xs text-gray-600 dark:text-gray-300">Engagement</span>
+                </div>
+                <div className="flex items-center space-x-1">
+                  <span className="font-semibold text-xs text-gray-700 dark:text-gray-200">{analytics.engagementRate}%</span>
+                  <TrendingUp size={12} className="text-green-500" />
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Enhanced Blog Statistics */}
-        <Row gutter={[12, 12]} className="mb-4">
-          <Col xs={24} lg={12}>
-            <Card className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border border-blue-200 dark:border-blue-700 shadow-md rounded-xl p-3 hover:shadow-lg transition-all duration-300">
-              <div className="flex items-center justify-between mb-3">
-                <Title level={5} className="!mb-0 text-blue-800 dark:text-blue-200">Blog Statistics</Title>
-                <div className="w-8 h-8 bg-blue-100 dark:bg-blue-800 rounded-lg flex items-center justify-center">
-                  <PieChart size={18} className="text-blue-600 dark:text-blue-300" />
-                </div>
-              </div>
-              <Row gutter={[8, 8]}>
-                <Col span={8}>
-                  <div className="text-center p-2 bg-white dark:bg-gray-700 rounded-lg shadow-sm">
-                    <div className="text-xl font-bold text-blue-600 dark:text-blue-400">{analytics.totalBlogs}</div>
-                    <Text className="text-gray-600 dark:text-gray-300 text-xs">Total</Text>
-                  </div>
-                </Col>
-                <Col span={8}>
-                  <div className="text-center p-2 bg-white dark:bg-gray-700 rounded-lg shadow-sm">
-                    <div className="text-xl font-bold text-green-600 dark:text-green-400">{analytics.publishedBlogs}</div>
-                    <Text className="text-gray-600 dark:text-gray-300 text-xs">Published</Text>
-                  </div>
-                </Col>
-                <Col span={8}>
-                  <div className="text-center p-2 bg-white dark:bg-gray-700 rounded-lg shadow-sm">
-                    <div className="text-xl font-bold text-orange-600 dark:text-orange-400">{analytics.draftBlogs}</div>
-                    <Text className="text-gray-600 dark:text-gray-300 text-xs">Drafts</Text>
-                  </div>
-                </Col>
-              </Row>
-              <Divider className="my-2" />
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                  <Text className="text-xs text-gray-600 dark:text-gray-300">Published ({Math.round((analytics.publishedBlogs / analytics.totalBlogs) * 100)}%)</Text>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
-                  <Text className="text-xs text-gray-600 dark:text-gray-300">Drafts ({Math.round((analytics.draftBlogs / analytics.totalBlogs) * 100)}%)</Text>
-                </div>
-              </div>
-            </Card>
-          </Col>
-          <Col xs={24} lg={12}>
-            <Card className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border border-green-200 dark:border-green-700 shadow-md rounded-xl p-3 hover:shadow-lg transition-all duration-300">
-              <div className="flex items-center justify-between mb-3">
-                <Title level={5} className="!mb-0 text-green-800 dark:text-green-200">Performance Metrics</Title>
-                <div className="w-8 h-8 bg-green-100 dark:bg-green-800 rounded-lg flex items-center justify-center">
-                  <ActivityIcon size={18} className="text-green-600 dark:text-green-300" />
-                </div>
-              </div>
-              <div className="space-y-2">
-                <div className="flex items-center justify-between p-2 bg-white dark:bg-gray-700 rounded-lg shadow-sm">
-                  <div className="flex items-center space-x-2">
-                    <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                    <Text className="text-xs text-gray-600 dark:text-gray-300">Bounce Rate</Text>
-                  </div>
-                  <div className="flex items-center space-x-1">
-                    <Text className="font-semibold text-xs text-gray-700 dark:text-gray-200">{analytics.bounceRate}%</Text>
-                    <TrendingDown size={12} className="text-red-500" />
-                  </div>
-                </div>
-                <div className="flex items-center justify-between p-2 bg-white dark:bg-gray-700 rounded-lg shadow-sm">
-                  <div className="flex items-center space-x-2">
-                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                    <Text className="text-xs text-gray-600 dark:text-gray-300">Avg. Time</Text>
-                  </div>
-                  <div className="flex items-center space-x-1">
-                    <Text className="font-semibold text-xs text-gray-700 dark:text-gray-200">{analytics.avgTimeOnPage}m</Text>
-                    <TrendingUp size={12} className="text-green-500" />
-                  </div>
-                </div>
-                <div className="flex items-center justify-between p-2 bg-white dark:bg-gray-700 rounded-lg shadow-sm">
-                  <div className="flex items-center space-x-2">
-                    <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-                    <Text className="text-xs text-gray-600 dark:text-gray-300">Engagement</Text>
-                  </div>
-                  <div className="flex items-center space-x-1">
-                    <Text className="font-semibold text-xs text-gray-700 dark:text-gray-200">{analytics.engagementRate}%</Text>
-                    <TrendingUp size={12} className="text-green-500" />
-                  </div>
-                </div>
-              </div>
-            </Card>
-          </Col>
-        </Row>
-
         {/* Top Performing Blog */}
         {analytics.topPerformingBlog && (
-          <Card className="bg-white border border-gray-100 shadow-lg rounded-lg mb-6 p-4">
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center space-x-3">
-                <Award size={28} className="text-yellow-500 animate-pulse" />
-                <Title level={4} className="!mb-0">Top Performing Blog</Title>
+          <div className="bg-white border border-gray-100 shadow-md rounded-lg mb-2 p-2">
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center space-x-2">
+                <Award size={16} className="text-yellow-500" />
+                <h3 className="text-xs font-medium mb-0">Top Performing Blog</h3>
               </div>
-              <Tag color="gold" className="font-medium">Best Performer</Tag>
+              <span className="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full">Best Performer</span>
             </div>
-                         <div className="flex flex-col lg:flex-row items-center lg:items-start space-y-6 lg:space-y-0 lg:space-x-8">
+            <div className="flex flex-col lg:flex-row items-center lg:items-start space-y-3 lg:space-y-0 lg:space-x-4">
                <div className="relative">
                  {(() => {
                    const img = analytics.topPerformingBlog.blog_Image || {};
@@ -977,82 +890,91 @@ export default function BlogDashboard() {
                      <img
                        src={src}
                        alt={analytics.topPerformingBlog.blog_Title || "Top Blog Image"}
-                       className="w-40 h-30 object-cover rounded-xl shadow-lg border border-gray-200 flex-shrink-0"
+                       className="w-24 h-18 object-cover rounded-lg shadow-md border border-gray-200 flex-shrink-0"
                      />
                    ) : (
-                     <div className="w-40 h-30 rounded-xl border border-gray-200 bg-gray-100 flex-shrink-0" />
+                     <div className="w-24 h-18 rounded-lg border border-gray-200 bg-gray-100 flex-shrink-0" />
                    );
                  })()}
-                 <div className="absolute -top-2 -right-2 w-8 h-8 bg-yellow-500 rounded-full flex items-center justify-center">
-                   <Award size={16} className="text-white" />
+                 <div className="absolute -top-1 -right-1 w-5 h-5 bg-yellow-500 rounded-full flex items-center justify-center">
+                   <Award size={10} className="text-white" />
                  </div>
                </div>
               <div className="flex-1 text-center lg:text-left">
                 <Link to={`/blog/${analytics.topPerformingBlog.blog_Title?.replace(/\s+/g, '-').replace(/[?!,\.;:\{\}\(\)\$\@]+/g, '')}/${analytics.topPerformingBlog._id}`}>
-                  <Title level={3} className="!mb-2 hover:text-blue-600 transition-colors duration-200 cursor-pointer">
+                  <h3 className="text-sm font-semibold mb-1 hover:text-blue-600 transition-colors duration-200 cursor-pointer">
                     {analytics.topPerformingBlog.blog_Title}
-                  </Title>
+                  </h3>
                 </Link>
-                <div className="flex items-center justify-center lg:justify-start space-x-4 mb-4">
+                <div className="flex items-center justify-center lg:justify-start space-x-3 mb-2">
                   <div className="flex items-center space-x-1">
-                    <Avatar size={20} className="bg-blue-500">
-                      <User size={12} />
-                    </Avatar>
-                    <Text className="font-medium">{analytics.topPerformingBlog.author}</Text>
+                    <div className="w-3 h-3 bg-blue-500 rounded-full flex items-center justify-center">
+                      <User size={8} className="text-white" />
+                    </div>
+                    <span className="text-xs font-medium">{analytics.topPerformingBlog.author}</span>
                   </div>
                   <div className="flex items-center space-x-1">
-                    <Calendar size={16} className="text-gray-400" />
-                    <Text className="text-gray-600">{new Date(analytics.topPerformingBlog.createdAt).toLocaleDateString()}</Text>
+                    <Calendar size={12} className="text-gray-400" />
+                    <span className="text-xs text-gray-600">{new Date(analytics.topPerformingBlog.createdAt).toLocaleDateString()}</span>
                   </div>
                 </div>
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-blue-600">{analytics.topPerformingBlog.views || 0}</div>
-                    <Text className="text-gray-600">Views</Text>
+                    <div className="text-lg font-bold text-blue-600">{analytics.topPerformingBlog.views || 0}</div>
+                    <span className="text-xs text-gray-600">Views</span>
                   </div>
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-green-600">{analytics.topPerformingBlog.likes || 0}</div>
-                    <Text className="text-gray-600">Likes</Text>
+                    <div className="text-lg font-bold text-green-600">{analytics.topPerformingBlog.likes || 0}</div>
+                    <span className="text-xs text-gray-600">Likes</span>
                   </div>
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-purple-600">{analytics.topPerformingBlog.shares || 0}</div>
-                    <Text className="text-gray-600">Shares</Text>
+                    <div className="text-lg font-bold text-purple-600">{analytics.topPerformingBlog.shares || 0}</div>
+                    <span className="text-xs text-gray-600">Shares</span>
                   </div>
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-red-600">{analytics.topPerformingBlog.comments || 0}</div>
-                    <Text className="text-gray-600">Comments</Text>
+                    <div className="text-lg font-bold text-red-600">{analytics.topPerformingBlog.comments || 0}</div>
+                    <span className="text-xs text-gray-600">Comments</span>
                   </div>
                 </div>
               </div>
             </div>
-          </Card>
+          </div>
         )}
 
         {/* Professional Blogs Table */}
-        <Card className="bg-white border border-gray-100 shadow-lg rounded-lg p-4">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center space-x-3">
-              <FileText size={24} className="text-blue-500" />
-              <Title level={4} className="!mb-0">All Blog Posts</Title>
+        <div className="bg-white border border-gray-100 shadow-md rounded-lg p-3">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 gap-3">
+            <div className="flex items-center space-x-2">
+              <FileText size={20} className="text-blue-500" />
+              <h3 className="text-sm font-medium mb-0">All Blog Posts</h3>
             </div>
-            <div className="flex items-center space-x-4">
-              <div className="text-base text-gray-600 font-medium">
-                Showing {filteredBlogs.length} of {blogs.length} posts
-              </div>
+            <div className="text-sm text-gray-600 font-medium">
+              Showing {filteredBlogs.length} of {blogs.length} posts
             </div>
           </div>
 
           {/* Search Bar */}
-          <div className="mb-6">
-            <Input
-              placeholder="Search blogs by title, author, email, content, category, or tags..."
-              prefix={<Search size={16} className="text-gray-400" />}
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="max-w-lg"
-              size="large"
-              allowClear
-            />
+          <div className="mb-4">
+            <div className="relative max-w-lg">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <Search size={16} className="text-gray-400" />
+              </div>
+              <input
+                type="text"
+                placeholder="Search blogs by title, author, email, content, category, or tags..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+              />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery('')}
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                >
+                  <X size={16} className="text-gray-400 hover:text-gray-600" />
+                </button>
+              )}
+            </div>
             {searchQuery && (
               <div className="mt-2 text-sm text-gray-600">
                 Found {filteredBlogs.length} blog(s) matching "{searchQuery}"
@@ -1060,63 +982,271 @@ export default function BlogDashboard() {
             )}
           </div>
 
-          <Table
-            columns={columns}
-            dataSource={filteredBlogs}
-            rowKey="_id"
-            loading={loading}
-            className="shadow-sm"
-            scroll={{ x: 1300 }}
-            rowSelection={{
-              selectedRowKeys: selectedBlogs,
-              onChange: setSelectedBlogs,
-            }}
-            locale={{
-              emptyText: searchQuery ? 
-                <Empty description={`No blogs found matching "${searchQuery}"`} /> :
-                <Empty description="No blog posts found" />
-            }}
-          />
+          {/* Blog Table */}
+          <div className="overflow-x-auto">
+            {loading ? (
+              <div className="flex justify-center py-8">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+              </div>
+            ) : filteredBlogs.length === 0 ? (
+              <div className="text-center py-8">
+                <div className="text-gray-500">
+                  {searchQuery ? `No blogs found matching "${searchQuery}"` : "No blog posts found"}
+                </div>
+              </div>
+            ) : (
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Blog Post</th>
+                    <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                    <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Performance</th>
+                    <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Views</th>
+                    <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Engagement</th>
+                    <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {filteredBlogs.map((blog) => (
+                    <tr key={blog._id} className="hover:bg-gray-50">
+                      {/* Blog Post Column */}
+                      <td className="px-3 py-2 whitespace-nowrap">
+                        <div className="flex items-center">
+                          <div className="relative mr-3">
+                            {(() => {
+                              const img = blog.blog_Image || {};
+                              const cdn = typeof img.cdn_url === 'string' && img.cdn_url.trim();
+                              const direct = typeof img.url === 'string' && img.url.trim();
+                              const src = cdn || direct || (typeof img === 'string' ? img : '');
+                              return src ? (
+                                <img
+                                  src={src}
+                                  alt={blog.blog_Title || "Blog Image"}
+                                  className="w-12 h-8 object-cover rounded border border-gray-200"
+                                />
+                              ) : (
+                                <div className="w-12 h-8 rounded border border-gray-200 bg-gray-100" />
+                              );
+                            })()}
+                            {blog.isPublished && (
+                              <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full"></div>
+                            )}
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <div 
+                              className="text-sm font-medium text-gray-900 cursor-pointer"
+                              title={blog.blog_Title}
+                            >
+                              {blog.blog_Title && blog.blog_Title.length > 25 
+                                ? `${blog.blog_Title.substring(0, 25)}...` 
+                                : blog.blog_Title
+                              }
+                            </div>
+                            <div className="text-xs text-gray-500 flex items-center mt-1">
+                              <div className="w-3 h-3 bg-blue-500 rounded-full flex items-center justify-center mr-1">
+                                <User size={6} className="text-white" />
+                              </div>
+                              {blog.author} • {new Date(blog.createdAt).toLocaleDateString()}
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      
+                      {/* Status Column */}
+                      <td className="px-3 py-2 whitespace-nowrap">
+                        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                          blog.isPublished 
+                            ? 'bg-green-100 text-green-800' 
+                            : 'bg-yellow-100 text-yellow-800'
+                        }`}>
+                          {blog.isPublished ? 'Published' : 'Draft'}
+                        </span>
+                      </td>
+                      
+                      {/* Performance Column */}
+                      <td className="px-3 py-2 whitespace-nowrap">
+                        <div className="flex items-center">
+                          <div className={`w-2 h-2 rounded-full mr-2 ${
+                            (blog.views || 0) > 100 ? 'bg-green-500' : 
+                            (blog.views || 0) > 50 ? 'bg-yellow-500' : 'bg-red-500'
+                          }`}></div>
+                          <span className="text-xs font-medium">
+                            {(blog.views || 0) > 100 ? 'High' : 
+                             (blog.views || 0) > 50 ? 'Medium' : 'Low'}
+                          </span>
+                        </div>
+                      </td>
+                      
+                      {/* Views Column */}
+                      <td className="px-3 py-2 whitespace-nowrap">
+                        <div className="flex items-center text-sm">
+                          <Eye size={12} className="mr-1 text-gray-400" />
+                          <span>{blog.views || 0}</span>
+                        </div>
+                      </td>
+                      
+                      {/* Engagement Column */}
+                      <td className="px-3 py-2 whitespace-nowrap">
+                        <div className="flex items-center space-x-2 text-xs">
+                          <div className="flex items-center text-green-600">
+                            <ThumbsUp size={10} className="mr-1" />
+                            <span>{blog.likes || 0}</span>
+                          </div>
+                          <div className="flex items-center text-purple-600">
+                            <Share2 size={10} className="mr-1" />
+                            <span>{blog.shares || 0}</span>
+                          </div>
+                          <div className="flex items-center text-red-600">
+                            <MessageCircle size={10} className="mr-1" />
+                            <span>{blog.commentsCount || 0}</span>
+                          </div>
+                        </div>
+                      </td>
+                      
+                      {/* Actions Column */}
+                      <td className="px-3 py-2 whitespace-nowrap text-right text-sm font-medium">
+                        <div className="flex items-center space-x-1">
+                          <Link 
+                            to={blogLink(blog)}
+                            className="text-blue-600 hover:text-blue-800 p-1 rounded"
+                            title="View Blog"
+                          >
+                            <Eye size={14} />
+                          </Link>
+                          <Link 
+                            to={`/seo/blogs/write?edit=${blog._id}`}
+                            className="text-green-600 hover:text-green-800 p-1 rounded"
+                            title="Edit Blog"
+                          >
+                            <Edit size={14} />
+                          </Link>
+                          <div className="relative">
+                            <div
+                              className={`w-8 h-4 rounded-full transition-colors duration-300 cursor-pointer ${
+                                blog.isPublished ? 'bg-green-500' : 'bg-gray-300'
+                              }`}
+                              onClick={() => {
+                                setSelectedBlog(blog);
+                                handlePublishToggle(!blog.isPublished, blog._id);
+                              }}
+                              title={blog.isPublished ? "Click to Unpublish" : "Click to Publish"}
+                            >
+                              <div
+                                className={`w-4 h-4 bg-white rounded-full shadow transform transition-transform duration-300 ${
+                                  blog.isPublished ? 'translate-x-4' : 'translate-x-0'
+                                }`}
+                              ></div>
+                            </div>
+                          </div>
+                          <button
+                            onClick={() => {
+                              setSelectedBlog(blog);
+                              setDeleteModalVisible(true);
+                            }}
+                            className="text-red-600 hover:text-red-800 p-1 rounded"
+                            title="Delete Blog"
+                          >
+                            <Trash2 size={14} />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+            
+            {/* Pagination */}
+            {filteredBlogs.length > 10 && (
+              <div className="flex items-center justify-between px-4 py-3 bg-white border-t border-gray-200">
+                <div className="flex items-center text-sm text-gray-700">
+                  <span>Showing 1-{Math.min(10, filteredBlogs.length)} of {filteredBlogs.length} results</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <button className="px-3 py-1 text-sm border border-gray-300 rounded hover:bg-gray-50">
+                    Previous
+                  </button>
+                  <span className="px-3 py-1 text-sm bg-blue-500 text-white rounded">1</span>
+                  <button className="px-3 py-1 text-sm border border-gray-300 rounded hover:bg-gray-50">
+                    Next
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
 
-        </Card>
+        </div>
 
         {/* Professional Delete Modal */}
-        <Modal
-          title={
-            <span className="text-red-600 flex items-center">
-              <Trash2 size={24} className="mr-2"/>
-              Confirm Deletion
-            </span>
-          }
-          open={deleteModalVisible}
-          onOk={() => {
-            console.log('Delete modal confirmed for blog:', selectedBlog?._id);
-            handleDeleteBlog(selectedBlog?._id);
-          }}
-          onCancel={() => {
-            setDeleteModalVisible(false);
-            setSelectedBlog(null);
-          }}
-          okText="Delete Blog"
-          cancelText="Cancel"
-          okButtonProps={{ danger: true, className: 'px-6 py-2 rounded-lg' }}
-          cancelButtonProps={{ className: 'px-6 py-2 rounded-lg' }}
-          centered
-        >
-          <div className="py-4 text-center">
-            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Trash2 size={32} className="text-red-600" />
+        {deleteModalVisible && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center">
+            {/* Backdrop */}
+            <div 
+              className="fixed inset-0 bg-black bg-opacity-50 transition-opacity"
+              onClick={() => {
+                setDeleteModalVisible(false);
+                setSelectedBlog(null);
+              }}
+            ></div>
+            
+            {/* Modal Content */}
+            <div className="relative bg-white rounded-lg shadow-xl max-w-md w-full mx-4 p-6 z-10">
+              {/* Header */}
+              <div className="flex items-center justify-between mb-4">
+                <span className="text-red-600 flex items-center text-lg font-semibold">
+                  <Trash2 size={24} className="mr-2"/>
+                  Confirm Deletion
+                </span>
+                <button
+                  onClick={() => {
+                    setDeleteModalVisible(false);
+                    setSelectedBlog(null);
+                  }}
+                  className="text-gray-400 hover:text-gray-600 transition-colors"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+              
+              {/* Content */}
+              <div className="py-4 text-center">
+                <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Trash2 size={32} className="text-red-600" />
+                </div>
+                <h4 className="text-lg font-semibold mb-2">
+                  Are you absolutely sure?
+                </h4>
+                <p className="text-base text-gray-600">
+                  This action will permanently delete the blog post titled "
+                  <span className="font-bold text-red-700">{selectedBlog?.blog_Title}</span>
+                  ". This action cannot be undone.
+                </p>
+              </div>
+              
+              {/* Footer */}
+              <div className="flex justify-end space-x-3 mt-6">
+                <button
+                  onClick={() => {
+                    setDeleteModalVisible(false);
+                    setSelectedBlog(null);
+                  }}
+                  className="px-6 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => {
+                    console.log('Delete modal confirmed for blog:', selectedBlog?._id);
+                    handleDeleteBlog(selectedBlog?._id);
+                  }}
+                  className="px-6 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700 transition-colors"
+                >
+                  Delete Blog
+                </button>
+              </div>
             </div>
-            <Title level={4} className="!mb-2">
-              Are you absolutely sure?
-            </Title>
-            <Paragraph className="text-base text-gray-600">
-              This action will permanently delete the blog post titled "
-              <Text strong className="text-red-700">{selectedBlog?.blog_Title}</Text>
-              ". This action cannot be undone.
-            </Paragraph>
           </div>
-        </Modal>
+        )}
       </div>
     </div>
   );
