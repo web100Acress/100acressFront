@@ -89,6 +89,9 @@ const UnifiedBannerManagement = () => {
       if (selectedDesktopFile) {
         formData.append('bannerImage', selectedDesktopFile);
       }
+      if (selectedMobileFile) {
+        formData.append('mobileBannerImage', selectedMobileFile);
+      }
 
       // Use environment-based API detection
       const isDevelopment = import.meta.env.DEV;
@@ -106,6 +109,15 @@ const UnifiedBannerManagement = () => {
       for (let [key, value] of formData.entries()) {
         console.log(`${key}:`, value);
       }
+
+      console.log('Banner update request details:', {
+        method,
+        url,
+        editingBannerId: editingBanner?._id,
+        editingBannerTitle: editingBanner?.title,
+        apiBase,
+        isDevelopment
+      });
 
       const response = await fetch(url, {
         method: method,
@@ -229,6 +241,10 @@ const UnifiedBannerManagement = () => {
   };
 
   const handleEdit = (banner) => {
+    console.log('Editing banner:', banner);
+    console.log('Banner ID:', banner._id);
+    console.log('Banner title:', banner.title);
+
     setEditingBanner(banner);
     setBannerData({
       title: banner.title || '',
@@ -678,21 +694,39 @@ const UnifiedBannerManagement = () => {
                     </h3>
                     
                     {activeTab === 'hero' ? (
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                          Desktop Image *
-                        </label>
-                        <input
-                          type="file"
-                          accept="image/*"
-                          onChange={(e) => handleFileSelect(e.target.files[0], 'desktop')}
-                          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        />
-                        {desktopPreviewUrl && (
-                          <div className="mt-2">
-                            <img src={desktopPreviewUrl} alt="Preview" className="h-32 w-auto rounded-lg" />
-                          </div>
-                        )}
+                      <div className="space-y-6">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            Desktop Image *
+                          </label>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => handleFileSelect(e.target.files[0], 'desktop')}
+                            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          />
+                          {desktopPreviewUrl && (
+                            <div className="mt-2">
+                              <img src={desktopPreviewUrl} alt="Preview" className="h-32 w-auto rounded-lg" />
+                            </div>
+                          )}
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            Mobile Image (optional)
+                          </label>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => handleFileSelect(e.target.files[0], 'mobile')}
+                            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          />
+                          {mobilePreviewUrl && (
+                            <div className="mt-2">
+                              <img src={mobilePreviewUrl} alt="Mobile Preview" className="h-32 w-auto rounded-lg" />
+                            </div>
+                          )}
+                        </div>
                       </div>
                     ) : (
                       <div className="space-y-6">

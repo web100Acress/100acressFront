@@ -215,7 +215,7 @@ body.enable-card-animations .group .hero-strip-99-default {
 
 body.enable-card-animations .group:hover .hero-strip-99-dynamic,
 body.enable-card-animations .group:hover .hero-strip-99-default {
-  transform: scale(1.06) translateZ(0) !important;
+  transform: scale(1.02) translateZ(0) !important;
   filter: brightness(1.1) contrast(1.04);
 }
 

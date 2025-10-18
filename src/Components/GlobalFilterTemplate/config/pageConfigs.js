@@ -1,5 +1,5 @@
 // Page configurations for different filter page types
-import { getStaticData, getFAQData, getTrustBoosters } from './staticData';
+import { getStaticData, getFAQData, getTrustBoosters } from './staticData.jsx';
 
 export const pageConfigs = {
   // City Page Configuration
@@ -10,7 +10,7 @@ export const pageConfigs = {
     projectTypes: [
       "Commercial Property", "Residential Flats", "SCO Plots", "Deen Dayal Plots",
       "Residential Plots", "Independent Floors", "Builder Floors", "Affordable Homes",
-      "Villas", "Farm House", "Industrial Projects", "Industrial Plots"
+      "Villas", "Farm Housess", "Industrial Projects", "Industrial Plots"
     ],
     priceRanges: [
       { value: '<1', label: 'Under 1 Cr' },
@@ -33,7 +33,7 @@ export const pageConfigs = {
     projectTypes: [
       "Commercial Property", "Residential Flats", "SCO Plots", "Deen Dayal Plots",
       "Residential Plots", "Independent Floors", "Builder Floors", "Affordable Homes",
-      "Villas", "Farm House", "Industrial Projects", "Industrial Plots"
+      "Villas", "Farm Houses", "Industrial Projects", "Industrial Plots"
     ],
     priceRanges: [
       { value: '<1', label: 'Under 1 Cr' },
@@ -56,7 +56,7 @@ export const pageConfigs = {
     projectTypes: [
       "Commercial Property", "Residential Flats", "SCO Plots", "Deen Dayal Plots",
       "Residential Plots", "Independent Floors", "Builder Floors", "Affordable Homes",
-      "Villas", "Farm House", "Industrial Projects", "Industrial Plots"
+      "Villas", "Farm Houses", "Industrial Projects", "Industrial Plots"
     ],
     projectStatus: [
       "Upcoming Projects", "New Launch", "Under Construction", "Ready to Move"
@@ -74,7 +74,7 @@ export const pageConfigs = {
     projectTypes: [
       "Commercial Property", "Residential Flats", "SCO Plots", "Deen Dayal Plots",
       "Residential Plots", "Independent Floors", "Builder Floors", "Affordable Homes",
-      "Villas", "Farm House", "Industrial Projects", "Industrial Plots"
+      "Villas", "Farm Houses", "Industrial Projects", "Industrial Plots"
     ],
     badgeColor: 'bg-purple-500',
     badgeText: 'New',
@@ -194,12 +194,13 @@ export const projectTypeConfigs = {
     }
   },
   "farmhouse": {
-    title: "Farm House Projects",
-    description: "Discover Premium Farm House Projects – Your Gateway to Serene Living and Agricultural Investment.",
+    title: "Farm Houses Projects",
+    description: "Discover Premium Farm Houses Projects – Your Gateway to Serene Living and Agricultural Investment.",
     query: "farmhouse",
     reduxKey: "farmhouse",
+    canonical: "https://www.100acress.com/projects/farmhouse/",
     badgeColor: "bg-green-500",
-    badgeText: "Farm House",
+    badgeText: "Farm Houses",
     typeFilter: (project) => {
       return project.type?.toLowerCase().includes('farm') ||
              project.projectType?.toLowerCase().includes('farm') ||
@@ -207,7 +208,7 @@ export const projectTypeConfigs = {
              project.propertyType?.toLowerCase().includes('farm') ||
              project.projectName?.toLowerCase().includes('farm') ||
              project.description?.toLowerCase().includes('farm') ||
-             project.type === 'Farm House';
+             project.type === 'Farm Houses';
     }
   },
   "industrial-plots": {

@@ -310,13 +310,14 @@ const HeroWrapper = styled.section`
   flex-direction: column;
   align-items: stretch;
   overflow: hidden;
-  padding-top: 64px; /* Height of the navbar */
-  margin-top: -64px; /* Pull up to account for navbar fixed positioning */
+  padding-top: 0; /* Remove padding to eliminate gap */
+  margin-top: 64px; /* Space for the fixed navbar */
 
   /* New: top hero background image strip (340px tall) */
   .top-hero-bg {
     width: 100%;
     height: 340px;
+{{ ... }}
     background-image: url("/Images/experion-the-trillion-banner.png");
     background-repeat: no-repeat;
     background-position: center center; /* keep image centered */

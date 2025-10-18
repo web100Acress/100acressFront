@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Sidebar from "./Sidebar";
 import { useParams, Link } from "react-router-dom";
 import api from "../config/apiClient";
-import { MdOutlineDeleteOutline, MdInfo, MdAttachMoney, MdDateRange, MdBarChart, MdDescription, MdStar, MdCheckCircle, MdUpdate } from "react-icons/md";
+import { MdOutlineDeleteOutline, MdInfo, MdAttachMoney, MdDateRange, MdBarChart, MdDescription, MdStar, MdCheckCircle, MdUpdate, MdMovie, MdTitle } from "react-icons/md";
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
 import 'tippy.js/animations/scale.css';
@@ -57,7 +57,10 @@ const ProjectEdit = () => {
     minPrice: "",
     maxPrice: "",
     Amenities:"",
-    project_Brochure: "" });
+    project_Brochure: "",
+    youtubeVideoUrl: "",
+    youtubeVideoTitle: "",
+    youtubeVideoDescription: "" });
 
   // City and State dropdown states
   const [citiesList, setCitiesList] = useState([]);
@@ -219,7 +222,6 @@ const ProjectEdit = () => {
           projectRedefine_Entertainment: '',
           projectReraNo: '',
           AboutDeveloper: '',
-          type: '',
           project_url: '',
           meta_title: '',
           meta_description: '',
@@ -578,7 +580,7 @@ const ProjectEdit = () => {
         'projectRedefine_Education','projectRedefine_Entertainment','projectReraNo','AboutDeveloper','type',
         'project_url','meta_title','meta_description','project_Status','launchingDate','totalLandArea',
         'totalUnit','towerNumber','mobileNumber','possessionDate','minPrice','maxPrice','Amenities',
-        'project_discripation'
+        'project_discripation','youtubeVideoUrl','youtubeVideoTitle','youtubeVideoDescription'
       ];
       scalarKeys.forEach((key) => {
         const val = values[key];
@@ -800,6 +802,13 @@ const ProjectEdit = () => {
         { label: "Project Redefine Connectivity", name: "projectRedefine_Connectivity", icon: <MdStar className="inline mr-1" /> },
         { label: "Project Redefine Education", name: "projectRedefine_Education", icon: <MdStar className="inline mr-1" /> },
         { label: "Project Redefine Entertainment", name: "projectRedefine_Entertainment", icon: <MdStar className="inline mr-1" /> },
+      ]
+    },
+    {
+      icon: <MdMovie className="text-2xl text-red-500 mr-2" />, title: "YouTube Video", fields: [
+        { label: "YouTube Video URL", name: "youtubeVideoUrl", icon: <MdMovie className="inline mr-1" /> },
+        { label: "YouTube Video Title", name: "youtubeVideoTitle", icon: <MdTitle className="inline mr-1" /> },
+        { label: "YouTube Video Description", name: "youtubeVideoDescription", icon: <MdDescription className="inline mr-1" />, textarea: true },
       ]
     },
   ];

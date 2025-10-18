@@ -226,6 +226,18 @@ const InsertProject = () => {
     }
   };
 
+  // Handle city selection
+  const handleCitySelect = (cityName) => {
+    setEditFromData((prev) => ({
+      ...prev,
+      city: cityName,
+    }));
+    setCitySearchTerm(cityName);
+    setIsCityDropdownOpen(false);
+  };
+
+  
+
   // Handle state input change - allow direct typing of new states
   const handleStateInputChange = (e) => {
     const value = e.target.value;
@@ -1018,7 +1030,7 @@ const InsertProject = () => {
                       <option value="Builder Floors">Builder Floors</option>
                       <option value="Affordable Homes">Affordable Homes</option>
                       <option value="Villas">Villas</option>
-                      <option value="Farm Houses">Farm House</option>
+                      <option value="Farm Houses">Farm Houses</option>
                       <option value="Industrial Plots">
                         Industrial Plots
                       </option>

@@ -127,15 +127,22 @@ const Builder = () => {
       image:
         "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/project/tmfm0mywshnqqnmz7j9x",
     },
+    {
+      title: "Maxestates",
+      link: "/developers/maxestates/",
+      image:
+        "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/maxestate.webp",
+    },
   ];
 
     return (
         <Wrapper className="section">
             <div className="container">
-               <div className="flex items-center justify-between mx-3 lg:mx-3 xl:mx-14 md:mx-6 py-2">
-                         <div className="flex items-center ">
-                           <h2 className="text-2xl xl:text-4xl lg:text-3xl md:text-2xl text-center sm:text-left font-bold">
-                             Top Real Estate Developers 
+               <div className="flex items-center justify-between mx-3 lg:mx-3 xl:mx-14 md:mx-6 py-6">
+                         <div className="flex items-center">
+                           <div className="w-1 h-12 bg-gradient-to-b from-red-500 to-red-600 rounded-full mr-4"></div>
+                           <h2 className="text-2xl xl:text-4xl lg:text-3xl md:text-2xl text-center sm:text-left font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">
+                             Top Real Estate Developers
                            </h2>
                          </div>
                          {/* <div className="ml-2 hidden sm:block">
@@ -147,26 +154,28 @@ const Builder = () => {
                            </Link>
                          </div> */}
                        </div>
-        {/* Single responsive grid for all builders */}
-        <div className="grid w-full max-w-[1250px] mx-auto lg:grid-cols-10 md:grid-cols-5 sm:grid-cols-3 grid-cols-2 gap-3 py-4">
+        {/* Dynamic Developer Showcase Grid */}
+        <div className="grid w-full max-w-[1400px] mx-auto grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 gap-4 py-6">
           {Builder.map((project, index) => (
-                        <Link
-                            data-aos="flip-up"
-                            to={project.link}
-                            key={index}
-                            className="relative group card rounded-xl overflow-hidden shadow-lg transform transition-transform duration-300 bg-white dark:bg-gray-800 "
-                        >
-                            <div className="flex items-center justify-center w-48 h-48 p-3 gap-3">
-                                <img
-                                    src={project.image}
-                                    alt={project.title}
-                  className="w-24 h-24 object-contain rounded-xl"
-                                    loading="lazy"
-                                />
-                            </div>
-                        </Link>
-                    ))}
+            <Link
+              data-aos="flip-up"
+              to={project.link}
+              key={index}
+              className="group relative bg-white rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.12)] hover:shadow-[0_16px_48px_rgba(0,0,0,0.2)] hover:scale-105 transition-all duration-300 ease-in-out overflow-hidden ring-2 ring-red-200 hover:ring-red-400"
+            >
+              <div className="flex flex-col items-center justify-center p-4 h-28">
+                <div className="flex items-center justify-center w-full h-20 mb-2">
+                  <img
+                    src={project.image}
+                    alt={project.title}
+                    className="w-28 h-28 object-contain rounded-xl"
+                    loading="lazy"
+                  />
                 </div>
+              </div>
+            </Link>
+          ))}
+        </div>
             </div>
         </Wrapper>
     );
@@ -180,7 +189,7 @@ const Wrapper = styled.section`
     padding-bottom: 20px;
   }
   .container {
-    max-width: 1250px;
+    max-width: 1400px;
     margin: auto;
     padding: 10px;
   }
@@ -205,77 +214,33 @@ const Wrapper = styled.section`
     font-weight: 600;
   }
 
-  .grid-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 20px;
+  /* Enhanced responsive grid for better tablet and mobile experience */
+  @media (max-width: 1280px) {
+    .container {
+      max-width: 100%;
+      padding: 15px;
+    }
   }
 
-  .card {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    // border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    overflow: hidden;
-    text-decoration: none;
-    background: #fff;
-    padding: 10px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease;
-    height: 96px;
-    width: 100%;
-  }
-
-  .card:hover {
-    transform: translateY(-8px);
-  }
-
-  .card-image {
-    width: 100%;
-    height: 180px;
-    object-fit: cover;
-    border-radius: 8px;
-  }
-
-  // .card-image:hover{
-  //   transform: scale(1.06);
-  // }
-
-  .card-button {
-    width: 100%;
-    margin-top: 10px;
-    border-radius:10px;
-    padding: 10px 0px;
-    background-color: #C13B44;
-    color: white;
-    font-size: 1rem;
-    font-weight: bold;
-    border: none;
-    cursor: pointer;
-    text-transform: capitalize;
-    transition: background-color 0.3s ease;
-  }
-
-  .card-button:hover {
-    background-color: #7C1920;
-    transform: scale(1.06);
+  @media (max-width: 1024px) {
+    .title {
+      font-size: 1.75rem;
+    }
   }
 
   @media (max-width: 768px) {
     .title {
-      font-size: 1.25rem;
+      font-size: 1.5rem;
     }
 
-    .card-image {
-      height: 150px;
-    }
-
-    .card-button {
-      font-size: 0.9rem;
+    .container {
+      padding: 10px;
     }
   }
 
+  @media (max-width: 640px) {
+    .title {
+      font-size: 1.25rem;
+    }
   }
 `;

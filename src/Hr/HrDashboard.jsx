@@ -1,13 +1,60 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FaUsers, FaMoneyBillWave, FaClock, FaUserPlus, FaChartBar } from 'react-icons/fa';
 import HrSidebar from './HrSidebar';
+import api from "../config/apiClient";
 
 const HrDashboard = () => {
+  const [dashboardData, setDashboardData] = useState({
+    totalEmployees: 0,
+    attendanceRate: 0,
+    openPositions: 0,
+    leaveRequests: 0,
+    performanceReviews: 0,
+    newHires: 0,
+    loading: true
+  });
+
+  useEffect(() => {
+    fetchDashboardData();
+  }, []);
+
+  const fetchDashboardData = async () => {
+    try {
+      setDashboardData(prev => ({ ...prev, loading: true }));
+
+      // Fetch open positions count from job postings
+      const jobResponse = await api.get("/career/opening/ViewAll");
+      const openPositions = jobResponse?.data?.data?.length || 0;
+
+      // For demo purposes, using static data for other metrics
+      // In a real application, these would come from respective APIs
+      const mockData = {
+        totalEmployees: 500,
+        monthlyPayroll: 120050000,
+        attendanceRate: 94,
+        leaveRequests: 3,
+        performanceReviews: 5,
+        newHires: 2,
+        trainingPrograms: 3
+      };
+
+      setDashboardData({
+        ...mockData,
+        openPositions,
+        loading: false
+      });
+
+    } catch (error) {
+      console.error("Error fetching dashboard data:", error);
+      setDashboardData(prev => ({ ...prev, loading: false }));
+    }
+  };
+
   const dashboardCards = [
     {
       title: 'Total Employees',
-      value: '0',
+      value: dashboardData.loading ? '...' : dashboardData.totalEmployees.toString(),
       icon: <FaUsers className="text-3xl text-blue-600" />,
       bgColor: 'bg-blue-100 dark:bg-blue-900/20',
       textColor: 'text-blue-800 dark:text-blue-200',
@@ -15,7 +62,7 @@ const HrDashboard = () => {
     },
     {
       title: 'Monthly Payroll',
-      value: '₹0',
+      value: dashboardData.loading ? '...' : `₹${(dashboardData.monthlyPayroll / 100000).toFixed(1)}L`,
       icon: <FaMoneyBillWave className="text-3xl text-green-600" />,
       bgColor: 'bg-green-100 dark:bg-green-900/20',
       textColor: 'text-green-800 dark:text-green-200',
@@ -23,7 +70,7 @@ const HrDashboard = () => {
     },
     {
       title: 'Attendance Rate',
-      value: '0%',
+      value: dashboardData.loading ? '...' : `${dashboardData.attendanceRate}%`,
       icon: <FaClock className="text-3xl text-orange-600" />,
       bgColor: 'bg-orange-100 dark:bg-orange-900/20',
       textColor: 'text-orange-800 dark:text-orange-200',
@@ -31,7 +78,7 @@ const HrDashboard = () => {
     },
     {
       title: 'Open Positions',
-      value: '0',
+      value: dashboardData.loading ? '...' : dashboardData.openPositions.toString(),
       icon: <FaUserPlus className="text-3xl text-purple-600" />,
       bgColor: 'bg-purple-100 dark:bg-purple-900/20',
       textColor: 'text-purple-800 dark:text-purple-200',
@@ -39,7 +86,7 @@ const HrDashboard = () => {
     },
     {
       title: 'Leave Requests',
-      value: '0',
+      value: dashboardData.loading ? '...' : dashboardData.leaveRequests.toString(),
       icon: <FaClock className="text-3xl text-red-600" />,
       bgColor: 'bg-red-100 dark:bg-red-900/20',
       textColor: 'text-red-800 dark:text-red-200',
@@ -47,7 +94,7 @@ const HrDashboard = () => {
     },
     {
       title: 'Performance Reviews',
-      value: '0 Due',
+      value: dashboardData.loading ? '...' : `${dashboardData.performanceReviews} Due`,
       icon: <FaChartBar className="text-3xl text-indigo-600" />,
       bgColor: 'bg-indigo-100 dark:bg-indigo-900/20',
       textColor: 'text-indigo-800 dark:text-indigo-200',
@@ -55,7 +102,7 @@ const HrDashboard = () => {
     },
     {
       title: 'New Hires',
-      value: '0',
+      value: dashboardData.loading ? '...' : dashboardData.newHires.toString(),
       icon: <FaUsers className="text-3xl text-teal-600" />,
       bgColor: 'bg-teal-100 dark:bg-teal-900/20',
       textColor: 'text-teal-800 dark:text-teal-200',
@@ -63,13 +110,24 @@ const HrDashboard = () => {
     },
     {
       title: 'Training Programs',
-      value: '0 Active',
+      value: dashboardData.loading ? '...' : `${dashboardData.trainingPrograms} Active`,
       icon: <FaChartBar className="text-3xl text-yellow-600" />,
       bgColor: 'bg-yellow-100 dark:bg-yellow-900/20',
       textColor: 'text-yellow-800 dark:text-yellow-200',
       link: '/hr/training'
     }
   ];
+
+  if (dashboardData.loading) {
+    return (
+      <div className="bg-gray-50 dark:bg-gray-900 min-h-screen flex">
+        <HrSidebar />
+        <div className="flex-1 lg:ml-50 flex items-center justify-center">
+          <div className="text-xl text-gray-600 dark:text-gray-300">Loading dashboard data...</div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-gray-50 dark:bg-gray-900 min-h-screen flex">
@@ -106,7 +164,7 @@ const HrDashboard = () => {
             ))}
           </div>
 
-        
+
         </div>
       </div>
     </div>

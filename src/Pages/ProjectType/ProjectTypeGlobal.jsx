@@ -21,6 +21,7 @@ const ProjectTypeGlobal = () => {
     if (path === '/projects/independentfloors/') return 'independent-floors';
     if (path === '/projects/commercial/') return 'commercial-projects';
     if (path === '/projects/farmhouse/') return 'farmhouse';
+    if (path === '/projects/farmhouses/') return 'farmhouse';
     if (path === '/projects/industrial-plots/') return 'industrial-plots';
     if (path === '/projects/industrial-projects/') return 'industrial-projects';
     

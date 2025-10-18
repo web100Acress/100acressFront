@@ -109,10 +109,9 @@ const CrimsonEleganceFooter = () => {
 
   const toolsServices = [
     { name: "EMI Calculator", href: "/emi-calculator/" },
-    {
-      name: "Area Calculator",
-      href: "/emi-calculator/",
-    },
+
+    { name: "Gurugram Master Plan 2031", href: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/masterplan/gurgaon+master+plan.pdf", external: true },
+
     { name: "Resale Properties in Gurugram", href: "/buy-properties/best-resale-property-in-gurugram/" },
     { name: "Rental Properties in Gurugram", href: "/rental-properties/best-rental-property-in-gurugram/" },
     { name: "Privacy Policy", href: "/privacy-policy/" },
@@ -321,13 +320,25 @@ const CrimsonEleganceFooter = () => {
                 </h4>
                 <div className="grid grid-cols-1 gap-3">
                   {toolsServices.map((link, index) => (
-                    <Link
-                      key={index}
-                      to={link.href}
-                      className="text-footer-text-muted hover:text-footer-accent transition-smooth hover:translate-x-1 duration-300"
-                    >
-                      {link.name}
-                    </Link>
+                    link.external ? (
+                      <a
+                        key={index}
+                        href={link.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-footer-text-muted hover:text-footer-accent transition-smooth hover:translate-x-1 duration-300"
+                      >
+                        {link.name}
+                      </a>
+                    ) : (
+                      <Link
+                        key={index}
+                        to={link.href}
+                        className="text-footer-text-muted hover:text-footer-accent transition-smooth hover:translate-x-1 duration-300"
+                      >
+                        {link.name}
+                      </Link>
+                    )
                   ))}
                 </div>
               </div>

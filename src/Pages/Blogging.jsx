@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import Footer from "../Components/Actual_Components/Footer";
-import { PaginationControls } from "../Components/Blog_Components/BlogManagement";
+import { PaginationControls, BlogPaginationControls } from "../Components/Blog_Components/BlogManagement";
 import { Helmet } from "react-helmet";
 import Free from "./Free";
 import api from "../config/apiClient";
@@ -39,7 +39,7 @@ const FunnelIcon = () => (
 const Blogging = () => {
   const [allBlogs, setAllBlogs] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [postsPerPage] = useState(12);
+  const [postsPerPage] = useState(100);
   const [totalPages, setTotalPages] = useState(0);
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("latest");
@@ -55,118 +55,44 @@ const Blogging = () => {
     }
   };
 
-  // Fetch all blogs for featured and pagination
+  // Fetch blogs with proper pagination
   useEffect(() => {
-    const fetchAllBlogs = async () => {
+    const fetchBlogs = async () => {
       setLoading(true);
       try {
-        const extractList = (payload) => {
-          // Fast-path known locations
-          const pools = [
-            payload?.data,
-            payload?.results,
-            payload?.items,
-            payload?.docs,
-            payload?.blogs,
-            payload?.rows,
-            payload?.list,
-            payload?.data?.data,
-            payload?.data?.results,
-            payload?.data?.items,
-            payload?.data?.docs,
-            payload?.data?.blogs,
-            payload?.data?.rows,
-            payload?.data?.list,
-            payload,
-          ];
-          for (const p of pools) if (Array.isArray(p)) return p;
-          // Deep search up to depth 8 to find first array in object
-          const seen = new Set();
-          const stack = [{ obj: payload, depth: 0 }];
-          while (stack.length) {
-            const { obj, depth } = stack.pop();
-            if (!obj || typeof obj !== 'object') continue;
-            if (seen.has(obj)) continue;
-            seen.add(obj);
-            for (const key in obj) {
-              const val = obj[key];
-              if (Array.isArray(val)) return val;
-              if (val && typeof val === 'object' && depth < 8) {
-                stack.push({ obj: val, depth: depth + 1 });
-              }
-            }
-          }
-          return [];
+        // Use backend pagination instead of fetching all blogs
+        const params = {
+          page: currentPage,
+          limit: postsPerPage,
+          sortBy: 'createdAt',
+          sortOrder: 'desc'
         };
 
-        const tryFetch = async (url) => {
-          const r = await api.get(url, { timeout: 12000 });
-          const list = extractList(r?.data);
-          try { console.debug('[Blogging] fetched', url, 'items:', Array.isArray(list) ? list.length : 0); } catch(_) {}
-          return list;
-        };
-
-        // Try a series of lightweight, public endpoints first (avoid heavy limits)
-        const urls = [
-          'blog/view?limit=50&sort=-createdAt',
-          'blog/view?limit=100&sort=-createdAt',
-          'blog/view?page=1&limit=50',
-          'blog/view',
-        ];
-
-        let rawList = [];
-        for (const u of urls) {
-          try {
-            rawList = await tryFetch(u);
-            if (rawList && rawList.length) break;
-          } catch (_) { /* keep trying */ }
-        }
-        // Final fallbacks: retry recent blogs endpoint with varying limits
-        if (!rawList.length) {
-          try {
-            rawList = await tryFetch('blog/view?limit=50&sort=-createdAt');
-          } catch (_) {}
-        }
-        if (!rawList.length) {
-          try {
-            rawList = await tryFetch('blog/view?limit=100&sort=-createdAt');
-          } catch (_) {}
-        }
-        if (!rawList.length) {
-          try {
-            rawList = await tryFetch('blog/view');
-          } catch (_) {}
-        }
-        // Absolute last resort: use admin list and filter client-side (endpoint is public per routes)
-        if (!rawList.length) {
-          try {
-            rawList = await tryFetch('blog/admin/view?limit=200&sort=-createdAt');
-          } catch (_) {}
-        }
-        if (!rawList.length) {
-          try {
-            rawList = await tryFetch('blog/admin/view?limit=1000&sort=-createdAt');
-          } catch (_) {}
+        // Add search parameter if there's a search term
+        if (search && search.trim()) {
+          params.search = search.trim();
         }
 
-        // Public page should show only published posts when flag exists; otherwise include all
-        let list = rawList.filter(b => (typeof b?.isPublished === 'boolean' ? b.isPublished : true));
-        // If filtering by published removes everything (e.g., flag missing or all drafts), show raw list to avoid empty state
-        if (list.length === 0 && rawList.length > 0) {
-          list = rawList;
+        const response = await api.get(`blog/view`, { params });
+
+        if (response?.data) {
+          const { data: blogs, totalPages: total } = response.data;
+          setAllBlogs(Array.isArray(blogs) ? blogs : []);
+          setTotalPages(total || 1);
+        } else {
+          setAllBlogs([]);
+          setTotalPages(1);
         }
-        if (!list.length) {
-          try { console.warn('[Blogging] No blogs loaded after all attempts'); } catch(_) {}
-        }
-        setAllBlogs(list);
       } catch (error) {
+        console.error('Error fetching blogs:', error);
         setAllBlogs([]);
+        setTotalPages(1);
       } finally {
         setLoading(false);
       }
     };
-    fetchAllBlogs();
-  }, []);
+    fetchBlogs();
+  }, [currentPage, postsPerPage, search]);
 
   // Featured blog: by ID, then isFeatured, then first
   const featuredBlog = useMemo(() =>
@@ -178,12 +104,7 @@ const Blogging = () => {
   // Filtered blogs (excluding featured)
   const filteredBlogs = useMemo(() => {
     let blogs = allBlogs.filter((b) => b !== featuredBlog);
-    if (search)
-      blogs = blogs.filter(
-        (b) =>
-          b.blog_Title?.toLowerCase().includes(search.toLowerCase()) ||
-          b.blog_Description?.toLowerCase().includes(search.toLowerCase())
-      );
+    // Sort client-side for now (can be moved to backend later)
     if (sort === "latest")
       blogs = blogs.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     if (sort === "oldest")
@@ -191,18 +112,17 @@ const Blogging = () => {
     if (sort === "popular")
       blogs = blogs; // Add your own popularity sort logic if available
     return blogs;
-  }, [allBlogs, featuredBlog, search, sort]);
+  }, [allBlogs, featuredBlog, sort]);
 
-  // Pagination logic (client-side)
-  const totalPagesCalc = Math.ceil(filteredBlogs.length / postsPerPage) || 1;
+  // Pagination logic (now handled by backend)
   useEffect(() => {
-    setTotalPages(totalPagesCalc);
-    if (currentPage > totalPagesCalc) setCurrentPage(1);
-  }, [totalPagesCalc]);
+    if (currentPage > totalPages) setCurrentPage(1);
+  }, [totalPages]);
+
   const paginatedBlogs = useMemo(() => {
-    const start = (currentPage - 1) * postsPerPage;
-    return filteredBlogs.slice(start, start + postsPerPage);
-  }, [filteredBlogs, currentPage, postsPerPage]);
+    // Since we're using backend pagination, all blogs are already paginated
+    return filteredBlogs;
+  }, [filteredBlogs]);
 
   // Fill last row with placeholders if needed
   const columns = 3; // for desktop
@@ -453,7 +373,7 @@ const Blogging = () => {
       </div>
       {/* Pagination/Load More */}
       <div className="flex justify-center my-8">
-        <PaginationControls
+        <BlogPaginationControls
           currentPage={currentPage}
           totalPages={totalPages}
           setCurrentPage={setCurrentPage}
@@ -466,6 +386,3 @@ const Blogging = () => {
 };
 
 export default Blogging;
-// Add this to your global CSS or tailwind.config.js for fade-in:
-// .animate-fadeIn { animation: fadeInUp 0.7s cubic-bezier(0.23, 1, 0.32, 1) both; }
-// @keyframes fadeInUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }

@@ -6,6 +6,7 @@ import { DataProvider } from "./MyContext";
 import { AuthProvider } from "./AuthContext";
 import { Toaster } from "./Components/ui/Toaster";
 import { Toaster as Sonner } from "./Components/ui/sonner";
+import { Toaster as HotToaster } from "react-hot-toast";
 import { TooltipProvider } from "./Components/ui/Tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import PrivateRoute from "./Components/PrivateRoute";
@@ -16,6 +17,7 @@ import "animate.css";
 import LoadingSpinner from "./Components/LoadingSpinner";
 import ErrorBoundary from "./Components/ErrorBoundary";
 import LoginForm from "./Components/LoginForm";
+import AuthModal from "./Components/AuthModal";
 // import ConfettiAllCorners from "./Components/ConfettiAllCorners"; 
 
 // Lazy load all main page components
@@ -77,6 +79,7 @@ const Rof = lazy(() => import("./Pages/Rof"));
 const HrSidebar = lazy(() => import("./Hr/HrSidebar"));
 const HrDashboard = lazy(() => import("./Hr/HrDashboard"));
 const Hr = lazy(() => import("./Hr/Hr"));
+const HrJobPosting = lazy(() => import("./Hr/JobPosting"));
 const EmaarIndia = lazy(() => import("./Pages/EmaarIndia"));
 const M3mIndia = lazy(() => import("./Pages/M3mIndia"));
 const Microtek = lazy(() => import("./Pages/Microtek"));
@@ -88,7 +91,7 @@ const Possessionin2025 = lazy(() => import("./Pages/Possessionin2025"));
 const NewLaunch = lazy(() => import("./Pages/NewLaunch"));
 // const Ayodhya = lazy(() => import("./Pages/ProjectCities/Ayodhya"));
 const SignatureGlobal = lazy(() => import("./Pages/SignatureGlobal"));
-const DlfSco = lazy(() => import("./Pages/DlfSco"));
+// const DlfSco = lazy(() => import("./Pages/DlfSco"));
 const ProjectLayout2 = lazy(() => import("./aadharhomes/BannerPage/updatedbannerpage/components/ProjectLayout2"));
 const Possessionin2026 = lazy(() => import("./Pages/Possessionin2026"));
 const BuilderPage = lazy(() => import("./Pages/BuilderPages/BuilderPage"));
@@ -146,13 +149,13 @@ const ProjectOrderManager = lazy(() => import("./AdminPage/ProjectOrderManager")
 const ProjectOrderManagement = lazy(() => import("./AdminPage/ProjectOrderManagement"));
 const BlogEdit = lazy(() => import("./AdminPage/BlogEdit"));
 const BlogWrite = lazy(() => import("./AdminPage/BlogWrite"));
-const Career = lazy(() => import("./AdminPage/Career"));
-const JobPosting = lazy(() => import("./AdminPage/JobPosting"));
-const CareerView = lazy(() => import("./AdminPage/CareerView"));
-const CareerEdit = lazy(() => import("./AdminPage/CareerEdit"));
-const JobPostingView = lazy(() => import("./AdminPage/JobPostingView"));
-const JobApplications = lazy(() => import("./AdminPage/JobApplications"));
-const JobPostingEdit = lazy(() => import("./AdminPage/JobPostingEdit"));
+const Career = lazy(() => import("./Hr/Career"));
+const JobPosting = lazy(() => import("./Hr/JobPosting"));
+const CareerView = lazy(() => import("./Hr/CareerView"));
+const CareerEdit = lazy(() => import("./Hr/CareerEdit"));
+const JobPostingView = lazy(() => import("./Hr/JobPostingView"));
+const JobApplications = lazy(() => import("./Hr/JobApplications"));
+const JobPostingEdit = lazy(() => import("./Hr/JobPostingEdit"));
 const InsertProject = lazy(() => import("./AdminPage/InsertProject"));
 const AllListedProperties = lazy(() => import("./AdminPage/AllListedProperties"));
 const BlogViewAdmin = lazy(() => import("./AdminPage/BlogViewAdmin"));
@@ -175,10 +178,18 @@ const Contacts = lazy(() => import("./Insight/components/Contacts"));
 const EnquiryManagement = lazy(() => import("./Insight/components/EnquiryManagement"));
 const MarketReportsAdmin = lazy(() => import("./Insight/pages/Admin/MarketReportsAdmin"));
 const AdminGuides = lazy(() => import("./Insight/pages/Admin/AdminGuides"));
-
-
-
-
+const AdminJobPosting = lazy(() => import("./AdminPage/AdminJobPosting"));
+const AdminJobPostingView = lazy(() => import("./AdminPage/AdminJobPostingView"));
+const AdminJobPostingEdit = lazy(() => import("./AdminPage/AdminJobPostingEdit"));
+const Onboarding = lazy(() => import("./Hr/Onboarding"));
+const Offboarding = lazy(() => import("./Hr/Offboarding"));
+const ItDashboard = lazy(() => import("./Hr/ItDashboard"));
+const AccountsDashboard = lazy(() => import("./Hr/AccountsDashboard"));
+const LeaveManagement = lazy(() => import("./Hr/LeaveManagement"));
+const HrEmployees = lazy(() => import("./Hr/HrEmployees"));
+const OnboardingUpload = lazy(() => import("./OnboardingUpload"));
+const DocumentUpload = lazy(() => import("./Pages/DocumentUpload"));
+const UploadSuccess = lazy(() => import("./Pages/UploadSuccess"));
 // Initialize QueryClient
 const queryClient = new QueryClient();
 
@@ -230,6 +241,7 @@ function App() {
                 <Suspense fallback={<LoadingSpinner />}>
                   <Toaster position="top-right" />
                   <Sonner position="top-right" richColors />
+                  <HotToaster position="top-right" />
                   
 
                   {/* Your existing routes */}
@@ -272,7 +284,27 @@ function App() {
                         element={<BudgetPrice />}
                       />
                       <Route
-                        path="/budget-properties/"
+                        path="/budget-properties/under-1-cr"
+                        element={<GlobalBudgetPrice />}
+                      />
+                      <Route
+                        path="/budget-properties/1-5-cr"
+                        element={<GlobalBudgetPrice />}
+                      />
+                      <Route
+                        path="/budget-properties/5-10-cr"
+                        element={<GlobalBudgetPrice />}
+                      />
+                      <Route
+                        path="/budget-properties/10-20-cr"
+                        element={<GlobalBudgetPrice />}
+                      />
+                      <Route
+                        path="/budget-properties/20-50-cr"
+                        element={<GlobalBudgetPrice />}
+                      />
+                      <Route
+                        path="/budget-properties/above-50-cr"
                         element={<GlobalBudgetPrice />}
                       />
                       <Route
@@ -334,7 +366,7 @@ function App() {
                         element={<ProjectTypeGlobal />}
                       />
                       <Route path="/sco/plots/" element={<ProjectTypeGlobal />} />
-                      <Route path="/dlf-homes-sco-plots/" element={<DlfSco />} />
+                      {/* <Route path="/dlf-homes-sco-plots/" element={<DlfSco />} /> */}
                       <Route
                         path="/projects/independentfloors/"
                         element={<ProjectTypeGlobal />}
@@ -372,6 +404,7 @@ function App() {
                       <Route path="/plots-in-gurugram/" element={<ProjectTypeGlobal />} />
                       <Route path="/projects/villas/" element={<ProjectTypeGlobal />} />
                       <Route path="/projects/farmhouse/" element={<ProjectTypeGlobal />} />
+                      <Route path="/projects/farmhouses/" element={<ProjectTypeGlobal />} />
                       <Route path="/projects/industrial-plots/" element={<ProjectTypeGlobal />} />
                       <Route path="/projects/industrial-projects/" element={<ProjectTypeGlobal />} />
                       <Route path="/news-and-articals/" element={<NewsandArtical />} />
@@ -392,7 +425,12 @@ function App() {
                       <Route path="/blog/" element={<Blogging />} />
                       {/* Place static path before dynamic ones to avoid '/blog/write' matching ':slug' */}
                       <Route path="/blog/write" element={<BlogWrite />} />
+                      {/* Direct ID access - must come before slug to avoid conflicts */}
                       <Route path="/blog/:id" element={<BlogView />} />
+                      {/* Handle slug-only URLs like /blog/my-blog-slug */}
+                      <Route path="/blog/:slug" element={<BlogView />} />
+                      {/* Handle slug/id URLs like /blog/my-blog-slug/67f7bd08edb6d0442ad0012e */}
+                      <Route path="/blog/:slug/:id" element={<BlogView />} />
                       <Route path="/blogging" element={<Blogging />} />
                       <Route path="/blog-insights" element={<BlogInsights />} />
                       <Route path="/insights/price-trends" element={<PriceTrends />} />
@@ -439,6 +477,9 @@ function App() {
                         path="/microtek-infra-sco-plots-gurugram/"
                         element={<Microtek />}
                       />
+                      <Route path="/onboarding/upload" element={<OnboardingUpload />} />
+                      <Route path="/document-upload/:token" element={<DocumentUpload />} />
+                      <Route path="/upload-success" element={<UploadSuccess />} />
                     </Route>
 
                     {/* Admin Routing */}
@@ -472,20 +513,8 @@ function App() {
                       <Route path="header" element={<LazyLoad><Header /></LazyLoad>} />
                       <Route path="Projects/property" element={<LazyLoad><Projects /></LazyLoad>} />
                       <Route path="resale-enquiries" element={<LazyLoad><Rent /></LazyLoad>} />
-                      <Route path="jobposting" element={<LazyLoad><JobPosting /></LazyLoad>} />
+                      {/* <Route path="jobposting" element={<LazyLoad><JobPosting /></LazyLoad>} /> */}
                       <Route path="blog" element={<LazyLoad><Blog /></LazyLoad>} />
-                      <Route
-                        path="jobposting/view/:id"
-                        element={<LazyLoad> <JobPostingView /></LazyLoad>}
-                      />
-                      <Route
-                        path="jobposting/applications/:id"
-                        element={<LazyLoad> <JobApplications /></LazyLoad>}
-                      />
-                      <Route
-                        path="jobposting/edit/:id"
-                        element={<LazyLoad> <JobPostingEdit /></LazyLoad>}
-                      />
                       <Route path="rent/view/:id" element={<LazyLoad> <RentView /></LazyLoad>} />
                       <Route path="rent/view/edit/:id" element={<LazyLoad> <RentEdit /></LazyLoad>} />
                       <Route
@@ -563,13 +592,26 @@ function App() {
                         path="insights/investment"
                         element={<LazyLoad><InvestmentInsights /></LazyLoad>}
                       />
+                      <Route path="jobposting" element={<LazyLoad><AdminJobPosting /></LazyLoad>} />
+                      <Route path="jobposting/view/:id" element={<LazyLoad><AdminJobPostingView /></LazyLoad>} />
+                      <Route path="jobposting/edit/:id" element={<LazyLoad><AdminJobPostingEdit /></LazyLoad>} />
                       </Route>
 
                     {/* HR Department Routing */}
                     <Route path="/hr" element={<HrPrivateRoute />}>
                       <Route index element={<LazyLoad><Hr /></LazyLoad>} />
                       <Route path="dashboard" element={<LazyLoad><HrDashboard /></LazyLoad>} />
-                      <Route path="employees" element={<div className="p-6"><h1 className="text-3xl font-bold text-gray-800 dark:text-white">Employee Management</h1><p className="mt-4 text-gray-600 dark:text-gray-300">Manage employee records and information.</p></div>} />
+                      <Route path="jobposting" element={<LazyLoad><HrJobPosting /></LazyLoad>} />
+                      <Route path="jobposting/view/:id" element={<LazyLoad><JobPostingView /></LazyLoad>} />
+                      <Route path="jobposting/applications/:id" element={<LazyLoad><JobApplications /></LazyLoad>} />
+                      <Route path="jobposting/edit/:id" element={<LazyLoad><JobPostingEdit /></LazyLoad>} />
+                      <Route path="onboarding" element={<LazyLoad><Onboarding /></LazyLoad>} />
+                      <Route path="offboarding" element={<LazyLoad><Offboarding /></LazyLoad>} />
+                      <Route path="it" element={<LazyLoad><ItDashboard /></LazyLoad>} />
+                      <Route path="accounts" element={<LazyLoad><AccountsDashboard /></LazyLoad>} />
+                      <Route path="leave" element={<LazyLoad><LeaveManagement /></LazyLoad>} />
+                      <Route path="leave-management" element={<LazyLoad><LeaveManagement /></LazyLoad>} />
+                      <Route path="employees" element={<LazyLoad><HrEmployees /></LazyLoad>} />
                       <Route path="payroll" element={<div className="p-6"><h1 className="text-3xl font-bold text-gray-800 dark:text-white">Payroll Management</h1><p className="mt-4 text-gray-600 dark:text-gray-300">Handle payroll processing and salary management.</p></div>} />
                       <Route path="attendance" element={<div className="p-6"><h1 className="text-3xl font-bold text-gray-800 dark:text-white">Attendance Management</h1><p className="mt-4 text-gray-600 dark:text-gray-300">Track employee attendance and working hours.</p></div>} />
                       <Route path="recruitment" element={<div className="p-6"><h1 className="text-3xl font-bold text-gray-800 dark:text-white">Recruitment</h1><p className="mt-4 text-gray-600 dark:text-gray-300">Manage job postings and recruitment process.</p></div>} />
@@ -599,10 +641,9 @@ function App() {
               </ErrorBoundary>
             </QueryClientProvider>
           </TooltipProvider>
+          {!isProjectPage && <MobileBottomNav />}
         </AuthProvider>
       </DataProvider>
-      {/* Global mobile bottom navigation (hidden on project pages) */}
-      {!isProjectPage && <MobileBottomNav />}
     </>
   );
 }
@@ -614,6 +655,7 @@ function MobileBottomNav() {
   const location = useLocation();
   const path = location.pathname || "/";
   const token = typeof window !== "undefined" ? localStorage.getItem("myToken") : null;
+  const [showAuth, setShowAuth] = React.useState(false);
 
   const [hideForNewBanner, setHideForNewBanner] = React.useState(() => {
     if (typeof document === 'undefined') return false;
@@ -637,8 +679,22 @@ function MobileBottomNav() {
   };
 
   const postTarget = token ? "/postproperty" : "/auth/signin";
-  const likedTarget = token ? "/userdashboard/?tab=liked" : "/auth/signin";
-  const profileTarget = token ? "/userdashboard/" : "/auth/signin";
+  const likedTarget = token ? "/userdashboard/?tab=liked" : null;
+  const profileTarget = token ? "/userdashboard/" : null;
+
+  const handleLikedClick = (e) => {
+    if (!token) {
+      e.preventDefault();
+      setShowAuth(true);
+    }
+  };
+
+  const handleProfileClick = (e) => {
+    if (!token) {
+      e.preventDefault();
+      setShowAuth(true);
+    }
+  };
 
   return (
     <nav className="md:hidden fixed bottom-0 inset-x-0 z-[10000]">
@@ -678,23 +734,42 @@ function MobileBottomNav() {
             </div>
 
             {/* Liked (was Shortlisted) */}
-            <Link to={likedTarget} className="flex flex-col items-center gap-1 py-2">
-              <span className={`text-xl ${isActive("/userdashboard") && (new URLSearchParams(location.search).get("tab") === "liked") ? "text-red-600" : "text-gray-500"}`}>
-                <i className="fa-solid fa-heart"></i>
-              </span>
-              <span className={`${isActive("/userdashboard") && (new URLSearchParams(location.search).get("tab") === "liked") ? "text-gray-900 font-semibold" : ""}`}>Liked</span>
-            </Link>
+            {token ? (
+              <Link to={likedTarget} className="flex flex-col items-center gap-1 py-2">
+                <span className={`text-xl ${isActive("/userdashboard") && (new URLSearchParams(location.search).get("tab") === "liked") ? "text-red-600" : "text-gray-500"}`}>
+                  <i className="fa-solid fa-heart"></i>
+                </span>
+                <span className={`${isActive("/userdashboard") && (new URLSearchParams(location.search).get("tab") === "liked") ? "text-gray-900 font-semibold" : ""}`}>Liked</span>
+              </Link>
+            ) : (
+              <button onClick={handleLikedClick} className="flex flex-col items-center gap-1 py-2">
+                <span className="text-xl text-gray-500">
+                  <i className="fa-solid fa-heart"></i>
+                </span>
+                <span>Liked</span>
+              </button>
+            )}
 
             {/* Profile */}
-            <Link to={profileTarget} className="flex flex-col items-center gap-1 py-2">
-              <span className={`text-xl ${isActive("/userdashboard") ? "text-red-600" : "text-gray-500"}`}>
-                <i className="fa-solid fa-user"></i>
-              </span>
-              <span className={`${isActive("/userdashboard") ? "text-gray-900 font-semibold" : ""}`}>Profile</span>
-            </Link>
+            {token ? (
+              <Link to={profileTarget} className="flex flex-col items-center gap-1 py-2">
+                <span className={`text-xl ${isActive("/userdashboard") ? "text-red-600" : "text-gray-500"}`}>
+                  <i className="fa-solid fa-user"></i>
+                </span>
+                <span className={`${isActive("/userdashboard") ? "text-gray-900 font-semibold" : ""}`}>Profile</span>
+              </Link>
+            ) : (
+              <button onClick={handleProfileClick} className="flex flex-col items-center gap-1 py-2">
+                <span className="text-xl text-gray-500">
+                  <i className="fa-solid fa-user"></i>
+                </span>
+                <span>Profile</span>
+              </button>
+            )}
           </div>
         </div>
       </div>
+      <AuthModal open={showAuth} onClose={() => setShowAuth(false)} defaultView="login" />
     </nav>
   );
 }

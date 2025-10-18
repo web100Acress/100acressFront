@@ -58,7 +58,7 @@ function FinalNavBar() {
 
         {/* Center: Logo (always) */}
         <div className='hdrCenter'>
-          <div className='1euNB' style={{ cursor: "pointer" }}>
+          <div className='1euNB' style={{ cursor: "pointer", display: "flex", alignItems: "center", gap: "10px" }}>
             <Link to={ROOT}>
               <img 
                 src={isScrolled 
@@ -70,6 +70,12 @@ function FinalNavBar() {
                 loading="lazy" 
               />
             </Link>
+            <img 
+              src="/Images/Golden_Diwali_Diya_PNG___Stylized_Festival_Illustration-PNGLove.com.png"
+              alt="Diwali Diya"
+              width='50'
+              loading="lazy" 
+            />
           </div>
         </div>
 

@@ -109,9 +109,9 @@ export function toggleFavorite(id, snapshot, isAuthenticated = false) {
     if (token && uid) {
       if (exists) {
         // was favorite, now remove
-        api.delete(`/users/${uid}/favorites/${encodeURIComponent(stringId)}`).catch(() => {});
+        api.delete(`/postPerson/users/${uid}/favorites/${encodeURIComponent(stringId)}`).catch(() => {});
       } else {
-        api.post(`/users/${uid}/favorites`, { projectId: stringId }).catch(() => {});
+        api.post(`/postPerson/users/${uid}/favorites`, { projectId: stringId }).catch(() => {});
       }
     }
   } catch {}
@@ -144,7 +144,7 @@ export async function hydrateFavoritesFromServer() {
     const token = localStorage.getItem('myToken') || localStorage.getItem('token');
     const uid = getStoredUserId();
     if (!token || !uid) return getFavorites();
-    const res = await api.get(`/users/${uid}/favorites`);
+    const res = await api.get(`/postPerson/users/${uid}/favorites`);
     const serverIds = res?.data?.data?.ids?.map(String) || [];
     const localIds = getFavorites();
     // Merge unique

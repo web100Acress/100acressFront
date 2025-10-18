@@ -381,6 +381,7 @@ export default function Navbar() {
   const userRole = roles[0] || "";
   const isAdmin = roles.some((r) => r.includes('admin'));
   const isBlogger = roles.some((r) => r.includes('blog') || r.includes('contentwriter') || r.includes('writer'));
+  const isHr = roles.some((r) => r.includes('hr') || r.includes('human') || r.includes('resource'));
 
   // Derive first name ONLY from localStorage 'firstName' (desktop only)
   const lsFirstName = (typeof window !== 'undefined' && localStorage.getItem("firstName")) || "";
@@ -650,6 +651,7 @@ export default function Navbar() {
             firstName={firstName}
             isAdmin={isAdmin}
             isBlogger={isBlogger}
+            isHr={isHr}
             go={go}
             HandleUserLogout={HandleUserLogout}
             ShowLogOutMessage={ShowLogOutMessage}

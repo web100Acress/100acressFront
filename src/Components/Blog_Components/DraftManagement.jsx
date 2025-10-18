@@ -35,7 +35,7 @@ export default function DraftBlogManagement() {
     setIsPublishedLoading(true);
 
     try {
-      const res = await api.patch(`blog/update/${id}`,
+      const res = await api.put(`blog/update/${id}`,
       {
         isPublished: checked,
       }

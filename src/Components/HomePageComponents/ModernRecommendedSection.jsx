@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useContext } from "react";
 import { useSelector } from "react-redux";
 import { Skeleton } from 'antd';
 import { format } from 'date-fns';
+import { getPossessionInfo } from '../../Utils/possessionUtils';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, Autoplay, Navigation } from 'swiper/modules';
 import { 
@@ -89,45 +90,37 @@ const ModernRecommendedSection = () => {
   };
 
   const formatPossession = (project) => {
-    if (project?.possessionDate) {
-      try {
-        return format(new Date(project.possessionDate), 'MMM yyyy');
-      } catch (error) {
-        console.error('Error formatting possession date:', error);
-        return project?.project_Status || 'Ready to Move';
-      }
-    }
-    return project?.project_Status || project?.possession || 'Ready to Move';
+    const possessionInfo = getPossessionInfo(project);
+    return possessionInfo.value;
+  };
+
+  const getPossessionLabel = (project) => {
+    const possessionInfo = getPossessionInfo(project);
+    return possessionInfo.label;
   };
 
   const parsePaymentPlan = (paymentPlan) => {
     if (!paymentPlan) return null;
-    
-    // Handle string format (e.g., "20:40:40" or "20-40-40")
+
+    // Handle string format (e.g., "20:40:30:10" or "20-40-30-10")
     if (typeof paymentPlan === 'string') {
       const parts = paymentPlan.split(/[:-]/).map(p => p.trim()).filter(Boolean);
       if (parts.length >= 3) {
-        return [
-          { percentage: parts[0] + '%', label: 'Booking' },
-          { percentage: parts[1] + '%', label: 'Construction' },
-          { percentage: parts[2] + '%', label: 'Possession' }
-        ];
+        return parts.slice(0, 4).map((part) => ({
+          percentage: part + '%'
+        }));
       }
       // If it's a descriptive string, show it as-is
-      return [{ percentage: paymentPlan, label: '' }];
+      return [{ percentage: paymentPlan }];
     }
-    
+
     // Handle array format
     if (Array.isArray(paymentPlan) && paymentPlan.length > 0) {
-      return paymentPlan.map((plan, idx) => {
-        const labels = ['Booking', 'Construction', 'Possession'];
-        return {
-          percentage: plan.includes('%') ? plan : plan + '%',
-          label: labels[idx] || ''
-        };
-      });
+      return paymentPlan.slice(0, 4).map((plan) => ({
+        percentage: plan.includes('%') ? plan : plan + '%'
+      }));
     }
-    
+
     return null;
   };
 
@@ -151,9 +144,9 @@ const ModernRecommendedSection = () => {
         onClose={() => setShowAuth(false)} 
         defaultView="Login" 
       />
-      <div className="w-full px-4 pt-0 pb-4">
-        <div className="text-center mb-4 px-2 pt-2">
-          <div className="inline-flex items-center gap-4 mb-3">
+      <div className="w-full px-4 pt-12 pb-4">
+        <div className="text-center mb-0 px-2 pt-0">
+          <div className="inline-flex items-center gap-4 mb-0">
             <div className="w-16 h-0.5 bg-gradient-to-r from-transparent via-red-500 to-red-600 hidden sm:block"></div>
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 bg-clip-text text-transparent leading-tight">
               <span className="text-red-600">100acress</span> Recommended
@@ -178,7 +171,7 @@ const ModernRecommendedSection = () => {
             slidesPerView={1}
             slidesPerGroup={1}
             spaceBetween={12}
-            loop={true}
+            loop={displayData.length > 4}
             allowTouchMove={true}
             simulateTouch={true}
             autoplay={false}
@@ -232,6 +225,7 @@ const ModernRecommendedSection = () => {
                   formatPrice={formatPrice}
                   formatLocation={formatLocation}
                   formatPossession={formatPossession}
+                  getPossessionLabel={getPossessionLabel}
                   parsePaymentPlan={parsePaymentPlan}
                   favTick={favTick}
                   isAuthenticated={isAuthenticated}
@@ -257,6 +251,7 @@ const PropertyCard = ({
   formatPrice,
   formatLocation,
   formatPossession,
+  getPossessionLabel,
   parsePaymentPlan,
   favTick,
   isAuthenticated,
@@ -355,7 +350,7 @@ const PropertyCard = ({
       <div className="image-container">
         <div className="image-overlay"></div>
         <img
-          src={project?.frontImage?.url}
+          src={project?.thumbnailImage?.url || project?.frontImage?.url}
           alt={project?.projectName}
           className={`property-image ${imageLoaded ? 'loaded' : ''}`}
           onLoad={() => setImageLoaded(true)}
@@ -377,7 +372,7 @@ const PropertyCard = ({
           <div className="info-item">
             <MdSquareFoot className="info-icon" />
             <div className="info-content">
-              <span className="info-value">{project?.totalLandArea || project?.projectArea || project?.landArea || '5 Acres'}</span>
+              <span className="info-value">{project?.totalLandArea || project?.projectArea || project?.landArea || '5 Acres'} Acres</span>
               <span className="info-label">Land Area</span>
             </div>
           </div>
@@ -385,7 +380,7 @@ const PropertyCard = ({
             <MdBed className="info-icon" />
             <div className="info-content">
               <span className="info-value">{formatPossession(project)}</span>
-              <span className="info-label">Possession</span>
+              <span className="info-label">{getPossessionLabel(project)}</span>
             </div>
           </div>
         </div>
@@ -400,7 +395,6 @@ const PropertyCard = ({
                 <React.Fragment key={index}>
                   <div className="payment-option">
                     <div className="payment-percentage">{plan.percentage}</div>
-                    {plan.label && <div className="payment-label">{plan.label}</div>}
                   </div>
                   {index < paymentPlanData.length - 1 && (
                     <div className="payment-divider">→</div>
@@ -427,7 +421,7 @@ const SectionWrapper = styled.section`
   position: relative;
   overflow: hidden;
   margin-top: 0;
-  padding: 60px 0 10px; // Reduced top padding to decrease gap between heading and cards
+  padding: 40px 0 0; // Removed bottom padding to eliminate gap
 
   &::before {
     content: '';
@@ -444,15 +438,16 @@ const SectionWrapper = styled.section`
     overflow: visible;
     width: 100%;
     max-width: none;
-    min-height: 460px;
+    min-height: 400px;
     margin: 0;
+    margin-bottom: 0;
     background: transparent;
   }
 
   .modern-swiper {
     width: 100%;
     height: 100%;
-    padding-bottom: 50px;
+    padding-bottom: 0;
     
     .swiper-slide {
       height: auto;
@@ -485,14 +480,14 @@ const SectionWrapper = styled.section`
   }
 
   @media (max-width: 768px) {
-    padding: 40px 0 8px; // Reduced mobile bottom gap further
+    padding: 16px 0 0; // Minimal top padding, no bottom padding for mobile
 
     .carousel-container {
-      min-height: 440px;
+      min-height: 400px;
     }
 
     .modern-swiper {
-      padding-bottom: 45px;
+      padding-bottom: 35px;
     }
   }
 `;
@@ -859,14 +854,6 @@ const CardWrapper = styled.div`
             color: #059669;
             line-height: 1;
           }
-
-          .payment-label {
-            font-size: 8px;
-            font-weight: 600;
-            color: #6b7280;
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
-          }
         }
 
         .payment-divider {
@@ -1022,10 +1009,6 @@ const CardWrapper = styled.div`
 
             .payment-percentage {
               font-size: 14px;
-            }
-
-            .payment-label {
-              font-size: 7px;
             }
           }
 

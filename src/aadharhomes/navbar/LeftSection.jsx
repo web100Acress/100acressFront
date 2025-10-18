@@ -144,32 +144,32 @@ export default function LeftSection({
               <>
                 <Box fontWeight="700" fontSize={{ base: "14px", md: "12px" }} color="#e53e3e" textTransform="uppercase" letterSpacing={{ base: "0.6px", md: "0.2px" }} mb={{ base: 2, md: 1 }} mt={{ base: 1, md: 0 }} px={{ base: 1, md: 0 }}>Budget</Box>
                 <SimpleGrid columns={{ base: 2, md: 1 }} spacing={2}>
-                  <Button as={Link} to="/budget-properties/" onClick={() => { handlePriceClick(0, 1); closeDrawer(); }}
+                  <Button as={Link} to="/budget-properties/under-1-cr" onClick={() => { handlePriceClick(0, 1); closeDrawer(); }}
                     w="100%" variant="ghost" justifyContent="center" textAlign="center" py={3}
                     borderWidth="1px" borderColor="#eaeaea" _hover={{ bg: "gray.50" }} rounded="md">
                     Under ₹1 Cr
                   </Button>
-                  <Button as={Link} to="/budget-properties/" onClick={() => { handlePriceClick(1, 5); closeDrawer(); }}
+                  <Button as={Link} to="/budget-properties/1-5-cr" onClick={() => { handlePriceClick(1, 5); closeDrawer(); }}
                     w="100%" variant="ghost" justifyContent="center" textAlign="center" py={3}
                     borderWidth="1px" borderColor="#eaeaea" _hover={{ bg: "gray.50" }} rounded="md">
                     ₹1 Cr - ₹5 Cr
                   </Button>
-                  <Button as={Link} to="/budget-properties/" onClick={() => { handlePriceClick(5, 10); closeDrawer(); }}
+                  <Button as={Link} to="/budget-properties/5-10-cr" onClick={() => { handlePriceClick(5, 10); closeDrawer(); }}
                     w="100%" variant="ghost" justifyContent="center" textAlign="center" py={3}
                     borderWidth="1px" borderColor="#eaeaea" _hover={{ bg: "gray.50" }} rounded="md">
                     ₹5 Cr - ₹10 Cr
                   </Button>
-                  <Button as={Link} to="/budget-properties/" onClick={() => { handlePriceClick(10, 20); closeDrawer(); }}
+                  <Button as={Link} to="/budget-properties/10-20-cr" onClick={() => { handlePriceClick(10, 20); closeDrawer(); }}
                     w="100%" variant="ghost" justifyContent="center" textAlign="center" py={3}
                     borderWidth="1px" borderColor="#eaeaea" _hover={{ bg: "gray.50" }} rounded="md">
                     ₹10 Cr - ₹20 Cr
                   </Button>
-                  <Button as={Link} to="/budget-properties/" onClick={() => { handlePriceClick(20, 50); closeDrawer(); }}
+                  <Button as={Link} to="/budget-properties/20-50-cr" onClick={() => { handlePriceClick(20, 50); closeDrawer(); }}
                     w="100%" variant="ghost" justifyContent="center" textAlign="center" py={3}
                     borderWidth="1px" borderColor="#eaeaea" _hover={{ bg: "gray.50" }} rounded="md">
                     ₹20 Cr - ₹50 Cr
                   </Button>
-                  <Button as={Link} to="/budget-properties/" onClick={() => { handlePriceClick(50, Infinity); closeDrawer(); }}
+                  <Button as={Link} to="/budget-properties/above-50-cr" onClick={() => { handlePriceClick(50, Infinity); closeDrawer(); }}
                     w="100%" variant="ghost" justifyContent="center" textAlign="center" py={3}
                     borderWidth="1px" borderColor="#eaeaea" _hover={{ bg: "gray.50" }} rounded="md">
                     Above ₹50 Cr
@@ -267,7 +267,7 @@ export default function LeftSection({
                     justifyContent="center" alignItems="center" textAlign="center"
                     py={3} px={4} minH={{ base: 14, md: 12 }}
                     borderWidth="1px" borderColor="#eaeaea" _hover={{ bg: "gray.50" }} rounded="md">
-                    <Text fontSize={{ base: 'sm', md: 'md' }} fontWeight="600" whiteSpace="normal" wordBreak="break-word" lineHeight="1.25">Farm House</Text>
+                    <Text fontSize={{ base: 'sm', md: 'md' }} fontWeight="600" whiteSpace="normal" wordBreak="break-word" lineHeight="1.25">Farm Houses</Text>
                   </Button>
                   <Button as={Link} to="/projects/industrial-projects/" onClick={closeDrawer}
                     w="100%" variant="ghost" display="flex" flexDir="column"
@@ -460,12 +460,12 @@ export default function LeftSection({
           onMouseEnter={() => { clearTimer(budgetTimer); setIsBudgetOpen(true); }}
           onMouseLeave={() => closeWithDelay(budgetTimer, setIsBudgetOpen)}
         >
-          <MenuItem as={Link} to="/budget-properties/" onClick={() => handlePriceClick(0, 1)}>Under ₹1 Cr</MenuItem>
-          <MenuItem as={Link} to="/budget-properties/" onClick={() => handlePriceClick(1, 5)}>₹1 Cr - ₹5 Cr</MenuItem>
-          <MenuItem as={Link} to="/budget-properties/" onClick={() => handlePriceClick(5, 10)}>₹5 Cr - ₹10 Cr</MenuItem>
-          <MenuItem as={Link} to="/budget-properties/" onClick={() => handlePriceClick(10, 20)}>₹10 Cr - ₹20 Cr</MenuItem>
-          <MenuItem as={Link} to="/budget-properties/" onClick={() => handlePriceClick(20, 50)}>₹20 Cr - ₹50 Cr</MenuItem>
-          <MenuItem as={Link} to="/budget-properties/" onClick={() => handlePriceClick(50, Infinity)}>Above ₹50 Cr</MenuItem>
+          <MenuItem as={Link} to="/budget-properties/under-1-cr" onClick={() => handlePriceClick(0, 1)}>Under ₹1 Cr</MenuItem>
+          <MenuItem as={Link} to="/budget-properties/1-5-cr" onClick={() => handlePriceClick(1, 5)}>₹1 Cr - ₹5 Cr</MenuItem>
+          <MenuItem as={Link} to="/budget-properties/5-10-cr" onClick={() => handlePriceClick(5, 10)}>₹5 Cr - ₹10 Cr</MenuItem>
+          <MenuItem as={Link} to="/budget-properties/10-20-cr" onClick={() => handlePriceClick(10, 20)}>₹10 Cr - ₹20 Cr</MenuItem>
+          <MenuItem as={Link} to="/budget-properties/20-50-cr" onClick={() => handlePriceClick(20, 50)}>₹20 Cr - ₹50 Cr</MenuItem>
+          <MenuItem as={Link} to="/budget-properties/above-50-cr" onClick={() => handlePriceClick(50, Infinity)}>Above ₹50 Cr</MenuItem>
         </MenuList>
       </Menu>
 
@@ -562,7 +562,7 @@ export default function LeftSection({
           <MenuItem as={Link} to="/property/residential/">Residential Projects</MenuItem>
           <MenuItem as={Link} to="/projects/independentfloors/">Independent Floors</MenuItem>
           <MenuItem as={Link} to="/projects/commercial/">Commercial Projects</MenuItem>
-          <MenuItem as={Link} to="/projects/farmhouse/">Farm House</MenuItem>
+          <MenuItem as={Link} to="/projects/farmhouse/">FarmHouses</MenuItem>
           <MenuItem as={Link} to="/projects/industrial-plots/">Industrial Plots</MenuItem>
        
         </MenuList>

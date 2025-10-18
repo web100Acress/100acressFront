@@ -20,7 +20,7 @@ All page components have been converted to use `React.lazy()` for dynamic import
 ```javascript
 // Before
 import Home from "./Pages/Home";
-
+...
 // After
 const Home = lazy(() => import("./Pages/Home"));
 ```
