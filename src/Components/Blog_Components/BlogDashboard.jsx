@@ -393,7 +393,7 @@ export default function BlogDashboard() {
   const handlePublishToggle = async (checked, blogId) => {
     setPublishLoading(true);
     try {
-      const res = await api.patch(
+      const res = await api.put(
         `/blog/update/${blogId}`,
         { isPublished: checked }
       );
