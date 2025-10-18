@@ -604,7 +604,7 @@ export default function BlogDashboard() {
                   <img
                     src={src}
                     alt={record.blog_Title || "Blog Image"}
-                    className="w-20 h-15 object-cover rounded-lg shadow-sm border border-gray-200"
+                    className="w-16 h-12 object-cover rounded-md shadow-sm border border-gray-200"
                     onError={(e) => {
                       console.log('Image failed to load:', src);
                       e.target.style.display = 'none';
@@ -612,14 +612,14 @@ export default function BlogDashboard() {
                     }}
                   />
                   <div 
-                    className="w-20 h-15 rounded-lg border border-gray-200 bg-gray-100 flex items-center justify-center text-xs text-gray-500" 
+                    className="w-16 h-12 rounded-md border border-gray-200 bg-gray-100 flex items-center justify-center text-xs text-gray-500" 
                     style={{ display: 'none' }}
                   >
                     No Image
                   </div>
                 </>
               ) : (
-                <div className="w-20 h-15 rounded-lg border border-gray-200 bg-gray-100" />
+                <div className="w-16 h-12 rounded-md border border-gray-200 bg-gray-100" />
               );
             })()}
             {record.isPublished && (
@@ -813,15 +813,15 @@ export default function BlogDashboard() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 p-3 sm:p-4 lg:p-6">
-      <div className="w-full mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 p-2 sm:p-3 lg:p-4">
+      <div className="w-full max-w-7xl mx-auto">
         {/* Professional Header */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 sm:p-8 mb-2 border border-gray-100 dark:border-gray-700 backdrop-blur-sm bg-opacity-90 dark:bg-opacity-90">
-          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 sm:p-6 mb-2 border border-gray-100 dark:border-gray-700 backdrop-blur-sm bg-opacity-90 dark:bg-opacity-90">
+          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
             <div className="space-y-2">
               <div className="flex items-center space-x-3">
-                <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center">
-                  <BarChart3 size={24} className="text-white" />
+                <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center">
+                  <BarChart3 size={20} className="text-white" />
                 </div>
                 <div>
                   <Title level={2} className="!mb-0 bg-gradient-to-r from-gray-800 via-blue-600 to-indigo-600 dark:from-gray-100 dark:via-blue-400 dark:to-indigo-400 bg-clip-text text-transparent">
@@ -870,31 +870,31 @@ export default function BlogDashboard() {
         </div>
 
         {/* Enhanced Blog Statistics */}
-        <Row gutter={[12, 12]} className="mb-4">
+        <Row gutter={[8, 8]} className="mb-3">
           <Col xs={24} lg={12}>
-            <Card className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border border-blue-200 dark:border-blue-700 shadow-md rounded-xl p-3 hover:shadow-lg transition-all duration-300">
+            <Card className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border border-blue-200 dark:border-blue-700 shadow-sm rounded-lg p-2 hover:shadow-md transition-all duration-300">
               <div className="flex items-center justify-between mb-3">
                 <Title level={5} className="!mb-0 text-blue-800 dark:text-blue-200">Blog Statistics</Title>
-                <div className="w-8 h-8 bg-blue-100 dark:bg-blue-800 rounded-lg flex items-center justify-center">
-                  <PieChart size={18} className="text-blue-600 dark:text-blue-300" />
+                <div className="w-6 h-6 bg-blue-100 dark:bg-blue-800 rounded-md flex items-center justify-center">
+                  <PieChart size={14} className="text-blue-600 dark:text-blue-300" />
                 </div>
               </div>
-              <Row gutter={[8, 8]}>
+              <Row gutter={[4, 4]}>
                 <Col span={8}>
-                  <div className="text-center p-2 bg-white dark:bg-gray-700 rounded-lg shadow-sm">
-                    <div className="text-xl font-bold text-blue-600 dark:text-blue-400">{analytics.totalBlogs}</div>
+                  <div className="text-center p-1.5 bg-white dark:bg-gray-700 rounded-md shadow-sm">
+                    <div className="text-lg font-bold text-blue-600 dark:text-blue-400">{analytics.totalBlogs}</div>
                     <Text className="text-gray-600 dark:text-gray-300 text-xs">Total</Text>
                   </div>
                 </Col>
                 <Col span={8}>
-                  <div className="text-center p-2 bg-white dark:bg-gray-700 rounded-lg shadow-sm">
-                    <div className="text-xl font-bold text-green-600 dark:text-green-400">{analytics.publishedBlogs}</div>
+                  <div className="text-center p-1.5 bg-white dark:bg-gray-700 rounded-md shadow-sm">
+                    <div className="text-lg font-bold text-green-600 dark:text-green-400">{analytics.publishedBlogs}</div>
                     <Text className="text-gray-600 dark:text-gray-300 text-xs">Published</Text>
                   </div>
                 </Col>
                 <Col span={8}>
-                  <div className="text-center p-2 bg-white dark:bg-gray-700 rounded-lg shadow-sm">
-                    <div className="text-xl font-bold text-orange-600 dark:text-orange-400">{analytics.draftBlogs}</div>
+                  <div className="text-center p-1.5 bg-white dark:bg-gray-700 rounded-md shadow-sm">
+                    <div className="text-lg font-bold text-orange-600 dark:text-orange-400">{analytics.draftBlogs}</div>
                     <Text className="text-gray-600 dark:text-gray-300 text-xs">Drafts</Text>
                   </div>
                 </Col>
@@ -913,11 +913,11 @@ export default function BlogDashboard() {
             </Card>
           </Col>
           <Col xs={24} lg={12}>
-            <Card className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border border-green-200 dark:border-green-700 shadow-md rounded-xl p-3 hover:shadow-lg transition-all duration-300">
+            <Card className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border border-green-200 dark:border-green-700 shadow-sm rounded-lg p-2 hover:shadow-md transition-all duration-300">
               <div className="flex items-center justify-between mb-3">
                 <Title level={5} className="!mb-0 text-green-800 dark:text-green-200">Performance Metrics</Title>
-                <div className="w-8 h-8 bg-green-100 dark:bg-green-800 rounded-lg flex items-center justify-center">
-                  <ActivityIcon size={18} className="text-green-600 dark:text-green-300" />
+                <div className="w-6 h-6 bg-green-100 dark:bg-green-800 rounded-md flex items-center justify-center">
+                  <ActivityIcon size={14} className="text-green-600 dark:text-green-300" />
                 </div>
               </div>
               <div className="space-y-2">
@@ -958,13 +958,13 @@ export default function BlogDashboard() {
 
         {/* Top Performing Blog */}
         {analytics.topPerformingBlog && (
-          <Card className="bg-white border border-gray-100 shadow-lg rounded-lg mb-6 p-4">
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center space-x-3">
-                <Award size={28} className="text-yellow-500 animate-pulse" />
-                <Title level={4} className="!mb-0">Top Performing Blog</Title>
+          <Card className="bg-white border border-gray-100 shadow-md rounded-lg mb-3 p-3">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center space-x-2">
+                <Award size={20} className="text-yellow-500" />
+                <Title level={5} className="!mb-0">Top Performing Blog</Title>
               </div>
-              <Tag color="gold" className="font-medium">Best Performer</Tag>
+              <Tag color="gold" className="text-xs">Best Performer</Tag>
             </div>
                          <div className="flex flex-col lg:flex-row items-center lg:items-start space-y-6 lg:space-y-0 lg:space-x-8">
                <div className="relative">
@@ -1029,21 +1029,19 @@ export default function BlogDashboard() {
         )}
 
         {/* Professional Blogs Table */}
-        <Card className="bg-white border border-gray-100 shadow-lg rounded-lg p-4">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center space-x-3">
-              <FileText size={24} className="text-blue-500" />
-              <Title level={4} className="!mb-0">All Blog Posts</Title>
+        <Card className="bg-white border border-gray-100 shadow-md rounded-lg p-3">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 gap-3">
+            <div className="flex items-center space-x-2">
+              <FileText size={20} className="text-blue-500" />
+              <Title level={5} className="!mb-0">All Blog Posts</Title>
             </div>
-            <div className="flex items-center space-x-4">
-              <div className="text-base text-gray-600 font-medium">
-                Showing {filteredBlogs.length} of {blogs.length} posts
-              </div>
+            <div className="text-sm text-gray-600 font-medium">
+              Showing {filteredBlogs.length} of {blogs.length} posts
             </div>
           </div>
 
           {/* Search Bar */}
-          <div className="mb-6">
+          <div className="mb-4">
             <Input
               placeholder="Search blogs by title, author, email, content, category, or tags..."
               prefix={<Search size={16} className="text-gray-400" />}
@@ -1066,7 +1064,15 @@ export default function BlogDashboard() {
             rowKey="_id"
             loading={loading}
             className="shadow-sm"
-            scroll={{ x: 1300 }}
+            scroll={{ x: 1000 }}
+            size="small"
+            pagination={{
+              pageSize: 10,
+              showSizeChanger: true,
+              showQuickJumper: true,
+              showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} items`,
+              size: 'small'
+            }}
             rowSelection={{
               selectedRowKeys: selectedBlogs,
               onChange: setSelectedBlogs,
