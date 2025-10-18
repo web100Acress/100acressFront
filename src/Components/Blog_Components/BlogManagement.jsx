@@ -76,6 +76,10 @@ export default function BlogManagement() {
   const [sortField, setSortField] = useState("date");
   const [sortDirection, setSortDirection] = useState("desc");
   const [blogToDelete, setBlogToDelete] = useState(null);
+  
+  // State for showing limited blogs
+  const [showAllBlogs, setShowAllBlogs] = useState(false);
+  const INITIAL_BLOG_LIMIT = 50;
 
   // Analytics state
   const [analytics, setAnalytics] = useState({
@@ -558,8 +562,8 @@ export default function BlogManagement() {
 
           {/* Blog Cards Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
-            {filteredAndSortedBlogs.length > 0 ? (
-              filteredAndSortedBlogs.map((blog) => (
+            {filteredAndSortedBlogs?.length > 0 ? (
+              (showAllBlogs ? filteredAndSortedBlogs : filteredAndSortedBlogs?.slice(0, INITIAL_BLOG_LIMIT))?.map((blog, index) => (
                 <div
                   key={blog._id}
                   className="group bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 ease-in-out transform hover:-translate-y-1 border border-gray-100 overflow-hidden"
@@ -771,6 +775,22 @@ export default function BlogManagement() {
                 </div>
               </div>
             )}
+            
+            {/* View All Button */}
+            {!showAllBlogs && filteredAndSortedBlogs?.length > INITIAL_BLOG_LIMIT && (
+              <div className="col-span-full mt-8">
+                <div className="flex justify-center">
+                  <button
+                    onClick={() => setShowAllBlogs(true)}
+                    className="group relative inline-flex items-center gap-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold px-8 py-4 rounded-xl shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 hover:shadow-2xl"
+                  >
+                    <Eye size={20} className="group-hover:scale-110 transition-transform duration-300" />
+                    <span className="text-lg">View All Blogs ({filteredAndSortedBlogs?.length})</span>
+                    <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 rounded-xl transition-opacity duration-300"></div>
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -778,212 +798,88 @@ export default function BlogManagement() {
   );
 }
 
+// Simple BlogPaginationControls component for backward compatibility
 export const BlogPaginationControls = ({
   currentPage,
   setCurrentPage,
   totalPages,
 }) => {
-  // Calculate page range to show
-  const getPageRange = () => {
-    const delta = 2; // Number of pages to show on each side
-    const range = [];
-    const rangeWithDots = [];
-
-    for (
-      let i = Math.max(2, currentPage - delta);
-      i <= Math.min(totalPages - 1, currentPage + delta);
-      i++
-    ) {
-      range.push(i);
-    }
-
-    if (currentPage - delta > 2) {
-      rangeWithDots.push(1, "...");
-    } else {
-      rangeWithDots.push(1);
-    }
-
-    rangeWithDots.push(...range);
-
-    if (currentPage + delta < totalPages - 1) {
-      rangeWithDots.push("...", totalPages);
-    } else {
-      rangeWithDots.push(totalPages);
-    }
-
-    return rangeWithDots;
-  };
-
-  const pageRange = getPageRange();
+  if (totalPages <= 1) return null;
 
   return (
-    <div className="bg-white rounded-2xl shadow-xl p-6 border border-gray-100">
-      {/* Page Info - Top */}
-      <div className="flex justify-center items-center space-x-2 text-sm text-gray-600 mb-4">
-        <div className="flex items-center space-x-1">
-          <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-          <span className="font-medium">Page {currentPage}</span>
-          <span className="text-gray-400">of {totalPages}</span>
-        </div>
-        {totalPages > 1 && (
-          <div className="hidden sm:flex items-center space-x-1 text-xs text-gray-400">
-            <span>•</span>
-            <span>{totalPages} total pages</span>
-          </div>
-        )}
+    <div className="flex justify-center items-center space-x-2 mt-8">
+      <button
+        className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 flex items-center space-x-1 ${
+          currentPage === 1
+            ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+            : "bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-700 hover:from-blue-100 hover:to-indigo-100 border border-blue-200"
+        }`}
+        onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+        disabled={currentPage === 1}
+      >
+        <ArrowUp size={16} className="rotate-90" />
+        <span className="hidden sm:inline">Previous</span>
+      </button>
+
+      <div className="flex items-center space-x-1">
+        <span className="px-4 py-2 text-sm text-gray-600">
+          Page {currentPage} of {totalPages}
+        </span>
       </div>
 
-      {/* Centered Navigation Controls */}
-      <div className="flex justify-center items-center space-x-2">
-        {/* First Page */}
-        {totalPages > 1 && (
-          <button
-            className={`p-2 rounded-lg transition-all duration-200 ${
-              currentPage === 1
-                ? "text-gray-300 cursor-not-allowed"
-                : "text-gray-600 hover:text-blue-600 hover:bg-blue-50"
-            }`}
-            onClick={() => setCurrentPage(1)}
-            disabled={currentPage === 1}
-            title="First page"
-          >
-            <ArrowUp size={16} className="rotate-90" />
-          </button>
-        )}
-
-        {/* Previous Page */}
-        <button
-          className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 flex items-center space-x-1 ${
-            currentPage === 1
-              ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-              : "bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-700 hover:from-blue-100 hover:to-indigo-100 border border-blue-200"
-          }`}
-          onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
-          disabled={currentPage === 1}
-        >
-          <ArrowUp size={16} className="rotate-90" />
-          <span className="hidden sm:inline">Previous</span>
-        </button>
-
-        {/* Page Numbers */}
-        <div className="flex items-center space-x-1">
-          {pageRange.map((page, index) => (
-            <div key={index}>
-              {page === "..." ? (
-                <span className="px-3 py-2 text-gray-400">...</span>
-              ) : (
-                <button
-                  className={`w-10 h-10 rounded-lg font-semibold transition-all duration-200 ${
-                    currentPage === page
-                      ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg transform scale-105"
-                      : "bg-gray-50 text-gray-700 hover:bg-gray-100 hover:text-blue-600"
-                  }`}
-                  onClick={() => setCurrentPage(page)}
-                >
-                  {page}
-                </button>
-              )}
-            </div>
-          ))}
-        </div>
-
-        {/* Next Page */}
-        <button
-          className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 flex items-center space-x-1 ${
-            currentPage === totalPages
-              ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-              : "bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-700 hover:from-blue-100 hover:to-indigo-100 border border-blue-200"
-          }`}
-          onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
-          disabled={currentPage === totalPages}
-        >
-          <span className="hidden sm:inline">Next</span>
-          <ArrowDown size={16} className="rotate-90" />
-        </button>
-
-        {/* Last Page */}
-        {totalPages > 1 && (
-          <button
-            className={`p-2 rounded-lg transition-all duration-200 ${
-              currentPage === totalPages
-                ? "text-gray-300 cursor-not-allowed"
-                : "text-gray-600 hover:text-blue-600 hover:bg-blue-50"
-            }`}
-            onClick={() => setCurrentPage(totalPages)}
-            disabled={currentPage === totalPages}
-            title="Last page"
-          >
-            <ArrowDown size={16} className="rotate-90" />
-          </button>
-        )}
-      </div>
-
-      {/* Quick Jump - Bottom */}
-      {totalPages > 5 && (
-        <div className="flex justify-center items-center space-x-2 text-sm mt-4">
-          <span className="text-gray-500">Go to:</span>
-          <select
-            className="px-3 py-1 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            value={currentPage}
-            onChange={(e) => setCurrentPage(Number(e.target.value))}
-          >
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-              <option key={page} value={page}>
-                Page {page}
-              </option>
-            ))}
-          </select>
-        </div>
-      )}
-
-      {/* Progress Bar - Bottom */}
-      {/* {totalPages > 1 && (
-        <div className="mt-4">
-          <div className="w-full bg-gray-200 rounded-full h-1">
-            <div 
-              className="bg-gradient-to-r from-blue-500 to-indigo-500 h-1 rounded-full transition-all duration-300"
-              style={{ width: `${(currentPage / totalPages) * 100}%` }}
-            ></div>
-          </div>
-        </div>
-      )} */}
+      <button
+        className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 flex items-center space-x-1 ${
+          currentPage === totalPages
+            ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+            : "bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-700 hover:from-blue-100 hover:to-indigo-100 border border-blue-200"
+        }`}
+        onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+        disabled={currentPage === totalPages}
+      >
+        <span className="hidden sm:inline">Next</span>
+        <ArrowDown size={16} className="rotate-90" />
+      </button>
     </div>
   );
 };
 
-// Simple pagination for other components
+// Simple PaginationControls component for backward compatibility
 export const PaginationControls = ({
   currentPage,
   setCurrentPage,
   totalPages,
-}) => (
-  <div className="flex justify-center items-center space-x-2 mt-6">
-    <button
-      className={`px-4 py-2 rounded-md font-medium transition-colors ${
-        currentPage === 1
-          ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-          : "bg-blue-600 text-white hover:bg-blue-700"
-      }`}
-      onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
-      disabled={currentPage === 1}
-    >
-      Previous
-    </button>
+}) => {
+  if (totalPages <= 1) return null;
 
-    <span className="px-4 py-2 text-gray-600">
-      Page {currentPage} of {totalPages}
-    </span>
+  return (
+    <div className="flex justify-center items-center space-x-2 mt-6">
+      <button
+        className={`px-4 py-2 rounded-md font-medium transition-colors ${
+          currentPage === 1
+            ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+            : "bg-blue-600 text-white hover:bg-blue-700"
+        }`}
+        onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+        disabled={currentPage === 1}
+      >
+        Previous
+      </button>
 
-    <button
-      className={`px-4 py-2 rounded-md font-medium transition-colors ${
-        currentPage === totalPages
-          ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-          : "bg-blue-600 text-white hover:bg-blue-700"
-      }`}
-      onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
-      disabled={currentPage === totalPages}
-    >
-      Next
-    </button>
-  </div>
-);
+      <span className="px-4 py-2 text-gray-600">
+        Page {currentPage} of {totalPages}
+      </span>
+
+      <button
+        className={`px-4 py-2 rounded-md font-medium transition-colors ${
+          currentPage === totalPages
+            ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+            : "bg-blue-600 text-white hover:bg-blue-700"
+        }`}
+        onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+        disabled={currentPage === totalPages}
+      >
+        Next
+      </button>
+    </div>
+  );
+};

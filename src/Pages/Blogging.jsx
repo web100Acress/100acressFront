@@ -39,7 +39,7 @@ const FunnelIcon = () => (
 const Blogging = () => {
   const [allBlogs, setAllBlogs] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [postsPerPage] = useState(12);
+  const [postsPerPage] = useState(100);
   const [totalPages, setTotalPages] = useState(0);
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("latest");
@@ -386,6 +386,3 @@ const Blogging = () => {
 };
 
 export default Blogging;
-// Add this to your global CSS or tailwind.config.js for fade-in:
-// .animate-fadeIn { animation: fadeInUp 0.7s cubic-bezier(0.23, 1, 0.32, 1) both; }
-// @keyframes fadeInUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
