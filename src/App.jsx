@@ -17,6 +17,7 @@ import "animate.css";
 import LoadingSpinner from "./Components/LoadingSpinner";
 import ErrorBoundary from "./Components/ErrorBoundary";
 import LoginForm from "./Components/LoginForm";
+import AuthModal from "./Components/AuthModal";
 // import ConfettiAllCorners from "./Components/ConfettiAllCorners"; 
 
 // Lazy load all main page components
@@ -640,10 +641,9 @@ function App() {
               </ErrorBoundary>
             </QueryClientProvider>
           </TooltipProvider>
+          {!isProjectPage && <MobileBottomNav />}
         </AuthProvider>
       </DataProvider>
-      {/* Global mobile bottom navigation (hidden on project pages) */}
-      {!isProjectPage && <MobileBottomNav />}
     </>
   );
 }
@@ -655,6 +655,7 @@ function MobileBottomNav() {
   const location = useLocation();
   const path = location.pathname || "/";
   const token = typeof window !== "undefined" ? localStorage.getItem("myToken") : null;
+  const [showAuth, setShowAuth] = React.useState(false);
 
   const [hideForNewBanner, setHideForNewBanner] = React.useState(() => {
     if (typeof document === 'undefined') return false;
@@ -678,8 +679,22 @@ function MobileBottomNav() {
   };
 
   const postTarget = token ? "/postproperty" : "/auth/signin";
-  const likedTarget = token ? "/userdashboard/?tab=liked" : "/auth/signin";
-  const profileTarget = token ? "/userdashboard/" : "/auth/signin";
+  const likedTarget = token ? "/userdashboard/?tab=liked" : null;
+  const profileTarget = token ? "/userdashboard/" : null;
+
+  const handleLikedClick = (e) => {
+    if (!token) {
+      e.preventDefault();
+      setShowAuth(true);
+    }
+  };
+
+  const handleProfileClick = (e) => {
+    if (!token) {
+      e.preventDefault();
+      setShowAuth(true);
+    }
+  };
 
   return (
     <nav className="md:hidden fixed bottom-0 inset-x-0 z-[10000]">
@@ -719,23 +734,42 @@ function MobileBottomNav() {
             </div>
 
             {/* Liked (was Shortlisted) */}
-            <Link to={likedTarget} className="flex flex-col items-center gap-1 py-2">
-              <span className={`text-xl ${isActive("/userdashboard") && (new URLSearchParams(location.search).get("tab") === "liked") ? "text-red-600" : "text-gray-500"}`}>
-                <i className="fa-solid fa-heart"></i>
-              </span>
-              <span className={`${isActive("/userdashboard") && (new URLSearchParams(location.search).get("tab") === "liked") ? "text-gray-900 font-semibold" : ""}`}>Liked</span>
-            </Link>
+            {token ? (
+              <Link to={likedTarget} className="flex flex-col items-center gap-1 py-2">
+                <span className={`text-xl ${isActive("/userdashboard") && (new URLSearchParams(location.search).get("tab") === "liked") ? "text-red-600" : "text-gray-500"}`}>
+                  <i className="fa-solid fa-heart"></i>
+                </span>
+                <span className={`${isActive("/userdashboard") && (new URLSearchParams(location.search).get("tab") === "liked") ? "text-gray-900 font-semibold" : ""}`}>Liked</span>
+              </Link>
+            ) : (
+              <button onClick={handleLikedClick} className="flex flex-col items-center gap-1 py-2">
+                <span className="text-xl text-gray-500">
+                  <i className="fa-solid fa-heart"></i>
+                </span>
+                <span>Liked</span>
+              </button>
+            )}
 
             {/* Profile */}
-            <Link to={profileTarget} className="flex flex-col items-center gap-1 py-2">
-              <span className={`text-xl ${isActive("/userdashboard") ? "text-red-600" : "text-gray-500"}`}>
-                <i className="fa-solid fa-user"></i>
-              </span>
-              <span className={`${isActive("/userdashboard") ? "text-gray-900 font-semibold" : ""}`}>Profile</span>
-            </Link>
+            {token ? (
+              <Link to={profileTarget} className="flex flex-col items-center gap-1 py-2">
+                <span className={`text-xl ${isActive("/userdashboard") ? "text-red-600" : "text-gray-500"}`}>
+                  <i className="fa-solid fa-user"></i>
+                </span>
+                <span className={`${isActive("/userdashboard") ? "text-gray-900 font-semibold" : ""}`}>Profile</span>
+              </Link>
+            ) : (
+              <button onClick={handleProfileClick} className="flex flex-col items-center gap-1 py-2">
+                <span className="text-xl text-gray-500">
+                  <i className="fa-solid fa-user"></i>
+                </span>
+                <span>Profile</span>
+              </button>
+            )}
           </div>
         </div>
       </div>
+      <AuthModal open={showAuth} onClose={() => setShowAuth(false)} defaultView="login" />
     </nav>
   );
 }
