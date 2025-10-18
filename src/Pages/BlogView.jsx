@@ -25,6 +25,9 @@ const BlogView = () => {
   // Cache for related project thumbnails and meta resolved from project details
   const [relatedThumbs, setRelatedThumbs] = useState({});
   const [relatedMeta, setRelatedMeta] = useState({}); // key: project_url -> { location, minPrice, maxPrice }
+  
+  // Blog cache to prevent repeated API calls for same blog
+  const [blogCache] = useState(new Map());
 
   const [loadError, setLoadError] = useState("");
   const { id, slug } = useParams();
@@ -360,6 +363,11 @@ const BlogView = () => {
     const fetchBlogData = async () => {
       try {
         setLoadError("");
+        
+        console.log('[BlogView] === STARTING BLOG FETCH ===');
+        console.log('[BlogView] URL params:', { slug, id });
+        console.log('[BlogView] Location:', { pathname: location.pathname, search: location.search });
+        console.log('[BlogView] Current URL:', window.location.href);
 
         // Handle different URL patterns:
         // 1. /blog/slug/id - both slug and id in URL params
@@ -407,6 +415,10 @@ const BlogView = () => {
           if (/^[0-9a-fA-F]{24}$/.test(id)) {
             effectiveId = id;
             console.log('[BlogView] Using direct ID access:', { id: effectiveId });
+          } else if (id.length === 24) {
+            // Sometimes IDs might have mixed case or special chars, try anyway
+            effectiveId = id;
+            console.log('[BlogView] Using direct ID access (24 chars):', { id: effectiveId });
           } else {
             // 'id' might actually be a slug, treat it as such
             effectiveSlug = id;
@@ -416,8 +428,21 @@ const BlogView = () => {
                 effectiveId = slugResp.data.data.id;
                 console.log('[BlogView] Resolved ID from slug (in id param):', { slug: effectiveSlug, id: effectiveId });
               } else {
-                setLoadError('Blog not found');
-                return;
+                // Fallback: try direct search by title/content
+                try {
+                  const searchResp = await api.get(`blog/view?search=${encodeURIComponent(id)}&limit=1`);
+                  if (searchResp?.data?.data?.length > 0) {
+                    effectiveId = searchResp.data.data[0]._id;
+                    console.log('[BlogView] Found blog via search fallback:', { searchTerm: id, id: effectiveId });
+                  } else {
+                    setLoadError('Blog not found');
+                    return;
+                  }
+                } catch (searchError) {
+                  console.warn('[BlogView] Search fallback also failed:', searchError);
+                  setLoadError('Blog not found');
+                  return;
+                }
               }
             } catch (e) {
               console.warn('[BlogView] Failed to resolve ID from slug (in id param):', e?.message || e);
@@ -432,29 +457,93 @@ const BlogView = () => {
           return;
         }
 
-        // Fetch the blog data directly using the resolved effectiveId
-        let blogResponse;
-        try {
-          blogResponse = await api.get(`blog/view/${effectiveId}`);
-          
-          if (!blogResponse?.data?.data) {
-            console.error('Blog not found or invalid response:', effectiveId);
-            setLoadError('Blog not found');
-            return;
-          }
-        } catch (error) {
-          console.error('Error fetching blog data:', {
-            error: error.response?.data || error.message,
-            status: error.response?.status,
-            url: error.config?.url
-          });
-          setLoadError('Failed to load blog. The blog may not exist or there might be a server issue.');
+        // Check cache first
+        const cacheKey = `blog_${effectiveId}`;
+        const cachedBlog = blogCache.get(cacheKey);
+        if (cachedBlog && Date.now() - cachedBlog.timestamp < 5 * 60 * 1000) { // 5 minutes cache
+          console.log('[BlogView] Using cached blog data:', effectiveId);
+          setData(cachedBlog.data);
+          setViews(cachedBlog.data.views || 0);
           return;
+        }
+
+        // Fetch the blog data directly using the resolved effectiveId with retry mechanism
+        let blogResponse;
+        let retryCount = 0;
+        const maxRetries = 3;
+        
+        while (retryCount < maxRetries) {
+          try {
+            console.log(`[BlogView] Fetching blog attempt ${retryCount + 1}/${maxRetries} for ID:`, effectiveId);
+            
+            // Try multiple API endpoints in sequence
+            const endpoints = [
+              `blog/view/${effectiveId}`,
+              `blog/${effectiveId}`,
+              `blog/view?id=${effectiveId}`,
+              `blog/details/${effectiveId}`
+            ];
+            
+            let success = false;
+            for (const endpoint of endpoints) {
+              try {
+                console.log(`[BlogView] Trying endpoint: ${endpoint}`);
+                blogResponse = await api.get(endpoint);
+                
+                if (blogResponse?.data?.data || blogResponse?.data) {
+                  // Handle different response structures
+                  if (!blogResponse.data.data && blogResponse.data._id) {
+                    blogResponse.data = { data: blogResponse.data };
+                  }
+                  console.log(`[BlogView] Success with endpoint: ${endpoint}`);
+                  success = true;
+                  break;
+                }
+              } catch (endpointError) {
+                console.warn(`[BlogView] Endpoint ${endpoint} failed:`, endpointError.message);
+                continue;
+              }
+            }
+            
+            if (!success) {
+              console.error('All endpoints failed for blog ID:', effectiveId);
+              
+              if (retryCount === maxRetries - 1) {
+                setLoadError('Blog not found');
+                return;
+              }
+            } else {
+              // Success - break out of retry loop
+              break;
+            }
+          } catch (error) {
+            console.error(`[BlogView] Attempt ${retryCount + 1} failed:`, {
+              error: error.response?.data || error.message,
+              status: error.response?.status,
+              url: error.config?.url
+            });
+            
+            if (retryCount === maxRetries - 1) {
+              setLoadError('Failed to load blog. Please try refreshing the page.');
+              return;
+            }
+            
+            // Wait before retry (exponential backoff)
+            await new Promise(resolve => setTimeout(resolve, Math.pow(2, retryCount) * 1000));
+          }
+          
+          retryCount++;
         }
         
         if ((blogResponse.status === 200 || blogResponse.status === 201) && blogResponse.data && blogResponse.data.data) {
           const normalized = normalizeBlog(blogResponse.data.data);
           setData(normalized);
+          
+          // Cache the blog data
+          blogCache.set(cacheKey, {
+            data: normalized,
+            timestamp: Date.now()
+          });
           
           // Set initial views from blog data
           setViews(normalized.views || 0);
