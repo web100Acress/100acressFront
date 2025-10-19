@@ -102,9 +102,9 @@ module.exports = {
           '0%': { transform: 'translate(0, 0) rotate(0deg)', opacity: '1' },
           '100%': { transform: 'translate(-200px, -150px) rotate(720deg)', opacity: '0' },
         },
-        'popper-right': {
-          '0%': { transform: 'translate(0, 0) rotate(0deg)', opacity: '1' },
-          '100%': { transform: 'translate(200px, -150px) rotate(720deg)', opacity: '0' },
+        shine: {
+          '0%': { transform: 'translateX(-100%)' },
+          '100%': { transform: 'translateX(100%)' },
         },
       },
       animation: {
@@ -113,6 +113,7 @@ module.exports = {
         rotate: 'rotate 10s linear infinite',
         'popper-left': 'popper-left 1.5s ease-out forwards',
         'popper-right': 'popper-right 1.5s ease-out forwards',
+        shine: 'shine 0.8s ease-in-out',
       },
     },
   },
