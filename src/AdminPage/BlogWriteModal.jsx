@@ -2085,659 +2085,594 @@ const BlogWriteModal = () => {
         <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
           <form className="p-6 space-y-8">
             {/* Title */}
-            <div className="space-y-3">
-              <div className="flex items-center space-x-2">
-                <FileText className="w-5 h-5 text-blue-600" />
-                <label htmlFor="title" className="text-lg font-semibold text-gray-900">
-                  Blog Title
-                </label>
-              </div>
-              <input
-                type="text"
-                id="title"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-lg"
-                placeholder="Enter your blog title..."
-                required
-              />
-            </div>
+           <div className="space-y-2">
+  <div className="flex items-center justify-between">
+    <div className="flex items-center gap-2">
+      <FileText className="w-4 h-4 text-blue-600" />
+      <label htmlFor="title" className="text-sm font-medium text-gray-900">
+        Blog Title
+      </label>
+    </div>
+    {title && (
+      <div className="text-xs text-gray-500">
+        {title.length}/100
+      </div>
+    )}
+  </div>
+  <input
+    type="text"
+    id="title"
+    value={title}
+    onChange={(e) => setTitle(e.target.value.slice(0, 100))}
+    className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 transition-colors"
+    placeholder="Enter your blog title..."
+    required
+  />
+  {titleKeywords.length > 0 && (
+    <div className="flex flex-wrap gap-1.5 mt-1">
+      <span className="text-[10px] text-gray-500 self-center">Keywords:</span>
+      {titleKeywords.slice(0, 4).map((k, i) => (
+        <span
+          key={k + i}
+          className="px-1.5 py-0.5 rounded bg-blue-50 text-blue-700 text-[10px] border border-blue-100"
+        >
+          {k}
+        </span>
+      ))}
+      {titleKeywords.length > 4 && (
+        <span className="text-[10px] text-gray-400 self-center">
+          +{titleKeywords.length - 4} more
+        </span>
+      )}
+    </div>
+  )}
+</div>
 
             {/* Slug + Meta */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700">Slug URL</label>
-                <div className="flex rounded-xl border border-gray-200 overflow-hidden">
-                  <span className="px-3 flex items-center text-gray-500 bg-gray-50 border-r border-gray-200">
-                    <LinkIcon className="w-4 h-4 mr-2" />
-                    /blog/
-                  </span>
-                  <input
-                    type="text"
-                    value={slug}
-                    onChange={(e) => {
-                      setSlugTouched(true);
-                      setSlug(slugify(e.target.value));
-                    }}
-                    className="w-full px-3 py-3 focus:outline-none"
-                    placeholder="my-custom-slug"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setSlugTouched(false);
-                      const auto = slugify(title);
-                      setSlug(auto);
-                    }}
-                    className="px-3 text-sm bg-gray-100 hover:bg-gray-200 border-l border-gray-200"
-                    title="Reset slug to match title"
-                  >
-                    Reset
-                  </button>
-                  <button
-                    type="button"
-                    onClick={async () => {
-                      try {
-                        await navigator.clipboard.writeText(`/blog/${slug}`);
-                        setSlugCopied(true);
-                        setTimeout(()=>setSlugCopied(false), 1200);
-                      } catch {}
-                    }}
-                    className="px-3 text-sm bg-gray-100 hover:bg-gray-200 border-l border-gray-200 flex items-center gap-1"
-                    title="Copy full slug URL"
-                  >
-                    {slugCopied ? <Check className="w-4 h-4 text-green-600" /> : <Copy className="w-4 h-4" />} Copy
-                  </button>
-                </div>
-                <p className="text-xs text-gray-500">Auto-generates from title; you can edit it.</p>
-                {slug && (
-                  <div className="text-xs mt-1">
-                    {slugChecking && <span className="text-gray-500">{slugCheckMsg}</span>}
-                    {!slugChecking && slugAvailable === true && (
-                      <span className="text-green-600">{slugCheckMsg || 'Slug is available.'}</span>
-                    )}
-                    {!slugChecking && slugAvailable === false && (
-                      <span className="text-red-600">{slugCheckMsg || 'Slug is already taken.'}</span>
-                    )}
-                    {!slugChecking && slugAvailable === null && slugCheckMsg && (
-                      <span className="text-gray-500">{slugCheckMsg}</span>
-                    )}
-                  </div>
-                )}
-              </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+  {/* Slug URL */}
+  <div className="space-y-1.5">
+    <label className="text-xs font-medium text-gray-700">Slug URL</label>
+    <div className="flex rounded-lg border border-gray-200 overflow-hidden text-sm">
+      <span className="px-2 py-2 flex items-center text-gray-500 bg-gray-50 border-r border-gray-200 text-xs">
+        <LinkIcon className="w-3.5 h-3.5 mr-1.5" />
+        /blog/
+      </span>
+      <input
+        type="text"
+        value={slug}
+        onChange={(e) => {
+          setSlugTouched(true);
+          setSlug(slugify(e.target.value));
+        }}
+        className="flex-1 px-2 py-2 min-w-0 text-sm focus:outline-none"
+        placeholder="my-custom-slug"
+      />
+      <div className="flex">
+        <button
+          type="button"
+          onClick={() => {
+            setSlugTouched(false);
+            setSlug(slugify(title));
+          }}
+          className="px-2 text-xs bg-gray-50 hover:bg-gray-100 border-l border-gray-200 h-full"
+          title="Reset slug to match title"
+        >
+          ⟲
+        </button>
+        <button
+          type="button"
+          onClick={async () => {
+            try {
+              await navigator.clipboard.writeText(`/blog/${slug}`);
+              setSlugCopied(true);
+              setTimeout(() => setSlugCopied(false), 1200);
+            } catch {}
+          }}
+          className="px-2 text-xs bg-gray-50 hover:bg-gray-100 border-l border-gray-200 h-full flex items-center"
+          title="Copy full slug URL"
+        >
+          {slugCopied ? <Check className="w-3.5 h-3.5 text-green-600" /> : <Copy className="w-3.5 h-3.5" />}
+        </button>
+      </div>
+    </div>
+    <p className="text-[11px] text-gray-500">Auto-generates from title</p>
+    {slug && (
+      <div className="text-[11px] mt-0.5">
+        {slugChecking ? (
+          <span className="text-gray-500">{slugCheckMsg}</span>
+        ) : (
+          <span className={slugAvailable ? 'text-green-600' : 'text-red-600'}>
+            {slugCheckMsg || (slugAvailable ? 'Slug available' : 'Slug taken')}
+          </span>
+        )}
+      </div>
+    )}
+  </div>
 
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700">Meta Title</label>
-                <input
-                  type="text"
-                  value={metaTitle}
-                  onChange={(e) => setMetaTitle(e.target.value.slice(0, 60))}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                  placeholder="Up to ~60 characters"
-                />
-                <div className="text-xs text-gray-500 text-right">{metaTitle.length}/60</div>
-              </div>
+  {/* Meta Title */}
+  <div className="space-y-1.5">
+    <label className="text-xs font-medium text-gray-700">Meta Title</label>
+    <div className="relative">
+      <input
+        type="text"
+        value={metaTitle}
+        onChange={(e) => setMetaTitle(e.target.value.slice(0, 60))}
+        className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500"
+        placeholder="Up to 60 characters"
+      />
+      <div className="absolute right-2 bottom-1.5 text-[11px] text-gray-500">
+        {metaTitle.length}/60
+      </div>
+    </div>
+  </div>
 
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700">Meta Description</label>
-                <textarea
-                  value={metaDescription}
-                  onChange={(e) => setMetaDescription(e.target.value.slice(0, 160))}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 h-[52px]"
-                  placeholder="Up to ~160 characters"
-                />
-                <div className="flex items-center justify-between text-xs">
-                  <div className="text-gray-600 flex items-center gap-2">
-                    <span>Suggestions:</span>
-                    {titleKeywords.length ? (
-                      <div className="flex flex-wrap gap-1">
-                        {titleKeywords.map((k, i) => (
-                          <button key={k+i} type="button" className="px-2 py-0.5 rounded-full bg-gray-100 hover:bg-gray-200" onClick={()=>setMetaDescription((v)=> (v ? (v+` ${k}`) : k).slice(0,160))}>{k}</button>
-                        ))}
-                      </div>
-                    ) : (
-                      <span className="text-gray-400">Type a clear title to get keyword suggestions</span>
-                    )}
-                  </div>
-                  {(() => {
-                    const len = metaDescription.length;
-                    const optimal = len >= 120 && len <= 165;
-                    const ok = len >= 80 && !optimal;
-                    const color = optimal ? 'text-green-600' : ok ? 'text-yellow-600' : 'text-red-600';
-                    const label = optimal ? 'Optimal' : ok ? 'Okay' : 'Too short';
-                    return <div className={`${color}`}>{len}/160 • {label}</div>;
-                  })()}
-                </div>
-              </div>
-            </div>
+  {/* Meta Description */}
+  <div className="space-y-1.5">
+  <div className="flex items-center justify-between">
+    <label className="text-xs font-medium text-gray-700">Meta Description</label>
+    <div className={`text-[10px] font-medium ${
+      metaDescription.length >= 120 && metaDescription.length <= 160
+        ? 'text-green-600'
+        : metaDescription.length >= 80
+        ? 'text-yellow-600'
+        : 'text-red-600'
+    }`}>
+      {metaDescription.length}/160
+    </div>
+  </div>
+  <div className="relative">
+    <textarea
+      value={metaDescription}
+      onChange={(e) => setMetaDescription(e.target.value.slice(0, 160))}
+      className="w-full px-3 py-2 text-xs border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500"
+      placeholder="Up to 160 characters"
+      rows={2}
+    />
+    {titleKeywords.length > 0 && (
+      <div className="mt-1 flex flex-wrap gap-1.5">
+        <span className="text-[10px] text-gray-500 self-center">Keywords:</span>
+        {titleKeywords.slice(0, 3).map((k, i) => (
+          <button
+            key={k + i}
+            type="button"
+            className="px-1.5 py-0.5 rounded bg-gray-50 hover:bg-gray-100 text-[10px] border border-gray-200 text-gray-700"
+            onClick={() => setMetaDescription((v) => (v ? `${v} ${k}` : k).slice(0, 160))}
+          >
+            {k}
+          </button>
+        ))}
+        {titleKeywords.length > 3 && (
+          <span 
+            className="text-[10px] text-gray-400 self-center"
+            title={titleKeywords.slice(3).join(', ')}
+          >
+            +{titleKeywords.length - 3} more
+          </span>
+        )}
+      </div>
+    )}
+  </div>
+</div>
+</div>
 
             {/* Featured Image */}
-            <div className="space-y-3">
-              <div className="flex items-center space-x-2">
-                <ImageIcon className="w-5 h-5 text-green-600" />
-                <label htmlFor="frontImage" className="text-lg font-semibold text-gray-900">
-                  Featured Image
-                </label>
-              </div>
+          <div className="space-y-4">
+  {/* Featured Image Section */}
+  <div className="space-y-2">
+    <div className="flex items-center gap-2">
+      <ImageIcon className="w-4 h-4 text-green-600" />
+      <label className="text-sm font-medium text-gray-900">Featured Image</label>
+    </div>
 
-              {/* Two-column layout: left = preview, right = change image + URL */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                {/* Left: Featured preview (with graceful fallback) */}
-                <div>
-                  <div className="relative rounded-xl overflow-hidden border border-gray-200 bg-white">
-                    {frontImagePreview ? (
-                      <div className="relative">
-                        {(() => {
-                          let isXO = false;
-                          try {
-                            const u = new URL(frontImagePreview, window.location.origin);
-                            isXO = u.origin !== window.location.origin;
-                          } catch {}
-                          return (
-                            <img
-                              src={frontImagePreview}
-                              alt="Featured preview"
-                              className="w-full h-64 object-cover"
-                              style={{ backgroundColor: 'transparent' }}
-                              onClick={() => setLightboxUrl(frontImagePreview)}
-                              {...(isXO ? { crossOrigin: 'anonymous', referrerPolicy: 'no-referrer' } : {})}
-                              onLoad={() => { setFrontImageError(false); }}
-                              onError={(e) => {
-                                const now = Date.now();
-                                const url = e?.target?.src || frontImagePreview || '';
-                                const { url: lastUrl, ts } = lastImageErrorRef.current || {};
-                                if (!(url && lastUrl === url && now - ts < 10000)) {
-                                  lastImageErrorRef.current = { url, ts: now };
-                                  messageApi.open({ key: 'frontImageError', type: 'warning', content: 'Could not load featured image. Applying a safe preview...', duration: 2 });
-                                }
-                                if (!frontTriedProxy) {
-                                  try {
-                                    const src = originalFrontUrlRef.current || frontImagePreview || url;
-                                    const stripProto = (u) => (u || '').replace(/^https?:\/\//i, '');
-                                    const proxied = `https://images.weserv.nl/?url=${encodeURIComponent(stripProto(src))}`;
-                                    setFrontImagePreview(proxied);
-                                    setFrontTriedProxy(true);
-                                    setFrontImageError(false);
-                                    return;
-                                  } catch {}
-                                }
-                                setFrontImageError(true);
-                              }}
-                              title="Click to view full size"
-                            />
-                          );
-                        })()}
-                        {frontImageError && (
-                          <div className="absolute bottom-2 left-2 right-2 bg-white/90 backdrop-blur rounded-lg p-2 border border-amber-200 shadow-sm flex flex-wrap items-center gap-2">
-                            <span className="text-xs text-amber-800">Image failed to load.</span>
-                            <button type="button" className="text-xs px-2 py-1 rounded bg-amber-600 text-white hover:bg-amber-700" onClick={() => {
-                              setFrontImageError(false);
-                              const base = (originalFrontUrlRef.current || frontImagePreview || '').split('?')[0];
-                              setFrontImagePreview(base ? `${base}?t=${Date.now()}` : base);
-                            }}>Retry</button>
-                            <a href={originalFrontUrlRef.current || frontImagePreview} target="_blank" rel="noreferrer" className="text-xs px-2 py-1 rounded border border-gray-300 hover:bg-gray-50">Open</a>
-                            <button type="button" className="text-xs px-2 py-1 rounded border border-gray-300 hover:bg-gray-50" onClick={() => {
-                              try {
-                                const stripProto = (u) => (u || '').replace(/^https?:\/\//i, '');
-                                const src = originalFrontUrlRef.current || frontImagePreview;
-                                const proxied = `https://images.weserv.nl/?url=${encodeURIComponent(stripProto(src))}`;
-                                setFrontImagePreview(proxied);
-                                setFrontTriedProxy(true);
-                                setFrontImageError(false);
-                              } catch {}
-                            }}>Use Proxy</button>
-                            {frontTriedProxy && (
-                              <button type="button" className="text-xs px-2 py-1 rounded border border-gray-300 hover:bg-gray-50" onClick={() => {
-                                setFrontImagePreview(originalFrontUrlRef.current || frontImagePreview);
-                                setFrontImageError(false);
-                              }}>Restore Original</button>
-                            )}
-                          </div>
-                        )}
-                      </div>
-                    ) : (
-                      <div className="h-64 flex items-center justify-center text-gray-400 text-sm">No image selected</div>
-                    )}
-                  </div>
-                </div>
-
-                {/* Right: Change Image uploader + URL input */}
-                <div className="space-y-4">
-                  {/* File Upload Option */}
-                  <div className="relative border-2 border-dashed border-gray-300 rounded-xl p-6 text-center"
-                       onDragOver={onFeaturedDragOver}
-                       onDrop={onFeaturedDrop}>
-                  <input
-                    type="file"
-                    id="featured-image-upload"
-                    accept="image/webp"
-                    onChange={handleFileChange}
-                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                    key={frontImagePreview ? 'has-image' : 'no-image'}
-                  />
-                  <div className="space-y-2">
-                    <Upload className="w-10 h-10 mx-auto text-gray-400" />
-                    <p className="text-sm font-medium text-gray-700">
-                      {frontImagePreview ? 'Click to change image' : 'Upload an image'}
-                    </p>
-                    <p className="text-xs text-gray-500">
-                      {frontImagePreview ? 'or drag and drop a new WebP image' : 'Drag and drop or click to browse (WebP only)'}
-                    </p>
-                  </div>
-                  </div>
-
-                  {/* OR Divider */}
-                  <div className="relative">
-                    <div className="absolute inset-0 flex items-center">
-                      <div className="w-full border-t border-gray-300"></div>
-                    </div>
-                    <div className="relative flex justify-center text-sm">
-                      <span className="px-2 bg-white text-gray-500">OR</span>
-                    </div>
-                  </div>
-
-                  {/* URL Input */}
-                  <div>
-                    <input
-                      type="text"
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      placeholder="Paste WebP image URL here"
-                      onPaste={async (e) => {
-                        try {
-                          const pastedText = e.clipboardData.getData('text/plain');
-                          if (pastedText) {
-                            e.preventDefault(); // Prevent default paste behavior
-                            e.target.value = pastedText; // Manually set the input value
-                            handleImageUrlChange({ target: { value: pastedText } });
-                          }
-                        } catch (err) {
-                          console.error('Error handling paste:', err);
-                        }
-                      }}
-                      onChange={handleImageUrlChange}
-                      value={frontImage || ''}
-                    />
-                    <p className="mt-1 text-xs text-gray-500">
-                      Paste direct WebP image URL (e.g., https://example.com/image.webp)
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex items-center space-x-2">
-                <Tag className="w-5 h-5 text-purple-600" />
-                <label className="text-lg font-semibold text-gray-900">
-                  Blog Category
-                </label>
-              </div>
-
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                <select
-                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 text-lg bg-white"
-                  value={categories}
-                  onChange={handleEditCategory}
+    {/* Two-column layout */}
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+      {/* Image Preview */}
+      <div className="relative rounded-lg overflow-hidden border border-gray-200 bg-white">
+        {frontImagePreview ? (
+          <div className="relative">
+            <img
+              src={frontImagePreview}
+              alt="Featured preview"
+              className="w-full h-48 object-cover"
+              onError={(e) => {
+                if (!frontTriedProxy) {
+                  const src = originalFrontUrlRef.current || frontImagePreview;
+                  const stripProto = (u) => (u || '').replace(/^https?:\/\//i, '');
+                  const proxied = `https://images.weserv.nl/?url=${encodeURIComponent(stripProto(src))}`;
+                  setFrontImagePreview(proxied);
+                  setFrontTriedProxy(true);
+                } else {
+                  setFrontImageError(true);
+                }
+              }}
+            />
+            {frontImageError && (
+              <div className="absolute bottom-1 left-1 right-1 bg-white/90 backdrop-blur rounded p-1 border border-amber-200 text-xs flex flex-wrap gap-1">
+                <span className="text-amber-800 text-[10px]">Image failed to load</span>
+                <button 
+                  type="button" 
+                  className="px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 hover:bg-amber-200 text-[10px]"
+                  onClick={() => {
+                    setFrontImageError(false);
+                    setFrontImagePreview(originalFrontUrlRef.current || frontImagePreview);
+                  }}
                 >
-                  <option value="">Select a category</option>
-                  {categoryList.map((c) => (
-                    <option key={c} value={c}>
-                      {c}
-                    </option>
-                  ))}
-                  <option value="__other__">Other (add new)</option>
-                </select>
-
-                {categories === '__other__' && (
-                  <>
-                    <input
-                      type="text"
-                      value={addedCategory}
-                      onChange={(e) => setAddedCategory(e.target.value)}
-                      className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500"
-                      placeholder="Type new category name"
-                    />
-                    <button
-                      type="button"
-                      onClick={addNewCategory}
-                      className="px-4 py-3 rounded-xl bg-purple-600 text-white hover:bg-purple-700 transition"
-                    >
-                      Add Category
-                    </button>
-                  </>
-                )}
+                  Retry
+                </button>
               </div>
-            </div>
+            )}
+          </div>
+        ) : (
+          <div className="h-32 flex items-center justify-center text-gray-400 text-sm">
+            No image selected
+          </div>
+        )}
+      </div>
+
+      {/* Upload Controls */}
+      <div className="space-y-2">
+        <div 
+          className="relative border-2 border-dashed border-gray-200 rounded-lg p-3 text-center hover:border-blue-300 transition-colors"
+          onDragOver={onFeaturedDragOver}
+          onDrop={onFeaturedDrop}
+        >
+          <input
+            type="file"
+            id="featured-image-upload"
+            accept="image/webp"
+            onChange={handleFileChange}
+            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+          />
+          <div className="space-y-1">
+            <UploadCloud className="w-6 h-6 mx-auto text-gray-400" />
+            <p className="text-xs font-medium text-gray-700">
+              {frontImagePreview ? 'Click to change' : 'Upload WebP image'}
+            </p>
+            <p className="text-[10px] text-gray-500">
+              {frontImagePreview ? 'or drag & drop' : 'or paste URL below'}
+            </p>
+          </div>
+        </div>
+
+        <input
+          type="text"
+          className="w-full px-3 py-1.5 text-xs border border-gray-200 rounded-lg focus:ring-1 focus:ring-blue-500"
+          placeholder="Paste WebP URL"
+          onPaste={async (e) => {
+            try {
+              const pastedText = e.clipboardData.getData('text/plain');
+              if (pastedText) {
+                e.preventDefault();
+                handleImageUrlChange({ target: { value: pastedText } });
+              }
+            } catch (err) {
+              console.error('Error handling paste:', err);
+            }
+          }}
+          onChange={handleImageUrlChange}
+          value={frontImage || ''}
+        />
+      </div>
+    </div>
+  </div>
+
+  {/* Blog Category Section */}
+  <div className="space-y-2">
+    <div className="flex items-center gap-2">
+      <Tag className="w-4 h-4 text-purple-600" />
+      <label className="text-sm font-medium text-gray-900">Category</label>
+    </div>
+    
+    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+      <select
+        className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:ring-1 focus:ring-purple-500"
+        value={categories}
+        onChange={handleEditCategory}
+      >
+        <option value="">Select category</option>
+        {categoryList.map((c) => (
+          <option key={c} value={c}>{c}</option>
+        ))}
+        <option value="__other__">+ Add new</option>
+      </select>
+
+      {categories === '__other__' && (
+        <>
+          <input
+            type="text"
+            value={addedCategory}
+            onChange={(e) => setAddedCategory(e.target.value)}
+            className="px-3 py-2 text-sm border border-gray-200 rounded-lg focus:ring-1 focus:ring-purple-500"
+            placeholder="New category name"
+          />
+          <button
+            type="button"
+            onClick={addNewCategory}
+            className="px-3 py-2 text-sm rounded-lg bg-purple-600 text-white hover:bg-purple-700"
+            disabled={!addedCategory.trim()}
+          >
+            Add
+          </button>
+        </>
+      )}
+    </div>
+  </div>
+</div>
 
             {/* Related Projects Section */}
-            <div className="space-y-4">
-              <div className="flex items-center space-x-2">
-                <LinkIcon className="w-5 h-5 text-indigo-600" />
-                <label className="text-lg font-semibold text-gray-900">
-                  Related Projects
-                </label>
-                <span className="text-sm text-gray-500">({relatedProjects.length}/5)</span>
+            <div className="space-y-3">
+  <div className="flex items-center gap-2">
+    <LinkIcon className="w-4 h-4 text-indigo-600" />
+    <span className="text-sm font-medium text-gray-900">Related Projects</span>
+    <span className="text-xs text-gray-500">({relatedProjects.length}/5)</span>
+  </div>
+
+  <div className="bg-gray-50 rounded-lg p-3 space-y-2">
+    {/* Auto-suggest toggle */}
+    <div className="flex items-center justify-between flex-wrap gap-2">
+      <label className="inline-flex items-center gap-1.5 text-xs text-gray-700">
+        <input 
+          type="checkbox" 
+          checked={autoSuggestEnabled} 
+          onChange={(e) => setAutoSuggestEnabled(e.target.checked)}
+          className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+        />
+        Auto-suggest from content
+      </label>
+      
+      {autoSuggestEnabled && suggestedProjects.length > 0 && (
+        <button
+          type="button"
+          className="px-2 py-1 text-xs rounded-lg bg-emerald-600 text-white hover:bg-emerald-700"
+          onClick={() => {
+            const toAdd = suggestedProjects.slice(0, Math.max(0, 5 - relatedProjects.length));
+            toAdd.forEach(addRelatedProject);
+          }}
+          disabled={relatedProjects.length >= 5}
+        >
+          Add Top {Math.min(3, suggestedProjects.length)} Suggested
+        </button>
+      )}
+    </div>
+
+    {/* Suggestions grid */}
+    {autoSuggestEnabled && suggestedProjects.length > 0 && (
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+        {suggestedProjects.slice(0, 4).map((p, idx) => (
+          <div key={`${p.project_url}-${idx}`} className="flex items-center justify-between p-2 bg-white border border-gray-100 rounded-lg">
+            <div className="flex items-center gap-2 min-w-0">
+              {p.thumbnail && (
+                <img 
+                  src={p.thumbnail} 
+                  alt="" 
+                  className="w-8 h-8 rounded object-cover" 
+                  onError={(e) => e.target.style.display='none'} 
+                />
+              )}
+              <div className="min-w-0">
+                <div className="text-xs font-medium text-gray-900 truncate">{p.projectName || 'Project'}</div>
+                <div className="text-[10px] text-gray-500 truncate">{p.builderName || p.city || ''}</div>
               </div>
+            </div>
+            <button 
+              type="button" 
+              className="px-2 py-0.5 text-xs rounded bg-indigo-600 text-white hover:bg-indigo-700"
+              onClick={() => addRelatedProject(p)} 
+              disabled={relatedProjects.length >= 5}
+            >
+              Add
+            </button>
+          </div>
+        ))}
+      </div>
+    )}
 
-              <div className="bg-gray-50 rounded-xl p-4">
-                <div className="space-y-3">
-                  {/* Auto-suggest toggle + quick add */}
-                  <div className="flex flex-wrap items-center justify-between gap-2">
-                    <label className="inline-flex items-center gap-2 text-sm text-gray-700">
-                      <input type="checkbox" checked={autoSuggestEnabled} onChange={(e)=>setAutoSuggestEnabled(e.target.checked)} />
-                      Auto-suggest from content
-                    </label>
-                    {autoSuggestEnabled && suggestedProjects.length > 0 && (
-                      <div className="flex items-center gap-2 text-sm">
-                        <span className="text-gray-600">Suggestions: {suggestedProjects.length}</span>
-                        <button
-                          type="button"
-                          className="px-3 py-1.5 rounded-lg bg-emerald-600 text-white hover:bg-emerald-700"
-                          onClick={() => {
-                            const toAdd = suggestedProjects.slice(0, Math.max(0, 5 - relatedProjects.length));
-                            toAdd.forEach(addRelatedProject);
-                          }}
-                          disabled={relatedProjects.length >= 5}
-                        >
-                          Add Top {Math.min(3, suggestedProjects.length)}
-                        </button>
-                      </div>
-                    )}
-                  </div>
+    {/* Project search */}
+    <div className="relative">
+      <input
+        type="text"
+        value={projectSearchTerm}
+        onChange={(e) => setProjectSearchTerm(e.target.value)}
+        placeholder="Search projects..."
+        className="w-full px-3 py-1.5 text-sm border border-gray-200 rounded-lg focus:ring-1 focus:ring-indigo-500"
+      />
+      {projectSearchTerm && (
+        <button
+          type="button"
+          onClick={() => setProjectSearchTerm('')}
+          className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+          title="Clear"
+        >
+          ×
+        </button>
+      )}
+    </div>
 
-                  {/* Suggestions grid */}
-                  {autoSuggestEnabled && suggestedProjects.length > 0 && (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                      {suggestedProjects.slice(0, 6).map((p, idx) => (
-                        <div key={(p.project_url||'')+idx} className="flex items-center justify-between p-3 bg-white border border-gray-200 rounded-lg">
-                          <div className="flex items-center gap-3 min-w-0">
-                            {p.thumbnail && (
-                              <img src={p.thumbnail} alt={p.projectName||''} className="w-10 h-10 rounded object-cover" onError={(e)=>{e.target.style.display='none'}} />
-                            )}
-                            <div className="min-w-0">
-                              <div className="text-sm font-medium text-gray-900 truncate">{p.projectName || 'Project'}</div>
-                              <div className="text-xs text-gray-500 truncate">{p.builderName || p.city || p.location || ''}</div>
-                            </div>
-                          </div>
-                          <button type="button" className="px-2 py-1 text-sm rounded bg-indigo-600 text-white hover:bg-indigo-700"
-                            onClick={()=>addRelatedProject(p)} disabled={relatedProjects.length>=5}>Add</button>
-                        </div>
-                      ))}
-                    </div>
-                  )}
+    {/* Project dropdown */}
+    <div className="relative">
+      <select
+        className="w-full px-3 py-1.5 text-sm border border-gray-200 rounded-lg focus:ring-1 focus:ring-indigo-500"
+        onChange={(e) => {
+          const idx = Number(e.target.value);
+          const source = projectSearchTerm.trim().length >= 2 ? projectSearchResults : allProjects;
+          const list = source
+            .filter(project => !relatedProjects.find(rp => rp.project_url === project.project_url))
+            .filter(p => {
+              const q = (projectSearchTerm || '').trim().toLowerCase();
+              if (!q) return true;
+              const hay = `${p.projectName || ''} ${p.builderName || ''} ${p.location || ''} ${p.city || ''}`.toLowerCase();
+              return hay.includes(q);
+            });
+          if (!Number.isNaN(idx) && list[idx]) addRelatedProject(list[idx]);
+          e.target.value = '';
+        }}
+        defaultValue=""
+      >
+        <option value="" disabled>{isLoadingProjects ? 'Loading...' : 'Select a project to add'}</option>
+        {(projectSearchTerm.trim().length >= 2 ? projectSearchResults : allProjects)
+          .filter(project => !relatedProjects.find(rp => rp.project_url === project.project_url))
+          .filter(p => {
+            const q = (projectSearchTerm || '').trim().toLowerCase();
+            if (!q) return true;
+            const hay = `${p.projectName || ''} ${p.builderName || ''} ${p.location || ''} ${p.city || ''}`.toLowerCase();
+            return hay.includes(q);
+          })
+          .map((p, idx) => (
+            <option key={p.project_url || `${p.projectName}-${idx}`} value={idx}>
+              {p.projectName || `Project ${idx+1}`}
+              {p.builderName ? ` — ${p.builderName}` : ''}
+            </option>
+          ))}
+      </select>
+      {isLoadingProjects && (
+        <div className="absolute right-2 top-1/2 -translate-y-1/2">
+          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-indigo-600"></div>
+        </div>
+      )}
+    </div>
 
-                  {/* Project search */}
-                  <div className="relative">
-                    <input
-                      type="text"
-                      value={projectSearchTerm}
-                      onChange={(e) => setProjectSearchTerm(e.target.value)}
-                      placeholder="Search projects by name, builder, location..."
-                      className="w-full px-4 py-2 pr-10 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white"
-                    />
-                    {/* Clear button */}
-                    {projectSearchTerm && (
-                      <button
-                        type="button"
-                        onClick={() => setProjectSearchTerm('')}
-                        className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 px-2"
-                        title="Clear search"
-                      >
-                        <span aria-hidden>×</span>
-                      </button>
-                    )}
-                  </div>
-
-                  {/* Project dropdown */}
-                  <div className="relative">
-                    <select
-                      className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white"
-                      onChange={(e) => {
-                        const idx = Number(e.target.value);
-                        const source = projectSearchTerm.trim().length >= 2 ? projectSearchResults : allProjects;
-                        const list = source
-                          .filter(project => !relatedProjects.find(rp => rp.project_url === project.project_url))
-                          .filter(p => {
-                            const q = (projectSearchTerm || '').trim().toLowerCase();
-                            if (!q) return true;
-                            const hay = `${p.projectName || ''} ${p.builderName || ''} ${p.location || ''} ${p.city || ''}`.toLowerCase();
-                            return hay.includes(q);
-                          });
-                        if (!Number.isNaN(idx) && list[idx]) addRelatedProject(list[idx]);
-                        e.target.value = '';
-                      }} defaultValue="" style={{ width:'100%', padding:'10px 12px' }}>
-                      <option value="" disabled>{isLoadingProjects ? 'Loading projects...' : 'Select a project to add'}</option>
-                      {(projectSearchTerm.trim().length >= 2 ? projectSearchResults : allProjects)
-                        .filter(project => !relatedProjects.find(rp => rp.project_url === project.project_url))
-                        .filter(p => {
-                          const q = (projectSearchTerm || '').trim().toLowerCase();
-                          if (!q) return true;
-                          const hay = `${p.projectName || ''} ${p.builderName || ''} ${p.location || ''} ${p.city || ''}`.toLowerCase();
-                          return hay.includes(q);
-                        })
-                        .map((p, idx) => (
-                          <option key={p.project_url || `${p.projectName}-${idx}`} value={idx}>
-                            {(p.projectName || p.project_url || `Project ${idx+1}`)}{p.builderName ? ` — ${p.builderName}` : ''}
-                          </option>
-                        ))}
-                    </select>
-                    {isLoadingProjects && (
-                      <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-indigo-600"></div>
-                      </div>
-                    )}
-                  </div>
-                  
-                  <p className="text-sm text-gray-600">
-                    {projectSearchTerm.trim().length >= 2
-                      ? `Showing ${projectSearchResults.length} result${projectSearchResults.length === 1 ? '' : 's'} for "${projectSearchTerm}"`
-                      : `Select from ${allProjects.length} available projects`}
+    {/* Selected projects */}
+    {relatedProjects.length > 0 && (
+      <div className="space-y-1.5 mt-2">
+        <div className="text-xs font-medium text-gray-700">Selected Projects ({relatedProjects.length}/5):</div>
+        <div className="space-y-1.5">
+          {relatedProjects.map((project, index) => (
+            <div
+              key={index}
+              className="flex items-center justify-between p-2 bg-white border border-gray-100 rounded-lg"
+            >
+              <div className="flex items-center gap-2 min-w-0">
+                {project.thumbnail && (
+                  <img
+                    src={project.thumbnail}
+                    alt=""
+                    className="w-6 h-6 object-cover rounded"
+                    onError={(e) => e.target.style.display = 'none'}
+                  />
+                )}
+                <div className="min-w-0">
+                  <p className="text-xs font-medium text-gray-900 truncate">
+                    {project.projectName || 'Project'}
                   </p>
-
-                  {/* Selected related projects */}
-                  {relatedProjects.length > 0 && (
-                    <div className="space-y-2">
-                      <h4 className="text-sm font-medium text-gray-700">Selected Projects:</h4>
-                      <div className="space-y-2">
-                        {relatedProjects.map((project, index) => (
-                          <div
-                            key={index}
-                            className="flex items-center justify-between p-3 bg-white border border-gray-200 rounded-lg"
-                          >
-                            <div className="flex items-center space-x-3">
-                              {project.thumbnail && (
-                                <img
-                                  src={project.thumbnail}
-                                  alt={project.projectName}
-                                  className="w-10 h-10 object-cover rounded-lg"
-                                  onError={(e) => {
-                                    e.target.style.display = 'none';
-                                  }}
-                                />
-                              )}
-                              <div className="flex-1 min-w-0">
-                                <p className="text-sm font-medium text-gray-900 truncate">
-                                  {project.projectName}
-                                </p>
-                                <p className="text-xs text-indigo-600 truncate">
-                                  /{project.project_url}
-                                </p>
-                              </div>
-                            </div>
-                            <button
-                              type="button"
-                              onClick={() => removeRelatedProject(project.project_url)}
-                              className="p-1 text-red-600 hover:text-red-800 hover:bg-red-50 rounded"
-                              title="Remove project"
-                            >
-                              <X className="w-4 h-4" />
-                            </button>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
+                  <p className="text-[10px] text-indigo-600 truncate">
+                    {project.project_url?.replace(/^https?:\/\//, '')}
+                  </p>
                 </div>
               </div>
+              <button
+                type="button"
+                onClick={() => removeRelatedProject(project.project_url)}
+                className="p-0.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded"
+                title="Remove"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
             </div>
+          ))}
+        </div>
+      </div>
+    )}
+  </div>
+</div>
 
             {/* Editor Controls */}
-            <div className="flex flex-wrap items-center gap-3">
-              <button
-                type="button"
-                onClick={uploadInlineImage}
-                className="px-4 py-2 rounded-lg bg-emerald-600 text-white hover:bg-emerald-700 transition flex items-center gap-2"
-                title="Upload image and insert at cursor"
-              >
-                <Upload className="w-4 h-4" />
-                Insert Image (Upload)
-              </button>
-              <button
-                type="button"
-                onClick={insertImageByUrl}
-                className="px-4 py-2 rounded-lg bg-sky-600 text-white hover:bg-sky-700 transition flex items-center gap-2"
-                title="Insert image by URL at cursor"
-              >
-                <ImageIcon className="w-4 h-4" />
-                Insert Image (URL)
-              </button>
-              {/* Grid controls */}
-              {/* <div className="flex items-center gap-2">
-                <label className="text-sm text-gray-600">Grid size:</label>
-                <select
-                  value={gridImgSize}
-                  onChange={(e)=>setGridImgSize(e.target.value)}
-                  className="px-2 py-1 border rounded"
-                >
-                  <option value="small">Small</option>
-                  <option value="medium">Medium</option>
-                  <option value="large">Large</option>
-                </select>
-              </div> */}
-              {/* <div className="flex items-center gap-2">
-                <label className="text-sm text-gray-600">Layout:</label>
-                <select
-                  value={gridLayout}
-                  onChange={(e)=>setGridLayout(e.target.value)}
-                  className="px-2 py-1 border rounded"
-                >
-                  <option value="equal">Equal (1:1:1:1)</option>
-                  <option value="lastLarge">Last Larger</option>
-                </select>
-              </div> */}
-              {/* <label className="flex items-center gap-2 text-sm text-gray-700">
-                <input type="checkbox" checked={gridWithTitles} onChange={(e)=>setGridWithTitles(e.target.checked)} />
-                Titles under images
-              </label>
-              <label className="flex items-center gap-2 text-sm text-gray-700">
-                <input type="checkbox" checked={gridUseFrameTitle} onChange={(e)=>setGridUseFrameTitle(e.target.checked)} />
-                Outer frame & grid title
-              </label> */}
-                <button
-                type="button"
-                onClick={async () => {
-                  // Select up to 4 images, upload, then insert grid
-                  const input = document.createElement('input');
-                  input.type = 'file';
-                  input.accept = 'image/webp';
-                  input.multiple = true;
-                  input.onchange = async () => {
-                    const files = Array.from(input.files || []).slice(0, 4);
-                    if (!files.length) return;
-                    
-                    // STRICT: Check all files are WebP
-                    const nonWebpFiles = files.filter(file => file.type !== 'image/webp');
-                    if (nonWebpFiles.length > 0) {
-                      messageApi.error('Only WebP images are allowed. Please convert all images to WebP format.');
-                      return;
-                    }
-                    
-                    messageApi.open({ key: 'gridUpload', type: 'loading', content: 'Uploading images...', duration: 0 });
-                    try {
-                      const urls = [];
-                      for (const f of files) {
-                        const fd = new FormData();
-                        fd.append('image', f);
-                        const r = await api.post(`/blog/upload-image`, fd);
-                        const u = r?.data?.url || r?.data?.data?.url || r?.data?.imageUrl || '';
-                        if (u) urls.push(u);
-                      }
-                      // Build cards with inline styles so it renders after publish without external CSS
-                      const cardStyle = 'background:#fff;border:2px solid #222;border-radius:16px;overflow:hidden;display:flex;flex-direction:column;';
-                      const imgStyle = `width:100%;height:${gridSizeToPx[gridImgSize]}px;object-fit:cover;display:block;`;
-                      const capStyle = 'padding:8px 10px;font-size:14px;color:#111;text-align:center;';
-                      const cards = urls.map((u, idx) => gridWithTitles
-                        ? `<figure class=\"grid-card\" style=\"${cardStyle}\"><img style=\"${imgStyle}\" src=\"${u}\" alt=\"\" /><figcaption style=\"${capStyle}\" contenteditable=\"true\">Title ${idx+1}</figcaption></figure>`
-                        : `<figure class=\"grid-card\" style=\"${cardStyle}\"><img style=\"${imgStyle}\" src=\"${u}\" alt=\"\" /></figure>`
-                      ).join('');
-                      const gridCols = gridLayout === 'lastLarge' ? '1fr 1fr 1fr 1.6fr' : 'repeat(4, 1fr)';
-                      const inner = `<div class=\"img-grid-4 layout-${gridLayout}\" style=\"display:flex;flex-wrap:nowrap;align-items:stretch;gap:12px;display:grid;grid-template-columns:${gridCols};--grid-img-height:${gridSizeToPx[gridImgSize]}px;\">${cards}</div>`;
-                      const frameStyle = 'border:3px solid #111;border-radius:18px;padding:14px;background:#fff;';
-                      const titleStyle = 'text-align:center;font-weight:700;margin:4px 0 12px;font-size:16px;';
-                      const html = gridWithTitles
-                        ? `<section class=\"img-grid-4-frame\" style=\"${frameStyle}\"><div class=\"grid-title\" style=\"${titleStyle}\" contenteditable=\"true\">Grid Title</div>${inner}</section>`
-                        : `${inner}<p><br/></p>`;
-                      const quill = safeGetQuill();
-                      if (quill) {
-                        const sel = quill.getSelection(true) || { index: quill.getLength(), length: 0 };
-                        quill.clipboard.dangerouslyPasteHTML(sel.index, html, 'user');
-                        quill.setSelection(sel.index + 1, 0);
-                      }
-                      messageApi.success('Inserted 4-image grid');
-                    } catch (err) {
-                      console.error(err);
-                      messageApi.error('Failed to insert grid');
-                    } finally {
-                      messageApi.destroy('gridUpload');
-                    }
-                  };
-                  input.click();
-                }}
-                className="px-4 py-2 rounded-lg bg-purple-600 text-white hover:bg-purple-700 transition"
-                title="Insert 4 images as a grid"
-              >
-                Insert 4-Image Grid
-              </button>
-              {/* <button
-                type="button"
-                onClick={applyGridSettingsToSelection}
-                className="px-4 py-2 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 transition"
-                title="Apply selected grid settings to the grid at the cursor"
-              >
-                Apply Grid Settings
-              </button> */}
-              {/* <button
-                type="button"
-                onClick={convertNextImagesToGrid}
-                className="px-4 py-2 rounded-lg bg-teal-600 text-white hover:bg-teal-700 transition"
-                title="Convert the next 4 images after the cursor into a grid"
-              >
-                Convert Next 4 Images → Grid
-              </button> */}
-              {/* Black & White toggle */}
-              <button
-                type="button"
-                onClick={()=>setBwMode(v=>!v)}
-                className="px-3 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100"
-                title="Toggle Black & White mode for images"
-              >
-                {bwMode ? 'Color Mode' : 'B/W Mode'}
-              </button>
-              {/* Font search/apply */}
-              {/* <div className="flex items-center gap-2">
-                <input
-                  list="ql-font-list"
-                  value={fontQuery}
-                  onChange={(e)=>setFontQuery(e.target.value)}
-                  onKeyDown={(e)=>{ if(e.key==='Enter'){ applyFontToSelection(fontQuery); } }}
-                  placeholder="Search fonts"
-                  className="px-2 py-1 border rounded"
-                  style={{minWidth:180}}
-                />
-                <datalist id="ql-font-list">
-                  {fontWhitelist.map(f=> (<option key={f} value={f} />))}
-                </datalist>
-                <button type="button" className="px-3 py-1 rounded bg-gray-800 text-white" onClick={()=>applyFontToSelection(fontQuery)}>Apply Font</button>
-              </div> */}
-            </div>
+          <div className="flex flex-wrap items-center gap-2">
+  <button
+    type="button"
+    onClick={uploadInlineImage}
+    className="px-3 py-1.5 text-xs rounded-lg bg-emerald-600 text-white hover:bg-emerald-700 flex items-center gap-1.5"
+    title="Upload image and insert at cursor"
+  >
+    <Upload className="w-3.5 h-3.5" />
+    Insert Image
+  </button>
+  
+  <button
+    type="button"
+    onClick={insertImageByUrl}
+    className="px-3 py-1.5 text-xs rounded-lg bg-sky-600 text-white hover:bg-sky-700 flex items-center gap-1.5"
+    title="Insert image by URL at cursor"
+  >
+    <ImageIcon className="w-3.5 h-3.5" />
+    Insert from URL
+  </button>
+  
+  <button
+    type="button"
+    onClick={async () => {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = 'image/webp';
+      input.multiple = true;
+      input.onchange = async () => {
+        const files = Array.from(input.files || []).slice(0, 4);
+        if (!files.length) return;
+        
+        // STRICT: Check all files are WebP
+        const nonWebpFiles = files.filter(file => file.type !== 'image/webp');
+        if (nonWebpFiles.length > 0) {
+          messageApi.error('Only WebP images are allowed');
+          return;
+        }
+        
+        messageApi.open({ key: 'gridUpload', type: 'loading', content: 'Uploading...', duration: 0 });
+        try {
+          const urls = [];
+          for (const f of files) {
+            const fd = new FormData();
+            fd.append('image', f);
+            const r = await api.post(`/blog/upload-image`, fd);
+            const u = r?.data?.url || r?.data?.data?.url || r?.data?.imageUrl || '';
+            if (u) urls.push(u);
+          }
+          const cardStyle = 'background:#fff;border:1px solid #e5e7eb;border-radius:8px;overflow:hidden;display:flex;flex-direction:column;';
+          const imgStyle = `width:100%;height:${gridSizeToPx[gridImgSize]}px;object-fit:cover;display:block;`;
+          const cards = urls.map((u, idx) => 
+            `<figure class="grid-card" style="${cardStyle}">
+              <img style="${imgStyle}" src="${u}" alt="" />
+              ${gridWithTitles ? `<figcaption style="padding:4px 6px;font-size:12px;color:#4b5563;text-align:center;" contenteditable="true">Title ${idx+1}</figcaption>` : ''}
+            </figure>`
+          ).join('');
+          const gridCols = gridLayout === 'lastLarge' ? '1fr 1fr 1fr 1.6fr' : 'repeat(4, 1fr)';
+          const inner = `<div class="img-grid-4 layout-${gridLayout}" style="display:grid;grid-template-columns:${gridCols};gap:8px;margin:8px 0;">${cards}</div>`;
+          const html = gridWithTitles
+            ? `<section class="img-grid-4-frame" style="border:1px solid #e5e7eb;border-radius:8px;padding:8px;background:#f9fafb;">
+                <div class="grid-title" style="text-align:center;font-weight:600;margin:0 0 8px;font-size:13px;color:#374151;" contenteditable="true">Grid Title</div>
+                ${inner}
+              </section>` 
+            : `${inner}<p><br/></p>`;
+          const quill = safeGetQuill();
+          if (quill) {
+            const sel = quill.getSelection(true) || { index: quill.getLength(), length: 0 };
+            quill.clipboard.dangerouslyPasteHTML(sel.index, html, 'user');
+            quill.setSelection(sel.index + 1, 0);
+          }
+          messageApi.success('Inserted image grid');
+        } catch (err) {
+          console.error(err);
+          messageApi.error('Failed to insert grid');
+        } finally {
+          messageApi.destroy('gridUpload');
+        }
+      };
+      input.click();
+    }}
+    className="px-3 py-1.5 text-xs rounded-lg bg-purple-600 text-white hover:bg-purple-700"
+    title="Insert 4 images as a grid"
+  >
+    Insert 4-Image Grid
+  </button>
+  
+  <button
+    type="button"
+    onClick={() => setBwMode(v => !v)}
+    className="px-2.5 py-1.5 text-xs rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50"
+    title="Toggle Black & White mode for images"
+  >
+    {bwMode ? 'Color Mode' : 'B/W Mode'}
+  </button>
+</div>
 
             {/* Content Editor */}
             <div className="space-y-3">
