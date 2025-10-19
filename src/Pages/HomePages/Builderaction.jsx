@@ -18,7 +18,7 @@ const Builderaction = () => {
       title: "Adani Realty",
       link: "developers/adani-realty/",
       image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/adanireality.webp",
-      backgroungURL: "https://d16gdc5rm7f21b.cloudfront.net/100acre/project/zcasashag5pnabbtk9ox",
+      backgroungURL: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/devlopers/Adani-Realty-bg.webp",
       // subtitle: "Premium",
       rating: 4.8,
       projects: 15
@@ -27,7 +27,7 @@ const Builderaction = () => {
       title: "M3M India", 
       link: "/developers/m3m-india/", 
       image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/m3m.webp", 
-      backgroungURL: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/m3mbuilderimage.jpg",
+      backgroungURL: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/devlopers/m3mbuilderimage.webp",
       // subtitle: "Luxury Living",
       rating: 4.7,
       projects: 28
@@ -36,7 +36,7 @@ const Builderaction = () => {
       title: "Emaar India", 
       link: "/developers/emaar-india/", 
       image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/signature.webp",
-      backgroungURL: "https://d16gdc5rm7f21b.cloudfront.net/100acre/project/q8duitnixfn97gmruqbr",
+      backgroungURL: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/devlopers/Emaar-India.webp",
       // subtitle: "Global Standards",
       rating: 4.9,
       projects: 22
@@ -45,7 +45,7 @@ const Builderaction = () => {
       title: "Experion Developers", 
       link: "/developers/experion-developers/", 
       image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/experion.webp",
-      backgroungURL: "https://d16gdc5rm7f21b.cloudfront.net/100acre/project/loedvckg91xfhdnqulho",
+      backgroungURL: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/devlopers/Experion-Developers.webp",
       // subtitle: "Smart Homes",
       rating: 4.6,
       projects: 12
@@ -54,7 +54,7 @@ const Builderaction = () => {
       title: "Signature Global", 
       link: "/developers/signature-global/", 
       image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/signature.webp",
-      backgroungURL: "https://d16gdc5rm7f21b.cloudfront.net/100acre/project/dhxv9npqtof8mlrwvanx",
+      backgroungURL: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/devlopers/Signature-Global.webp",
       // subtitle: "Affordable Luxury",
       rating: 4.5,
       projects: 18
@@ -64,7 +64,7 @@ const Builderaction = () => {
       title: "Elan Group",
       link: "/developers/elan-group/",
       image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/uploads/1757160649396-download.jpeg",
-      backgroungURL: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/uploads/1757160649396-download.jpeg",
+      backgroungURL: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/devlopers/Elan-Group.webp",
       // subtitle: "Affordable Luxury",
       rating: 4.5,
       projects: 18
@@ -127,7 +127,7 @@ const Builderaction = () => {
               data-aos="fade-up"
               data-aos-delay={index * 100}
               className="group"
-            >
+            > 
               <Link 
                 to={project.link} 
                 className="block bg-white rounded-3xl hover:shadow-2xl transition-all duration-500 transform hover:scale-[1.02] hover:-translate-y-2 overflow-hidden border border-gray-100 group-hover:border-red-200"
