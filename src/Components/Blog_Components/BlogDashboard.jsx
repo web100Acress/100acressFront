@@ -1113,13 +1113,22 @@ export default function BlogDashboard() {
                           >
                             <Eye size={14} />
                           </Link>
-                          <Link 
-                            to={`/seo/blogs/write?edit=${blog._id}`}
-                            className="text-green-600 hover:text-green-800 p-1 rounded"
-                            title="Edit Blog"
-                          >
-                            <Edit size={14} />
-                          </Link>
+                             <button
+                          onClick={() => {
+                            if (!isOwnedByMe(blog)) {
+                              message.warning("For edit, contact admin");
+                              return;
+                            }
+                            history(`/seo/blogs/edit/${blog._id}`);
+                          }}
+                          className="group p-0.25 rounded-full transition-all duration-300 hover:scale-110"
+                          title="Edit Blog"
+                        >
+                          <Edit
+                            size={10}
+                            className="text-indigo-600 group-hover:text-indigo-700 transition-colors duration-300"
+                          />
+                        </button>
                           <div className="relative">
                             <div
                               className={`w-8 h-4 rounded-full transition-colors duration-300 cursor-pointer ${
