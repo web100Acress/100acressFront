@@ -437,7 +437,7 @@ function ProjectLayout2() {
           </div>
         </div>
 
-        <div className="relative mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+        <div className="relative w-full px-4 sm:px-6 lg:px-8">
           <div className="relative">
             {/* Premium Card Container */}
             <div className="relative rounded-xl overflow-hidden">
