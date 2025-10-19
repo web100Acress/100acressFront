@@ -283,10 +283,9 @@ function ProjectLayout2() {
               const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
               window.open(whatsappUrl, '_blank');
             }}
-            className="flex-1 bg-white border-2 border-green-500 text-green-600 py-2.5 rounded-full font-semibold text-sm flex items-center justify-center space-x-1.5 hover:bg-green-50 hover:border-green-600 transition-all duration-300 shadow-md hover:shadow-lg"
+            className="flex-1 bg-white text-green-600 py-2.5 font-semibold text-sm flex items-center justify-center space-x-1.5 hover:bg-green-50 transition-all duration-300 shadow-md hover:shadow-lg"
             whileHover={{ 
-              scale: 1.02,
-              boxShadow: "0 8px 20px rgba(34, 197, 94, 0.3)"
+              scale: 1.02
             }}
             whileTap={{ scale: 0.98 }}
           >
@@ -438,7 +437,7 @@ function ProjectLayout2() {
           </div>
         </div>
 
-        <div className="relative mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+        <div className="relative w-full px-4 sm:px-6 lg:px-8">
           <div className="relative">
             {/* Premium Card Container */}
             <div className="relative rounded-xl overflow-hidden">
@@ -495,7 +494,7 @@ function ProjectLayout2() {
                   <div className="w-10 h-px bg-gradient-to-r from-transparent via-yellow-400/50 to-transparent mx-auto mb-3"></div>
 
                   {/* Sophisticated subtext */}
-                  <p className="text-gray-300 text-sm font-light leading-relaxed max-w-xl mx-auto">
+                  <p className="text-gray-300 text-base font-light leading-relaxed max-w-xl mx-auto">
                     Get detailed information on floor plans, pricing, payment options, amenities, and specifications to help you make an informed decision.
                   </p>
                 </div>
@@ -524,7 +523,7 @@ function ProjectLayout2() {
                         <line x1="9" y1="15" x2="15" y2="15"/>
                       </svg>
                     </div>
-                    <span className="text-gray-300 text-xs font-medium tracking-wide">Floor Plans</span>
+                    <span className="text-gray-300 text-sm font-medium tracking-wide">Floor Plans</span>
                   </div>
 
                   {/* Pricing & Payment Plans */}
@@ -545,7 +544,7 @@ function ProjectLayout2() {
                         <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
                       </svg>
                     </div>
-                    <span className="text-gray-300 text-xs font-medium tracking-wide">Pricing & Payment Plans</span>
+                    <span className="text-gray-300 text-sm font-medium tracking-wide">Pricing & Payment Plans</span>
                   </div>
 
                   {/* Amenities & Specifications */}
@@ -566,7 +565,7 @@ function ProjectLayout2() {
                         <polyline points="9,22 9,12 15,12 15,22"/>
                       </svg>
                     </div>
-                    <span className="text-gray-300 text-xs font-medium tracking-wide">Amenities & Specifications</span>
+                    <span className="text-gray-300 text-sm font-medium tracking-wide">Amenities & Specifications</span>
                   </div>
                 </div>
 
