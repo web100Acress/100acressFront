@@ -26,7 +26,7 @@ const ProjectHero = ({
     ...(backgroundImage && { backgroundImage: `url(${backgroundImage})` }),
     contentVisibility: 'auto',
     containIntrinsicSize: '100vw 100vh',
-    backgroundSize: '100% auto',
+    backgroundSize: 'cover',
     backgroundPosition: 'center',
     backgroundRepeat: 'no-repeat',
     backgroundColor: backgroundImage ? 'transparent' : '#1a202c' // Dark background if no image

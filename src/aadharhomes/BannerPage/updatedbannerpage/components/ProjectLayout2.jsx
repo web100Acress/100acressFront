@@ -359,7 +359,7 @@ function ProjectLayout2() {
 
       {/* Amenities - Only show for residential properties */}
       {isResidentialProperty() && (
-        <section className="pt-0 pb-12 bg-gradient-to-b from-black via-gray-900 to-black">
+        <section className="mt-8 pt-0 pb-12 bg-gradient-to-b from-black via-gray-900 to-black">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <SectionHeading title="Amenities" />
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
@@ -418,7 +418,9 @@ function ProjectLayout2() {
       />
 
       {/* Brochure Section - Max Antara Luxury Design */}
-      <div className="relative bg-black py-6 overflow-hidden">
+      <div className="relative bg-gray-900 py-6 overflow-hidden">
+        {/* Golden top border accent */}
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-yellow-500 via-yellow-400 to-yellow-500"></div>
         {/* Sophisticated Background Elements */}
         <div className="absolute inset-0">
           {/* Primary gradient background */}
@@ -441,11 +443,11 @@ function ProjectLayout2() {
             {/* Premium Card Container */}
             <div className="relative rounded-xl overflow-hidden">
               {/* Sophisticated card background */}
-              <div className="absolute inset-0 bg-black/95 backdrop-blur-sm"></div>
+              <div className="absolute inset-0 bg-gray-900/95 backdrop-blur-sm"></div>
 
               {/* Subtle border gradient */}
               <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-yellow-500/10 via-yellow-400/15 to-yellow-300/10 p-[1px]">
-                <div className="absolute inset-0 rounded-xl bg-black/95"></div>
+                <div className="absolute inset-0 rounded-xl bg-gray-900/95"></div>
               </div>
 
               {/* Minimalist corner accents */}
@@ -461,7 +463,7 @@ function ProjectLayout2() {
                     <div className="relative">
                       {/* Gradient ring */}
                       <div className="w-12 h-12 rounded-full bg-gradient-to-br from-yellow-500/20 via-yellow-400/15 to-yellow-300/20 p-[1px]">
-                        <div className="w-full h-full rounded-full bg-black flex items-center justify-center">
+                        <div className="w-full h-full rounded-full bg-gray-900 flex items-center justify-center">
                           {/* Document icon - minimalist line style */}
                           <svg
                             width="16"
