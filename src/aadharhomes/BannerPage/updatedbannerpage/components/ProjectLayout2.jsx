@@ -283,10 +283,9 @@ function ProjectLayout2() {
               const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
               window.open(whatsappUrl, '_blank');
             }}
-            className="flex-1 bg-white border-2 border-green-500 text-green-600 py-2.5 rounded-full font-semibold text-sm flex items-center justify-center space-x-1.5 hover:bg-green-50 hover:border-green-600 transition-all duration-300 shadow-md hover:shadow-lg"
+            className="flex-1 bg-white text-green-600 py-2.5 font-semibold text-sm flex items-center justify-center space-x-1.5 hover:bg-green-50 transition-all duration-300 shadow-md hover:shadow-lg"
             whileHover={{ 
-              scale: 1.02,
-              boxShadow: "0 8px 20px rgba(34, 197, 94, 0.3)"
+              scale: 1.02
             }}
             whileTap={{ scale: 0.98 }}
           >
