@@ -417,49 +417,190 @@ function ProjectLayout2() {
         backgroundImage={projectViewDetails?.frontImage?.url}
       />
 
-      {/* Brochure Section */}
-      <div className="bg-black py-12">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="bg-gradient-to-br from-gray-900/50 to-gray-800/30 backdrop-blur-sm rounded-3xl p-8 border border-gray-700/30 shadow-2xl">
-            <div className="text-center">
-              {/* Content */}
-              <div className="mb-6">
-                <h3 className="text-2xl font-bold text-white mb-2 tracking-tight">
-                  Download {projectViewDetails?.projectName || 'Project'} Brochure
-                </h3>
-                <p className="text-gray-300 text-base font-light leading-relaxed">
-                  Get complete details, floor plans, amenities & pricing
-                </p>
+      {/* Brochure Section - Max Antara Luxury Design */}
+      <div className="relative bg-black py-6 overflow-hidden">
+        {/* Sophisticated Background Elements */}
+        <div className="absolute inset-0">
+          {/* Primary gradient background */}
+          <div className="absolute inset-0 bg-black"></div>
+
+          {/* Subtle accent lighting */}
+          <div className="absolute top-0 left-1/3 w-64 h-64 bg-gradient-to-br from-yellow-500/8 to-yellow-400/4 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-0 right-1/3 w-56 h-56 bg-gradient-to-tl from-yellow-400/6 to-yellow-300/3 rounded-full blur-3xl"></div>
+
+          {/* Minimalist geometric accents */}
+          <div className="absolute inset-0 opacity-[0.02]">
+            <div className="absolute top-6 left-6 w-12 h-12 border border-yellow-400/20 rotate-45"></div>
+            <div className="absolute top-12 right-12 w-10 h-10 border border-yellow-300/15 rotate-12"></div>
+            <div className="absolute bottom-12 left-12 w-16 h-16 border border-yellow-300/10 -rotate-12"></div>
+          </div>
+        </div>
+
+        <div className="relative mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+          <div className="relative">
+            {/* Premium Card Container */}
+            <div className="relative rounded-xl overflow-hidden">
+              {/* Sophisticated card background */}
+              <div className="absolute inset-0 bg-black/95 backdrop-blur-sm"></div>
+
+              {/* Subtle border gradient */}
+              <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-yellow-500/10 via-yellow-400/15 to-yellow-300/10 p-[1px]">
+                <div className="absolute inset-0 rounded-xl bg-black/95"></div>
               </div>
 
-              {/* Download Button */}
-              <div className="flex justify-center">
-                <motion.button
-                  onClick={handleBrochureDownload}
-                  className="bg-gradient-to-r from-amber-500 to-orange-600 text-white px-8 py-3 rounded-full font-semibold text-base flex items-center space-x-2 hover:from-amber-600 hover:to-orange-700 transition-all duration-300 shadow-xl hover:shadow-2xl"
-                  whileHover={{ 
-                    scale: 1.05,
-                    boxShadow: "0 20px 40px rgba(245, 158, 11, 0.4)"
-                  }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <svg 
-                    width="20" 
-                    height="20" 
-                    viewBox="0 0 24 24" 
-                    fill="none" 
-                    stroke="currentColor" 
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="text-white"
+              {/* Minimalist corner accents */}
+              <div className="absolute top-0 left-0 w-6 h-6 bg-gradient-to-br from-yellow-500/5 to-transparent rounded-full blur-sm"></div>
+              <div className="absolute bottom-0 right-0 w-8 h-8 bg-gradient-to-tl from-yellow-400/5 to-transparent rounded-full blur-sm"></div>
+
+              {/* Main Content */}
+              <div className="relative p-6 md:p-8 text-center">
+                {/* Premium Header Section */}
+                <div className="mb-4">
+                  {/* Refined Circular Icon */}
+                  <div className="inline-flex items-center justify-center mb-3">
+                    <div className="relative">
+                      {/* Gradient ring */}
+                      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-yellow-500/20 via-yellow-400/15 to-yellow-300/20 p-[1px]">
+                        <div className="w-full h-full rounded-full bg-black flex items-center justify-center">
+                          {/* Document icon - minimalist line style */}
+                          <svg
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="1.5"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="text-yellow-400"
+                          >
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                            <polyline points="14,2 14,8 20,8"/>
+                            <line x1="16" y1="13" x2="8" y2="13"/>
+                            <line x1="16" y1="17" x2="8" y2="17"/>
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Luxury Typography */}
+                  <h3 className="text-xl md:text-2xl font-light text-white mb-2 tracking-wide">
+                    Download <span className="bg-gradient-to-r from-yellow-400 via-yellow-400 to-yellow-300 bg-clip-text text-transparent font-medium">Max Antara</span> Senior Living Brochure
+                  </h3>
+
+                  {/* Elegant divider */}
+                  <div className="w-10 h-px bg-gradient-to-r from-transparent via-yellow-400/50 to-transparent mx-auto mb-3"></div>
+
+                  {/* Sophisticated subtext */}
+                  <p className="text-gray-300 text-sm font-light leading-relaxed max-w-xl mx-auto">
+                    Get detailed information on floor plans, pricing, payment options, amenities, and specifications to help you make an informed decision.
+                  </p>
+                </div>
+
+                {/* Subtle separator */}
+                <div className="w-full h-px bg-gradient-to-r from-transparent via-yellow-400/30 to-transparent mb-4"></div>
+
+                {/* Information Columns */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
+                  {/* Floor Plans */}
+                  <div className="flex flex-col items-center space-y-1.5">
+                    <div className="w-6 h-6 flex items-center justify-center">
+                      <svg
+                        width="14"
+                        height="14"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="text-yellow-400"
+                      >
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                        <line x1="9" y1="9" x2="15" y2="9"/>
+                        <line x1="9" y1="15" x2="15" y2="15"/>
+                      </svg>
+                    </div>
+                    <span className="text-gray-300 text-xs font-medium tracking-wide">Floor Plans</span>
+                  </div>
+
+                  {/* Pricing & Payment Plans */}
+                  <div className="flex flex-col items-center space-y-1.5">
+                    <div className="w-6 h-6 flex items-center justify-center">
+                      <svg
+                        width="14"
+                        height="14"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="text-yellow-400"
+                      >
+                        <line x1="12" y1="1" x2="12" y2="23"/>
+                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                      </svg>
+                    </div>
+                    <span className="text-gray-300 text-xs font-medium tracking-wide">Pricing & Payment Plans</span>
+                  </div>
+
+                  {/* Amenities & Specifications */}
+                  <div className="flex flex-col items-center space-y-1.5">
+                    <div className="w-6 h-6 flex items-center justify-center">
+                      <svg
+                        width="14"
+                        height="14"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="text-yellow-400"
+                      >
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                        <polyline points="9,22 9,12 15,12 15,22"/>
+                      </svg>
+                    </div>
+                    <span className="text-gray-300 text-xs font-medium tracking-wide">Amenities & Specifications</span>
+                  </div>
+                </div>
+
+                {/* Premium CTA Button */}
+                <div className="flex justify-center">
+                  <motion.button
+                    onClick={handleBrochureDownload}
+                    className="group relative bg-gradient-to-r from-yellow-500 via-yellow-500 to-yellow-400 text-black px-6 py-2.5 rounded-full font-medium text-sm flex items-center space-x-2 hover:from-yellow-400 hover:via-yellow-400 hover:to-yellow-300 transition-all duration-300 shadow-lg hover:shadow-yellow-500/20"
+                    whileHover={{
+                      scale: 1.02,
+                      boxShadow: "0 8px 20px rgba(234, 179, 8, 0.2)"
+                    }}
+                    whileTap={{ scale: 0.98 }}
                   >
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                    <polyline points="7,10 12,15 17,10"/>
-                    <line x1="12" y1="15" x2="12" y2="3"/>
-                  </svg>
-                  <span>Brochure</span>
-                </motion.button>
+                    {/* Subtle glow effect */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-yellow-400 to-yellow-300 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10 blur-sm"></div>
+
+                    {/* Button content */}
+                    <div className="relative flex items-center space-x-2">
+                      <svg
+                        width="12"
+                        height="12"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="text-black"
+                      >
+                        <polyline points="6,9 12,15 18,9"/>
+                      </svg>
+                      <span className="font-medium tracking-wide">Download Brochure</span>
+                    </div>
+                  </motion.button>
+                </div>
               </div>
             </div>
           </div>

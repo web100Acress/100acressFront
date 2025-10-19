@@ -59,7 +59,7 @@ const AboutSection = ({ projectName, description, imageUrl, onShowCallback = () 
             {/* Animated gold underline */}
             <div className="mt-2 h-[3px] rounded-full gold-underline w-28 sm:w-36" />
             
-            <div className={`text-white/90 text-sm md:text-base leading-relaxed mt-4 mb-2 ${expanded ? '' : 'overflow-hidden max-h-[220px] md:max-h-[260px]'}`}>
+            <div className={`text-white/90 text-sm md:text-base leading-relaxed mt-4 mb-2 ${expanded ? '' : 'line-clamp-6'}`}>
               {description ? (
                 <div dangerouslySetInnerHTML={{ __html: description }} />
               ) : (
