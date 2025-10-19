@@ -486,7 +486,7 @@ function ProjectLayout2() {
 
                   {/* Luxury Typography */}
                   <h3 className="text-xl md:text-2xl font-light text-white mb-2 tracking-wide">
-                    Download <span className="bg-gradient-to-r from-yellow-400 via-yellow-400 to-yellow-300 bg-clip-text text-transparent font-medium">Max Antara</span> Senior Living Brochure
+                    Download <span className="bg-gradient-to-r from-yellow-400 via-yellow-400 to-yellow-300 bg-clip-text text-transparent font-medium">{projectViewDetails?.projectName || 'Project'}</span> Brochure
                   </h3>
 
                   {/* Elegant divider */}
