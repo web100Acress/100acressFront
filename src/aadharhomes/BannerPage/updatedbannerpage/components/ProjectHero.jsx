@@ -26,7 +26,7 @@ const ProjectHero = ({
     ...(backgroundImage && { backgroundImage: `url(${backgroundImage})` }),
     contentVisibility: 'auto',
     containIntrinsicSize: '100vw 100vh',
-    backgroundSize: '100% auto',
+    backgroundSize: 'cover',
     backgroundPosition: 'center',
     backgroundRepeat: 'no-repeat',
     backgroundColor: backgroundImage ? 'transparent' : '#1a202c' // Dark background if no image
@@ -94,13 +94,13 @@ const ProjectHero = ({
               href={`https://wa.me/91${phoneNumber}?text=Hi%2C%20I%27m%20interested%20in%20${encodeURIComponent(projectTitle)}%20property.%20Can%20you%20provide%20more%20details%3F`}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center justify-center w-14 h-14 text-green-500 rounded-full hover:bg-green-500 hover:text-white transition-all duration-300 transform hover:scale-110"
+              className="flex items-center justify-center w-12 h-12 border-2 border-green-500 text-green-500 rounded-full hover:bg-green-500 hover:text-white transition-all duration-300 transform hover:scale-110"
               aria-label={`Chat on WhatsApp for ${projectTitle}`}
             >
               <img
                 src="/icons/social.webp"
                 alt="WhatsApp"
-                className="w-7 h-7"
+                className="w-6 h-6"
               />
             </a>
 
