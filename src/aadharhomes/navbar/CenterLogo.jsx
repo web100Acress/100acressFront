@@ -37,7 +37,7 @@ export default function CenterLogo({ colorChange, isSearchOpen, centerOnCompact 
         />
       </Link>
       <Image
-        src="/Images/Golden_Diwali_Diya_PNG___Stylized_Festival_Illustration-PNGLove.com.png"
+        src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/festival-images/navbar-diwali.webp"
         alt="Diwali Diya"
         height={{ base: '40px', sm: '50px', md: '60px' }}
         width={{ base: '40px', sm: '50px', md: '60px' }}
