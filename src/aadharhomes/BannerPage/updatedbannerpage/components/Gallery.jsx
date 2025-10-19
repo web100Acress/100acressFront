@@ -64,9 +64,9 @@ const Gallery = ({ galleryImages = [] }) => {
   const remainingImagesCount = galleryImages.length - visibleImages.length;
 
   return (
-    <section className="py-12 bg-black">
+    <section className="py-8 bg-black">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-8">
+        <div className="text-center mb-4">
             <h2 className="text-amber-400 text-sm font-semibold uppercase tracking-widest mb-3">
               GALLERY
             </h2>
