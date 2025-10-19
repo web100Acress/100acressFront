@@ -82,10 +82,22 @@ export const getProjectOrderData = async () => {
       { id: 32, name: "Experion Windchants Nova", order: 7, isActive: true }
     ],
     budgetPlots: [
-      { id: 33, name: "Reliance Met City", link: "/reliance-met-city/", image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/reliance-met-city.webp", order: 1, isActive: true },
-      { id: 34, name: "Signature Sidhrawali", link: "/signature-global-plots/", image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/budgetplots/colors.jpg", order: 2, isActive: true },
-      { id: 35, name: "BPTP Limited", link: "/bptp-plots-gurugram/", image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/budgetplots/bptp.webp", order: 3, isActive: true },
-      { id: 36, name: "ORRIS Group", link: "/orris-plots-gurugram/", image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/budgetplots/Orris.jpg", order: 4, isActive: true }
+      { id: 33, name: "Reliance Met City", link: "/reliance-met-city/", 
+        frontImage: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/reliance-met-city.webp",
+        thumbnailImage: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/thumbnails/reliance-met-city-thumb.webp",
+        order: 1, isActive: true },
+      { id: 34, name: "Signature City Of Colours", link: "/signature-global-plots/", 
+        frontImage: "https://d16gdc5rm7f21b.cloudfront.net/100acre/budgetplots/colors.jpg",
+        thumbnailImage: "https://d16gdc5rm7f21b.cloudfront.net/100acre/thumbnails/signature-colors-thumb.jpg",
+        order: 2, isActive: true },
+      { id: 35, name: "Trevoc Plots Sonipat", link: "/bptp-plots-gurugram/", 
+        frontImage: "https://d16gdc5rm7f21b.cloudfront.net/100acre/budgetplots/bptp.webp",
+        thumbnailImage: "https://d16gdc5rm7f21b.cloudfront.net/100acre/thumbnails/trevoc-sonipat-thumb.webp",
+        order: 3, isActive: true },
+      { id: 36, name: "JMS The Pearl", link: "/jms-the-pearl/", 
+        frontImage: "https://d16gdc5rm7f21b.cloudfront.net/100acre/budgetplots/Orris.jpg",
+        thumbnailImage: "https://d16gdc5rm7f21b.cloudfront.net/100acre/thumbnails/jms-pearl-thumb.jpg",
+        order: 4, isActive: true }
     ]
   };
 };
@@ -151,11 +163,70 @@ export const getDesiredLuxuryOrder = async () => {
 };
 
 export const getBudgetPlots = async () => {
+  try {
+    // Try to fetch actual project data from API
+    const api = (await import('../config/apiClient')).default;
+    const response = await api.get('/project/viewAll/data');
+    
+    if (response.data && response.data.data) {
+      const allProjects = response.data.data;
+      
+      // Get the desired order from project orders
+      const orderData = await getProjectOrderData();
+      const budgetPlotsOrder = orderData.budgetPlots.filter(item => item.isActive);
+      
+      // Map the projects to their order
+      const orderedProjects = [];
+      budgetPlotsOrder.forEach(orderItem => {
+        // Find project by name (case-insensitive match)
+        const project = allProjects.find(p => 
+          p.projectName && 
+          p.projectName.toLowerCase().replace(/\s+/g, '') === orderItem.name.toLowerCase().replace(/\s+/g, '')
+        );
+        
+        if (project) {
+          // Build the thumbnail URL from the database structure
+          const thumbnailUrl = project.thumbnailImage?.public_id 
+            ? `https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/${project.thumbnailImage.public_id}`
+            : (project.thumbnailImage?.url || project.thumbnailImage?.cdn_url);
+            
+          const frontImageUrl = project.frontImage?.public_id
+            ? `https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/${project.frontImage.public_id}`
+            : (project.frontImage?.url || project.frontImage?.cdn_url);
+          
+          orderedProjects.push({
+            title: project.projectName,
+            link: orderItem.link || `/${project.project_url}/`,
+            image: thumbnailUrl || frontImageUrl, // Prefer thumbnail
+            thumbnailImage: thumbnailUrl,
+            frontImage: frontImageUrl
+          });
+        } else {
+          // Fallback to static data if project not found in database
+          orderedProjects.push({
+            title: orderItem.name,
+            link: orderItem.link,
+            image: orderItem.thumbnailImage || orderItem.frontImage,
+            thumbnailImage: orderItem.thumbnailImage,
+            frontImage: orderItem.frontImage
+          });
+        }
+      });
+      
+      return orderedProjects;
+    }
+  } catch (error) {
+    console.error('Error fetching budget plots from API:', error);
+  }
+  
+  // Fallback to static data
   const data = await getProjectOrderData();
   return data.budgetPlots.filter(item => item.isActive).map(item => ({
     title: item.name,
     link: item.link,
-    image: item.image
+    image: item.thumbnailImage || item.frontImage || item.image,
+    frontImage: item.frontImage,
+    thumbnailImage: item.thumbnailImage
   }));
 };
 
