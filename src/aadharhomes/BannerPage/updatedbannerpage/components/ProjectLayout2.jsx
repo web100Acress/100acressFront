@@ -494,7 +494,7 @@ function ProjectLayout2() {
                   <div className="w-10 h-px bg-gradient-to-r from-transparent via-yellow-400/50 to-transparent mx-auto mb-3"></div>
 
                   {/* Sophisticated subtext */}
-                  <p className="text-gray-300 text-sm font-light leading-relaxed max-w-xl mx-auto">
+                  <p className="text-gray-300 text-base font-light leading-relaxed max-w-xl mx-auto">
                     Get detailed information on floor plans, pricing, payment options, amenities, and specifications to help you make an informed decision.
                   </p>
                 </div>
@@ -523,7 +523,7 @@ function ProjectLayout2() {
                         <line x1="9" y1="15" x2="15" y2="15"/>
                       </svg>
                     </div>
-                    <span className="text-gray-300 text-xs font-medium tracking-wide">Floor Plans</span>
+                    <span className="text-gray-300 text-sm font-medium tracking-wide">Floor Plans</span>
                   </div>
 
                   {/* Pricing & Payment Plans */}
@@ -544,7 +544,7 @@ function ProjectLayout2() {
                         <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
                       </svg>
                     </div>
-                    <span className="text-gray-300 text-xs font-medium tracking-wide">Pricing & Payment Plans</span>
+                    <span className="text-gray-300 text-sm font-medium tracking-wide">Pricing & Payment Plans</span>
                   </div>
 
                   {/* Amenities & Specifications */}
@@ -565,7 +565,7 @@ function ProjectLayout2() {
                         <polyline points="9,22 9,12 15,12 15,22"/>
                       </svg>
                     </div>
-                    <span className="text-gray-300 text-xs font-medium tracking-wide">Amenities & Specifications</span>
+                    <span className="text-gray-300 text-sm font-medium tracking-wide">Amenities & Specifications</span>
                   </div>
                 </div>
 
