@@ -74,27 +74,122 @@ const SearchData = () => {
           return;
         }
 
-        const [projectResult, rentResult, buyResult] = await Promise.allSettled([
-          // Use multiple search parameters to find projects by name, builder, type, etc.
-          key1 && key1.trim() ? api.get(`/projectsearch?projectName=${encodeURIComponent(key)}&builderName=${encodeURIComponent(key)}&type=${encodeURIComponent(key)}&limit=50`) : Promise.reject(new Error('No query')),
-          // Keep other endpoints for compatibility but they likely don't exist
-          key1 && key1.trim() ? api.get(`/rentproperty/search/${encodeURIComponent(key)}`) : Promise.reject(new Error('No query')),
-          key1 && key1.trim() ? api.get(`/buyproperty/search/${encodeURIComponent(key)}`) : Promise.reject(new Error('No query')),
+        // Always fetch from all endpoints for comprehensive search
+        const [rentResult, saleResult, projectsResult] = await Promise.allSettled([
+          api.get("/property/rent/viewAll"),
+          api.get("/property/buy/viewAll"), // Corrected endpoint
+          api.get("/project/viewAll/data")
         ]);
 
-        const localSearchArr = projectResult.status === "fulfilled"
-          ? (projectResult.value?.data?.data || []).map((item) => ({ ...item, sourceType: "search" }))
+        console.log('API Results:', {
+          rent: rentResult,
+          sale: saleResult,
+          projects: projectsResult
+        });
+
+        let localRentArr = rentResult.status === "fulfilled"
+          ? (rentResult.value?.data?.rentaldata || []).map((item) => ({
+              ...item,
+              sourceType: "rent",
+              type: 'rental'
+            }))
           : [];
+
+        let localBuyArr = saleResult.status === "fulfilled"
+          ? (saleResult.value?.data?.saledata || saleResult.value?.data?.buydata || []).map((item) => ({
+              ...item,
+              sourceType: "buy",
+              type: 'sale'
+            }))
+          : [];
+
+        let localSearchArr = projectsResult.status === "fulfilled"
+          ? (projectsResult.value?.data?.data || []).map((item) => ({
+              projectName: item.projectName,
+              project_url: item.project_url,
+              frontImage: item.frontImage,
+              price: item.price,
+              type: item.type,
+              projectAddress: item.projectAddress,
+              city: item.city,
+              state: item.state,
+              minPrice: item.minPrice,
+              maxPrice: item.maxPrice,
+              sourceType: "project",
+            }))
+          : [];
+
+        console.log('Processed data:', {
+          rentals: localRentArr.length,
+          sales: localBuyArr.length,
+          projects: localSearchArr.length
+        });
+
+        // Filter results based on search term
+        const searchTerm = key.toLowerCase().trim();
+
+        if (searchTerm) {
+          // Split search term into individual words for more flexible matching
+          const searchWords = searchTerm.split(/\s+/).filter(word => word.length > 0);
+
+          // Helper function to check if any search word matches the searchable text
+          const matchesSearch = (searchableText) => {
+            const text = searchableText.toLowerCase();
+            return searchWords.some(word => text.includes(word));
+          };
+
+          // Filter rental properties
+          localRentArr = localRentArr.filter((item) => {
+            const searchableText = [
+              item.projectName,
+              item.builderName,
+              item.type,
+              item.projectAddress,
+              item.city,
+              item.state,
+              item.description,
+              item.title,
+              item.name
+            ].filter(Boolean).join(' ');
+            return matchesSearch(searchableText);
+          });
+
+          // Filter sale properties
+          localBuyArr = localBuyArr.filter((item) => {
+            const searchableText = [
+              item.projectName,
+              item.builderName,
+              item.type,
+              item.projectAddress,
+              item.city,
+              item.state,
+              item.description,
+              item.title,
+              item.name
+            ].filter(Boolean).join(' ');
+            return matchesSearch(searchableText);
+          });
+
+          // Filter projects
+          localSearchArr = localSearchArr.filter((item) => {
+            const searchableText = [
+              item.projectName,
+              item.builderName,
+              item.type,
+              item.projectAddress,
+              item.city,
+              item.state,
+              item.project_discripation,
+              item.description,
+              item.title,
+              item.name
+            ].filter(Boolean).join(' ');
+            return matchesSearch(searchableText);
+          });
+        }
+
         setSearchData(localSearchArr);
-
-        const localRentArr = rentResult.status === "fulfilled"
-          ? (rentResult.value?.data?.data || []).map((item) => ({ ...item, sourceType: "rent" }))
-          : [];
         setRentSearchData(localRentArr);
-
-        const localBuyArr = buyResult.status === "fulfilled"
-          ? (buyResult.value?.data?.data || []).map((item) => ({ ...item, sourceType: "buy" }))
-          : [];
         setBuySearchData(localBuyArr);
 
         const isAllEmpty =
