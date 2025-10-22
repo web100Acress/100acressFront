@@ -9,13 +9,13 @@ const Builder = () => {
     AOS.init();
   }, []);
 
-    const Builder = [
+  const Builder = [
     {
       title: "Godrej Properties",
-          link: "/developers/godrej-properties/",
+      link: "/developers/godrej-properties/",
       image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/godrej.jpg",
-      },
-      {
+    },
+    {
       title: "DLF Homes",
       link: "/developers/dlf-homes/",
       image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/dlf.png",
@@ -36,39 +36,39 @@ const Builder = () => {
       link: "/developers/adani-realty/",
       image:
         "https://www.adanirealty.com/-/media/project/realty/header/logo.ashx",
-  },
-  {
-    title: "Experion",
+    },
+    {
+      title: "Experion",
       link: "/developers/experion-developers/",
       image: "https://www.experion.co/img/logo/experion-logo.png",
-},
-{
-  title: "Signature Global",
+    },
+    {
+      title: "Signature Global",
       link: "/developers/signature-global/",
       image:
         "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/signature.webp",
-        },
-        {
+    },
+    {
       title: "sobha",
       link: "/developers/sobha-developers/",
       image:
         "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/sobha.webp",
-        },
-        {
+    },
+    {
       title: "Central Park",
       link: "/developers/central-park/",
       image:
         "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/centralpark.jpg",
-        },
+    },
     {
       title: "Trump Towers",
       link: "/developers/trump-towers/",
       image:
         "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/Trump-Tower.webp",
     },
-        {
-            title: "ELAN Group",
-            link: "/developers/elan-group/",
+    {
+      title: "ELAN Group",
+      link: "/developers/elan-group/",
       image:
         "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/elan-logo.webp",
     },
@@ -89,30 +89,30 @@ const Builder = () => {
       link: "/developers/smartworld-developers/",
       image:
         "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/smartworld.webp",
-        },
+    },
 
-        {
-            title: "BPTP Limited",
-            link: "/developers/bptp-limited/",
-            image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/bptp.webp",
-        },
-        {
+    {
+      title: "BPTP Limited",
+      link: "/developers/bptp-limited/",
+      image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/bptp.webp",
+    },
+    {
       title: "Whiteland Corporation",
       link: "/developers/whiteland/",
       image:
         "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/whiteland.jpg",
-        },
-        {
-            title: "Indiabulls Real Estate",
-            link: "/developers/indiabulls-real-estate/",
+    },
+    {
+      title: "Indiabulls Real Estate",
+      link: "/developers/indiabulls-real-estate/",
       image:
         "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/indiabulls.webp",
-        },
-        {
+    },
+    {
       title: "AIPL",
       link: "/developers/aipl/",
       image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/aipl.png",
-        },
+    },
 
     {
       title: "Trevoc Group",
@@ -129,23 +129,23 @@ const Builder = () => {
     },
     {
       title: "Maxestates",
-      link: "/developers/maxestates/",
+      link: "/developers/maxe-states/",
       image:
         "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/maxestate.webp",
     },
   ];
 
-    return (
-        <Wrapper className="section">
-            <div className="container">
-               <div className="flex items-center justify-between mx-3 lg:mx-3 xl:mx-14 md:mx-6 py-6">
-                         <div className="flex items-center">
-                           <div className="w-1 h-12 bg-gradient-to-b from-red-500 to-red-600 rounded-full mr-4"></div>
-                           <h2 className="text-2xl xl:text-4xl lg:text-3xl md:text-2xl text-center sm:text-left font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">
-                             Top Real Estate Developers
-                           </h2>
-                         </div>
-                         {/* <div className="ml-2 hidden sm:block">
+  return (
+    <Wrapper className="section">
+      <div className="container">
+        <div className="flex items-center justify-between mx-3 lg:mx-3 xl:mx-14 md:mx-6 py-6">
+          <div className="flex items-center">
+            <div className="w-1 h-12 bg-gradient-to-b from-red-500 to-red-600 rounded-full mr-4"></div>
+            <h2 className="text-2xl xl:text-4xl lg:text-3xl md:text-2xl text-center sm:text-left font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">
+              Top Real Estate Developers
+            </h2>
+          </div>
+          {/* <div className="ml-2 hidden sm:block">
                            <Link to="/top-luxury-projects/" target="_top">
                              <span className="flex items-center text-white text-sm px-3 py-0 rounded-full bg-red-600">
                                <EyeIcon />
@@ -153,7 +153,7 @@ const Builder = () => {
                              </span>
                            </Link>
                          </div> */}
-                       </div>
+        </div>
         {/* Dynamic Developer Showcase Grid */}
         <div className="grid w-full max-w-[1400px] mx-auto grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 gap-4 py-6">
           {Builder.map((project, index) => (
@@ -176,9 +176,9 @@ const Builder = () => {
             </Link>
           ))}
         </div>
-            </div>
-        </Wrapper>
-    );
+      </div>
+    </Wrapper>
+  );
 };
 
 export default Builder;
