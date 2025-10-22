@@ -328,6 +328,35 @@ const Api_service = () => {
         dispatch(possessionafter2026(AllProjectbyQuery));
       }else
       if(query === "commercial"){
+        // First try the dedicated commercial endpoint
+        console.log('Trying dedicated commercial endpoint...');
+        try {
+          const response = await api.get(`${API_ROUTES.projectsBase()}/commercial`);
+          const commercialData = response.data.data;
+          if (commercialData && commercialData.length > 0) {
+            console.log('Dedicated commercial endpoint successful, found', commercialData.length, 'projects');
+            dispatch(commercialProjectAll(commercialData));
+            return;
+          }
+        } catch (endpointError) {
+          console.log('Dedicated commercial endpoint failed, trying general search...');
+        }
+
+        // Fallback to general search with comprehensive query
+        if (!AllProjectbyQuery || AllProjectbyQuery.length === 0) {
+          console.log('Commercial query returned no results, trying allcommercialprojects fallback...');
+          try {
+            const fallbackResponse = await api.get(`${API_ROUTES.projectsBase()}/projectsearch?allcommercialprojects=1&limit=${limit}`);
+            const fallbackData = fallbackResponse.data.data;
+            if (fallbackData && fallbackData.length > 0) {
+              console.log('Fallback query successful, found', fallbackData.length, 'commercial projects');
+              dispatch(commercialProjectAll(fallbackData));
+              return;
+            }
+          } catch (fallbackError) {
+            console.error('Fallback query also failed:', fallbackError);
+          }
+        }
         dispatch(commercialProjectAll(AllProjectbyQuery));
       }else
       if(query === "scoplots"){
