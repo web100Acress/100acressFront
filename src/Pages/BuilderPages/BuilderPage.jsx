@@ -192,7 +192,7 @@ const DeveloperSidebar = ({ builderKey, builderName }) => {
 
   return (
     <aside className="hidden lg:block lg:col-span-3">
-      <div className="sticky top-24">
+      <div className="sticky top-[140px]">
         <div className="rounded-xl border shadow-sm bg-white">
           <div className="p-5 border-b">
             <img
