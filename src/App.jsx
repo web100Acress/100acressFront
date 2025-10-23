@@ -327,6 +327,7 @@ function App() {
                         path="/developers/:builderName"
                         element={<BuilderPage />}
                       />
+                      <Route path="/max-estates/" element={<BuilderPage />} />
                       <Route
                         path="/projects-in-gurugram/property-possession-in-2025/"
                         element={<Possessionin2025 />}

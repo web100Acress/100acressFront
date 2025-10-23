@@ -23,6 +23,7 @@ const builderslice = createSlice({
     trump:[],
     puri:[],
     aarize:[],
+    maxestates:[],
   },
   reducers: {
     signatureglobal: (state, action) => {
@@ -85,9 +86,12 @@ const builderslice = createSlice({
     aarize:(state,action) =>{
         state.aarize = action.payload;
     },
+    maxestates:(state,action) =>{
+        state.maxestates = action.payload;
+    },
   },
 });
 
-export const { signatureglobal,m3m,dlf,experion,elan,bptp,adani,smartworld,trevoc,indiabulls,centralpark,emaarindia,godrej,whiteland,aipl,birla,sobha,trump,puri,aarize} = builderslice.actions;
+export const { signatureglobal,m3m,dlf,experion,elan,bptp,adani,smartworld,trevoc,indiabulls,centralpark,emaarindia,godrej,whiteland,aipl,birla,sobha,trump,puri,aarize,maxestates} = builderslice.actions;
 
 export default builderslice.reducer;

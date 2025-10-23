@@ -68,6 +68,9 @@ export default function LeftSection({
   const [isBudgetOpen, setIsBudgetOpen] = useState(false);
   const [isStatusOpen, setIsStatusOpen] = useState(false);
   const [isTypeOpen, setIsTypeOpen] = useState(false);
+  
+  // Track screen width for responsive behavior
+  const [isSmallScreen, setIsSmallScreen] = useState(false);
   // Small close-delay timers for smoother hover-out
   const cityTimer = useRef(null);
   const budgetTimer = useRef(null);
@@ -107,6 +110,23 @@ export default function LeftSection({
     if (isDrawerOpen) closeDrawer();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname]);
+  
+  useEffect(() => {
+    // Track screen width for responsive behavior
+    const handleResize = () => {
+      // Show hamburger when Project Status is hidden (1600px breakpoint)
+      setIsSmallScreen(window.innerWidth <= 1600);
+    };
+    
+    // Initial check
+    handleResize();
+    
+    // Add event listener
+    window.addEventListener('resize', handleResize);
+    
+    // Cleanup
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
   return (
     <Flex
       alignItems="center"
@@ -131,7 +151,7 @@ export default function LeftSection({
         color="#111"
         mr={0}
         onClick={() => (isDrawerOpen ? closeDrawer() : openDrawer())}
-        display={{ base: "inline-flex", md: (forceHamburger || showHamburgerOnDesktop) ? "inline-flex" : "none" }}
+        display={{ base: "inline-flex", md: (forceHamburger || showHamburgerOnDesktop || isSmallScreen) ? "inline-flex" : "none" }}
       />
       <Drawer placement="left" isOpen={isDrawerOpen} onClose={closeDrawer} size="xs" motionPreset="slideInLeft" closeOnOverlayClick>
         <DrawerOverlay />
@@ -207,7 +227,7 @@ export default function LeftSection({
               </>
             )}
 
-            {(forceHamburger || hideProjectStatus) && (
+            {(forceHamburger || hideProjectStatus || isSmallScreen) && (
               <>
                 <Box fontWeight="700" fontSize={{ base: "14px", md: "12px" }} color="#e53e3e" textTransform="uppercase" letterSpacing={{ base: "0.6px", md: "0.2px" }} mb={{ base: 2, md: 1 }} mt={{ base: 1, md: 0 }} px={{ base: 1, md: 0 }}>Project Status</Box>
                 <SimpleGrid columns={{ base: 2, md: 2 }} spacing={3}>
@@ -244,7 +264,7 @@ export default function LeftSection({
               </>
             )}
 
-            {(forceHamburger || hideProjectType) && (
+            {(forceHamburger || hideProjectType || isSmallScreen) && (
               <>
                 <Box fontWeight="700" fontSize={{ base: "14px", md: "12px" }} color="#e53e3e" textTransform="uppercase" letterSpacing={{ base: "0.6px", md: "0.2px" }} mb={{ base: 2, md: 1 }} mt={{ base: 1, md: 0 }} px={{ base: 1, md: 0 }}>Project Type</Box>
                 <SimpleGrid columns={{ base: 2, md: 2 }} spacing={3}>
@@ -512,6 +532,12 @@ export default function LeftSection({
           fontSize="16px"
           letterSpacing="0.5px"
           display={{ base: "none", md: (forceHamburger || hideProjectStatus) ? "none" : "inline-flex" }}
+          sx={{
+            // Hide on high zoom ratios (150% and above) or smaller screens
+            '@media (max-width: 1600px)': {
+              display: 'none'
+            }
+          }}
           pr={2}
           mr={0}
           borderRight={{ base: 'none', md: 'none' }}
@@ -561,6 +587,12 @@ export default function LeftSection({
           fontSize="16px"
           letterSpacing="0.5px"
           display={{ base: "none", md: (forceHamburger || hideProjectType) ? "none" : "inline-flex" }}
+          sx={{
+            // Hide on high zoom ratios (150% and above) or smaller screens
+            '@media (max-width: 1400px)': {
+              display: 'none'
+            }
+          }}
           lineHeight="1"
           alignSelf="center"
           alignItems="center"

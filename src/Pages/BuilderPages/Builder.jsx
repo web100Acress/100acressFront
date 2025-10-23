@@ -129,7 +129,7 @@ const Builder = () => {
     },
     {
       title: "Maxestates",
-      link: "/developers/maxe-states/",
+      link: "/developers/max-estates/",
       image:
         "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/maxestate.webp",
     },
