@@ -767,8 +767,8 @@ const SearchData = () => {
       </button>
 
       {/* New Compact Sticky Filter Bar (always visible) */}
-      <div className={`sticky top-[60px] z-30 bg-white/95 backdrop-blur-md border-b border-gray-200 ${showFilters ? "" : "h-0 md:h-auto overflow-hidden md:overflow-visible"}`}>
-        <div className="py-3  md:max-w-7xl md:mx-auto md:px-4">
+      <div className="sticky top-[60px] z-30 bg-white/95 backdrop-blur-md border-b border-gray-200">
+        <div className="py-3 h md:max-w-7xl md:mx-auto md:px-4">
           {/* Filter Controls */}
           <div className={`${showFilters ? "flex" : "hidden"} md:flex flex-col md:flex-row md:flex-wrap gap-3 md:items-center md:justify-center px-4 md:px-0`}>
             {/* Type */}
