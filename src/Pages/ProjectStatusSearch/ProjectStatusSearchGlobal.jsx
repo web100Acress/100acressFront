@@ -15,6 +15,14 @@ const ProjectStatusSearchGlobal = () => {
   const isRequestInProgress = useRef(false);
   const lastRequestTime = useRef(0);
   
+  // Force component re-render when URL changes by updating key
+  const [componentKey, setComponentKey] = useState(0);
+  
+  useEffect(() => {
+    // Force component re-render when URL changes
+    setComponentKey(prev => prev + 1);
+  }, [location.pathname]);
+  
   // Get project status from URL or props
   const getProjectStatus = () => {
     const path = location.pathname;
@@ -186,9 +194,10 @@ const ProjectStatusSearchGlobal = () => {
   }, [projectData]);
 
   useEffect(() => {
+    console.log('ProjectStatusSearchGlobal - location changed:', location.pathname);
     console.log('Loading projects for status:', projectStatus, 'with query:', currentConfig.query);
     throttledGetAllProjects(currentConfig.query, 0);
-  }, [projectStatus, currentConfig.query, throttledGetAllProjects]);
+  }, [projectStatus, currentConfig.query, throttledGetAllProjects, location.pathname, componentKey]);
 
   // Cleanup on unmount
   useEffect(() => {
@@ -250,6 +259,7 @@ const ProjectStatusSearchGlobal = () => {
   return (
     <>
       <GlobalFilterTemplate
+        key={`${location.pathname}-${componentKey}`} // Force re-render when route changes
         pageType="status"
         projects={memoizedProjectData || []}
         isLoading={false}
