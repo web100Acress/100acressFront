@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, startTransition } from "react";
 import { useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import Api_Service from "../Redux/utils/Api_Service";
@@ -106,12 +106,16 @@ const GlobalBudgetPrice = () => {
 
     const filtered = filterProjectsByBudget(allProjects, currentBudgetRange);
     console.log('Budget page - filtered projects:', filtered.length);
-    setFilteredProjects(filtered);
-
-    // Reset loading state when URL changes
-    if (allProjects.length > 0) {
-      setIsLoading(false);
-    }
+    
+    // Use startTransition for smooth state updates
+    startTransition(() => {
+      setFilteredProjects(filtered);
+      
+      // Reset loading state when URL changes
+      if (allProjects.length > 0) {
+        setIsLoading(false);
+      }
+    });
   }, [allProjects, location.pathname, location.search, componentKey]);
 
   return (
