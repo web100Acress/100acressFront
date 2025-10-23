@@ -5,8 +5,8 @@ import { SiBloglovin } from "react-icons/si";
 import { GoProjectSymlink } from "react-icons/go";
 import { AiFillPropertySafety } from "react-icons/ai";
 import { GiFamilyHouse } from "react-icons/gi";
-import { FaHome, FaYoutube } from "react-icons/fa";
-import { MdImage, MdCategory } from "react-icons/md";
+import { FaHome, FaYoutube, FaAws } from "react-icons/fa";
+import { MdImage, MdCategory, MdCloudUpload } from "react-icons/md";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { FaRegUserCircle } from "react-icons/fa";
 import { BiSolidGraduation } from "react-icons/bi";
@@ -102,7 +102,7 @@ const Sidebar = () => {
         body { font-family: 'Roboto', sans-serif; }
       `}</style>
       <div
-        className={`sidebar-wrapper fixed top-0 left-0 h-screen w-[250px] bg-gradient-to-br from-[#232526]/90 to-[#414345]/90 backdrop-blur-xl shadow-2xl border-r border-gray-200/20 flex flex-col justify-between z-50 transition-all duration-300 dark:bg-gradient-to-br dark:from-[#181a1b]/95 dark:to-[#232526]/95`}
+        className={`sidebar-wrapper fixed top-0 left-0 h-screen w-[240px] bg-gradient-to-br from-[#232526]/90 to-[#414345]/90 backdrop-blur-xl shadow-2xl border-r border-gray-200/20 flex flex-col justify-between z-50 transition-all duration-300 dark:bg-gradient-to-br dark:from-[#181a1b]/95 dark:to-[#232526]/95`}
       >
         {/* Brand/Logo Section */}
         <div className="sidebar-brand flex items-center gap-2 px-6 py-6 border-b border-gray-200/10 dark:border-gray-700/30">
@@ -157,6 +157,10 @@ const Sidebar = () => {
           <Link to="/Admin/all-listed-properties" className={`sidebar-nav-item group flex items-center gap-3 px-4 py-2 rounded-lg transition-all duration-200 hover:bg-gradient-to-r hover:from-blue-500/80 hover:to-purple-500/80 hover:text-white font-medium text-base ${location.pathname.startsWith("/Admin/all-listed-properties") ? "bg-gradient-to-r from-blue-500/80 to-purple-500/80 text-white" : "text-gray-200 dark:text-gray-300"}`}>
             <FaHome className="icon text-xl group-hover:scale-110 group-hover:text-white transition-transform duration-200" />
             <span>Listed Properties</span>
+          </Link>
+          <Link to="/admin/s3-manager" className={`sidebar-nav-item group flex items-center gap-3 px-4 py-2 rounded-lg transition-all duration-200 hover:bg-gradient-to-r hover:from-green-500/80 hover:to-teal-500/80 hover:text-white font-medium text-base ${location.pathname.startsWith("/admin/s3-manager") ? "bg-gradient-to-r from-green-500/80 to-teal-500/80 text-white" : "text-gray-200 dark:text-gray-300"}`}>
+            <FaAws className="icon text-xl group-hover:scale-110 group-hover:text-white transition-transform duration-200" />
+            <span>S3 Manager</span>
           </Link>
           {/* Contact Us Dropdown */}
           {/* <a href="#" onClick={toggleContactDropdown} className="sidebar-nav-item group flex items-center gap-3 px-4 py-2 rounded-lg transition-all duration-200 hover:bg-gradient-to-r hover:from-blue-500/80 hover:to-purple-500/80 hover:text-white text-gray-200 font-medium text-base cursor-pointer select-none dark:text-gray-300 dark:hover:text-white dark:hover:bg-gradient-to-r dark:hover:from-blue-700/80 dark:hover:to-purple-700/80">

@@ -181,6 +181,7 @@ const AdminGuides = lazy(() => import("./Insight/pages/Admin/AdminGuides"));
 const AdminJobPosting = lazy(() => import("./AdminPage/AdminJobPosting"));
 const AdminJobPostingView = lazy(() => import("./AdminPage/AdminJobPostingView"));
 const AdminJobPostingEdit = lazy(() => import("./AdminPage/AdminJobPostingEdit"));
+const S3Manager = lazy(() => import("./AdminPage/S3Manager"));
 const Onboarding = lazy(() => import("./Hr/Onboarding"));
 const Offboarding = lazy(() => import("./Hr/Offboarding"));
 const ItDashboard = lazy(() => import("./Hr/ItDashboard"));
@@ -578,6 +579,10 @@ function App() {
                         element={<LazyLoad><InsightsPriceTrendsBanners /></LazyLoad>}
                       />
                       <Route
+                        path="s3-manager"
+                        element={<LazyLoad><S3Manager /></LazyLoad>}
+                      />
+                      <Route
                         path="insights/EnquiryManagement"
                         element={<LazyLoad><EnquiryManagement /></LazyLoad>}
                       />
@@ -624,6 +629,7 @@ function App() {
 
                     {/* Admin route for Market Reports */}
                     <Route path="/admin/insights/market-report-generator" element={<LazyLoad><MarketReportsAdmin /></LazyLoad>} />
+
                     
                     {/* Blog route only user with role Blog will be able to login */}
                     <Route path="/seo/" element={<SeoPrivateRoute />}>
