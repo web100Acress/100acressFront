@@ -4,7 +4,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { MdFavoriteBorder } from "react-icons/md";
 import { LOGIN } from "../../lib/route";
-import AuthModal from "../AuthModal";
+import AuthModal from "../../Resister/AuthModal";
 import { AuthContext } from "../../AuthContext";
 
 function PropViewCardPro() {

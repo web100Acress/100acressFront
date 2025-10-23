@@ -9,7 +9,7 @@ import { Helmet } from "react-helmet";
 import CustomSkeleton from "../../Utils/CustomSkeleton";
 import { FilterIcon, PropertyIcon, RupeeIcon } from "../../Assets/icons";
 import { PaginationControls } from "../../Components/Blog_Components/BlogManagement";
-import AuthModal from "../AuthModal";
+import AuthModal from "../../Resister/AuthModal";
 import { AuthContext } from "../../AuthContext";
 
 const RentPropViewCard = () => {

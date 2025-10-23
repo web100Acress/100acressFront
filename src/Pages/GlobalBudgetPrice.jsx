@@ -97,15 +97,17 @@ const GlobalBudgetPrice = () => {
   }, [location.pathname]);
 
   useEffect(() => {
-    console.log('Budget page - allProjects updated:', allProjects.length);
-    console.log('Budget page - location changed:', location.pathname);
+    console.log('🔍 Budget page - allProjects updated:', allProjects.length);
+    console.log('🔍 Budget page - location changed:', location.pathname);
+    console.log('🔍 Budget page - sample project:', allProjects[0]);
 
     // Get current budget range from URL
     const currentBudgetRange = getBudgetRangeFromPath(location.pathname);
-    console.log('Budget page - current budget range:', currentBudgetRange);
+    console.log('🔍 Budget page - current budget range:', currentBudgetRange);
 
     const filtered = filterProjectsByBudget(allProjects, currentBudgetRange);
-    console.log('Budget page - filtered projects:', filtered.length);
+    console.log('🔍 Budget page - filtered projects:', filtered.length);
+    console.log('🔍 Budget page - sample filtered project:', filtered[0]);
     
     // Use startTransition for smooth state updates
     startTransition(() => {

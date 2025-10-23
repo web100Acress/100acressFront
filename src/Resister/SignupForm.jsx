@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { message } from "antd";
 import "antd/dist/reset.css";
 import { AuthContext } from "../AuthContext";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, X } from "lucide-react";
 
 const roles = ["Agent", "Owner", "Builder"];
 
@@ -121,20 +121,20 @@ function SignupForm({ inModal = false, onSwitchToLogin }) {
   return (
     <>
       {contextHolder}
-      <div className={`bg-white/95 shadow-[0_12px_32px_rgba(239,68,68,0.15)] rounded-2xl mt-8 p-6 md:p-8 my-6 ${inModal ? "w-full" : "max-sm:w-[90vw]"}`}>
+      <div className={`relative p-4 md:p-6 ${inModal ? "w-full" : "max-sm:w-[90vw]"}`}>
+        
         {/* Heading */}
-        <div className="text-center mb-4">
-          <h2 className="text-[28px] md:text-[32px] font-extrabold text-[#e53935] font-sans tracking-tight">
+        <div className="text-center mb-3">
+          <h2 className="text-[24px] md:text-[28px] font-extrabold text-[#e53935] font-sans tracking-tight">
             Create Your Account
           </h2>
-          <div className="mt-2 flex justify-center">
+          <div className="mt-1 flex justify-center">
             <span className="h-1 w-16 rounded-full bg-[#e53935]" />
           </div>
         </div>
 
         {/* Role Selector */}
-        <div className="my-4">
-          <p className="text-sm text-slate-600 mb-2">I am a</p>
+        <div className="my-3">
           <div className="flex flex-wrap gap-2">
             {roles.map((role) => (
               <button
@@ -246,7 +246,7 @@ function SignupForm({ inModal = false, onSwitchToLogin }) {
         </form>
 
         {/* Footer */}
-        <div className="text-center mt-3 text-sm text-slate-600">
+        <div className="text-center mt-2 text-sm text-slate-600">
           Already have an account?{" "}
           <button onClick={handleUserSignIn} className="text-[#e53935] font-semibold hover:underline">Login</button>
         </div>

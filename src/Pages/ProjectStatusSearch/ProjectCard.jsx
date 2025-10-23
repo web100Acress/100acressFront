@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { AuthContext } from '../../AuthContext';
-import AuthModal from '../../Components/AuthModal';
+import AuthModal from '../../Resister/AuthModal';
 import {
   isFavorite as favCheck,
   toggleFavorite,

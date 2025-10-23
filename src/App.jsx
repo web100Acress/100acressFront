@@ -16,8 +16,8 @@ import LazyLoad from "react-lazyload";
 import "animate.css";
 import LoadingSpinner from "./Components/LoadingSpinner";
 import ErrorBoundary from "./Components/ErrorBoundary";
-import LoginForm from "./Components/LoginForm";
-import AuthModal from "./Components/AuthModal";
+import LoginForm from "./Resister/LoginForm";
+import AuthModal from "./Resister/AuthModal";
 // import ConfettiAllCorners from "./Components/ConfettiAllCorners"; 
 
 // Lazy load all main page components
@@ -96,7 +96,7 @@ const ProjectLayout2 = lazy(() => import("./aadharhomes/BannerPage/updatedbanner
 const Possessionin2026 = lazy(() => import("./Pages/Possessionin2026"));
 const BuilderPage = lazy(() => import("./Pages/BuilderPages/BuilderPage"));
 const OTPVerification = lazy(() => import("./Components/OTPVerification"));
-const SignupForm = lazy(() => import("./Components/SignupForm"));
+const SignupForm = lazy(() => import("./Resister/SignupForm"));
 const EmailVerification = lazy(() => import("./Components/EmailVerification"));
 // const Jalandhar = lazy(() => import("./Pages/ProjectCities/Jalandhar"));
 const LuxuryProject = lazy(() => import("./Pages/BuilderPages/LuxuryProjects"));
