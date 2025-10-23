@@ -8,8 +8,9 @@ export default defineConfig(() => {
       port: 3000,
       allowedHosts: ['30eb0c089ea5.ngrok-free.app', '.ngrok-free.app'],
       fs: {
-        // Allow serving files from one level up to the project root
-        allow: ['..']
+        // Restrict to project directory only - prevent OneDrive sync issues
+        allow: ['.'],
+        strict: true
       },
       proxy: {
         // In dev, route all '/api' requests to the backend

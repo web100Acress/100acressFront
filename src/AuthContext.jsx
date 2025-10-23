@@ -38,46 +38,104 @@ export const AuthProvider = ({ children }) => {
     checkAuthStatus();
   }, [decodedToken]);
 
-  const login = async (formData, messageApi) => {
-    try {
-      const { email, password } = formData;
-      messageApi.open({
-        key: "loginLoading",
-        type: "loading",
-        content: "Logging in...",
-        duration: 0,
-      })
-      if (email && password) {
-        try {
-          const loginResponse = await api.post(
-            `/postPerson/verify_Login`,
-            { email, password }
-          );
-          const newToken = loginResponse?.data?.token;
-          if (!newToken || typeof newToken !== 'string') {
-            messageApi.destroy("loginLoading");
-            messageApi.open({
-              key: "loginError",
-              type: "error",
-              content: "Login failed: token not received.",
-              duration: 3,
-            })
-            return;
-          }
-          localStorage.setItem("myToken", newToken);
-          setToken(newToken);
+  const login = async (formData) => {
+    const { email, password } = formData;
 
-          if (loginResponse.status === 200) {
-            const roleResponse = await api.get(
-              `/postPerson/Role/${email}`
-            );
-            setAgentData(roleResponse.data.User);
+    if (!email || !password) {
+      throw new Error("Please enter email and password.");
+    }
+
+    try {
+      const loginResponse = await api.post(
+        `/postPerson/verify_Login`,
+        { email, password }
+      );
+
+      const newToken = loginResponse?.data?.token;
+      if (!newToken || typeof newToken !== 'string') {
+        throw new Error("Login failed: token not received.");
+      }
+
+      localStorage.setItem("myToken", newToken);
+      setToken(newToken);
+
+      if (loginResponse.status === 200) {
+        const roleResponse = await api.get(
+          `/postPerson/Role/${email}`
+        );
+
+        setAgentData(roleResponse.data.User);
+        localStorage.setItem(
+          "agentData",
+          JSON.stringify(roleResponse.data.User)
+        );
+
+        try {
+          const userName = roleResponse?.data?.User?.name || "";
+          const first = (userName || "").toString().trim().split(/\s+/)[0] || "";
+          if (first) {
+            localStorage.setItem("firstName", first);
+          } else {
+            localStorage.removeItem("firstName");
+          }
+        } catch (_) { }
+
+        if (roleResponse.status === 200) {
+          localStorage.setItem(
+            "userRole",
+            JSON.stringify(roleResponse.data.User.role)
+          );
+          const sellerId = roleResponse.data.User._id;
+          localStorage.setItem("mySellerId", JSON.stringify(sellerId));
+          try { hydrateFavoritesFromServer(); } catch (_) { }
+
+          const roleRaw = (roleResponse?.data?.User?.role || "").toString();
+          const roleNormalized = roleRaw.replace(/\s+/g, "").toLowerCase();
+
+          try { console.debug("[login redirect] role:", roleRaw, "normalized:", roleNormalized); } catch { }
+
+          if (roleRaw === "Admin" || roleRaw === admin) {
+            setIsAdmin(true);
+            history("/admin/user");
+          } else if (roleNormalized === "contentwriter" || roleNormalized === "blog") {
+            setIsContentWriter(true);
+            history("/seo/blogs");
+          } else if (roleNormalized === "hr") {
+            setIsHr(true);
+            history("/hr/dashboard");
+          } else {
+            history("/userdashboard/");
+          }
+        } else {
+          console.error("Role fetch failed:", roleResponse);
+          throw new Error(`Failed to fetch role information. Server responded with an error: ${roleResponse.status}`);
+        }
+      } else {
+        console.error("Login failed:", loginResponse);
+        throw new Error(`Invalid credentials. Server responded with an error: ${loginResponse.status}`);
+      }
+
+      setIsAuthenticated(true);
+
+    } catch (error) {
+      if (error.response) {
+        const { status, data } = error.response;
+
+        if (status === 403) {
+          // Check if it's email verification required or wrong credentials
+          if (data && data.token && data.User) {
+            // Email verification required
+            const newToken = data.token;
+            const User = data.User;
+            localStorage.setItem("myToken", newToken);
+            setToken(newToken);
+            setAgentData(User);
             localStorage.setItem(
               "agentData",
-              JSON.stringify(roleResponse.data.User)
+              JSON.stringify(User)
             );
             try {
-              const userName = roleResponse?.data?.User?.name || "";
+              const userName = User?.name || "";
               const first = (userName || "").toString().trim().split(/\s+/)[0] || "";
               if (first) {
                 localStorage.setItem("firstName", first);
@@ -85,195 +143,87 @@ export const AuthProvider = ({ children }) => {
                 localStorage.removeItem("firstName");
               }
             } catch (_) { }
-            if (roleResponse.status === 200) {
-              localStorage.setItem(
-                "userRole",
-                JSON.stringify(roleResponse.data.User.role)
-              );
-              const sellerId = roleResponse.data.User._id;
-              localStorage.setItem("mySellerId", JSON.stringify(sellerId));
-              try { hydrateFavoritesFromServer(); } catch (_) { }
-              const roleRaw = (roleResponse?.data?.User?.role || "").toString();
-              const roleNormalized = roleRaw.replace(/\s+/g, "").toLowerCase();
-              try { console.debug("[login redirect] role:", roleRaw, "normalized:", roleNormalized); } catch { }
-              if (roleRaw === "Admin" || roleRaw === admin) {
-                setIsAdmin(true);
-                history("/admin/user");
-              } else if (roleNormalized === "contentwriter" || roleNormalized === "blog") {
-                setIsContentWriter(true);
-                history("/seo/blogs");
-              } else if (roleNormalized === "hr") {
-                setIsHr(true);
-                history("/hr/dashboard");
-              } else {
-                history("/userdashboard/");
-              }
-            } else {
-              console.error("Role fetch failed:", roleResponse);
-              alert(
-                `Failed to fetch role information. Server responded with an error: ${roleResponse.status}`
-              );
-            }
+            history("/auth/signup/email-verification");
+            throw new Error("Please verify your email before logging in.");
           } else {
-            console.error("Login failed:", loginResponse);
-            alert(
-              `Invalid credentials. Server responded with an error: ${loginResponse.status}`
-            );
+            // Wrong credentials or other 403 error
+            throw new Error("Invalid email or password.");
           }
-        } catch (error) {
-          if (error.response) {
-            const { status, data } = error.response;
-
-            if (status === 403) {
-              messageApi.destroy("loginLoading");
-              messageApi.open({
-                key: "loginError",
-                type: "error",
-                content: "Please verify your email before logging in.",
-                duration: 3,
-              })
-              const newToken = data.token;
-              const User = data.User;
-              localStorage.setItem("myToken", newToken);
-              setToken(newToken);
-              setAgentData(User);
-              localStorage.setItem(
-                "agentData",
-                JSON.stringify(User)
-              );
-              try {
-                const userName = User?.name || "";
-                const first = (userName || "").toString().trim().split(/\s+/)[0] || "";
-                if (first) {
-                  localStorage.setItem("firstName", first);
-                } else {
-                  localStorage.removeItem("firstName");
-                }
-              } catch (_) { }
-              history("/auth/signup/email-verification");
-            } else if (status === 401) {
-              messageApi.destroy("loginLoading");
-              messageApi.open({
-                key: "loginError",
-                type: "error",
-                content: "Invalid email or password.",
-                duration: 3,
-              })
-            } else {
-              messageApi.destroy("loginLoading");
-              messageApi.open({
-                key: "loginError",
-                type: "error",
-                content: "An error occurred. Please try again later.",
-                duration: 3,
-              })
-            }
-          } else {
-            messageApi.destroy("loginLoading");
-            messageApi.open({
-              key: "loginError",
-              type: "error",
-              content: "An error occurred. Please try again later.",
-              duration: 3,
-            });
-          }
+        } else if (status === 401) {
+          throw new Error("Invalid email or password.");
+        } else {
+          throw new Error("An error occurred. Please try again later.");
         }
       } else {
-        messageApi.destroy("loginLoading");
-        messageApi.open({
-          key: "loginError",
-          type: "error",
-          content: "Please enter email and password.",
-          duration: 3,
-        })
+        // If it's already an Error object from our throws above, re-throw it
+        if (error instanceof Error) {
+          throw error;
+        }
+        throw new Error("An error occurred. Please try again later.");
       }
-      setIsAuthenticated(true);
-    } catch (error) {
-      messageApi.destroy("loginLoading");
-      messageApi.open({
-        key: "loginError",
-        type: "error",
-        content: "Invalid Username or Password.",
-        duration: 3,
-      })
     }
   };
 
-  const signup = async (userSignUp, messageApi, resetData, setResponseMessage) => {
+  const signup = async (userSignUp, resetData, setResponseMessage) => {
     const { name, mobile, password, cpassword, email } = userSignUp;
+
+    if (!name || !mobile || !email || !password || password !== cpassword) {
+      throw new Error("Please fill the details properly");
+    }
+
     try {
-      messageApi.open({
-        key: "SignUpLoading",
-        type: "loading",
-        content: "Creating your account...",
-        duration: 0,
-      });
+      const registrationResponse = await api.post(`/postPerson/register`, userSignUp);
 
-      if (name && mobile && email && password && password === cpassword) {
-        api
-          .post(`/postPerson/register`, userSignUp)
-          .then((registrationResponse) => {
-            if (registrationResponse.status === 409) {
-              messageApi.destroy("SignUpLoading");
-              messageApi.error({
-                content: "User already exists. Please login.",
-                duration: 3,
-              });
-              return;
-            }
-
-            const newToken = registrationResponse.data.token;
-            localStorage.setItem("myToken", newToken);
-            setToken(newToken);
-            setAgentData(registrationResponse.data.User);
-            localStorage.setItem(
-              "agentData",
-              JSON.stringify(registrationResponse.data.User)
-            );
-            try {
-              const userName = registrationResponse?.data?.User?.name || "";
-              const first = (userName || "").toString().trim().split(/\s+/)[0] || "";
-              if (first) {
-                localStorage.setItem("firstName", first);
-              } else {
-                localStorage.removeItem("firstName");
-              }
-            } catch (_) { }
-            return api.post(`/postPerson/verifyEmail`, {
-              email: email
-            })
-          })
-          .then(() => {
-            messageApi.destroy("SignUpLoading");
-            messageApi.success({
-              content: "Account created. Please Confirm your email to login.",
-              duration: 2,
-            });
-            history("/auth/signup/otp-verification/");
-            resetData();
-          })
-          .catch((error) => {
-            messageApi.destroy("SignUpLoading");
-            console.error("Registration failed:", error);
-            messageApi.open({
-              type: "error",
-              content: "Registration failed. Please try again.",
-              duration: 3,
-            });
-          });
-      } else {
-        messageApi.destroy("SignUpLoading");
-        messageApi.error({
-          content: "Please fill the details properly",
-          duration: 3
-        })
+      if (registrationResponse.status === 409) {
+        throw new Error("User already exists. Please login.");
       }
+
+      const newToken = registrationResponse.data.token;
+      localStorage.setItem("myToken", newToken);
+      setToken(newToken);
+      setAgentData(registrationResponse.data.User);
+      localStorage.setItem(
+        "agentData",
+        JSON.stringify(registrationResponse.data.User)
+      );
+      try {
+        const userName = registrationResponse?.data?.User?.name || "";
+        const first = (userName || "").toString().trim().split(/\s+/)[0] || "";
+        if (first) {
+          localStorage.setItem("firstName", first);
+        } else {
+          localStorage.removeItem("firstName");
+        }
+      } catch (_) { }
+
+      try {
+        await api.post(`/postPerson/verifyEmail`, {
+          email: email
+        });
+      } catch (verifyError) {
+        if (verifyError.response?.status !== 409) {
+          throw verifyError;
+        }
+        // If 409, OTP already sent, continue to OTP page
+      }
+
+      history("/auth/signup/otp-verification/");
+      resetData();
+
     } catch (error) {
-      messageApi.destroy("SignUpLoading");
-      messageApi.error({
-        content: "Internal Sever Error, Something went wrong",
-        duration: 3
-      })
+      console.error("Registration failed:", error);
+      if (error.response) {
+        const { status, data } = error.response;
+        if (status === 409 || status === 400) {
+          throw new Error("User already exists. Please login.");
+        } else {
+          throw new Error("Registration failed. Please try again.");
+        }
+      } else if (error.message) {
+        throw error;
+      } else {
+        throw new Error("Internal Server Error, Something went wrong");
+      }
     }
   }
 

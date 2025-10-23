@@ -165,31 +165,53 @@ export const projectTypeConfigs = {
     badgeColor: "bg-orange-500",
     badgeText: "Commercial",
     typeFilter: (project) => {
-      // More comprehensive filtering for commercial projects
-      const isCommercial = 
+      // More comprehensive filtering for commercial projects with detailed logging
+      const isCommercial =
         project.type?.toLowerCase().includes('commercial') ||
         project.projectType?.toLowerCase().includes('commercial') ||
         project.category?.toLowerCase().includes('commercial') ||
         project.propertyType?.toLowerCase().includes('commercial') ||
         project.projectName?.toLowerCase().includes('commercial') ||
         project.description?.toLowerCase().includes('commercial') ||
+        project.project_discripation?.toLowerCase().includes('commercial') ||
+        // Check for specific commercial property type
+        project.type === 'Commercial Property' ||
+        project.projectType === 'Commercial Property' ||
+        project.category === 'Commercial Property' ||
+        project.propertyType === 'Commercial Property' ||
+        // Check for specific commercial project overview
+        project.projectOverview?.toLowerCase().includes('commercial') ||
+        // Check for commercial keywords in project name
         project.projectName?.toLowerCase().includes('office') ||
+        project.projectName?.toLowerCase().includes('shop') ||
+        project.projectName?.toLowerCase().includes('retail') ||
         project.projectName?.toLowerCase().includes('business') ||
         project.projectName?.toLowerCase().includes('corporate') ||
         project.projectName?.toLowerCase().includes('tower') ||
+        project.projectName?.toLowerCase().includes('center') ||
         project.projectName?.toLowerCase().includes('centre') ||
         project.projectName?.toLowerCase().includes('street') ||
         project.projectName?.toLowerCase().includes('boulevard') ||
         project.projectName?.toLowerCase().includes('arena') ||
         project.projectName?.toLowerCase().includes('broadway') ||
         project.projectName?.toLowerCase().includes('vedatam') ||
-        // Check if the project is explicitly marked as commercial in the database
-        project.type === 'Commercial Property' ||
-        project.projectType === 'Commercial Property' ||
-        project.category === 'Commercial Property' ||
-        project.propertyType === 'Commercial Property';
-      
+        // Check for commercial keywords in description
+        project.project_discripation?.toLowerCase().includes('office') ||
+        project.project_discripation?.toLowerCase().includes('shop') ||
+        project.project_discripation?.toLowerCase().includes('retail') ||
+        project.project_discripation?.toLowerCase().includes('business') ||
+        project.project_discripation?.toLowerCase().includes('corporate');
+
       console.log('Commercial filter check for:', project.projectName, 'Result:', isCommercial);
+      console.log('Project details:', {
+        type: project.type,
+        projectType: project.projectType,
+        category: project.category,
+        propertyType: project.propertyType,
+        projectOverview: project.projectOverview,
+        projectName: project.projectName
+      });
+
       return isCommercial;
     }
   },

@@ -1,11 +1,11 @@
 import React, { useContext, useState } from "react";
-import { message } from "antd";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { Eye, EyeOff } from "lucide-react";
 import { AuthContext } from "../AuthContext";
 
 function LoginForm({ inModal = false, onSwitchToRegister }) {
   const { login } = useContext(AuthContext);
-  const [messageApi, contextHolder] = message.useMessage();
 
   const [userLogin, setUserLogin] = useState({ email: "", password: "" });
   const [passwordHide, setPasswordHide] = useState(true);
@@ -17,9 +17,26 @@ function LoginForm({ inModal = false, onSwitchToRegister }) {
 
   const handleUserLogin = async () => {
     try {
-      await login(userLogin, messageApi);
+      await login(userLogin);
+      toast.success("Login successful!", {
+        position: "top-left",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        style: { marginTop: '20px' },
+      });
     } catch (e) {
-      // errors handled by AuthContext
+      toast.error("Login failed. Please check your credentials.", {
+        position: "center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        style: { marginTop: '20px' },
+      });
     }
   };
 
@@ -30,8 +47,10 @@ function LoginForm({ inModal = false, onSwitchToRegister }) {
 
   return (
     <>
-      {contextHolder}
-      <div className={`bg-white/95 shadow-[0_12px_32px_rgba(239,68,68,0.15)] rounded-2xl p-6 md:p-8 ${inModal ? "w-full" : "max-sm:w-[85vw]"}`}>
+      <div className={`bg-white/95 shadow-[0_12px_32px_rgba(239,68,68,0.15)] rounded-2xl p-6 md:p-8 ${inModal ? "w-full" : "max-sm:w-[85vw]"} relative`}>
+        {/* Toast Container positioned above heading */}
+        {/* <div id="login-toast-container" className="absolute top-0 left-0 right-0 z-50"></div> */}
+
         {/* Heading */}
         <div className="text-center mb-4">
           <h2 className="text-[26px] md:text-[30px] font-extrabold text-[#e53935] font-sans tracking-tight">Login to your account</h2>
@@ -88,6 +107,7 @@ function LoginForm({ inModal = false, onSwitchToRegister }) {
           </button>
         </div>
       </div>
+      <ToastContainer />
     </>
   );
 }

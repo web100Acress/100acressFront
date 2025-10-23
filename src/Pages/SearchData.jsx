@@ -74,27 +74,187 @@ const SearchData = () => {
           return;
         }
 
-        const [projectResult, rentResult, buyResult] = await Promise.allSettled([
-          // Use multiple search parameters to find projects by name, builder, type, etc.
-          key1 && key1.trim() ? api.get(`/projectsearch?projectName=${encodeURIComponent(key)}&builderName=${encodeURIComponent(key)}&type=${encodeURIComponent(key)}&limit=50`) : Promise.reject(new Error('No query')),
-          // Keep other endpoints for compatibility but they likely don't exist
-          key1 && key1.trim() ? api.get(`/rentproperty/search/${encodeURIComponent(key)}`) : Promise.reject(new Error('No query')),
-          key1 && key1.trim() ? api.get(`/buyproperty/search/${encodeURIComponent(key)}`) : Promise.reject(new Error('No query')),
+        // Always fetch from all endpoints for comprehensive search
+        const [rentResult, saleResult, projectsResult] = await Promise.allSettled([
+          api.get("/property/rent/viewall"),
+          api.get("/property/buy/ViewAll"), // Note: capital V for buy endpoint
+          api.get("/project/viewAll/data")
         ]);
 
-        const localSearchArr = projectResult.status === "fulfilled"
-          ? (projectResult.value?.data?.data || []).map((item) => ({ ...item, sourceType: "search" }))
+        console.log('API Results:', {
+          rent: rentResult,
+          sale: saleResult,
+          projects: projectsResult
+        });
+
+        let localRentArr = rentResult.status === "fulfilled"
+          ? (rentResult.value?.data?.rentaldata || []).map((item) => ({
+              ...item,
+              sourceType: "rent",
+              type: 'rental'
+            }))
           : [];
+
+        let localBuyArr = saleResult.status === "fulfilled"
+          ? (saleResult.value?.data?.ResaleData || saleResult.value?.data?.saledata || saleResult.value?.data?.buydata || []).map((item) => ({
+              ...item,
+              sourceType: "buy",
+              type: 'sale'
+            }))
+          : [];
+
+        let localSearchArr = projectsResult.status === "fulfilled"
+          ? (projectsResult.value?.data?.data || []).map((item) => ({
+              projectName: item.projectName,
+              project_url: item.project_url,
+              frontImage: item.frontImage,
+              price: item.price,
+              type: item.type,
+              projectAddress: item.projectAddress,
+              city: item.city,
+              state: item.state,
+              minPrice: item.minPrice,
+              maxPrice: item.maxPrice,
+              sourceType: "project",
+            }))
+          : [];
+
+        console.log('Processed data:', {
+          rentals: localRentArr.length,
+          sales: localBuyArr.length,
+          projects: localSearchArr.length
+        });
+
+        // Filter results based on search term
+        const searchTerm = key.toLowerCase().trim();
+
+        if (searchTerm) {
+          // Split search term into individual words for more flexible matching
+          const searchWords = searchTerm.split(/\s+/).filter(word => word.length > 0);
+
+          // Helper function to calculate relevance score
+          const calculateRelevance = (item, searchableText) => {
+            const text = searchableText.toLowerCase();
+            let score = 0;
+            
+            // Get property name for exact match checking (check multiple possible fields)
+            const propertyName = (
+              item.propertyName || 
+              item.projectName || 
+              item.postProperty?.propertyName || 
+              ''
+            ).toLowerCase();
+            
+            // Exact match gets highest score
+            if (propertyName === searchTerm) {
+              score += 1000;
+            }
+            // Starts with search term gets high score
+            else if (propertyName.startsWith(searchTerm)) {
+              score += 500;
+            }
+            // Contains exact phrase gets medium-high score
+            else if (text.includes(searchTerm)) {
+              score += 250;
+            }
+            // All words match gets medium score
+            else if (searchWords.every(word => text.includes(word))) {
+              score += 100;
+            }
+            // Some words match gets lower score
+            else if (searchWords.some(word => text.includes(word))) {
+              score += 50;
+            }
+            
+            return score;
+          };
+
+          // Helper function to check if any search word matches the searchable text
+          const matchesSearch = (searchableText) => {
+            const text = searchableText.toLowerCase();
+            return searchWords.some(word => text.includes(word));
+          };
+
+          // Filter and score rental properties
+          localRentArr = localRentArr.filter((item) => {
+            const searchableText = [
+              item.propertyName,
+              item.projectName,
+              item.postProperty?.propertyName,
+              item.builderName,
+              item.type,
+              item.propertyType,
+              item.address,
+              item.projectAddress,
+              item.postProperty?.address,
+              item.city,
+              item.postProperty?.city,
+              item.state,
+              item.postProperty?.state,
+              item.descripation,
+              item.description,
+              item.title,
+              item.name
+            ].filter(Boolean).join(' ');
+            const matches = matchesSearch(searchableText);
+            if (matches) {
+              item._relevanceScore = calculateRelevance(item, searchableText);
+            }
+            return matches;
+          }).sort((a, b) => (b._relevanceScore || 0) - (a._relevanceScore || 0));
+
+          // Filter and score sale properties
+          localBuyArr = localBuyArr.filter((item) => {
+            const searchableText = [
+              item.propertyName,
+              item.projectName,
+              item.postProperty?.propertyName,
+              item.builderName,
+              item.type,
+              item.propertyType,
+              item.address,
+              item.projectAddress,
+              item.postProperty?.address,
+              item.city,
+              item.postProperty?.city,
+              item.state,
+              item.postProperty?.state,
+              item.descripation,
+              item.description,
+              item.title,
+              item.name
+            ].filter(Boolean).join(' ');
+            const matches = matchesSearch(searchableText);
+            if (matches) {
+              item._relevanceScore = calculateRelevance(item, searchableText);
+            }
+            return matches;
+          }).sort((a, b) => (b._relevanceScore || 0) - (a._relevanceScore || 0));
+
+          // Filter and score projects
+          localSearchArr = localSearchArr.filter((item) => {
+            const searchableText = [
+              item.projectName,
+              item.builderName,
+              item.type,
+              item.projectAddress,
+              item.city,
+              item.state,
+              item.project_discripation,
+              item.description,
+              item.title,
+              item.name
+            ].filter(Boolean).join(' ');
+            const matches = matchesSearch(searchableText);
+            if (matches) {
+              item._relevanceScore = calculateRelevance(item, searchableText);
+            }
+            return matches;
+          }).sort((a, b) => (b._relevanceScore || 0) - (a._relevanceScore || 0));
+        }
+
         setSearchData(localSearchArr);
-
-        const localRentArr = rentResult.status === "fulfilled"
-          ? (rentResult.value?.data?.data || []).map((item) => ({ ...item, sourceType: "rent" }))
-          : [];
         setRentSearchData(localRentArr);
-
-        const localBuyArr = buyResult.status === "fulfilled"
-          ? (buyResult.value?.data?.data || []).map((item) => ({ ...item, sourceType: "buy" }))
-          : [];
         setBuySearchData(localBuyArr);
 
         const isAllEmpty =
@@ -102,57 +262,16 @@ const SearchData = () => {
           (Array.isArray(localRentArr) ? localRentArr.length : 0) === 0 &&
           (Array.isArray(localBuyArr) ? localBuyArr.length : 0) === 0;
 
-        // Always trigger fallback for empty searches or when no specific results found
+        // Check if we have any results from the search
         const totalResults = localSearchArr.length + localRentArr.length + localBuyArr.length;
-        const shouldUseFallback = isAllEmpty || totalResults < 1 || !key1 || !key1.trim();
+        
+        // Only trigger fallback if there are absolutely no results AND we have a search query
+        // OR if it's an empty search (no query at all)
+        const shouldUseFallback = (totalResults === 0 && key1 && key1.trim()) || (!key1 || !key1.trim());
 
-        if (shouldUseFallback) {
+        if (shouldUseFallback && (!key1 || !key1.trim())) {
+          // Empty search - show all projects
           setFallbackLoading(true);
-
-          // If we have a search query, try client-side search through all projects
-          if (key1 && key1.trim()) {
-            const allProjectsRes = await api.get("/project/viewAll/data");
-            let allProjectsArr = (allProjectsRes.data.data || []);
-
-            // Client-side search filter
-            const searchTerm = key1.toLowerCase();
-            const filteredProjects = allProjectsArr.filter((item) => {
-              return (
-                (item.projectName && item.projectName.toLowerCase().includes(searchTerm)) ||
-                (item.builderName && item.builderName.toLowerCase().includes(searchTerm)) ||
-                (item.type && item.type.toLowerCase().includes(searchTerm)) ||
-                (item.projectAddress && item.projectAddress.toLowerCase().includes(searchTerm)) ||
-                (item.city && item.city.toLowerCase().includes(searchTerm)) ||
-                (item.state && item.state.toLowerCase().includes(searchTerm)) ||
-                (item.project_discripation && item.project_discripation.toLowerCase().includes(searchTerm))
-              );
-            });
-
-            if (filteredProjects.length > 0) {
-              // Show filtered results
-              const mappedProjects = filteredProjects.map((item) => ({
-                projectName: item.projectName,
-                project_url: item.project_url,
-                frontImage: item.frontImage,
-                price: item.price,
-                type: item.type,
-                projectAddress: item.projectAddress,
-                city: item.city,
-                state: item.state,
-                minPrice: item.minPrice,
-                maxPrice: item.maxPrice,
-                sourceType: "project",
-              }));
-              setBuySearchData([]);
-              setRentSearchData([]);
-              setSearchData(mappedProjects);
-              setIsFallbackMode(true);
-              setFallbackLoading(false);
-              return;
-            }
-          }
-
-          // If no filtered results or no search query, show all projects
           const allProjectsRes = await api.get("/project/viewAll/data");
           let allProjectsArr = (allProjectsRes.data.data || []).map((item) => ({
             projectName: item.projectName,
@@ -173,7 +292,69 @@ const SearchData = () => {
           setSearchData(allProjectsArr);
           setIsFallbackMode(true);
           setFallbackLoading(false);
+        } else if (shouldUseFallback && key1 && key1.trim()) {
+          // Search query with no results - try fallback search through all projects
+          setFallbackLoading(true);
+          const allProjectsRes = await api.get("/project/viewAll/data");
+          let allProjectsArr = (allProjectsRes.data.data || []);
+
+          // Client-side search filter
+          const searchTerm = key1.toLowerCase();
+          const filteredProjects = allProjectsArr.filter((item) => {
+            return (
+              (item.projectName && item.projectName.toLowerCase().includes(searchTerm)) ||
+              (item.builderName && item.builderName.toLowerCase().includes(searchTerm)) ||
+              (item.type && item.type.toLowerCase().includes(searchTerm)) ||
+              (item.projectAddress && item.projectAddress.toLowerCase().includes(searchTerm)) ||
+              (item.city && item.city.toLowerCase().includes(searchTerm)) ||
+              (item.state && item.state.toLowerCase().includes(searchTerm)) ||
+              (item.project_discripation && item.project_discripation.toLowerCase().includes(searchTerm))
+            );
+          });
+
+          if (filteredProjects.length > 0) {
+            // Show filtered results
+            const mappedProjects = filteredProjects.map((item) => ({
+              projectName: item.projectName,
+              project_url: item.project_url,
+              frontImage: item.frontImage,
+              price: item.price,
+              type: item.type,
+              projectAddress: item.projectAddress,
+              city: item.city,
+              state: item.state,
+              minPrice: item.minPrice,
+              maxPrice: item.maxPrice,
+              sourceType: "project",
+            }));
+            setBuySearchData([]);
+            setRentSearchData([]);
+            setSearchData(mappedProjects);
+            setIsFallbackMode(true);
+          } else {
+            // No results at all - show random projects
+            let allProjectsArr = (allProjectsRes.data.data || []).map((item) => ({
+              projectName: item.projectName,
+              project_url: item.project_url,
+              frontImage: item.frontImage,
+              price: item.price,
+              type: item.type,
+              projectAddress: item.projectAddress,
+              city: item.city,
+              state: item.state,
+              minPrice: item.minPrice,
+              maxPrice: item.maxPrice,
+              sourceType: "project",
+            }));
+            allProjectsArr = allProjectsArr.sort(() => Math.random() - 0.5);
+            setBuySearchData([]);
+            setRentSearchData([]);
+            setSearchData(allProjectsArr);
+            setIsFallbackMode(true);
+          }
+          setFallbackLoading(false);
         } else {
+          // We have search results - show them (projects, rent, and buy properties)
           setIsFallbackMode(false);
         }
       } catch (error) {
@@ -215,11 +396,18 @@ const SearchData = () => {
   }, [key, key3, isEmptySearch]);
 
   const combinedSearchData = useMemo(() => {
-    return [
+    const combined = [
       ...(searchData || []),
       ...(rentSearchData || []),
       ...(buySearchData || []),
     ];
+    
+    // Sort by relevance score if available (from search filtering)
+    return combined.sort((a, b) => {
+      const scoreA = a._relevanceScore || 0;
+      const scoreB = b._relevanceScore || 0;
+      return scoreB - scoreA;
+    });
   }, [searchData, rentSearchData, buySearchData]);
 
   const filteredFallbackProjects = useMemo(() => {

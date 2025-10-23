@@ -52,7 +52,7 @@ function SpacesAvailable() {
     },
     { 
       title: "Industrial Plots", 
-      link: "/signature-global-plots/", 
+      link: "/projects/industrial-plots/", 
       image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/residential.webp",
       description: "Industrial plots for manufacturing and warehousing",
       badge: "Investment"

@@ -1,34 +1,43 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { Input, message } from "antd";
+import { Input } from "antd";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function OTPVerification() {
   const [otp, setOtp] = useState("");
   const navigate = useNavigate();
-  const [messageApi, contextHolder] = message.useMessage();
 
   useEffect(() => {
     if (otp.length === 6) handleCompleteAction();
   }, [otp]);
 
-  const handleCompleteAction = () => {
+  const handleCompleteAction = async () => {
     // Check for otp length
     if (otp.length !== 6) {
-      messageApi.open({
-        type: "error",
-        content: "Please enter a valid OTP",
-        duration: 3,
+      toast.error("Please enter a valid OTP", {
+        position: "bottom-center",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        style: { marginTop: '20px' },
       });
       return;
     }
     // Check for valid otp
     let isNotNumber = otp.some((num) => isNaN(num));
     if (isNotNumber) {
-      messageApi.open({
-        type: "error",
-        content: "Please enter a valid OTP",
-        duration: 3,
+      toast.error("Please enter a valid OTP", {
+        position: "top-left",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        style: { marginTop: '20px' },
       });
       return;
     }
@@ -37,35 +46,44 @@ function OTPVerification() {
     let otpArray = otp.map((num) => parseInt(num));
     let otpString = otpArray.join("");
     try {
-      messageApi.open({
-        type: "loading",
-        content: "Verifying OTP...",
-        duration: 2,
+      toast.info("Verifying OTP...", {
+        position: "top-left",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        style: { marginTop: '20px' },
       });
       //send the otp
-      axios
-        .post("/postPerson/otp", { otp: otpString })
-        .then((res) => {
-          messageApi.open({
-            type: "success",
-            content: "OTP Verified. You can now login.",
-            duration: 2,
-          });
-          let agentData = localStorage.getItem("agentData");
-          let agentDataJson = JSON.parse(agentData);
-          //Update the email verifed to true in agenDataJson
+      const res = await axios.post("/postPerson/otp", { otp: otpString });
+      toast.success("OTP Verified. You can now login.", {
+        position: "top-left",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        style: { marginTop: '20px' },
+      });
+      let agentData = localStorage.getItem("agentData");
+      let agentDataJson = JSON.parse(agentData);
+      //Update the email verifed to true in agenDataJson
 
-          agentDataJson.emailVerified = true;
-          localStorage.setItem("agentData", JSON.stringify(agentDataJson));
+      agentDataJson.emailVerified = true;
+      localStorage.setItem("agentData", JSON.stringify(agentDataJson));
 
-          navigate("/userdashboard/");
-        });
+      navigate("/userdashboard/");
     } catch (error) {
       console.error("Registration failed:", error);
-      messageApi.open({
-        type: "error",
-        content: "Registration failed. Please try again.",
-        duration: 3,
+      toast.error("Incorrect OTP. Please try again.", {
+        position: "top-left",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        style: { marginTop: '20px' },
       });
     }
   };
@@ -85,6 +103,7 @@ function OTPVerification() {
 
   return (
     <>
+      <ToastContainer />
       <form
         className="mt-14 bg-white rounded shadow-lg"
         onSubmit={handleSubmit}
