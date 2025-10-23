@@ -19,6 +19,8 @@ import Sidebar from './Sidebar';
 const S3Manager = () => {
   const [folders, setFolders] = useState([]);
   const [selectedFolder, setSelectedFolder] = useState('');
+  const [currentPath, setCurrentPath] = useState(''); // Track current folder path
+  const [folderHistory, setFolderHistory] = useState([]); // Breadcrumb history
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [uploadLoading, setUploadLoading] = useState(false);
@@ -73,24 +75,31 @@ const S3Manager = () => {
     setIsAuthenticated(true);
   };
 
-  const fetchFolders = async () => {
+  const fetchFolders = async (parentPath = '') => {
     try {
-      // Actual S3 API call
+      // Actual S3 API call with parent parameter
       const response = await axios.get('/api/s3/folders', {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('myToken')}`
+        },
+        params: {
+          parent: parentPath
         }
       });
       
       if (response.data.success) {
         setFolders(response.data.folders);
-        if (response.data.folders.length > 0) {
-          setSelectedFolder(response.data.folders[0]);
+        setCurrentPath(parentPath);
+        
+        // If no folder is selected and we have folders, select first one
+        if (!selectedFolder && response.data.folders.length > 0) {
+          const firstFolder = response.data.folders[0];
+          setSelectedFolder(firstFolder.path || firstFolder.name);
         }
       } else {
         // Fallback to sample data
-        setFolders(sampleFolders);
-        if (sampleFolders.length > 0) {
+        setFolders(sampleFolders.map(name => ({ name, path: name, hasSubfolders: false })));
+        if (!selectedFolder && sampleFolders.length > 0) {
           setSelectedFolder(sampleFolders[0]);
         }
       }
@@ -98,34 +107,58 @@ const S3Manager = () => {
       console.error('Error fetching folders:', error);
       toast.error('Failed to fetch folders from S3');
       // Fallback to sample data
-      setFolders(sampleFolders);
-      if (sampleFolders.length > 0) {
+      setFolders(sampleFolders.map(name => ({ name, path: name, hasSubfolders: false })));
+      if (!selectedFolder && sampleFolders.length > 0) {
         setSelectedFolder(sampleFolders[0]);
       }
     }
   };
 
   const fetchImages = async () => {
+    if (!selectedFolder) {
+      console.log('No folder selected for image fetching');
+      setImages([]);
+      return;
+    }
+
+    console.log('Fetching images for folder:', selectedFolder);
     setLoading(true);
+    
+    // Clear previous images immediately for faster UI response
+    setImages([]);
+    
     try {
       // Actual S3 API call
-      const response = await axios.get(`/api/s3/images/${selectedFolder}`, {
+      const response = await axios.get(`/api/s3/images/${encodeURIComponent(selectedFolder)}`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('myToken')}`
-        }
+        },
+        timeout: 10000 // 10 second timeout
       });
       
+      console.log('Images API response:', response.data);
+      
       if (response.data.success) {
-        setImages(response.data.images);
+        // Use setTimeout to ensure state update is processed
+        setTimeout(() => {
+          setImages(response.data.images);
+          setLoading(false);
+        }, 0);
+        
+        if (response.data.images.length === 0) {
+          toast.info(`No images found in ${selectedFolder} folder`);
+        } else {
+          console.log(`Loaded ${response.data.images.length} images`);
+        }
       } else {
         setImages([]);
+        setLoading(false);
         toast.info(`No images found in ${selectedFolder} folder`);
       }
     } catch (error) {
       console.error('Error fetching images:', error);
       toast.error('Failed to fetch images from S3');
       setImages([]);
-    } finally {
       setLoading(false);
     }
   };
@@ -301,6 +334,58 @@ const S3Manager = () => {
     }
   };
 
+  // Navigate to subfolder or select for images
+  const handleFolderClick = (folder) => {
+    if (folder.hasSubfolders) {
+      // Add current path to history for breadcrumb
+      const currentName = currentPath ? currentPath.split('/').pop() : 'Root';
+      setFolderHistory([...folderHistory, { name: currentName, path: currentPath }]);
+      // Fetch subfolders
+      fetchFolders(folder.path);
+      setSelectedFolder(''); // Clear selection until subfolders load
+    } else {
+      // Select folder for image viewing
+      setSelectedFolder(folder.path || folder.name);
+    }
+  };
+
+  // Debounce function for better performance
+  const debounce = (func, wait) => {
+    let timeout;
+    return function executedFunction(...args) {
+      const later = () => {
+        clearTimeout(timeout);
+        func(...args);
+      };
+      clearTimeout(timeout);
+      timeout = setTimeout(later, wait);
+    };
+  };
+
+  // Select folder for viewing images (separate from navigation)
+  const handleFolderSelect = debounce((folder) => {
+    const folderPath = folder.path || folder.name;
+    console.log('Selecting folder for images:', folderPath);
+    setSelectedFolder(folderPath);
+  }, 300);
+
+  // Navigate back to parent folder
+  const handleBackNavigation = () => {
+    if (folderHistory.length > 0) {
+      const parent = folderHistory[folderHistory.length - 1];
+      setFolderHistory(folderHistory.slice(0, -1));
+      fetchFolders(parent.path);
+      setSelectedFolder('');
+    }
+  };
+
+  // Navigate to root
+  const handleRootNavigation = () => {
+    setFolderHistory([]);
+    fetchFolders('');
+    setSelectedFolder('');
+  };
+
   const handleCreateFolder = async () => {
     if (!newFolderName.trim()) {
       toast.error('Please enter folder name');
@@ -308,9 +393,11 @@ const S3Manager = () => {
     }
 
     try {
-      // Actual S3 create folder API call
+      // Create folder in current path
+      const folderPath = currentPath ? `${currentPath}/${newFolderName.trim()}` : newFolderName.trim();
+      
       const response = await axios.post('/api/s3/folders', { 
-        name: newFolderName.trim()
+        name: folderPath
       }, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('myToken')}`
@@ -318,7 +405,8 @@ const S3Manager = () => {
       });
       
       if (response.data.success) {
-        setFolders([...folders, response.data.folder]);
+        // Refresh current folder view
+        fetchFolders(currentPath);
         setNewFolderName('');
         setShowCreateFolder(false);
         toast.success('Folder created successfully');
@@ -340,8 +428,8 @@ const S3Manager = () => {
   return (
     <div className="min-h-screen flex bg-gray-50 dark:bg-gray-900 dark:text-gray-100">
       <Sidebar />
-      <div className="flex-1 min-w-0 p-6 ml-[250px] transition-colors duration-300">
-        <div className="max-w-7xl mx-auto">
+      <div className="flex-1 min-w-0 p-6 ml-[240px] transition-colors duration-300">
+        <div className="max-w-full mx-auto">
         {/* Header */}
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 mb-6">
           <div className="flex items-center justify-between">
@@ -381,26 +469,93 @@ const S3Manager = () => {
           {/* Folders Sidebar */}
           <div className="lg:col-span-1">
             <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4">
-              <div className="flex items-center gap-2 mb-4">
-                <FaFolder className="text-yellow-500" />
-                <h2 className="font-semibold text-gray-900 dark:text-white">Folders</h2>
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <FaFolder className="text-yellow-500" />
+                  <h2 className="font-semibold text-gray-900 dark:text-white">Folders</h2>
+                </div>
+                {folderHistory.length > 0 && (
+                  <button
+                    onClick={handleBackNavigation}
+                    className="p-1 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+                    title="Go Back"
+                  >
+                    ←
+                  </button>
+                )}
               </div>
+
+              {/* Breadcrumb */}
+              {folderHistory.length > 0 && (
+                <div className="mb-3 text-xs text-gray-500 dark:text-gray-400">
+                  <button 
+                    onClick={handleRootNavigation}
+                    className="hover:text-gray-700 dark:hover:text-gray-300"
+                  >
+                    Root
+                  </button>
+                  {folderHistory.map((item, index) => (
+                    <span key={index}>
+                      {' / '}
+                      <span>{item.name || 'Folder'}</span>
+                    </span>
+                  ))}
+                  {currentPath && <span> / {currentPath.split('/').pop()}</span>}
+                </div>
+              )}
+
               <div className="space-y-2">
                 {folders.map((folder, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setSelectedFolder(folder)}
-                    className={`w-full text-left px-3 py-2 rounded-lg transition-colors ${
-                      selectedFolder === folder
-                        ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
-                        : 'hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300'
-                    }`}
-                  >
-                    <div className="flex items-center gap-2">
-                      <FaFolder className="text-sm" />
-                      <span className="text-sm truncate">{folder}</span>
-                    </div>
-                  </button>
+                  <div key={index} className="relative">
+                    <button
+                      onClick={() => handleFolderClick(folder)}
+                      onDoubleClick={() => handleFolderSelect(folder)}
+                      className={`w-full text-left px-3 py-2 rounded-lg transition-colors ${
+                        selectedFolder === (folder.path || folder.name)
+                          ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
+                          : 'hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300'
+                      }`}
+                      title={folder.hasSubfolders ? "Click to navigate, Double-click to view images" : "Click to view images"}
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <FaFolder className="text-sm" />
+                          <span className="text-sm truncate">{folder.name || folder}</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          {folder.hasSubfolders && (
+                            <span className="text-xs text-gray-400">→</span>
+                          )}
+                          {!folder.hasSubfolders && (
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleFolderSelect(folder);
+                              }}
+                              className="text-xs text-blue-500 hover:text-blue-700"
+                              title="View images"
+                            >
+                              📁
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    </button>
+                    
+                    {/* Show "View Images" button for folders with subfolders */}
+                    {folder.hasSubfolders && (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleFolderSelect(folder);
+                        }}
+                        className="absolute right-8 top-1/2 transform -translate-y-1/2 text-xs bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition-colors"
+                        title="View images in this folder"
+                      >
+                        View
+                      </button>
+                    )}
+                  </div>
                 ))}
               </div>
             </div>
@@ -448,7 +603,7 @@ const S3Manager = () => {
                 <div className="flex items-center gap-2">
                   <FaFolder className="text-yellow-500" />
                   <span className="font-medium text-gray-900 dark:text-white">
-                    Current Folder: {selectedFolder}
+                    Current Folder: {selectedFolder || currentPath || 'Root'}
                   </span>
                   <span className="text-sm text-gray-600 dark:text-gray-400">
                     ({filteredImages.length} images)
@@ -486,8 +641,25 @@ const S3Manager = () => {
 
               {/* Images Grid */}
               {loading ? (
-                <div className="flex justify-center items-center h-64">
-                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-500"></div>
+                <div className="space-y-4">
+                  <div className="flex justify-center items-center py-8">
+                    <div className="flex items-center gap-3">
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-500"></div>
+                      <span className="text-gray-600 dark:text-gray-400">Loading images...</span>
+                    </div>
+                  </div>
+                  {/* Skeleton Loading */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                    {[...Array(8)].map((_, index) => (
+                      <div key={index} className="bg-gray-200 dark:bg-gray-700 rounded-lg overflow-hidden animate-pulse">
+                        <div className="w-full h-48 bg-gray-300 dark:bg-gray-600"></div>
+                        <div className="p-3 space-y-2">
+                          <div className="h-4 bg-gray-300 dark:bg-gray-600 rounded w-3/4"></div>
+                          <div className="h-3 bg-gray-300 dark:bg-gray-600 rounded w-1/2"></div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
@@ -512,7 +684,15 @@ const S3Manager = () => {
                         <img
                           src={image.url}
                           alt={image.name}
-                          className="w-full h-48 object-cover"
+                          className="w-full h-48 object-cover transition-opacity duration-300"
+                          loading="lazy"
+                          onLoad={(e) => {
+                            e.target.style.opacity = '1';
+                          }}
+                          onError={(e) => {
+                            e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtc2l6ZT0iMTgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5JbWFnZSBOb3QgRm91bmQ8L3RleHQ+PC9zdmc+';
+                          }}
+                          style={{ opacity: '0' }}
                         />
                       </div>
                       
