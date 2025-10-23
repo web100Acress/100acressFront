@@ -67,13 +67,11 @@
 
     const rows = useMemo(() => {
       return [...apps].sort((a, b) => {
-        // Prioritize sorting by matchScore if available
         if (a.matchScore && b.matchScore) {
           return b.matchScore - a.matchScore;
         }
-        if (a.matchScore) return -1; // a comes first
-        if (b.matchScore) return 1;  // b comes first
-        // Fallback to createdAt if no scores
+        if (a.matchScore) return -1;
+        if (b.matchScore) return 1;
         return new Date(b.createdAt) - new Date(a.createdAt);
       });
     }, [apps]);
@@ -110,7 +108,6 @@
       if (score >= 0.85) colorClass = "text-green-600 font-bold";
       else if (score >= 0.75) colorClass = "text-yellow-600 font-semibold";
       else if (score < 0.6) colorClass = "text-red-500";
-
       return <span className={colorClass}>{percentage}%</span>;
     };
 
@@ -120,7 +117,12 @@
         <div className="flex-1 p-8 md:p-10 lg:p-12 ml-0 md:ml-6">
           <div className="w-full">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-3xl font-bold text-gray-800">Job Applications</h2>
+            <div className="text-center mb-8">
+            <h1 className="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 mb-2 tracking-tight">
+              Job Application
+            </h1>
+            <div className="w-32 h-1 bg-gradient-to-r from-blue-600 to-purple-600 mx-auto rounded-full"></div>
+          </div>
               <div className="flex items-center space-x-4">
                 <button
                   onClick={runAiScoring}
@@ -163,7 +165,6 @@
 
             {rows.length > 0 && (
               <div className="overflow-hidden shadow-lg rounded-lg">
-                {/* Desktop Table */}
                 <div className="hidden lg:block">
                   <table className="min-w-full divide-y divide-gray-200">
                     <thead className="bg-gray-50">

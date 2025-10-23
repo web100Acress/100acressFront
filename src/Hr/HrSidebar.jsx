@@ -77,7 +77,7 @@ const HrSidebar = () => {
 
       {/* Sidebar */}
       <div className={`
-        fixed left-0 top-0 h-full w-64 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 text-white shadow-xl transform transition-transform duration-300 ease-in-out z-50 border-r border-gray-700
+        fixed left-0 top-0 h-full w-52 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 text-white shadow-xl transform transition-transform duration-300 ease-in-out z-50 border-r border-gray-700
         ${isOpen ? 'translate-x-0' : '-translate-x-full'}
         lg:translate-x-0 lg:static lg:z-auto
       `}>
