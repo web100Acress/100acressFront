@@ -114,7 +114,20 @@ export default function Hero({
                     <div className="flex flex-col gap-3">
                       {/* Main Search Input */}
                       <div className="flex items-center bg-white rounded-lg px-3 py-2 border border-gray-200 shadow-sm">
-                        <span className="text-gray-400 text-lg mr-2">🔎</span>
+                        <svg 
+                          className="text-gray-400 mr-2 flex-shrink-0" 
+                          width="20" 
+                          height="20" 
+                          viewBox="0 0 24 24" 
+                          fill="none" 
+                          stroke="currentColor" 
+                          strokeWidth="2" 
+                          strokeLinecap="round" 
+                          strokeLinejoin="round"
+                        >
+                          <circle cx="11" cy="11" r="8"></circle>
+                          <path d="m21 21-4.35-4.35"></path>
+                        </svg>
                         <input
                           placeholder={placeholder}
                           className="flex-1 outline-none text-gray-800 placeholder-gray-400 text-sm sm:text-base"
