@@ -132,8 +132,8 @@ const CommonInside = ({
     ? Actualdata.filter((item) => {
         return (
           item &&
-          (item.projectName || item.postProperty?.propertyName) && // Must have a name
-          (item.project_url || item.postProperty?._id) && // Must have a URL or ID
+          (item.propertyName || item.projectName || item.postProperty?.propertyName) && // Must have a name
+          (item.project_url || item._id || item.postProperty?._id) && // Must have a URL or ID
           (item.frontImage?.cdn_url ||
             item.frontImage?.url ||
             item?.postProperty?.frontImage?.url) // Must have an image
@@ -177,7 +177,7 @@ const CommonInside = ({
           {validData.map((item, index) => {
             const pUrl = item.project_url;
             const propertyName =
-              item.projectName || item.postProperty?.propertyName;
+              item.propertyName || item.projectName || item.postProperty?.propertyName;
             const location =
               item.city && item.state
                 ? `${item.city}, ${item.state}`
@@ -197,9 +197,13 @@ const CommonInside = ({
             if (item.sourceType === "search") {
               propertyUrl = `/${pUrl}/`;
             } else if (item.sourceType === "rent") {
-              propertyUrl = `/rental-properties/${item?.postProperty?.propertyName}/${item?.postProperty?._id}`;
+              const rentPropertyName = item.propertyName || item?.postProperty?.propertyName;
+              const rentId = item._id || item?.postProperty?._id;
+              propertyUrl = `/rental-properties/${rentPropertyName}/${rentId}`;
             } else if (item.sourceType === "buy") {
-              propertyUrl = `/buy-properties/${item?.postProperty?.propertyName}/${item?.postProperty?._id}`;
+              const buyPropertyName = item.propertyName || item?.postProperty?.propertyName;
+              const buyId = item._id || item?.postProperty?._id;
+              propertyUrl = `/buy-properties/${buyPropertyName}/${buyId}`;
             } else {
               propertyUrl = `/${pUrl}/`;
             }

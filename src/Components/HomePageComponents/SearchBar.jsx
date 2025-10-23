@@ -1269,7 +1269,13 @@ function SearchBar() {
                             </div>
                           ))}
                           {suggestions.length > 4 && (
-                            <div className="p-3 bg-gray-50 border-t border-gray-200 cursor-pointer hover:bg-gray-100 transition-colors">
+                            <div 
+                              className="p-3 bg-gray-50 border-t border-gray-200 cursor-pointer hover:bg-gray-100 transition-colors"
+                              onClick={() => {
+                                setShowSuggestions(false);
+                                handleSearch();
+                              }}
+                            >
                               <div className="flex items-center justify-center gap-2 text-blue-600 font-medium">
                                 <span>View All Results</span>
                                 <FiChevronRight className="w-4 h-4" />
