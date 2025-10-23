@@ -11,7 +11,7 @@ import {
 } from "../Assets/icons";
 import Footer from "../Components/Actual_Components/Footer";
 import { FavouriteIcon } from "../Assets/icons";
-import AuthModal from "../Components/AuthModal";
+import AuthModal from "../Resister/AuthModal";
 import { AuthContext } from "../AuthContext";
 import {
   isFavorite as favCheck,

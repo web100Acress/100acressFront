@@ -10,7 +10,7 @@ import { Link } from "react-router-dom";
 import { EyeIcon } from "lucide-react";
 import CustomSkeleton from "./CustomSkeleton";
 // import { MdFavoriteBorder, MdFavorite } from "react-icons/md";
-import AuthModal from "../Components/AuthModal";
+import AuthModal from "../Resister/AuthModal";
 import { AuthContext } from "../AuthContext";
 import {
   isFavorite as favCheck,

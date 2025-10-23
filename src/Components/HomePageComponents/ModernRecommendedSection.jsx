@@ -19,7 +19,7 @@ import styled from 'styled-components';
 import Api_Service from "../../Redux/utils/Api_Service";
 import { isFavorite as favCheck, toggleFavorite, subscribe, hydrateFavoritesFromServer } from "../../Utils/favorites";
 import { AuthContext } from "../../AuthContext";
-import AuthModal from "../../Components/AuthModal";
+import AuthModal from "../../Resister/AuthModal";
 
 import 'swiper/css';
 import 'swiper/css/pagination';
