@@ -57,9 +57,20 @@ const ProjectTypeGlobal = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [apiError, setApiError] = useState(null);
   const apiCallTimeoutRef = useRef(null);
+  
+  // Force component re-render when URL changes by updating key
+  const [componentKey, setComponentKey] = useState(0);
+  
+  useEffect(() => {
+    // Force component re-render when URL changes
+    setComponentKey(prev => prev + 1);
+  }, [location.pathname]);
 
   // Load projects on component mount with debouncing
   useEffect(() => {
+    console.log('ProjectTypeGlobal - location changed:', location.pathname);
+    console.log('ProjectTypeGlobal - current project type:', projectType);
+    
     // Clear any existing timeout
     if (apiCallTimeoutRef.current) {
       clearTimeout(apiCallTimeoutRef.current);
@@ -80,11 +91,11 @@ const ProjectTypeGlobal = () => {
     apiCallTimeoutRef.current = setTimeout(() => {
       getAllProjects(config.query, 0)
         .then((response) => {
-          console.log('API response for commercial:', response);
+          console.log('API response for project type:', response);
           setApiError(null);
         })
         .catch((error) => {
-          console.error('API Error for commercial:', error);
+          console.error('API Error for project type:', error);
           setApiError(error.message || 'Failed to load projects');
         })
         .finally(() => {
@@ -98,7 +109,7 @@ const ProjectTypeGlobal = () => {
         clearTimeout(apiCallTimeoutRef.current);
       }
     };
-  }, [config.query, getAllProjects, projects]);
+  }, [config.query, getAllProjects, projects, location.pathname, componentKey]);
 
   // Handle loading state when projects are loaded
   useEffect(() => {
@@ -155,6 +166,7 @@ const ProjectTypeGlobal = () => {
   return (
     <>
       <GlobalFilterTemplate
+        key={`${location.pathname}-${componentKey}`} // Force re-render when route changes
         pageType="type"
         projects={projects || []}
         isLoading={isLoading}

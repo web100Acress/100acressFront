@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Box, Flex, IconButton, Button, Menu, MenuButton, MenuItem, MenuList, Text, SimpleGrid, useDisclosure, Drawer, DrawerOverlay, DrawerContent, DrawerHeader, DrawerBody, DrawerCloseButton } from "@chakra-ui/react";
 import { ChevronDownIcon } from "@chakra-ui/icons";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 
 // Custom rounded hamburger icon
@@ -35,11 +35,42 @@ export default function LeftSection({
 }) {
   const { isOpen: isDrawerOpen, onOpen: openDrawer, onClose: closeDrawer } = useDisclosure();
   const location = useLocation();
+  const navigate = useNavigate();
+
+  // Navigation handler to force page refresh
+  const handleNavigation = (path, priceClickHandler = null, shouldCloseDrawer = false) => {
+    // Close any open menus
+    setIsBudgetOpen(false);
+    setIsTypeOpen(false);
+    setIsStatusOpen(false);
+    setIsCityOpen(false);
+    
+    // Close drawer if needed (for mobile navigation)
+    if (shouldCloseDrawer) {
+      closeDrawer();
+    }
+    
+    // Call price handler if provided
+    if (priceClickHandler) {
+      priceClickHandler();
+    }
+    
+    // Navigate to the path
+    navigate(path);
+    
+    // Force a small delay then scroll to top to ensure proper rendering
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 100);
+  };
   // Controlled open states for hover-driven menus
   const [isCityOpen, setIsCityOpen] = useState(false);
   const [isBudgetOpen, setIsBudgetOpen] = useState(false);
   const [isStatusOpen, setIsStatusOpen] = useState(false);
   const [isTypeOpen, setIsTypeOpen] = useState(false);
+  
+  // Track screen width for responsive behavior
+  const [isSmallScreen, setIsSmallScreen] = useState(false);
   // Small close-delay timers for smoother hover-out
   const cityTimer = useRef(null);
   const budgetTimer = useRef(null);
@@ -79,6 +110,23 @@ export default function LeftSection({
     if (isDrawerOpen) closeDrawer();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname]);
+  
+  useEffect(() => {
+    // Track screen width for responsive behavior
+    const handleResize = () => {
+      // Show hamburger when Project Status is hidden (1600px breakpoint)
+      setIsSmallScreen(window.innerWidth <= 1600);
+    };
+    
+    // Initial check
+    handleResize();
+    
+    // Add event listener
+    window.addEventListener('resize', handleResize);
+    
+    // Cleanup
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
   return (
     <Flex
       alignItems="center"
@@ -103,7 +151,7 @@ export default function LeftSection({
         color="#111"
         mr={0}
         onClick={() => (isDrawerOpen ? closeDrawer() : openDrawer())}
-        display={{ base: "inline-flex", md: (forceHamburger || showHamburgerOnDesktop) ? "inline-flex" : "none" }}
+        display={{ base: "inline-flex", md: (forceHamburger || showHamburgerOnDesktop || isSmallScreen) ? "inline-flex" : "none" }}
       />
       <Drawer placement="left" isOpen={isDrawerOpen} onClose={closeDrawer} size="xs" motionPreset="slideInLeft" closeOnOverlayClick>
         <DrawerOverlay />
@@ -144,32 +192,32 @@ export default function LeftSection({
               <>
                 <Box fontWeight="700" fontSize={{ base: "14px", md: "12px" }} color="#e53e3e" textTransform="uppercase" letterSpacing={{ base: "0.6px", md: "0.2px" }} mb={{ base: 2, md: 1 }} mt={{ base: 1, md: 0 }} px={{ base: 1, md: 0 }}>Budget</Box>
                 <SimpleGrid columns={{ base: 2, md: 1 }} spacing={2}>
-                  <Button as={Link} to="/budget-properties/under-1-cr" onClick={() => { handlePriceClick(0, 1); closeDrawer(); }}
+                  <Button onClick={() => handleNavigation("/budget-properties/under-1-cr", () => handlePriceClick(0, 1), true)}
                     w="100%" variant="ghost" justifyContent="center" textAlign="center" py={3}
                     borderWidth="1px" borderColor="#eaeaea" _hover={{ bg: "gray.50" }} rounded="md">
                     Under ₹1 Cr
                   </Button>
-                  <Button as={Link} to="/budget-properties/1-5-cr" onClick={() => { handlePriceClick(1, 5); closeDrawer(); }}
+                  <Button onClick={() => handleNavigation("/budget-properties/1-5-cr", () => handlePriceClick(1, 5), true)}
                     w="100%" variant="ghost" justifyContent="center" textAlign="center" py={3}
                     borderWidth="1px" borderColor="#eaeaea" _hover={{ bg: "gray.50" }} rounded="md">
                     ₹1 Cr - ₹5 Cr
                   </Button>
-                  <Button as={Link} to="/budget-properties/5-10-cr" onClick={() => { handlePriceClick(5, 10); closeDrawer(); }}
+                  <Button onClick={() => handleNavigation("/budget-properties/5-10-cr", () => handlePriceClick(5, 10), true)}
                     w="100%" variant="ghost" justifyContent="center" textAlign="center" py={3}
                     borderWidth="1px" borderColor="#eaeaea" _hover={{ bg: "gray.50" }} rounded="md">
                     ₹5 Cr - ₹10 Cr
                   </Button>
-                  <Button as={Link} to="/budget-properties/10-20-cr" onClick={() => { handlePriceClick(10, 20); closeDrawer(); }}
+                  <Button onClick={() => handleNavigation("/budget-properties/10-20-cr", () => handlePriceClick(10, 20), true)}
                     w="100%" variant="ghost" justifyContent="center" textAlign="center" py={3}
                     borderWidth="1px" borderColor="#eaeaea" _hover={{ bg: "gray.50" }} rounded="md">
                     ₹10 Cr - ₹20 Cr
                   </Button>
-                  <Button as={Link} to="/budget-properties/20-50-cr" onClick={() => { handlePriceClick(20, 50); closeDrawer(); }}
+                  <Button onClick={() => handleNavigation("/budget-properties/20-50-cr", () => handlePriceClick(20, 50), true)}
                     w="100%" variant="ghost" justifyContent="center" textAlign="center" py={3}
                     borderWidth="1px" borderColor="#eaeaea" _hover={{ bg: "gray.50" }} rounded="md">
                     ₹20 Cr - ₹50 Cr
                   </Button>
-                  <Button as={Link} to="/budget-properties/above-50-cr" onClick={() => { handlePriceClick(50, Infinity); closeDrawer(); }}
+                  <Button onClick={() => handleNavigation("/budget-properties/above-50-cr", () => handlePriceClick(50, Infinity), true)}
                     w="100%" variant="ghost" justifyContent="center" textAlign="center" py={3}
                     borderWidth="1px" borderColor="#eaeaea" _hover={{ bg: "gray.50" }} rounded="md">
                     Above ₹50 Cr
@@ -179,32 +227,32 @@ export default function LeftSection({
               </>
             )}
 
-            {(forceHamburger || hideProjectStatus) && (
+            {(forceHamburger || hideProjectStatus || isSmallScreen) && (
               <>
                 <Box fontWeight="700" fontSize={{ base: "14px", md: "12px" }} color="#e53e3e" textTransform="uppercase" letterSpacing={{ base: "0.6px", md: "0.2px" }} mb={{ base: 2, md: 1 }} mt={{ base: 1, md: 0 }} px={{ base: 1, md: 0 }}>Project Status</Box>
                 <SimpleGrid columns={{ base: 2, md: 2 }} spacing={3}>
-                  <Button as={Link} to="/projects/upcoming-projects-in-gurgaon/" onClick={closeDrawer}
+                  <Button onClick={() => handleNavigation("/projects/upcoming-projects-in-gurgaon/", null, true)}
                     w="100%" variant="ghost" display="flex" flexDir="column"
                     justifyContent="center" alignItems="center" textAlign="center"
                     py={3} px={4} minH={{ base: 14, md: 12 }}
                     borderWidth="1px" borderColor="#eaeaea" _hover={{ bg: "gray.50" }} rounded="md">
                     <Text fontSize={{ base: 'sm', md: 'md' }} fontWeight="600" whiteSpace="normal" wordBreak="break-word" lineHeight="1.25" textAlign="center">Upcoming Projects</Text>
                   </Button>
-                  <Button as={Link} to="/projects-in-newlaunch/" onClick={closeDrawer}
+                  <Button onClick={() => handleNavigation("/projects-in-newlaunch/", null, true)}
                     w="100%" variant="ghost" display="flex" flexDir="column"
                     justifyContent="center" alignItems="center" textAlign="center"
                     py={3} px={4} minH={{ base: 14, md: 12 }}
                     borderWidth="1px" borderColor="#eaeaea" _hover={{ bg: "gray.50" }} rounded="md">
                     <Text fontSize={{ base: 'sm', md: 'md' }} fontWeight="600" whiteSpace="normal" wordBreak="break-word" lineHeight="1.25" textAlign="center">New Launch Projects</Text>
                   </Button>
-                  <Button as={Link} to="/project-in-underconstruction/" onClick={closeDrawer}
+                  <Button onClick={() => handleNavigation("/project-in-underconstruction/", null, true)}
                     w="100%" variant="ghost" display="flex" flexDir="column"
                     justifyContent="center" alignItems="center" textAlign="center"
                     py={3} px={4} minH={{ base: 14, md: 12 }}
                     borderWidth="1px" borderColor="#eaeaea" _hover={{ bg: "gray.50" }} rounded="md">
                     <Text fontSize={{ base: 'sm', md: 'md' }} fontWeight="600" whiteSpace="normal" wordBreak="break-word" lineHeight="1.25" textAlign="center">Under Construction</Text>
                   </Button>
-                  <Button as={Link} to="/projects-in-gurugram/property-ready-to-move/" onClick={closeDrawer}
+                  <Button onClick={() => handleNavigation("/projects-in-gurugram/property-ready-to-move/", null, true)}
                     w="100%" variant="ghost" display="flex" flexDir="column"
                     justifyContent="center" alignItems="center" textAlign="center"
                     py={3} px={4} minH={{ base: 14, md: 12 }}
@@ -216,60 +264,60 @@ export default function LeftSection({
               </>
             )}
 
-            {(forceHamburger || hideProjectType) && (
+            {(forceHamburger || hideProjectType || isSmallScreen) && (
               <>
                 <Box fontWeight="700" fontSize={{ base: "14px", md: "12px" }} color="#e53e3e" textTransform="uppercase" letterSpacing={{ base: "0.6px", md: "0.2px" }} mb={{ base: 2, md: 1 }} mt={{ base: 1, md: 0 }} px={{ base: 1, md: 0 }}>Project Type</Box>
                 <SimpleGrid columns={{ base: 2, md: 2 }} spacing={3}>
-                  <Button as={Link} to="/sco/plots/" onClick={closeDrawer}
+                  <Button onClick={() => handleNavigation("/sco/plots/", null, true)}
                     w="100%" variant="ghost" display="flex" flexDir="column"
                     justifyContent="center" alignItems="center" textAlign="center"
                     py={3} px={4} minH={{ base: 14, md: 12 }}
                     borderWidth="1px" borderColor="#eaeaea" _hover={{ bg: "gray.50" }} rounded="md">
                     <Text fontSize={{ base: 'sm', md: 'md' }} fontWeight="600" whiteSpace="normal" wordBreak="break-word" lineHeight="1.25">SCO Plots</Text>
                   </Button>
-                  <Button as={Link} to="/projects/villas/" onClick={closeDrawer}
+                  <Button onClick={() => handleNavigation("/projects/villas/", null, true)}
                     w="100%" variant="ghost" display="flex" flexDir="column"
                     justifyContent="center" alignItems="center" textAlign="center"
                     py={3} px={4} minH={{ base: 14, md: 12 }}
                     borderWidth="1px" borderColor="#eaeaea" _hover={{ bg: "gray.50" }} rounded="md">
                     <Text fontSize={{ base: 'sm', md: 'md' }} fontWeight="600" whiteSpace="normal" wordBreak="break-word" lineHeight="1.25">Luxury Villas</Text>
                   </Button>
-                  <Button as={Link} to="/plots-in-gurugram/" onClick={closeDrawer}
+                  <Button onClick={() => handleNavigation("/plots-in-gurugram/", null, true)}
                     w="100%" variant="ghost" display="flex" flexDir="column"
                     justifyContent="center" alignItems="center" textAlign="center"
                     py={3} px={4} minH={{ base: 14, md: 12 }}
                     borderWidth="1px" borderColor="#eaeaea" _hover={{ bg: "gray.50" }} rounded="md">
                     <Text fontSize={{ base: 'sm', md: 'md' }} fontWeight="600" whiteSpace="normal" wordBreak="break-word" lineHeight="1.25">Plots In Gurugram</Text>
                   </Button>
-                  <Button as={Link} to="/property/residential/" onClick={closeDrawer}
+                  <Button onClick={() => handleNavigation("/property/residential/", null, true)}
                     w="100%" variant="ghost" display="flex" flexDir="column"
                     justifyContent="center" alignItems="center" textAlign="center"
                     py={3} px={4} minH={{ base: 14, md: 12 }}
                     borderWidth="1px" borderColor="#eaeaea" _hover={{ bg: "gray.50" }} rounded="md">
                     <Text fontSize={{ base: 'sm', md: 'md' }} fontWeight="600" whiteSpace="normal" wordBreak="break-word" lineHeight="1.25">Residential Projects</Text>
                   </Button>
-                  <Button as={Link} to="/projects/independentfloors/" onClick={closeDrawer}
+                  <Button onClick={() => handleNavigation("/projects/independentfloors/", null, true)}
                     w="100%" variant="ghost" display="flex" flexDir="column"
                     justifyContent="center" alignItems="center" textAlign="center"
                     py={3} px={4} minH={{ base: 14, md: 12 }}
                     borderWidth="1px" borderColor="#eaeaea" _hover={{ bg: "gray.50" }} rounded="md">
                     <Text fontSize={{ base: 'sm', md: 'md' }} fontWeight="600" whiteSpace="normal" wordBreak="break-word" lineHeight="1.25">Independent Floors</Text>
                   </Button>
-                  <Button as={Link} to="/projects/commercial/" onClick={closeDrawer}
+                  <Button onClick={() => handleNavigation("/projects/commercial/", null, true)}
                     w="100%" variant="ghost" display="flex" flexDir="column"
                     justifyContent="center" alignItems="center" textAlign="center"
                     py={3} px={4} minH={{ base: 14, md: 12 }}
                     borderWidth="1px" borderColor="#eaeaea" _hover={{ bg: "gray.50" }} rounded="md">
                     <Text fontSize={{ base: 'sm', md: 'md' }} fontWeight="600" whiteSpace="normal" wordBreak="break-word" lineHeight="1.25">Commercial Projects</Text>
                   </Button>
-                  <Button as={Link} to="/projects/farmhouse/" onClick={closeDrawer}
+                  <Button onClick={() => handleNavigation("/projects/farmhouse/", null, true)}
                     w="100%" variant="ghost" display="flex" flexDir="column"
                     justifyContent="center" alignItems="center" textAlign="center"
                     py={3} px={4} minH={{ base: 14, md: 12 }}
                     borderWidth="1px" borderColor="#eaeaea" _hover={{ bg: "gray.50" }} rounded="md">
                     <Text fontSize={{ base: 'sm', md: 'md' }} fontWeight="600" whiteSpace="normal" wordBreak="break-word" lineHeight="1.25">Farm Houses</Text>
                   </Button>
-                  <Button as={Link} to="/projects/industrial-projects/" onClick={closeDrawer}
+                  <Button onClick={() => handleNavigation("/projects/industrial-projects/", null, true)}
                     w="100%" variant="ghost" display="flex" flexDir="column"
                     justifyContent="center" alignItems="center" textAlign="center"
                     py={3} px={4} minH={{ base: 14, md: 12 }}
@@ -460,12 +508,12 @@ export default function LeftSection({
           onMouseEnter={() => { clearTimer(budgetTimer); setIsBudgetOpen(true); }}
           onMouseLeave={() => closeWithDelay(budgetTimer, setIsBudgetOpen)}
         >
-          <MenuItem as={Link} to="/budget-properties/under-1-cr" onClick={() => handlePriceClick(0, 1)}>Under ₹1 Cr</MenuItem>
-          <MenuItem as={Link} to="/budget-properties/1-5-cr" onClick={() => handlePriceClick(1, 5)}>₹1 Cr - ₹5 Cr</MenuItem>
-          <MenuItem as={Link} to="/budget-properties/5-10-cr" onClick={() => handlePriceClick(5, 10)}>₹5 Cr - ₹10 Cr</MenuItem>
-          <MenuItem as={Link} to="/budget-properties/10-20-cr" onClick={() => handlePriceClick(10, 20)}>₹10 Cr - ₹20 Cr</MenuItem>
-          <MenuItem as={Link} to="/budget-properties/20-50-cr" onClick={() => handlePriceClick(20, 50)}>₹20 Cr - ₹50 Cr</MenuItem>
-          <MenuItem as={Link} to="/budget-properties/above-50-cr" onClick={() => handlePriceClick(50, Infinity)}>Above ₹50 Cr</MenuItem>
+          <MenuItem onClick={() => handleNavigation("/budget-properties/under-1-cr", () => handlePriceClick(0, 1))}>Under ₹1 Cr</MenuItem>
+          <MenuItem onClick={() => handleNavigation("/budget-properties/1-5-cr", () => handlePriceClick(1, 5))}>₹1 Cr - ₹5 Cr</MenuItem>
+          <MenuItem onClick={() => handleNavigation("/budget-properties/5-10-cr", () => handlePriceClick(5, 10))}>₹5 Cr - ₹10 Cr</MenuItem>
+          <MenuItem onClick={() => handleNavigation("/budget-properties/10-20-cr", () => handlePriceClick(10, 20))}>₹10 Cr - ₹20 Cr</MenuItem>
+          <MenuItem onClick={() => handleNavigation("/budget-properties/20-50-cr", () => handlePriceClick(20, 50))}>₹20 Cr - ₹50 Cr</MenuItem>
+          <MenuItem onClick={() => handleNavigation("/budget-properties/above-50-cr", () => handlePriceClick(50, Infinity))}>Above ₹50 Cr</MenuItem>
         </MenuList>
       </Menu>
 
@@ -484,6 +532,12 @@ export default function LeftSection({
           fontSize="16px"
           letterSpacing="0.5px"
           display={{ base: "none", md: (forceHamburger || hideProjectStatus) ? "none" : "inline-flex" }}
+          sx={{
+            // Hide on high zoom ratios (150% and above) or smaller screens
+            '@media (max-width: 1600px)': {
+              display: 'none'
+            }
+          }}
           pr={2}
           mr={0}
           borderRight={{ base: 'none', md: 'none' }}
@@ -511,10 +565,10 @@ export default function LeftSection({
           onMouseEnter={() => { clearTimer(statusTimer); setIsStatusOpen(true); }}
           onMouseLeave={() => closeWithDelay(statusTimer, setIsStatusOpen)}
         >
-          <MenuItem as={Link} to="/projects/upcoming-projects-in-gurgaon/">Upcoming Projects</MenuItem>
-          <MenuItem as={Link} to="/projects-in-newlaunch/">New Launch Projects</MenuItem>
-          <MenuItem as={Link} to="/project-in-underconstruction/">Under Construction</MenuItem>
-          <MenuItem as={Link} to="/projects-in-gurugram/property-ready-to-move/">Ready To Move</MenuItem>
+          <MenuItem onClick={() => handleNavigation("/projects/upcoming-projects-in-gurgaon/")}>Upcoming Projects</MenuItem>
+          <MenuItem onClick={() => handleNavigation("/projects-in-newlaunch/")}>New Launch Projects</MenuItem>
+          <MenuItem onClick={() => handleNavigation("/project-in-underconstruction/")}>Under Construction</MenuItem>
+          <MenuItem onClick={() => handleNavigation("/projects-in-gurugram/property-ready-to-move/")}>Ready To Move</MenuItem>
         </MenuList>
       </Menu>
 
@@ -533,6 +587,12 @@ export default function LeftSection({
           fontSize="16px"
           letterSpacing="0.5px"
           display={{ base: "none", md: (forceHamburger || hideProjectType) ? "none" : "inline-flex" }}
+          sx={{
+            // Hide on high zoom ratios (150% and above) or smaller screens
+            '@media (max-width: 1400px)': {
+              display: 'none'
+            }
+          }}
           lineHeight="1"
           alignSelf="center"
           alignItems="center"
@@ -556,14 +616,14 @@ export default function LeftSection({
           onMouseEnter={() => { clearTimer(typeTimer); setIsTypeOpen(true); }}
           onMouseLeave={() => closeWithDelay(typeTimer, setIsTypeOpen)}
         >
-          <MenuItem as={Link} to="/sco/plots/">SCO Plots</MenuItem>
-          <MenuItem as={Link} to="/projects/villas/">Luxury Villas</MenuItem>
-          <MenuItem as={Link} to="/plots-in-gurugram/">Plots In Gurugram</MenuItem>
-          <MenuItem as={Link} to="/property/residential/">Residential Projects</MenuItem>
-          <MenuItem as={Link} to="/projects/independentfloors/">Independent Floors</MenuItem>
-          <MenuItem as={Link} to="/projects/commercial/">Commercial Projects</MenuItem>
-          <MenuItem as={Link} to="/projects/farmhouse/">FarmHouses</MenuItem>
-          <MenuItem as={Link} to="/projects/industrial-plots/">Industrial Plots</MenuItem>
+          <MenuItem onClick={() => handleNavigation("/sco/plots/")}>SCO Plots</MenuItem>
+          <MenuItem onClick={() => handleNavigation("/projects/villas/")}>Luxury Villas</MenuItem>
+          <MenuItem onClick={() => handleNavigation("/plots-in-gurugram/")}>Plots In Gurugram</MenuItem>
+          <MenuItem onClick={() => handleNavigation("/property/residential/")}>Residential Projects</MenuItem>
+          <MenuItem onClick={() => handleNavigation("/projects/independentfloors/")}>Independent Floors</MenuItem>
+          <MenuItem onClick={() => handleNavigation("/projects/commercial/")}>Commercial Projects</MenuItem>
+          <MenuItem onClick={() => handleNavigation("/projects/farmhouse/")}>FarmHouses</MenuItem>
+          <MenuItem onClick={() => handleNavigation("/projects/industrial-plots/")}>Industrial Plots</MenuItem>
        
         </MenuList>
       </Menu>
