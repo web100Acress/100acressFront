@@ -10,7 +10,7 @@ import OurServices from "../Components/HomePageComponents/ourServices";
 import { Helmet } from "react-helmet";
 // import Footer from "../Components/Actual_Components/Footer";
 import Footer from "../Components/Actual_Components/Footer";
-import AuthModal from "../Components/AuthModal";
+import AuthModal from "../Resister/AuthModal";
 import { Link } from "react-router-dom";
 import BackToTopButton from "./BackToTopButton";
 import PossessionProperty from "../Components/PossessionProperty";

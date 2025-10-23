@@ -660,7 +660,7 @@ const BuyPropViewCard = () => {
       )}
 
       {/* Main Content */}
-      <main className="min-h-screen bg-gray-50 pt-8 pb-10">
+      <main className="min-h-screen bg-gray-50 pt-24 pb-10">
         <div className="max-w-7xl mx-auto px-4">
           
           {/* Enhanced Header Title Section */}

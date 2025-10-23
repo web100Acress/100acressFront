@@ -1,14 +1,15 @@
 import React, { useContext, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, X } from "lucide-react";
 import { AuthContext } from "../AuthContext";
 
-function LoginForm({ inModal = false, onSwitchToRegister }) {
+function LoginForm({ inModal = false, onSwitchToRegister, preventRedirect = false }) {
   const { login } = useContext(AuthContext);
 
   const [userLogin, setUserLogin] = useState({ email: "", password: "" });
   const [passwordHide, setPasswordHide] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleLoginChange = (e) => {
     const { name, value } = e.target;
@@ -16,10 +17,12 @@ function LoginForm({ inModal = false, onSwitchToRegister }) {
   };
 
   const handleUserLogin = async () => {
-    try {
-      await login(userLogin);
-      toast.success("Login successful!", {
-        position: "top-left",
+    console.log("🔍 Login button clicked, starting login process...");
+
+    // Basic validation
+    if (!userLogin.email || !userLogin.password) {
+      toast.error("Please fill in all fields.", {
+        position: "top-center",
         autoClose: 3000,
         hideProgressBar: false,
         closeOnClick: true,
@@ -27,9 +30,38 @@ function LoginForm({ inModal = false, onSwitchToRegister }) {
         draggable: true,
         style: { marginTop: '20px' },
       });
-    } catch (e) {
-      toast.error("Login failed. Please check your credentials.", {
-        position: "center",
+      return;
+    }
+
+    setIsLoading(true);
+    
+    try {
+      await login(userLogin);
+      
+      // Only show success toast if we're preventing redirect (modal mode)
+      if (preventRedirect || inModal) {
+        toast.success("Login successful!", {
+          position: "top-center",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          style: { marginTop: '20px' },
+        });
+      }
+      // If not preventing redirect, the AuthContext will handle navigation
+      
+    } catch (error) {
+      console.error("🚨 Login error details:", error);
+      console.error("🚨 Error message:", error?.message);
+      console.error("🚨 Error response:", error?.response);
+      
+      // Extract error message from the error object
+      const errorMessage = error?.message || "Invalid email or password. Please try again.";
+      
+      toast.error(errorMessage, {
+        position: "top-center",
         autoClose: 5000,
         hideProgressBar: false,
         closeOnClick: true,
@@ -37,29 +69,29 @@ function LoginForm({ inModal = false, onSwitchToRegister }) {
         draggable: true,
         style: { marginTop: '20px' },
       });
+    } finally {
+      setIsLoading(false);
     }
-  };
-
-  const handleClick = (e) => {
-    e.preventDefault();
-    handleUserLogin();
   };
 
   return (
     <>
-      <div className={`bg-white/95 shadow-[0_12px_32px_rgba(239,68,68,0.15)] rounded-2xl p-6 md:p-8 ${inModal ? "w-full" : "max-sm:w-[85vw]"} relative`}>
-        {/* Toast Container positioned above heading */}
-        {/* <div id="login-toast-container" className="absolute top-0 left-0 right-0 z-50"></div> */}
-
+      <div className={`relative p-4 md:p-6 ${inModal ? "w-full" : "max-sm:w-[85vw]"}`}>
         {/* Heading */}
-        <div className="text-center mb-4">
-          <h2 className="text-[26px] md:text-[30px] font-extrabold text-[#e53935] font-sans tracking-tight">Login to your account</h2>
-          <div className="mt-2 flex justify-center">
+        <div className="text-center mb-3">
+          <h2 className="text-[24px] md:text-[28px] font-extrabold text-[#e53935] font-sans tracking-tight">Login to your account</h2>
+          <div className="mt-1 flex justify-center">
             <span className="h-1 w-14 rounded-full bg-[#e53935]" />
           </div>
         </div>
 
-        <form className="space-y-3" onSubmit={handleClick}>
+        <form 
+          className="space-y-3"
+          onSubmit={(e) => {
+            e.preventDefault(); // 🛑 stops page refresh
+            handleUserLogin();  // 🧠 manually trigger login
+          }}
+        >
           {/* Email */}
           <div className="flex flex-col">
             <label htmlFor="email" className="text-sm font-medium text-slate-700 mb-1">Email</label>
@@ -94,13 +126,17 @@ function LoginForm({ inModal = false, onSwitchToRegister }) {
           </div>
 
           {/* Submit */}
-          <button type="submit" className="w-full bg-[#e53935] hover:bg-[#c62828] text-white font-bold rounded-lg py-2.5 mt-1 shadow-sm hover:shadow-md transition">
-            Login
+          <button 
+            type="submit"  // ✅ now it's a real form submission
+            disabled={isLoading}
+            className="w-full bg-[#e53935] hover:bg-[#c62828] disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-bold rounded-lg py-2.5 mt-1 shadow-sm hover:shadow-md transition"
+          >
+            {isLoading ? "Logging in..." : "Login"}
           </button>
         </form>
 
         {/* Footer */}
-        <div className="mt-4 text-center text-sm text-slate-600">
+        <div className="mt-2 text-center text-sm text-slate-600">
           Don't have an account?{" "}
           <button className="text-[#e53935] font-semibold hover:underline" onClick={() => onSwitchToRegister && onSwitchToRegister()}>
             Register

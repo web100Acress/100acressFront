@@ -11,7 +11,7 @@ import { HiBars3 } from "react-icons/hi2";
 import { FiUser } from "react-icons/fi";
 import { ABOUT, BLOG, KNOWABOUT, LOGIN, ROOT } from "../../lib/route";
 import { Link, Navigate } from "react-router-dom";
-import AuthModal from "../AuthModal";
+import AuthModal from "../../Resister/AuthModal";
 import { RxCross2 } from "react-icons/rx";
 
 function FinalNavBar() {
