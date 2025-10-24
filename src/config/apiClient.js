@@ -165,13 +165,18 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
     
-    // Log the error in development (suppress expected 404s for search endpoints)
+    // Log the error in development (suppress expected 404s for search endpoints and 403s for favorites)
     const isSearch404 =
       error?.response?.status === 404 &&
       typeof originalRequest?.url === 'string' &&
       (/^(rentproperty|buyproperty|property)\/search\//.test(originalRequest.url));
 
-    if (process.env.NODE_ENV !== 'production' && !isSearch404) {
+    const isFavorites403 =
+      error?.response?.status === 403 &&
+      typeof originalRequest?.url === 'string' &&
+      originalRequest.url.includes('/favorites');
+
+    if (process.env.NODE_ENV !== 'production' && !isSearch404 && !isFavorites403) {
       console.groupCollapsed(`%c ${error.response?.status || 'NETWORK_ERR'} ${originalRequest?.url || ''}`, 
         'background: #F44336; color: white; padding: 2px 8px; border-radius: 4px;');
       
