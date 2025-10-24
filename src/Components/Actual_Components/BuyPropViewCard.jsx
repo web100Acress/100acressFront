@@ -898,7 +898,7 @@ const BuyPropViewCard = () => {
                       {/* Property Image */}
                       <div className="relative overflow-hidden">
                         <img
-                          src={property.frontImage?.url}
+                          src={property.thumbnailImage?.url || property.frontImage?.url}
                           alt={property.propertyName}
                           className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-105"
                           loading="lazy"

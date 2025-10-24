@@ -506,7 +506,7 @@ const ShowPropertyDetails = ({ id, type }) => {
             {buyData.slice(0, 12).map((property, idx) => (
               <div key={property._id || idx} className="bg-white rounded-xl shadow-md overflow-hidden flex flex-col w-full h-64 border border-gray-100">
                 <img
-                  src={property.frontImage?.url}
+                  src={property.thumbnailImage?.url || property.frontImage?.url}
                   alt={property.propertyName}
                   className="w-full h-28 object-cover rounded-t-xl"
                   loading="lazy"

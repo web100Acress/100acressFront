@@ -4,7 +4,7 @@ import { formatPossession, getPossessionLabel } from '../../Utils/possessionUtil
 
 export default function ProjectCard({ project, view = 'grid', onExplore, onFavorite, onShare, isFav = false, onCompareToggle, compared, onPhone, onWhatsApp }) {
   const [hovered, setHovered] = useState(false);
-  const image = project?.frontImage?.url || project?.frontImage?.cdn_url || '/Images/dummy.webp';
+  const image = project?.thumbnailImage?.url || project?.frontImage?.url || project?.frontImage?.cdn_url || '/Images/dummy.webp';
   const priceText = (() => {
     const min = project?.minPrice;
     const max = project?.maxPrice;

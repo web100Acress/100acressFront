@@ -24,7 +24,7 @@ export default function ProjectCard({
   const { isAuthenticated } = useContext(AuthContext);
   const [showAuth, setShowAuth] = useState(false);
   const [favTick, setFavTick] = useState(0);
-  const image = project?.frontImage?.url || project?.frontImage?.cdn_url || '/Images/dummy.webp';
+  const image = project?.thumbnailImage?.url || project?.frontImage?.url || project?.frontImage?.cdn_url || '/Images/dummy.webp';
   
   const priceText = (() => {
     const min = project?.minPrice;
