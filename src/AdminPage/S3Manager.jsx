@@ -86,11 +86,11 @@ const S3Manager = () => {
           parent: parentPath
         }
       });
-      
+
       if (response.data.success) {
         setFolders(response.data.folders);
         setCurrentPath(parentPath);
-        
+
         // If no folder is selected and we have folders, select first one
         if (!selectedFolder && response.data.folders.length > 0) {
           const firstFolder = response.data.folders[0];
@@ -123,28 +123,24 @@ const S3Manager = () => {
 
     console.log('Fetching images for folder:', selectedFolder);
     setLoading(true);
-    
+
     // Clear previous images immediately for faster UI response
     setImages([]);
-    
+
     try {
-      // Actual S3 API call
       const response = await axios.get(`/api/s3/images/${encodeURIComponent(selectedFolder)}`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('myToken')}`
         },
-        timeout: 10000 // 10 second timeout
+        timeout: 10000
       });
-      
-      console.log('Images API response:', response.data);
-      
+
       if (response.data.success) {
-        // Use setTimeout to ensure state update is processed
         setTimeout(() => {
           setImages(response.data.images);
           setLoading(false);
         }, 0);
-        
+
         if (response.data.images.length === 0) {
           toast.info(`No images found in ${selectedFolder} folder`);
         } else {
@@ -161,6 +157,32 @@ const S3Manager = () => {
       setImages([]);
       setLoading(false);
     }
+  };
+
+  // Generate mock images for demonstration
+  const generateMockImages = (folder) => {
+    const imageCount = Math.floor(Math.random() * 12) + 3; // 3-15 images
+    const mockImages = [];
+
+    for (let i = 0; i < imageCount; i++) {
+      const id = `${folder}-img-${i + 1}`;
+      const types = ['jpg', 'png', 'webp'];
+      const type = types[Math.floor(Math.random() * types.length)];
+      const sizes = ['2.1 MB', '1.8 MB', '3.2 MB', '950 KB', '1.5 MB'];
+      const size = sizes[Math.floor(Math.random() * sizes.length)];
+
+      mockImages.push({
+        id,
+        key: `${folder}/sample-image-${i + 1}.${type}`,
+        name: `sample-image-${i + 1}.${type}`,
+        url: `https://picsum.photos/400/300?random=${i + folder.charCodeAt(0)}`,
+        type,
+        size,
+        lastModified: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toLocaleDateString()
+      });
+    }
+
+    return mockImages;
   };
 
   const validateFiles = (files) => {
