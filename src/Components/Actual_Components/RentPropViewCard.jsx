@@ -3,7 +3,6 @@ import styled from "styled-components";
 import Footer from "./Footer";
 import api from "../../config/apiClient";
 import { Link, useNavigate } from "react-router-dom";
-import { MdFavoriteBorder } from "react-icons/md";
 import { LOGIN } from "../../lib/route";
 import { Helmet } from "react-helmet";
 import CustomSkeleton from "../../Utils/CustomSkeleton";
@@ -11,6 +10,7 @@ import { FilterIcon, PropertyIcon, RupeeIcon } from "../../Assets/icons";
 import { PaginationControls } from "../../Components/Blog_Components/BlogManagement";
 import AuthModal from "../../Resister/AuthModal";
 import { AuthContext } from "../../AuthContext";
+import { MdFavoriteBorder, MdFavorite } from "react-icons/md";
 
 const RentPropViewCard = () => {
   const navigate = useNavigate();
@@ -32,6 +32,7 @@ const RentPropViewCard = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 18;
   const [filterModalOpen, setFilterModalOpen] = useState(false);
+  const [favorites, setFavorites] = useState([]);
 
   // Check and redirect if URL is missing trailing slash
   useEffect(() => {
@@ -207,6 +208,18 @@ const RentPropViewCard = () => {
   const formatPrice = (price) => {
     if (!price) return '0';
     return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  };
+
+  const handleFavorite = (propertyId) => {
+    if (!isAuthenticated) {
+      setShowAuth(true);
+      return;
+    }
+    setFavorites((prev) =>
+      prev.includes(propertyId)
+        ? prev.filter((id) => id !== propertyId)
+        : [...prev, propertyId]
+    );
   };
 
   const propertyTypes = [
@@ -670,19 +683,19 @@ const RentPropViewCard = () => {
                           onClick={(e) => {
                             e.preventDefault();
                             e.stopPropagation();
-                            if (!isAuthenticated) {
-                              setShowAuth(true);
-                              return;
-                            }
-                            // TODO: handle wishlist action for logged-in users
+                            handleFavorite(property._id);
                           }}
-                          className="absolute top-3 right-3 w-10 h-10 bg-white/90 hover:bg-white rounded-full flex items-center justify-center shadow-md transition"
-                          aria-label="Add to wishlist (login required)"
-                          title="Login to add to wishlist"
+                          className="absolute top-3 right-3 w-10 h-10 rounded-full flex items-center justify-center shadow-md transition"
+                          aria-label={favorites.includes(property._id) ? "Remove from wishlist" : "Add to wishlist"}
+                          title={favorites.includes(property._id) ? "Remove from wishlist" : "Add to wishlist"}
                         >
-                          <MdFavoriteBorder className="text-gray-600 hover:text-red-500 text-xl" />
+                          {favorites.includes(property._id) ? (
+                            <MdFavorite className="text-red-500 text-xl" />
+                          ) : (
+                            <MdFavoriteBorder className="text-gray-600 hover:text-red-500 text-xl" />
+                          )}
                         </button>
-                        <div className="absolute top-3 right-3">
+                        <div className="absolute top-3 right-96">
                           <span className="bg-red-500 text-white px-2 py-1 rounded-full text-xs font-semibold">
                             Rental
                           </span>
