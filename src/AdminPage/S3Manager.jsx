@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  FaAws, 
-  FaUpload, 
-  FaFolder, 
-  FaImage, 
-  FaTrash, 
-  FaDownload, 
+import {
+  FaAws,
+  FaUpload,
+  FaFolder,
+  FaImage,
+  FaTrash,
+  FaDownload,
   FaEye,
   FaSearch,
   FaFilter,
-  FaPlus
+  FaPlus,
+  FaEdit
 } from 'react-icons/fa';
 import { MdCloudUpload, MdRefresh } from 'react-icons/md';
 import { toast } from 'react-toastify';
@@ -33,6 +34,11 @@ const S3Manager = () => {
   const [selectedImages, setSelectedImages] = useState(new Set());
   const [showBatchActions, setShowBatchActions] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editingImage, setEditingImage] = useState(null);
+  const [newImageName, setNewImageName] = useState('');
+  const [showCitiesDashboard, setShowCitiesDashboard] = useState(true);
+  const [citiesImages, setCitiesImages] = useState([]);
 
   // File validation constants
   const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
@@ -42,7 +48,7 @@ const S3Manager = () => {
   // Sample S3 folders - Replace with actual API call
   const sampleFolders = [
     'property-images',
-    'project-banners', 
+    'project-banners',
     'blog-images',
     'user-uploads',
     'testimonials',
@@ -187,33 +193,33 @@ const S3Manager = () => {
 
   const validateFiles = (files) => {
     const errors = [];
-    
+
     if (files.length > MAX_FILES_PER_UPLOAD) {
       errors.push(`Maximum ${MAX_FILES_PER_UPLOAD} files allowed per upload`);
     }
-    
+
     files.forEach((file, index) => {
       if (file.size > MAX_FILE_SIZE) {
         errors.push(`File ${index + 1} (${file.name}) exceeds 10MB limit`);
       }
-      
+
       if (!ALLOWED_TYPES.includes(file.type)) {
         errors.push(`File ${index + 1} (${file.name}) is not a supported image format`);
       }
     });
-    
+
     return errors;
   };
 
   const handleFileSelect = (event) => {
     const files = Array.from(event.target.files);
-    
+
     const validationErrors = validateFiles(files);
     if (validationErrors.length > 0) {
       validationErrors.forEach(error => toast.error(error));
       return;
     }
-    
+
     setSelectedFiles(files);
     toast.success(`${files.length} valid files selected`);
   };
@@ -269,7 +275,7 @@ const S3Manager = () => {
           'Authorization': `Bearer ${localStorage.getItem('myToken')}`
         }
       });
-      
+
       // Remove from local state
       setImages(images.filter(img => img.key !== imageKey));
       toast.success('Image deleted successfully');
@@ -303,7 +309,7 @@ const S3Manager = () => {
 
   const handleBatchDelete = async () => {
     if (selectedImages.size === 0) return;
-    
+
     if (!window.confirm(`Are you sure you want to delete ${selectedImages.size} selected images?`)) {
       return;
     }
@@ -323,7 +329,7 @@ const S3Manager = () => {
           keys: selectedImageKeys
         }
       });
-      
+
       setImages(images.filter(img => !selectedImages.has(img.id)));
       setSelectedImages(new Set());
       setShowBatchActions(false);
@@ -339,7 +345,7 @@ const S3Manager = () => {
 
     try {
       const selectedImageData = images.filter(img => selectedImages.has(img.id));
-      
+
       selectedImageData.forEach(image => {
         const link = document.createElement('a');
         link.href = image.url;
@@ -417,15 +423,15 @@ const S3Manager = () => {
     try {
       // Create folder in current path
       const folderPath = currentPath ? `${currentPath}/${newFolderName.trim()}` : newFolderName.trim();
-      
-      const response = await axios.post('/api/s3/folders', { 
+
+      const response = await axios.post('/api/s3/folders', {
         name: folderPath
       }, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('myToken')}`
         }
       });
-      
+
       if (response.data.success) {
         // Refresh current folder view
         fetchFolders(currentPath);
@@ -510,7 +516,7 @@ const S3Manager = () => {
               {/* Breadcrumb */}
               {folderHistory.length > 0 && (
                 <div className="mb-3 text-xs text-gray-500 dark:text-gray-400">
-                  <button 
+                  <button
                     onClick={handleRootNavigation}
                     className="hover:text-gray-700 dark:hover:text-gray-300"
                   >
@@ -563,7 +569,7 @@ const S3Manager = () => {
                         </div>
                       </div>
                     </button>
-                    
+
                     {/* Show "View Images" button for folders with subfolders */}
                     {folder.hasSubfolders && (
                       <button
@@ -631,7 +637,7 @@ const S3Manager = () => {
                     ({filteredImages.length} images)
                   </span>
                 </div>
-                
+
                 <div className="flex items-center gap-2">
                   <button
                     onClick={handleSelectAll}
@@ -639,7 +645,7 @@ const S3Manager = () => {
                   >
                     {selectedImages.size === filteredImages.length ? 'Deselect All' : 'Select All'}
                   </button>
-                  
+
                   {showBatchActions && (
                     <div className="flex gap-2">
                       <button
@@ -717,7 +723,7 @@ const S3Manager = () => {
                           style={{ opacity: '0' }}
                         />
                       </div>
-                      
+
                       {/* Overlay */}
                       <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-all duration-200 flex items-center justify-center opacity-0 group-hover:opacity-100">
                         <div className="flex gap-2">
