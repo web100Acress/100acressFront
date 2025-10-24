@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import styled from "styled-components";
 import Footer from "./Footer";
 import api from "../../config/apiClient";
@@ -8,8 +8,10 @@ import CustomSkeleton from "../../Utils/CustomSkeleton";
 import { FilterIcon, PropertyIcon, RupeeIcon } from "../../Assets/icons";
 import { use } from "react";
 import { PaginationControls } from "../../Components/Blog_Components/BlogManagement";
-import { MdFavoriteBorder } from "react-icons/md";
+import { MdFavoriteBorder, MdFavorite } from "react-icons/md";
 import { LOGIN } from "../../lib/route";
+import { AuthContext } from "../../AuthContext";
+import AuthModal from "../../Resister/AuthModal";
 
 // Price formatting function
 function formatPrice(price) {
@@ -34,6 +36,7 @@ function formatPrice(price) {
 
 const BuyPropViewCard = () => {
   const navigate = useNavigate();
+  const { isAuthenticated, user } = useContext(AuthContext);
   const [isOpen, setIsOpen] = useState(false);
   const [toOpen, setToOpen] = useState(false);
   const [show, setShow] = useState(false);
@@ -70,6 +73,43 @@ const BuyPropViewCard = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 18;
   const [filterModalOpen, setFilterModalOpen] = useState(false);
+  const [favorites, setFavorites] = useState([]);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+
+  // Fetch favorites if authenticated
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      fetchFavorites();
+    }
+  }, [isAuthenticated, user]);
+
+  const fetchFavorites = async () => {
+    try {
+      const res = await api.get('/favorites');
+      setFavorites(res.data.favorites || []);
+    } catch (error) {
+      console.error('Error fetching favorites:', error);
+    }
+  };
+
+  const toggleFavorite = async (propertyId) => {
+    if (!isAuthenticated) {
+      setAuthModalOpen(true);
+      return;
+    }
+    try {
+      if (favorites.includes(propertyId)) {
+        await api.delete(`/favorites/${propertyId}`);
+        setFavorites(prev => prev.filter(id => id !== propertyId));
+      } else {
+        await api.post('/favorites', { propertyId });
+        setFavorites(prev => [...prev, propertyId]);
+      }
+    } catch (error) {
+      console.error('Error toggling favorite:', error);
+    }
+  };
+
   // Check and redirect if URL is missing trailing slash
   useEffect(() => {
     const currentPath = window.location.pathname;
@@ -905,18 +945,56 @@ const BuyPropViewCard = () => {
                         />
                         {/* Heart/Wishlist Button */}
                         <button
+                          type="button"
+                          aria-label={
+                            favorites.includes(property._id)
+                              ? "Remove from wishlist"
+                              : isAuthenticated
+                              ? "Add to wishlist"
+                              : "Login to add to wishlist"
+                          }
+                          title={
+                            favorites.includes(property._id)
+                              ? "Remove from wishlist"
+                              : isAuthenticated
+                              ? "Add to wishlist"
+                              : "Login to add to wishlist"
+                          }
+                          className={`absolute top-3 right-3 inline-flex items-center justify-center w-8 h-8 rounded-full ${
+                            favorites.includes(property._id) ? "" : "bg-transparent"
+                          } border-white transition`}
                           onClick={(e) => {
                             e.preventDefault();
                             e.stopPropagation();
-                            navigate(LOGIN);
+                            toggleFavorite(property._id);
                           }}
-                          className="absolute top-3 right-3 w-10 h-10 bg-white/90 hover:bg-white rounded-full flex items-center justify-center shadow-md transition"
-                          aria-label="Add to wishlist (login required)"
-                          title="Login to add to wishlist"
                         >
-                          <MdFavoriteBorder className="text-gray-600 hover:text-red-500 text-xl" />
+                          {favorites.includes(property._id) ? (
+                            <svg
+                              width="24"
+                              height="24"
+                              viewBox="0 0 24 24"
+                              fill="red"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                            </svg>
+                          ) : (
+                            <svg
+                              width="24"
+                              height="24"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="#d1d5db"
+                              strokeWidth="2"
+                              xmlns="http://www.w3.org/2000/svg"
+                              className="opacity-100"
+                            >
+                              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                            </svg>
+                          )}
                         </button>
-                        <div className="absolute top-3 right-3">
+                        <div className="absolute top-3 right-54">
                           <span className="bg-red-500 text-white px-2 py-1 rounded-full text-xs font-semibold">
                             Resale
                           </span>
