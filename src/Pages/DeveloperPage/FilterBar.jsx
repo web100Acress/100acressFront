@@ -8,7 +8,7 @@ export default function FilterBar({ view, setView, sort, setSort, mapView, setMa
   ];
 
   return (
-    <div className="sticky top-16 z-30 bg-white/80 backdrop-blur border-b border-gray-200">
+    <div className="sticky top-[60px] z-30 bg-white/80 backdrop-blur border-b border-gray-200">
       <div className="max-w-screen-xl mx-auto px-4 md:px-6 py-3 flex items-center justify-between gap-3">
         <div className="flex flex-wrap items-center gap-2">
           {sorts.map(s => (
