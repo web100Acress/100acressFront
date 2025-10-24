@@ -1,5 +1,5 @@
 import React, {useEffect, useState, useMemo, useCallback } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useLocation } from "react-router-dom";
 import Footer from "../../Components/Actual_Components/Footer";
 import { Helmet } from "react-helmet";
 import { LocationRedIcon, PropertyIcon, RupeeIcon, ShareFrameIcon } from "../../Assets/icons";
@@ -112,6 +112,13 @@ const BUILDER_INFO = {
     about:
       "Aarize Developers is a trusted real estate company that builds affordable apartments, flats, and residential projects with good designs and layouts. Their homes in Gurgaon and other cities offer world-class amenities, safe environments, and excellent connectivity to schools, offices, and markets. Aarize focuses on making homes that are stylish, comfortable, and eco-friendly. They ensure timely delivery, use good construction materials, and give priority to customer satisfaction. Families and investors searching for affordable housing, luxury apartments, or residential projects trust Aarize Developers because they provide safe, convenient, and modern living spaces that make everyday life better.",
   },
+  "max-estates": {
+    about:
+      "Max Estates is a premium real estate developer known for building luxury apartments, commercial spaces, and residential projects with world-class designs and top-quality construction. Their projects in Gurgaon and other prime locations offer excellent connectivity, modern amenities, and elegant living spaces. Max Estates focuses on creating sustainable, eco-friendly buildings with smart technology and premium facilities like gyms, pools, and landscaped gardens. Families and investors looking for luxury living, commercial properties, or high-end residential projects trust Max Estates because they deliver timely, high-quality homes with attention to detail, offering a sophisticated lifestyle and long-term value.",
+    founded: "2016",
+    hq: "Gurugram, Haryana",
+    website: "https://www.maxestates.com/",
+  },
 };
 
 // Canonical display names for builder brands (for titles/meta)
@@ -130,6 +137,7 @@ const DISPLAY_NAMES = {
   'indiabulls-real-estate': 'Indiabulls Real Estate',
   'smartworld-developers': 'Smartworld Developers',
   'central-park': 'Central Park',
+  'max-estates': 'Max Estates',
 };
 
 // Builder logos aligned with the grid in Builder.jsx
@@ -154,6 +162,7 @@ const BUILDER_LOGOS = {
   'aipl': 'https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/aipl.png',
   'trevoc-group': 'https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/trevoc.webp',
   'aarize-developers': 'https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/project/tmfm0mywshnqqnmz7j9x',
+  'max-estates': 'https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/maxestate.webp',
 };
 
 // Sidebar component that stays fixed (sticky) on large screens
@@ -183,7 +192,7 @@ const DeveloperSidebar = ({ builderKey, builderName }) => {
 
   return (
     <aside className="hidden lg:block lg:col-span-3">
-      <div className="sticky top-24">
+      <div className="sticky top-[140px]">
         <div className="rounded-xl border shadow-sm bg-white">
           <div className="p-5 border-b">
             <img
@@ -260,8 +269,12 @@ const DeveloperSidebar = ({ builderKey, builderName }) => {
 };
 
 const BuilderPage = React.memo(() => {
-    const { builderName } = useParams(); 
+    const { builderName: paramBuilderName } = useParams();
+    const location = useLocation();
     const dispatch = useDispatch();
+    
+    // Extract builder name from URL params or pathname for direct routes like /max-estates/
+    const builderName = paramBuilderName || location.pathname.replace(/^\/|\/$/g, '');
     const [query, setQuery] = useState("");
     const [loading, setLoading] = useState(true);
     const [isSynced, setIsSynced] = useState(false);
@@ -301,6 +314,7 @@ const BuilderPage = React.memo(() => {
     const trump = useSelector(store => store?.builder?.trump);
     const puri = useSelector(store => store?.builder?.puri);
     const aarize = useSelector(store => store?.builder?.aarize);
+    const maxestates = useSelector(store => store?.builder?.maxestates);
     
     // Get project order state from Redux store
     const customOrders = useSelector(store => store?.projectOrder?.customOrders);
@@ -327,7 +341,8 @@ const BuilderPage = React.memo(() => {
     'sobha-developers': sobha,
     'trump-towers': trump,
     'puri-developers': puri,
-    'aarize-developers': aarize
+    'aarize-developers': aarize,
+    'max-estates': maxestates
   };
   const builderProjects = buildersData[builderName] || [];
 
@@ -474,7 +489,8 @@ const BuilderPage = React.memo(() => {
         'sobha-developers': 'Sobha',
         'trump-towers': 'Trump Towers',
         'puri-developers': 'Puri Constructions',
-        'aarize-developers': 'Aarize Group'
+        'aarize-developers': 'Aarize Group',
+        'max-estates': 'Max Estates'
       };
 
       const queryValue = builderQueries[builderName.toLowerCase()];
@@ -590,12 +606,17 @@ const BuilderPage = React.memo(() => {
     return onToggleFavorite(project)({ preventDefault: () => {}, stopPropagation: () => {} });
   };
 
+  // Determine canonical URL - use direct route for max-estates, developers route for others
+  const canonicalUrl = builderName === 'max-estates' 
+    ? `https://www.100acress.com/max-estates/`
+    : `https://www.100acress.com/developers/${builderName.toLowerCase()}/`;
+
   return (
     <div>
       <Helmet>
         <title>{heroTitleText} | 100acress</title>
         <meta name="description" content={`${displayName} projects in Gurugram. Explore premium residential and commercial projects with pricing, photos, and details.`} />
-        <link rel="canonical" href={`https://www.100acress.com/developers/${builderName.toLowerCase()}/`} />
+        <link rel="canonical" href={canonicalUrl} />
       </Helmet>
 
       {/* Hero */}

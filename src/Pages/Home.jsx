@@ -790,6 +790,39 @@ const Home = () => {
        {/* Auth Modal for login/register */}
         <AuthModal open={authOpen} onClose={() => setAuthOpen(false)} defaultView={authDefaultView} />
  
+        {/* Mobile Sticky Post Property Card - Right Side Center */}
+        {isSmallerThan768 && (
+          <div className="fixed right-0 top-1/2 -translate-y-1/2 z-[9999] xl:hidden">
+            <button
+              onClick={() => {
+                const token = localStorage.getItem("myToken");
+                if (token) {
+                  window.location.href = "/postproperty";
+                } else {
+                  setAuthDefaultView('login');
+                  setAuthOpen(true);
+                }
+              }}
+              className="bg-red-600 text-white font-bold text-sm px-3 py-6 rounded-l-2xl shadow-2xl hover:bg-red-700 transition-all duration-300 flex flex-col items-center justify-center leading-tight"
+            >
+              <span>P</span>
+              <span>O</span>
+              <span>S</span>
+              <span>T</span>
+              <span className="my-1"></span>
+              <span className="my-1"></span>
+              <span>P</span>
+              <span>R</span>
+              <span>O</span>
+              <span>P</span>
+              <span>E</span>
+              <span>R</span>
+              <span>T</span>
+              <span>Y</span>
+            </button>
+          </div>
+        )}
+
         {/* Place FormHome below the two-column layout */}
         {/* <FormHome /> */}
  
