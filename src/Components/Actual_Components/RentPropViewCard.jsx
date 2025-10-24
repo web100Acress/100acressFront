@@ -685,7 +685,7 @@ const RentPropViewCard = () => {
                             e.stopPropagation();
                             handleFavorite(property._id);
                           }}
-                          className="absolute top-3 right-3 w-10 h-10 rounded-full flex items-center justify-center shadow-md transition"
+                          className="absolute top-3 right-3 w-10 h-10 rounded-full flex items-center justify-center transition"
                           aria-label={favorites.includes(property._id) ? "Remove from wishlist" : "Add to wishlist"}
                           title={favorites.includes(property._id) ? "Remove from wishlist" : "Add to wishlist"}
                         >
