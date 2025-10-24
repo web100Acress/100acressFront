@@ -692,7 +692,7 @@ const RentPropViewCard = () => {
                           {favorites.includes(property._id) ? (
                             <MdFavorite className="text-red-500 text-xl" />
                           ) : (
-                            <MdFavoriteBorder className="text-gray-600 hover:text-red-500 text-xl" />
+                            <MdFavoriteBorder className="text-white hover:text-red-500 text-xl" />
                           )}
                         </button>
                         <div className="absolute top-3 right-96">
