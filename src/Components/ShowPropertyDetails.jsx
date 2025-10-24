@@ -448,7 +448,7 @@ const ShowPropertyDetails = ({ id, type }) => {
                         value={userForm.custName}
                         placeholder=" "
                       />
-                      <label className="absolute left-4 top-2 text-gray-400 text-sm transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-focus:top-2 peer-focus:text-sm bg-white/80 px-1 rounded">Full Name</label>
+                      <label className="absolute left-4 top-2 text-gray-400 text-sm transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-focus:top-2 peer-focus:text-sm bg-white/80 px-1 rounded pointer-events-none">Full Name</label>
                     </div>
                     <div className="relative">
                       <input
@@ -460,7 +460,7 @@ const ShowPropertyDetails = ({ id, type }) => {
                         value={userForm.custNumber}
                         placeholder=" "
                       />
-                      <label className="absolute left-4 top-2 text-gray-400 text-sm transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-focus:top-2 peer-focus:text-sm bg-white/80 px-1 rounded">Mobile Number</label>
+                      <label className="absolute left-4 top-2 text-gray-400 text-sm transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-focus:top-2 peer-focus:text-sm bg-white/80 px-1 rounded pointer-events-none">Mobile Number</label>
                     </div>
                     <div className="relative">
                       <input
@@ -472,7 +472,7 @@ const ShowPropertyDetails = ({ id, type }) => {
                         value={userForm.custEmail}
                         placeholder=" "
                       />
-                      <label className="absolute left-4 top-2 text-gray-400 text-sm transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-focus:top-2 peer-focus:text-sm bg-white/80 px-1 rounded">Email address</label>
+                      <label className="absolute left-4 top-2 text-gray-400 text-sm transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-focus:top-2 peer-focus:text-sm bg-white/80 px-1 rounded pointer-events-none">Email address</label>
                     </div>
                     <p className="text-xs text-gray-500 mt-1">Fill out form only once to get contact details</p>
                     <button
@@ -506,7 +506,7 @@ const ShowPropertyDetails = ({ id, type }) => {
             {buyData.slice(0, 12).map((property, idx) => (
               <div key={property._id || idx} className="bg-white rounded-xl shadow-md overflow-hidden flex flex-col w-full h-64 border border-gray-100">
                 <img
-                  src={property.frontImage?.url}
+                  src={property.thumbnailImage?.url || property.frontImage?.url}
                   alt={property.propertyName}
                   className="w-full h-28 object-cover rounded-t-xl"
                   loading="lazy"

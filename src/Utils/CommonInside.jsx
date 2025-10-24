@@ -185,6 +185,7 @@ const CommonInside = ({
                 ? `${item.postProperty.city}, ${item.postProperty.state}`
                 : "Gurgaon, Haryana";
             const imageUrl =
+              item.thumbnailImage?.url ||
               item.frontImage?.cdn_url ||
               item.frontImage?.url ||
               item?.postProperty?.frontImage?.url ||

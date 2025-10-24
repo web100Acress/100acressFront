@@ -872,7 +872,7 @@ const SearchData = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {displayedItems.map((property, index) => {
               const propertyName = property.propertyName || property.projectName || property.postProperty?.propertyName || "Property";
-              const imageUrl = property.frontImage?.cdn_url || property.frontImage?.url || property.postProperty?.frontImage?.url || "https://d16gdc5rm7f21b.cloudfront.net/100acre/no-image.jpg";
+              const imageUrl = property.thumbnailImage?.url || property.frontImage?.cdn_url || property.frontImage?.url || property.postProperty?.frontImage?.url || "https://d16gdc5rm7f21b.cloudfront.net/100acre/no-image.jpg";
               const city = property.city || property.postProperty?.city || "Location";
               const state = property.state || property.postProperty?.state || "";
               const minPrice = property.minPrice || property.price || 0;

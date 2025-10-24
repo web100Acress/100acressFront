@@ -111,7 +111,7 @@ const CommonProject = ({
             >
               <div className="overflow-hidden rounded-t-2xl">
                 <img
-                  src={`https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/${item?.thumbnailImage?.public_id}`}
+                  src={item?.thumbnailImage?.url || item?.frontImage?.url || `https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/${item?.thumbnailImage?.public_id}`}
                   alt="Property"
                   className={`w-full ${
                     compact ? "aspect-[4/3]" : "aspect-[16/9]"
