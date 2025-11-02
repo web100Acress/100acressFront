@@ -350,33 +350,34 @@ const CrimsonEleganceFooter = () => {
           <div className="container mx-auto px-6 py-0">
             <div className="flex flex-wrap gap-2">
               {[
-                "1 BHK Flats in Gurgaon",
-                "2 BHK Flats in Gurgaon",
-                "3 BHK Flats in Gurgaon",
-                "4 BHK Flats in Gurgaon",
-                "5 BHK Flats in Gurgaon",
-                "Fully Furnished Flats in Gurgaon",
-                "Penthouse in Gurgaon",
-                "Semi Furnished Flats in Gurgaon",
-                "Unfurnished Flats in Gurgaon",
-                "Independent Floor for Sale in Gurgaon",
-                "Independent Houses For Sale in Gurgaon",
-                "Flats For Sale under 1 Cr in Gurgaon",
-                "Flats For Sale under 5 Cr in Gurgaon",
-                "Flats For Sale under 10 Cr in Gurgaon",
-                "Flats For Sale under 20 Cr In Gurgaon",                
-                "Affordable Homes in Gurgaon",
-                "Farmhouse in Gurgaon",
-                "Luxury Villas in Gurgaon",
+                { name: "1 BHK Flats in Gurgaon", href: "/property-types/1-bhk-flats-gurgaon/" },
+                { name: "2 BHK Flats in Gurgaon", href: "/property-types/2-bhk-flats-gurgaon/" },
+                { name: "3 BHK Flats in Gurgaon", href: "/property-types/3-bhk-flats-gurgaon/" },
+                { name: "4 BHK Flats in Gurgaon", href: "/property-types/4-bhk-flats-gurgaon/" },
+                { name: "5 BHK Flats in Gurgaon", href: "/property-types/5-bhk-flats-gurgaon/" },
+                { name: "Fully Furnished Flats in Gurgaon", href: "/property-types/fully-furnished-flats-gurgaon/" },
+                { name: "Penthouse in Gurgaon", href: "/property-types/penthouse-gurgaon/" },
+                { name: "Semi Furnished Flats in Gurgaon", href: "/property-types/semi-furnished-flats-gurgaon/" },
+                { name: "Unfurnished Flats in Gurgaon", href: "/property-types/unfurnished-flats-gurgaon/" },
+                { name: "Independent Floor for Sale in Gurgaon", href: "/property-types/independent-floor-gurgaon/" },
+                { name: "Independent Houses For Sale in Gurgaon", href: "/property-types/independent-houses-gurgaon/" },
+                { name: "Flats For Sale under 1 Cr in Gurgaon", href: "/property-types/flats-under-1-cr-gurgaon/" },
+                { name: "Flats For Sale under 5 Cr in Gurgaon", href: "/property-types/flats-under-5-cr-gurgaon/" },
+                { name: "Flats For Sale under 10 Cr in Gurgaon", href: "/property-types/flats-under-10-cr-gurgaon/" },
+                { name: "Flats For Sale under 20 Cr In Gurgaon", href: "/property-types/flats-under-20-cr-gurgaon/" },
+                { name: "Affordable Homes in Gurgaon", href: "/property-types/affordable-homes-gurgaon/" },
+                { name: "Farmhouse in Gurgaon", href: "/property-types/farmhouse-gurgaon/" },
+                { name: "Luxury Villas in Gurgaon", href: "/property-types/luxury-villas-gurgaon/" },
               ].map((location, index) => (
-                <div
+                <Link
                   key={index}
+                  to={location.href}
                   className="bg-white rounded-lg h-6 px-2 flex items-center justify-center hover:scale-105 transition-all duration-300 cursor-pointer min-w-max"
                 >
                   <span className="text-red-900 font-medium text-sm text-center leading-tight whitespace-nowrap">
-                    {location}
+                    {location.name}
                   </span>
-                </div>
+                </Link>
               ))}
             </div>
           </div>
@@ -387,24 +388,25 @@ const CrimsonEleganceFooter = () => {
     <div className="w-full border-t border-white/10 pt-8">
       <div className="flex flex-wrap justify-center gap-3">
         {[
-          "Residential Flats in Gurgaon",
-          "Retail Shops in Gurgaon",
-          "Builder Floor in Gurgaon",
-          "Farmhouse in Gurgaon",
-          "Industrial Plots in Gurgaon",
-          "Independent Floor in Gurgaon",
-          "SCO Plots in Gurgaon",
-          "Shop Cum Office Plots in Gurgaon",
-          "Luxury Villas in Gurgaon",
+          { name: "Residential Flats in Gurgaon", href: "/property-types/residential-flats-gurgaon/" },
+          { name: "Retail Shops in Gurgaon", href: "/property-types/retail-shops-gurgaon/" },
+          { name: "Builder Floor in Gurgaon", href: "/property-types/builder-floor-gurgaon/" },
+          { name: "Farmhouse in Gurgaon", href: "/property-types/farmhouse-gurgaon/" },
+          { name: "Industrial Plots in Gurgaon", href: "/property-types/industrial-plots-gurgaon/" },
+          { name: "Independent Floor in Gurgaon", href: "/property-types/independent-floor-gurgaon/" },
+          { name: "SCO Plots in Gurgaon", href: "/property-types/sco-plots-gurgaon/" },
+          { name: "Shop Cum Office Plots in Gurgaon", href: "/property-types/shop-cum-office-plots-gurgaon/" },
+          { name: "Luxury Villas in Gurgaon", href: "/property-types/luxury-villas-gurgaon/" },
         ].map((location, index) => (
-          <div
+          <Link
             key={index}
+            to={location.href}
             className="bg-white rounded-lg px-3 py-1 flex items-center justify-center hover:scale-105 transition-all duration-300 cursor-pointer shadow-sm"
           >
             <span className="text-red-900 font-medium text-sm text-center leading-tight whitespace-nowrap">
-              {location}
+              {location.name}
             </span>
-          </div>
+          </Link>
         ))}
       </div>
     </div>
