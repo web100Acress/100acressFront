@@ -3,6 +3,8 @@ import Footer from "../Components/Actual_Components/Footer";
 import { useParams, Link, useNavigate, useLocation } from "react-router-dom";
 import api from "../config/apiClient";
 import { API_ROUTES } from "../Redux/utils/Constant_Service";
+import { useSelector } from "react-redux";
+import Api_Service from "../Redux/utils/Api_Service";
 
 import { DataContext } from "../MyContext";
 import { Helmet } from "react-helmet";
@@ -20,8 +22,12 @@ import {
 
 const BlogView = () => {
   const { allupcomingProject } = useContext(DataContext);
+  const TrendingProjects = useSelector(store => store?.project?.trending) || [];
+  const SpotlightProjects = useSelector(store => store?.project?.spotlight) || [];
+  const { getTrending, getSpotlight } = Api_Service();
   const [data, setData] = useState({});
   const [trendingProjects, setTrendingProjects] = useState([]);
+  const [spotlightProjects, setSpotlightProjects] = useState([]);
   // Cache for related project thumbnails and meta resolved from project details
   const [relatedThumbs, setRelatedThumbs] = useState({});
   const [relatedMeta, setRelatedMeta] = useState({}); // key: project_url -> { location, minPrice, maxPrice }
@@ -94,7 +100,7 @@ const BlogView = () => {
   });
 
   // Floating enquiry (bottom-right) collapsible
-  const [showFloatingEnquiry, setShowFloatingEnquiry] = useState(true);
+  const [showFloatingEnquiry, setShowFloatingEnquiry] = useState(false);
   // Engagement state
   const [likes, setLikes] = useState(0);
   const [shares, setShares] = useState(0);
@@ -720,31 +726,37 @@ const BlogView = () => {
     return `₹ ${n.toLocaleString('en-IN')}`;
   };
 
-  // Fetch trending projects for sidebar - use allupcomingProject from context
+  // Fetch trending projects from Redux store (same as home page)
   useEffect(() => {
-    console.log("allupcomingProject:", allupcomingProject);
-    if (allupcomingProject && Array.isArray(allupcomingProject) && allupcomingProject.length > 0) {
-      // Take first 10 projects from allupcomingProject
-      console.log("Setting trending projects from context:", allupcomingProject.length);
-      setTrendingProjects(allupcomingProject.slice(0, 10));
-    } else {
-      // Fallback: try to fetch from API
-      console.log("Fetching from API...");
-      const fetchTrending = async () => {
-        try {
-          const url = `${API_ROUTES.projectsBase()}/trending`;
-          const res = await api.get(url, { timeout: 15000 });
-          const list = res?.data?.data || [];
-          console.log("API response:", list.length, "projects");
-          setTrendingProjects(Array.isArray(list) ? list.slice(0, 10) : []);
-        } catch (error) {
-          console.error("Error fetching trending projects:", error);
-          setTrendingProjects([]);
-        }
-      };
-      fetchTrending();
+    // Fetch trending projects if not already loaded
+    if (!TrendingProjects || TrendingProjects.length === 0) {
+      console.log("Fetching trending projects from Redux...");
+      getTrending();
     }
-  }, [allupcomingProject]);
+    // Fetch spotlight/recommended projects
+    if (!SpotlightProjects || SpotlightProjects.length === 0) {
+      console.log("Fetching spotlight projects from Redux...");
+      getSpotlight();
+    }
+  }, []);
+
+  // Update local state when Redux store updates
+  useEffect(() => {
+    console.log("TrendingProjects from Redux:", TrendingProjects?.length || 0);
+    if (TrendingProjects && Array.isArray(TrendingProjects) && TrendingProjects.length > 0) {
+      console.log("Setting trending projects from Redux store:", TrendingProjects.length);
+      setTrendingProjects(TrendingProjects.slice(0, 10));
+    }
+  }, [TrendingProjects]);
+
+  // Update spotlight projects when Redux store updates
+  useEffect(() => {
+    console.log("SpotlightProjects from Redux:", SpotlightProjects?.length || 0);
+    if (SpotlightProjects && Array.isArray(SpotlightProjects) && SpotlightProjects.length > 0) {
+      console.log("Setting spotlight projects:", SpotlightProjects.length);
+      setSpotlightProjects(SpotlightProjects.slice(0, 5));
+    }
+  }, [SpotlightProjects]);
 
   const createSanitizedHTML = (dirtyHTML) => ({
     __html: DOMPurify.sanitize(dirtyHTML, {
@@ -1356,20 +1368,20 @@ const BlogView = () => {
           <aside className="lg:col-span-3 space-y-6">
             <div className="lg:sticky lg:top-24 space-y-6 animate-fadeIn">
 
-              {/* Popular Projects Section */}
-              {trendingProjects.length > 0 && (
+              {/* 100acress Recommended Projects Section */}
+              {spotlightProjects.length > 0 && (
                 <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
                   <button
                     onClick={() => toggleSidebarSection('popularProjects')}
                     className="w-full px-6 py-4 flex items-center justify-between bg-gradient-to-r from-red-500 to-red-600 text-white font-bold hover:from-red-600 hover:to-red-700 transition-all"
                     style={{ fontFamily: "'Poppins', sans-serif" }}
                   >
-                    <span>Popular Projects</span>
+                    <span>100acress Recommended</span>
                     {sidebarSections.popularProjects ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
                   </button>
                   {sidebarSections.popularProjects && (
                     <div className="p-4 space-y-3 max-h-96 overflow-y-auto custom-scrollbar">
-                      {trendingProjects.slice(0, 5).map((p, idx) => {
+                      {spotlightProjects.map((p, idx) => {
                         const name = p?.projectName || p?.name || p?.title || 'Project';
                         const img = pickProjectImage(p);
                         return (
@@ -1615,18 +1627,38 @@ const BlogView = () => {
           </div>
         )}
 
-        {/* Floating Chat Button */}
+        {/* Floating Enquire Now Button */}
         {!showFloatingEnquiry && (
           <button
             onClick={() => setShowFloatingEnquiry(true)}
-            className="w-14 h-14 bg-gradient-to-br from-red-500 to-red-600 rounded-full shadow-lg hover:shadow-xl hover:scale-110 transition-all duration-300 flex items-center justify-center group"
+            className="relative bg-gradient-to-r from-red-600 to-red-500 text-white px-6 py-3.5 rounded-full shadow-xl hover:shadow-2xl hover:scale-110 transition-all duration-300 flex items-center gap-3 group overflow-hidden"
             aria-label="Open enquiry form"
+            style={{ 
+              boxShadow: '0 10px 40px rgba(211, 47, 47, 0.4)',
+            }}
           >
-            <svg className="w-6 h-6 text-white group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+            {/* Animated background shine effect */}
+            <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-0 group-hover:opacity-20 group-hover:animate-shimmer"></span>
+            
+            {/* Icon with background */}
+            <span className="relative flex items-center justify-center w-8 h-8 bg-white/20 rounded-full backdrop-blur-sm">
+              <svg className="w-4 h-4 group-hover:rotate-12 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+              </svg>
+            </span>
+            
+            {/* Text */}
+            <span className="font-bold text-base tracking-wide" style={{ fontFamily: "'Poppins', sans-serif" }}>
+              Enquire Now
+            </span>
+            
+            {/* Arrow icon */}
+            <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
             </svg>
-            {/* Pulse animation */}
-            <span className="absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75 animate-ping"></span>
+            
+            {/* Pulse ring animation */}
+            <span className="absolute -inset-1 rounded-full bg-red-400 opacity-30 animate-ping"></span>
           </button>
         )}
       </div>
@@ -1713,17 +1745,17 @@ const BlogView = () => {
                   const maxPrice = typeof project?.maxPrice === 'number' ? formatINRShort(project.maxPrice) : null;
                   const priceRange = minPrice && maxPrice ? `${minPrice} - ${maxPrice}` : (minPrice || maxPrice || '');
 
-                  const navigateProject = (p) => {
+                  const navigateToProject = (p) => {
                     const pUrl = p?.project_url || p?.projectUrl || p?.url || '';
                     if (pUrl) {
-                      history(`/projects/${pUrl}`);
+                      history(`/${pUrl}/`);
                     }
                   };
 
                   return (
                     <div
                       key={idx}
-                      onClick={() => navigateProject(project)}
+                      onClick={() => navigateToProject(project)}
                       className="group bg-white rounded-xl border border-gray-200 hover:border-red-500 overflow-hidden cursor-pointer transition-all duration-300 hover:shadow-lg"
                     >
                       {/* Project Image */}
