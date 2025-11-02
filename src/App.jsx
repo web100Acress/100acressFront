@@ -1,4 +1,4 @@
- import React, { lazy, Suspense, useState, useEffect } from "react";
+import React, { lazy, Suspense, useState, useEffect } from "react";
 import "./App.css";
 import { styled } from "styled-components";
 import { Routes, Route, Navigate, Link, useLocation } from "react-router-dom";
@@ -191,6 +191,24 @@ const HrEmployees = lazy(() => import("./Hr/HrEmployees"));
 const OnboardingUpload = lazy(() => import("./OnboardingUpload"));
 const DocumentUpload = lazy(() => import("./Pages/DocumentUpload"));
 const UploadSuccess = lazy(() => import("./Pages/UploadSuccess"));
+
+// Property Types Pages
+const BhkFlatsGurgaon = lazy(() => import("./Pages/PropertyTypes/BhkFlatsGurgaon"));
+const FurnishedFlatsGurgaon = lazy(() => import("./Pages/PropertyTypes/FurnishedFlatsGurgaon"));
+const PenthouseGurgaon = lazy(() => import("./Pages/PropertyTypes/PenthouseGurgaon"));
+const IndependentFloorGurgaon = lazy(() => import("./Pages/PropertyTypes/IndependentFloorGurgaon"));
+const IndependentHousesGurgaon = lazy(() => import("./Pages/PropertyTypes/IndependentHousesGurgaon"));
+const BudgetFlatsGurgaon = lazy(() => import("./Pages/PropertyTypes/BudgetFlatsGurgaon"));
+const AffordableHomesGurgaon = lazy(() => import("./Pages/PropertyTypes/AffordableHomesGurgaon"));
+const FarmhouseGurgaon = lazy(() => import("./Pages/PropertyTypes/FarmhouseGurgaon"));
+const LuxuryVillasGurgaon = lazy(() => import("./Pages/PropertyTypes/LuxuryVillasGurgaon"));
+const ResidentialFlatsGurgaon = lazy(() => import("./Pages/PropertyTypes/ResidentialFlatsGurgaon"));
+const RetailShopsGurgaon = lazy(() => import("./Pages/PropertyTypes/RetailShopsGurgaon"));
+const BuilderFloorGurgaon = lazy(() => import("./Pages/PropertyTypes/BuilderFloorGurgaon"));
+const IndustrialPlotsGurgaon = lazy(() => import("./Pages/PropertyTypes/IndustrialPlotsGurgaon"));
+const SCOPlotsGurgaon = lazy(() => import("./Pages/PropertyTypes/SCOPlotsGurgaon"));
+const ShopCumOfficePlotsGurgaon = lazy(() => import("./Pages/PropertyTypes/ShopCumOfficePlotsGurgaon"));
+
 // Initialize QueryClient
 const queryClient = new QueryClient();
 
@@ -200,7 +218,7 @@ function App() {
   // Consider dynamic project pages like '/experion-the-trillion/' etc. (single segment with trailing slash)
   const singleSegment = /^\/[A-Za-z0-9-]+\/?$/.test(currentPath);
   const blockedPrefixes = [
-    'blog', 'auth', 'projects', 'project', 'property', 'loan', 'contact-us', 'userdashboard', 'admin', 'emi-calculator', 'postproperty', 'news-and-articals', 'searchdata', 'developers', 'privacy-policy', 'terms-and-conditions', 'qr-generator'
+    'blog', 'auth', 'projects', 'project', 'property', 'property-types', 'loan', 'contact-us', 'userdashboard', 'admin', 'emi-calculator', 'postproperty', 'news-and-articals', 'searchdata', 'developers', 'privacy-policy', 'terms-and-conditions', 'qr-generator'
   ];
   const hasBlockedPrefix = blockedPrefixes.some((p) => currentPath.startsWith(`/${p}`));
   const isProjectPage = singleSegment && !hasBlockedPrefix && currentPath !== '/';
@@ -482,6 +500,32 @@ function App() {
                       <Route path="/onboarding/upload" element={<OnboardingUpload />} />
                       <Route path="/document-upload/:token" element={<DocumentUpload />} />
                       <Route path="/upload-success" element={<UploadSuccess />} />
+                      
+                      {/* Property Types Routes */}
+                      <Route path="/property-types/1-bhk-flats-gurgaon/" element={<BhkFlatsGurgaon bhkType="1" />} />
+                      <Route path="/property-types/2-bhk-flats-gurgaon/" element={<BhkFlatsGurgaon bhkType="2" />} />
+                      <Route path="/property-types/3-bhk-flats-gurgaon/" element={<BhkFlatsGurgaon bhkType="3" />} />
+                      <Route path="/property-types/4-bhk-flats-gurgaon/" element={<BhkFlatsGurgaon bhkType="4" />} />
+                      <Route path="/property-types/5-bhk-flats-gurgaon/" element={<BhkFlatsGurgaon bhkType="5" />} />
+                      <Route path="/property-types/fully-furnished-flats-gurgaon/" element={<FurnishedFlatsGurgaon furnishingType="Fully Furnished" />} />
+                      <Route path="/property-types/semi-furnished-flats-gurgaon/" element={<FurnishedFlatsGurgaon furnishingType="Semi Furnished" />} />
+                      <Route path="/property-types/unfurnished-flats-gurgaon/" element={<FurnishedFlatsGurgaon furnishingType="Unfurnished" />} />
+                      <Route path="/property-types/penthouse-gurgaon/" element={<PenthouseGurgaon />} />
+                      <Route path="/property-types/independent-floor-gurgaon/" element={<IndependentFloorGurgaon />} />
+                      <Route path="/property-types/independent-houses-gurgaon/" element={<IndependentHousesGurgaon />} />
+                      <Route path="/property-types/flats-under-1-cr-gurgaon/" element={<BudgetFlatsGurgaon budgetRange="1" />} />
+                      <Route path="/property-types/flats-under-5-cr-gurgaon/" element={<BudgetFlatsGurgaon budgetRange="5" />} />
+                      <Route path="/property-types/flats-under-10-cr-gurgaon/" element={<BudgetFlatsGurgaon budgetRange="10" />} />
+                      <Route path="/property-types/flats-under-20-cr-gurgaon/" element={<BudgetFlatsGurgaon budgetRange="20" />} />
+                      <Route path="/property-types/affordable-homes-gurgaon/" element={<AffordableHomesGurgaon />} />
+                      <Route path="/property-types/farmhouse-gurgaon/" element={<FarmhouseGurgaon />} />
+                      <Route path="/property-types/luxury-villas-gurgaon/" element={<LuxuryVillasGurgaon />} />
+                      <Route path="/property-types/residential-flats-gurgaon/" element={<ResidentialFlatsGurgaon />} />
+                      <Route path="/property-types/retail-shops-gurgaon/" element={<RetailShopsGurgaon />} />
+                      <Route path="/property-types/builder-floor-gurgaon/" element={<BuilderFloorGurgaon />} />
+                      <Route path="/property-types/industrial-plots-gurgaon/" element={<IndustrialPlotsGurgaon />} />
+                      <Route path="/property-types/sco-plots-gurgaon/" element={<SCOPlotsGurgaon />} />
+                      <Route path="/property-types/shop-cum-office-plots-gurgaon/" element={<ShopCumOfficePlotsGurgaon />} />
                     </Route>
 
                     {/* Admin Routing */}
