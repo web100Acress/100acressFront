@@ -70,15 +70,7 @@ function FinalNavBar() {
                 loading="lazy" 
               />
             </Link>
-            <img 
-              src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/festival-images/navbar-diwali.webp"
-              alt="Diwali Diya"
-              width='50'
-              height='50'
-              loading="lazy"
-              style={{ objectFit: 'contain', display: 'block' }}
-              onError={(e) => { console.error('Diya image failed to load'); e.currentTarget.style.display = 'none'; }}
-            />
+            
           </div>
         </div>
 
@@ -203,15 +195,7 @@ function FinalNavBar() {
                   loading="lazy" 
                 />
               </Link>
-              <img 
-                src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/festival-images/navbar-diwali.webp"
-                alt="Diwali Diya"
-                width='50'
-                height='50'
-                loading="lazy"
-                style={{ objectFit: 'contain', display: 'block' }}
-                onError={(e) => { console.error('Diya image failed to load'); e.currentTarget.style.display = 'none'; }}
-              />
+              
             </li>
             <li className='pxrE el1'>
               <span className='pxrETXT'>
