@@ -10,16 +10,8 @@ import {
 import LoginForm from "./LoginForm";
 import SignupForm from "./SignupForm";
 
-/**
- * AuthModal
- * Props:
- * - open: boolean
- * - onClose: function
- * - defaultView: 'login' | 'register'
- */
 export default function AuthModal({ open = false, onClose = () => {}, defaultView = "login" }) {
   const [view, setView] = useState(defaultView === "register" ? "register" : "login");
-
   useEffect(() => {
     setView(defaultView === "register" ? "register" : "login");
   }, [defaultView, open]);

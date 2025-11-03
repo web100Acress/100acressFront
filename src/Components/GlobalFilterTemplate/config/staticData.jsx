@@ -1255,8 +1255,8 @@ export const staticData = {
     }
   },
 
-  // Budget Pages Data
-  budget: {
+  // Budget Pages Data for Gurgaon
+  budgetGurgaon: {
     under1cr: {
       title: "Properties Under 1 Cr - Affordable Homes in Gurgaon",
       description: "Find the best properties under 1 crore in Gurgaon with modern amenities, excellent connectivity, and great investment potential. Perfect for first-time buyers and budget-conscious investors.",

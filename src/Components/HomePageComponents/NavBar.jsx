@@ -11,7 +11,7 @@ import { HiBars3 } from "react-icons/hi2";
 import { FiUser } from "react-icons/fi";
 import { ABOUT, BLOG, KNOWABOUT, LOGIN, ROOT } from "../../lib/route";
 import { Link, Navigate } from "react-router-dom";
-import AuthModal from "../AuthModal";
+import AuthModal from "../../Resister/AuthModal";
 import { RxCross2 } from "react-icons/rx";
 
 function FinalNavBar() {
@@ -70,12 +70,7 @@ function FinalNavBar() {
                 loading="lazy" 
               />
             </Link>
-            <img 
-              src="/Images/Golden_Diwali_Diya_PNG___Stylized_Festival_Illustration-PNGLove.com.png"
-              alt="Diwali Diya"
-              width='50'
-              loading="lazy" 
-            />
+            
           </div>
         </div>
 
@@ -188,6 +183,20 @@ function FinalNavBar() {
         )}
         <div className='NBflx'>
           <ul className='ulfx _1grx' style={{marginTop:"2px"}}>
+            <li style={{ paddingRight: "20px", display: "flex", alignItems: "center", gap: "10px" }}>
+              <Link to={ROOT}>
+                <img 
+                  src={isScrolled 
+                    ? "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/white-logo.webp"
+                    : "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/red-logo.webp"
+                  } 
+                  alt='100acress' 
+                  width='140' 
+                  loading="lazy" 
+                />
+              </Link>
+              
+            </li>
             <li className='pxrE el1'>
               <span className='pxrETXT'>
                 <a role="button" tabIndex="0" aria-haspopup="true" aria-expanded="false" aria-label="Buy">Buy</a>
@@ -556,6 +565,10 @@ const Wrapper = styled.section`
   .ulfx > li:hover:after {
     opacity: 1;
     cursor: pointer;
+  }
+  /* Prevent underline on logo item */
+  .ulfx > li:first-child:after {
+    display: none;
   }
    
   .MBflx .pxrETXT,.MBflx .linkEl{

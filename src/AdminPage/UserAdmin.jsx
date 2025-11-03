@@ -21,6 +21,14 @@ const UserAdmin = () => {
   const [dateTo, setDateTo] = useState("");   // ISO yyyy-mm-dd
   const [sourceFilter, setSourceFilter] = useState('all'); // 'all' | source values
 
+  // Utility function to truncate text
+  const truncateText = (text, wordLimit) => {
+    if (!text) return '';
+    const words = text.split(' ');
+    if (words.length <= wordLimit) return text;
+    return words.slice(0, wordLimit).join(' ') + '...';
+  };
+
   // Available roles
   const ROLE_OPTIONS = [
     { label: "User", value: "user" },
@@ -424,28 +432,28 @@ const UserAdmin = () => {
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                    <th className="px-3 py-2 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                       S No.
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                    <th className="px-3 py-2 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                       Name
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                    <th className="px-3 py-2 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                       Email
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                    <th className="px-3 py-2 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                       Mobile Number
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                    <th className="px-3 py-2 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                       Date
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                    <th className="px-3 py-2 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                       Role
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                    <th className="px-3 py-2 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                       Email Verified
                     </th>
-                    <th className="px-6 py-3 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                    <th className="px-3 py-2 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">
                       Action
                     </th>
                   </tr>
@@ -460,29 +468,38 @@ const UserAdmin = () => {
                         key={userId}
                         className="group even:bg-gray-50 hover:bg-gray-100 transition-colors duration-200"
                       >
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        <td className="px-3 py-3 whitespace-nowrap text-sm font-medium text-gray-900">
                           {serialNumber}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
-                          {item.name}
+                        <td className="px-3 py-4 whitespace-nowrap text-sm text-gray-800">
+                          <Tippy
+                            content={item.name || 'No name'}
+                            animation="scale"
+                            theme="light"
+                            placement="top"
+                          >
+                            <span className="cursor-help">
+                              {truncateText(item.name || 'No name', 10)}
+                            </span>
+                          </Tippy>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm">
-                          <span className="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded-full shadow-sm">
+                        <td className="px-3 py-3 whitespace-nowrap text-sm">
+                          <span className="inline-flex items-center px-2 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded-full shadow-sm">
                             {item.email}
                           </span>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm">
-                          <span className="inline-flex items-center px-3 py-1 bg-green-100 text-green-800 text-xs font-medium rounded-full shadow-sm">
+                        <td className="px-3 py-3 whitespace-nowrap text-sm">
+                          <span className="inline-flex items-center px-2 py-1 bg-green-100 text-green-800 text-xs font-medium rounded-full shadow-sm">
                             {item.mobile}
                           </span>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
+                        <td className="px-3 py-3 whitespace-nowrap text-sm text-gray-800">
                           {formatLastModified(item.createdAt)}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
+                        <td className="px-3 py-3 whitespace-nowrap text-sm text-gray-800">
                           <div className="flex items-center">
                             <select
-                              className={`px-3 py-2 border rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-red-500 ${getRoleClasses(item.role)} ${
+                              className={`px-2 py-1 border rounded-full text-xs focus:outline-none focus:ring-2 focus:ring-red-500 ${getRoleClasses(item.role)} ${
                                 updatingRole[userId]
                                   ? "opacity-60 cursor-not-allowed"
                                   : ""
@@ -501,14 +518,14 @@ const UserAdmin = () => {
                               ))}
                             </select>
                             {updatingRole[userId] && (
-                              <span className="ml-2 text-xs text-gray-500">Saving...</span>
+                              <span className="ml-1 text-xs text-gray-500">Saving...</span>
                             )}
                           </div>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
-                          <div className="flex items-center gap-2">
+                        <td className="px-3 py-3 whitespace-nowrap text-sm text-gray-800">
+                          <div className="flex items-center gap-1">
                             <span
-                              className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium shadow-sm ${
+                              className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium shadow-sm ${
                                 item.emailVerified
                                   ? 'bg-emerald-100 text-emerald-700'
                                   : 'bg-yellow-100 text-yellow-700'
@@ -518,7 +535,7 @@ const UserAdmin = () => {
                             </span>
                             {!item.emailVerified && (
                               <button
-                                className={`px-3 py-1 text-xs rounded-full ${verifyingEmail[userId] ? 'bg-gray-300 cursor-not-allowed' : 'bg-emerald-600 hover:bg-emerald-700'} text-white`}
+                                className={`px-2 py-1 text-xs rounded-full ${verifyingEmail[userId] ? 'bg-gray-300 cursor-not-allowed' : 'bg-emerald-600 hover:bg-emerald-700'} text-white`}
                                 onClick={() => handleVerifyEmail(userId)}
                                 disabled={!!verifyingEmail[userId]}
                                 title="Mark email as verified"
@@ -528,7 +545,7 @@ const UserAdmin = () => {
                             )}
                           </div>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
+                        <td className="px-3 py-3 whitespace-nowrap text-center text-sm font-medium">
                           <Tippy
                             content={<span>View Property</span>}
                             animation="scale"

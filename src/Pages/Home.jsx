@@ -10,7 +10,7 @@ import OurServices from "../Components/HomePageComponents/ourServices";
 import { Helmet } from "react-helmet";
 // import Footer from "../Components/Actual_Components/Footer";
 import Footer from "../Components/Actual_Components/Footer";
-import AuthModal from "../Components/AuthModal";
+import AuthModal from "../Resister/AuthModal";
 import { Link } from "react-router-dom";
 import BackToTopButton from "./BackToTopButton";
 import PossessionProperty from "../Components/PossessionProperty";
@@ -533,7 +533,7 @@ const Home = () => {
                 {/* Image block with button immediately below */}
                 <div className="mt-3">
                   <img
-                    src="/Images/Shubh_Deepawali_Hindi_Greeting_PNG___Happy_Diwali_Clipart-PNGLove.com.png"
+                    src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/festival-images/new-year-offer-image.webp"
                     alt="Post property illustration"
                     className="w-full h-auto object-contain max-h-44 md:max-h-56"
                     loading="lazy"
@@ -790,6 +790,39 @@ const Home = () => {
        {/* Auth Modal for login/register */}
         <AuthModal open={authOpen} onClose={() => setAuthOpen(false)} defaultView={authDefaultView} />
  
+        {/* Mobile Sticky Post Property Card - Right Side Center */}
+        {isSmallerThan768 && (
+          <div className="fixed right-0 top-1/2 -translate-y-1/2 z-[9999] xl:hidden">
+            <button
+              onClick={() => {
+                const token = localStorage.getItem("myToken");
+                if (token) {
+                  window.location.href = "/postproperty";
+                } else {
+                  setAuthDefaultView('login');
+                  setAuthOpen(true);
+                }
+              }}
+              className="bg-red-600 text-white font-bold text-sm px-3 py-6 rounded-l-2xl shadow-2xl hover:bg-red-700 transition-all duration-300 flex flex-col items-center justify-center leading-tight"
+            >
+              <span>P</span>
+              <span>O</span>
+              <span>S</span>
+              <span>T</span>
+              <span className="my-1"></span>
+              <span className="my-1"></span>
+              <span>P</span>
+              <span>R</span>
+              <span>O</span>
+              <span>P</span>
+              <span>E</span>
+              <span>R</span>
+              <span>T</span>
+              <span>Y</span>
+            </button>
+          </div>
+        )}
+
         {/* Place FormHome below the two-column layout */}
         {/* <FormHome /> */}
  

@@ -11,49 +11,49 @@ function SpacesAvailable() {
     { 
       title: "Residential Projects", 
       link: "/property/residential/", 
-      image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/dream+property/residencialprojects.webp",
+      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/residential.webp",
       description: "Luxury apartments and homes in prime locations",
       badge: "Popular"
     },
     { 
       title: "Commercial Projects", 
       link: "/projects/commercial/", 
-      image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/dream+property/commercialproperty+(1).jpg",
+      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/commercialproperty%2B(1).webp",
       description: "Premium office spaces and retail properties",
       badge: "Hot"
     },
     { 
       title: "SCO Plots", 
       link: "/sco/plots/", 
-      image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/dream+property/sco.jpg",
+      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/sco.webp",
       description: "Shop-cum-office plots for business growth",
       badge: "New"
     },
     { 
       title: "Builder & Independent Floor", 
       link: "/projects/independentfloors/", 
-      image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/dream+property/builderandindepedent.jpg",
+      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/builderandindepedent.webp",
       description: "Independent floors and builder floors",
       badge: "Featured"
     },
     { 
       title: "Plots In Gurugram", 
       link: "/plots-in-gurugram/", 
-      image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/dream+property/deendayal.webp",
+      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/deendayal.webp",
       description: "Investment-ready plots in prime locations",
       badge: "Best Value"
     },
     { 
       title: "Luxury Villas", 
       link: "/projects/villas/", 
-      image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/dream+property/villas.jpg",
+      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/villas.webp",
       description: "Ultra-luxury villas with world-class amenities",
       badge: "Premium"
     },
     { 
       title: "Industrial Plots", 
-      link: "/signature-global-plots/", 
-      image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/dream+property/residential.jpg",
+      link: "/projects/industrial-plots/", 
+      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/residential.webp",
       description: "Industrial plots for manufacturing and warehousing",
       badge: "Investment"
     },

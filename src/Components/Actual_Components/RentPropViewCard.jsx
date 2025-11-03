@@ -3,18 +3,24 @@ import styled from "styled-components";
 import Footer from "./Footer";
 import api from "../../config/apiClient";
 import { Link, useNavigate } from "react-router-dom";
-import { MdFavoriteBorder } from "react-icons/md";
 import { LOGIN } from "../../lib/route";
 import { Helmet } from "react-helmet";
 import CustomSkeleton from "../../Utils/CustomSkeleton";
 import { FilterIcon, PropertyIcon, RupeeIcon } from "../../Assets/icons";
 import { PaginationControls } from "../../Components/Blog_Components/BlogManagement";
-import AuthModal from "../AuthModal";
+import AuthModal from "../../Resister/AuthModal";
 import { AuthContext } from "../../AuthContext";
+import { MdFavoriteBorder, MdFavorite } from "react-icons/md";
+import {
+  isFavorite as favCheck,
+  toggleFavorite,
+  subscribe,
+  hydrateFavoritesFromServer,
+} from "../../Utils/favorites";
 
 const RentPropViewCard = () => {
   const navigate = useNavigate();
-  const { isAuthenticated } = useContext(AuthContext);
+  const { isAuthenticated, user } = useContext(AuthContext);
   const [showAuth, setShowAuth] = useState(false);
   const [buyData, setBuyData] = useState([]);
   const [filterData, setFilterData] = useState([]);
@@ -32,6 +38,17 @@ const RentPropViewCard = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 18;
   const [filterModalOpen, setFilterModalOpen] = useState(false);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+
+  // Hydrate favorites once and subscribe for cross-component updates
+  useEffect(() => {
+    hydrateFavoritesFromServer();
+    const unsubscribe = subscribe(() => {
+      // Force re-render when favorites change
+      setBuyData(prev => [...prev]);
+    });
+    return unsubscribe;
+  }, []);
 
   // Check and redirect if URL is missing trailing slash
   useEffect(() => {
@@ -208,6 +225,8 @@ const RentPropViewCard = () => {
     if (!price) return '0';
     return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   };
+
+
 
   const propertyTypes = [
     "Residential",
@@ -427,7 +446,7 @@ const RentPropViewCard = () => {
       )}
 
       {/* Main Content */}
-      <main className="min-h-screen bg-gray-50 pt-8 pb-10">
+      <main className="min-h-screen bg-gray-50 pt-24 pb-10">
         <div className="max-w-7xl mx-auto px-4">
           
           {/* Enhanced Header Title Section */}
@@ -660,29 +679,63 @@ const RentPropViewCard = () => {
                       {/* Property Image */}
                       <div className="relative overflow-hidden">
                         <img
-                          src={property.frontImage?.url}
+                          src={property.thumbnailImage?.url || property.frontImage?.url}
                           alt={property.propertyName}
                           className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-105"
                           loading="lazy"
                         />
                         {/* Heart/Wishlist Button */}
-                        <button
+                         <button
+                          type="button"
+                          aria-label={
+                            favCheck(property._id)
+                              ? "Remove from wishlist"
+                              : isAuthenticated
+                              ? "Add to wishlist"
+                              : "Login to add to wishlist"
+                          }
+                          title={
+                            favCheck(property._id)
+                              ? "Remove from wishlist"
+                              : isAuthenticated
+                              ? "Add to wishlist"
+                              : "Login to add to wishlist"
+                          }
+                          className={`absolute top-3 right-3 inline-flex items-center justify-center w-8 h-8 rounded-full ${
+                            favCheck(property._id) ? "" : "bg-transparent"
+                          } border-white transition`}
                           onClick={(e) => {
                             e.preventDefault();
                             e.stopPropagation();
-                            if (!isAuthenticated) {
-                              setShowAuth(true);
-                              return;
-                            }
-                            // TODO: handle wishlist action for logged-in users
+                            toggleFavorite(property._id);
                           }}
-                          className="absolute top-3 right-3 w-10 h-10 bg-white/90 hover:bg-white rounded-full flex items-center justify-center shadow-md transition"
-                          aria-label="Add to wishlist (login required)"
-                          title="Login to add to wishlist"
                         >
-                          <MdFavoriteBorder className="text-gray-600 hover:text-red-500 text-xl" />
+                          {favCheck(property._id) ? (
+                            <svg
+                              width="24"
+                              height="24"
+                              viewBox="0 0 24 24"
+                              fill="red"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                            </svg>
+                          ) : (
+                            <svg
+                              width="24"
+                              height="24"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="#d1d5db"
+                              strokeWidth="2"
+                              xmlns="http://www.w3.org/2000/svg"
+                              className="opacity-100"
+                            >
+                              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                            </svg>
+                          )}
                         </button>
-                        <div className="absolute top-3 right-3">
+                        <div className="absolute top-3 right-54">
                           <span className="bg-red-500 text-white px-2 py-1 rounded-full text-xs font-semibold">
                             Rental
                           </span>
@@ -698,7 +751,7 @@ const RentPropViewCard = () => {
 
                         {/* Location */}
                         <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
-                          <svg className="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <svg className="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                           </svg>

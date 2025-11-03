@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, startTransition } from "react";
 import { useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import Api_Service from "../Redux/utils/Api_Service";
@@ -26,9 +26,8 @@ const GlobalBudgetPrice = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [filteredProjects, setFilteredProjects] = useState([]);
 
-  // Extract budget range from URL
-  const getBudgetRange = () => {
-    const path = location.pathname;
+  // Helper function to extract budget range from URL
+  const getBudgetRangeFromPath = (path) => {
     if (path.includes('under-1-cr')) return 'under1cr';
     if (path.includes('1-5-cr')) return '1to5cr';
     if (path.includes('5-10-cr')) return '5to10cr';
@@ -37,8 +36,6 @@ const GlobalBudgetPrice = () => {
     if (path.includes('above-50-cr')) return 'above50cr';
     return 'under1cr'; // default
   };
-
-  const budgetRange = getBudgetRange();
 
   // Filter projects by budget range
   const filterProjectsByBudget = (projects, budgetRange) => {
@@ -91,43 +88,44 @@ const GlobalBudgetPrice = () => {
     }
   }, []);
 
+  // Force component re-render when URL changes by updating key
+  const [componentKey, setComponentKey] = useState(0);
+
   useEffect(() => {
-    console.log('Budget page - allProjects updated:', allProjects.length);
+    // Force component re-render when URL changes
+    setComponentKey(prev => prev + 1);
+  }, [location.pathname]);
 
-    // Calculate budget range dynamically based on current location
-    const currentBudgetRange = (() => {
-      const path = location.pathname;
-      if (path.includes('under-1-cr')) return 'under1cr';
-      if (path.includes('1-5-cr')) return '1to5cr';
-      if (path.includes('5-10-cr')) return '5to10cr';
-      if (path.includes('10-20-cr')) return '10to20cr';
-      if (path.includes('20-50-cr')) return '20to50cr';
-      if (path.includes('above-50-cr')) return 'above50cr';
-      return 'under1cr'; // default
-    })();
+  useEffect(() => {
+    console.log('🔍 Budget page - allProjects updated:', allProjects.length);
+    console.log('🔍 Budget page - location changed:', location.pathname);
+    console.log('🔍 Budget page - sample project:', allProjects[0]);
 
-    console.log('Budget page - current budget range:', currentBudgetRange);
+    // Get current budget range from URL
+    const currentBudgetRange = getBudgetRangeFromPath(location.pathname);
+    console.log('🔍 Budget page - current budget range:', currentBudgetRange);
 
     const filtered = filterProjectsByBudget(allProjects, currentBudgetRange);
-    console.log('Budget page - filtered projects:', filtered.length);
-    setFilteredProjects(filtered);
-  }, [allProjects, location.pathname, location.search]); // Add location.search to catch query param changes too
+    console.log('🔍 Budget page - filtered projects:', filtered.length);
+    console.log('🔍 Budget page - sample filtered project:', filtered[0]);
+    
+    // Use startTransition for smooth state updates
+    startTransition(() => {
+      setFilteredProjects(filtered);
+      
+      // Reset loading state when URL changes
+      if (allProjects.length > 0) {
+        setIsLoading(false);
+      }
+    });
+  }, [allProjects, location.pathname, location.search, componentKey]);
 
   return (
     <>
       <GlobalFilterTemplate
-        key={location.pathname} // Force re-render when route changes
+        key={`${location.pathname}-${componentKey}`} // Force re-render when route changes
         pageType="budget"
-        pageConfig={{ budgetRange: (() => {
-          const path = location.pathname;
-          if (path.includes('under-1-cr')) return 'under1cr';
-          if (path.includes('1-5-cr')) return '1to5cr';
-          if (path.includes('5-10-cr')) return '5to10cr';
-          if (path.includes('10-20-cr')) return '10to20cr';
-          if (path.includes('20-50-cr')) return '20to50cr';
-          if (path.includes('above-50-cr')) return 'above50cr';
-          return 'under1cr'; // default
-        })() }}
+        pageConfig={{ budgetRange: getBudgetRangeFromPath(location.pathname) }}
         projects={filteredProjects}
         isLoading={isLoading}
       />

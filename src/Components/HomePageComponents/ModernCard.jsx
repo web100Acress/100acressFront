@@ -59,7 +59,7 @@ function ModernCard() {
           {/* Image Section */}
           <div className="image-section">
             <img
-              src={item.frontImage?.url}
+              src={item.thumbnailImage?.url || item.frontImage?.url}
               alt={item.projectName}
               className="property-image"
               loading="lazy"

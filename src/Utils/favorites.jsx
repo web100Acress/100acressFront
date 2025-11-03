@@ -170,7 +170,11 @@ export async function hydrateFavoritesFromServer() {
     notifyAll(merged);
     return merged;
   } catch (e) {
-    // ignore; stay local-only if server not reachable
+    // ignore 403 errors (user not authorized for favorites), stay local-only
+    if (e?.response?.status === 403) {
+      return getFavorites();
+    }
+    // ignore other errors; stay local-only if server not reachable
     return getFavorites();
   }
 }

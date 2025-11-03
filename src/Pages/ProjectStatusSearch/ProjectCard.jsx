@@ -1,4 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
+import { AuthContext } from '../../AuthContext';
+import AuthModal from '../../Resister/AuthModal';
+import {
+  isFavorite as favCheck,
+  toggleFavorite,
+  subscribe,
+  hydrateFavoritesFromServer,
+} from '../../Utils/favorites';
 
 export default function ProjectCard({ 
   project, 
@@ -13,7 +21,10 @@ export default function ProjectCard({
   onWhatsApp,
   projectStatus = 'upcoming'
 }) {
-  const image = project?.frontImage?.url || project?.frontImage?.cdn_url || '/Images/dummy.webp';
+  const { isAuthenticated } = useContext(AuthContext);
+  const [showAuth, setShowAuth] = useState(false);
+  const [favTick, setFavTick] = useState(0);
+  const image = project?.thumbnailImage?.url || project?.frontImage?.url || project?.frontImage?.cdn_url || '/Images/dummy.webp';
   
   const priceText = (() => {
     const min = project?.minPrice;
@@ -67,14 +78,65 @@ export default function ProjectCard({
 
   const openProject = () => onExplore?.(project);
 
+  // Hydrate favorites once and subscribe for cross-component updates
+  useEffect(() => {
+    try {
+      hydrateFavoritesFromServer();
+    } catch (_) {}
+    const unsub = subscribe(() => setFavTick((v) => v + 1));
+    return () => {
+      if (typeof unsub === "function") unsub();
+    };
+  }, []);
+
+  const handleFavoriteClick = (e, id, project) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const snapshot = {
+      title: project?.projectName,
+      frontImage: project?.frontImage,
+      thumbnailImage: project?.thumbnailImage,
+      priceText: (() => {
+        try {
+          const min = project?.minPrice ?? project?.price;
+          if (!min) return "Price on request";
+          return `₹${min} Cr`;
+        } catch {
+          return undefined;
+        }
+      })(),
+      url: project.project_url ? `/${project.project_url}/` : undefined,
+      city: project?.city,
+      maxPrice: project?.maxPrice || project?.price,
+      minPrice: project?.minPrice,
+    };
+
+    if (!isAuthenticated) {
+      // Show login modal
+      setShowAuth(true);
+      // Show toast notification
+      if (typeof window.toast === "function") {
+        window.toast.info("Please login to save properties to your favorites");
+      }
+      return;
+    }
+    toggleFavorite(id, snapshot, isAuthenticated);
+    setFavTick((v) => v + 1);
+  };
+
+  // Calculate project ID for favorites
+  const id = project?._id || project?.id || project?.slug || project?.project_url;
+
   return (
-    <article
-      className={`bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden ${cardClass} cursor-pointer group`}
-      onClick={openProject}
-      role="button"
-      tabIndex={0}
-      onKeyDown={(e) => { if (e.key === 'Enter') openProject(); }}
-    >
+    <>
+      <article
+        className={`bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden ${cardClass} cursor-pointer group`}
+        onClick={openProject}
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => { if (e.key === 'Enter') openProject(); }}
+      >
       {/* Image Section */}
       <div className={`${view === 'list' ? 'w-1/3' : ''} relative h-40 sm:h-48 overflow-hidden`}>
         <img 
@@ -95,23 +157,54 @@ export default function ProjectCard({
         </div>
         
         {/* Heart and Share */}
-        <div className="absolute top-2 right-2 flex gap-1">
+        <div className="absolute top-0 right-0 flex gap-1">
           <button
-            onClick={(e) => { e.stopPropagation(); onFavorite?.(project); }}
-            className="w-6 h-6 rounded-full bg-white/90 flex items-center justify-center shadow-sm hover:shadow-md transition-all duration-200"
-            aria-label={isFav ? 'Unsave' : 'Save'}
+            type="button"
+            aria-label={
+              favCheck(id)
+                ? "Remove from wishlist"
+                : isAuthenticated
+                ? "Add to wishlist"
+                : "Login to add to wishlist"
+            }
+            title={
+              favCheck(id)
+                ? "Remove from wishlist"
+                : isAuthenticated
+                ? "Add to wishlist"
+                : "Login to add to wishlist"
+            }
+            className={`inline-flex items-center justify-center w-6 h-6 rounded-full hover:shadow-md transition-all duration-200 ${
+              favCheck(id) ? "" : "bg-transparent"
+            }border-white transition`}
+            onClick={(e) => handleFavoriteClick(e, id, project)}
           >
-            {isFav ? (
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="12" height="12" fill="#D32F2F">
-                <path d="M11.645 20.91l-.007-.003-.022-.012a15.247 15.247 0 01-.383-.218 25.18 25.18 0 01-4.244-3.17C4.688 15.188 3 12.9 3 10.25 3 7.902 4.902 6 7.25 6c1.273 0 2.49.495 3.39 1.384L12 8.743l1.36-1.36A4.75 4.75 0 0116.75 6C19.098 6 21 7.902 21 10.25c0 2.65-1.688 4.938-3.989 7.257a25.175 25.175 0 01-4.244 3.17 15.247 15.247 0 01-.383.218l-.022.012-.007.003a.75.75 0 01-.666 0z" />
+            {favCheck(id) ? (
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="red"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
               </svg>
             ) : (
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="#D32F2F" strokeWidth="1.5">
-                <path d="M21 10.25c0 2.65-1.688 4.938-3.989 7.257a25.175 25.175 0 01-4.244-3.17l-.383-.218-.022-.012-.007-.003-.007-.003-.022-.012-.383-.218a25.18 25.18 0 01-4.244-3.17C4.688 15.188 3 12.9 3 10.25 3 7.902 4.902 6 7.25 6c1.273 0 2.49.495 3.39 1.384L12 8.743l1.36-1.36A4.75 4.75 0 0116.75 6C19.098 6 21 7.902 21 10.25z" />
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#d1d5db"
+                strokeWidth="2"
+                xmlns="http://www.w3.org/2000/svg"
+                className="opacity-100"
+              >
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
               </svg>
             )}
           </button>
-          <button
+          {/* <button
             onClick={(e) => { e.stopPropagation(); onShare?.(project); }}
             className="w-6 h-6 rounded-full bg-white/90 flex items-center justify-center shadow-sm hover:shadow-md transition-all duration-200"
             aria-label="Share"
@@ -122,7 +215,7 @@ export default function ProjectCard({
               <circle cx="18" cy="19" r="3" />
               <path d="M8.59 13.51l6.83 3.98M15.41 6.51L8.59 10.49" />
             </svg>
-          </button>
+          </button> */}
         </div>
       </div>
 
@@ -183,5 +276,13 @@ export default function ProjectCard({
         </div>
       </div>
     </article>
+
+    {/* Auth Modal for Login/Register */}
+    <AuthModal
+      open={showAuth}
+      onClose={() => setShowAuth(false)}
+      defaultView="Login"
+    />
+    </>
   );
 }

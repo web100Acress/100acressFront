@@ -2,7 +2,7 @@ import { useDispatch } from "react-redux";
 import { spotlight, trending ,featured,upcoming,affordable,luxury,scoplots,commercial,budget,projectindelhi} from "../slice/projectSlice";
 import {gurugram,delhi,noida,goa,ayodhya,mumbai,panipat,panchkula,kasauli,karnal,jalandhar, sonipat, alwar, dubai, pushkar} from "../slice/StateProject";  
 import {allupcomingproject,builderindependentfloor,commercialProjectAll,deendayalplots,dlfsco,luxuryAll,luxuryvillas,newlaunch, readytomove, residential, scoplotsall, underconstruction,possessionafter2026,plotsingurugram,farmhouse,industrialplots,industrialprojects} from "../slice/AllSectionData";
-import { signatureglobal,m3m,dlf,experion,elan,bptp,adani,smartworld,trevoc,indiabulls,centralpark,emaarindia, godrej, whiteland, aipl, birla, sobha, trump, puri, aarize} from "../slice/BuilderSlice";
+import { signatureglobal,m3m,dlf,experion,elan,bptp,adani,smartworld,trevoc,indiabulls,centralpark,emaarindia, godrej, whiteland, aipl, birla, sobha, trump, puri, aarize, maxestates} from "../slice/BuilderSlice";
 import {Possessionin2025,Possessionin2026} from "../slice/PossessionSlice";
 import {bptpplots,orrisplots} from "../slice/ProjectOverviewSlice";
 
@@ -328,6 +328,35 @@ const Api_service = () => {
         dispatch(possessionafter2026(AllProjectbyQuery));
       }else
       if(query === "commercial"){
+        // First try the dedicated commercial endpoint
+        console.log('Trying dedicated commercial endpoint...');
+        try {
+          const response = await api.get(`${API_ROUTES.projectsBase()}/commercial`);
+          const commercialData = response.data.data;
+          if (commercialData && commercialData.length > 0) {
+            console.log('Dedicated commercial endpoint successful, found', commercialData.length, 'projects');
+            dispatch(commercialProjectAll(commercialData));
+            return;
+          }
+        } catch (endpointError) {
+          console.log('Dedicated commercial endpoint failed, trying general search...');
+        }
+
+        // Fallback to general search with comprehensive query
+        if (!AllProjectbyQuery || AllProjectbyQuery.length === 0) {
+          console.log('Commercial query returned no results, trying allcommercialprojects fallback...');
+          try {
+            const fallbackResponse = await api.get(`${API_ROUTES.projectsBase()}/projectsearch?allcommercialprojects=1&limit=${limit}`);
+            const fallbackData = fallbackResponse.data.data;
+            if (fallbackData && fallbackData.length > 0) {
+              console.log('Fallback query successful, found', fallbackData.length, 'commercial projects');
+              dispatch(commercialProjectAll(fallbackData));
+              return;
+            }
+          } catch (fallbackError) {
+            console.error('Fallback query also failed:', fallbackError);
+          }
+        }
         dispatch(commercialProjectAll(AllProjectbyQuery));
       }else
       if(query === "scoplots"){
@@ -522,6 +551,11 @@ const Api_service = () => {
         case 'Aarize Developers':
           console.log('🔍 Dispatching aarize action with data:', BuilderbyQuery);
           dispatch(aarize(BuilderbyQuery));
+          break;
+        case 'Max Estates':
+        case 'max estates':
+          console.log('🔍 Dispatching maxestates action with data:', BuilderbyQuery);
+          dispatch(maxestates(BuilderbyQuery));
           break;
 
         default:

@@ -3,6 +3,8 @@ import Footer from "../Components/Actual_Components/Footer";
 import { useParams, Link, useNavigate, useLocation } from "react-router-dom";
 import api from "../config/apiClient";
 import { API_ROUTES } from "../Redux/utils/Constant_Service";
+import { useSelector } from "react-redux";
+import Api_Service from "../Redux/utils/Api_Service";
 
 import { DataContext } from "../MyContext";
 import { Helmet } from "react-helmet";
@@ -20,8 +22,12 @@ import {
 
 const BlogView = () => {
   const { allupcomingProject } = useContext(DataContext);
+  const TrendingProjects = useSelector(store => store?.project?.trending) || [];
+  const SpotlightProjects = useSelector(store => store?.project?.spotlight) || [];
+  const { getTrending, getSpotlight } = Api_Service();
   const [data, setData] = useState({});
   const [trendingProjects, setTrendingProjects] = useState([]);
+  const [spotlightProjects, setSpotlightProjects] = useState([]);
   // Cache for related project thumbnails and meta resolved from project details
   const [relatedThumbs, setRelatedThumbs] = useState({});
   const [relatedMeta, setRelatedMeta] = useState({}); // key: project_url -> { location, minPrice, maxPrice }
@@ -47,9 +53,26 @@ const BlogView = () => {
   const isMobile = useIsMobile ? useIsMobile() : false;
   const [showMobileEnquiry, setShowMobileEnquiry] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
+  // Table of Contents state
+  const [tocItems, setTocItems] = useState([]);
+  const [activeTocId, setActiveTocId] = useState('');
+  const [showToc, setShowToc] = useState(true);
+  // Sidebar collapsible sections
+  const [sidebarSections, setSidebarSections] = useState({
+    enquiry: true,
+    popularProjects: true,
+    peopleExploring: true,
+    popularSite: true
+  });
+  // Scroll progress
+  const [scrollProgress, setScrollProgress] = useState(0);
+  // Category filter state
+  const [activeCategory, setActiveCategory] = useState('all');
   // Sidebar sticky
   const containerRef = useRef(null);
   const sidebarRef = useRef(null);
+  // Sliding trending projects sidebar
+  const [showTrendingSidebar, setShowTrendingSidebar] = useState(false);
   // People are searching (unique phrasing and links)
   const peopleSearch = [
     { label: 'Projects in Gurugram', url: '/projects-in-gurugram' },
@@ -77,7 +100,7 @@ const BlogView = () => {
   });
 
   // Floating enquiry (bottom-right) collapsible
-  const [showFloatingEnquiry, setShowFloatingEnquiry] = useState(true);
+  const [showFloatingEnquiry, setShowFloatingEnquiry] = useState(false);
   // Engagement state
   const [likes, setLikes] = useState(0);
   const [shares, setShares] = useState(0);
@@ -705,21 +728,37 @@ const BlogView = () => {
     return `₹ ${n.toLocaleString('en-IN')}`;
   };
 
-  // Fetch trending projects for sidebar
+  // Fetch trending projects from Redux store (same as home page)
   useEffect(() => {
-    const fetchTrending = async () => {
-      try {
-        const url = `${API_ROUTES.projectsBase()}/trending`;
-        const res = await api.get(url, { timeout: 15000 });
-        const list = res?.data?.data || [];
-        setTrendingProjects(Array.isArray(list) ? list.slice(0, 5) : []);
-      } catch (error) {
-        console.error("Error fetching trending projects:", error);
-        setTrendingProjects([]);
-      }
-    };
-    fetchTrending();
+    // Fetch trending projects if not already loaded
+    if (!TrendingProjects || TrendingProjects.length === 0) {
+      console.log("Fetching trending projects from Redux...");
+      getTrending();
+    }
+    // Fetch spotlight/recommended projects
+    if (!SpotlightProjects || SpotlightProjects.length === 0) {
+      console.log("Fetching spotlight projects from Redux...");
+      getSpotlight();
+    }
   }, []);
+
+  // Update local state when Redux store updates
+  useEffect(() => {
+    console.log("TrendingProjects from Redux:", TrendingProjects?.length || 0);
+    if (TrendingProjects && Array.isArray(TrendingProjects) && TrendingProjects.length > 0) {
+      console.log("Setting trending projects from Redux store:", TrendingProjects.length);
+      setTrendingProjects(TrendingProjects.slice(0, 10));
+    }
+  }, [TrendingProjects]);
+
+  // Update spotlight projects when Redux store updates
+  useEffect(() => {
+    console.log("SpotlightProjects from Redux:", SpotlightProjects?.length || 0);
+    if (SpotlightProjects && Array.isArray(SpotlightProjects) && SpotlightProjects.length > 0) {
+      console.log("Setting spotlight projects:", SpotlightProjects.length);
+      setSpotlightProjects(SpotlightProjects.slice(0, 5));
+    }
+  }, [SpotlightProjects]);
 
   const createSanitizedHTML = (dirtyHTML) => ({
     __html: DOMPurify.sanitize(dirtyHTML, {
@@ -747,21 +786,30 @@ const BlogView = () => {
     faqs,
   } = data;
 
-  // Ref to post-process content images (fix lazy attrs, http->https, fallback on error)
+  // Show trending sidebar after 2 seconds
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowTrendingSidebar(true);
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Ref to post-process content images and generate TOC
   const contentRef = useRef(null);
   useEffect(() => {
     const root = contentRef.current;
     if (!root) return;
+    
+    // Process images
     const imgs = root.querySelectorAll('img');
     imgs.forEach((img) => {
       try {
-        // Upgrade lazy-loaded images
         if (img.dataset && img.dataset.src && !img.getAttribute('src')) {
           img.setAttribute('src', img.dataset.src);
         }
         if (!img.getAttribute('loading')) img.setAttribute('loading', 'lazy');
         if (!img.getAttribute('referrerpolicy')) img.setAttribute('referrerpolicy', 'no-referrer');
-        // Upgrade insecure URLs when possible
         const src = img.getAttribute('src') || '';
         if (/^http:\/\//i.test(src)) {
           img.setAttribute('src', src.replace(/^http:\/\//i, 'https://'));
@@ -769,13 +817,80 @@ const BlogView = () => {
         if (/^\/\//.test(src)) {
           img.setAttribute('src', 'https:' + src);
         }
-        // Attach error fallback
         img.onerror = () => {
           img.src = FALLBACK_IMG;
         };
       } catch (_) { /* ignore */ }
     });
+
+    // Generate Table of Contents from h2 and h3 elements
+    const headings = root.querySelectorAll('h2, h3');
+    const items = [];
+    headings.forEach((heading, index) => {
+      const id = `heading-${index}`;
+      heading.id = id;
+      items.push({
+        id,
+        text: heading.textContent,
+        level: heading.tagName.toLowerCase()
+      });
+    });
+    setTocItems(items);
+
+    // Intersection Observer for active TOC highlighting
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setActiveTocId(entry.target.id);
+          }
+        });
+      },
+      { rootMargin: '-100px 0px -66%' }
+    );
+
+    headings.forEach((heading) => observer.observe(heading));
+
+    return () => {
+      headings.forEach((heading) => observer.unobserve(heading));
+    };
   }, [data.blog_Description]);
+
+  // Scroll progress tracker
+  useEffect(() => {
+    const handleScroll = () => {
+      const windowHeight = window.innerHeight;
+      const documentHeight = document.documentElement.scrollHeight;
+      const scrollTop = window.scrollY;
+      const progress = (scrollTop / (documentHeight - windowHeight)) * 100;
+      setScrollProgress(Math.min(100, Math.max(0, progress)));
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Smooth scroll to TOC item
+  const scrollToHeading = (id) => {
+    const element = document.getElementById(id);
+    if (element) {
+      const offset = 100;
+      const elementPosition = element.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - offset;
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+    }
+  };
+
+  // Toggle sidebar sections
+  const toggleSidebarSection = (section) => {
+    setSidebarSections(prev => ({
+      ...prev,
+      [section]: !prev[section]
+    }));
+  };
 
   // Brand colors
   const BRAND_RED = '#b8333a';
@@ -896,7 +1011,7 @@ const BlogView = () => {
 
 
   return (
-    <div className="blog-view bg-gray-50 min-h-screen">
+    <div className="blog-view bg-white min-h-screen" style={{ fontFamily: "'Lato', 'Inter', sans-serif" }}>
       <Helmet>
         <title>{data.blog_Title || 'Blog Post'}</title>
         <meta name="description" content={data.metaDescription || data.blog_Description?.substring(0, 160)} />
@@ -905,23 +1020,52 @@ const BlogView = () => {
         <meta property="og:image" content={data.blog_Image?.display || FALLBACK_IMG} />
         <meta name="twitter:card" content="summary_large_image" />
         {blog_Image?.url && <meta name="twitter:image" content={blog_Image.url} />}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Lato:wght@300;400;700&display=swap" rel="stylesheet" />
       </Helmet>
 
+      {/* Scroll Progress Bar */}
+      <div className="fixed top-0 left-0 w-full h-1 bg-gray-200 z-[9999]">
+        <div 
+          className="h-full bg-gradient-to-r from-red-500 to-red-600 transition-all duration-300"
+          style={{ width: `${scrollProgress}%` }}
+        />
+      </div>
 
-      {/* Modern Brand-Aligned Title */}
-      <div className="max-w-4xl mx-auto px-4 pt-12 pb-6 mt-10">
-        <div className="flex flex-col items-center justify-center">
-          <h1
-            className="text-center font-['Poppins','Inter',sans-serif] font-bold md:text-[36px] text-[28px] leading-tight mb-2 tracking-tight animate-fadeIn"
-            style={{ letterSpacing: '-0.5px' }}
-          >
-            <span style={{ color: BRAND_RED, fontWeight: 800 }}>100acress</span>
-            <span style={{ color: DARK_TEXT, fontWeight: 500 }}> Blog</span>
-          </h1>
-          {/* Gradient underline */}
-          <div className="w-32 h-1 rounded-full mx-auto mb-2" style={{ background: 'linear-gradient(90deg, #f5e9e0 0%, #e0e7ef 100%)' }} />
-          <div className="text-gray-500 text-sm text-center max-w-xl animate-fadeIn delay-100">
-            {TAGLINE}
+      {/* Sticky Category Navigation Bar */}
+      <div className="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="flex items-center justify-between h-14">
+            <Link to="/blog" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+              <span style={{ color: BRAND_RED, fontWeight: 700, fontFamily: "'Poppins', sans-serif", fontSize: '18px' }}>100acress</span>
+              <span style={{ color: DARK_TEXT, fontWeight: 500, fontFamily: "'Poppins', sans-serif", fontSize: '18px' }}>Blog</span>
+            </Link>
+            <nav className="hidden md:flex items-center gap-6">
+              {['News', 'Market Trends', 'Insights', 'Property Tips'].map((cat) => (
+                <button
+                  key={cat}
+                  onClick={() => setActiveCategory(cat.toLowerCase().replace(' ', '-'))}
+                  className={`text-sm font-medium transition-all pb-1 ${
+                    activeCategory === cat.toLowerCase().replace(' ', '-')
+                      ? 'text-red-600 border-b-2 border-red-600'
+                      : 'text-gray-600 hover:text-red-600'
+                  }`}
+                  style={{ fontFamily: "'Poppins', sans-serif" }}
+                >
+                  {cat}
+                </button>
+              ))}
+            </nav>
+            <button 
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              className="text-gray-600 hover:text-red-600 transition-colors"
+              aria-label="Scroll to top"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
+              </svg>
+            </button>
           </div>
         </div>
       </div>
@@ -1205,254 +1349,387 @@ const BlogView = () => {
             dangerouslySetInnerHTML={createSanitizedHTML(blog_Description)}
           ></div>
 
-          {/* FAQ Section */}
-          {enableFAQ && Array.isArray(faqs) && faqs.length > 0 && (
-            <div className="mt-8">
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h3>
-              <div className="divide-y divide-gray-200 rounded-2xl bg-white shadow-sm">
-                {faqs.map((f, idx) => (
-                  <details key={idx} className="group p-4 open:bg-gray-50">
-                    <summary className="flex cursor-pointer list-none items-center justify-between gap-4">
-                      <span className="font-medium text-gray-900">Q. {f?.question || ''}</span>
-                      <span className="text-gray-500 group-open:rotate-180 transition-transform">▾</span>
-                    </summary>
-                    <div
-                      className="mt-3 prose max-w-none prose-p:my-2 prose-a:text-primaryRed prose-img:rounded"
-                      dangerouslySetInnerHTML={createSanitizedHTML(f?.answer || '')}
-                    ></div>
-                  </details>
-                ))}
-              </div>
-            </div>
-          )}
-          {/* Comments Section moved below FAQ */}
-          {data?._id && (
-            <div className="mt-8 p-6 bg-gray-50 rounded-lg">
-              <h3 className="text-xl font-bold mb-4 text-gray-800 flex items-center gap-2">
-                <MessageCircle size={20} />
-                Comments ({commentsCount})
-              </h3>
-              {/* Add Comment Form */}
-              <div className="mb-6 p-4 bg-white rounded-lg border">
-                <h4 className="font-semibold mb-3 text-gray-700">Leave a Comment</h4>
-                <div className="space-y-3">
-                  <input
-                    type="text"
-                    placeholder="Your name (optional)"
-                    value={commentName}
-                    onChange={(e) => setCommentName(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                  <textarea
-                    placeholder="Write your comment here..."
-                    value={commentMsg}
-                    onChange={(e) => setCommentMsg(e.target.value)}
-                    rows={3}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                  <button
-                    onClick={async () => {
-                      if (!commentMsg.trim()) return;
-                      try {
-                        const payload = { name: commentName || 'Anonymous', message: commentMsg.trim() };
-                        const r = await api.post(`blog/${data._id}/comment`, payload);
-                        const d = r?.data?.data || {};
-                        setCommentsCount(d.commentsCount || 0);
-                        setComments(Array.isArray(d.comments) ? d.comments.slice(-5).reverse() : []);
-                        setCommentName('');
-                        setCommentMsg('');
-                      } catch (err) {
-                        console.error('Comment error:', err);
-                      }
-                    }}
-                    disabled={!commentMsg.trim()}
-                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    Post Comment
-                  </button>
+            {/* FAQ Section */}
+            {enableFAQ && Array.isArray(faqs) && faqs.length > 0 && (
+              <div className="mt-8 bg-white rounded-2xl p-6 md:p-8 border border-gray-100 shadow-lg">
+                <h3 
+                  className="text-2xl font-bold mb-6"
+                  style={{ color: DARK_TEXT, fontFamily: "'Poppins', sans-serif" }}
+                >
+                  Frequently Asked Questions
+                </h3>
+                <div className="divide-y divide-gray-200">
+                  {faqs.map((f, idx) => (
+                    <details key={idx} className="group py-4">
+                      <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-medium text-gray-900 hover:text-red-600 transition-colors">
+                        <span className="text-lg">Q. {f?.question || ''}</span>
+                        <span className="text-gray-500 group-open:rotate-180 transition-transform duration-300">
+                          <ChevronDown size={20} />
+                        </span>
+                      </summary>
+                      <div
+                        className="mt-4 prose max-w-none prose-p:my-2 prose-a:text-red-600 prose-img:rounded text-gray-700"
+                        dangerouslySetInnerHTML={createSanitizedHTML(f?.answer || '')}
+                      />
+                    </details>
+                  ))}
                 </div>
               </div>
-              {/* Display Comments */}
-              {comments.length > 0 ? (
-                <div className="space-y-4">
-                  {comments.map((comment, idx) => (
-                    <div key={idx} className="p-4 bg-white rounded-lg border">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="font-semibold text-gray-700">{comment.name || 'Anonymous'}</span>
-                        <span className="text-sm text-gray-500">
-                          {new Date(comment.createdAt).toLocaleDateString()}
-                        </span>
+            )}
+
+            {/* Phase 6: Related Projects Card Section */}
+            {relatedProjects && relatedProjects.length > 0 && (
+              <div className="bg-gradient-to-br from-gray-50 to-white rounded-2xl p-6 md:p-8 border border-gray-100 shadow-lg">
+                <h3 
+                  className="text-2xl font-bold mb-6 flex items-center gap-2"
+                  style={{ color: DARK_TEXT, fontFamily: "'Poppins', sans-serif" }}
+                >
+                  <span className="text-2xl">🏗️</span>
+                  RELATED PROJECTS
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {relatedProjects.map((project, idx) => {
+                    const name = project?.projectName || 'Project';
+                    const url = project?.project_url || '';
+                    const thumbnail = project?.thumbnail || '';
+                    const rawImg = (relatedThumbs[url] || thumbnail || FALLBACK_IMG);
+                    const img = getBestImageUrl(rawImg);
+
+                    const handleProjectClick = () => {
+                      try {
+                        if (!url) return;
+                        let slug = url;
+                        if (slug && /^(https?:)?\/\//i.test(slug)) {
+                          try {
+                            const u = new URL(slug, window.location.origin);
+                            const parts = u.pathname.split('/').filter(Boolean);
+                            slug = parts[parts.length - 1] || '';
+                          } catch (_) { /* ignore */ }
+                        }
+                        if (!slug) return;
+                        const path = `/${slug}/`;
+                        history(path);
+                        try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (_) {}
+                      } catch (_) { /* noop */ }
+                    };
+
+                    const meta = relatedMeta[url] || {};
+                    const fallbackLoc = project?.location || project?.city || '';
+                    const showLoc = meta?.location || fallbackLoc || '';
+                    const priceLine = (() => {
+                      const a = typeof meta.minPrice === 'number' ? formatINRShort(meta.minPrice) : null;
+                      const b = typeof meta.maxPrice === 'number' ? formatINRShort(meta.maxPrice) : null;
+                      if (a && b) return `${a} - ${b}`;
+                      if (a || b) return `${a || b}`;
+                      return '';
+                    })();
+
+                    return (
+                      <div
+                        key={idx}
+                        className="group bg-white rounded-xl border border-gray-200 overflow-hidden cursor-pointer transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
+                        role="button"
+                        tabIndex={0}
+                        onClick={handleProjectClick}
+                        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleProjectClick(); } }}
+                        title={name}
+                      >
+                        <div className="relative h-40 overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200">
+                          <img
+                            src={img}
+                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                            alt={name}
+                            onError={onImgError}
+                            loading="lazy"
+                            referrerPolicy="no-referrer"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                        </div>
+                        <div className="p-4">
+                          <h4 className="font-bold text-gray-900 group-hover:text-red-600 transition-colors duration-200 line-clamp-2 mb-2 text-base">
+                            {name}
+                          </h4>
+                          {(showLoc || priceLine) && (
+                            <div className="flex items-center gap-2 text-sm text-gray-600">
+                              {showLoc && (
+                                <span className="flex items-center gap-1">
+                                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                  </svg>
+                                  {showLoc}
+                                </span>
+                              )}
+                              {priceLine && (
+                                <span className="font-semibold text-red-600">{priceLine}</span>
+                              )}
+                            </div>
+                          )}
+                        </div>
                       </div>
-                      <p className="text-gray-600">{comment.message}</p>
-                    </div>
-                  ))}
-                  {commentsCount > 5 && (
-                    <div className="text-center">
-                      <button className="text-blue-600 hover:text-blue-700 font-medium">
-                        View all {commentsCount} comments
-                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+          </main>
+
+          {/* Phase 5: Right Sidebar (30%) - Clean Modern Design */}
+          <aside className="lg:col-span-3 space-y-6">
+            <div className="lg:sticky lg:top-24 space-y-6 animate-fadeIn">
+
+              {/* 100acress Recommended Projects Section */}
+              {spotlightProjects.length > 0 && (
+                <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+                  <button
+                    onClick={() => toggleSidebarSection('popularProjects')}
+                    className="w-full px-6 py-4 flex items-center justify-between bg-gradient-to-r from-red-500 to-red-600 text-white font-bold hover:from-red-600 hover:to-red-700 transition-all"
+                    style={{ fontFamily: "'Poppins', sans-serif" }}
+                  >
+                    <span>100acress Recommended</span>
+                    {sidebarSections.popularProjects ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+                  </button>
+                  {sidebarSections.popularProjects && (
+                    <div className="p-4 space-y-3 max-h-96 overflow-y-auto custom-scrollbar">
+                      {spotlightProjects.map((p, idx) => {
+                        const name = p?.projectName || p?.name || p?.title || 'Project';
+                        const img = pickProjectImage(p);
+                        return (
+                          <div
+                            key={idx}
+                            className="group flex items-center gap-3 p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-red-50 hover:shadow-md transition-all duration-300"
+                            onClick={() => navigateProject(p)}
+                            role="button"
+                            tabIndex={0}
+                            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); navigateProject(p); } }}
+                          >
+                            <img
+                              src={img || FALLBACK_IMG}
+                              className="w-16 h-16 rounded-lg object-cover flex-shrink-0 shadow-sm"
+                              alt={name}
+                              onError={onImgError}
+                              referrerPolicy="no-referrer"
+                            />
+                            <div className="flex-1 min-w-0">
+                              <h4 className="font-semibold text-gray-900 group-hover:text-red-600 transition-colors line-clamp-2 text-sm">
+                                {name}
+                              </h4>
+                              {(p?.location || p?.city) && (
+                                <p className="text-xs text-gray-500 mt-1">{p.location || p.city}</p>
+                              )}
+                            </div>
+                          </div>
+                        );
+                      })}
                     </div>
                   )}
                 </div>
-              ) : (
-                <p className="text-gray-500 text-center py-4">No comments yet. Be the first to comment!</p>
               )}
-            </div>
-          )}
-        </div>
 
-        {/* Mobile-only Trending below blog content */}
-        <div className="md:hidden w-full mt-6">
-          <h3 className="text-xl font-bold mb-3 px-3 py-2 rounded-lg text-white bg-gradient-to-r from-red-500 to-red-600 shadow-sm">Trending Projects</h3>
-          <div className="space-y-2">
-            {trendingProjects.length > 0 && trendingProjects.map((p, idx) => {
-              const name = p?.projectName || p?.name || p?.title || 'Project';
-              const category = p?.category || p?.projectType || '';
-              const img = (() => {
-                const t1 = p?.thumbnailImage?.url || p?.thumbnail?.url || p?.thumb?.url || '';
-                const t2 = p?.thumbnailImage || p?.thumbnail || p?.thumb || '';
-                const fThumb = p?.frontImage?.thumbnail?.url || p?.frontImage?.thumb?.url || '';
-                const fMain = p?.frontImage?.url || '';
-                const c1 = p?.cardImage?.url || p?.cardImage || '';
-                const b1 = p?.bannerImage?.url || p?.bannerImage || '';
-                const any = p?.image || p?.project_Image || '';
-                const fromArray = Array.isArray(p?.images) && p.images.length ? (p.images[0]?.url || p.images[0]) : '';
-                const u = t1 || t2 || fThumb || c1 || fMain || b1 || fromArray || any || '';
-                return getBestImageUrl(u);
-              })();
-              return (
-                <div
-                  key={idx}
-                  className="group p-2 flex items-center gap-2 cursor-pointer hover:text-primaryRed border border-red-500 rounded-lg hover:border-red-600 bg-white shadow-sm transition duration-300 hover:[box-shadow:0_4px_12px_rgba(239,68,68,0.4)] hover:-translate-y-0.5"
-                  role="button"
-                  tabIndex={0}
-                  onClick={() => navigateProject(p)}
-                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); navigateProject(p); } }}
-                  title={name}
-                >
-                  <img
-                    src={img}
-                    className="w-12 h-12 rounded-lg object-cover flex-shrink-0"
-                    alt={name}
-                    onError={onImgError}
-                    referrerPolicy="no-referrer"
-                    crossOrigin="anonymous"
-                  />
-                  <div className="flex-1 min-w-0">
-                    <h4 className="font-semibold text-gray-900 group-hover:text-primaryRed transition-colors duration-200 line-clamp-2 text-sm">
-                      {name}
-                    </h4>
-                    <div className="text-xs text-gray-500 mt-1 line-clamp-1">
-                      {(p?.location || p?.city) ? (
-                        <span>{p.location || p.city}</span>
-                      ) : (
-                        category ? <span>{category}</span> : null
-                      )}
-                      {(() => {
-                        const a = typeof p?.minPrice === 'number' ? formatINRShort(p.minPrice) : null;
-                        const b = typeof p?.maxPrice === 'number' ? formatINRShort(p.maxPrice) : null;
-                        const price = a && b ? `${a} - ${b}` : (a || b || '');
-                        return price ? <span>{(p?.location || p?.city || category) ? ' • ' : ''}{price}</span> : null;
-                      })()}
-                    </div>
+              {/* What People Are Exploring Section - Modern Clean Design */}
+              <div className="bg-white rounded-2xl shadow-md hover:shadow-lg transition-shadow duration-300 border border-gray-100">
+                <div className="px-4 py-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2">
+                    <div className="w-1 h-5 bg-red-600 rounded-full"></div>
+                    <h3 className="text-base font-bold text-gray-900" style={{ fontFamily: "'Poppins', sans-serif" }}>
+                      What People Are Exploring
+                    </h3>
                   </div>
                 </div>
-              );
-            })}
-            {trendingProjects.length === 0 && (
-              <div className="text-sm text-gray-400">No trending projects found.</div>
-            )}
-          </div>
-        </div>
+                <div className="px-4 py-3">
+                  <ul className="space-y-2">
+                    <li>
+                      <Link to="/projects-in-gurugram/" className="flex items-center gap-3 text-gray-700 hover:text-red-600 transition-all duration-200 text-sm group">
+                        <svg className="w-4 h-4 text-red-600 opacity-70 group-hover:opacity-100 group-hover:scale-110 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        <span className="group-hover:underline">Projects in Gurugram</span>
+                      </Link>
+                    </li>
+                    <li>
+                      <Link to="/projects-in-delhi/" className="flex items-center gap-3 text-gray-700 hover:text-red-600 transition-all duration-200 text-sm group">
+                        <svg className="w-4 h-4 text-red-600 opacity-70 group-hover:opacity-100 group-hover:scale-110 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        <span className="group-hover:underline">Projects in Delhi</span>
+                      </Link>
+                    </li>
+                    <li>
+                      <Link to="/projects-in-noida/" className="flex items-center gap-3 text-gray-700 hover:text-red-600 transition-all duration-200 text-sm group">
+                        <svg className="w-4 h-4 text-red-600 opacity-70 group-hover:opacity-100 group-hover:scale-110 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        <span className="group-hover:underline">Projects in Noida</span>
+                      </Link>
+                    </li>
+                    <li>
+                      <Link to="/property-under-1-crore/" className="flex items-center gap-3 text-gray-700 hover:text-red-600 transition-all duration-200 text-sm group">
+                        <svg className="w-4 h-4 text-red-600 opacity-70 group-hover:opacity-100 group-hover:scale-110 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span className="group-hover:underline">Property under 1 Cr</span>
+                      </Link>
+                    </li>
+                    <li>
+                      <Link to="/upcoming-projects/" className="flex items-center gap-3 text-gray-700 hover:text-red-600 transition-all duration-200 text-sm group">
+                        <svg className="w-4 h-4 text-red-600 opacity-70 group-hover:opacity-100 group-hover:scale-110 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                        </svg>
+                        <span className="group-hover:underline">Upcoming Projects</span>
+                      </Link>
+                    </li>
+                    <li>
+                      <Link to="/new-launch-projects/" className="flex items-center gap-3 text-gray-700 hover:text-red-600 transition-all duration-200 text-sm group">
+                        <svg className="w-4 h-4 text-red-600 opacity-70 group-hover:opacity-100 group-hover:scale-110 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                        </svg>
+                        <span className="group-hover:underline">New Launch Projects</span>
+                      </Link>
+                    </li>
+                    <li>
+                      <Link to="/sco-plots/" className="flex items-center gap-3 text-gray-700 hover:text-red-600 transition-all duration-200 text-sm group">
+                        <svg className="w-4 h-4 text-red-600 opacity-70 group-hover:opacity-100 group-hover:scale-110 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                        </svg>
+                        <span className="group-hover:underline">SCO Plots</span>
+                      </Link>
+                    </li>
+                    <li>
+                      <Link to="/commercial-projects/" className="flex items-center gap-3 text-gray-700 hover:text-red-600 transition-all duration-200 text-sm group">
+                        <svg className="w-4 h-4 text-red-600 opacity-70 group-hover:opacity-100 group-hover:scale-110 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                        </svg>
+                        <span className="group-hover:underline">Commercial Projects</span>
+                      </Link>
+                    </li>
+                  </ul>
+                </div>
+              </div>
 
-        {/* Right Sidebar (hidden on mobile for cleaner layout) */}
-        <div ref={sidebarRef} className="hidden md:block w-full md:col-span-3 md:col-start-10 md:sticky md:top-24 self-start">
-          <div className="flex flex-col gap-8">
-          {/* Trending moved to left column */}
+              {/* Popular on Our Site Section - Modern Clean Design */}
+              <div className="bg-white rounded-2xl shadow-md hover:shadow-lg transition-shadow duration-300 border border-gray-100">
+                <div className="px-4 py-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2">
+                    <div className="w-1 h-5 bg-red-600 rounded-full"></div>
+                    <h3 className="text-base font-bold text-gray-900" style={{ fontFamily: "'Poppins', sans-serif" }}>
+                      Popular on Our Site
+                    </h3>
+                  </div>
+                </div>
+                <div className="px-4 py-3">
+                  <ul className="space-y-2">
+                    <li>
+                      <Link to="/post-property/" className="flex items-center gap-3 text-gray-700 hover:text-red-600 transition-all duration-200 text-sm group">
+                        <svg className="w-4 h-4 text-red-600 opacity-70 group-hover:opacity-100 group-hover:scale-110 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                        </svg>
+                        <span className="group-hover:underline">Post Property</span>
+                      </Link>
+                    </li>
+                    <li>
+                      <Link to="/emi-calculator/" className="flex items-center gap-3 text-gray-700 hover:text-red-600 transition-all duration-200 text-sm group">
+                        <svg className="w-4 h-4 text-red-600 opacity-70 group-hover:opacity-100 group-hover:scale-110 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                        </svg>
+                        <span className="group-hover:underline">EMI Calculator</span>
+                      </Link>
+                    </li>
+                    <li>
+                      <Link to="/rent-property/" className="flex items-center gap-3 text-gray-700 hover:text-red-600 transition-all duration-200 text-sm group">
+                        <svg className="w-4 h-4 text-red-600 opacity-70 group-hover:opacity-100 group-hover:scale-110 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                        </svg>
+                        <span className="group-hover:underline">Rent Property</span>
+                      </Link>
+                    </li>
+                    <li>
+                      <Link to="/resale-property/" className="flex items-center gap-3 text-gray-700 hover:text-red-600 transition-all duration-200 text-sm group">
+                        <svg className="w-4 h-4 text-red-600 opacity-70 group-hover:opacity-100 group-hover:scale-110 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                        </svg>
+                        <span className="group-hover:underline">Resale Property</span>
+                      </Link>
+                    </li>
+                  </ul>
+                </div>
+              </div>
 
-          {/* Right sidebar sections */}
-        <div className="space-y-8">
-          {/* People are searching */}
-          <div className="p-0">
-            <h3 className="text-xl font-bold text-gray-900 mb-3">What people are exploring</h3>
-            <ul className="space-y-2">
-              {peopleSearch.map((item, idx) => (
-                <li key={idx}>
-                  <Link to={item.url} className="text-sm text-gray-700 hover:text-primaryRed hover:underline">
-                    {item.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
+            </div>
+          </aside>
 
-          {/* Popular tools */}
-          <div className="p-0">
-            <h3 className="text-xl font-bold text-gray-900 mb-3">Popular on our site</h3>
-            <ul className="space-y-2">
-              {popularTools.map((item, idx) => (
-                <li key={idx}>
-                  <Link to={item.url} className="text-sm text-gray-700 hover:text-primaryRed hover:underline">
-                    {item.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-          </div>
         </div>
-        </div>
-        {/* End Sidebar */}
       </div>
 
-      {/* Lead capture modal disabled */}
-      {false && showLeadModal && (<></>)}
-
-      {/* Floating Enquiry Widget (bottom-right) */}
-      <div className="fixed right-3 bottom-20 md:bottom-4 z-[10050]">
-        {/* Panel */}
+      {/* Floating Chat Bubble Enquiry Form */}
+      <div className="fixed bottom-6 right-6 z-[60]">
+        {/* Enquiry Form Popup */}
         {showFloatingEnquiry && (
-          <div className="w-[260px] xs:w-[280px] sm:w-[300px] md:w-[320px] rounded-2xl shadow-2xl border border-gray-200 bg-white overflow-hidden mb-3">
-            <div className="px-4 py-3 flex items-center justify-between bg-gray-50 border-b">
-              <div className="font-semibold text-gray-900">Enquire Now</div>
+          <div className="mb-4 w-80 bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden animate-slideUp">
+            {/* Header */}
+            <div className="bg-gradient-to-r from-red-500 to-red-600 px-5 py-4 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                </svg>
+                <h3 className="text-white font-bold text-base" style={{ fontFamily: "'Poppins', sans-serif" }}>
+                  Quick Enquiry
+                </h3>
+              </div>
               <button
-                type="button"
                 onClick={() => setShowFloatingEnquiry(false)}
-                className="text-gray-500 hover:text-gray-700"
-                aria-label="Collapse enquiry"
+                className="text-white hover:bg-white/20 rounded-full p-1 transition-colors"
+                aria-label="Close enquiry form"
               >
-                <span aria-hidden>▾</span>
+                <X size={20} />
               </button>
             </div>
-            <form onSubmit={handleBlogSubmitQueryData} className="p-4 space-y-3">
-              <div>
-                <label className="block text-xs text-gray-600 mb-1">Name</label>
-                <input
-                  type="text"
-                  name="name"
-                  value={blogQuery.name}
-                  onChange={handleBlogQueryChange}
-                  className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                  placeholder="Your Name"
-                />
-              </div>
-              <div>
-                <label className="block text-xs text-gray-600 mb-1">Mobile</label>
-                <input
-                  type="tel"
-                  name="mobile"
-                  value={blogQuery.mobile}
-                  onChange={handleBlogQueryChange}
-                  className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                  placeholder="Phone Number"
-                />
-              </div>
+            
+            {/* Form */}
+            <form onSubmit={handleBlogSubmitQueryData} className="p-5 space-y-3">
+              <input
+                type="text"
+                name="name"
+                value={blogQuery.name}
+                onChange={handleBlogQueryChange}
+                className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all text-sm"
+                placeholder="Your Name *"
+                required
+              />
+              <input
+                type="email"
+                name="email"
+                value={blogQuery.email}
+                onChange={handleBlogQueryChange}
+                className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all text-sm"
+                placeholder="Email Address"
+              />
+              <input
+                type="tel"
+                name="mobile"
+                value={blogQuery.mobile}
+                onChange={handleBlogQueryChange}
+                className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all text-sm"
+                placeholder="Phone Number *"
+                required
+              />
+              <textarea
+                name="message"
+                value={blogQuery.message}
+                onChange={handleBlogQueryChange}
+                className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all resize-none text-sm"
+                placeholder="Your Message"
+                rows={3}
+              />
               {responseMessage && (
-                <p className="text-xs text-red-600">{responseMessage}</p>
+                <p className="text-xs text-green-600 font-medium">{responseMessage}</p>
               )}
               <button
                 type="submit"
-                className="w-full rounded-lg bg-red-600 text-white font-semibold py-2 hover:bg-red-700 transition"
+                className="w-full py-2.5 bg-gradient-to-r from-red-500 to-red-600 text-white font-semibold rounded-xl hover:from-red-600 hover:to-red-700 transition-all transform hover:scale-[1.02] shadow-md"
                 disabled={buttonText !== 'Submit'}
               >
                 {buttonText}
@@ -1461,19 +1738,201 @@ const BlogView = () => {
           </div>
         )}
 
-        {/* Toggle Button (hidden when panel is open) */}
+        {/* Floating Enquire Now Button */}
         {!showFloatingEnquiry && (
           <button
-            type="button"
             onClick={() => setShowFloatingEnquiry(true)}
-            className="flex items-center gap-2 rounded-full bg-red-600 text-white shadow-lg px-4 py-2 hover:bg-red-700"
-            aria-expanded={showFloatingEnquiry}
+            className="relative bg-gradient-to-r from-red-600 to-red-500 text-white px-6 py-3.5 rounded-full shadow-xl hover:shadow-2xl hover:scale-110 transition-all duration-300 flex items-center gap-3 group overflow-hidden"
+            aria-label="Open enquiry form"
+            style={{ 
+              boxShadow: '0 10px 40px rgba(211, 47, 47, 0.4)',
+            }}
           >
-            <span className="inline-block w-2 h-2 rounded-full bg-white animate-pulse"></span>
-            <span>Enquire now</span>
+            {/* Animated background shine effect */}
+            <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-0 group-hover:opacity-20 group-hover:animate-shimmer"></span>
+            
+            {/* Icon with background */}
+            <span className="relative flex items-center justify-center w-8 h-8 bg-white/20 rounded-full backdrop-blur-sm">
+              <svg className="w-4 h-4 group-hover:rotate-12 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+              </svg>
+            </span>
+            
+            {/* Text */}
+            <span className="font-bold text-base tracking-wide" style={{ fontFamily: "'Poppins', sans-serif" }}>
+              Enquire Now
+            </span>
+            
+            {/* Arrow icon */}
+            <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+            </svg>
+            
+            {/* Pulse ring animation */}
+            <span className="absolute -inset-1 rounded-full bg-red-400 opacity-30 animate-ping"></span>
           </button>
         )}
       </div>
+
+      {/* Sliding Trending Projects Sidebar */}
+      <>
+        {/* Overlay - only show when sidebar is open */}
+        {showTrendingSidebar && (
+          <div 
+            className="fixed inset-0 bg-black bg-opacity-50 z-40 transition-opacity duration-300"
+            onClick={() => setShowTrendingSidebar(false)}
+          ></div>
+        )}
+        
+        {/* Sidebar Container */}
+        <div className={`fixed top-20 h-[calc(100vh-10rem)] z-40 transition-all duration-500 ease-out ${showTrendingSidebar ? 'right-0' : 'right-0'}`}>
+          {/* Visible Tab (always visible on right edge) */}
+          <button
+            onClick={() => setShowTrendingSidebar(!showTrendingSidebar)}
+            className={`absolute top-1/3 -translate-y-1/2 bg-gradient-to-r from-red-500 to-red-600 text-white px-3 py-8 rounded-l-xl shadow-lg hover:from-red-600 hover:to-red-700 transition-all z-10 flex flex-col items-center gap-2 ${showTrendingSidebar ? '-left-12' : 'right-0'}`}
+            aria-label={showTrendingSidebar ? "Close trending projects" : "Open trending projects"}
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+            </svg>
+            <span className="text-xs font-bold" style={{ writingMode: 'vertical-rl', textOrientation: 'mixed' }}>
+              TRENDING
+            </span>
+          </button>
+
+          {/* Sidebar Panel */}
+          <div className={`h-full w-80 md:w-96 bg-white shadow-2xl overflow-hidden transition-all duration-500 ease-out ${showTrendingSidebar ? 'translate-x-0' : 'translate-x-full'}`}>
+
+          {/* Scrollable Content */}
+          <div className="h-full overflow-y-auto">
+            {/* Header */}
+            <div className="sticky top-0 bg-gradient-to-r from-red-500 to-red-600 px-6 py-4 flex items-center justify-between z-10">
+              <div className="flex items-center gap-3">
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                </svg>
+                <h3 className="text-white font-bold text-lg" style={{ fontFamily: "'Poppins', sans-serif" }}>
+                  Trending Projects
+                </h3>
+              </div>
+              <button
+                onClick={() => setShowTrendingSidebar(false)}
+                className="text-white hover:bg-white/20 rounded-full p-2 transition-colors"
+                aria-label="Close sidebar"
+              >
+                <X size={24} />
+              </button>
+            </div>
+
+            {/* Projects List */}
+            <div className="p-6 space-y-4">
+              {trendingProjects.length > 0 ? (
+                trendingProjects.map((project, idx) => {
+                  const name = project?.projectName || project?.name || project?.title || 'Project';
+                  const category = project?.category || project?.projectType || '';
+                  const location = project?.location || project?.city || '';
+                  
+                  const img = (() => {
+                    const t1 = project?.thumbnailImage?.url || project?.thumbnail?.url || project?.thumb?.url || '';
+                    const t2 = project?.thumbnailImage || project?.thumbnail || project?.thumb || '';
+                    const fThumb = project?.frontImage?.thumbnail?.url || project?.frontImage?.thumb?.url || '';
+                    const fMain = project?.frontImage?.url || '';
+                    const c1 = project?.cardImage?.url || project?.cardImage || '';
+                    const b1 = project?.bannerImage?.url || project?.bannerImage || '';
+                    const any = project?.image || project?.project_Image || '';
+                    const fromArray = Array.isArray(project?.images) && project.images.length ? (project.images[0]?.url || project.images[0]) : '';
+                    const u = t1 || t2 || fThumb || c1 || fMain || b1 || fromArray || any || '';
+                    return getBestImageUrl(u);
+                  })();
+
+                  const formatINRShort = (val) => {
+                    if (typeof val !== 'number') return '';
+                    if (val >= 10000000) return `${(val / 10000000).toFixed(2)} Cr`;
+                    if (val >= 100000) return `${(val / 100000).toFixed(2)} Lac`;
+                    return val.toLocaleString('en-IN');
+                  };
+
+                  const minPrice = typeof project?.minPrice === 'number' ? formatINRShort(project.minPrice) : null;
+                  const maxPrice = typeof project?.maxPrice === 'number' ? formatINRShort(project.maxPrice) : null;
+                  const priceRange = minPrice && maxPrice ? `${minPrice} - ${maxPrice}` : (minPrice || maxPrice || '');
+
+                  const navigateToProject = (p) => {
+                    const pUrl = p?.project_url || p?.projectUrl || p?.url || '';
+                    if (pUrl) {
+                      history(`/${pUrl}/`);
+                    }
+                  };
+
+                  return (
+                    <div
+                      key={idx}
+                      onClick={() => navigateToProject(project)}
+                      className="group bg-white rounded-xl border border-gray-200 hover:border-red-500 overflow-hidden cursor-pointer transition-all duration-300 hover:shadow-lg"
+                    >
+                      {/* Project Image */}
+                      <div className="relative h-48 overflow-hidden">
+                        <img
+                          src={img}
+                          alt={name}
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                          onError={(e) => {
+                            if (e?.target && e.target.src !== window.location.origin + FALLBACK_IMG && !e.target.dataset.fallback) {
+                              e.target.dataset.fallback = "1";
+                              e.target.src = FALLBACK_IMG;
+                            }
+                          }}
+                          referrerPolicy="no-referrer"
+                          crossOrigin="anonymous"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                        {category && (
+                          <div className="absolute top-3 left-3 bg-red-600 text-white text-xs font-semibold px-3 py-1 rounded-full">
+                            {category}
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Project Details */}
+                      <div className="p-4">
+                        <h4 className="font-bold text-gray-900 text-base mb-2 line-clamp-2 group-hover:text-red-600 transition-colors">
+                          {name}
+                        </h4>
+                        
+                        {location && (
+                          <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
+                            <svg className="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                            <span>{location}</span>
+                          </div>
+                        )}
+
+                        {priceRange && (
+                          <div className="flex items-center gap-2 text-sm font-semibold text-red-600">
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <span>₹ {priceRange}</span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })
+              ) : (
+                <div className="text-center py-12">
+                  <svg className="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                  </svg>
+                  <p className="text-gray-500 text-sm">No trending projects available</p>
+                </div>
+              )}
+            </div>
+          </div>
+          </div>
+        </div>
+      </>
 
       {/* Page Footer */}
       <Footer />

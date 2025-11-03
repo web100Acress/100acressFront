@@ -8,7 +8,7 @@ import { LOGIN } from "../../lib/route";
 import { AiFillStar } from "react-icons/ai";
 import { BsFillCameraFill } from "react-icons/bs";
 import { BiDotsVerticalRounded } from "react-icons/bi";
-import AuthModal from "../AuthModal";
+import AuthModal from "../../Resister/AuthModal";
 import { AuthContext } from "../../AuthContext";
 import {
   MDBBtn,

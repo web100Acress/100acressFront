@@ -4,7 +4,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { MdFavoriteBorder } from "react-icons/md";
 import { LOGIN } from "../../lib/route";
-import AuthModal from "../AuthModal";
+import AuthModal from "../../Resister/AuthModal";
 import { AuthContext } from "../../AuthContext";
 
 function PropViewCardPro() {
@@ -41,7 +41,7 @@ function PropViewCardPro() {
   }, [rentData]);
 
   return (
-    <div style={{ overflowX: "hidden" }}>
+    <div style={{ overflowX: "hidden", paddingTop: "80px" }}>
       <section className="flex flex-col items-center bg-white mt-4">
         <div className="mt-10 grid max-w-md grid-cols-1 gap-6 px-2 sm:max-w-lg sm:px-20 md:max-w-screen-xl md:grid-cols-2 md:px-10 lg:grid-cols-4 lg:gap-8">
           {rentData.map((item, index) => {

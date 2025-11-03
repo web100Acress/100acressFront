@@ -33,7 +33,7 @@ const ProjectCard = ({
   };
 
   const projectUrl = project.project_url ? `/${project.project_url}/` : "#";
-  const imageUrl = project.frontImage?.cdn_url || project.frontImage?.url || "https://d16gdc5rm7f21b.cloudfront.net/100acre/no-image.jpg";
+  const imageUrl = project.thumbnailImage?.url || project.frontImage?.cdn_url || project.frontImage?.url || "https://d16gdc5rm7f21b.cloudfront.net/100acre/no-image.jpg";
   const location = (project.city && project.state) ? `${project.city}, ${project.state}` : "Gurugram, Haryana";
 
   if (viewMode === 'list') {

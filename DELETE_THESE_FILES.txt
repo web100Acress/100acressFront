@@ -1,0 +1,165 @@
+=================================================================
+HIGH PRIORITY - SAFE TO DELETE IMMEDIATELY (22 files)
+=================================================================
+
+BACKUP/FIXED VERSIONS (5 files):
+src\AdminPage\ShortsSettings.fixed.jsx
+src\Components\Actual_Components\Footer_backup.jsx
+src\Components\Blog_Components\BlogSection.clean.jsx
+src\Components\Blog_Components\BlogSection.new.jsx
+src\Insight\sections\HeroWithFilters_fixed.jsx
+
+TEST/DEVELOPMENT FILES (9 files):
+src\Components\ApiTest.jsx
+src\Components\LocalTestingHelper.jsx
+src\Components\Actual_Components\Rough.jsx
+src\Components\HomePageComponents\NavBarRough.jsx
+src\Components\Rough_Components\Hero.jsx
+src\Components\Rough_Components\Popular.jsx
+src\Pages\pre.jsx
+src\Pages\TestComponent.jsx
+src\Pages\Snapshot.jsx
+
+COMMENTED OUT IN APP.JSX (2 files):
+src\AdminPage\BlogEnquiries.jsx
+src\Components\ConfettiAllCorners.jsx
+
+DUPLICATES/OLD VERSIONS (6 files):
+src\AdminPage\Chart.jsx
+src\AdminPage\Dashboard.jsx
+src\aadharhomes\BannerPage\updatedbannerpage\App.js
+src\Components\Blog_Components\Blog_Components\BlogDashboard.jsx
+src\Components\PropertyShowcase\ScrollableContainer.js
+
+=================================================================
+MEDIUM PRIORITY - VERIFY THEN DELETE (54 files)
+=================================================================
+
+UNUSED ACTUAL COMPONENTS (11 files):
+src\Components\Actual_Components\Carddev.jsx
+src\Components\Actual_Components\Cookie.jsx
+src\Components\Actual_Components\Login.jsx
+src\Components\Actual_Components\LoginMain.jsx
+src\Components\Actual_Components\PropCardUser.jsx
+src\Components\Actual_Components\PropViewCardPro2.jsx
+src\Components\Actual_Components\SmallPopForm.jsx
+src\Components\AutoConfetti.jsx
+src\Components\Chart\chart.jsx
+src\Components\EMICalculator.jsx
+src\Components\Flag.jsx
+
+UNUSED HOME PAGE COMPONENTS (14 files):
+src\Components\HomePageComponents\DeveloperSlider.jsx
+src\Components\HomePageComponents\EnhancedRecommendedSection.jsx
+src\Components\HomePageComponents\featured.jsx
+src\Components\HomePageComponents\Locations.jsx
+src\Components\HomePageComponents\MobileSearch.jsx
+src\Components\HomePageComponents\ModernCard.jsx
+src\Components\HomePageComponents\ModernCarousel.jsx
+src\Components\HomePageComponents\ModernHeroSection.jsx
+src\Components\HomePageComponents\NewSearchBar.jsx
+src\Components\HomePageComponents\PropertyShowcase.jsx
+src\Components\HomePageComponents\RotatingCardCarousel.jsx
+src\Components\HomePageComponents\SearchTop.jsx
+src\Components\HomePageComponents\SimiliarCarousel.jsx
+src\Components\HomePageComponents\UpComingProjects.jsx
+
+UNUSED LAYOUT COMPONENTS (4 files):
+src\Components\Layout\featured2.jsx
+src\Components\Layout\SearchBar.jsx
+src\Components\Layout\SearchBar2.jsx
+src\Components\Layout\Services.jsx
+
+UNUSED BLOG COMPONENTS (3 files):
+src\Components\Blog_Components\Blog.jsx
+src\Components\Blog_Components\BlogMain.jsx
+src\Components\Blog_Components\SingleBlog.jsx
+
+OTHER UNUSED COMPONENTS (10 files):
+src\Components\AboutPageComponents\AboutPage.jsx
+src\Components\MovingBorderButton.jsx
+src\Components\ProfilePage.jsx
+src\Components\ProjectTypeNavigation.jsx
+src\Components\PropertyShowcase\PropertyShowcase.jsx
+src\Components\PropertyShowcase\ScrollableContainer.jsx
+src\Components\RoleBasedHeader.jsx
+src\Components\SitemapViewer.jsx
+src\Components\ui\toast-ui.jsx
+
+UNUSED PAGE FILES (16 files):
+src\Pages\CarrerWithUs.jsx
+src\Pages\Contact.jsx
+src\Pages\DlfProject.jsx
+src\Pages\DubaiDesign.jsx
+src\Pages\HomeBuilderCarousel.jsx
+src\Pages\HomePages\hotproject.jsx
+src\Pages\HomePages\Luxury.jsx
+src\Pages\MgRoad.jsx
+src\Pages\Nh48.jsx
+src\Pages\Possessionin2024.jsx
+src\Pages\PropertyRent.jsx
+src\Pages\PropertyView.jsx
+src\Pages\ReadyToMoveProject.jsx
+src\Pages\Resale.jsx
+src\Pages\UnderConstructionSearching.jsx
+src\Pages\ProjectStatusSearch\Sidebar.jsx
+
+=================================================================
+LOW PRIORITY - REVIEW WITH TEAM (10 files)
+=================================================================
+
+INSIGHT COMPONENTS (may be work-in-progress):
+src\Insight\admin\InsightsPropertyInsightsBanners.jsx
+src\Insight\components\AreaAnalytics.jsx
+src\Insight\components\InvestmentInsights.jsx
+src\Insight\components\MarketReports.jsx
+src\Insight\components\PriceTrendsPage.jsx
+src\Insight\sections\FooterInfo.jsx
+
+UTILITIES:
+src\OnboardingUpload.jsx
+src\Utils\auth.js
+src\Utils\youtubeUtils.js
+src\context\GoogleAuthContext.jsx
+
+=================================================================
+UNUSED NPM PACKAGES (can be removed from package.json)
+=================================================================
+
+@gsap/react
+@stianlarsen/border-beam
+d3-geo
+gsap
+has-flag
+html2canvas
+jodit-react
+jspdf
+react-hook-form
+react-phone-number-input
+react-simple-maps
+react-tooltip
+react-window
+uuid
+
+=================================================================
+MISSING DEPENDENCIES (should be added to package.json)
+=================================================================
+
+eslint-config-react-app
+jwt-decode
+@radix-ui/react-slot
+quill
+prop-types
+
+=================================================================
+TOTAL SUMMARY
+=================================================================
+
+High Priority (Safe to Delete): 22 files
+Medium Priority (Verify First): 54 files
+Low Priority (Team Review): 10 files
+---
+TOTAL UNUSED FILES: 86 files
+
+Unused Dependencies: 14 packages
+Missing Dependencies: 5 packages

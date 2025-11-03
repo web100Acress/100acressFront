@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useContext, useState } from "react";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
 import {
@@ -11,6 +11,14 @@ import {
 } from "../Assets/icons";
 import Footer from "../Components/Actual_Components/Footer";
 import { FavouriteIcon } from "../Assets/icons";
+import AuthModal from "../Resister/AuthModal";
+import { AuthContext } from "../AuthContext";
+import {
+  isFavorite as favCheck,
+  toggleFavorite,
+  subscribe,
+  hydrateFavoritesFromServer,
+} from "../Utils/favorites";
 
 const CommonInside = ({
   title,
@@ -26,19 +34,22 @@ const CommonInside = ({
     if (!min && !max) return fallback || "Reveal Soon";
     if (!min || !max) return "Reveal Soon";
     const fmt = (v) => {
-      if (typeof v !== 'number') return v;
+      if (typeof v !== "number") return v;
       if (v < 1) {
         return `${(v * 100).toFixed(0)} L`;
       }
       // up to 2 decimals but trim trailing zeros
-      const str = v.toFixed(2).replace(/\.00$/, '').replace(/(\.\d)0$/, '$1');
+      const str = v
+        .toFixed(2)
+        .replace(/\.00$/, "")
+        .replace(/(\.\d)0$/, "$1");
       return `${str} Cr`;
     };
-  const openWhatsApp = (name, url) => {
-    const message = `Hi, I'm interested in ${name}. Please share more details. ${url}`;
-    const waUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
-    window.open(waUrl, "_blank");
-  };
+    const openWhatsApp = (name, url) => {
+      const message = `Hi, I'm interested in ${name}. Please share more details. ${url}`;
+      const waUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+      window.open(waUrl, "_blank");
+    };
     return `₹ ${fmt(min)}–${fmt(max)}`;
   };
   const handleShare = (project) => {
@@ -57,21 +68,75 @@ const CommonInside = ({
     }
   };
 
+  const handleFavoriteClick = (e, id, item) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const snapshot = {
+      title: item?.projectName,
+      frontImage: item?.frontImage,
+      thumbnailImage: item?.thumbnailImage,
+      priceText: (() => {
+        try {
+          const min = item?.minPrice ?? item?.price;
+          if (!min) return "Price on request";
+          return `₹${min} Cr`;
+        } catch {
+          return undefined;
+        }
+      })(),
+      url: item.project_url ? `/${item.project_url}/` : undefined,
+      city: item?.city,
+      maxPrice: item?.maxPrice || item?.price,
+      minPrice: item?.minPrice,
+    };
+
+    if (!isAuthenticated) {
+      // Show login modal
+      setShowAuth(true);
+      // Show toast notification
+      if (typeof window.toast === "function") {
+        window.toast.info("Please login to save properties to your favorites");
+      }
+      return;
+    }
+    toggleFavorite(id, snapshot, isAuthenticated);
+    setFavTick((v) => v + 1);
+  };
+
+  const { isAuthenticated } = useContext(AuthContext);
+  const [showAuth, setShowAuth] = useState(false);
+  const [favTick, setFavTick] = useState(0);
+
   useEffect(() => {
     if (Array.isArray(Actualdata) && Actualdata.length > 0) {
-      import('aos').then((Aos) => {
+      import("aos").then((Aos) => {
         Aos.init();
       });
     }
   }, [Actualdata]);
 
+  // Hydrate favorites once and subscribe for cross-component updates
+  useEffect(() => {
+    try {
+      hydrateFavoritesFromServer();
+    } catch (_) {}
+    const unsub = subscribe(() => setFavTick((v) => v + 1));
+    return () => {
+      if (typeof unsub === "function") unsub();
+    };
+  }, []);
+
   // Filter out invalid items and ensure we have valid data
   const validData = Array.isArray(Actualdata)
-    ? Actualdata.filter(item => {
-        return item && (
-          (item.projectName || item.postProperty?.propertyName) && // Must have a name
-          (item.project_url || item.postProperty?._id) && // Must have a URL or ID
-          (item.frontImage?.cdn_url || item.frontImage?.url || item?.postProperty?.frontImage?.url) // Must have an image
+    ? Actualdata.filter((item) => {
+        return (
+          item &&
+          (item.propertyName || item.projectName || item.postProperty?.propertyName) && // Must have a name
+          (item.project_url || item._id || item.postProperty?._id) && // Must have a URL or ID
+          (item.frontImage?.cdn_url ||
+            item.frontImage?.url ||
+            item?.postProperty?.frontImage?.url) // Must have an image
         );
       })
     : [];
@@ -81,7 +146,9 @@ const CommonInside = ({
     if (suppressEmptyMessage) return null;
     return (
       <div className="text-center py-10">
-        <h2 className="text-xl font-semibold text-gray-600">No properties found</h2>
+        <h2 className="text-xl font-semibold text-gray-600">
+          No properties found
+        </h2>
         <p className="text-gray-500 mt-2">Try modifying your search criteria</p>
       </div>
     );
@@ -109,22 +176,35 @@ const CommonInside = ({
         <div className="grid max-w-md grid-cols-1 px-3 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full mb-4">
           {validData.map((item, index) => {
             const pUrl = item.project_url;
-            const propertyName = item.projectName || item.postProperty?.propertyName;
-            const location = (item.city && item.state)
-              ? `${item.city}, ${item.state}`
-              : (item?.postProperty?.city && item?.postProperty?.state)
+            const propertyName =
+              item.propertyName || item.projectName || item.postProperty?.propertyName;
+            const location =
+              item.city && item.state
+                ? `${item.city}, ${item.state}`
+                : item?.postProperty?.city && item?.postProperty?.state
                 ? `${item.postProperty.city}, ${item.postProperty.state}`
                 : "Gurgaon, Haryana";
-            const imageUrl = item.frontImage?.cdn_url || item.frontImage?.url || item?.postProperty?.frontImage?.url || "https://d16gdc5rm7f21b.cloudfront.net/100acre/no-image.jpg";
+            const imageUrl =
+              item.thumbnailImage?.url ||
+              item.frontImage?.cdn_url ||
+              item.frontImage?.url ||
+              item?.postProperty?.frontImage?.url ||
+              "https://d16gdc5rm7f21b.cloudfront.net/100acre/no-image.jpg";
+            const id = item?._id || item?.id || item?.slug || pUrl;
+            const isFav = favCheck(id);
 
             // Build propertyUrl based on sourceType
             let propertyUrl = "";
             if (item.sourceType === "search") {
               propertyUrl = `/${pUrl}/`;
             } else if (item.sourceType === "rent") {
-              propertyUrl = `/rental-properties/${item?.postProperty?.propertyName}/${item?.postProperty?._id}`;
+              const rentPropertyName = item.propertyName || item?.postProperty?.propertyName;
+              const rentId = item._id || item?.postProperty?._id;
+              propertyUrl = `/rental-properties/${rentPropertyName}/${rentId}`;
             } else if (item.sourceType === "buy") {
-              propertyUrl = `/buy-properties/${item?.postProperty?.propertyName}/${item?.postProperty?._id}`;
+              const buyPropertyName = item.propertyName || item?.postProperty?.propertyName;
+              const buyId = item._id || item?.postProperty?._id;
+              propertyUrl = `/buy-properties/${buyPropertyName}/${buyId}`;
             } else {
               propertyUrl = `/${pUrl}/`;
             }
@@ -141,27 +221,66 @@ const CommonInside = ({
                       alt={propertyName || "Property In Gurugram"}
                       className="w-full h-[170px] md:h-44 object-cover transition-transform duration-500 ease-in-out group-hover:scale-[1.03] rounded-t-2xl"
                       loading="lazy"
-                    />  
+                    />
                     {/* Subtle overlay for readability */}
                     <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent" />
                   </Link>
                   {/* Floating action buttons */}
-                  <div className="absolute top-3 right-3 flex gap-2">
+                  <div className="absolute top-1 right-1 flex gap-1">
                     <button
                       type="button"
-                      className="w-9 h-9 rounded-full bg-white/90 shadow-md flex items-center justify-center hover:shadow-lg"
-                      aria-label="Favorite"
+                      aria-label={
+                        isFav
+                          ? "Remove from wishlist"
+                          : isAuthenticated
+                          ? "Add to wishlist"
+                          : "Login to add to wishlist"
+                      }
+                      title={
+                        isFav
+                          ? "Remove from wishlist"
+                          : isAuthenticated
+                          ? "Add to wishlist"
+                          : "Login to add to wishlist"
+                      }
+                      className={`inline-flex items-center justify-center w-1 h-1 rounded-full ${
+                        isFav ? "" : "bg-transparent"
+                      }border-white transition`}
+                      onClick={(e) => handleFavoriteClick(e, id, item)}
                     >
-                      <FavouriteIcon iconstyle={{ width: 18, height: 18 }} />
+                      {favCheck(id) ? (
+                        <svg
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="red"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                        </svg>
+                      ) : (
+                        <svg
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="#d1d5db"
+                          strokeWidth="2"
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="opacity-100"
+                        >
+                          <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                        </svg>
+                      )}
                     </button>
-                    <button
+                    {/* <button
                       type="button"
                       className="w-9 h-9 rounded-full bg-white/90 shadow-md flex items-center justify-center hover:shadow-lg"
                       onClick={() => handleShare(item)}
                       aria-label="Share"
                     >
                       <ShareFrameIcon />
-                    </button>
+                    </button> */}
                   </div>
                   {/* Type badge */}
                   {(item.type || item?.postProperty?.propertyType) && (
@@ -190,15 +309,22 @@ const CommonInside = ({
                   {/* Location (two-line style: Address, then City, State) */}
                   <div className="mb-2 text-[12px] md:text-[13px] text-gray-600 leading-snug">
                     {(item.projectAddress || item?.postProperty?.address) && (
-                      <div className="truncate">{item.projectAddress || item?.postProperty?.address}</div>
+                      <div className="truncate">
+                        {item.projectAddress || item?.postProperty?.address}
+                      </div>
                     )}
                     <div className="truncate">{location}</div>
                   </div>
                   {/* Price + CTA */}
                   <div className="pt-2 border-t border-gray-100">
                     <div className="flex items-center gap-2 text-red-600 font-extrabold text-[15px] md:text-[17px] mb-2">
-                      
-                      <span>{formatPriceRange(item.minPrice, item.maxPrice, item.price || item.postProperty?.price)}</span>
+                      <span>
+                        {formatPriceRange(
+                          item.minPrice,
+                          item.maxPrice,
+                          item.price || item.postProperty?.price
+                        )}
+                      </span>
                     </div>
                     <div className="flex items-center gap-2">
                       <Link to={propertyUrl} target="_top" className="flex-1">
@@ -211,7 +337,12 @@ const CommonInside = ({
                       </Link>
                       <button
                         type="button"
-                        onClick={() => openWhatsApp(propertyName || "Property", `${window.location.origin}${propertyUrl}`)}
+                        onClick={() =>
+                          openWhatsApp(
+                            propertyName || "Property",
+                            `${window.location.origin}${propertyUrl}`
+                          )
+                        }
                         className="flex-1 bg-gradient-to-r from-red-500 to-red-500 hover:from-red-600 hover:to-red-600 text-white px-3.5 py-1.5 rounded-full text-[11px] md:text-xs font-bold shadow-md hover:shadow-lg transition-all"
                       >
                         WhatsApp
@@ -223,8 +354,13 @@ const CommonInside = ({
             );
           })}
         </div>
-
-      </section>  
+      </section>
+      {/* Auth Modal for Login/Register */}
+      <AuthModal
+        open={showAuth}
+        onClose={() => setShowAuth(false)}
+        defaultView="Login"
+      />
     </div>
   );
 };

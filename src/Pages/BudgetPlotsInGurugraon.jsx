@@ -13,9 +13,16 @@ const BudgetPlotsInGurugraon = () => {
     const loadBudgetPlots = async () => {
       try {
         const plots = await getBudgetPlots();
+        console.log('📊 Budget plots loaded:', plots);
+        console.log('📸 Image URLs being used:');
+        plots.forEach((plot, idx) => {
+          console.log(`  ${idx + 1}. ${plot.title}:`, plot.image);
+          console.log(`     - Thumbnail: ${plot.thumbnailImage}`);
+          console.log(`     - Front: ${plot.frontImage}`);
+        });
         setBudgetPlots(plots);
       } catch (error) {
-        console.error('Error loading budget plots:', error);
+        console.error('❌ Error loading budget plots:', error);
         setBudgetPlots([]);
       }
     };
@@ -50,7 +57,18 @@ const BudgetPlotsInGurugraon = () => {
         ) : (
           budgetPlots.map((project, index) => (
             <Link to={project.link} key={index} className="card group" aria-label={project.title}>
-              <img src={project.image} alt={project.title} loading="lazy" className="card-image transition-transform duration-300 group-hover:scale-105" />
+              <div className="card-image-wrapper">
+                <img 
+                  src={project.image} 
+                  alt={project.title} 
+                  loading="lazy" 
+                  className="card-image transition-transform duration-300 group-hover:scale-105"
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = '../../Images/logo.png';
+                  }}
+                />
+              </div>
               <button className="card-button bg-red-600 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-500/30 transition-all duration-300">{project.title}</button>
             </Link>
           ))
@@ -117,11 +135,19 @@ const Wrapper = styled.section`
     box-shadow: 0px 8px 16px rgba(220, 38, 38, 0.18);
   }
 
+  .card-image-wrapper {
+    width: 100%;
+    overflow: hidden;
+    border-radius: 10px;
+    display: block;
+  }
+
   .card-image {
     width: 100%;
     height: 176px; /* ~h-44 */
     object-fit: cover;
     border-radius: 10px;
+    display: block;
   }
 
   .card-button {
@@ -148,8 +174,13 @@ const Wrapper = styled.section`
       font-size: 1.25rem;
     }
 
+    .card-image-wrapper {
+      display: block;
+    }
+
     .card-image {
       height: 160px; /* slightly tighter but keeps aspect */
+      display: block;
     }
 
     .card-button {
