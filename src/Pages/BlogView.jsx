@@ -9,7 +9,7 @@ import { Helmet } from "react-helmet";
 import DOMPurify from 'dompurify';
 import "./BlogView.css";
 import useIsMobile from '../hooks/useIsMobile';
-import { ThumbsUp, Share2, MessageCircle } from 'lucide-react';
+import { ThumbsUp, Share2, MessageCircle, List } from 'lucide-react';
 import { 
   FALLBACK_IMG, 
   getBestImageUrl, 
@@ -86,6 +86,8 @@ const BlogView = () => {
   const [comments, setComments] = useState([]);
   const [commentName, setCommentName] = useState('');
   const [commentMsg, setCommentMsg] = useState('');
+  const [tocItems, setTocItems] = useState([]);
+  const [activeId, setActiveId] = useState('');
   const [likeLoading, setLikeLoading] = useState(false);
   const [liked, setLiked] = useState(false);
   const [shareLoading, setShareLoading] = useState(false);
@@ -811,8 +813,54 @@ const BlogView = () => {
     }
   };
 
-  // Compute title and description
-  const fallbackTitle = `${blog_Title || ''} ${blog_Category || ''}`.trim();
+  // Generate table of contents from headings
+  useEffect(() => {
+    if (!contentRef.current) return;
+    
+    const headings = Array.from(contentRef.current.querySelectorAll('h2, h3, h4'));
+    const items = headings.map((heading) => {
+      const id = heading.textContent.toLowerCase()
+        .replace(/[^\w\s-]/g, '') // Remove special chars
+        .replace(/\s+/g, '-')      // Replace spaces with -
+        .replace(/-+/g, '-');       // Replace multiple - with single -
+      
+      // Add ID to heading for anchor links
+      if (!heading.id) {
+        heading.id = id;
+      }
+      
+      return {
+        id: heading.id || id,
+        title: heading.textContent,
+        level: parseInt(heading.tagName.substring(1)), // h2 -> 2, h3 -> 3, etc.
+        element: heading
+      };
+    });
+    
+    setTocItems(items);
+    
+    // Set up intersection observer for active TOC highlighting
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && entry.intersectionRatio > 0) {
+            setActiveId(entry.target.id);
+          }
+        });
+      },
+      {
+        root: null,
+        rootMargin: '0px 0px -80% 0px',
+        threshold: 0.1
+      }
+    );
+    
+    headings.forEach((heading) => observer.observe(heading));
+    
+    return () => {
+      observer.disconnect();
+    };
+  }, [blog_Description]); // Re-run when blog content changes
   const pageTitle = (metaTitle && metaTitle.trim()) || fallbackTitle || 'Blog | 100acress';
   const toPlainText = (html) => {
     if (!html) return '';
@@ -1034,7 +1082,7 @@ const BlogView = () => {
         </aside>
 
         {/* Top Performing Blog */}
-        <div className="w-full md:col-span-6 md:col-start-4 bg-white rounded-2xl shadow-xl p-8">
+        <div className="w-full md:col-span-6 lg:col-span-6 lg:col-start-4 bg-white rounded-2xl shadow-xl p-8">
           <div className="mb-4 text-sm text-gray-500">
             <Link to="/blog/" className="text-primaryRed hover:underline">Blogs</Link>
             {' > '} {blog_Category || 'Blog'}
