@@ -388,15 +388,15 @@ const CrimsonEleganceFooter = () => {
     <div className="w-full border-t border-white/10 pt-8">
       <div className="flex flex-wrap justify-center gap-3">
         {[
-          { name: "Residential Flats in Gurgaon", href: "/property-types/residential-flats-gurgaon/" },
-          { name: "Retail Shops in Gurgaon", href: "/property-types/retail-shops-gurgaon/" },
-          { name: "Builder Floor in Gurgaon", href: "/property-types/builder-floor-gurgaon/" },
-          { name: "Farmhouse in Gurgaon", href: "/property-types/farmhouse-gurgaon/" },
-          { name: "Industrial Plots in Gurgaon", href: "/property-types/industrial-plots-gurgaon/" },
-          { name: "Independent Floor in Gurgaon", href: "/property-types/independent-floor-gurgaon/" },
-          { name: "SCO Plots in Gurgaon", href: "/property-types/sco-plots-gurgaon/" },
-          { name: "Shop Cum Office Plots in Gurgaon", href: "/property-types/shop-cum-office-plots-gurgaon/" },
-          { name: "Luxury Villas in Gurgaon", href: "/property-types/luxury-villas-gurgaon/" },
+          { name: "Residential Flats in Gurgaon", href: "/property/residential/" },
+          { name: "Retail Shops in Gurgaon", href: "/projects/commercial/" },
+          { name: "Builder Floor in Gurgaon", href: "/projects/independentfloors/" },
+          { name: "Farmhouse in Gurgaon", href: "/projects/farmhouse/" },
+          { name: "Industrial Plots in Gurgaon", href: "/projects/industrial-plots/" },
+          { name: "Independent Floor in Gurgaon", href: "/projects/independentfloors/" },
+          { name: "SCO Plots in Gurgaon", href: "/sco/plots/" },
+          { name: "Shop Cum Office Plots in Gurgaon", href: "/sco/plots/" },
+          { name: "Luxury Villas in Gurgaon", href: "/projects/villas/" },
         ].map((location, index) => (
           <Link
             key={index}
