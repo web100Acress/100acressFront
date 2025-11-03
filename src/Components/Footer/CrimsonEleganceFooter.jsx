@@ -350,24 +350,24 @@ const CrimsonEleganceFooter = () => {
           <div className="container mx-auto px-6 py-0">
             <div className="flex flex-wrap gap-2">
               {[
-                { name: "1 BHK Flats in Gurgaon", href: "/property-types/1-bhk-flats-gurgaon/" },
-                { name: "2 BHK Flats in Gurgaon", href: "/property-types/2-bhk-flats-gurgaon/" },
-                { name: "3 BHK Flats in Gurgaon", href: "/property-types/3-bhk-flats-gurgaon/" },
-                { name: "4 BHK Flats in Gurgaon", href: "/property-types/4-bhk-flats-gurgaon/" },
-                { name: "5 BHK Flats in Gurgaon", href: "/property-types/5-bhk-flats-gurgaon/" },
-                { name: "Fully Furnished Flats in Gurgaon", href: "/property-types/fully-furnished-flats-gurgaon/" },
-                { name: "Penthouse in Gurgaon", href: "/property-types/penthouse-gurgaon/" },
-                { name: "Semi Furnished Flats in Gurgaon", href: "/property-types/semi-furnished-flats-gurgaon/" },
-                { name: "Unfurnished Flats in Gurgaon", href: "/property-types/unfurnished-flats-gurgaon/" },
-                { name: "Independent Floor for Sale in Gurgaon", href: "/property-types/independent-floor-gurgaon/" },
-                { name: "Independent Houses For Sale in Gurgaon", href: "/property-types/independent-houses-gurgaon/" },
-                { name: "Flats For Sale under 1 Cr in Gurgaon", href: "/property-types/flats-under-1-cr-gurgaon/" },
-                { name: "Flats For Sale under 5 Cr in Gurgaon", href: "/property-types/flats-under-5-cr-gurgaon/" },
-                { name: "Flats For Sale under 10 Cr in Gurgaon", href: "/property-types/flats-under-10-cr-gurgaon/" },
-                { name: "Flats For Sale under 20 Cr In Gurgaon", href: "/property-types/flats-under-20-cr-gurgaon/" },
-                { name: "Affordable Homes in Gurgaon", href: "/property-types/affordable-homes-gurgaon/" },
+                { name: "1 BHK Flats in Gurgaon", href: "/" },
+                { name: "2 BHK Flats in Gurgaon", href: "/" },
+                { name: "3 BHK Flats in Gurgaon", href: "/" },
+                { name: "4 BHK Flats in Gurgaon", href: "/" },
+                { name: "5 BHK Flats in Gurgaon", href: "/" },
+                { name: "Fully Furnished Flats in Gurgaon", href: "/" },
+                { name: "Penthouse in Gurgaon", href: "/" },
+                { name: "Semi Furnished Flats in Gurgaon", href: "/" },
+                { name: "Unfurnished Flats in Gurgaon", href: "/" },
+                { name: "Independent Floor for Sale in Gurgaon", href: "/" },
+                { name: "Independent Houses For Sale in Gurgaon", href: "/" },
+                { name: "Flats For Sale under 1 Cr in Gurgaon", href: "/budget-properties/under-1-cr/" },
+                { name: "Flats For Sale under 5 Cr in Gurgaon", href: "/budget-properties/1-5-cr" },
+                { name: "Flats For Sale under 10 Cr in Gurgaon", href: "/budget-properties/5-10-cr" },
+                { name: "Flats For Sale under 20 Cr In Gurgaon", href: "/budget-properties/10-20-cr" },
+                { name: "Affordable Homes in Gurgaon", href: "/budget-properties/1-5-cr" },
                 { name: "Farmhouse in Gurgaon", href: "/property-types/farmhouse-gurgaon/" },
-                { name: "Luxury Villas in Gurgaon", href: "/property-types/luxury-villas-gurgaon/" },
+                
               ].map((location, index) => (
                 <Link
                   key={index}
@@ -388,15 +388,15 @@ const CrimsonEleganceFooter = () => {
     <div className="w-full border-t border-white/10 pt-8">
       <div className="flex flex-wrap justify-center gap-3">
         {[
-          { name: "Residential Flats in Gurgaon", href: "/property-types/residential-flats-gurgaon/" },
-          { name: "Retail Shops in Gurgaon", href: "/property-types/retail-shops-gurgaon/" },
-          { name: "Builder Floor in Gurgaon", href: "/property-types/builder-floor-gurgaon/" },
-          { name: "Farmhouse in Gurgaon", href: "/property-types/farmhouse-gurgaon/" },
-          { name: "Industrial Plots in Gurgaon", href: "/property-types/industrial-plots-gurgaon/" },
-          { name: "Independent Floor in Gurgaon", href: "/property-types/independent-floor-gurgaon/" },
-          { name: "SCO Plots in Gurgaon", href: "/property-types/sco-plots-gurgaon/" },
-          { name: "Shop Cum Office Plots in Gurgaon", href: "/property-types/shop-cum-office-plots-gurgaon/" },
-          { name: "Luxury Villas in Gurgaon", href: "/property-types/luxury-villas-gurgaon/" },
+          { name: "Residential Flats in Gurgaon", href: "/property/residential/" },
+          { name: "Retail Shops in Gurgaon", href: "/projects/commercial/" },
+          { name: "Builder Floor in Gurgaon", href: "/projects/independentfloors/" },
+          { name: "Farmhouse in Gurgaon", href: "/projects/farmhouse/" },
+          { name: "Industrial Plots in Gurgaon", href: "/projects/industrial-plots/" },
+          { name: "Independent Floor in Gurgaon", href: "/projects/independentfloors/" },
+          { name: "SCO Plots in Gurgaon", href: "/sco/plots/" },
+          { name: "Shop Cum Office Plots in Gurgaon", href: "/sco/plots/" },
+          { name: "Luxury Villas in Gurgaon", href: "/projects/villas/" },
         ].map((location, index) => (
           <Link
             key={index}
