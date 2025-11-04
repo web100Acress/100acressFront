@@ -166,7 +166,7 @@ const handleDeleteUser = async (id) => {
   }
   // Prefer slug-based blog link with fallback to legacy title/id route
   const blogLink = (blog) => {
-    if (blog?.slug) return `/blog/${blog.slug}?id=${blog?._id}`;
+    if (blog?.slug) return `/blog/${blog.slug}`;
     return `/blog/${cleanString(blog?.blog_Title)}/${blog?._id}`;
   };
   const handleBlogView = (blog) => {
