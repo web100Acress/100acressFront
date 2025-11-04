@@ -253,7 +253,7 @@ const BlogView = () => {
   const handleBlogView = (title, _id, postSlug) => {
     const createSlug = (t) =>
       t ? t.replace(/\s+/g, "-").replace(/[?!,\.;:\{\}\(\)\$\@]+/g, "").toLowerCase() : "blog";
-    const path = postSlug ? `/blog/${postSlug}?id=${_id}` : `/blog/${createSlug(title)}/${_id}`;
+    const path = postSlug ? `/blog/${postSlug}` : `/blog/${createSlug(title)}/${_id}`;
     history(path);
     try { window.scrollTo({ top: 0, behavior: "smooth" }); } catch (_) {}
   };
