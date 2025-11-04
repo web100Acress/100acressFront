@@ -23,9 +23,8 @@ const getSlug = (title) =>
   title.replace(/\s+/g, "-").replace(/[?!,\.;:\{\}\(\)\$\@]+/g, "").toLowerCase();
 
 // Prefer slug-based blog link with fallback to legacy title/id route
-// When using slug, also append ?id for robust fallback in BlogView
 const blogLink = (blog) => {
-  if (blog?.slug) return `/blog/${blog.slug}?id=${blog._id}`;
+  if (blog?.slug) return `/blog/${blog.slug}`;
   return `/blog/${getSlug(blog.blog_Title)}/${blog._id}`;
 };
 
