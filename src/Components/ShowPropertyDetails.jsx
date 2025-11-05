@@ -490,49 +490,49 @@ const ShowPropertyDetails = ({ id, type }) => {
                       <div className="p-4 md:p-6 lg:p-8">
                         {activeTab === 'details' && (
                           <div className="space-y-6">
-                            <h3 className="text-xl font-semibold text-gray-900 mb-6">Project Details</h3>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                              <div className="bg-gradient-to-br from-gray-50 to-white p-5 rounded-xl border border-gray-200 hover:shadow-md transition-all duration-300 hover:border-[#E63946]/30">
-                                <div className="flex items-start gap-4">
-                                  <div className="p-3 bg-[#E63946]/10 rounded-xl">
-                                    <Home className="w-6 h-6 text-[#E63946]" />
+                            <h3 className="text-lg font-semibold text-gray-900 mb-4">Project Details</h3>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                              <div className="bg-gradient-to-br from-gray-50 to-white p-4 rounded-lg border border-gray-200 hover:shadow-md transition-all duration-300 hover:border-[#E63946]/30 flex items-center justify-center min-h-[80px]">
+                                <div className="flex items-center gap-3">
+                                  <div className="p-2 bg-[#E63946]/10 rounded-lg">
+                                    <Home className="w-5 h-5 text-[#E63946]" />
                                   </div>
                                   <div>
-                                    <p className="text-xs text-gray-500 mb-1 font-medium">Property Type</p>
-                                    <p className="font-bold text-gray-900 text-base">{rentViewDetails.propertyType || 'Flat/Apartment'}</p>
+                                    <p className="text-xs text-gray-500 mb-0.5 font-medium">Property Type</p>
+                                    <p className="font-semibold text-gray-900 text-sm">{rentViewDetails.propertyType || 'Flat/Apartment'}</p>
                                   </div>
                                 </div>
                               </div>
-                              <div className="bg-gradient-to-br from-gray-50 to-white p-5 rounded-xl border border-gray-200 hover:shadow-md transition-all duration-300 hover:border-[#E63946]/30">
-                                <div className="flex items-start gap-4">
-                                  <div className="p-3 bg-[#E63946]/10 rounded-xl">
-                                    <IndianRupee className="w-6 h-6 text-[#E63946]" />
+                              <div className="bg-gradient-to-br from-gray-50 to-white p-4 rounded-lg border border-gray-200 hover:shadow-md transition-all duration-300 hover:border-[#E63946]/30 flex items-center justify-center min-h-[80px]">
+                                <div className="flex items-center gap-3">
+                                  <div className="p-2 bg-[#E63946]/10 rounded-lg">
+                                    <IndianRupee className="w-5 h-5 text-[#E63946]" />
                                   </div>
                                   <div>
-                                    <p className="text-xs text-gray-500 mb-1 font-medium">Project Price</p>
-                                    <p className="font-bold text-gray-900 text-base">₹ {formatPrice(rentViewDetails.price, propertyType)}</p>
+                                    <p className="text-xs text-gray-500 mb-0.5 font-medium">Project Price</p>
+                                    <p className="font-semibold text-gray-900 text-sm">₹ {formatPrice(rentViewDetails.price, propertyType)}</p>
                                   </div>
                                 </div>
                               </div>
-                              <div className="bg-gradient-to-br from-gray-50 to-white p-5 rounded-xl border border-gray-200 hover:shadow-md transition-all duration-300 hover:border-[#E63946]/30">
-                                <div className="flex items-start gap-4">
-                                  <div className="p-3 bg-[#E63946]/10 rounded-xl">
-                                    <Ruler className="w-6 h-6 text-[#E63946]" />
+                              <div className="bg-gradient-to-br from-gray-50 to-white p-4 rounded-lg border border-gray-200 hover:shadow-md transition-all duration-300 hover:border-[#E63946]/30 flex items-center justify-center min-h-[80px]">
+                                <div className="flex items-center gap-3">
+                                  <div className="p-2 bg-[#E63946]/10 rounded-lg">
+                                    <Ruler className="w-5 h-5 text-[#E63946]" />
                                   </div>
                                   <div>
-                                    <p className="text-xs text-gray-500 mb-1 font-medium">Project Size</p>
-                                    <p className="font-bold text-gray-900 text-base">{rentViewDetails.area || '1054'}</p>
+                                    <p className="text-xs text-gray-500 mb-0.5 font-medium">Project Size</p>
+                                    <p className="font-semibold text-gray-900 text-sm">{rentViewDetails.area || '1054'}</p>
                                   </div>
                                 </div>
                               </div>
-                              <div className="bg-gradient-to-br from-gray-50 to-white p-5 rounded-xl border border-gray-200 hover:shadow-md transition-all duration-300 hover:border-[#E63946]/30">
-                                <div className="flex items-start gap-4">
-                                  <div className="p-3 bg-[#E63946]/10 rounded-xl">
-                                    <MapPin className="w-6 h-6 text-[#E63946]" />
+                              <div className="bg-gradient-to-br from-gray-50 to-white p-4 rounded-lg border border-gray-200 hover:shadow-md transition-all duration-300 hover:border-[#E63946]/30 flex items-center justify-center min-h-[80px]">
+                                <div className="flex items-center gap-3">
+                                  <div className="p-2 bg-[#E63946]/10 rounded-lg">
+                                    <MapPin className="w-5 h-5 text-[#E63946]" />
                                   </div>
                                   <div>
-                                    <p className="text-xs text-gray-500 mb-1 font-medium">Location</p>
-                                    <p className="font-bold text-gray-900 text-base">{rentViewDetails.city || 'N/A'}</p>
+                                    <p className="text-xs text-gray-500 mb-0.5 font-medium">Location</p>
+                                    <p className="font-semibold text-gray-900 text-sm">{rentViewDetails.city || 'N/A'}</p>
                                   </div>
                                 </div>
                               </div>
