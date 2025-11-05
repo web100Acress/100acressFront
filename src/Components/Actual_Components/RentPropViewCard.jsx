@@ -17,6 +17,8 @@ import {
   subscribe,
   hydrateFavoritesFromServer,
 } from "../../Utils/favorites";
+import FAQSection from "./FAQSection";
+import { rentalFAQs } from "../../Data/rentalFAQs";
 
 const RentPropViewCard = () => {
   const navigate = useNavigate();
@@ -457,7 +459,7 @@ const RentPropViewCard = () => {
             {/* Content container */}
             <div className="relative z-10 max-w-5xl mx-auto pt-4">
               {/* Main Title with gradient effect and enhanced styling */}
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-3 tracking-wide leading-tight" style={{ fontFamily: 'DM Sans, sans-serif' }}>
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-3 tracking-wide leading-tight" style={{ fontFamily: 'Rubik, sans-serif' }}>
                 <span className="bg-gradient-to-r from-red-600 via-red-500 to-orange-500 bg-clip-text text-transparent drop-shadow-sm">
                   Best
                 </span>
@@ -468,7 +470,7 @@ const RentPropViewCard = () => {
               <div className="w-32 h-1.5 bg-gradient-to-r from-red-500 via-red-400 to-orange-500 mx-auto mb-3 rounded-full shadow-lg"></div>
               
               {/* Subtitle with reduced size */}
-              <p className="text-base md:text-lg text-slate-600 max-w-4xl mx-auto leading-relaxed font-medium tracking-wide" style={{ fontFamily: 'DM Sans, sans-serif' }}>
+              <p className="text-base md:text-lg text-slate-600 max-w-4xl mx-auto leading-relaxed font-medium tracking-wide" style={{ fontFamily: 'Rubik, sans-serif' }}>
                 Premium Rental Properties — Value, Location, and Trust Redefined.
               </p>
             </div>
@@ -793,6 +795,10 @@ const RentPropViewCard = () => {
           </div>
         </div>
       </main>
+      
+      {/* FAQ Section */}
+      <FAQSection faqs={rentalFAQs} type="rental" />
+      
       <Footer />
       {/* Auth Modal for Login/Register */}
       <AuthModal open={showAuth} onClose={() => setShowAuth(false)} defaultView="login" />

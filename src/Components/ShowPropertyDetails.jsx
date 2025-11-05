@@ -1,23 +1,36 @@
-import React, { useState, useEffect, useContext, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Footer from "../Components/Actual_Components/Footer";
 import api from "../config/apiClient";
-
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
-import Slider from "react-slick";
 import { Skeleton } from "antd";
-import { Link, useParams, useNavigate } from "react-router-dom";
-import {
-  ShareIcon,
-  PhoneIcon,
-  ForwardIcon,
-  BackwardIcon,
-  LcoationBiggerIcon,
-  ArrowIcon,
-} from "../Assets/icons";
-import styled from "styled-components";
+import { Link, useNavigate } from "react-router-dom";
 import Gallery from "../Components/Gallery";
-import StarCarousel from "./HomePageComponents/Carousel";
+import { 
+  MapPin, 
+  Home, 
+  Ruler, 
+  IndianRupee, 
+  Phone, 
+  Download, 
+  Share2,
+  CheckCircle,
+  Star,
+  Bed,
+  Bath,
+  Car,
+  Trees,
+  Dumbbell,
+  Waves,
+  Shield,
+  Award,
+  Building,
+  Calendar,
+  User,
+  Mail,
+  ChevronRight
+} from "lucide-react";
+import FAQSection from "../Components/Actual_Components/FAQSection";
+import { resaleFAQs } from "../Data/resaleFAQs";
+import { rentalFAQs } from "../Data/rentalFAQs";
 
 // Price formatting function
 function formatPrice(price, type = 'buy') {
@@ -64,6 +77,7 @@ const ShowPropertyDetails = ({ id, type }) => {
   const [showFormPopup, setShowFormPopup] = useState(false);
   const [highlightForm, setHighlightForm] = useState(false);
   const [propertyType, setPropertyType] = useState(null);
+  const [activeTab, setActiveTab] = useState('details');
 
   // Check and redirect if URL is missing trailing slash
   useEffect(() => {
@@ -260,16 +274,14 @@ const ShowPropertyDetails = ({ id, type }) => {
 
   // Ref for inquiry form
   const inquiryFormRef = useRef(null);
+  
   // Phone button click handler
   const handlePhoneClick = (e) => {
-    e.preventDefault();
+    if (e) e.preventDefault();
     if (inquiryFormRef.current) {
       inquiryFormRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
       setHighlightForm(true);
-      setShowFormPopup(true);
       setTimeout(() => setHighlightForm(false), 2000);
-    } else {
-      setShowFormPopup(true);
     }
   };
 
@@ -323,252 +335,453 @@ const ShowPropertyDetails = ({ id, type }) => {
       }, [rentViewDetails, id, propertyType]);
 
   return (
-    <div className="bg-[#f8fafc] min-h-screen font-['Inter','Poppins','sans-serif']">
-      {/* Breadcrumb navigation (inline, above property name) */}
-      <div className="pt-20 max-w-6xl mx-auto px-2 sm:px-4">
-        {loading || !propertyType ? (
-          <Skeleton active />
-        ) : (
-          rentViewDetails && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
-              {/* Left: Property Image & Info */}
-              <div className="w-full">
-                {/* Breadcrumb above property name */}
-                <nav className="mb-0 flex justify-start -ml-2" aria-label="Breadcrumb">
-                  <ol className="flex items-center space-x-2 text-sm text-gray-500 pl-2">
+    <div className="bg-[#FAFAFA] min-h-screen font-['Rubik','sans-serif']">
+      {loading || !propertyType ? (
+        <div className="pt-20 max-w-7xl mx-auto px-4 py-8">
+          <Skeleton active paragraph={{ rows: 10 }} />
+        </div>
+      ) : (
+        rentViewDetails && (
+          <>
+            {/* Hero Section */}
+            <div className="pt-16 md:pt-20 pb-4 md:pb-6">
+              <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-12">
+                {/* Breadcrumb */}
+                <nav className="mb-4 md:mb-6 mt-2 md:mt-4" aria-label="Breadcrumb">
+                  <ol className="flex items-center space-x-1 md:space-x-2 text-xs text-gray-500 overflow-x-auto">
                     <li>
-                      <a href={propertyType === "rental" ? "/rental-properties/best-rental-property-in-gurugram/" : "/buy-properties/best-resale-property-in-gurugram/"} className="hover:text-[#e63946] font-medium transition-colors">
-                        {propertyType === "rental" ? "Rental Property" : "Resale Property"}
+                      <a href="/" className="hover:text-[#E63946] transition-colors duration-200">Home</a>
+                    </li>
+                    <li><ChevronRight className="w-3 h-3 text-gray-400" /></li>
+                    <li>
+                      <a 
+                        href={propertyType === "rental" ? "/rental-properties/best-rental-property-in-gurugram/" : "/buy-properties/best-resale-property-in-gurugram/"}
+                        className="hover:text-[#E63946] transition-colors duration-200"
+                      >
+                        {propertyType === "rental" ? "Rental" : "Resale"}
                       </a>
                     </li>
-                    <li>
-                      <span className="mx-1">&gt;</span>
-                    </li>
-                    <li className="truncate max-w-xs font-semibold text-gray-700" aria-current="page">
-                      {rentViewDetails?.propertyName || 'Property'}
+                    <li><ChevronRight className="w-3 h-3 text-gray-400" /></li>
+                    <li className="text-gray-700 font-medium truncate max-w-xs">
+                      {rentViewDetails.propertyName}
                     </li>
                   </ol>
                 </nav>
-                <div className="mb-4">
-                  <div className="flex flex-col gap-2 mb-2">
-                    <span className="text-3xl font-extrabold text-gray-900 whitespace-nowrap overflow-hidden text-ellipsis">{rentViewDetails?.propertyName}</span>
-                    <div className="flex items-center gap-3">
-                      <span className="bg-[#e63946]/10 text-[#e63946] font-semibold px-3 py-1 rounded-full text-xs uppercase tracking-wide">{rentViewDetails?.propertyType}</span>
-                      {/* Optional badge */}
-                      <span className="bg-green-100 text-green-700 font-bold px-2 py-0.5 rounded-full text-xs">Verified</span>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2 bg-gray-100 rounded-lg px-3 py-1 w-fit mb-2">
-                    <LcoationBiggerIcon className="h-4 w-4 text-[#e63946]" />
-                    <span className="text-sm text-gray-700">Located in {rentViewDetails?.address}, {rentViewDetails?.city}, {rentViewDetails?.state}</span>
-                  </div>
-                </div>
-                {/* Property Image */}
-                <div className="relative mb-4">
-                  <img
-                    src={rentViewDetails?.frontImage?.url}
-                    alt={rentViewDetails?.propertyName}
-                    className="w-full h-72 sm:h-96 object-cover rounded-3xl shadow-xl border border-gray-100 transition-transform duration-300 hover:scale-105"
-                  />
-                  {/* Floating Call Button */}
-                  <button
-                    onClick={handlePhoneClick}
-                    aria-label="Contact via phone"
-                    className="fixed bottom-4 right-4 z-50 bg-gradient-to-r from-[#e63946] to-[#d7263d] shadow-2xl rounded-full h-14 px-6 flex items-center gap-3 border-4 border-white focus:outline-none focus:ring-2 focus:ring-[#e63946]/30 transition-all duration-200 hover:scale-105 hover:shadow-[0_8px_32px_0_rgba(230,57,70,0.35)]"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" className="h-7 w-7" aria-hidden="true">
-                      <path d="M6.62 10.79a15.053 15.053 0 006.59 6.59l2.2-2.2a1 1 0 011.01-.24c1.12.37 2.33.57 3.58.57a1 1 0 011 1V20a1 1 0 01-1 1C10.07 21 3 13.93 3 5a1 1 0 011-1h3.5a1 1 0 011 1c0 1.25.2 2.46.57 3.58a1 1 0 01-.24 1.01l-2.2 2.2z" fill="#fff"/>
-                    </svg>
-                    <span className="text-white font-bold text-base">Call Now</span>
-                  </button>
-                  {/* Optional badge overlay */}
-                  <span className="absolute top-4 left-4 bg-[#e63946] text-white font-bold px-3 py-1 rounded-full text-xs shadow-lg animate-pulse">Hot Property</span>
-                </div>
-                {/* Property Image Gallery Thumbnails */}
-                <div className="mb-6">
-                  <div className="flex gap-2 overflow-x-auto pb-2">
-                    {[rentViewDetails?.frontImage, ...(rentViewDetails?.otherImage || [])]
-                      .filter(img => img && img.url)
-                      .map((img, idx) => (
-                        <img
-                          key={img.url || idx}
-                          src={img.url}
-                          alt={`Property image ${idx + 1}`}
-                          className="h-20 w-32 object-cover rounded-lg border border-gray-200 cursor-pointer transition-transform duration-200 hover:scale-105"
-                          onClick={() => { setGalleryImageData([rentViewDetails?.frontImage, ...(rentViewDetails?.otherImage || [])].filter(i => i && i.url).map(i => ({ url: i.url, thumbnail: i.url }))); setOpenGallery(true); }}
-                        />
-                      ))}
-                  </div>
-                  {OpenGallery && (
-                    <Gallery
-                      images={GalleryImageData}
-                      OpenGallery={OpenGallery}
-                      setOpenGallery={setOpenGallery}
-                    />
-                  )}
-                </div>
-                {/* Price */}
-                <div className="flex items-center gap-2 mb-6">
-                  <span className="text-2xl font-extrabold text-[#e63946]">₹ {formatPrice(rentViewDetails?.price, propertyType)}</span>
-                </div>
-                {/* About Property & Highlights */}
-                <div className="mb-6">
-                  <h3 className="text-xl font-bold mb-2">About Property</h3>
-                  <p className="text-base text-gray-700 mb-4">{rentViewDetails?.descripation || 'Please call us for further information'}</p>
-                  <h4 className="text-lg font-semibold mb-1">Property Highlights</h4>
-                  <ul className="list-disc pl-5 text-base text-gray-600 space-y-1">
-                    {rentViewDetails?.area && <li>{rentViewDetails.area}</li>}
-                    {rentViewDetails?.furnishing && <li>{rentViewDetails.furnishing}</li>}
-                    {rentViewDetails?.landMark && <li>{rentViewDetails.landMark}</li>}
-                    {rentViewDetails?.type && <li>{rentViewDetails.type}</li>}
-                  </ul>
-                </div>
-              </div>
-              {/* Right: Inquiry Form & CTA */}
-              <div className="w-full max-w-md mx-auto md:mx-0" ref={inquiryFormRef}>
-                {/* Modern Inquiry Form */}
-                <div className={`bg-white/80 rounded-2xl shadow-xl p-6 mb-6 border border-gray-100 relative transition-all duration-300 ${highlightForm ? 'ring-2 ring-[#e63946] ring-offset-2' : ''}`}>
-                  {showFormPopup && (
-                    <div className="absolute inset-0 flex items-center justify-center z-20">
-                      <div className="bg-white border border-[#e63946] rounded-xl shadow-lg px-6 py-4 text-center text-[#e63946] font-semibold text-base animate-fade-in">
-                        First fill the form to see the contact details.
-                        <button className="block mx-auto mt-3 px-4 py-1 bg-[#e63946] text-white rounded-full text-sm shadow hover:bg-red-700 transition" onClick={() => setShowFormPopup(false)}>OK</button>
+
+                {/* Property Name and Location - Above Image */}
+                <div className="mb-4 md:mb-6">
+                  <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-3 md:mb-4 gap-3">
+                    <div className="flex-1">
+                      <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-2 md:mb-3 leading-tight">
+                        {rentViewDetails.propertyName}
+                      </h1>
+                      <div className="flex items-center gap-2 text-gray-600">
+                        <MapPin className="w-4 md:w-5 h-4 md:h-5 text-[#E63946] flex-shrink-0" />
+                        <span className="text-sm md:text-base">
+                          Sector {rentViewDetails.address}, {rentViewDetails.city}, {rentViewDetails.state}
+                        </span>
                       </div>
                     </div>
-                  )}
-                  <h3 className="text-xl font-bold mb-4">Know more about property</h3>
-                  <form onSubmit={handleSubmitFormData} className="space-y-5">
-                    <div className="relative">
-                      <input
-                        type="text"
-                        name="custName"
-                        required
-                        className="peer w-full border border-gray-300 rounded-lg bg-gray-50 px-4 pt-6 pb-2 text-base focus:outline-none focus:ring-2 focus:ring-[#e63946] transition-all"
-                        onChange={handleUserFormChange}
-                        value={userForm.custName}
-                        placeholder=" "
-                      />
-                      <label className="absolute left-4 top-2 text-gray-400 text-sm transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-focus:top-2 peer-focus:text-sm bg-white/80 px-1 rounded pointer-events-none">Full Name</label>
+                    <div className="flex items-center gap-1.5 md:gap-2 flex-wrap md:flex-shrink-0">
+                      <div className="flex items-center gap-1 md:gap-1.5 bg-blue-50 px-2 md:px-4 py-1.5 md:py-2 rounded-full shadow-sm border border-blue-100">
+                        <Shield className="w-3 md:w-4 h-3 md:h-4 text-blue-600" />
+                        <span className="text-xs md:text-sm font-semibold text-blue-700">RERA</span>
+                      </div>
+                      <div className="flex items-center gap-1 md:gap-1.5 bg-green-50 px-2 md:px-4 py-1.5 md:py-2 rounded-full shadow-sm border border-green-100">
+                        <CheckCircle className="w-3 md:w-4 h-3 md:h-4 text-green-600" />
+                        <span className="text-xs md:text-sm font-semibold text-green-700">Verified</span>
+                      </div>
+                      <div className="flex items-center gap-0.5 md:gap-1 bg-white px-2 md:px-3 py-1.5 md:py-2 rounded-full shadow-sm border border-gray-200">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <Star key={star} className="w-3 md:w-4 h-3 md:h-4 fill-yellow-400 text-yellow-400" />
+                        ))}
+                        <span className="text-xs md:text-sm font-semibold text-gray-700 ml-0.5 md:ml-1">5.0</span>
+                      </div>
                     </div>
-                    <div className="relative">
-                      <input
-                        type="number"
-                        name="custNumber"
-                        required
-                        className="peer w-full border border-gray-300 rounded-lg bg-gray-50 px-4 pt-6 pb-2 text-base focus:outline-none focus:ring-2 focus:ring-[#e63946] transition-all"
-                        onChange={handleUserFormChange}
-                        value={userForm.custNumber}
-                        placeholder=" "
-                      />
-                      <label className="absolute left-4 top-2 text-gray-400 text-sm transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-focus:top-2 peer-focus:text-sm bg-white/80 px-1 rounded pointer-events-none">Mobile Number</label>
-                    </div>
-                    <div className="relative">
-                      <input
-                        type="email"
-                        name="custEmail"
-                        required
-                        className="peer w-full border border-gray-300 rounded-lg bg-gray-50 px-4 pt-6 pb-2 text-base focus:outline-none focus:ring-2 focus:ring-[#e63946] transition-all"
-                        onChange={handleUserFormChange}
-                        value={userForm.custEmail}
-                        placeholder=" "
-                      />
-                      <label className="absolute left-4 top-2 text-gray-400 text-sm transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-focus:top-2 peer-focus:text-sm bg-white/80 px-1 rounded pointer-events-none">Email address</label>
-                    </div>
-                    <p className="text-xs text-gray-500 mt-1">Fill out form only once to get contact details</p>
-                    <button
-                      type="submit"
-                      className="w-full bg-[#e63946] hover:bg-red-700 text-white font-bold py-3 rounded-full shadow-lg transition-all duration-200 text-base mt-2"
-                    >
-                      Get Details
-                    </button>
-                  </form>
-                </div>
-                {/* Post Property CTA Card */}
-                <div className="bg-gradient-to-r from-[#e63946]/10 to-[#457b9d]/10 rounded-2xl shadow-lg p-6 flex flex-col items-center border border-gray-100">
-                  <h5 className="text-lg font-bold mb-2 text-gray-800">Post your Property for <span className="text-[#e63946]">FREE!</span></h5>
-                  <Link to={"https://100acress.com/postproperty/"}>
-                    <button className="mt-2 bg-[#e63946] hover:bg-red-700 text-white font-bold px-6 py-2 rounded-full shadow transition-all duration-200 text-base">
-                      List Properties <span className="bg-white text-xs text-[#e63946] p-1 mx-1 rounded">FREE</span>
-                    </button>
-                  </Link>
+                  </div>
                 </div>
               </div>
-            </div>
-          )
-        )}
-      </div>
-      {buyData && buyData.length > 0 && (
-        <div className="w-full mt-2 mb-0 pb-0 max-w-5xl mx-auto">
-          <div className="similar-properties-container mb-4">
-            <h3 className="text-2xl font-bold mb-2 text-gray-900">Similar Properties</h3>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 min-h-[40vh] py-8">
-            {buyData.slice(0, 12).map((property, idx) => (
-              <div key={property._id || idx} className="bg-white rounded-xl shadow-md overflow-hidden flex flex-col w-full h-64 border border-gray-100">
-                <img
-                  src={property.thumbnailImage?.url || property.frontImage?.url}
-                  alt={property.propertyName}
-                  className="w-full h-28 object-cover rounded-t-xl"
-                  loading="lazy"
-                />
-                <div className="p-2 flex-1 flex flex-col justify-between">
-                  <div>
-                    <h4 className="font-semibold text-base mb-0 truncate">{property.propertyName}</h4>
-                    <div className="flex items-center text-gray-500 text-xs mb-0.5">
-                      <span className="mr-1">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 inline-block text-[#e63946]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a2 2 0 01-2.828 0l-4.243-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-                      </span>
-                      <span className="truncate">{property.address}</span>
-                    </div>
-                    <div className="text-xs text-gray-400 mb-1 truncate">{property.city},{property.state}</div>
-                  </div>
-                  <div className="flex items-center justify-between mt-1">
-                                          <span className="font-bold text-xs text-gray-900"><span className="text-[#e63946]">₹ {formatPrice(property.price, propertyType)}</span></span>
-                    <a href={`${propertyType === "rental" ? "/rental-properties" : "/buy-properties"}/${property.propertyName ? property.propertyName.replace(/\s+/g, '-') : 'unknown'}/${property._id}/`} target="_blank" rel="noopener noreferrer">
-                      <button className="bg-[#e63946] hover:bg-red-700 text-white rounded-xl p-2 transition-all duration-200">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+
+                {/* Full Width Hero Image with Overlay Tags */}
+                <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-12">
+                  <div className="relative mb-6 md:mb-8 group overflow-hidden rounded-2xl md:rounded-3xl">
+                      <img
+                        src={rentViewDetails.frontImage?.url}
+                        alt={rentViewDetails.propertyName}
+                        className="w-full h-[250px] md:h-[400px] lg:h-[500px] object-cover cursor-pointer transition-transform duration-700 group-hover:scale-105"
+                        onClick={() => setOpenGallery(true)}
+                      />
+                      
+                      {/* Gradient Overlay for better text readability */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none"></div>
+                      
+                      {/* Overlay Tags - Top Left */}
+                      <div className="absolute top-3 md:top-6 left-3 md:left-6 flex flex-col gap-2 md:gap-3 z-10">
+                        <span className="bg-gradient-to-r from-[#E63946] to-[#FF6B6B] text-white px-3 md:px-5 py-1.5 md:py-2.5 rounded-lg md:rounded-xl font-semibold text-xs md:text-sm shadow-2xl flex items-center gap-1.5 md:gap-2 backdrop-blur-sm">
+                          <Award className="w-3 md:w-4 h-3 md:h-4" />
+                          <span className="hidden sm:inline">0% Brokerage</span>
+                          <span className="sm:hidden">0% Fee</span>
+                        </span>
+                        <span className="bg-gradient-to-r from-green-600 to-green-500 text-white px-3 md:px-5 py-1.5 md:py-2.5 rounded-lg md:rounded-xl font-semibold text-xs md:text-sm shadow-2xl flex items-center gap-1.5 md:gap-2 backdrop-blur-sm">
+                          <CheckCircle className="w-3 md:w-4 h-3 md:h-4" />
+                          <span className="hidden sm:inline">Best Price Guarantee</span>
+                          <span className="sm:hidden">Best Price</span>
+                        </span>
+                      </div>
+                      
+                      {/* Price Card - Bottom Left */}
+                      <div className="absolute bottom-3 md:bottom-6 left-3 md:left-6 bg-white/95 backdrop-blur-md rounded-xl md:rounded-2xl shadow-2xl px-3 md:px-6 py-2 md:py-4 border border-white/20 z-10">
+                        <p className="text-xs text-gray-500 mb-0.5 md:mb-1 font-medium">Starting from</p>
+                        <p className="text-xl md:text-3xl font-bold bg-gradient-to-r from-[#E63946] to-[#FF6B6B] bg-clip-text text-transparent flex items-center">
+                          <IndianRupee className="w-4 md:w-6 h-4 md:h-6 text-[#E63946]" />
+                          {formatPrice(rentViewDetails.price, propertyType)}
+                        </p>
+                      </div>
+                      
+                      {/* View All Photos Button - Bottom Right */}
+                      <button
+                        onClick={() => setOpenGallery(true)}
+                        className="absolute bottom-3 md:bottom-6 right-3 md:right-6 bg-white/95 backdrop-blur-md rounded-lg md:rounded-xl px-3 md:px-5 py-2 md:py-3 font-semibold text-xs md:text-sm shadow-2xl hover:shadow-3xl hover:scale-105 transition-all duration-300 flex items-center gap-1.5 md:gap-2 border border-white/20 z-10">
+                        <span className="text-gray-900 hidden sm:inline">View All Photos</span>
+                        <span className="text-gray-900 sm:hidden">Photos</span>
+                        <span className="bg-[#E63946] text-white px-1.5 md:px-2 py-0.5 rounded-md text-xs">{GalleryImageData.length}</span>
                       </button>
-                    </a>
+                  </div>
+                </div>
+
+                {/* Grid Layout: Tabs + Contact Form */}
+                <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-12">
+                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
+                  {/* Left: Tabs Section (2/3 width) */}
+                  <div className="lg:col-span-2">
+                    {/* About Property Section - Above Tabs */}
+                    <div className="bg-white rounded-xl md:rounded-2xl shadow-lg p-4 md:p-6 lg:p-8 mb-4 md:mb-6 border border-gray-100 hover:shadow-xl transition-shadow duration-300">
+                      <h3 className="text-lg md:text-xl font-semibold text-gray-900 mb-3 md:mb-4">About Property</h3>
+                      <p className="text-gray-600 leading-relaxed text-sm md:text-base">
+                        {rentViewDetails.descripation || 'Please contact us for more information about this property.'}
+                      </p>
+                    </div>
+
+                    {/* Tabs Section */}
+                    <div className="bg-white rounded-xl md:rounded-2xl shadow-lg mb-4 md:mb-6 border border-gray-100 overflow-hidden">
+                      {/* Tab Headers */}
+                      <div className="border-b border-gray-200 bg-gray-50/50 overflow-x-auto">
+                        <div className="flex gap-0 px-3 md:px-6 min-w-max md:min-w-0">
+                          {['details', 'configuration', 'highlights', 'amenities', 'images'].map((tab) => (
+                            <button
+                              key={tab}
+                              onClick={() => setActiveTab(tab)}
+                              className={`px-3 md:px-6 py-3 md:py-4 font-semibold text-xs md:text-sm transition-all duration-300 whitespace-nowrap relative ${
+                                activeTab === tab
+                                  ? 'text-[#E63946]'
+                                  : 'text-gray-600 hover:text-gray-900 hover:bg-white/50'
+                              }`}
+                            >
+                              {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                              {activeTab === tab && (
+                                <span className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-[#E63946] to-[#FF6B6B] rounded-t-full transition-all duration-300"></span>
+                              )}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Tab Content */}
+                      <div className="p-4 md:p-6 lg:p-8">
+                        {activeTab === 'details' && (
+                          <div className="space-y-6">
+                            <h3 className="text-xl font-semibold text-gray-900 mb-6">Project Details</h3>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                              <div className="bg-gradient-to-br from-gray-50 to-white p-5 rounded-xl border border-gray-200 hover:shadow-md transition-all duration-300 hover:border-[#E63946]/30">
+                                <div className="flex items-start gap-4">
+                                  <div className="p-3 bg-[#E63946]/10 rounded-xl">
+                                    <Home className="w-6 h-6 text-[#E63946]" />
+                                  </div>
+                                  <div>
+                                    <p className="text-xs text-gray-500 mb-1 font-medium">Property Type</p>
+                                    <p className="font-bold text-gray-900 text-base">{rentViewDetails.propertyType || 'Flat/Apartment'}</p>
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="bg-gradient-to-br from-gray-50 to-white p-5 rounded-xl border border-gray-200 hover:shadow-md transition-all duration-300 hover:border-[#E63946]/30">
+                                <div className="flex items-start gap-4">
+                                  <div className="p-3 bg-[#E63946]/10 rounded-xl">
+                                    <IndianRupee className="w-6 h-6 text-[#E63946]" />
+                                  </div>
+                                  <div>
+                                    <p className="text-xs text-gray-500 mb-1 font-medium">Project Price</p>
+                                    <p className="font-bold text-gray-900 text-base">₹ {formatPrice(rentViewDetails.price, propertyType)}</p>
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="bg-gradient-to-br from-gray-50 to-white p-5 rounded-xl border border-gray-200 hover:shadow-md transition-all duration-300 hover:border-[#E63946]/30">
+                                <div className="flex items-start gap-4">
+                                  <div className="p-3 bg-[#E63946]/10 rounded-xl">
+                                    <Ruler className="w-6 h-6 text-[#E63946]" />
+                                  </div>
+                                  <div>
+                                    <p className="text-xs text-gray-500 mb-1 font-medium">Project Size</p>
+                                    <p className="font-bold text-gray-900 text-base">{rentViewDetails.area || '1054'}</p>
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="bg-gradient-to-br from-gray-50 to-white p-5 rounded-xl border border-gray-200 hover:shadow-md transition-all duration-300 hover:border-[#E63946]/30">
+                                <div className="flex items-start gap-4">
+                                  <div className="p-3 bg-[#E63946]/10 rounded-xl">
+                                    <MapPin className="w-6 h-6 text-[#E63946]" />
+                                  </div>
+                                  <div>
+                                    <p className="text-xs text-gray-500 mb-1 font-medium">Location</p>
+                                    <p className="font-bold text-gray-900 text-base">{rentViewDetails.city || 'N/A'}</p>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
+                        {activeTab === 'configuration' && (
+                          <div>
+                            <h3 className="text-2xl font-bold text-[#212529] mb-4">Configuration</h3>
+                            <div className="space-y-3">
+                              {rentViewDetails.type && (
+                                <div className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg">
+                                  <Building className="w-5 h-5 text-[#E63946]" />
+                                  <span className="text-gray-700"><strong>Type:</strong> {rentViewDetails.type}</span>
+                                </div>
+                              )}
+                              {rentViewDetails.furnishing && (
+                                <div className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg">
+                                  <Home className="w-5 h-5 text-[#E63946]" />
+                                  <span className="text-gray-700"><strong>Furnishing:</strong> {rentViewDetails.furnishing}</span>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        )}
+
+                        {activeTab === 'highlights' && (
+                          <div>
+                            <h3 className="text-2xl font-bold text-[#212529] mb-4">Property Highlights</h3>
+                            <ul className="space-y-2">
+                              {rentViewDetails.area && (
+                                <li className="flex items-center gap-2 text-gray-700">
+                                  <CheckCircle className="w-5 h-5 text-green-600" />
+                                  <span>{rentViewDetails.area}</span>
+                                </li>
+                              )}
+                              {rentViewDetails.furnishing && (
+                                <li className="flex items-center gap-2 text-gray-700">
+                                  <CheckCircle className="w-5 h-5 text-green-600" />
+                                  <span>{rentViewDetails.furnishing}</span>
+                                </li>
+                              )}
+                              {rentViewDetails.landMark && (
+                                <li className="flex items-center gap-2 text-gray-700">
+                                  <CheckCircle className="w-5 h-5 text-green-600" />
+                                  <span>Near {rentViewDetails.landMark}</span>
+                                </li>
+                              )}
+                            </ul>
+                          </div>
+                        )}
+
+                        {activeTab === 'amenities' && (
+                          <div>
+                            <h3 className="text-2xl font-bold text-[#212529] mb-4">Amenities</h3>
+                            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                              <div className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg">
+                                <Dumbbell className="w-5 h-5 text-[#E63946]" />
+                                <span className="text-sm">Gymnasium</span>
+                              </div>
+                              <div className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg">
+                                <Waves className="w-5 h-5 text-[#E63946]" />
+                                <span className="text-sm">Swimming Pool</span>
+                              </div>
+                              <div className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg">
+                                <Trees className="w-5 h-5 text-[#E63946]" />
+                                <span className="text-sm">Garden</span>
+                              </div>
+                              <div className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg">
+                                <Car className="w-5 h-5 text-[#E63946]" />
+                                <span className="text-sm">Parking</span>
+                              </div>
+                              <div className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg">
+                                <Shield className="w-5 h-5 text-[#E63946]" />
+                                <span className="text-sm">24/7 Security</span>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
+                        {activeTab === 'images' && (
+                          <div>
+                            <h3 className="text-2xl font-bold text-[#212529] mb-4">Property Images</h3>
+                            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                              {GalleryImageData.map((img, idx) => (
+                                <img
+                                  key={idx}
+                                  src={img.url}
+                                  alt={`Property ${idx + 1}`}
+                                  className="w-full h-40 object-cover rounded-lg cursor-pointer hover:opacity-80 transition shadow-sm"
+                                  onClick={() => setOpenGallery(true)}
+                                />
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Right: Contact Form Sidebar */}
+                  <div className="lg:col-span-1">
+                    <div className="sticky top-24" ref={inquiryFormRef}>
+                      {/* Premium Contact Form */}
+                      <div className="bg-white rounded-2xl shadow-2xl p-7 mb-6 border border-gray-100 hover:shadow-3xl transition-shadow duration-300">
+                        <h3 className="text-lg font-bold text-gray-900 mb-2 leading-tight">
+                          Yes, I'm Interested in
+                        </h3>
+                        <p className="text-[#E63946] font-semibold mb-5 text-base">{rentViewDetails.propertyName}</p>
+                        <form onSubmit={handleSubmitFormData} className="space-y-4">
+                          <div className="relative group">
+                            <User className="absolute left-3 top-3.5 w-5 h-5 text-gray-400 group-focus-within:text-[#E63946] transition-colors" />
+                            <input
+                              type="text"
+                              name="custName"
+                              required
+                              className="w-full border-2 border-gray-200 rounded-xl bg-gray-50 pl-10 pr-4 py-3.5 text-base focus:outline-none focus:ring-2 focus:ring-[#E63946]/20 focus:border-[#E63946] focus:bg-white hover:border-gray-300 transition-all duration-300"
+                              onChange={handleUserFormChange}
+                              value={userForm.custName}
+                              placeholder="Your Name"
+                            />
+                          </div>
+                          <div className="relative group">
+                            <Mail className="absolute left-3 top-3.5 w-5 h-5 text-gray-400 group-focus-within:text-[#E63946] transition-colors" />
+                            <input
+                              type="email"
+                              name="custEmail"
+                              required
+                              className="w-full border-2 border-gray-200 rounded-xl bg-gray-50 pl-10 pr-4 py-3.5 text-base focus:outline-none focus:ring-2 focus:ring-[#E63946]/20 focus:border-[#E63946] focus:bg-white hover:border-gray-300 transition-all duration-300"
+                              onChange={handleUserFormChange}
+                              value={userForm.custEmail}
+                              placeholder="Email Address"
+                            />
+                          </div>
+                          <div className="relative group">
+                            <Phone className="absolute left-3 top-3.5 w-5 h-5 text-gray-400 group-focus-within:text-[#E63946] transition-colors" />
+                            <input
+                              type="tel"
+                              name="custNumber"
+                              required
+                              className="w-full border-2 border-gray-200 rounded-xl bg-gray-50 pl-10 pr-4 py-3.5 text-base focus:outline-none focus:ring-2 focus:ring-[#E63946]/20 focus:border-[#E63946] focus:bg-white hover:border-gray-300 transition-all duration-300"
+                              onChange={handleUserFormChange}
+                              value={userForm.custNumber}
+                              placeholder="Phone Number"
+                            />
+                          </div>
+                          
+                          <button
+                            type="submit"
+                            className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-[#E63946] to-[#FF6B6B] hover:from-[#d7263d] hover:to-[#E63946] text-white font-semibold py-3.5 px-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+                          >
+                            <Phone className="w-4 h-4" />
+                            Request Call
+                          </button>
+                          <p className="text-xs text-gray-500 text-center mt-3">
+                            Our agent will reach out within 5 minutes.
+                          </p>
+                        </form>
+                      </div>
+                      
+                      {/* Post Property CTA Card */}
+                      <div className="bg-gradient-to-br from-[#E63946]/5 via-white to-[#FF6B6B]/5 rounded-2xl shadow-xl p-7 flex flex-col items-center border border-gray-200 hover:shadow-2xl transition-all duration-300">
+                        <h5 className="text-lg font-bold mb-3 text-gray-900 text-center">
+                          Want to sell your property?
+                        </h5>
+                        <p className="text-sm text-gray-600 mb-4 text-center">List your property for FREE!</p>
+                        <Link to="/postproperty">
+                          <button className="bg-gradient-to-r from-[#E63946] to-[#FF6B6B] hover:from-[#FF6B6B] hover:to-[#E63946] text-white font-bold px-8 py-3 rounded-full shadow-lg hover:shadow-2xl transition-all duration-300 text-base hover:scale-105 flex items-center gap-2">
+                            List Properties
+                            <span className="bg-white text-[#E63946] px-2 py-0.5 rounded-full text-xs font-bold">FREE</span>
+                          </button>
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
                   </div>
                 </div>
               </div>
+
+            {/* Gallery Modal */}
+            {OpenGallery && (
+              <Gallery
+                images={GalleryImageData}
+                OpenGallery={OpenGallery}
+                setOpenGallery={setOpenGallery}
+              />
+            )}
+
+            {/* Floating Call Button */}
+            <button
+              onClick={handlePhoneClick}
+              aria-label="Contact via phone"
+              className="fixed bottom-6 right-6 z-50 bg-gradient-to-r from-[#E63946] to-[#d7263d] shadow-2xl rounded-full h-14 w-14 flex items-center justify-center border-4 border-white focus:outline-none focus:ring-2 focus:ring-[#E63946]/30 transition-all duration-200 hover:scale-110 hover:shadow-[0_8px_32px_0_rgba(230,57,70,0.4)] lg:h-16 lg:w-16"
+            >
+              <Phone className="h-6 w-6 text-white lg:h-7 lg:w-7" />
+            </button>
+          </>
+        )
+      )}
+
+      {/* Similar Properties Section */}
+      {buyData && buyData.length > 0 && (
+        <div className="max-w-7xl mx-auto px-6 lg:px-12 py-8">
+          <h3 className="text-2xl font-bold mb-6 text-[#212529]">Similar Properties</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {buyData.slice(0, 4).map((property, idx) => (
+              <a
+                key={property._id || idx}
+                href={`${propertyType === "rental" ? "/rental-properties" : "/buy-properties"}/${property.propertyName ? property.propertyName.replace(/\s+/g, '-') : 'unknown'}/${property._id}/`}
+                className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 hover:scale-[1.02] border border-gray-100"
+              >
+                <div className="relative">
+                  <img
+                    src={property.thumbnailImage?.url || property.frontImage?.url}
+                    alt={property.propertyName}
+                    className="w-full h-48 object-cover"
+                    loading="lazy"
+                  />
+                  <div className="absolute top-3 left-3 bg-[#E63946] text-white px-3 py-1 rounded-lg text-xs font-semibold">
+                    Featured
+                  </div>
+                </div>
+                <div className="p-4">
+                  <h4 className="font-bold text-base mb-2 truncate text-[#212529]">{property.propertyName}</h4>
+                  <div className="flex items-center text-gray-600 text-sm mb-2">
+                    <MapPin className="w-4 h-4 text-[#E63946] mr-1 flex-shrink-0" />
+                    <span className="truncate">{property.city}, {property.state}</span>
+                  </div>
+                  <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-100">
+                    <span className="font-bold text-lg text-[#E63946] flex items-center">
+                      <IndianRupee className="w-4 h-4" />
+                      {formatPrice(property.price, propertyType)}
+                    </span>
+                    <ChevronRight className="w-5 h-5 text-gray-400" />
+                  </div>
+                </div>
+              </a>
             ))}
           </div>
-          <style>{`
-            .custom-slick-arrows .slick-arrow {
-              z-index: 10;
-              background: #fff;
-              border-radius: 50%;
-              box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-              width: 32px;
-              height: 32px;
-              display: flex !important;
-              align-items: center;
-              justify-content: center;
-              top: 38%;
-            }
-            .custom-slick-arrows .slick-arrow:before {
-              color: #e63946;
-              font-size: 22px;
-            }
-            .custom-slick-arrows .slick-prev {
-              left: -12px;
-            }
-            .custom-slick-arrows .slick-next {
-              right: -12px;
-            }
-            .custom-slick-arrows,
-            .similar-properties-container,
-            .slick-list,
-            .slick-track {
-              margin-bottom: 1rem !important;
-              padding-bottom: 0 !important;
-              min-height: unset !important;
-              height: auto !important;
-            }
-          `}</style>
         </div>
       )}
+      
+      {/* FAQ Section */}
+      <FAQSection 
+        faqs={propertyType === "rental" ? rentalFAQs : resaleFAQs} 
+        type={propertyType === "rental" ? "rental" : "resale"} 
+      />
+      
       <Footer />
     </div>
   );
