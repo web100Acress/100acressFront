@@ -7,10 +7,12 @@ import CustomSkeleton from "../Utils/CustomSkeleton";
 import Api_service from "../Redux/utils/Api_Service";
 import { useSelector } from "react-redux";
 import Footer from "../Components/Actual_Components/Footer";
+import FAQSection from "../Components/Actual_Components/FAQSection";
+import { resaleFAQs } from "../Data/resaleFAQs";
 
-// Import Google Fonts (Inter, Poppins, Roboto)
+// Import Google Fonts (Rubik - matching home page)
 const fontLink = document.createElement('link');
-fontLink.href = "https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Poppins:wght@400;600;700&family=Roboto:wght@400;700&display=swap";
+fontLink.href = "https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&display=swap";
 fontLink.rel = "stylesheet";
 document.head.appendChild(fontLink);
 
@@ -136,9 +138,10 @@ const Resale = () => {
   const rest = filteredProperties.slice(1);
 
   return (
+    <>
     <section
       className="bg-white min-h-screen py-6 lg:py-10"
-      style={{ fontFamily: 'Inter, Poppins, Roboto, sans-serif' }}
+      style={{ fontFamily: 'Rubik, sans-serif' }}
     >
       {/* Header */}
       <div className="text-center mb-10">
@@ -333,8 +336,13 @@ const Resale = () => {
           <CustomSkeleton />
         )}
       </div>
-      <Footer />
     </section>
+    
+    {/* FAQ Section */}
+    <FAQSection faqs={resaleFAQs} type="resale" />
+    
+    <Footer />
+    </>
   );
 };
 

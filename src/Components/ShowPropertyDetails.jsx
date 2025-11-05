@@ -28,6 +28,9 @@ import {
   Mail,
   ChevronRight
 } from "lucide-react";
+import FAQSection from "../Components/Actual_Components/FAQSection";
+import { resaleFAQs } from "../Data/resaleFAQs";
+import { rentalFAQs } from "../Data/rentalFAQs";
 
 // Price formatting function
 function formatPrice(price, type = 'buy') {
@@ -332,7 +335,7 @@ const ShowPropertyDetails = ({ id, type }) => {
       }, [rentViewDetails, id, propertyType]);
 
   return (
-    <div className="bg-[#FAFAFA] min-h-screen font-['Inter','Poppins','sans-serif']">
+    <div className="bg-[#FAFAFA] min-h-screen font-['Rubik','sans-serif']">
       {loading || !propertyType ? (
         <div className="pt-20 max-w-7xl mx-auto px-4 py-8">
           <Skeleton active paragraph={{ rows: 10 }} />
@@ -341,11 +344,11 @@ const ShowPropertyDetails = ({ id, type }) => {
         rentViewDetails && (
           <>
             {/* Hero Section */}
-            <div className="pt-20 pb-6">
-              <div className="max-w-7xl mx-auto px-6 lg:px-12">
+            <div className="pt-16 md:pt-20 pb-4 md:pb-6">
+              <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-12">
                 {/* Breadcrumb */}
-                <nav className="mb-6 mt-4" aria-label="Breadcrumb">
-                  <ol className="flex items-center space-x-2 text-xs text-gray-500">
+                <nav className="mb-4 md:mb-6 mt-2 md:mt-4" aria-label="Breadcrumb">
+                  <ol className="flex items-center space-x-1 md:space-x-2 text-xs text-gray-500 overflow-x-auto">
                     <li>
                       <a href="/" className="hover:text-[#E63946] transition-colors duration-200">Home</a>
                     </li>
@@ -366,33 +369,33 @@ const ShowPropertyDetails = ({ id, type }) => {
                 </nav>
 
                 {/* Property Name and Location - Above Image */}
-                <div className="mb-6">
-                  <div className="flex items-start justify-between mb-4">
+                <div className="mb-4 md:mb-6">
+                  <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-3 md:mb-4 gap-3">
                     <div className="flex-1">
-                      <h1 className="text-4xl font-bold text-gray-900 mb-3 leading-tight">
+                      <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-2 md:mb-3 leading-tight">
                         {rentViewDetails.propertyName}
                       </h1>
                       <div className="flex items-center gap-2 text-gray-600">
-                        <MapPin className="w-5 h-5 text-[#E63946] flex-shrink-0" />
-                        <span className="text-base">
+                        <MapPin className="w-4 md:w-5 h-4 md:h-5 text-[#E63946] flex-shrink-0" />
+                        <span className="text-sm md:text-base">
                           Sector {rentViewDetails.address}, {rentViewDetails.city}, {rentViewDetails.state}
                         </span>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2 flex-shrink-0">
-                      <div className="flex items-center gap-1.5 bg-blue-50 px-4 py-2 rounded-full shadow-sm border border-blue-100">
-                        <Shield className="w-4 h-4 text-blue-600" />
-                        <span className="text-sm font-semibold text-blue-700">RERA Approved</span>
+                    <div className="flex items-center gap-1.5 md:gap-2 flex-wrap md:flex-shrink-0">
+                      <div className="flex items-center gap-1 md:gap-1.5 bg-blue-50 px-2 md:px-4 py-1.5 md:py-2 rounded-full shadow-sm border border-blue-100">
+                        <Shield className="w-3 md:w-4 h-3 md:h-4 text-blue-600" />
+                        <span className="text-xs md:text-sm font-semibold text-blue-700">RERA</span>
                       </div>
-                      <div className="flex items-center gap-1.5 bg-green-50 px-4 py-2 rounded-full shadow-sm border border-green-100">
-                        <CheckCircle className="w-4 h-4 text-green-600" />
-                        <span className="text-sm font-semibold text-green-700">Verified</span>
+                      <div className="flex items-center gap-1 md:gap-1.5 bg-green-50 px-2 md:px-4 py-1.5 md:py-2 rounded-full shadow-sm border border-green-100">
+                        <CheckCircle className="w-3 md:w-4 h-3 md:h-4 text-green-600" />
+                        <span className="text-xs md:text-sm font-semibold text-green-700">Verified</span>
                       </div>
-                      <div className="flex items-center gap-1 bg-white px-3 py-2 rounded-full shadow-sm border border-gray-200">
+                      <div className="flex items-center gap-0.5 md:gap-1 bg-white px-2 md:px-3 py-1.5 md:py-2 rounded-full shadow-sm border border-gray-200">
                         {[1, 2, 3, 4, 5].map((star) => (
-                          <Star key={star} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                          <Star key={star} className="w-3 md:w-4 h-3 md:h-4 fill-yellow-400 text-yellow-400" />
                         ))}
-                        <span className="text-sm font-semibold text-gray-700 ml-1">5.0</span>
+                        <span className="text-xs md:text-sm font-semibold text-gray-700 ml-0.5 md:ml-1">5.0</span>
                       </div>
                     </div>
                   </div>
@@ -400,12 +403,12 @@ const ShowPropertyDetails = ({ id, type }) => {
               </div>
 
                 {/* Full Width Hero Image with Overlay Tags */}
-                <div className="max-w-7xl mx-auto px-6 lg:px-12">
-                  <div className="relative mb-8 group overflow-hidden rounded-3xl">
+                <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-12">
+                  <div className="relative mb-6 md:mb-8 group overflow-hidden rounded-2xl md:rounded-3xl">
                       <img
                         src={rentViewDetails.frontImage?.url}
                         alt={rentViewDetails.propertyName}
-                        className="w-full h-[500px] object-cover cursor-pointer transition-transform duration-700 group-hover:scale-105"
+                        className="w-full h-[250px] md:h-[400px] lg:h-[500px] object-cover cursor-pointer transition-transform duration-700 group-hover:scale-105"
                         onClick={() => setOpenGallery(true)}
                       />
                       
@@ -413,22 +416,24 @@ const ShowPropertyDetails = ({ id, type }) => {
                       <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none"></div>
                       
                       {/* Overlay Tags - Top Left */}
-                      <div className="absolute top-6 left-6 flex flex-col gap-3 z-10">
-                        <span className="bg-gradient-to-r from-[#E63946] to-[#FF6B6B] text-white px-5 py-2.5 rounded-xl font-semibold text-sm shadow-2xl flex items-center gap-2 backdrop-blur-sm">
-                          <Award className="w-4 h-4" />
-                          0% Brokerage
+                      <div className="absolute top-3 md:top-6 left-3 md:left-6 flex flex-col gap-2 md:gap-3 z-10">
+                        <span className="bg-gradient-to-r from-[#E63946] to-[#FF6B6B] text-white px-3 md:px-5 py-1.5 md:py-2.5 rounded-lg md:rounded-xl font-semibold text-xs md:text-sm shadow-2xl flex items-center gap-1.5 md:gap-2 backdrop-blur-sm">
+                          <Award className="w-3 md:w-4 h-3 md:h-4" />
+                          <span className="hidden sm:inline">0% Brokerage</span>
+                          <span className="sm:hidden">0% Fee</span>
                         </span>
-                        <span className="bg-gradient-to-r from-green-600 to-green-500 text-white px-5 py-2.5 rounded-xl font-semibold text-sm shadow-2xl flex items-center gap-2 backdrop-blur-sm">
-                          <CheckCircle className="w-4 h-4" />
-                          Best Price Guarantee
+                        <span className="bg-gradient-to-r from-green-600 to-green-500 text-white px-3 md:px-5 py-1.5 md:py-2.5 rounded-lg md:rounded-xl font-semibold text-xs md:text-sm shadow-2xl flex items-center gap-1.5 md:gap-2 backdrop-blur-sm">
+                          <CheckCircle className="w-3 md:w-4 h-3 md:h-4" />
+                          <span className="hidden sm:inline">Best Price Guarantee</span>
+                          <span className="sm:hidden">Best Price</span>
                         </span>
                       </div>
                       
                       {/* Price Card - Bottom Left */}
-                      <div className="absolute bottom-6 left-6 bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl px-6 py-4 border border-white/20 z-10">
-                        <p className="text-xs text-gray-500 mb-1 font-medium">Starting from</p>
-                        <p className="text-3xl font-bold bg-gradient-to-r from-[#E63946] to-[#FF6B6B] bg-clip-text text-transparent flex items-center">
-                          <IndianRupee className="w-6 h-6 text-[#E63946]" />
+                      <div className="absolute bottom-3 md:bottom-6 left-3 md:left-6 bg-white/95 backdrop-blur-md rounded-xl md:rounded-2xl shadow-2xl px-3 md:px-6 py-2 md:py-4 border border-white/20 z-10">
+                        <p className="text-xs text-gray-500 mb-0.5 md:mb-1 font-medium">Starting from</p>
+                        <p className="text-xl md:text-3xl font-bold bg-gradient-to-r from-[#E63946] to-[#FF6B6B] bg-clip-text text-transparent flex items-center">
+                          <IndianRupee className="w-4 md:w-6 h-4 md:h-6 text-[#E63946]" />
                           {formatPrice(rentViewDetails.price, propertyType)}
                         </p>
                       </div>
@@ -436,37 +441,37 @@ const ShowPropertyDetails = ({ id, type }) => {
                       {/* View All Photos Button - Bottom Right */}
                       <button
                         onClick={() => setOpenGallery(true)}
-                        className="absolute bottom-6 right-6 bg-white/95 backdrop-blur-md rounded-xl px-5 py-3 font-semibold text-sm shadow-2xl hover:shadow-3xl hover:scale-105 transition-all duration-300 flex items-center gap-2 border border-white/20 z-10"
-                      >
-                        <span className="text-gray-900">View All Photos</span>
-                        <span className="bg-[#E63946] text-white px-2 py-0.5 rounded-md text-xs">{GalleryImageData.length}</span>
+                        className="absolute bottom-3 md:bottom-6 right-3 md:right-6 bg-white/95 backdrop-blur-md rounded-lg md:rounded-xl px-3 md:px-5 py-2 md:py-3 font-semibold text-xs md:text-sm shadow-2xl hover:shadow-3xl hover:scale-105 transition-all duration-300 flex items-center gap-1.5 md:gap-2 border border-white/20 z-10">
+                        <span className="text-gray-900 hidden sm:inline">View All Photos</span>
+                        <span className="text-gray-900 sm:hidden">Photos</span>
+                        <span className="bg-[#E63946] text-white px-1.5 md:px-2 py-0.5 rounded-md text-xs">{GalleryImageData.length}</span>
                       </button>
                   </div>
                 </div>
 
                 {/* Grid Layout: Tabs + Contact Form */}
-                <div className="max-w-7xl mx-auto px-6 lg:px-12">
-                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-12">
+                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
                   {/* Left: Tabs Section (2/3 width) */}
                   <div className="lg:col-span-2">
                     {/* About Property Section - Above Tabs */}
-                    <div className="bg-white rounded-2xl shadow-lg p-8 mb-6 border border-gray-100 hover:shadow-xl transition-shadow duration-300">
-                      <h3 className="text-xl font-semibold text-gray-900 mb-4">About Property</h3>
-                      <p className="text-gray-600 leading-relaxed text-base">
+                    <div className="bg-white rounded-xl md:rounded-2xl shadow-lg p-4 md:p-6 lg:p-8 mb-4 md:mb-6 border border-gray-100 hover:shadow-xl transition-shadow duration-300">
+                      <h3 className="text-lg md:text-xl font-semibold text-gray-900 mb-3 md:mb-4">About Property</h3>
+                      <p className="text-gray-600 leading-relaxed text-sm md:text-base">
                         {rentViewDetails.descripation || 'Please contact us for more information about this property.'}
                       </p>
                     </div>
 
                     {/* Tabs Section */}
-                    <div className="bg-white rounded-2xl shadow-lg mb-6 border border-gray-100 overflow-hidden">
+                    <div className="bg-white rounded-xl md:rounded-2xl shadow-lg mb-4 md:mb-6 border border-gray-100 overflow-hidden">
                       {/* Tab Headers */}
-                      <div className="border-b border-gray-200 bg-gray-50/50">
-                        <div className="flex gap-0 px-6">
+                      <div className="border-b border-gray-200 bg-gray-50/50 overflow-x-auto">
+                        <div className="flex gap-0 px-3 md:px-6 min-w-max md:min-w-0">
                           {['details', 'configuration', 'highlights', 'amenities', 'images'].map((tab) => (
                             <button
                               key={tab}
                               onClick={() => setActiveTab(tab)}
-                              className={`px-6 py-4 font-semibold text-sm transition-all duration-300 whitespace-nowrap relative ${
+                              className={`px-3 md:px-6 py-3 md:py-4 font-semibold text-xs md:text-sm transition-all duration-300 whitespace-nowrap relative ${
                                 activeTab === tab
                                   ? 'text-[#E63946]'
                                   : 'text-gray-600 hover:text-gray-900 hover:bg-white/50'
@@ -482,7 +487,7 @@ const ShowPropertyDetails = ({ id, type }) => {
                       </div>
 
                       {/* Tab Content */}
-                      <div className="p-8">
+                      <div className="p-4 md:p-6 lg:p-8">
                         {activeTab === 'details' && (
                           <div className="space-y-6">
                             <h3 className="text-xl font-semibold text-gray-900 mb-6">Project Details</h3>
@@ -676,22 +681,13 @@ const ShowPropertyDetails = ({ id, type }) => {
                             />
                           </div>
                           
-                          <div className="grid grid-cols-2 gap-3 pt-3">
-                            <button
-                              type="submit"
-                              className="flex items-center justify-center gap-2 bg-gradient-to-r from-[#E63946] to-[#FF6B6B] hover:from-[#d7263d] hover:to-[#E63946] text-white font-semibold py-3.5 px-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
-                            >
-                              <Phone className="w-4 h-4" />
-                              Request Call
-                            </button>
-                            <button
-                              type="button"
-                              className="flex items-center justify-center gap-2 bg-white hover:bg-gray-50 text-[#E63946] font-semibold py-3.5 px-4 rounded-xl border-2 border-[#E63946] hover:border-[#FF6B6B] transition-all duration-300 hover:scale-105 shadow-sm hover:shadow-md"
-                            >
-                              <Download className="w-4 h-4" />
-                              Brochure
-                            </button>
-                          </div>
+                          <button
+                            type="submit"
+                            className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-[#E63946] to-[#FF6B6B] hover:from-[#d7263d] hover:to-[#E63946] text-white font-semibold py-3.5 px-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+                          >
+                            <Phone className="w-4 h-4" />
+                            Request Call
+                          </button>
                           <p className="text-xs text-gray-500 text-center mt-3">
                             Our agent will reach out within 5 minutes.
                           </p>
@@ -704,7 +700,7 @@ const ShowPropertyDetails = ({ id, type }) => {
                           Want to sell your property?
                         </h5>
                         <p className="text-sm text-gray-600 mb-4 text-center">List your property for FREE!</p>
-                        <Link to={"https://100acress.com/postproperty/"}>
+                        <Link to="/postproperty">
                           <button className="bg-gradient-to-r from-[#E63946] to-[#FF6B6B] hover:from-[#FF6B6B] hover:to-[#E63946] text-white font-bold px-8 py-3 rounded-full shadow-lg hover:shadow-2xl transition-all duration-300 text-base hover:scale-105 flex items-center gap-2">
                             List Properties
                             <span className="bg-white text-[#E63946] px-2 py-0.5 rounded-full text-xs font-bold">FREE</span>
@@ -779,6 +775,13 @@ const ShowPropertyDetails = ({ id, type }) => {
           </div>
         </div>
       )}
+      
+      {/* FAQ Section */}
+      <FAQSection 
+        faqs={propertyType === "rental" ? rentalFAQs : resaleFAQs} 
+        type={propertyType === "rental" ? "rental" : "resale"} 
+      />
+      
       <Footer />
     </div>
   );
