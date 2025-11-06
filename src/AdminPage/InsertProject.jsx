@@ -171,7 +171,6 @@ const InsertProject = () => {
     city: "",
     projectOverview: "",
     project_url: "",
-    project_Status: "",
     totalLandArea: "",
     totalUnit: "",
     towerNumber: "",
@@ -183,7 +182,6 @@ const InsertProject = () => {
     youtubeVideoUrl: "",
     youtubeVideoTitle: "",
     youtubeVideoDescription: "",
-    project_highlight: "", // Added highlights field
   });
 
   const [fileData, setFileData] = useState({
@@ -2124,32 +2122,6 @@ const InsertProject = () => {
                     placeholder="Enter RERA registration number"
                     className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-900"
                     value={editFromData.projectReraNo}
-                    onChange={handleChangeProjectData}
-                  />
-                </div>
-                
-                {/* Project Highlights */}
-                <div className="col-span-1 md:col-span-2">
-                  <Tippy
-                    content={
-                      <span>Enter project highlights (one per line)</span>
-                    }
-                    animation="scale"
-                    theme="light-border"
-                  >
-                    <label
-                      htmlFor="project_highlight"
-                      className="block text-sm font-medium text-gray-700 mb-1 flex items-center gap-1"
-                    >
-                      <MdStar /> Project Highlights
-                    </label>
-                  </Tippy>
-                  <textarea
-                    id="project_highlight"
-                    name="project_highlight"
-                    placeholder="Enter project highlights (one per line)"
-                    className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-900 h-32"
-                    value={editFromData.project_highlight}
                     onChange={handleChangeProjectData}
                   />
                 </div>
