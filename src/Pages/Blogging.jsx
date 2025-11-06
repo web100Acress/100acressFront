@@ -266,7 +266,7 @@ const BlogCard = ({ blog, isFeatured = false, index = 0 }) => {
 
 // Prefer slug-based blog link with fallback to legacy title/id route
 const blogLink = (blog) => {
-  if (blog?.slug) return `/blog/${blog.slug}?id=${blog._id}`;
+  if (blog?.slug) return `/blog/${blog.slug}`;
   return `/blog/${getSlug(blog.blog_Title)}/${blog._id}`;
 };
 

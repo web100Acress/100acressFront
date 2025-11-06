@@ -46,7 +46,7 @@ import { AuthContext } from "../../AuthContext";
 const getSlugFromTitle = (title) =>
   (title || "").replace(/\s+/g, '-').replace(/[?!,\.;:\{\}\(\)\$\@]+/g, '').toLowerCase();
 const blogLink = (blog) => {
-  if (blog?.slug) return `/blog/${blog.slug}?id=${blog?._id}`;
+  if (blog?.slug) return `/blog/${blog.slug}`;
   return `/blog/${getSlugFromTitle(blog?.blog_Title)}/${blog?._id}`;
 };
 
