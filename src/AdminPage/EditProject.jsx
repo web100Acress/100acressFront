@@ -17,6 +17,7 @@ const EditProject = () => {
     AboutDeveloper: "",
     MetaTitle: "",
     MetaDescription: "",
+    project_highlight: "", // Added highlights field
   });
 
   const handleEditChangeFrom = (e) => {
@@ -175,6 +176,20 @@ const EditProject = () => {
               value={editFromData.ReraNo}
               onChange={handleEditChangeFrom}
             />
+            
+            {/* Project Highlights - Moved outside any label */}
+            <div className="mt-4">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Project Highlights (one per line)
+              </label>
+              <textarea
+                className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 shadow-sm focus:ring-2 focus:ring-red-500 focus:border-transparent h-32"
+                placeholder="Enter project highlights, one per line"
+                name="project_highlight"
+                value={editFromData.project_highlight}
+                onChange={handleEditChangeFrom}
+              />
+            </div>
 
             <input
               className="w-full mt-4 rounded-md border bg-white px-2 py-2 outline-none ring-black focus:ring-1"
