@@ -11,7 +11,7 @@ import { Helmet } from "react-helmet";
 import DOMPurify from 'dompurify';
 import "./BlogView.css";
 import useIsMobile from '../hooks/useIsMobile';
-import { ThumbsUp, Share2, MessageCircle, List } from 'lucide-react';
+import { ThumbsUp, Share2, MessageCircle, ChevronDown, ChevronUp, Menu, X } from 'lucide-react';
 import { 
   FALLBACK_IMG, 
   getBestImageUrl, 
@@ -109,8 +109,6 @@ const BlogView = () => {
   const [comments, setComments] = useState([]);
   const [commentName, setCommentName] = useState('');
   const [commentMsg, setCommentMsg] = useState('');
-  const [tocItems, setTocItems] = useState([]);
-  const [activeId, setActiveId] = useState('');
   const [likeLoading, setLikeLoading] = useState(false);
   const [liked, setLiked] = useState(false);
   const [shareLoading, setShareLoading] = useState(false);
@@ -928,54 +926,8 @@ const BlogView = () => {
     }
   };
 
-  // Generate table of contents from headings
-  useEffect(() => {
-    if (!contentRef.current) return;
-    
-    const headings = Array.from(contentRef.current.querySelectorAll('h2, h3, h4'));
-    const items = headings.map((heading) => {
-      const id = heading.textContent.toLowerCase()
-        .replace(/[^\w\s-]/g, '') // Remove special chars
-        .replace(/\s+/g, '-')      // Replace spaces with -
-        .replace(/-+/g, '-');       // Replace multiple - with single -
-      
-      // Add ID to heading for anchor links
-      if (!heading.id) {
-        heading.id = id;
-      }
-      
-      return {
-        id: heading.id || id,
-        title: heading.textContent,
-        level: parseInt(heading.tagName.substring(1)), // h2 -> 2, h3 -> 3, etc.
-        element: heading
-      };
-    });
-    
-    setTocItems(items);
-    
-    // Set up intersection observer for active TOC highlighting
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting && entry.intersectionRatio > 0) {
-            setActiveId(entry.target.id);
-          }
-        });
-      },
-      {
-        root: null,
-        rootMargin: '0px 0px -80% 0px',
-        threshold: 0.1
-      }
-    );
-    
-    headings.forEach((heading) => observer.observe(heading));
-    
-    return () => {
-      observer.disconnect();
-    };
-  }, [blog_Description]); // Re-run when blog content changes
+  // Compute title and description
+  const fallbackTitle = `${blog_Title || ''} ${blog_Category || ''}`.trim();
   const pageTitle = (metaTitle && metaTitle.trim()) || fallbackTitle || 'Blog | 100acress';
   const toPlainText = (html) => {
     if (!html) return '';
@@ -1070,284 +1022,221 @@ const BlogView = () => {
         </div>
       </div>
 
-      <div ref={containerRef} className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-8 px-4 pb-12 relative">
-        {/* Left Sidebar: show Related Projects first, then Trending */}
-        <aside className="w-full md:col-span-3 md:col-start-1">
-          <div className="mt-0 p-0 md:sticky md:top-24">
-            {/* Related Projects moved to the left sidebar (TOP) */}
-            {relatedProjects && relatedProjects.length > 0 && (
-              <div className="mb-3">
-                <h3 className="text-xl font-bold mb-3 px-3 py-2 rounded-lg text-white bg-gradient-to-r from-red-500 to-red-600 shadow-sm">Related Projects</h3>
-                <div className="space-y-2">
-                  {relatedProjects.map((project, idx) => {
-                    const name = project?.projectName || 'Project';
-                    const url = project?.project_url || '';
-                    const thumbnail = project?.thumbnail || '';
-                    const rawImg = (relatedThumbs[url] || thumbnail || FALLBACK_IMG);
-                    const img = getBestImageUrl(rawImg);
-
-                    const handleProjectClick = () => {
-                      try {
-                        if (!url) return;
-                        let slug = url;
-                        if (slug && /^(https?:)?\/\//i.test(slug)) {
+      {/* Main Container with Two-Column Layout */}
+      <div ref={containerRef} className="max-w-7xl mx-auto px-4 md:px-6 py-8 md:py-12">
+        <div className="grid grid-cols-1 lg:grid-cols-10 gap-8">
+          
+          {/* Main Content Area (70%) */}
+          <main className="lg:col-span-7 space-y-8">
+            
+            {/* Phase 2: Modern Header Section with Split Layout */}
+            <div className="bg-white rounded-2xl shadow-lg p-6 md:p-8 border border-gray-100">
+              <div className="grid md:grid-cols-2 gap-6 md:gap-8 items-start">
+                
+                {/* Left Side: Title and Meta */}
+                <div className="space-y-4">
+                  {/* Category Tag */}
+                  {blog_Category && (
+                    <span 
+                      className="inline-block px-3 py-1 text-xs font-semibold rounded-full"
+                      style={{ 
+                        backgroundColor: 'rgba(211, 47, 47, 0.1)', 
+                        color: BRAND_RED,
+                        fontFamily: "'Poppins', sans-serif"
+                      }}
+                    >
+                      {blog_Category}
+                    </span>
+                  )}
+                  
+                  {/* Blog Title with Hover Animation */}
+                  <h1 
+                    className="text-3xl md:text-4xl font-bold leading-tight group"
+                    style={{ 
+                      color: DARK_TEXT,
+                      fontFamily: "'Poppins', sans-serif"
+                    }}
+                  >
+                    {blog_Title}
+                    <div className="h-1 w-0 group-hover:w-full bg-gradient-to-r from-red-500 to-red-600 transition-all duration-300 mt-2 rounded-full" />
+                  </h1>
+                  
+                  {/* Meta Information */}
+                  <div className="flex flex-wrap items-center gap-3 text-sm text-gray-600">
+                    {(published_Date || data.createdAt) && (
+                      <span className="flex items-center gap-1">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                        {new Date(published_Date || data.createdAt).toLocaleDateString('en-US', {
+                          month: 'short', day: 'numeric', year: 'numeric'
+                        })}
+                      </span>
+                    )}
+                    <span className="flex items-center gap-1">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      {Math.ceil((blog_Description?.length || 0) / 1000)} min read
+                    </span>
+                    {author && (
+                      <span className="flex items-center gap-1">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
+                        {author}
+                      </span>
+                    )}
+                  </div>
+                  
+                  {/* Social Share Icons */}
+                  <div className="flex items-center gap-2 pt-2">
+                    {data?._id && (
+                      <button
+                        type="button"
+                        disabled={likeLoading}
+                        onClick={async () => {
+                          if (!data?._id) return;
                           try {
-                            const u = new URL(slug, window.location.origin);
-                            const parts = u.pathname.split('/').filter(Boolean);
-                            slug = parts[parts.length - 1] || '';
-                          } catch (_) { /* ignore */ }
-                        }
-                        if (!slug) return;
-                        const path = `/${slug}/`;
-                        history(path);
-                        try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (_) {}
-                      } catch (_) { /* noop */ }
-                    };
-
-                    // compose meta
-                    const meta = relatedMeta[url] || {};
-                    const priceLine = (() => {
-                      const a = typeof meta.minPrice === 'number' ? formatINRShort(meta.minPrice) : null;
-                      const b = typeof meta.maxPrice === 'number' ? formatINRShort(meta.maxPrice) : null;
-                      if (a && b) return `${a} - ${b} Cr`;
-                      if (a || b) return `${a || b} Cr`;
-                      return '';
-                    })();
-
-                    return (
-                      <div
-                        key={idx}
-                        className="group p-2 flex items-center gap-2 cursor-pointer hover:text-primaryRed border border-red-500 rounded-lg hover:border-red-600 bg-white shadow-sm transition duration-300 hover:[box-shadow:0_4px_12px_rgba(239,68,68,0.4)] hover:-translate-y-0.5"
-                        role="button"
-                        tabIndex={0}
-                        onClick={handleProjectClick}
-                        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleProjectClick(); } }}
-                        title={name}
+                            setLikeLoading(true);
+                            const key = `blog_like_${data._id}`;
+                            const ident = getUserIdentityDetails();
+                            if (!liked) {
+                              const r = await api.post(`blog/${data._id}/like`, ident);
+                              const d = r?.data?.data || {};
+                              setLikes(typeof d.likes === 'number' ? d.likes : (likes + 1));
+                              setLiked(true);
+                              try { window.localStorage.setItem(key, '1'); } catch (_) {}
+                            } else {
+                              const r = await api.post(`blog/${data._id}/unlike`, ident);
+                              const d = r?.data?.data || {};
+                              setLikes(typeof d.likes === 'number' ? d.likes : Math.max(0, likes - 1));
+                              setLiked(false);
+                              try { window.localStorage.setItem(key, '0'); } catch (_) {}
+                            }
+                          } catch (_) {}
+                          finally { setLikeLoading(false); }
+                        }}
+                        className={`inline-flex items-center gap-1 px-3 py-2 rounded-full text-sm font-medium transition-all hover:scale-105 ${
+                          liked ? 'bg-red-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-red-50 hover:text-red-600'
+                        }`}
+                        title={liked ? 'Unlike' : 'Like'}
                       >
-                        <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-blue-100 to-indigo-200 flex-shrink-0 flex items-center justify-center overflow-hidden">
-                          <img
-                            src={img}
-                            className="w-12 h-12 rounded-lg object-cover"
-                            alt={name}
-                            onError={onImgError}
-                            loading="lazy"
-                            referrerPolicy="no-referrer"
-                          />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <h4 className="font-semibold text-gray-900 group-hover:text-primaryRed transition-colors duration-200 line-clamp-2 text-sm">
-                            {name}
-                          </h4>
-                          {(() => {
-                            // Fallback location from project if meta not loaded yet
-                            const fallbackLoc = project?.location || project?.city || '';
-                            const showLoc = meta?.location || fallbackLoc || '';
-                            return (showLoc || priceLine) ? (
-                            <div className="text-[11px] text-gray-500 mt-0.5 line-clamp-1">
-                              {showLoc && <span>{showLoc}</span>}
-                              {showLoc && priceLine ? <span> • </span> : null}
-                              {priceLine && <span>{priceLine}</span>}
-                            </div>
-                            ) : null;
-                          })()}
-                        </div>
-                      </div>
-                    );
-                  })}
+                        <ThumbsUp size={16} />
+                        <span>{likes || 0}</span>
+                      </button>
+                    )}
+                    <a
+                      href={`https://www.linkedin.com/sharing/share-offsite/?url=${shareUrl}`}
+                      target="_blank" rel="noopener noreferrer"
+                      className="inline-flex items-center justify-center w-9 h-9 rounded-full bg-blue-600 text-white hover:bg-blue-700 transition-all hover:scale-105"
+                      title="Share on LinkedIn"
+                    >
+                      <i className="fa-brands fa-linkedin-in text-sm"></i>
+                    </a>
+                    <a
+                      href={`https://twitter.com/intent/tweet?text=${shareTitle}&url=${shareUrl}`}
+                      target="_blank" rel="noopener noreferrer"
+                      className="inline-flex items-center justify-center w-9 h-9 rounded-full bg-sky-500 text-white hover:bg-sky-600 transition-all hover:scale-105"
+                      title="Share on Twitter"
+                    >
+                      <i className="fa-brands fa-twitter text-sm"></i>
+                    </a>
+                    <a
+                      href={`https://www.facebook.com/sharer/sharer.php?u=${shareUrl}`}
+                      target="_blank" rel="noopener noreferrer"
+                      className="inline-flex items-center justify-center w-9 h-9 rounded-full bg-blue-700 text-white hover:bg-blue-800 transition-all hover:scale-105"
+                      title="Share on Facebook"
+                    >
+                      <i className="fa-brands fa-facebook-f text-sm"></i>
+                    </a>
+                    <a
+                      href={`https://wa.me/?text=${shareTitle}%20${shareUrl}`}
+                      target="_blank" rel="noopener noreferrer"
+                      className="inline-flex items-center justify-center w-9 h-9 rounded-full bg-green-600 text-white hover:bg-green-700 transition-all hover:scale-105"
+                      title="Share on WhatsApp"
+                    >
+                      <i className="fa-brands fa-whatsapp text-sm"></i>
+                    </a>
+                  </div>
                 </div>
+                
+                {/* Right Side: Featured Image */}
+                {(blog_Image?.display || FALLBACK_IMG) && (
+                  <div className="relative overflow-hidden rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300">
+                    <img
+                      {...createSafeImageProps(blog_Image?.display || FALLBACK_IMG, blog_Title || 'Blog post image', {
+                        className: "w-full h-64 md:h-72 object-cover",
+                        'data-alt-src': blog_Image?.cdn_url && blog_Image?.url && blog_Image.cdn_url !== blog_Image.url ? (blog_Image.display === blog_Image.cdn_url ? blog_Image.url : blog_Image.cdn_url) : ''
+                      })}
+                    />
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Phase 3: Table of Contents */}
+            {tocItems.length > 0 && (
+              <div 
+                className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl p-6 border border-gray-200 shadow-sm"
+                style={{ backgroundColor: '#F7F7F7' }}
+              >
+                <div className="flex items-center justify-between mb-4">
+                  <h3 
+                    className="text-lg font-bold flex items-center gap-2"
+                    style={{ color: DARK_TEXT, fontFamily: "'Poppins', sans-serif" }}
+                  >
+                    <span className="text-xl">📑</span>
+                    Table of Contents
+                  </h3>
+                  <button
+                    onClick={() => setShowToc(!showToc)}
+                    className="md:hidden text-gray-600 hover:text-red-600 transition-colors"
+                    aria-label={showToc ? 'Hide contents' : 'Show contents'}
+                  >
+                    {showToc ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+                  </button>
+                </div>
+                
+                {(showToc || !isMobile) && (
+                  <div className="space-y-2 max-h-80 overflow-y-auto pr-2 custom-scrollbar">
+                    {tocItems.map((item, index) => (
+                      <button
+                        key={item.id}
+                        onClick={() => scrollToHeading(item.id)}
+                        className={`block w-full text-left px-4 py-2 rounded-lg transition-all duration-200 ${
+                          activeTocId === item.id
+                            ? 'bg-red-600 text-white font-semibold shadow-md'
+                            : 'text-gray-700 hover:bg-white hover:text-red-600 hover:shadow-sm'
+                        } ${item.level === 'h3' ? 'ml-4 text-sm' : 'text-base'}`}
+                        style={{ fontFamily: "'Lato', sans-serif" }}
+                      >
+                        {item.level === 'h3' && '└ '}
+                        {item.text}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
 
-            {/* Trending Projects below Related (hidden on mobile; shown in its own section under content) */}
-            <div className="hidden md:block">
-            <h3 className="text-xl font-bold mb-3 px-3 py-2 rounded-lg text-white bg-gradient-to-r from-red-500 to-red-600 shadow-sm">Trending Projects</h3>
-            <div className="space-y-2">
-              {trendingProjects.length > 0 && trendingProjects.map((p, idx) => {
-                const name = p?.projectName || p?.name || p?.title || 'Project';
-                const category = p?.category || p?.projectType || '';
-                const img = (() => {
-                  const t1 = p?.thumbnailImage?.url || p?.thumbnail?.url || p?.thumb?.url || '';
-                  const t2 = p?.thumbnailImage || p?.thumbnail || p?.thumb || '';
-                  const fThumb = p?.frontImage?.thumbnail?.url || p?.frontImage?.thumb?.url || '';
-                  const fMain = p?.frontImage?.url || '';
-                  const c1 = p?.cardImage?.url || p?.cardImage || '';
-                  const b1 = p?.bannerImage?.url || p?.bannerImage || '';
-                  const any = p?.image || p?.project_Image || '';
-                  const fromArray = Array.isArray(p?.images) && p.images.length ? (p.images[0]?.url || p.images[0]) : '';
-                  const u = t1 || t2 || fThumb || c1 || fMain || b1 || fromArray || any || '';
-                  return getBestImageUrl(u);
-                })();
-                return (
-                  <div
-                    key={idx}
-                    className="group p-2 flex items-center gap-2 cursor-pointer hover:text-primaryRed border border-red-500 rounded-lg hover:border-red-600 bg-white shadow-sm transition duration-300 hover:[box-shadow:0_4px_12px_rgba(239,68,68,0.4)] hover:-translate-y-0.5"
-                    role="button"
-                    tabIndex={0}
-                    onClick={() => navigateProject(p)}
-                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); navigateProject(p); } }}
-                    title={name}
-                  >
-                    <img
-                      src={img}
-                      className="w-12 h-12 rounded-lg object-cover flex-shrink-0"
-                      alt={name}
-                      onError={onImgError}
-                      referrerPolicy="no-referrer"
-                    />
-                    <div className="flex-1 min-w-0">
-                      <h4 className="font-semibold text-gray-900 group-hover:text-primaryRed transition-colors duration-200 line-clamp-2 text-sm">
-                        {name}
-                      </h4>
-                      <div className="text-xs text-gray-500 mt-1 line-clamp-1">
-                        {/* Prefer location if available */}
-                        {p?.location || p?.city ? (
-                          <span>{p.location || p.city}</span>
-                        ) : (
-                          category ? <span>{category}</span> : null
-                        )}
-                        {/* Price */}
-                        {(() => {
-                          const a = typeof p?.minPrice === 'number' ? formatINRShort(p.minPrice) : null;
-                          const b = typeof p?.maxPrice === 'number' ? formatINRShort(p.maxPrice) : null;
-                          const price = a && b ? `${a} - ${b} Cr` : (a || b ? `${a || b} Cr` : '');
-                          return price ? <span>{(p?.location || p?.city || category) ? ' • ' : ''}{price}</span> : null;
-                        })()}
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-              {trendingProjects.length === 0 && (
-                <div className="text-sm text-gray-400">No trending projects found.</div>
-              )}
-            </div>
-            </div>
-          </div>
-        </aside>
-
-        {/* Top Performing Blog */}
-        <div className="w-full md:col-span-6 lg:col-span-6 lg:col-start-4 bg-white rounded-2xl shadow-xl p-8">
-          <div className="mb-4 text-sm text-gray-500">
-            <Link to="/blog/" className="text-primaryRed hover:underline">Blogs</Link>
-            {' > '} {blog_Category || 'Blog'}
-          </div>
-          <h1 className="text-3xl md:text-4xl font-bold text-[#1e3a8a] leading-tight mb-3">{blog_Title}</h1>
-          {/* Share bar under title */}
-          <div className="share-bar flex items-center gap-3 mb-4">
-            {/* Like button (toggle) */}
-            {data?._id && (
-              <button
-                type="button"
-                disabled={likeLoading}
-                onClick={async () => {
-                  if (!data?._id) return;
-                  try {
-                    setLikeLoading(true);
-                    const key = `blog_like_${data._id}`;
-                    const ident = getUserIdentityDetails();
-                    if (!liked) {
-                      const r = await api.post(`blog/${data._id}/like`, ident);
-                      const d = r?.data?.data || {};
-                      setLikes(typeof d.likes === 'number' ? d.likes : (likes + 1));
-                      setLiked(true);
-                      try { window.localStorage.setItem(key, '1'); } catch (_) {}
-                    } else {
-                      const r = await api.post(`blog/${data._id}/unlike`, ident);
-                      const d = r?.data?.data || {};
-                      setLikes(typeof d.likes === 'number' ? d.likes : Math.max(0, likes - 1));
-                      setLiked(false);
-                      try { window.localStorage.setItem(key, '0'); } catch (_) {}
-                    }
-                  } catch (_) {}
-                  finally { setLikeLoading(false); }
+            {/* Phase 4: Blog Content with Enhanced Styling */}
+            <div 
+              className="bg-white rounded-2xl shadow-lg p-6 md:p-10 border border-gray-100"
+              style={{ backgroundColor: '#FFFFFF' }}
+            >
+              <div
+                ref={contentRef}
+                className="blog-content prose prose-lg max-w-none"
+                style={{
+                  fontSize: '18px',
+                  lineHeight: '1.8',
+                  color: '#333',
+                  fontFamily: "'Lato', 'Inter', sans-serif"
                 }}
-                className={`inline-flex items-center px-3 h-10 rounded-full disabled:opacity-50 ${liked ? 'bg-green-600 text-white border border-green-600' : 'border border-green-500 text-green-600 hover:bg-green-50'}`}
-                aria-label={liked ? 'Unlike this blog' : 'Like this blog'}
-                title={liked ? 'Unlike' : 'Like'}
-              >
-                <ThumbsUp size={18} />
-              </button>
-            )}
-            <a
-              href={`https://twitter.com/intent/tweet?text=${shareTitle}&url=${shareUrl}`}
-              target="_blank" rel="noopener noreferrer"
-              className="inline-flex w-10 h-10 items-center justify-center rounded-full border border-blue-500 text-[#1e90ff] hover:bg-blue-50"
-              aria-label="Share on Twitter"
-            >
-              <i className="fa-brands fa-twitter"></i>
-            </a>
-            <a
-              href={`https://wa.me/?text=${shareTitle}%20${shareUrl}`}
-              target="_blank" rel="noopener noreferrer"
-              className="inline-flex w-10 h-10 items-center justify-center rounded-full border border-green-500 text-green-600 hover:bg-green-50"
-              aria-label="Share on WhatsApp"
-            >
-              <i className="fa-brands fa-whatsapp"></i>
-            </a>
-            <a
-              href={`https://www.facebook.com/sharer/sharer.php?u=${shareUrl}`}
-              target="_blank" rel="noopener noreferrer"
-              className="inline-flex w-10 h-10 items-center justify-center rounded-full border border-blue-600 text-blue-700 hover:bg-blue-50"
-              aria-label="Share on Facebook"
-            >
-              <i className="fa-brands fa-facebook-f"></i>
-            </a>
-            <a
-              href={`https://www.linkedin.com/sharing/share-offsite/?url=${shareUrl}`}
-              target="_blank" rel="noopener noreferrer"
-              className="inline-flex w-10 h-10 items-center justify-center rounded-full border border-sky-600 text-sky-700 hover:bg-sky-50"
-              aria-label="Share on LinkedIn"
-            >
-              <i className="fa-brands fa-linkedin-in"></i>
-            </a>
-            <div className="relative flex items-center gap-2">
-              <button
-                type="button"
-                onClick={copyLink}
-                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); copyLink(); } }}
-                className="inline-flex w-10 h-10 items-center justify-center rounded-full border border-gray-400 text-gray-700 hover:bg-gray-50 cursor-pointer"
-                title={copiedLink ? 'Copied!' : 'Copy link'}
-                aria-label="Copy link"
-              >
-                <i className="fa-solid fa-link"></i>
-              </button>
-              {copiedLink && (
-                <span className="copy-toast">Link copied</span>
-              )}
+                dangerouslySetInnerHTML={createSanitizedHTML(blog_Description)}
+              />
             </div>
-          </div>
-          {(blog_Image?.display || FALLBACK_IMG) && (
-            <div className="relative w-full mb-2 overflow-hidden">
-              {blog_Image?.display ? (
-                <img
-                  {...createSafeImageProps(blog_Image.display, blog_Title || 'Blog post image', {
-                    className: "w-full h-auto block rounded-xl",
-                    'data-alt-src': blog_Image?.cdn_url && blog_Image?.url && blog_Image.cdn_url !== blog_Image.url ? (blog_Image.display === blog_Image.cdn_url ? blog_Image.url : blog_Image.cdn_url) : ''
-                  })}
-                />
-              ) : (
-                <div className="absolute inset-0 flex items-center justify-center bg-gray-100 rounded-xl">
-                  <span className="text-gray-400">No image available</span>
-                </div>
-              )}
-            </div>
-          )}
-          {/* Date and author moved below the featured image */}
-          <div className="flex items-center gap-4 mb-4">
-            <span className="text-gray-500 text-sm">
-              {(published_Date || data.createdAt) ? new Date(published_Date || data.createdAt).toLocaleDateString('en-US', {
-                month: 'short', day: 'numeric', year: 'numeric'
-              }) : ''}
-            </span>
-            {author && (
-              <span className="text-gray-700 text-sm">By {author}</span>
-            )}
-          </div>
-          <div
-            className="prose prose-lg max-w-none prose-headings:text-gray-900 prose-p:text-gray-700 prose-a:text-primaryRed prose-a:no-underline hover:prose-a:underline"
-            ref={contentRef}
-            dangerouslySetInnerHTML={createSanitizedHTML(blog_Description)}
-          ></div>
 
             {/* FAQ Section */}
             {enableFAQ && Array.isArray(faqs) && faqs.length > 0 && (
