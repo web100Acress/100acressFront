@@ -39,6 +39,11 @@ const BlogView = () => {
   const { id, slug } = useParams();
   const location = useLocation();
 
+  // Brand colors
+  const BRAND_RED = '#b8333a';
+  const DARK_TEXT = '#333';
+  const TAGLINE = "Insights, Updates, and Stories from Gurgaon's Real Estate World";
+
   const [buttonText, setButtonText] = useState("Submit");
   const [responseMessage, setResponseMessage] = useState("");
   const [blogQuery, setBlogQuery] = useState({
@@ -57,6 +62,18 @@ const BlogView = () => {
   const [tocItems, setTocItems] = useState([]);
   const [activeTocId, setActiveTocId] = useState('');
   const [showToc, setShowToc] = useState(true);
+  // Toggle sidebar sections
+  const toggleSidebarSection = (section, e) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    setSidebarSections(prev => ({
+      ...prev,
+      [section]: !prev[section]
+    }));
+  };
+
   // Sidebar collapsible sections
   const [sidebarSections, setSidebarSections] = useState({
     enquiry: true,
@@ -73,6 +90,21 @@ const BlogView = () => {
   const sidebarRef = useRef(null);
   // Sliding trending projects sidebar
   const [showTrendingSidebar, setShowTrendingSidebar] = useState(false);
+  
+  // Auto-collapse the sidebar after 10 seconds when it's open
+  useEffect(() => {
+    let timer;
+    if (showTrendingSidebar) {
+      timer = setTimeout(() => {
+        setShowTrendingSidebar(false);
+      }, 10000); // 10 seconds
+    }
+    
+    // Clear the timer if the component unmounts or the sidebar is closed manually
+    return () => {
+      if (timer) clearTimeout(timer);
+    };
+  }, [showTrendingSidebar]);
   // People are searching (unique phrasing and links)
   const peopleSearch = [
     { label: 'Projects in Gurugram', url: '/projects-in-gurugram' },
@@ -882,20 +914,6 @@ const BlogView = () => {
     }
   };
 
-  // Toggle sidebar sections
-  const toggleSidebarSection = (section) => {
-    setSidebarSections(prev => ({
-      ...prev,
-      [section]: !prev[section]
-    }));
-  };
-
-  // Brand colors
-  const BRAND_RED = '#b8333a';
-  const DARK_TEXT = '#333';
-  const TAGLINE = "Insights, Updates, and Stories from Gurgaon’s Real Estate World";
-  
-
   // Canonical URL: prefer configured domain; include ?id= when present to avoid empty blog cases
   const preferredDomain = (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_SITE_URL)
     || (typeof window !== 'undefined' && window.location && window.location.origin)
@@ -1372,8 +1390,8 @@ const BlogView = () => {
               {spotlightProjects.length > 0 && (
                 <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
                   <button
-                    onClick={() => toggleSidebarSection('popularProjects')}
-                    className="w-full px-6 py-4 flex items-center justify-between bg-gradient-to-r from-red-500 to-red-600 text-white font-bold hover:from-red-600 hover:to-red-700 transition-all"
+                    onClick={(e) => toggleSidebarSection('popularProjects', e)}
+                    className="w-full px-4 py-3 flex items-center justify-between bg-gradient-to-r from-red-500 to-red-600 text-white font-bold hover:from-red-600 hover:to-red-700 transition-all"
                     style={{ fontFamily: "'Poppins', sans-serif" }}
                   >
                     <span>100acress Recommended</span>
@@ -1664,24 +1682,26 @@ const BlogView = () => {
       </div>
 
       {/* Sliding Trending Projects Sidebar */}
-      <>
+      <React.Fragment>
         {/* Overlay - only show when sidebar is open */}
         {showTrendingSidebar && (
           <div 
             className="fixed inset-0 bg-black bg-opacity-50 z-40 transition-opacity duration-300"
             onClick={() => setShowTrendingSidebar(false)}
-          ></div>
+            aria-hidden="true"
+          />
         )}
         
         {/* Sidebar Container */}
-        <div className={`fixed top-20 h-[calc(100vh-10rem)] z-40 transition-all duration-500 ease-out ${showTrendingSidebar ? 'right-0' : 'right-0'}`}>
+        <div className={`fixed top-0 h-screen z-50 transition-all duration-500 ease-out ${showTrendingSidebar ? 'right-0' : 'right-0'}`}>
           {/* Visible Tab (always visible on right edge) */}
           <button
             onClick={() => setShowTrendingSidebar(!showTrendingSidebar)}
             className={`absolute top-1/3 -translate-y-1/2 bg-gradient-to-r from-red-500 to-red-600 text-white px-3 py-8 rounded-l-xl shadow-lg hover:from-red-600 hover:to-red-700 transition-all z-10 flex flex-col items-center gap-2 ${showTrendingSidebar ? '-left-12' : 'right-0'}`}
             aria-label={showTrendingSidebar ? "Close trending projects" : "Open trending projects"}
+            type="button"
           >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
             </svg>
             <span className="text-xs font-bold" style={{ writingMode: 'vertical-rl', textOrientation: 'mixed' }}>
@@ -1689,13 +1709,35 @@ const BlogView = () => {
             </span>
           </button>
 
-          {/* Sidebar Panel */}
-          <div className={`h-full w-80 md:w-96 bg-white shadow-2xl overflow-hidden transition-all duration-500 ease-out ${showTrendingSidebar ? 'translate-x-0' : 'translate-x-full'}`}>
+            {/* Sidebar Panel */}
+            <div 
+              className={`h-full w-80 md:w-96 bg-white overflow-hidden transition-all duration-500 ease-out flex flex-col ${showTrendingSidebar ? 'translate-x-0' : 'translate-x-full'}`}
+              style={{
+                boxShadow: '-4px 0 15px rgba(0,0,0,0.08)',
+                borderTopLeftRadius: '1rem',
+                borderBottomLeftRadius: '1rem',
+                borderLeft: '1px solid rgba(0,0,0,0.05)'
+              }}
+              onMouseEnter={() => {
+                // Reset the auto-close timer when user interacts with the sidebar
+                if (autoCloseTimer.current) {
+                  clearTimeout(autoCloseTimer.current);
+                }
+              }}
+              onMouseLeave={() => {
+                // Set a new auto-close timer when mouse leaves the sidebar
+                if (showTrendingSidebar) {
+                  autoCloseTimer.current = setTimeout(() => {
+                    setShowTrendingSidebar(false);
+                  }, 10000); // 10 seconds
+                }
+              }}
+            >
 
           {/* Scrollable Content */}
-          <div className="h-full overflow-y-auto">
+          <div className="flex-1 overflow-y-auto">
             {/* Header */}
-            <div className="sticky top-0 bg-gradient-to-r from-red-500 to-red-600 px-6 py-4 flex items-center justify-between z-10">
+            <div className="sticky top-0 bg-gradient-to-r from-red-600 to-red-700 px-4 py-3 flex items-center justify-between z-10 shadow-sm">
               <div className="flex items-center gap-3">
                 <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
@@ -1714,7 +1756,7 @@ const BlogView = () => {
             </div>
 
             {/* Projects List */}
-            <div className="p-6 space-y-4">
+            <div className="p-3 space-y-3">
               {trendingProjects.length > 0 ? (
                 trendingProjects.map((project, idx) => {
                   const name = project?.projectName || project?.name || project?.title || 'Project';
@@ -1756,14 +1798,21 @@ const BlogView = () => {
                     <div
                       key={idx}
                       onClick={() => navigateToProject(project)}
-                      className="group bg-white rounded-xl border border-gray-200 hover:border-red-500 overflow-hidden cursor-pointer transition-all duration-300 hover:shadow-lg"
+                      className="group bg-white rounded-lg border border-gray-100 hover:border-red-100 overflow-hidden cursor-pointer transition-all duration-300 hover:shadow-md hover:-translate-y-0.5"
                     >
-                      {/* Project Image */}
-                      <div className="relative h-48 overflow-hidden">
+                      {/* Project Image with Hover Effect */}
+                      <div className="relative h-32 overflow-hidden">
+                        {/* Gradient Overlay */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10"></div>
+                        
+                        {/* Shine Effect */}
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out z-20"></div>
+                        
+                        {/* Main Image */}
                         <img
                           src={img}
                           alt={name}
-                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                          className="w-full h-full object-cover transform transition-all duration-700 ease-out group-hover:scale-105"
                           onError={(e) => {
                             if (e?.target && e.target.src !== window.location.origin + FALLBACK_IMG && !e.target.dataset.fallback) {
                               e.target.dataset.fallback = "1";
@@ -1773,55 +1822,76 @@ const BlogView = () => {
                           referrerPolicy="no-referrer"
                           crossOrigin="anonymous"
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                        
+                        {/* Category Badge */}
                         {category && (
-                          <div className="absolute top-3 left-3 bg-red-600 text-white text-xs font-semibold px-3 py-1 rounded-full">
+                          <div className="absolute top-2 left-2 bg-gradient-to-r from-red-600 to-red-700 text-white text-[10px] font-semibold px-2 py-1 rounded-full shadow-md z-20 group-hover:shadow-lg transition-all duration-300 group-hover:-translate-y-0.5">
                             {category}
                           </div>
                         )}
                       </div>
 
                       {/* Project Details */}
-                      <div className="p-4">
-                        <h4 className="font-bold text-gray-900 text-base mb-2 line-clamp-2 group-hover:text-red-600 transition-colors">
+                      <div className="p-2.5">
+                        {/* Title and Price */}
+                        <h4 className="font-bold text-gray-900 text-sm line-clamp-2 group-hover:text-red-600 transition-colors duration-200 mb-1">
                           {name}
                         </h4>
                         
-                        {location && (
-                          <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
-                            <svg className="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                            </svg>
-                            <span>{location}</span>
-                          </div>
-                        )}
-
+                        {/* Price Display */}
                         {priceRange && (
-                          <div className="flex items-center gap-2 text-sm font-semibold text-red-600">
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            <span>₹ {priceRange}</span>
+                          <div className="flex items-center justify-between mb-1.5">
+                            <div className="flex items-center gap-1.5 text-xs text-gray-500">
+                              <span>Price:</span>
+                              <span className="font-bold text-red-600">₹ {priceRange}</span>
+                            </div>
                           </div>
                         )}
+                        
+                        {/* Location with Icon */}
+                        {location && (
+                          <div className="flex items-center gap-1.5 text-xs text-gray-500">
+                            <div className="flex-shrink-0 w-5 h-5 rounded-full bg-red-50 flex items-center justify-center group-hover:bg-red-100 transition-colors duration-200">
+                              <svg className="w-2.5 h-2.5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                              </svg>
+                            </div>
+                            <span className="truncate" title={location}>{location}</span>
+                          </div>
+                        )}
+                        
+                        {/* View Details Button */}
+                        <button 
+                          className="w-full py-2 px-3 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white text-xs font-semibold rounded-lg transition-all duration-200 flex items-center justify-center gap-1.5 group-hover:shadow-md overflow-hidden relative"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            navigateToProject(project);
+                          }}
+                        >
+                          <span className="relative z-10">View Details</span>
+                          <svg className="w-3.5 h-3.5 relative z-10 transition-transform duration-200 group-hover:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                          </svg>
+                          <span className="absolute inset-0 bg-gradient-to-r from-red-700 to-red-800 opacity-0 group-hover:opacity-100 transition-opacity duration-200"></span>
+                        </button>
                       </div>
                     </div>
                   );
                 })
               ) : (
-                <div className="text-center py-12">
+                <div className="text-center py-8 px-4">
                   <svg className="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                   </svg>
                   <p className="text-gray-500 text-sm">No trending projects available</p>
                 </div>
               )}
+              </div>
             </div>
           </div>
-          </div>
         </div>
-      </>
+      </React.Fragment>
 
       {/* Page Footer */}
       <Footer />
