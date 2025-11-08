@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useSelector } from "react-redux";
 import Footer from "../Components/Actual_Components/Footer";
 import api from "../config/apiClient";
+import Api_Service from "../Redux/utils/Api_Service";
 import { Skeleton } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import Gallery from "../Components/Gallery";
@@ -62,10 +64,14 @@ function formatPrice(price, type = 'buy') {
 
 const ShowPropertyDetails = ({ id, type }) => {
   const navigate = useNavigate();
+  const { getTrending } = Api_Service();
 
   const [rentViewDetails, setRentViewDetails] = useState();
   const [buyData, setBuyData] = useState([]);
   const [showNumber, setShowNumber] = useState(false);
+  
+  // Get trending properties from Redux store
+  const TrendingProjects = useSelector(store => store?.project?.trending) || [];
   const [GalleryImageData, setGalleryImageData] = useState([]);
   const [OpenGallery, setOpenGallery] = useState(false);
   const [agentDetails, setAgentDetails] = useState({
@@ -78,6 +84,11 @@ const ShowPropertyDetails = ({ id, type }) => {
   const [highlightForm, setHighlightForm] = useState(false);
   const [propertyType, setPropertyType] = useState(null);
   const [activeTab, setActiveTab] = useState('details');
+
+  // Fetch trending properties on component mount
+  useEffect(() => {
+    getTrending();
+  }, [getTrending]);
 
   // Check and redirect if URL is missing trailing slash
   useEffect(() => {
@@ -772,6 +783,74 @@ const ShowPropertyDetails = ({ id, type }) => {
                 </div>
               </a>
             ))}
+          </div>
+        </div>
+      )}
+      
+      {/* Trending Properties Section */}
+      {TrendingProjects && TrendingProjects.length > 0 && (
+        <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-12 py-8 bg-gradient-to-b from-white to-gray-50">
+          <div className="text-center mb-8">
+            <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">Trending Properties</h3>
+            <div className="w-20 h-1 bg-gradient-to-r from-red-500 to-orange-500 mx-auto rounded-full"></div>
+            <p className="text-gray-600 mt-3">Explore the most popular properties right now</p>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+            {TrendingProjects.slice(0, 4).map((property, idx) => (
+              <a
+                key={property._id || idx}
+                href={`/projects/${property.projectName ? property.projectName.replace(/\s+/g, '-').toLowerCase() : 'project'}/${property._id}/`}
+                className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 hover:scale-[1.02] border border-gray-100 group"
+              >
+                <div className="relative overflow-hidden">
+                  <img
+                    src={property.thumbnailImage?.url || property.frontImage?.url}
+                    alt={property.projectName}
+                    className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500"
+                    loading="lazy"
+                  />
+                  <div className="absolute top-3 left-3 bg-gradient-to-r from-red-600 to-orange-500 text-white px-3 py-1 rounded-lg text-xs font-semibold shadow-lg">
+                    🔥 Trending
+                  </div>
+                  {property.projectStatus && (
+                    <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm text-gray-800 px-2 py-1 rounded-lg text-xs font-medium">
+                      {property.projectStatus}
+                    </div>
+                  )}
+                </div>
+                <div className="p-4">
+                  <h4 className="font-bold text-base mb-2 truncate text-gray-900 group-hover:text-red-600 transition-colors">
+                    {property.projectName}
+                  </h4>
+                  <div className="flex items-center text-gray-600 text-sm mb-2">
+                    <MapPin className="w-4 h-4 text-red-500 mr-1 flex-shrink-0" />
+                    <span className="truncate">{property.city}, {property.state}</span>
+                  </div>
+                  {property.type && (
+                    <div className="flex items-center text-gray-600 text-xs mb-3">
+                      <Home className="w-3 h-3 mr-1" />
+                      <span>{property.type}</span>
+                    </div>
+                  )}
+                  <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-100">
+                    <span className="font-bold text-lg text-red-600 flex items-center">
+                      <IndianRupee className="w-4 h-4" />
+                      {property.minPrice ? `${property.minPrice} Cr` : 'Contact for Price'}
+                    </span>
+                    <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-red-500 group-hover:translate-x-1 transition-all" />
+                  </div>
+                </div>
+              </a>
+            ))}
+          </div>
+          <div className="text-center mt-8">
+            <Link
+              to="/projects-in-gurugram/"
+              className="inline-flex items-center gap-2 bg-gradient-to-r from-red-600 to-orange-500 hover:from-red-700 hover:to-orange-600 text-white font-semibold px-6 py-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+            >
+              View All Trending Properties
+              <ChevronRight className="w-5 h-5" />
+            </Link>
           </div>
         </div>
       )}

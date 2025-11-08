@@ -104,6 +104,8 @@ const ForgetPassword = lazy(() => import("./Pages/ForgetPassword"));
 const ViewAllProperty = lazy(() => import("./Pages/ViewAllProperty"));
 const BlogWriteModal = lazy(() => import("./AdminPage/BlogWriteModal"));
 // const Dubai = lazy(() => import("./Pages/ProjectCities/Dubai"));
+const DubaiPage = lazy(() => import("./Pages/Dubai/DubaiPage"));
+const DubaiProjectPage = lazy(() => import("./Pages/Dubai/ProjectDetail/DubaiProjectPage"));
 const GlobalBudgetPrice = lazy(() => import("./Pages/GlobalBudgetPrice"));
 const PriceTrends = lazy(() => import("./Insight/pages/PriceTrends"));
 const CityProjects = lazy(() => import("./Pages/ProjectCities/CityProjects"));
@@ -401,7 +403,16 @@ function App() {
                       <Route path="/projects-in-jalandhar/" element={<CityProjectsGlobal />} />
                       <Route path="/project-in-ayodhya/" element={<CityProjectsGlobal />} />
                       <Route path="/project-in-mumbai/" element={<CityProjectsGlobal />} />
-                      <Route path="/projects-in-dubai/" element={<CityProjectsGlobal />} />
+                      {/* UAE Emirates Routes */}
+                      <Route path="/projects-in-dubai/" element={<DubaiPage />} />
+                      <Route path="/dubai/" element={<DubaiPage />} />
+                      <Route path="/dubai/project/:projectSlug/" element={<DubaiProjectPage />} />
+                      <Route path="/abu-dhabi/" element={<DubaiPage />} />
+                      <Route path="/sharjah/" element={<DubaiPage />} />
+                      <Route path="/ajman/" element={<DubaiPage />} />
+                      <Route path="/ras-al-khaimah/" element={<DubaiPage />} />
+                      <Route path="/fujairah/" element={<DubaiPage />} />
+                      <Route path="/umm-al-quwain/" element={<DubaiPage />} />
                       {/* Dynamic city projects route (generic template). Keep after specific routes to avoid conflicts. */}
                       <Route path="/projects-in-:citySlug/" element={<CityProjectsGlobal />} />
                       <Route path="/project-in-:citySlug/" element={<CityProjectsGlobal />} />

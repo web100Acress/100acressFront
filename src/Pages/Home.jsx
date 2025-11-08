@@ -31,6 +31,7 @@ import { useSelector } from "react-redux";
 import { AuthContext } from "../AuthContext";
 import FloatingShorts from "../Components/FloatingShorts";
 import DynamicHeroBanner from "../Components/HomePageComponents/DynamicHeroBanner";
+import FeaturedBlogs from "../Components/HomePageComponents/FeaturedBlogs";
 
 const Home = () => {
   // const [showConfetti, setShowConfetti] = useState(true);
@@ -825,7 +826,7 @@ const Home = () => {
 
         {/* Place FormHome below the two-column layout */}
         {/* <FormHome /> */}
- 
+        <FeaturedBlogs />
         <PossessionProperty />
         <BackToTopButton />
         {/* Floating YouTube Shorts (Home page only) */}
@@ -833,6 +834,10 @@ const Home = () => {
  
         {/* <Footer /> */}
       </div> {/* Closing div for the blur container */}
+      
+      {/* Featured Blogs Section */}
+      
+      
       <Footer />
  
       </main>
