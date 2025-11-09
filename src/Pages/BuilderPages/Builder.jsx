@@ -102,26 +102,26 @@ const Builder = () => {
       image:
         "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/whiteland.jpg",
     },
-    // {
-    //   title: "Indiabulls Real Estate",
-    //   link: "/developers/indiabulls-real-estate/",
-    //   image:
-    //     "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/indiabulls.webp",
-    // },
-    // {
-    //   title: "AIPL",
-    //   link: "/developers/aipl/",
-    //   image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/aipl.png",
-    // },
+    {
+      title: "Indiabulls Real Estate",
+      link: "/developers/indiabulls-real-estate/",
+      image:
+        "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/indiabulls.webp",
+    },
+    {
+      title: "AIPL",
+      link: "/developers/aipl/",
+      image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/aipl.png",
+    },
     {
       title: "Shapoorji Pallonji",
       link: "/developers/shapoorji-pallonji/",
-      image: "",
+      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/f53cad64-481a-44b6-9c08-e100f5a9a81f.webp",
     },
     {
       title: "Satya Group",
       link: "/developers/satya-group/",
-      image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/satya-group.jpg",
+      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/fea4304a-c768-40cc-857e-45b68c84b2a5.webp",
     },
 
     {
@@ -165,7 +165,7 @@ const Builder = () => {
                          </div> */}
         </div>
         {/* Dynamic Developer Showcase Grid */}
-        <div className="grid w-full max-w-[1400px] mx-auto grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 gap-4 py-6">
+        <div className="grid w-full max-w-[1400px] mx-auto grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 py-6">
           {Builder.map((project, index) => (
             <Link
               data-aos="flip-up"
