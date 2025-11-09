@@ -2,7 +2,7 @@ import { useDispatch } from "react-redux";
 import { spotlight, trending ,featured,upcoming,affordable,luxury,scoplots,commercial,budget,projectindelhi} from "../slice/projectSlice";
 import {gurugram,delhi,noida,goa,ayodhya,mumbai,panipat,panchkula,kasauli,karnal,jalandhar, sonipat, alwar, dubai, pushkar} from "../slice/StateProject";  
 import {allupcomingproject,builderindependentfloor,commercialProjectAll,deendayalplots,dlfsco,luxuryAll,luxuryvillas,newlaunch, readytomove, residential, scoplotsall, underconstruction,possessionafter2026,plotsingurugram,farmhouse,industrialplots,industrialprojects} from "../slice/AllSectionData";
-import { signatureglobal,m3m,dlf,experion,elan,bptp,adani,smartworld,trevoc,indiabulls,centralpark,emaarindia, godrej, whiteland, aipl, birla, sobha, trump, puri, aarize, maxestates} from "../slice/BuilderSlice";
+import { signatureglobal,m3m,dlf,experion,elan,bptp,adani,smartworld,trevoc,indiabulls,centralpark,emaarindia, godrej, whiteland, aipl, birla, sobha, trump, puri, aarize, maxestates, shapoorji, satya } from "../slice/BuilderSlice";
 import {Possessionin2025,Possessionin2026} from "../slice/PossessionSlice";
 import {bptpplots,orrisplots} from "../slice/ProjectOverviewSlice";
 
@@ -497,6 +497,27 @@ const Api_service = () => {
         case 'Elan Group':
           dispatch(elan(BuilderbyQuery));
           break;
+        case 'Shapoorji Pallonji': // Exact match with database
+        case 'shapoorji pallonji': // Case-insensitive match for safety
+          console.log('🔍 Shapoorji Pallonji data received:', BuilderbyQuery);
+          if (!Array.isArray(BuilderbyQuery)) {
+            console.error('🟥 Expected BuilderbyQuery to be an array, got:', typeof BuilderbyQuery);
+            return [];
+          }
+          console.log(`🟢 Dispatching ${BuilderbyQuery.length} Shapoorji Pallonji projects to Redux`);
+          dispatch(shapoorji(BuilderbyQuery));
+          console.log('✅ Shapoorji Pallonji data dispatched to Redux');
+          break;
+        case 'Satya Group':
+          console.log('🔍 Satya Group data received:', BuilderbyQuery);
+          if (!Array.isArray(BuilderbyQuery)) {
+            console.error('🟥 Expected BuilderbyQuery to be an array, got:', typeof BuilderbyQuery);
+            return [];
+          }
+          console.log(`🟢 Dispatching ${BuilderbyQuery.length} Satya Group projects to Redux`);
+          dispatch(satya(BuilderbyQuery));
+          console.log('✅ Satya Group data dispatched to Redux');
+          break;
         case 'BPTP LTD':
           dispatch(bptp(BuilderbyQuery));
           break;
@@ -707,6 +728,109 @@ const Api_service = () => {
     }
   };
 
+  const fetchShapoorjiProjects = async (limit = 3) => {
+    // Check if we're being rate limited
+    const lastRequestTime = localStorage.getItem('lastApiRequestTime');
+    if (lastRequestTime && Date.now() - parseInt(lastRequestTime) < 1000) {
+      console.log('⚠️ Rate limit protection: Waiting before making another request');
+      await new Promise(resolve => setTimeout(resolve, 1000));
+    }
+
+    try {
+      console.log('🔄 Fetching Shapoorji Pallonji projects...');
+      localStorage.setItem('lastApiRequestTime', Date.now().toString());
+      
+      // Try to get projects from local storage first
+      const cachedProjects = localStorage.getItem('shapoorjiProjects');
+      if (cachedProjects) {
+        try {
+          const parsed = JSON.parse(cachedProjects);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            console.log('📦 Using cached Shapoorji Pallonji projects');
+            dispatch(shapoorji(parsed));
+            return parsed;
+          }
+        } catch (e) {
+          console.log('Failed to parse cached projects', e);
+        }
+      }
+      
+      // If no cache, try to fetch from API with retry logic
+      const maxRetries = 2;
+      let lastError = null;
+      
+      for (let attempt = 0; attempt <= maxRetries; attempt++) {
+        try {
+          // Add a small delay between retries
+          if (attempt > 0) {
+            const delay = 1000 * Math.pow(2, attempt); // Exponential backoff
+            console.log(`⏳ Retry attempt ${attempt} in ${delay}ms...`);
+            await new Promise(resolve => setTimeout(resolve, delay));
+          }
+          
+          const response = await api.get(
+            `project?builderName=Shapoorji Pallonji&limit=${limit}`, 
+            { 
+              timeout: 10000 // 10 second timeout
+            }
+          );
+          
+          if (response?.data?.data) {
+            const projects = Array.isArray(response.data.data) ? response.data.data : [];
+            console.log(`✅ Fetched ${projects.length} Shapoorji Pallonji projects`);
+            
+            // Cache the response
+            try {
+              localStorage.setItem('shapoorjiProjects', JSON.stringify(projects));
+              localStorage.setItem('lastApiRequestTime', Date.now().toString());
+            } catch (e) {
+              console.warn('Failed to cache projects', e);
+            }
+            
+            dispatch(shapoorji(projects));
+            return projects;
+          }
+        } catch (error) {
+          lastError = error;
+          console.warn(`Attempt ${attempt + 1} failed:`, error.message);
+          if (attempt === maxRetries) break;
+        }
+      }
+      
+      // If we get here, all retries failed
+      throw lastError || new Error('Failed to fetch projects after multiple attempts');
+      
+    } catch (error) {
+      console.error('❌ Error in fetchShapoorjiProjects:', {
+        message: error.message,
+        code: error.code,
+        isNetworkError: !error.response,
+        status: error.response?.status,
+        config: {
+          url: error.config?.url,
+          method: error.config?.method,
+        }
+      });
+      
+      // Return cached data if available, even if stale
+      try {
+        const cached = localStorage.getItem('shapoorjiProjects');
+        if (cached) {
+          const parsed = JSON.parse(cached);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            console.log('⚠️ Using cached data due to network error');
+            dispatch(shapoorji(parsed));
+            return parsed;
+          }
+        }
+      } catch (e) {
+        console.warn('Could not use cached data', e);
+      }
+      
+      return [];
+    }
+  };
+
   return {
     getTrending,
     getSpotlight,
@@ -729,6 +853,7 @@ const Api_service = () => {
     getPossessionByYear,
     getProjectBasedOnminPrice,
     getProjectBasedOnmaxPrice,
+    fetchShapoorjiProjects,
     // Property order & fetch helpers
     getPropertyOrder,
     savePropertyOrder,

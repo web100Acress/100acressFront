@@ -120,46 +120,76 @@ const S3Manager = () => {
     }
   };
 
-  const fetchImages = async () => {
-    if (!selectedFolder) {
+  const fetchImages = async (forceFolder = null) => {
+    const folderToFetch = forceFolder || selectedFolder;
+    
+    if (!folderToFetch) {
       console.log('No folder selected for image fetching');
       setImages([]);
       return;
     }
 
-    console.log('Fetching images for folder:', selectedFolder);
+    console.log('🔄 Fetching images for folder:', folderToFetch);
     setLoading(true);
 
     // Clear previous images immediately for faster UI response
     setImages([]);
 
     try {
-      const response = await axios.get(`/api/s3/images/${encodeURIComponent(selectedFolder)}`, {
+      const url = `/api/s3/images/${encodeURIComponent(folderToFetch)}`;
+      console.log('📡 API Call:', url);
+      console.log('📡 Full URL:', window.location.origin + url);
+      console.log('📡 Folder to fetch:', folderToFetch);
+      console.log('📡 Encoded folder:', encodeURIComponent(folderToFetch));
+      
+      const response = await axios.get(url, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('myToken')}`
         },
-        timeout: 10000
+        timeout: 15000 // Increased timeout
+      });
+
+      console.log('📦 Response received:', response.data);
+      console.log('📋 Response structure:', {
+        success: response.data.success,
+        images: response.data.images,
+        imagesType: typeof response.data.images,
+        imagesIsArray: Array.isArray(response.data.images),
+        imagesLength: response.data.images?.length,
+        allKeys: Object.keys(response.data)
       });
 
       if (response.data.success) {
-        setTimeout(() => {
-          setImages(response.data.images);
-          setLoading(false);
-        }, 0);
+        const imagesList = response.data.images || [];
+        console.log(`✅ Found ${imagesList.length} images in folder: ${folderToFetch}`);
+        
+        setImages(imagesList);
+        setLoading(false);
 
-        if (response.data.images.length === 0) {
-          toast.info(`No images found in ${selectedFolder} folder`);
+        if (imagesList.length === 0) {
+          console.warn('⚠️ No images in response');
+          console.warn('Full response data:', JSON.stringify(response.data, null, 2));
+          toast.info(`No images found in ${folderToFetch} folder. Check if files were uploaded correctly.`);
         } else {
-          console.log(`Loaded ${response.data.images.length} images`);
+          console.log(`✅ Successfully loaded ${imagesList.length} images`);
+          imagesList.forEach((img, idx) => {
+            console.log(`  ${idx + 1}. ${img.name || img.key}`, img);
+          });
         }
       } else {
+        console.warn('❌ API returned success: false');
         setImages([]);
         setLoading(false);
-        toast.info(`No images found in ${selectedFolder} folder`);
+        toast.info(`No images found in ${folderToFetch} folder`);
       }
     } catch (error) {
-      console.error('Error fetching images:', error);
-      toast.error('Failed to fetch images from S3');
+      console.error('❌ Error fetching images:', error);
+      console.error('Error details:', {
+        message: error.message,
+        response: error.response?.data,
+        status: error.response?.status
+      });
+      toast.error(`Failed to fetch images: ${error.message}`);
       setImages([]);
       setLoading(false);
     }
@@ -225,23 +255,28 @@ const S3Manager = () => {
   };
 
   const handleUpload = async () => {
+    console.log('Upload clicked - selectedFiles:', selectedFiles.length, 'selectedFolder:', selectedFolder);
+    
     if (selectedFiles.length === 0) {
       toast.error('Please select files to upload');
       return;
     }
 
     if (!selectedFolder) {
-      toast.error('Please select a folder');
+      toast.error('Please select a folder first');
       return;
     }
 
     setUploadLoading(true);
     try {
       const formData = new FormData();
-      selectedFiles.forEach(file => {
+      selectedFiles.forEach((file, index) => {
+        console.log(`Adding file ${index + 1}: ${file.name}`);
         formData.append('files', file);
       });
       formData.append('folder', selectedFolder);
+      
+      console.log('Uploading to folder:', selectedFolder);
 
       // Replace with actual S3 upload API call
       const response = await axios.post('/api/s3/upload', formData, {
@@ -251,13 +286,52 @@ const S3Manager = () => {
         },
       });
 
-      toast.success(`Successfully uploaded ${selectedFiles.length} files`);
-      setSelectedFiles([]);
+      console.log('📤 Upload response:', response.data);
+      console.log('📤 Upload details:', {
+        success: response.data.success,
+        message: response.data.message,
+        uploadedFiles: response.data.uploadedFiles,
+        folder: response.data.folder,
+        count: response.data.count,
+        allKeys: Object.keys(response.data)
+      });
+      
+      if (response.data.success) {
+        toast.success(`✅ Successfully uploaded ${selectedFiles.length} files to ${selectedFolder}`);
+      } else {
+        toast.warning(`⚠️ Upload completed but check response: ${response.data.message}`);
+      }
+      
+      // Store the folder we uploaded to
+      const uploadedToFolder = selectedFolder;
+      
+      // Close modal and clear files
       setShowUploadModal(false);
-      fetchImages(); // Refresh images list
+      setSelectedFiles([]);
+      
+      // Show refreshing message
+      toast.info('🔄 Refreshing images...');
+      
+      // Refresh the images list after a short delay to ensure S3 has processed the upload
+      console.log('🔄 Refreshing images for folder:', uploadedToFolder);
+      setTimeout(async () => {
+        console.log('⏰ Timeout completed, fetching images now...');
+        
+        // Force fetch images for the uploaded folder
+        await fetchImages(uploadedToFolder);
+        
+        // If folder changed, switch back to uploaded folder
+        if (selectedFolder !== uploadedToFolder) {
+          console.log('📁 Switching to uploaded folder:', uploadedToFolder);
+          setSelectedFolder(uploadedToFolder);
+        }
+        
+        console.log('✅ Refresh completed for folder:', uploadedToFolder);
+      }, 2000); // Increased to 2 seconds
     } catch (error) {
       console.error('Upload error:', error);
-      toast.error('Failed to upload files');
+      console.error('Error details:', error.response?.data);
+      toast.error(error.response?.data?.message || 'Failed to upload files. Please try again.');
     } finally {
       setUploadLoading(false);
     }
@@ -618,10 +692,17 @@ const S3Manager = () => {
                     <option value="webp">WebP</option>
                   </select>
                   <button
-                    onClick={fetchImages}
-                    className="px-3 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+                    onClick={async () => {
+                      console.log('🔄 Manual refresh clicked for folder:', selectedFolder);
+                      toast.info('🔄 Refreshing images...');
+                      await fetchImages(selectedFolder);
+                    }}
+                    disabled={loading || !selectedFolder}
+                    className="px-3 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors disabled:bg-gray-400 flex items-center gap-2"
+                    title={selectedFolder ? `Refresh images from ${selectedFolder}` : 'Select a folder first'}
                   >
-                    <MdRefresh />
+                    <MdRefresh className={loading ? 'animate-spin' : ''} />
+                    {loading ? 'Loading...' : 'Refresh'}
                   </button>
                 </div>
               </div>
@@ -810,62 +891,124 @@ const S3Manager = () => {
 
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Select Folder
+                  📁 Step 1: Select Destination Folder
                 </label>
                 <select
                   value={selectedFolder}
-                  onChange={(e) => setSelectedFolder(e.target.value)}
+                  onChange={(e) => {
+                    setSelectedFolder(e.target.value);
+                    console.log('Folder selected:', e.target.value);
+                  }}
                   className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                 >
-                  {folders.map((folder, index) => (
-                    <option key={index} value={folder}>
-                      {folder}
-                    </option>
-                  ))}
+                  <option value="">-- Choose upload destination --</option>
+                  {folders.map((folder, index) => {
+                    // Handle both string folders and object folders
+                    const folderValue = typeof folder === 'string' ? folder : (folder.path || folder.name);
+                    const folderLabel = typeof folder === 'string' ? folder : (folder.name || folder.path);
+                    return (
+                      <option key={index} value={folderValue}>
+                        📂 {folderLabel}
+                      </option>
+                    );
+                  })}
                 </select>
+                {folders.length === 0 && (
+                  <div className="mt-2 p-2 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
+                    <p className="text-xs text-yellow-700 dark:text-yellow-400">
+                      ⚠️ No folders available. Please create a folder first or refresh the page.
+                    </p>
+                  </div>
+                )}
+                {selectedFolder && (
+                  <div className="mt-2 p-2 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+                    <p className="text-xs text-green-700 dark:text-green-400">
+                      ✓ Selected folder: <strong>{selectedFolder}</strong>
+                    </p>
+                  </div>
+                )}
               </div>
 
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Select Images
+                  📷 Step 2: Select Images from Your Computer
                 </label>
-                <input
-                  type="file"
-                  multiple
-                  accept="image/jpeg,image/jpg,image/png,image/webp,image/gif"
-                  onChange={handleFileSelect}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-                />
-                <div className="mt-2 text-xs text-gray-500 dark:text-gray-400">
+                <div className={`relative ${!selectedFolder ? 'opacity-50 pointer-events-none' : ''}`}>
+                  <input
+                    type="file"
+                    multiple
+                    accept="image/jpeg,image/jpg,image/png,image/webp,image/gif"
+                    onChange={handleFileSelect}
+                    disabled={!selectedFolder}
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent dark:bg-gray-700 dark:text-white file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100"
+                  />
+                  {!selectedFolder && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-gray-100/80 dark:bg-gray-800/80 rounded-lg">
+                      <p className="text-xs text-gray-600 dark:text-gray-400">Please select a folder first</p>
+                    </div>
+                  )}
+                </div>
+                <div className="mt-2 text-xs text-gray-500 dark:text-gray-400 space-y-1">
                   <p>• Max {MAX_FILES_PER_UPLOAD} files per upload</p>
                   <p>• Max 10MB per file</p>
                   <p>• Supported: JPEG, PNG, WebP, GIF</p>
                 </div>
                 {selectedFiles.length > 0 && (
-                  <p className="text-sm text-green-600 dark:text-green-400 mt-2 font-medium">
-                    ✓ {selectedFiles.length} valid file(s) selected
-                  </p>
+                  <div className="mt-2 p-2 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+                    <p className="text-sm text-green-700 dark:text-green-400 font-medium">
+                      ✓ {selectedFiles.length} valid file(s) selected
+                    </p>
+                    <div className="mt-1 text-xs text-gray-600 dark:text-gray-400">
+                      {selectedFiles.slice(0, 3).map((file, idx) => (
+                        <div key={idx}>• {file.name}</div>
+                      ))}
+                      {selectedFiles.length > 3 && (
+                        <div>... and {selectedFiles.length - 3} more</div>
+                      )}
+                    </div>
+                  </div>
                 )}
               </div>
 
+              {/* Upload Summary */}
+              {selectedFolder && selectedFiles.length > 0 && (
+                <div className="mb-4 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+                  <p className="text-sm text-blue-800 dark:text-blue-300 font-medium mb-1">
+                    📤 Ready to Upload
+                  </p>
+                  <p className="text-xs text-blue-600 dark:text-blue-400">
+                    {selectedFiles.length} file(s) → <strong>{selectedFolder}</strong> folder
+                  </p>
+                </div>
+              )}
+
               <div className="flex gap-3">
                 <button
-                  onClick={() => setShowUploadModal(false)}
+                  onClick={() => {
+                    setShowUploadModal(false);
+                    setSelectedFiles([]);
+                  }}
                   className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleUpload}
-                  disabled={uploadLoading || selectedFiles.length === 0}
-                  className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:bg-gray-400 transition-colors flex items-center justify-center gap-2"
+                  disabled={uploadLoading || selectedFiles.length === 0 || !selectedFolder}
+                  className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+                  title={!selectedFolder ? 'Please select a folder first' : selectedFiles.length === 0 ? 'Please select files to upload' : `Upload ${selectedFiles.length} file(s) to ${selectedFolder}`}
                 >
                   {uploadLoading ? (
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                    <>
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                      <span>Uploading...</span>
+                    </>
                   ) : (
-                    <MdCloudUpload />
+                    <>
+                      <MdCloudUpload />
+                      <span>Upload {selectedFiles.length > 0 ? `(${selectedFiles.length})` : ''}</span>
+                    </>
                   )}
-                  {uploadLoading ? 'Uploading...' : 'Upload'}
                 </button>
               </div>
             </div>

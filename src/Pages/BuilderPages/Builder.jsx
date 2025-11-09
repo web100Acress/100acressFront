@@ -102,16 +102,26 @@ const Builder = () => {
       image:
         "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/whiteland.jpg",
     },
+    // {
+    //   title: "Indiabulls Real Estate",
+    //   link: "/developers/indiabulls-real-estate/",
+    //   image:
+    //     "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/indiabulls.webp",
+    // },
+    // {
+    //   title: "AIPL",
+    //   link: "/developers/aipl/",
+    //   image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/aipl.png",
+    // },
     {
-      title: "Indiabulls Real Estate",
-      link: "/developers/indiabulls-real-estate/",
-      image:
-        "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/indiabulls.webp",
+      title: "Shapoorji Pallonji",
+      link: "/developers/shapoorji-pallonji/",
+      image: "",
     },
     {
-      title: "AIPL",
-      link: "/developers/aipl/",
-      image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/aipl.png",
+      title: "Satya Group",
+      link: "/developers/satya-group/",
+      image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/satya-group.jpg",
     },
 
     {
