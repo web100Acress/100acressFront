@@ -187,6 +187,17 @@ const Builder = () => {
                     alt={project.title}
                     className="w-28 h-28 object-contain rounded-xl"
                     loading="lazy"
+                    onError={(e) => {
+                      // If image fails to load, try with HTTPS if it's an S3 URL
+                      if (project.image && project.image.startsWith('http://')) {
+                        const httpsUrl = project.image.replace('http://', 'https://');
+                        e.target.src = httpsUrl;
+                        e.target.onerror = null; // Prevent infinite loop
+                      } else {
+                        // Fallback to a placeholder if image still fails to load
+                        e.target.src = 'https://via.placeholder.com/112x112?text=' + encodeURIComponent(project.title.substring(0, 10));
+                      }
+                    }}
                   />
                 </div>
               </div>

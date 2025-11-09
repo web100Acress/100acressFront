@@ -39,6 +39,7 @@ const S3Manager = () => {
   const [newImageName, setNewImageName] = useState('');
   const [showCitiesDashboard, setShowCitiesDashboard] = useState(true);
   const [citiesImages, setCitiesImages] = useState([]);
+  const [imageErrors, setImageErrors] = useState({});
 
   // File validation constants
   const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
@@ -120,6 +121,46 @@ const S3Manager = () => {
     }
   };
 
+  // Process S3 image data to ensure consistent format
+  const processS3Images = (images) => {
+    if (!Array.isArray(images)) return [];
+    
+    return images.map(img => {
+      // If it's already in the correct format, return as is
+      if (img.url) {
+        return {
+          ...img,
+          url: normalizeS3Url(img.url)
+        };
+      }
+      
+      // Handle different S3 response formats
+      const key = img.Key || img.key || '';
+      const url = img.Location || 
+                (img.Bucket && img.Key ? `https://${img.Bucket}.s3.amazonaws.com/${img.Key}` : null) ||
+                (img.bucket && img.key ? `https://${img.bucket}.s3.amazonaws.com/${img.key}` : null);
+      
+      return {
+        id: img.id || key,
+        key: key,
+        name: img.name || key.split('/').pop() || 'image',
+        url: normalizeS3Url(url || ''),
+        size: img.Size ? formatFileSize(img.Size) : (img.size || 'N/A'),
+        lastModified: img.LastModified ? new Date(img.LastModified).toLocaleDateString() : (img.lastModified || 'N/A'),
+        type: key.split('.').pop()?.toLowerCase() || 'jpg'
+      };
+    });
+  };
+
+  // Format file size
+  const formatFileSize = (bytes) => {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  };
+
   const fetchImages = async (forceFolder = null) => {
     const folderToFetch = forceFolder || selectedFolder;
     
@@ -160,11 +201,12 @@ const S3Manager = () => {
       });
 
       if (response.data.success) {
-        const imagesList = response.data.images || [];
+        const imagesList = processS3Images(response.data.images || []);
         console.log(`✅ Found ${imagesList.length} images in folder: ${folderToFetch}`);
         
         setImages(imagesList);
         setLoading(false);
+        setImageErrors({}); // Reset error state on successful load
 
         if (imagesList.length === 0) {
           console.warn('⚠️ No images in response');
@@ -193,6 +235,30 @@ const S3Manager = () => {
       setImages([]);
       setLoading(false);
     }
+  };
+
+  // Normalize S3 URLs to ensure consistent format
+  const normalizeS3Url = (url) => {
+    if (!url) return '';
+    
+    // Convert to HTTPS if it's an S3 URL
+    if (url.startsWith('http://') && (url.includes('s3.') || url.includes('s3-'))) {
+      return url.replace('http://', 'https://');
+    }
+    
+    // Handle S3 URL formats
+    if (url.includes('s3.amazonaws.com')) {
+      // Convert path-style to virtual-hosted-style URL
+      const urlObj = new URL(url);
+      const pathParts = urlObj.pathname.split('/').filter(Boolean);
+      if (pathParts.length >= 2) {
+        const bucket = pathParts[0];
+        const key = pathParts.slice(1).join('/');
+        return `https://${bucket}.s3.${urlObj.hostname.split('.').slice(-2).join('.')}/${key}`;
+      }
+    }
+    
+    return url;
   };
 
   // Generate mock images for demonstration
@@ -789,20 +855,52 @@ const S3Manager = () => {
                         />
                       </div>
 
-                      <div className="aspect-w-16 aspect-h-12">
-                        <img
-                          src={image.url}
-                          alt={image.name}
-                          className="w-full h-48 object-cover transition-opacity duration-300"
-                          loading="lazy"
-                          onLoad={(e) => {
-                            e.target.style.opacity = '1';
-                          }}
-                          onError={(e) => {
-                            e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtc2l6ZT0iMTgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5JbWFnZSBOb3QgRm91bmQ8L3RleHQ+PC9zdmc+';
-                          }}
-                          style={{ opacity: '0' }}
-                        />
+                      <div className="aspect-w-16 aspect-h-12 relative">
+                        {!imageErrors[image.id] ? (
+                          <img
+                            src={image.url}
+                            alt={image.name}
+                            className="w-full h-48 object-cover transition-opacity duration-300"
+                            loading="lazy"
+                            onLoad={(e) => {
+                              e.target.style.opacity = '1';
+                            }}
+                            onError={(e) => {
+                              console.error(`Failed to load image: ${image.url}`);
+                              // Try with HTTPS if it's an S3 URL
+                              if (image.url && image.url.startsWith('http://')) {
+                                const httpsUrl = image.url.replace('http://', 'https://');
+                                e.target.src = httpsUrl;
+                                e.target.onerror = null; // Prevent infinite loop
+                              } else {
+                                // Mark this image as failed to load
+                                setImageErrors(prev => ({
+                                  ...prev,
+                                  [image.id]: true
+                                }));
+                              }
+                            }}
+                            style={{ opacity: '0' }}
+                          />
+                        ) : (
+                          <div className="w-full h-48 flex items-center justify-center bg-gray-100 dark:bg-gray-800">
+                            <div className="text-center p-4">
+                              <FaImage className="mx-auto text-gray-400 text-2xl mb-2" />
+                              <p className="text-gray-500 text-sm">Failed to load image</p>
+                              <button 
+                                onClick={() => {
+                                  setImageErrors(prev => ({
+                                    ...prev,
+                                    [image.id]: false
+                                  }));
+                                }}
+                                className="mt-2 text-xs text-blue-500 hover:underline"
+                              >
+                                Retry
+                              </button>
+                            </div>
+                          </div>
+                        )}
                       </div>
 
                       {/* Overlay */}
