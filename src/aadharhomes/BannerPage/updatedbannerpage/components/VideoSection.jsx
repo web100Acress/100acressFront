@@ -127,7 +127,7 @@ const VideoSection = ({
                   <div className="absolute inset-0 bg-black/40 group-hover:bg-black/30 transition-all duration-300"></div>
                   
                   {/* Play button */}
-                  <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="absolute inset-0 flex items-center justify-center sm:block">
                     <motion.div
                       className="bg-red-600 hover:bg-red-700 rounded-full p-6 shadow-2xl cursor-pointer transform transition-all duration-300 group-hover:scale-110"
                       whileHover={{ scale: 1.1 }}
@@ -145,8 +145,8 @@ const VideoSection = ({
                     </motion.div>
                   </div>
 
-                  {/* Video title overlay */}
-                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent p-8">
+                  {/* Video title overlay - hidden on mobile */}
+                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent p-4 sm:p-8 hidden sm:block">
                     <motion.div
                       className="max-w-4xl mx-auto"
                       initial={{ opacity: 0, y: 20 }}
