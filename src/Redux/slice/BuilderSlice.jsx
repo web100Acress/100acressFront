@@ -26,6 +26,7 @@ const builderSlice = createSlice({
     maxestates: [],
     shapoorji: [],
     satya: [],
+    danube: [],
   },
   reducers: {
     signatureglobal: (state, action) => {
@@ -97,6 +98,9 @@ const builderSlice = createSlice({
     satya: (state, action) => {
       state.satya = action.payload;
     },
+    danube: (state, action) => {
+      state.danube = action.payload;
+    },
   },
 });
 
@@ -123,7 +127,8 @@ export const {
   aarize, 
   maxestates,
   shapoorji,
-  satya
+  satya,
+  danube
 } = builderSlice.actions;
 
 export default builderSlice.reducer;

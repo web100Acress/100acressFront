@@ -143,6 +143,13 @@ const Builder = () => {
       image:
         "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/maxestate.webp",
     },
+    {
+      title: "Danube Properties",
+      link: "/developers/danube-properties/",
+      image:
+        "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/dubai/dubai-devloper-logo/DANUBE.png",
+    },
+    
   ];
 
   return (

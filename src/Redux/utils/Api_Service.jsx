@@ -2,7 +2,7 @@ import { useDispatch } from "react-redux";
 import { spotlight, trending ,featured,upcoming,affordable,luxury,scoplots,commercial,budget,projectindelhi} from "../slice/projectSlice";
 import {gurugram,delhi,noida,goa,ayodhya,mumbai,panipat,panchkula,kasauli,karnal,jalandhar, sonipat, alwar, dubai, pushkar} from "../slice/StateProject";  
 import {allupcomingproject,builderindependentfloor,commercialProjectAll,deendayalplots,dlfsco,luxuryAll,luxuryvillas,newlaunch, readytomove, residential, scoplotsall, underconstruction,possessionafter2026,plotsingurugram,farmhouse,industrialplots,industrialprojects} from "../slice/AllSectionData";
-import { signatureglobal,m3m,dlf,experion,elan,bptp,adani,smartworld,trevoc,indiabulls,centralpark,emaarindia, godrej, whiteland, aipl, birla, sobha, trump, puri, aarize, maxestates, shapoorji, satya } from "../slice/BuilderSlice";
+import { signatureglobal,m3m,dlf,experion,elan,bptp,adani,smartworld,trevoc,indiabulls,centralpark,emaarindia, godrej, whiteland, aipl, birla, sobha, trump, puri, aarize, maxestates, shapoorji, satya, danube } from "../slice/BuilderSlice";
 import {Possessionin2025,Possessionin2026} from "../slice/PossessionSlice";
 import {bptpplots,orrisplots} from "../slice/ProjectOverviewSlice";
 
@@ -578,7 +578,14 @@ const Api_service = () => {
           console.log('🔍 Dispatching maxestates action with data:', BuilderbyQuery);
           dispatch(maxestates(BuilderbyQuery));
           break;
-
+case 'Danube Properties':
+          console.log('🔍 Dispatching danube action with data:', BuilderbyQuery);
+          dispatch(danube(BuilderbyQuery));
+          break;
+case 'Danube Properties':
+          console.log('🔍 Dispatching danube action with data:', BuilderbyQuery);
+          dispatch(danube(BuilderbyQuery));
+          break;
         default:
           console.warn('Unknown builder:', query);
       }
