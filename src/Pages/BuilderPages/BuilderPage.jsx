@@ -17,6 +17,20 @@ import CompareBar from "../DeveloperPage/CompareBar";
 // Lightweight builder information for sidebar display
 // Extend freely as needed; safe fallbacks are provided if a builder key is missing
 const BUILDER_INFO = {
+  "shapoorji-pallonji": {
+    about:
+      "Shapoorji Pallonji Real Estate is the real estate development arm of the 150+ years old Shapoorji Pallonji Group. With a strong legacy of excellence, they are known for their premium residential and commercial projects across India. Their developments are characterized by innovative design, superior construction quality, and sustainable practices. Shapoorji Pallonji has a strong presence in major Indian cities including Mumbai, Pune, Bengaluru, Gurgaon, and Chennai, delivering landmark projects that redefine urban living.",
+    founded: "1865",
+    hq: "Mumbai, Maharashtra",
+    website: "https://www.shapoorjirealestate.com/",
+  },
+  "satya-group": {
+    about:
+      "Satya Group is a leading real estate developer known for its innovative and sustainable residential and commercial projects. With a strong focus on quality construction and timely delivery, Satya Group has established itself as a trusted name in the real estate sector. Their projects are designed to offer modern amenities, green spaces, and a premium lifestyle. The group has a significant presence in Gurgaon and other key locations, catering to the needs of homebuyers looking for quality living spaces with excellent connectivity and world-class facilities.",
+    founded: "1986",
+    hq: "Gurugram, Haryana",
+    website: "https://www.satyagroup.in/",
+  },
   "godrej-properties": {
     about:
       "Godrej is one of the most trusted real estate developers in India. With more than 120 years of experience, they build modern apartments, flats, and homes that give comfort, safety, and a better lifestyle. Their projects are in Gurgaon, Delhi NCR, Mumbai, Pune, and other cities. They focus on using good materials and making sure homes are ready on time. Whether it’s affordable housing or luxury homes, Godrej ensures excellent connectivity, world-class amenities, and a clean environment. Choosing Godrej means you get quality homes that are perfect for families and investors looking for residential projects with long-term value.",
@@ -121,8 +135,37 @@ const BUILDER_INFO = {
   },
 };
 
+// Map URL slugs to exact builder names as they appear in the database
+const BUILDER_QUERIES = {
+  'shapoorji-pallonji': 'Shapoorji Pallonji',
+  'satya-group': 'Satya Group',
+  'signature-global': 'Signature Global',
+  'm3m-india': 'M3M India',
+  'dlf-homes': 'DLF',
+  'experion-developers': 'Experion Developers',
+  'elan-group': 'Elan Group',
+  'bptp-limited': 'BPTP',
+  'adani-realty': 'Adani Realty',
+  'smartworld-developers': 'Smartworld Developers',
+  'trevoc-group': 'Trevoc Group',
+  'indiabulls-real-estate': 'Indiabulls Real Estate',
+  'central-park': 'Central Park',
+  'emaar-india': 'Emaar India',
+  'godrej-properties': 'Godrej Properties',
+  'whiteland': 'Whiteland',
+  'aipl': 'AIPL',
+  'birla-estate': 'Birla Estate',
+  'sobha-developers': 'Sobha Developers',
+  'trump-towers': 'Trump Towers',
+  'puri-developers': 'Puri Developers',
+  'aarize-developers': 'Aarize Developers',
+  'max-estates': 'Max Estates'
+};
+
 // Canonical display names for builder brands (for titles/meta)
 const DISPLAY_NAMES = {
+  'shapoorji-pallonji': 'Shapoorji Pallonji',
+  'satya-group': 'Satya Group',
   'adani-realty': 'Adani Realty',
   'm3m-india': 'M3M India',
   'emaar-india': 'Emaar India',
@@ -275,11 +318,35 @@ const BuilderPage = React.memo(() => {
     
     // Extract builder name from URL params or pathname for direct routes like /max-estates/
     const builderName = paramBuilderName || location.pathname.replace(/^\/|\/$/g, '');
-    const [query, setQuery] = useState("");
+    
+    // Set the query to the exact builder name from the database
+    const [query, setQuery] = useState(BUILDER_QUERIES[builderName] || '');
     const [loading, setLoading] = useState(true);
     const [isSynced, setIsSynced] = useState(false);
     const [favoriteIds, setFavoriteIds] = useState([]);
-    const {getProjectbyBuilder, getPropertyOrder} = Api_Service();
+    const {getProjectbyBuilder, getPropertyOrder, fetchShapoorjiProjects} = Api_Service();
+    
+    // Fetch projects when component mounts or builderName changes
+    useEffect(() => {
+      const fetchProjects = async () => {
+        try {
+          setLoading(true);
+          if (builderName === 'shapoorji-pallonji') {
+            console.log('🔄 Fetching Shapoorji Pallonji projects...');
+            await fetchShapoorjiProjects(3);
+          } else if (query) {
+            console.log(`🔄 Fetching projects for ${query}...`);
+            await getProjectbyBuilder(query, 20);
+          }
+        } catch (error) {
+          console.error('❌ Error fetching projects:', error);
+        } finally {
+          setLoading(false);
+        }
+      };
+      
+      fetchProjects();
+    }, [builderName, query, fetchShapoorjiProjects, getProjectbyBuilder]);
     
     // Memoize sync function to prevent infinite re-renders
     const memoizedSyncProjectOrders = useCallback(() => {
@@ -315,6 +382,8 @@ const BuilderPage = React.memo(() => {
     const puri = useSelector(store => store?.builder?.puri);
     const aarize = useSelector(store => store?.builder?.aarize);
     const maxestates = useSelector(store => store?.builder?.maxestates);
+    const shapoorjiBuilder = useSelector(store => store?.builder?.shapoorji);
+    const satyaBuilder = useSelector(store => store?.builder?.satya);
     
     // Get project order state from Redux store
     const customOrders = useSelector(store => store?.projectOrder?.customOrders);
@@ -342,7 +411,9 @@ const BuilderPage = React.memo(() => {
     'trump-towers': trump,
     'puri-developers': puri,
     'aarize-developers': aarize,
-    'max-estates': maxestates
+    'max-estates': maxestates,
+    'shapoorji-pallonji': shapoorjiBuilder,
+    'satya-group': satyaBuilder
   };
   const builderProjects = buildersData[builderName] || [];
 
@@ -375,7 +446,7 @@ const BuilderPage = React.memo(() => {
   // Apply Property Order if available, otherwise Project Order/Random
   const orderedProjects = useMemo(() => {
     // Important: use canonical query (e.g., 'Godrej Properties') as key for Redux order
-    const keyForOrder = query || builderName;
+    const keyForOrder = query || BUILDER_QUERIES[builderName] || builderName;
     const hasCustomOrderDefined = hasCustomOrder(keyForOrder, buildersWithCustomOrder);
     const customOrder = getCustomOrder(keyForOrder, customOrders);
     const randomSeed = getRandomSeed(keyForOrder, randomSeeds);

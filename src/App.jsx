@@ -277,16 +277,16 @@ function App() {
                           )
                         }
                       />
-                      <Route path="/auth/" element={<div>Auth routes commented out</div>}>
+                      <Route path="/auth/">
                         <Route path="signup/">
-                          <Route index element={<div>Signup commented out</div>} />
+                          <Route index element={<SignupForm />} />
                           <Route
                             path="email-verification/"
-                            element={<div>Email verification commented out</div>}
+                            element={<EmailVerification />}
                           />
                           <Route
                             path="otp-verification/"
-                            element={<div>OTP verification commented out</div>}
+                            element={<OTPVerification />}
                           />
                         </Route>
                         <Route path="signin/" element={<div>Signin commented out</div>} />
