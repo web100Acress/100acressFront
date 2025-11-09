@@ -235,12 +235,12 @@ const FloorPlan = ({ floorPlans = [], bhkDetails = [], onShowCallback = () => {}
                   
                   {/* Blur Overlay with Get Details Button */}
                   {!isImageUnlocked && (
-                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center rounded-md">
-                      <p className="text-white text-lg md:text-xl font-semibold">
+                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center rounded-md p-4">
+                      <p className="text-white text-center text-sm sm:text-base md:text-lg font-medium">
                         To access the master layout, kindly{' '}
                         <button 
                           onClick={handleGetDetails}
-                          className="text-blue-600 hover:text-blue-500 underline underline-offset-4 decoration-2 decoration-blue-600/80 hover:decoration-blue-500 transition-colors duration-200 font-semibold text-lg md:text-xl"
+                          className="text-blue-400 hover:text-blue-300 underline underline-offset-2 sm:underline-offset-4 decoration-1 sm:decoration-2 decoration-blue-400/80 hover:decoration-blue-300 transition-colors duration-200 font-medium text-sm sm:text-base md:text-lg whitespace-nowrap"
                         >
                           share your details
                         </button>
