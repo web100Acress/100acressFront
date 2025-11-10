@@ -128,9 +128,9 @@ const RelatedProjects = ({ builderName = "", currentProjectUrl = "", onShowCallb
                       
                       {/* Project Image */}
                       <div className="aspect-[4/3] bg-gradient-to-br from-gray-800 to-gray-900 overflow-hidden">
-                        {project.frontImage?.url ? (
+                        {project.thumbnailImage?.url ? (
                           <img
-                            src={project.frontImage.url}
+                            src={project.thumbnailImage.url}
                             alt={project.projectName}
                             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                           />
