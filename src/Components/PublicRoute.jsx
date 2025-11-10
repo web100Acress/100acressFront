@@ -6,6 +6,12 @@ const PublicRoute = () => {
     const location = useLocation();
     const path = location.pathname || "";
     let hideNavbar = false;
+    
+    // Hide navbar for contact card routes (/hi/:slug)
+    if (path.startsWith('/hi/')) {
+      hideNavbar = true;
+    }
+    
     if (!hideNavbar) {
       const segments = path.split("/").filter(Boolean);
       const isSingleSlugRoot = segments.length === 1;
