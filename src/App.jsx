@@ -18,6 +18,7 @@ import LoadingSpinner from "./Components/LoadingSpinner";
 import ErrorBoundary from "./Components/ErrorBoundary";
 import LoginForm from "./Resister/LoginForm";
 import AuthModal from "./Resister/AuthModal";
+
 // import ConfettiAllCorners from "./Components/ConfettiAllCorners"; 
 
 // Lazy load all main page components
@@ -116,10 +117,16 @@ const LocationIntelligence = lazy(() => import("./Insight/pages/LocationIntellig
 const InvestmentInsights = lazy(() => import("./Insight/pages/InvestmentInsights"));
 const LoanEligibility = lazy(() => import("./Insight/pages/LoanEligibility"));
 
+// Contact Card components
+const ContactCard = lazy(() => import("./Components/ContactCard/ContactCard"));
+const ModernContactCard = lazy(() => import("./Components/ContactCard/ModernContactCard"));
+const ContactCardLayout = lazy(() => import("./Components/Layout/ContactCardLayout"));
+
 // Admin components (already lazy loaded)
 const Addnew = lazy(() => import("./AdminPage/Addnew"));
-const Adminproperty = lazy(() => import("./AdminPage/Adminproperty"));
-const Dashboard = lazy(() => import("./AdminPage/Dashboard"));
+const InsertProject = lazy(() => import("./AdminPage/InsertProject"));
+const AdminDashboard = lazy(() => import("./AdminPage/AdminDashboard"));
+const ContactCardManagement = lazy(() => import("./AdminPage/ContactCardManagement"));
 const Blog = lazy(() => import("./AdminPage/Blog"));
 const EditProject = lazy(() => import("./AdminPage/EditProject"));
 const Enquiries = lazy(() => import("./AdminPage/Enquiries"));
@@ -156,8 +163,8 @@ const CareerEdit = lazy(() => import("./Hr/CareerEdit"));
 const JobPostingView = lazy(() => import("./Hr/JobPostingView"));
 const JobApplications = lazy(() => import("./Hr/JobApplications"));
 const JobPostingEdit = lazy(() => import("./Hr/JobPostingEdit"));
-const InsertProject = lazy(() => import("./AdminPage/InsertProject"));
 const AllListedProperties = lazy(() => import("./AdminPage/AllListedProperties"));
+const Adminproperty = lazy(() => import("./AdminPage/Adminproperty"));
 const BlogViewAdmin = lazy(() => import("./AdminPage/BlogViewAdmin"));
 // const BlogEnquiries = lazy(() => import("./AdminPage/BlogEnquiries"));
 const OtherEnquiries = lazy(() => import("./AdminPage/OtherEnquiries"));
@@ -166,7 +173,6 @@ const BlogManagement = lazy(() => import("./Components/Blog_Components/BlogManag
 const BlogDashboard = lazy(() => import("./Components/Blog_Components/BlogDashboard"));
 const DraftManagement = lazy(() => import("./Components/Blog_Components/DraftManagement"));
 const BlogManagementSidebar = lazy(() => import("./Components/Blog_Components/BlogManagementSidebar"));
-const AdminDashboard = lazy(() => import("./AdminPage/AdminDashboard"));
 const ShortsSettings = lazy(() => import("./AdminPage/ShortsSettings"));
 const BannerManagement = lazy(() => import("./AdminPage/BannerManagement"));
 const UnifiedBannerManagement = lazy(() => import("./AdminPage/UnifiedBannerManagement"));
@@ -218,7 +224,7 @@ function App() {
   // Consider dynamic project pages like '/experion-the-trillion/' etc. (single segment with trailing slash)
   const singleSegment = /^\/[A-Za-z0-9-]+\/?$/.test(currentPath);
   const blockedPrefixes = [
-    'blog', 'auth', 'projects', 'project', 'property', 'property-types', 'loan', 'contact-us', 'userdashboard', 'admin', 'emi-calculator', 'postproperty', 'news-and-articals', 'searchdata', 'developers', 'privacy-policy', 'terms-and-conditions', 'qr-generator'
+    'blog', 'auth', 'projects', 'project', 'property', 'property-types', 'loan', 'contact-us', 'userdashboard', 'admin', 'emi-calculator', 'postproperty', 'news-and-articals', 'searchdata', 'developers', 'privacy-policy', 'terms-and-conditions', 'qr-generator', 'hi'
   ];
   const hasBlockedPrefix = blockedPrefixes.some((p) => currentPath.startsWith(`/${p}`));
   const isProjectPage = singleSegment && !hasBlockedPrefix && currentPath !== '/';
@@ -406,8 +412,14 @@ function App() {
                       <Route path="/projects-in-:citySlug/" element={<CityProjectsGlobal />} />
                       <Route path="/project-in-:citySlug/" element={<CityProjectsGlobal />} />
                       <Route path="/projects-in-pushkar/" element={<CityProjectsGlobal />} />
-                  <Route path="/qr-generator" element={<QRGeneratorPage />} />
+                      <Route path="/qr-generator" element={<QRGeneratorPage />} />
                       <Route path="/emi-calculator/" element={<EMICalculatorPage />} />
+                      {/* Contact Card Route - Modern Design */}
+                      <Route path="/hi/:slug" element={
+                        <LazyLoad>
+                          <ModernContactCard />
+                        </LazyLoad>
+                      } />
                       {/* Analytics (public) */}
                       <Route path="/property-market-trends/" element={<AnalyticsHome />} />
                       <Route path="/analytics/price-trends" element={<PriceTrends />} />
@@ -645,6 +657,7 @@ function App() {
                       <Route path="jobposting" element={<LazyLoad><AdminJobPosting /></LazyLoad>} />
                       <Route path="jobposting/view/:id" element={<LazyLoad><AdminJobPostingView /></LazyLoad>} />
                       <Route path="jobposting/edit/:id" element={<LazyLoad><AdminJobPostingEdit /></LazyLoad>} />
+                      <Route path="contact-cards" element={<LazyLoad><ContactCardManagement /></LazyLoad>} />
                       </Route>
 
                     {/* HR Department Routing */}

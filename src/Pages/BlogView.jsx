@@ -39,11 +39,6 @@ const BlogView = () => {
   const { id, slug } = useParams();
   const location = useLocation();
 
-  // Brand colors
-  const BRAND_RED = '#b8333a';
-  const DARK_TEXT = '#333';
-  const TAGLINE = "Insights, Updates, and Stories from Gurgaon's Real Estate World";
-
   const [buttonText, setButtonText] = useState("Submit");
   const [responseMessage, setResponseMessage] = useState("");
   const [blogQuery, setBlogQuery] = useState({
@@ -62,18 +57,6 @@ const BlogView = () => {
   const [tocItems, setTocItems] = useState([]);
   const [activeTocId, setActiveTocId] = useState('');
   const [showToc, setShowToc] = useState(true);
-  // Toggle sidebar sections
-  const toggleSidebarSection = (section, e) => {
-    if (e) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
-    setSidebarSections(prev => ({
-      ...prev,
-      [section]: !prev[section]
-    }));
-  };
-
   // Sidebar collapsible sections
   const [sidebarSections, setSidebarSections] = useState({
     enquiry: true,
@@ -914,6 +897,20 @@ const BlogView = () => {
     }
   };
 
+  // Toggle sidebar sections
+  const toggleSidebarSection = (section) => {
+    setSidebarSections(prev => ({
+      ...prev,
+      [section]: !prev[section]
+    }));
+  };
+
+  // Brand colors
+  const BRAND_RED = '#b8333a';
+  const DARK_TEXT = '#333';
+  const TAGLINE = "Insights, Updates, and Stories from Gurgaon’s Real Estate World";
+  
+
   // Canonical URL: prefer configured domain; include ?id= when present to avoid empty blog cases
   const preferredDomain = (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_SITE_URL)
     || (typeof window !== 'undefined' && window.location && window.location.origin)
@@ -1388,47 +1385,86 @@ const BlogView = () => {
 
               {/* 100acress Recommended Projects Section */}
               {spotlightProjects.length > 0 && (
-                <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+                <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden relative z-10">
                   <button
-                    onClick={(e) => toggleSidebarSection('popularProjects', e)}
-                    className="w-full px-4 py-3 flex items-center justify-between bg-gradient-to-r from-red-500 to-red-600 text-white font-bold hover:from-red-600 hover:to-red-700 transition-all"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      toggleSidebarSection('popularProjects');
+                    }}
+                    className="w-full px-6 py-4 flex items-center justify-between bg-gradient-to-r from-red-500 to-red-600 text-white font-bold hover:from-red-600 hover:to-red-700 transition-all focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 z-20 relative"
                     style={{ fontFamily: "'Poppins', sans-serif" }}
                   >
                     <span>100acress Recommended</span>
                     {sidebarSections.popularProjects ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
                   </button>
                   {sidebarSections.popularProjects && (
-                    <div className="p-4 space-y-3 max-h-96 overflow-y-auto custom-scrollbar">
-                      {spotlightProjects.map((p, idx) => {
-                        const name = p?.projectName || p?.name || p?.title || 'Project';
-                        const img = pickProjectImage(p);
-                        return (
-                          <div
-                            key={idx}
-                            className="group flex items-center gap-3 p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-red-50 hover:shadow-md transition-all duration-300"
-                            onClick={() => navigateProject(p)}
-                            role="button"
-                            tabIndex={0}
-                            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); navigateProject(p); } }}
-                          >
-                            <img
-                              src={img || FALLBACK_IMG}
-                              className="w-16 h-16 rounded-lg object-cover flex-shrink-0 shadow-sm"
-                              alt={name}
-                              onError={onImgError}
-                              referrerPolicy="no-referrer"
-                            />
-                            <div className="flex-1 min-w-0">
-                              <h4 className="font-semibold text-gray-900 group-hover:text-red-600 transition-colors line-clamp-2 text-sm">
-                                {name}
-                              </h4>
-                              {(p?.location || p?.city) && (
-                                <p className="text-xs text-gray-500 mt-1">{p.location || p.city}</p>
-                              )}
+                    <div className="relative">
+                      <div 
+                        className="p-4 space-y-3 max-h-[400px] overflow-y-auto overflow-x-hidden custom-scrollbar"
+                        style={{
+                          scrollbarWidth: 'thin',
+                          scrollbarColor: '#ef4444 #f3f4f6',
+                          msOverflowStyle: 'none',
+                        }}
+                      >
+                        <style jsx>{`
+                          .custom-scrollbar::-webkit-scrollbar {
+                            width: 4px;
+                            height: 4px;
+                          }
+                          .custom-scrollbar::-webkit-scrollbar-track {
+                            background: #f3f4f6;
+                            border-radius: 10px;
+                          }
+                          .custom-scrollbar::-webkit-scrollbar-thumb {
+                            background-color: #ef4444;
+                            border-radius: 10px;
+                          }
+                        `}</style>
+                        {spotlightProjects.map((p, idx) => {
+                          const name = p?.projectName || p?.name || p?.title || 'Project';
+                          const img = pickProjectImage(p);
+                          return (
+                            <div
+                              key={`project-${p.id || idx}`}
+                              className="group relative flex items-center gap-3 p-3 bg-gray-50 rounded-lg hover:bg-red-50 hover:shadow-md transition-all duration-300 cursor-pointer"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                navigateProject(p);
+                              }}
+                              role="button"
+                              tabIndex={0}
+                              onKeyDown={(e) => { 
+                                if (e.key === 'Enter' || e.key === ' ') { 
+                                  e.preventDefault(); 
+                                  e.stopPropagation();
+                                  navigateProject(p); 
+                                } 
+                              }}
+                            >
+                              <div className="flex-shrink-0">
+                                <img
+                                  src={img || FALLBACK_IMG}
+                                  className="w-16 h-16 rounded-lg object-cover shadow-sm"
+                                  alt={name}
+                                  onError={onImgError}
+                                  referrerPolicy="no-referrer"
+                                />
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <h4 className="font-semibold text-gray-900 group-hover:text-red-600 transition-colors line-clamp-2 text-sm">
+                                  {name}
+                                </h4>
+                                {(p?.location || p?.city) && (
+                                  <p className="text-xs text-gray-500 mt-1 truncate">{p.location || p.city}</p>
+                                )}
+                              </div>
                             </div>
-                          </div>
-                        );
-                      })}
+                          );
+                        })}
+                      </div>
                     </div>
                   )}
                 </div>
