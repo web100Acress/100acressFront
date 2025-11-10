@@ -87,7 +87,7 @@ const MasterPlan = ({ projectName = "", masterPlanImage = null }) => {
         {/* uncomment this section to show additional info */}
       </div>
 
-      {/* Full Screen Modal */}
+      {/* Full Screegn Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-95 flex justify-center items-center z-50 p-4">
           <button

@@ -40,7 +40,7 @@ const AboutSection = ({ projectName, description, imageUrl, onShowCallback = () 
           <div className="absolute -inset-4 opacity-[0.03] hidden md:block"><div className="diamond-pattern"></div></div>
           {/* Soft Spotlight Effect */}
           <div className="absolute -top-6 left-0 w-72 h-72 bg-gradient-radial from-yellow-400/15 via-yellow-400/0 to-transparent rounded-full blur-3xl" />
-          {/* Thin golden diagonal borders */}
+          {/* Thin golden diagonal bborders */}
           <div className="pointer-events-none absolute -top-2 -left-6 w-2/3 h-px bg-gradient-to-r from-transparent via-yellow-400/70 to-transparent rotate-12" />
           <div className="pointer-events-none absolute -bottom-2 -right-6 w-2/3 h-px bg-gradient-to-r from-transparent via-yellow-400/70 to-transparent -rotate-12" />
           
