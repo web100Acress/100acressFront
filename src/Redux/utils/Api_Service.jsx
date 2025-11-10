@@ -578,11 +578,7 @@ const Api_service = () => {
           console.log('🔍 Dispatching maxestates action with data:', BuilderbyQuery);
           dispatch(maxestates(BuilderbyQuery));
           break;
-case 'Danube Properties':
-          console.log('🔍 Dispatching danube action with data:', BuilderbyQuery);
-          dispatch(danube(BuilderbyQuery));
-          break;
-case 'Danube Properties':
+        case 'Danube Properties':
           console.log('🔍 Dispatching danube action with data:', BuilderbyQuery);
           dispatch(danube(BuilderbyQuery));
           break;
@@ -776,7 +772,7 @@ case 'Danube Properties':
           }
           
           const response = await api.get(
-            `project?builderName=Shapoorji Pallonji&limit=${limit}`, 
+            `${API_ROUTES.projectsBase()}/projectsearch?builderName=Shapoorji Pallonji&limit=${limit}`, 
             { 
               timeout: 10000 // 10 second timeout
             }
