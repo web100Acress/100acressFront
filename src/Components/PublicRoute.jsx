@@ -6,6 +6,18 @@ const PublicRoute = () => {
     const location = useLocation();
     const path = location.pathname || "";
     let hideNavbar = false;
+    
+    // Hide navbar for Dubai pages (they have their own custom Header)
+    if (path.startsWith("/dubai/") || 
+        path.startsWith("/abu-dhabi/") || 
+        path.startsWith("/sharjah/") || 
+        path.startsWith("/ajman/") || 
+        path.startsWith("/ras-al-khaimah/") || 
+        path.startsWith("/fujairah/") || 
+        path.startsWith("/umm-al-quwain/")) {
+      hideNavbar = true;
+    }
+    
     if (!hideNavbar) {
       const segments = path.split("/").filter(Boolean);
       const isSingleSlugRoot = segments.length === 1;
