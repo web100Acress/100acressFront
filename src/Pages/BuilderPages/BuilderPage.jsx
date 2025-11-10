@@ -133,6 +133,13 @@ const BUILDER_INFO = {
     hq: "Gurugram, Haryana",
     website: "https://www.maxestates.com/",
   },
+  "danube-properties": {
+    about:
+      "Danube Properties is a leading real estate developer in Dubai, known for delivering affordable luxury residential and commercial projects. With a strong commitment to quality, innovation, and customer satisfaction, Danube has established itself as a trusted name in the UAE property market. Their developments feature modern architecture, premium amenities, and strategic locations across Dubai. Danube Properties focuses on creating value-driven homes that combine contemporary design with practical living spaces, making property ownership accessible to a wider audience while maintaining high standards of construction and timely delivery.",
+    founded: "2014",
+    hq: "Dubai, UAE",
+    website: "https://www.danubeproperties.com/",
+  },
 };
 
 // Map URL slugs to exact builder names as they appear in the database
@@ -159,7 +166,8 @@ const BUILDER_QUERIES = {
   'trump-towers': 'Trump Towers',
   'puri-developers': 'Puri Developers',
   'aarize-developers': 'Aarize Developers',
-  'max-estates': 'Max Estates'
+  'max-estates': 'Max Estates',
+  'danube-properties': 'Danube Properties'
 };
 
 // Canonical display names for builder brands (for titles/meta)
@@ -181,6 +189,7 @@ const DISPLAY_NAMES = {
   'smartworld-developers': 'Smartworld Developers',
   'central-park': 'Central Park',
   'max-estates': 'Max Estates',
+  'danube-properties': 'Danube Properties',
 };
 
 // Builder logos aligned with the grid in Builder.jsx
@@ -206,6 +215,9 @@ const BUILDER_LOGOS = {
   'trevoc-group': 'https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/trevoc.webp',
   'aarize-developers': 'https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/project/tmfm0mywshnqqnmz7j9x',
   'max-estates': 'https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/maxestate.webp',
+  'shapoorji-pallonji': '/Images/100acresslogo.png',
+  'satya-group': '/Images/100acresslogo.png',
+  'danube-properties': 'https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/dubai/dubai-devloper-logo/DANUBE.png',
 };
 
 // Sidebar component that stays fixed (sticky) on large screens
@@ -324,17 +336,14 @@ const BuilderPage = React.memo(() => {
     const [loading, setLoading] = useState(true);
     const [isSynced, setIsSynced] = useState(false);
     const [favoriteIds, setFavoriteIds] = useState([]);
-    const {getProjectbyBuilder, getPropertyOrder, fetchShapoorjiProjects} = Api_Service();
+    const {getProjectbyBuilder, getPropertyOrder} = Api_Service();
     
     // Fetch projects when component mounts or builderName changes
     useEffect(() => {
       const fetchProjects = async () => {
         try {
           setLoading(true);
-          if (builderName === 'shapoorji-pallonji') {
-            console.log('🔄 Fetching Shapoorji Pallonji projects...');
-            await fetchShapoorjiProjects(3);
-          } else if (query) {
+          if (query) {
             console.log(`🔄 Fetching projects for ${query}...`);
             await getProjectbyBuilder(query, 20);
           }
@@ -346,7 +355,8 @@ const BuilderPage = React.memo(() => {
       };
       
       fetchProjects();
-    }, [builderName, query, fetchShapoorjiProjects, getProjectbyBuilder]);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [builderName, query]);
     
     // Memoize sync function to prevent infinite re-renders
     const memoizedSyncProjectOrders = useCallback(() => {
@@ -384,6 +394,7 @@ const BuilderPage = React.memo(() => {
     const maxestates = useSelector(store => store?.builder?.maxestates);
     const shapoorjiBuilder = useSelector(store => store?.builder?.shapoorji);
     const satyaBuilder = useSelector(store => store?.builder?.satya);
+    const danubeBuilder = useSelector(store => store?.builder?.danube);
     
     // Get project order state from Redux store
     const customOrders = useSelector(store => store?.projectOrder?.customOrders);
@@ -413,7 +424,8 @@ const BuilderPage = React.memo(() => {
     'aarize-developers': aarize,
     'max-estates': maxestates,
     'shapoorji-pallonji': shapoorjiBuilder,
-    'satya-group': satyaBuilder
+    'satya-group': satyaBuilder,
+    'danube-properties': danubeBuilder
   };
   const builderProjects = buildersData[builderName] || [];
 
@@ -441,7 +453,8 @@ const BuilderPage = React.memo(() => {
     };
     run();
     return () => { cancelled = true; };
-  }, [query, getPropertyOrder]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [query]);
 
   // Apply Property Order if available, otherwise Project Order/Random
   const orderedProjects = useMemo(() => {
@@ -561,7 +574,10 @@ const BuilderPage = React.memo(() => {
         'trump-towers': 'Trump Towers',
         'puri-developers': 'Puri Constructions',
         'aarize-developers': 'Aarize Group',
-        'max-estates': 'Max Estates'
+        'max-estates': 'Max Estates',
+        'shapoorji-pallonji': 'Shapoorji Pallonji',
+        'satya-group': 'Satya Group',
+        'danube-properties': 'Danube Properties'
       };
 
       const queryValue = builderQueries[builderName.toLowerCase()];
@@ -569,17 +585,7 @@ const BuilderPage = React.memo(() => {
         setQuery(queryValue);
       }
     }
-  }, [builderName, query]);
-
-  useEffect(() => {
-    if (query) {
-      console.log('🔍 Fetching projects for builder:', query);
-      setLoading(true);
-      Promise.resolve(getProjectbyBuilder(query, 0)).finally(() => setLoading(false));
-    }
-  }, [query, getProjectbyBuilder]);
-
-  
+  }, [builderName]);
 
   // Sync project orders from server on component mount
   useEffect(() => {
@@ -615,11 +621,6 @@ const BuilderPage = React.memo(() => {
 
     return () => clearInterval(syncInterval);
   }, [memoizedSyncProjectOrders]);
-
-  // Force re-render when Redux state changes
-  useEffect(() => {
-    console.log('🔍 BuilderPage re-rendering due to Redux state change');
-  }, [customOrders, buildersWithCustomOrder, randomSeeds]);
 
   // UI states for new page (must be declared before any conditional return to keep hooks order stable)
   const [view, setView] = useState('grid');
