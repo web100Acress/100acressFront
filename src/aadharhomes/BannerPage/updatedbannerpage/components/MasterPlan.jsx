@@ -45,8 +45,8 @@ const MasterPlan = ({ projectName = "", masterPlanImage = null }) => {
           <div className="w-16 h-0.5 bg-gradient-to-r from-amber-600 via-amber-500 to-amber-400 rounded-full mx-auto"></div>
         </div>
 
-        {/* Master Plan Image - Full Width */}
-        <div className="w-full cursor-pointer" onClick={openModal}>
+        {/* Master Plan Image - Contained on desktop, full width on mobile */}
+        <div className="w-full px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto cursor-pointer" onClick={openModal}>
           <div className="relative w-full">
             <img
               src={masterPlanImage.url}
