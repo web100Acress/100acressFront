@@ -32,6 +32,22 @@ function FinalNavBar() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
+  // Listen for global events to open/close auth modal
+  useEffect(() => {
+    const openListener = () => setShowAuth(true);
+    const closeListener = () => setShowAuth(false);
+    try {
+      window.addEventListener('showLoginModal', openListener);
+      window.addEventListener('closeAuthModal', closeListener);
+    } catch (_) {}
+    return () => {
+      try {
+        window.removeEventListener('showLoginModal', openListener);
+        window.removeEventListener('closeAuthModal', closeListener);
+      } catch (_) {}
+    };
+  }, []);
+
   return (
     <Wrapper className='section' data-scrolled={isScrolled ? '1' : '0'}>
        
