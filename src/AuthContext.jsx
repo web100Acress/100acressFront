@@ -215,6 +215,13 @@ export const AuthProvider = ({ children }) => {
         }
       }
 
+      // Close any open auth modal before navigating (hide register UI)
+      try {
+        if (typeof window !== 'undefined' && window.dispatchEvent) {
+          window.dispatchEvent(new CustomEvent('closeAuthModal'));
+        }
+      } catch (_) {}
+
       // Navigate to OTP verification page
       history("/auth/signup/otp-verification/");
       
