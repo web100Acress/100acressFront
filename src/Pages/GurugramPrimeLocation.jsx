@@ -90,20 +90,38 @@ const GurugramPrimeLocation = () => {
   return (
     <div>
       <Helmet>
-        <title>{`Find Top Properties in ${result} - 100acress`}</title>
+        <title>
+          {location === 'dwarka-expressway'
+            ? 'New Projects in Dwarka Expressway, Gurugram – Modern Living by 100acress'
+            : `Find Top Properties in ${result} - 100acress`}
+        </title>
         <meta
           name="description"
-          content={`Looking for property in ${result}, Gurugram. Browse 100 acres for prime real estate options, offering unmatched amenities and perfect locations`}
+          content={location === 'dwarka-expressway'
+            ? 'Search projects in Dwarka Expressway, Gurugram at 100acress for Luxury Residential Apartments, Commercial Space, and SCO opportunities in key locations.'
+            : `Looking for property in ${result}, Gurugram. Browse 100 acres for prime real estate options, offering unmatched amenities and perfect locations`}
+        />
+        <meta
+          name="keywords"
+          content={location === 'dwarka-expressway'
+            ? 'Projects in Dwarka Expressway, Gurugram'
+            : `Properties in ${result}`}
         />
         <meta property="og:title" content={`Find Top Properties in ${result} - 100acress`} />
         <meta property="og:site_name" content="100acress" />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/logo.webp" />
         <meta property="og:url" content={`https://www.100acress.com/property-in-gurugram/${location}/`} />
-        <meta property="og:description" content={`Looking for property in ${result}, Gurugram. Browse 100 acres for prime real estate options, offering unmatched amenities and perfect locations`} />
-        <meta property="og:keywords" content={`Properties in ${result}`} />
+        <meta property="og:description" content={location === 'dwarka-expressway'
+          ? 'Search projects in Dwarka Expressway, Gurugram at 100acress for Luxury Residential Apartments, Commercial Space, and SCO opportunities in key locations.'
+          : `Looking for property in ${result}, Gurugram. Browse 100 acres for prime real estate options, offering unmatched amenities and perfect locations`} />
+        <meta property="og:keywords" content={location === 'dwarka-expressway'
+          ? 'Projects in Dwarka Expressway, Gurugram'
+          : `Properties in ${result}`} />
         <meta name="twitter:title" content={`Find Top Properties in ${result} - 100acress`} />
-        <meta name="twitter:description" content={`Looking for property in ${result}, Gurugram. Browse 100 acres for prime real estate options, offering unmatched amenities and perfect locations`} />
+        <meta name="twitter:description" content={location === 'dwarka-expressway'
+          ? 'Search projects in Dwarka Expressway, Gurugram at 100acress for Luxury Residential Apartments, Commercial Space, and SCO opportunities in key locations.'
+          : `Looking for property in ${result}, Gurugram. Browse 100 acres for prime real estate options, offering unmatched amenities and perfect locations`} />
         <meta name="twitter:url" content="https://twitter.com/100acressdotcom" />
         <meta name="twitter:card" content="summary" />
 
@@ -112,16 +130,18 @@ const GurugramPrimeLocation = () => {
           href={`https://www.100acress.com/property-in-gurugram/${location}/`}
         />
       </Helmet>
-      <section className="flex flex-col items-center pt-2 mt-14">
+      <section className="flex flex-col items-center pt-8 mt-24 md:mt-24 lg:mt-2">
         <h1 className="mb-3 text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold">
           Projects in {result}, Gurugram
         </h1>
 
         <h2 className="text-sm text-center sm:text-xl md:text-xl lg:text-sm font-normal lg:mx-20 md:mx-10 mx-5 sm:mx-4">
-          Looking for prime Real Estate in Gurgaon? Explore our exquisite
+          {location === 'dwarka-expressway'
+            ? 'Looking for your next investment or dream home in Gurgaon? At 100acress, we bring you a curated selection of projects in Dwarka Expressway, Gurugram, blending luxury, location, and lifestyle. Explore an impressive range of Residential Apartments, Commercial Space, and SCO developments designed to match every need and aspiration.'
+            : <>Looking for prime Real Estate in Gurgaon? Explore our exquisite
           collection of Residential Apartments, Commercial Space, and SCO in{" "}
           {result} Gurugram, offering unparalleled luxury and comfort. Find your
-          dream property in Gurgaon today!
+          dream property in Gurgaon today!</>}
         </h2>
         <div className="grid max-w-md grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
           {Primelocation.map((item, index) => {
