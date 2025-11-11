@@ -151,10 +151,10 @@ const ViewPropertyAdmin = () => {
         return;
       }
 
-      // Call the backend endpoint that deletes the user and their properties from DB
+      // Delete from PostProperty users collection only (do not match by email/mobile)
       let deleteSuccess = false;
       try {
-        const res = await api.delete(`/user/${id}`, {
+        const res = await api.delete(`/postPerson/deleteUser/${id}`, {
           headers: { 'Content-Type': 'application/json' },
           timeout: 15000,
         });
