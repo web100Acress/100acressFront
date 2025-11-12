@@ -22,6 +22,7 @@ const Projects = () => {
   const [filterHasMobile, setFilterHasMobile] = useState("");
   const [filterHasPayment, setFilterHasPayment] = useState("");
   const [filterProjectOverview, setFilterProjectOverview] = useState("");
+  const [filterYoutubeVideo, setFilterYoutubeVideo] = useState("");
 
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 

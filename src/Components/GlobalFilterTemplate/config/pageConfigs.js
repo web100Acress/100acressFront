@@ -322,6 +322,12 @@ export const cityConfigs = {
     description: "Value, Location, and Comfort — Discover premium projects in prime Alwar locations.",
     badgeColor: "bg-yellow-500",
     badgeText: "Alwar"
+  },
+  pune: {
+    title: "Best Projects in Pune",
+    description: "Value, Location, and Comfort — Discover premium projects in prime Pune locations.",
+    badgeColor: "bg-purple-500",
+    badgeText: "Pune"
   }
 };
 

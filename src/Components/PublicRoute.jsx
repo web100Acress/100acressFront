@@ -44,6 +44,7 @@ const PublicRoute = () => {
         "project-in-mumbai",
         "projects-in-dubai",
         "projects-in-pushkar",
+        "project-in-pune",
         "qr-generator",
         "project-in-underconstruction",
         "projects-in-newlaunch",
