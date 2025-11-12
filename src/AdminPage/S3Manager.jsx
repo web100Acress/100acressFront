@@ -10,7 +10,8 @@ import {
   FaSearch,
   FaFilter,
   FaPlus,
-  FaEdit
+  FaEdit,
+  FaCopy
 } from 'react-icons/fa';
 import { MdCloudUpload, MdRefresh } from 'react-icons/md';
 import { toast } from 'react-toastify';
@@ -830,6 +831,16 @@ const S3Manager = () => {
                             title="View"
                           >
                             <FaEye />
+                          </button>
+                          <button
+                            onClick={() => {
+                              navigator.clipboard.writeText(image.url);
+                              toast.success('Image link copied to clipboard!');
+                            }}
+                            className="p-2 bg-purple-600 text-white rounded-full hover:bg-purple-700 transition-colors"
+                            title="Copy Link"
+                          >
+                            <FaCopy />
                           </button>
                           <button
                             onClick={() => {
