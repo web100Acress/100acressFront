@@ -22,6 +22,7 @@ const Projects = () => {
   const [filterHasMobile, setFilterHasMobile] = useState("");
   const [filterHasPayment, setFilterHasPayment] = useState("");
   const [filterProjectOverview, setFilterProjectOverview] = useState("");
+  const [filterYoutubeVideo, setFilterYoutubeVideo] = useState("");
 
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
@@ -262,6 +263,30 @@ const Projects = () => {
     ];
   }, [viewAll, isHighValueProject]);
 
+  // YouTube video options with counts
+  const youtubeVideoOptions = useMemo(() => {
+    if (!viewAll || viewAll.length === 0) {
+      return [];
+    }
+
+    let withYoutube = 0;
+    let withoutYoutube = 0;
+
+    viewAll.forEach(project => {
+      const hasYoutubeVideo = Boolean((project?.youtubeVideoUrl ?? "").toString().trim());
+      if (hasYoutubeVideo) {
+        withYoutube++;
+      } else {
+        withoutYoutube++;
+      }
+    });
+
+    return [
+      { value: 'with', label: `With (${withYoutube})` },
+      { value: 'without', label: `Without (${withoutYoutube})` }
+    ];
+  }, [viewAll]);
+
   // Apply combined filters
   const filteredProjects = viewAll.filter((item) => {
     const searchTermLower = (searchTerm || "").toLowerCase();
@@ -320,7 +345,11 @@ const Projects = () => {
       }
     }
 
-    return matchesSearch && matchesType && matchesCity && matchesAddress && matchesBuilder && matchesStatus && matchesState && matchesMobile && matchesPayment && matchesOverview;
+    // YouTube video filtering logic
+    const hasYoutubeVideo = Boolean((item?.youtubeVideoUrl ?? "").toString().trim());
+    const matchesYoutubeVideo = !filterYoutubeVideo || (filterYoutubeVideo === "with" ? hasYoutubeVideo : !hasYoutubeVideo);
+
+    return matchesSearch && matchesType && matchesCity && matchesAddress && matchesBuilder && matchesStatus && matchesState && matchesMobile && matchesPayment && matchesOverview && matchesYoutubeVideo;
   });
   const indexOfLastRow = currentPage * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
@@ -386,6 +415,7 @@ const Projects = () => {
     setFilterHasMobile("");
     setFilterHasPayment("");
     setFilterProjectOverview("");
+    setFilterYoutubeVideo("");
     setCurrentPage(1);
   };
 
@@ -488,6 +518,17 @@ const Projects = () => {
               <option value="">Project Overview</option>
               {projectOverviewOptions.map(opt => (
                 <option key={opt.value} value={opt.value}>{opt.label}</option>
+              ))}
+            </select>
+
+            <select
+              className="filter-select"
+              value={filterYoutubeVideo}
+              onChange={(e) => { setFilterYoutubeVideo(e.target.value); setCurrentPage(1); }}
+            >
+              <option value="">YouTube Video: All</option>
+              {youtubeVideoOptions.map(opt => (
+                <option key={opt.value} value={opt.value}>YouTube Video: {opt.label}</option>
               ))}
             </select>
           </div>

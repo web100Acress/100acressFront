@@ -408,6 +408,7 @@ function App() {
                       <Route path="/project-in-ayodhya/" element={<CityProjectsGlobal />} />
                       <Route path="/project-in-mumbai/" element={<CityProjectsGlobal />} />
                       <Route path="/projects-in-dubai/" element={<CityProjectsGlobal />} />
+                      <Route path="/project-in-pune/" element={<CityProjectsGlobal />} />
                       {/* Dynamic city projects route (generic template). Keep after specific routes to avoid conflicts. */}
                       <Route path="/projects-in-:citySlug/" element={<CityProjectsGlobal />} />
                       <Route path="/project-in-:citySlug/" element={<CityProjectsGlobal />} />
