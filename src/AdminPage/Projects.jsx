@@ -263,6 +263,30 @@ const Projects = () => {
     ];
   }, [viewAll, isHighValueProject]);
 
+  // YouTube video options with counts
+  const youtubeVideoOptions = useMemo(() => {
+    if (!viewAll || viewAll.length === 0) {
+      return [];
+    }
+
+    let withYoutube = 0;
+    let withoutYoutube = 0;
+
+    viewAll.forEach(project => {
+      const hasYoutubeVideo = Boolean((project?.youtubeVideoUrl ?? "").toString().trim());
+      if (hasYoutubeVideo) {
+        withYoutube++;
+      } else {
+        withoutYoutube++;
+      }
+    });
+
+    return [
+      { value: 'with', label: `With (${withYoutube})` },
+      { value: 'without', label: `Without (${withoutYoutube})` }
+    ];
+  }, [viewAll]);
+
   // Apply combined filters
   const filteredProjects = viewAll.filter((item) => {
     const searchTermLower = (searchTerm || "").toLowerCase();
@@ -503,8 +527,9 @@ const Projects = () => {
               onChange={(e) => { setFilterYoutubeVideo(e.target.value); setCurrentPage(1); }}
             >
               <option value="">YouTube Video: All</option>
-              <option value="with">YouTube Video: With</option>
-              <option value="without">YouTube Video: Without</option>
+              {youtubeVideoOptions.map(opt => (
+                <option key={opt.value} value={opt.value}>YouTube Video: {opt.label}</option>
+              ))}
             </select>
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
