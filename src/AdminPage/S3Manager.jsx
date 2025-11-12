@@ -817,9 +817,10 @@ const S3Manager = () => {
                   onChange={(e) => setSelectedFolder(e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                 >
+                  <option value="">-- Select a folder --</option>
                   {folders.map((folder, index) => (
-                    <option key={index} value={folder}>
-                      {folder}
+                    <option key={index} value={folder.path || folder.name}>
+                      {folder.name || folder}
                     </option>
                   ))}
                 </select>
