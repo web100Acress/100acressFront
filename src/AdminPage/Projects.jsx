@@ -321,7 +321,11 @@ const Projects = () => {
       }
     }
 
-    return matchesSearch && matchesType && matchesCity && matchesAddress && matchesBuilder && matchesStatus && matchesState && matchesMobile && matchesPayment && matchesOverview;
+    // YouTube video filtering logic
+    const hasYoutubeVideo = Boolean((item?.youtubeVideoUrl ?? "").toString().trim());
+    const matchesYoutubeVideo = !filterYoutubeVideo || (filterYoutubeVideo === "with" ? hasYoutubeVideo : !hasYoutubeVideo);
+
+    return matchesSearch && matchesType && matchesCity && matchesAddress && matchesBuilder && matchesStatus && matchesState && matchesMobile && matchesPayment && matchesOverview && matchesYoutubeVideo;
   });
   const indexOfLastRow = currentPage * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
@@ -387,6 +391,7 @@ const Projects = () => {
     setFilterHasMobile("");
     setFilterHasPayment("");
     setFilterProjectOverview("");
+    setFilterYoutubeVideo("");
     setCurrentPage(1);
   };
 
@@ -490,6 +495,16 @@ const Projects = () => {
               {projectOverviewOptions.map(opt => (
                 <option key={opt.value} value={opt.value}>{opt.label}</option>
               ))}
+            </select>
+
+            <select
+              className="filter-select"
+              value={filterYoutubeVideo}
+              onChange={(e) => { setFilterYoutubeVideo(e.target.value); setCurrentPage(1); }}
+            >
+              <option value="">YouTube Video: All</option>
+              <option value="with">YouTube Video: With</option>
+              <option value="without">YouTube Video: Without</option>
             </select>
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
