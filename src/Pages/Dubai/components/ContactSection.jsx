@@ -1,7 +1,7 @@
 import { Button } from "../../../Components/ui/button";
-import { Input } from "../../../Components/ui/input";
-import { Textarea } from "../../../Components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../Components/ui/select";
+import { Input } from "../../../Components/ui/Input";
+import { Textarea } from "../../../Components/ui/Textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../Components/ui/Select";
 import { Phone, Mail, MapPin, Send } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";

@@ -7,14 +7,8 @@ const PublicRoute = () => {
     const path = location.pathname || "";
     let hideNavbar = false;
     
-    // Hide navbar for Dubai pages (they have their own custom Header)
-    if (path.startsWith("/dubai/") || 
-        path.startsWith("/abu-dhabi/") || 
-        path.startsWith("/sharjah/") || 
-        path.startsWith("/ajman/") || 
-        path.startsWith("/ras-al-khaimah/") || 
-        path.startsWith("/fujairah/") || 
-        path.startsWith("/umm-al-quwain/")) {
+    // Hide navbar for contact card routes (/hi/:slug)
+    if (path.startsWith('/hi/')) {
       hideNavbar = true;
     }
     

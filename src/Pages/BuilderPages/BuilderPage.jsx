@@ -17,6 +17,20 @@ import CompareBar from "../DeveloperPage/CompareBar";
 // Lightweight builder information for sidebar display
 // Extend freely as needed; safe fallbacks are provided if a builder key is missing
 const BUILDER_INFO = {
+  "shapoorji-pallonji": {
+    about:
+      "Shapoorji Pallonji Real Estate is the real estate development arm of the 150+ years old Shapoorji Pallonji Group. With a strong legacy of excellence, they are known for their premium residential and commercial projects across India. Their developments are characterized by innovative design, superior construction quality, and sustainable practices. Shapoorji Pallonji has a strong presence in major Indian cities including Mumbai, Pune, Bengaluru, Gurgaon, and Chennai, delivering landmark projects that redefine urban living.",
+    founded: "1865",
+    hq: "Mumbai, Maharashtra",
+    website: "https://www.shapoorjirealestate.com/",
+  },
+  "satya-group": {
+    about:
+      "Satya Group is a leading real estate developer known for its innovative and sustainable residential and commercial projects. With a strong focus on quality construction and timely delivery, Satya Group has established itself as a trusted name in the real estate sector. Their projects are designed to offer modern amenities, green spaces, and a premium lifestyle. The group has a significant presence in Gurgaon and other key locations, catering to the needs of homebuyers looking for quality living spaces with excellent connectivity and world-class facilities.",
+    founded: "1986",
+    hq: "Gurugram, Haryana",
+    website: "https://www.satyagroup.in/",
+  },
   "godrej-properties": {
     about:
       "Godrej is one of the most trusted real estate developers in India. With more than 120 years of experience, they build modern apartments, flats, and homes that give comfort, safety, and a better lifestyle. Their projects are in Gurgaon, Delhi NCR, Mumbai, Pune, and other cities. They focus on using good materials and making sure homes are ready on time. Whether it’s affordable housing or luxury homes, Godrej ensures excellent connectivity, world-class amenities, and a clean environment. Choosing Godrej means you get quality homes that are perfect for families and investors looking for residential projects with long-term value.",
@@ -119,10 +133,47 @@ const BUILDER_INFO = {
     hq: "Gurugram, Haryana",
     website: "https://www.maxestates.com/",
   },
+  "danube-properties": {
+    about:
+      "Danube Properties is a leading real estate developer in Dubai, known for delivering affordable luxury residential and commercial projects. With a strong commitment to quality, innovation, and customer satisfaction, Danube has established itself as a trusted name in the UAE property market. Their developments feature modern architecture, premium amenities, and strategic locations across Dubai. Danube Properties focuses on creating value-driven homes that combine contemporary design with practical living spaces, making property ownership accessible to a wider audience while maintaining high standards of construction and timely delivery.",
+    founded: "2014",
+    hq: "Dubai, UAE",
+    website: "https://www.danubeproperties.com/",
+  },
+};
+
+// Map URL slugs to exact builder names as they appear in the database
+const BUILDER_QUERIES = {
+  'shapoorji-pallonji': 'Shapoorji Pallonji',
+  'satya-group': 'Satya Group',
+  'signature-global': 'Signature Global',
+  'm3m-india': 'M3M India',
+  'dlf-homes': 'DLF',
+  'experion-developers': 'Experion Developers',
+  'elan-group': 'Elan Group',
+  'bptp-limited': 'BPTP',
+  'adani-realty': 'Adani Realty',
+  'smartworld-developers': 'Smartworld Developers',
+  'trevoc-group': 'Trevoc Group',
+  'indiabulls-real-estate': 'Indiabulls Real Estate',
+  'central-park': 'Central Park',
+  'emaar-india': 'Emaar India',
+  'godrej-properties': 'Godrej Properties',
+  'whiteland': 'Whiteland',
+  'aipl': 'AIPL',
+  'birla-estate': 'Birla Estate',
+  'sobha-developers': 'Sobha Developers',
+  'trump-towers': 'Trump Towers',
+  'puri-developers': 'Puri Developers',
+  'aarize-developers': 'Aarize Developers',
+  'max-estates': 'Max Estates',
+  'danube-properties': 'Danube Properties'
 };
 
 // Canonical display names for builder brands (for titles/meta)
 const DISPLAY_NAMES = {
+  'shapoorji-pallonji': 'Shapoorji Pallonji',
+  'satya-group': 'Satya Group',
   'adani-realty': 'Adani Realty',
   'm3m-india': 'M3M India',
   'emaar-india': 'Emaar India',
@@ -138,6 +189,7 @@ const DISPLAY_NAMES = {
   'smartworld-developers': 'Smartworld Developers',
   'central-park': 'Central Park',
   'max-estates': 'Max Estates',
+  'danube-properties': 'Danube Properties',
 };
 
 // Builder logos aligned with the grid in Builder.jsx
@@ -163,6 +215,9 @@ const BUILDER_LOGOS = {
   'trevoc-group': 'https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/trevoc.webp',
   'aarize-developers': 'https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/project/tmfm0mywshnqqnmz7j9x',
   'max-estates': 'https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/maxestate.webp',
+  'shapoorji-pallonji': '/Images/100acresslogo.png',
+  'satya-group': '/Images/100acresslogo.png',
+  'danube-properties': 'https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/dubai/dubai-devloper-logo/DANUBE.png',
 };
 
 // Sidebar component that stays fixed (sticky) on large screens
@@ -275,11 +330,33 @@ const BuilderPage = React.memo(() => {
     
     // Extract builder name from URL params or pathname for direct routes like /max-estates/
     const builderName = paramBuilderName || location.pathname.replace(/^\/|\/$/g, '');
-    const [query, setQuery] = useState("");
+    
+    // Set the query to the exact builder name from the database
+    const [query, setQuery] = useState(BUILDER_QUERIES[builderName] || '');
     const [loading, setLoading] = useState(true);
     const [isSynced, setIsSynced] = useState(false);
     const [favoriteIds, setFavoriteIds] = useState([]);
     const {getProjectbyBuilder, getPropertyOrder} = Api_Service();
+    
+    // Fetch projects when component mounts or builderName changes
+    useEffect(() => {
+      const fetchProjects = async () => {
+        try {
+          setLoading(true);
+          if (query) {
+            console.log(`🔄 Fetching projects for ${query}...`);
+            await getProjectbyBuilder(query, 20);
+          }
+        } catch (error) {
+          console.error('❌ Error fetching projects:', error);
+        } finally {
+          setLoading(false);
+        }
+      };
+      
+      fetchProjects();
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [builderName, query]);
     
     // Memoize sync function to prevent infinite re-renders
     const memoizedSyncProjectOrders = useCallback(() => {
@@ -315,6 +392,9 @@ const BuilderPage = React.memo(() => {
     const puri = useSelector(store => store?.builder?.puri);
     const aarize = useSelector(store => store?.builder?.aarize);
     const maxestates = useSelector(store => store?.builder?.maxestates);
+    const shapoorjiBuilder = useSelector(store => store?.builder?.shapoorji);
+    const satyaBuilder = useSelector(store => store?.builder?.satya);
+    const danubeBuilder = useSelector(store => store?.builder?.danube);
     
     // Get project order state from Redux store
     const customOrders = useSelector(store => store?.projectOrder?.customOrders);
@@ -342,7 +422,10 @@ const BuilderPage = React.memo(() => {
     'trump-towers': trump,
     'puri-developers': puri,
     'aarize-developers': aarize,
-    'max-estates': maxestates
+    'max-estates': maxestates,
+    'shapoorji-pallonji': shapoorjiBuilder,
+    'satya-group': satyaBuilder,
+    'danube-properties': danubeBuilder
   };
   const builderProjects = buildersData[builderName] || [];
 
@@ -370,12 +453,13 @@ const BuilderPage = React.memo(() => {
     };
     run();
     return () => { cancelled = true; };
-  }, [query, getPropertyOrder]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [query]);
 
   // Apply Property Order if available, otherwise Project Order/Random
   const orderedProjects = useMemo(() => {
     // Important: use canonical query (e.g., 'Godrej Properties') as key for Redux order
-    const keyForOrder = query || builderName;
+    const keyForOrder = query || BUILDER_QUERIES[builderName] || builderName;
     const hasCustomOrderDefined = hasCustomOrder(keyForOrder, buildersWithCustomOrder);
     const customOrder = getCustomOrder(keyForOrder, customOrders);
     const randomSeed = getRandomSeed(keyForOrder, randomSeeds);
@@ -490,7 +574,10 @@ const BuilderPage = React.memo(() => {
         'trump-towers': 'Trump Towers',
         'puri-developers': 'Puri Constructions',
         'aarize-developers': 'Aarize Group',
-        'max-estates': 'Max Estates'
+        'max-estates': 'Max Estates',
+        'shapoorji-pallonji': 'Shapoorji Pallonji',
+        'satya-group': 'Satya Group',
+        'danube-properties': 'Danube Properties'
       };
 
       const queryValue = builderQueries[builderName.toLowerCase()];
@@ -498,17 +585,7 @@ const BuilderPage = React.memo(() => {
         setQuery(queryValue);
       }
     }
-  }, [builderName, query]);
-
-  useEffect(() => {
-    if (query) {
-      console.log('🔍 Fetching projects for builder:', query);
-      setLoading(true);
-      Promise.resolve(getProjectbyBuilder(query, 0)).finally(() => setLoading(false));
-    }
-  }, [query, getProjectbyBuilder]);
-
-  
+  }, [builderName]);
 
   // Sync project orders from server on component mount
   useEffect(() => {
@@ -544,11 +621,6 @@ const BuilderPage = React.memo(() => {
 
     return () => clearInterval(syncInterval);
   }, [memoizedSyncProjectOrders]);
-
-  // Force re-render when Redux state changes
-  useEffect(() => {
-    console.log('🔍 BuilderPage re-rendering due to Redux state change');
-  }, [customOrders, buildersWithCustomOrder, randomSeeds]);
 
   // UI states for new page (must be declared before any conditional return to keep hooks order stable)
   const [view, setView] = useState('grid');
