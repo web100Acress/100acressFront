@@ -129,19 +129,13 @@ const VideoSection = ({
                   {/* Play button */}
                   <div className="absolute inset-0 flex items-center justify-center">
                     <motion.div
-                      className="bg-red-600 hover:bg-red-700 rounded-full p-4 sm:p-6 shadow-2xl cursor-pointer transform transition-all duration-300 group-hover:scale-110 flex items-center justify-center"
+                      className="bg-red-600 hover:bg-red-700 rounded-full p-6 shadow-2xl cursor-pointer transform transition-all duration-300 group-hover:scale-110"
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.95 }}
-                      style={{
-                        width: '80px',
-                        height: '80px',
-                        minWidth: '80px',
-                        minHeight: '80px'
-                      }}
                     >
                       <svg 
-                        width="40" 
-                        height="40" 
+                        width="48" 
+                        height="48" 
                         viewBox="0 0 24 24" 
                         fill="white"
                         className="ml-1"
@@ -151,8 +145,8 @@ const VideoSection = ({
                     </motion.div>
                   </div>
 
-                  {/* Video title overlay - hidden on mobile */}
-                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent p-4 sm:p-8 hidden sm:block">
+                  {/* Video title overlay */}
+                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent p-8">
                     <motion.div
                       className="max-w-4xl mx-auto"
                       initial={{ opacity: 0, y: 20 }}

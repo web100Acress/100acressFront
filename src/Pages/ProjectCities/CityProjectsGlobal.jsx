@@ -30,8 +30,7 @@ const CITY_ALIASES = {
   karnal: "Karnal",
   goa: "Goa",
   pushkar: "Pushkar",
-  dubai: "Dubai",
-  pune: "Pune"
+  dubai: "Dubai"
 };
 
 const CityProjectsGlobal = () => {

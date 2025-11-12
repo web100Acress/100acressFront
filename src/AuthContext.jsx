@@ -196,39 +196,19 @@ export const AuthProvider = ({ children }) => {
         }
       } catch (_) { }
 
-      // Store email in localStorage for OTP verification
-      localStorage.setItem("userEmail", email);
-
       try {
         await api.post(`/postPerson/verifyEmail`, {
           email: email
         });
-        // OTP sent successfully
       } catch (verifyError) {
-        if (verifyError.response?.status === 409) {
-          // OTP already sent (409 Conflict) - this is fine, continue to OTP page
-          console.log("OTP already sent, proceeding to verification page");
-        } else {
-          // Other errors - still navigate to OTP page in case OTP was sent before error
-          console.error("Error sending OTP:", verifyError);
-          // Don't throw - allow user to proceed to OTP page anyway
+        if (verifyError.response?.status !== 409) {
+          throw verifyError;
         }
+        // If 409, OTP already sent, continue to OTP page
       }
 
-      // Close any open auth modal before navigating (hide register UI)
-      try {
-        if (typeof window !== 'undefined' && window.dispatchEvent) {
-          window.dispatchEvent(new CustomEvent('closeAuthModal'));
-        }
-      } catch (_) {}
-
-      // Navigate to OTP verification page
       history("/auth/signup/otp-verification/");
-      
-      // Reset form data after successful navigation
-      if (typeof resetData === 'function') {
-        resetData();
-      }
+      resetData();
 
     } catch (error) {
       console.error("Registration failed:", error);

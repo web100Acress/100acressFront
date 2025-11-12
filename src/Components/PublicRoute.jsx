@@ -7,8 +7,8 @@ const PublicRoute = () => {
     const path = location.pathname || "";
     let hideNavbar = false;
     
-    // Hide navbar for contact card routes (/hi/:slug)
-    if (path.startsWith('/hi/')) {
+    // Hide navbar for UAE pages (they have their own custom Header)
+    if (path.startsWith("/United-Arab-Emirates") || path.startsWith("/United-Arab-Emirates/")) {
       hideNavbar = true;
     }
     
@@ -44,7 +44,6 @@ const PublicRoute = () => {
         "project-in-mumbai",
         "projects-in-dubai",
         "projects-in-pushkar",
-        "project-in-pune",
         "qr-generator",
         "project-in-underconstruction",
         "projects-in-newlaunch",

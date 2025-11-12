@@ -241,12 +241,6 @@ export default function Navbar() {
         <path d="M2 20h20"/>
       </svg>
     ),
-    Pune: (
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M12 3l6 4v10l-6 4-6-4V7l6-4Z"/>
-        <path d="M2 20h20"/>
-      </svg>
-    ),
   };
 
   // Fast navigate helper for menu clicks
@@ -346,8 +340,7 @@ export default function Navbar() {
 
     { name: "Jalandhar", path: "/projects-in-jalandhar/" },
     { name: "Pushkar", path: "/projects-in-pushkar/" },
-    { name: "Dubai", path: "/projects-in-dubai/" },
-    { name: "Pune", path: "/project-in-pune/" },
+    { name: "Dubai", path: "/United-Arab-Emirates" },
   ];
   const [selectedCity, setSelectedCity] = useState(
     (typeof window !== 'undefined' && localStorage.getItem("selectedCity")) || ""
