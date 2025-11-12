@@ -58,8 +58,36 @@ const CommonProject = ({
       const without = list.filter((x) => x.id !== id);
       const entry = {
         id,
+        _id: item?._id,
         title: item?.projectName,
+        projectName: item?.projectName,
         url: item?.project_url ? `/${item.project_url}/` : undefined,
+        project_url: item?.project_url,
+        city: item?.city || item?.location,
+        location: item?.location,
+        // Image fields - all variations
+        thumbnailImage: item?.thumbnailImage,
+        thumbnail: item?.thumbnail,
+        frontImage: item?.frontImage,
+        front_image: item?.front_image,
+        cardImage: item?.cardImage,
+        bannerImage: item?.bannerImage,
+        image: item?.image,
+        img: item?.img,
+        images: item?.images,
+        gallery: item?.gallery,
+        cover: item?.cover,
+        coverImage: item?.coverImage,
+        photo: item?.photo,
+        picture: item?.picture,
+        // Price and details
+        priceText: item?.priceText,
+        minPrice: item?.minPrice,
+        maxPrice: item?.maxPrice,
+        price: item?.price,
+        beds: item?.beds || item?.bedrooms || item?.bhk,
+        baths: item?.baths || item?.bathrooms,
+        area: item?.area || item?.size || item?.superArea,
         ts: Date.now(),
       };
       const next = [entry, ...without].slice(0, 50);
