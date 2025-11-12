@@ -29,6 +29,9 @@ const S3Manager = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState('all');
   const [showUploadModal, setShowUploadModal] = useState(false);
+  const [uploadModalFolders, setUploadModalFolders] = useState([]); // Folders in upload modal
+  const [uploadModalPath, setUploadModalPath] = useState(''); // Current path in upload modal
+  const [uploadModalHistory, setUploadModalHistory] = useState([]); // Breadcrumb history in upload modal
   const [newFolderName, setNewFolderName] = useState('');
   const [showCreateFolder, setShowCreateFolder] = useState(false);
   const [selectedImages, setSelectedImages] = useState(new Set());
@@ -453,6 +456,100 @@ const S3Manager = () => {
     return matchesSearch && matchesFilter;
   });
 
+  // Upload Modal Folder Navigation Handlers
+  const handleUploadModalOpen = async () => {
+    setShowUploadModal(true);
+    setUploadModalPath('');
+    setUploadModalHistory([]);
+    // Fetch root folders for upload modal
+    try {
+      const response = await axios.get('/api/s3/folders', {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('myToken')}`
+        },
+        params: { parent: '' }
+      });
+      if (response.data.success) {
+        setUploadModalFolders(response.data.folders);
+      } else {
+        setUploadModalFolders(sampleFolders.map(name => ({ name, path: name, hasSubfolders: false })));
+      }
+    } catch (error) {
+      console.error('Error fetching folders for upload modal:', error);
+      setUploadModalFolders(sampleFolders.map(name => ({ name, path: name, hasSubfolders: false })));
+    }
+  };
+
+  const handleUploadModalFolderClick = async (folder) => {
+    // Always try to fetch contents first to see if it's a folder with items
+    const folderPath = folder.path || folder.name;
+    
+    try {
+      const response = await axios.get('/api/s3/folders', {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('myToken')}`
+        },
+        params: { parent: folderPath }
+      });
+      
+      if (response.data.success && response.data.folders && response.data.folders.length > 0) {
+        // This folder has subfolders, navigate into it
+        const currentName = uploadModalPath ? uploadModalPath.split('/').pop() : 'Root';
+        setUploadModalHistory([...uploadModalHistory, { name: currentName, path: uploadModalPath }]);
+        setUploadModalPath(folderPath);
+        setUploadModalFolders(response.data.folders);
+      } else {
+        // No subfolders found, select this folder for upload
+        setSelectedFolder(folderPath);
+      }
+    } catch (error) {
+      console.error('Error checking folder contents:', error);
+      // On error, treat as a leaf folder and select it
+      setSelectedFolder(folderPath);
+    }
+  };
+
+  const handleUploadModalBack = async () => {
+    if (uploadModalHistory.length > 0) {
+      const parent = uploadModalHistory[uploadModalHistory.length - 1];
+      setUploadModalHistory(uploadModalHistory.slice(0, -1));
+      setUploadModalPath(parent.path);
+      
+      try {
+        const response = await axios.get('/api/s3/folders', {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('myToken')}`
+          },
+          params: { parent: parent.path }
+        });
+        if (response.data.success) {
+          setUploadModalFolders(response.data.folders);
+        }
+      } catch (error) {
+        console.error('Error fetching parent folders:', error);
+      }
+    }
+  };
+
+  const handleUploadModalRoot = async () => {
+    setUploadModalHistory([]);
+    setUploadModalPath('');
+    
+    try {
+      const response = await axios.get('/api/s3/folders', {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('myToken')}`
+        },
+        params: { parent: '' }
+      });
+      if (response.data.success) {
+        setUploadModalFolders(response.data.folders);
+      }
+    } catch (error) {
+      console.error('Error fetching root folders:', error);
+    }
+  };
+
   return (
     <div className="min-h-screen flex bg-gray-50 dark:bg-gray-900 dark:text-gray-100">
       <Sidebar />
@@ -483,7 +580,7 @@ const S3Manager = () => {
                 New Folder
               </button>
               <button
-                onClick={() => setShowUploadModal(true)}
+                onClick={handleUploadModalOpen}
                 className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
               >
                 <FaUpload />
@@ -812,18 +909,71 @@ const S3Manager = () => {
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Select Folder
                 </label>
-                <select
-                  value={selectedFolder}
-                  onChange={(e) => setSelectedFolder(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-                >
-                  <option value="">-- Select a folder --</option>
-                  {folders.map((folder, index) => (
-                    <option key={index} value={folder.path || folder.name}>
-                      {folder.name || folder}
-                    </option>
-                  ))}
-                </select>
+                
+                {/* Breadcrumb Navigation */}
+                {uploadModalHistory.length > 0 && (
+                  <div className="mb-3 text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1 flex-wrap">
+                    <button
+                      onClick={handleUploadModalRoot}
+                      className="hover:text-gray-700 dark:hover:text-gray-300 font-medium"
+                    >
+                      Root
+                    </button>
+                    {uploadModalHistory.map((item, index) => (
+                      <span key={index} className="flex items-center gap-1">
+                        <span>/</span>
+                        <span>{item.name || 'Folder'}</span>
+                      </span>
+                    ))}
+                    {uploadModalPath && <span> / {uploadModalPath.split('/').pop()}</span>}
+                  </div>
+                )}
+
+                {/* Folder List */}
+                <div className="border border-gray-300 dark:border-gray-600 rounded-lg p-3 max-h-48 overflow-y-auto bg-gray-50 dark:bg-gray-700">
+                  {uploadModalFolders.length === 0 ? (
+                    <p className="text-sm text-gray-500 dark:text-gray-400">No folders available</p>
+                  ) : (
+                    <div className="space-y-2">
+                      {uploadModalFolders.map((folder, index) => (
+                        <div key={index} className="flex items-center justify-between">
+                          <button
+                            onClick={() => handleUploadModalFolderClick(folder)}
+                            className={`flex-1 text-left px-3 py-2 rounded-lg transition-colors text-sm ${
+                              selectedFolder === (folder.path || folder.name)
+                                ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
+                                : 'hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300'
+                            }`}
+                            title={folder.hasSubfolders ? "Click to navigate into folder" : "Click to select this folder"}
+                          >
+                            <div className="flex items-center gap-2">
+                              <FaFolder className="text-sm" />
+                              <span className="truncate">{folder.name || folder}</span>
+                              {folder.hasSubfolders && <span className="text-xs ml-auto">→</span>}
+                            </div>
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Back Button */}
+                {uploadModalHistory.length > 0 && (
+                  <button
+                    onClick={handleUploadModalBack}
+                    className="mt-2 text-sm px-3 py-1 bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-300 rounded hover:bg-gray-400 dark:hover:bg-gray-500 transition-colors"
+                  >
+                    ← Back
+                  </button>
+                )}
+
+                {/* Selected Folder Display */}
+                {selectedFolder && (
+                  <div className="mt-3 p-2 bg-green-50 dark:bg-green-900 border border-green-200 dark:border-green-700 rounded text-sm text-green-800 dark:text-green-200">
+                    ✓ Selected: <strong>{selectedFolder}</strong>
+                  </div>
+                )}
               </div>
 
               <div className="mb-4">
