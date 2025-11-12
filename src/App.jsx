@@ -197,6 +197,8 @@ const HrEmployees = lazy(() => import("./Hr/HrEmployees"));
 const OnboardingUpload = lazy(() => import("./OnboardingUpload"));
 const DocumentUpload = lazy(() => import("./Pages/DocumentUpload"));
 const UploadSuccess = lazy(() => import("./Pages/UploadSuccess"));
+import ProjectRouter from "./Pages/ProjectRouter";
+import DubaiPage from "./Pages/Dubai/DubaiPage";
 
 // Property Types Pages
 const BhkFlatsGurgaon = lazy(() => import("./Pages/PropertyTypes/BhkFlatsGurgaon"));
@@ -398,6 +400,8 @@ function App() {
                         element={<ProjectTypeGlobal />}
                       />
                       <Route path="/project-in-delhi/" element={<CityProjectsGlobal />} />
+                      <Route path="/dubai/" element={<DubaiPage />} />
+                      <Route path="/united-arab-emirates/" element={<DubaiPage />} />
                       <Route path="/project-in-noida/" element={<CityProjectsGlobal />} />
                       <Route path="/project-in-panipat/" element={<CityProjectsGlobal />} />
                       <Route path="/project-in-panchkula/" element={<CityProjectsGlobal />} />
@@ -407,7 +411,7 @@ function App() {
                       <Route path="/projects-in-jalandhar/" element={<CityProjectsGlobal />} />
                       <Route path="/project-in-ayodhya/" element={<CityProjectsGlobal />} />
                       <Route path="/project-in-mumbai/" element={<CityProjectsGlobal />} />
-                      <Route path="/projects-in-dubai/" element={<CityProjectsGlobal />} />
+                      <Route path="/united-arab-emirates/" element={<CityProjectsGlobal />} />
                       <Route path="/project-in-pune/" element={<CityProjectsGlobal />} />
                       {/* Dynamic city projects route (generic template). Keep after specific routes to avoid conflicts. */}
                       <Route path="/projects-in-:citySlug/" element={<CityProjectsGlobal />} />

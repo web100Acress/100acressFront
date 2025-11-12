@@ -3,6 +3,7 @@ import { Button } from "../../../Components/ui/button";
 import { ArrowRight, Play } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useDubai } from "../context/DubaiContext";
+import heroVideo from "../../../Images/Drone_Shot_for_Real_Estate_Homepage.mp4";
 
 export const Hero = () => {
   const { t } = useTranslation();
@@ -39,20 +40,21 @@ export const Hero = () => {
 
   return (
     <section 
-      className="fixed top-0 left-0 h-screen w-full overflow-hidden z-0"
-      style={{ opacity: heroOpacity }}
+      className="fixed inset-0 overflow-hidden z-0 p-0 m-0"
+      style={{ opacity: heroOpacity, width: '100dvw', height: '100dvh' }}
     >
       {/* Hero Video Background - Fixed */}
-      <div className="absolute inset-0">
+      <div className="absolute inset-0 m-0 p-0" style={{ width: '100dvw', height: '100dvh' }}>
         <video
           ref={videoRef}
           autoPlay
           loop
           muted
           playsInline
-          className="h-full w-full object-cover"
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 object-cover w-auto h-full will-change-transform"
+          style={{ height: '100dvh', minWidth: '125dvw' }}
         >
-          <source src="/Images/dubai_vidoe.mp4" type="video/mp4" />
+          <source src={heroVideo} type="video/mp4" />
           Your browser does not support the video tag.
         </video>
         {/* Dark overlay for better text readability */}
@@ -60,7 +62,7 @@ export const Hero = () => {
       </div>
 
       {/* Content */}
-      <div className="container relative z-10 flex h-full items-center">
+      <div className="container relative z-10 flex items-center" style={{ height: '100dvh' }}>
         <div className="max-w-3xl space-y-8 animate-fade-in">
           <div className="inline-block">
           </div>
@@ -121,3 +123,4 @@ export const Hero = () => {
     </section>
   );
 };
+      

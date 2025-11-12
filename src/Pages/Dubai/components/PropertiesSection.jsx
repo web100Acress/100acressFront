@@ -154,7 +154,7 @@ export const PropertiesSection = () => {
         {/* View All Button */}
         {!isLoading && properties.length > 0 && (
           <div className="text-center">
-            <Link to="/projects-in-dubai/">
+            <Link to="/united-arab-emirates/">
               <Button size="lg" className="gradient-gold text-black hover:shadow-gold group">
                 {t('properties.viewAllProperties', { emirate: selectedEmirate })}
                 <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />

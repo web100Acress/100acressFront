@@ -42,7 +42,7 @@ const properties = dubaiProjects.slice(0, 6).map((project) => ({
 - **Loading State**: Shows spinner while fetching data
 - **Empty State**: Displays message when no properties found
 - **Filter Functionality**: Interactive filter buttons (All Properties, Apartments, Villas, etc.)
-- **View All Button**: Links to `/projects-in-dubai/` for full listing
+- **View All Button**: Links to `/united-arab-emirates/` for full listing
 
 ### 2. PropertyCard.jsx
 **Updated to handle API data:**
@@ -102,8 +102,8 @@ Each project contains:
 
 ## Routes
 
-- **Landing Page**: `/dubai/` or `/projects-in-dubai/` (shows 6 properties)
-- **Full Listing**: `/projects-in-dubai/` (shows all Dubai properties via CityProjectsGlobal)
+- **Landing Page**: `/dubai/` or `/united-arab-emirates/` (shows 6 properties)
+- **Full Listing**: `/united-arab-emirates/` (shows all Dubai properties via CityProjectsGlobal)
 - **Project Details**: `/projects/{slugURL}/` (individual property page)
 
 ## Benefits
@@ -118,7 +118,7 @@ Each project contains:
 ## Testing
 
 To test the integration:
-1. Navigate to `/dubai/` or `/projects-in-dubai/`
+1. Navigate to `/dubai/` or `/united-arab-emirates/`
 2. Scroll to "Premium Properties in Dubai" section
 3. Verify properties load from API
 4. Test filter buttons
