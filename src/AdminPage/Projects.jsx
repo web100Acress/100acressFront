@@ -903,17 +903,17 @@ const projectStyles = `
   border-collapse: separate;
   border-spacing: 0;
   min-width: 1000px; /* Ensure generous width */
-  font-size: 0.98rem; /* Slightly larger text */
+  font-size: 0.85rem; /* Smaller text */
 }
 
 .table-header {
-  padding: 20px 28px; /* More padding */
+  padding: 10px 12px; /* Reduced padding */
   text-align: center;
-  font-size: 0.9rem; /* Slightly larger header font */
+  font-size: 0.8rem; /* Smaller header font */
   font-weight: 700;
   color: #5c677d; /* Muted, professional header text color */
   text-transform: uppercase;
-  letter-spacing: 0.1em; /* Increased letter spacing */
+  letter-spacing: 0.05em; /* Reduced letter spacing */
   background-color: #f7f9fc; /* Very light header background */
   border-bottom: 2px solid #e8eaf1;
   position: sticky; /* Make headers sticky for large tables */
@@ -985,9 +985,9 @@ const projectStyles = `
 }
 
 .table-cell {
-  padding: 18px 28px; /* Increased padding */
+  padding: 8px 12px; /* Reduced padding for compact rows */
   text-align: center;
-  font-size: 0.98rem;
+  font-size: 0.85rem; /* Smaller font */
   color: #333d4e;
   white-space: nowrap;
   overflow: hidden;
@@ -1032,21 +1032,21 @@ const projectStyles = `
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 10px; /* More space between buttons */
+  gap: 6px; /* Reduced space between buttons */
   flex-wrap: wrap;
-  padding: 15px 20px; /* Adjusted padding for button cell */
+  padding: 6px 8px; /* Reduced padding for button cell */
 }
 
 .action-button {
-  padding: 10px 16px; /* Larger padding for individual buttons */
-  border-radius: 10px; /* Softer rounded corners */
+  padding: 6px 10px; /* Smaller padding for individual buttons */
+  border-radius: 6px; /* Smaller rounded corners */
   border: none;
   font-weight: 500;
-  font-size: 0.9rem;
+  font-size: 0.75rem; /* Smaller button font */
   cursor: pointer;
   transition: all 0.25s ease;
   white-space: nowrap;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.1); /* More pronounced shadow */
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1); /* Smaller shadow */
 }
 
 .action-button:hover {
