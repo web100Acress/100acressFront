@@ -22,7 +22,6 @@ const Projects = () => {
   const [filterHasMobile, setFilterHasMobile] = useState("");
   const [filterHasPayment, setFilterHasPayment] = useState("");
   const [filterProjectOverview, setFilterProjectOverview] = useState("");
-  const [filterYoutubeVideo, setFilterYoutubeVideo] = useState("");
 
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
@@ -345,11 +344,7 @@ const Projects = () => {
       }
     }
 
-    // YouTube video filtering logic
-    const hasYoutubeVideo = Boolean((item?.youtubeVideoUrl ?? "").toString().trim());
-    const matchesYoutubeVideo = !filterYoutubeVideo || (filterYoutubeVideo === "with" ? hasYoutubeVideo : !hasYoutubeVideo);
-
-    return matchesSearch && matchesType && matchesCity && matchesAddress && matchesBuilder && matchesStatus && matchesState && matchesMobile && matchesPayment && matchesOverview && matchesYoutubeVideo;
+    return matchesSearch && matchesType && matchesCity && matchesAddress && matchesBuilder && matchesStatus && matchesState && matchesMobile && matchesPayment && matchesOverview;
   });
   const indexOfLastRow = currentPage * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
@@ -415,7 +410,6 @@ const Projects = () => {
     setFilterHasMobile("");
     setFilterHasPayment("");
     setFilterProjectOverview("");
-    setFilterYoutubeVideo("");
     setCurrentPage(1);
   };
 
@@ -518,17 +512,6 @@ const Projects = () => {
               <option value="">Project Overview</option>
               {projectOverviewOptions.map(opt => (
                 <option key={opt.value} value={opt.value}>{opt.label}</option>
-              ))}
-            </select>
-
-            <select
-              className="filter-select"
-              value={filterYoutubeVideo}
-              onChange={(e) => { setFilterYoutubeVideo(e.target.value); setCurrentPage(1); }}
-            >
-              <option value="">YouTube Video: All</option>
-              {youtubeVideoOptions.map(opt => (
-                <option key={opt.value} value={opt.value}>YouTube Video: {opt.label}</option>
               ))}
             </select>
           </div>
