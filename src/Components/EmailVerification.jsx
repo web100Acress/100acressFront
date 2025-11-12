@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import {  useNavigate } from "react-router-dom";
-import api from "../config/apiClient";
+import axios from "axios";
 import { Input ,message} from 'antd';
 
 function EmailVerification() {
@@ -29,11 +29,9 @@ function EmailVerification() {
         duration: 3,
       });
 
-      api.post("/postPerson/verifyEmail", { email: email })
+      axios.post("/postPerson/verifyEmail", { email: email })
       .then((res) => {
-        // Store email in localStorage for OTP verification
-        localStorage.setItem("userEmail", email);
-        
+
         messageApi.destroy("EmailVerificationOTPLoading");
         messageApi.open({
           key:"OtpSent",
@@ -46,21 +44,18 @@ function EmailVerification() {
       })
       .catch((err) => {
         
-        if(err.response?.status === 409){
-          // Store email in localStorage even if OTP was already sent
-          localStorage.setItem("userEmail", email);
-          
+        if(err.response.status === 409){
+
           messageApi.destroy("EmailVerificationOTPLoading");
           messageApi.open({
             key:"OtpAlreadySent",
-            type: "success",
-            content: "OTP already sent. Redirecting to OTP verification page",
-            duration: 2,
-          });
-          // Navigate after a short delay
-          setTimeout(() => {
+            type: "loading",
+            content: "Otp already sent. Redirecting to OTP verification page",
+            duration: 1,
+          }).then(() => {            
             history("/auth/signup/otp-verification/");
-          }, 1000);
+            return;
+          })
         }
         else{
           messageApi.open({

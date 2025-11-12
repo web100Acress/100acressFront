@@ -127,60 +127,61 @@ const ViewPropertyAdmin = () => {
     }
   };
 
-  const handleDeleteUser = async () => {
+  const handleDeleteUser = () => {
     if (deletingUser) return; // guard against double-clicks
+    Modal.confirm({
+      title: 'Delete User',
+      content: (
+        <div>
+          <p>Are you sure you want to delete this user? This action cannot be undone.</p>
+          <p><b>User:</b> {userDetails.name}</p>
+          <p><b>Email:</b> {userDetails.email}</p>
+        </div>
+      ),
+      okText: 'Yes, Delete',
+      cancelText: 'Cancel',
+      okButtonProps: { danger: true },
+      onOk: async () => {
+        if (deletingUser) return;
+        setDeletingUser(true);
+        messageApi.open({ key: 'deleteUser', type: 'loading', content: 'Deleting user...', duration: 0 });
+        try {
+          const token = localStorage.getItem('myToken');
+          if (!token) {
+            messageApi.destroy('deleteUser');
+            notification.error({ message: 'Auth error', description: 'Authentication token not found. Please login again.', placement: 'topRight' });
+            setDeletingUser(false);
+            return;
+          }
 
-    // Use reliable native confirm to avoid popup/z-index issues
-    const confirmed = window.confirm(
-      `Are you sure you want to delete this user?\n\nUser: ${userDetails.name}\nEmail: ${userDetails.email}\n\nThis action cannot be undone.`
-    );
+          // Call the primary backend endpoint that performs real DB deletion
+          let deleteSuccess = false;
+          try {
+            const res = await api.delete(`/postPerson/deleteUser/${id}` , {
+              headers: { 'Content-Type': 'application/json' },
+              timeout: 15000,
+            });
+            deleteSuccess = res.status >= 200 && res.status < 300;
+          } catch (endpointError) {
+            console.log('❌ Delete failed:', endpointError.response?.status || endpointError.message);
+          }
 
-    if (!confirmed) {
-      messageApi.info('Deletion cancelled.', 2);
-      return;
-    }
-
-    setDeletingUser(true);
-    messageApi.open({ key: 'deleteUser', type: 'loading', content: 'Deleting user...', duration: 0 });
-    try {
-      const token = localStorage.getItem('myToken');
-      if (!token) {
-        messageApi.destroy('deleteUser');
-        notification.error({ message: 'Auth error', description: 'Authentication token not found. Please login again.', placement: 'topRight' });
-        setDeletingUser(false);
-        return;
-      }
-
-      // Delete from PostProperty users collection only (do not match by email/mobile)
-      let deleteSuccess = false;
-      try {
-        const res = await api.delete(`/postPerson/deleteUser/${id}`, {
-          headers: { 'Content-Type': 'application/json' },
-          timeout: 15000,
-        });
-        deleteSuccess = res.status >= 200 && res.status < 300;
-      } catch (endpointError) {
-        console.log('❌ Delete failed:', endpointError.response?.status || endpointError.message);
-        messageApi.error(endpointError?.response?.data?.message || 'Delete request failed', 2);
-      }
-
-      messageApi.destroy('deleteUser');
-      if (deleteSuccess) {
-        notification.success({ message: 'User deleted', description: 'The user was deleted successfully.', placement: 'topRight' });
-        messageApi.success('User deleted successfully.', 2);
-        navigate('/Admin/user');
-      } else {
-        notification.error({ message: 'Delete failed', description: 'Backend did not confirm deletion. Please try again or check server logs.', placement: 'topRight' });
-        messageApi.error('Delete failed. Please try again.', 2);
-      }
-    } catch (err) {
-      console.error('❌ Critical delete error:', err);
-      messageApi.destroy('deleteUser');
-      notification.error({ message: 'Delete failed', description: 'Critical error during deletion. Please try again.', placement: 'topRight' });
-      messageApi.error('Critical error during deletion.', 2);
-    } finally {
-      setDeletingUser(false);
-    }
+          messageApi.destroy('deleteUser');
+          if (deleteSuccess) {
+            notification.success({ message: 'User deleted', description: 'The user was deleted successfully.', placement: 'topRight' });
+            navigate('/Admin/user');
+          } else {
+            notification.error({ message: 'Delete failed', description: 'Backend did not confirm deletion. Please try again or check server logs.', placement: 'topRight' });
+          }
+        } catch (err) {
+          console.error('❌ Critical delete error:', err);
+          messageApi.destroy('deleteUser');
+          notification.error({ message: 'Delete failed', description: 'Critical error during deletion. Please try again.', placement: 'topRight' });
+        } finally {
+          setDeletingUser(false);
+        }
+      },
+    });
   };
 
   return (

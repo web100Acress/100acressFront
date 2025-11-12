@@ -5,7 +5,7 @@ import { SiBloglovin } from "react-icons/si";
 import { GoProjectSymlink } from "react-icons/go";
 import { AiFillPropertySafety } from "react-icons/ai";
 import { GiFamilyHouse } from "react-icons/gi";
-import { FaHome, FaYoutube, FaAws } from "react-icons/fa";
+import { FaHome, FaYoutube, FaAws, FaSitemap } from "react-icons/fa";
 import { MdImage, MdCategory, MdCloudUpload } from "react-icons/md";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { FaRegUserCircle } from "react-icons/fa";
@@ -196,6 +196,10 @@ const Sidebar = () => {
         <Link to="/Admin/project-order-management" className={`sidebar-nav-item group flex items-center gap-3 px-4 py-2 rounded-lg transition-all duration-200 hover:bg-gradient-to-r hover:from-blue-500/80 hover:to-purple-500/80 hover:text-white font-medium text-base ${location.pathname.startsWith("/Admin/project-order-management") ? "bg-gradient-to-r from-blue-500/80 to-purple-500/80 text-white" : "text-gray-200 dark:text-gray-300"}`}>
           <MdCategory className="icon text-xl group-hover:scale-110 group-hover:text-white transition-transform duration-200" />
           <span>Project Order Management</span>
+        </Link>
+        <Link to="/Admin/sitemap-management" className={`sidebar-nav-item group flex items-center gap-3 px-4 py-2 rounded-lg transition-all duration-200 hover:bg-gradient-to-r hover:from-blue-500/80 hover:to-purple-500/80 hover:text-white font-medium text-base ${location.pathname.startsWith("/Admin/sitemap-management") ? "bg-gradient-to-r from-blue-500/80 to-purple-500/80 text-white" : "text-gray-200 dark:text-gray-300"}`}>
+          <FaSitemap className="icon text-xl group-hover:scale-110 group-hover:text-white transition-transform duration-200" />
+          <span>Sitemap Management</span>
         </Link>
           <Link to="/Admin/user" className={`sidebar-nav-item group flex items-center gap-3 px-4 py-2 rounded-lg transition-all duration-200 hover:bg-gradient-to-r hover:from-blue-500/80 hover:to-purple-500/80 hover:text-white font-medium text-base ${location.pathname.startsWith("/Admin/user") ? "bg-gradient-to-r from-blue-500/80 to-purple-500/80 text-white" : "text-gray-200 dark:text-gray-300"}`}>
             <FaRegUserCircle className="icon text-xl group-hover:scale-110 group-hover:text-white transition-transform duration-200" />

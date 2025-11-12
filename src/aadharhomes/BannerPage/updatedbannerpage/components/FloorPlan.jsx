@@ -235,16 +235,17 @@ const FloorPlan = ({ floorPlans = [], bhkDetails = [], onShowCallback = () => {}
                   
                   {/* Blur Overlay with Get Details Button */}
                   {!isImageUnlocked && (
-                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center rounded-md p-4">
-                      <p className="text-white text-center text-sm sm:text-base md:text-lg font-medium">
-                        To access the master layout, kindly{' '}
-                        <button 
-                          onClick={handleGetDetails}
-                          className="text-blue-400 hover:text-blue-300 underline underline-offset-2 sm:underline-offset-4 decoration-1 sm:decoration-2 decoration-blue-400/80 hover:decoration-blue-300 transition-colors duration-200 font-medium text-sm sm:text-base md:text-lg whitespace-nowrap"
-                        >
-                          share your details
-                        </button>
-                      </p>
+                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center rounded-md">
+                      <button
+                        onClick={handleGetDetails}
+                        className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-black font-bold px-6 py-3 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-amber-500/30 flex items-center gap-2"
+                      >
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                        <span>Click to View</span>
+                      </button>
                     </div>
                   )}
                 </>

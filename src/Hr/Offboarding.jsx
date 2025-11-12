@@ -50,7 +50,7 @@ const Offboarding = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
-  const [view, setView] = useState("employees");
+  const [view, setView] = useState("employees"); // "employees" or "offboarding"
   const [employeeOffboardingMap, setEmployeeOffboardingMap] = useState({});
   const [selectedEmployeeId, setSelectedEmployeeId] = useState(null);
   const [showCompletedStepsModal, setShowCompletedStepsModal] = useState(false);

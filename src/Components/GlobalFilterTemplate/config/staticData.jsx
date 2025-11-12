@@ -497,50 +497,6 @@ export const staticData = {
           description: "Properties in Punjab's industrial capital with excellent opportunities"
         }
       ]
-    },
-    pune: {
-      title: "Discover Premium Projects in Pune",
-      description: "Explore the best residential and commercial projects in Pune with modern amenities, excellent connectivity, and vibrant lifestyle. Find your dream home in this IT hub and cultural capital.",
-      metaTitle: "Best Projects in Pune - Residential & Commercial Properties | 100acress",
-      canonical: "https://www.100acress.com/projects-in-pune/",
-      keywords: "projects in pune, residential projects pune, commercial projects pune, pune real estate, pune properties",
-      heroTitle: "Discover Premium Projects in Pune",
-      heroSubtitle: "Find your perfect home in Pune with world-class amenities and excellent connectivity",
-      faqs: [
-        {
-          question: "What are the best residential areas in Pune?",
-          answer: "Top residential areas in Pune include Koregaon Park, Viman Nagar, Baner, Hadapsar, Kharadi, and Wakad. Each area offers unique advantages and connectivity."
-        },
-        {
-          question: "What is the average property price in Pune?",
-          answer: "Property prices in Pune range from ₹4,000 per sq ft in developing areas to ₹12,000+ per sq ft in prime locations like Koregaon Park. The average price for a 3BHK apartment is ₹1-2.5 Crores."
-        },
-        {
-          question: "Is Pune a good place for property investment?",
-          answer: "Yes, Pune offers excellent investment opportunities due to its IT industry growth, affordable property prices, and strong rental market."
-        },
-        {
-          question: "What amenities should I look for in Pune projects?",
-          answer: "Look for projects with 24/7 security, power backup, swimming pool, gym, clubhouse, landscaped gardens, parking, and proximity to schools, hospitals, and shopping centers."
-        }
-      ],
-      trustBoosters: [
-        {
-          icon: "🏆",
-          title: "IT Hub",
-          description: "Growing IT industry with excellent job opportunities and economic growth"
-        },
-        {
-          icon: "🌳",
-          title: "Green City",
-          description: "Known for its green spaces, parks, and environmental consciousness"
-        },
-        {
-          icon: "🏠",
-          title: "Premium Properties",
-          description: "Handpicked luxury properties with modern amenities and prime locations"
-        }
-      ]
     }
   },
 

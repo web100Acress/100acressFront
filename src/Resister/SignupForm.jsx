@@ -78,14 +78,7 @@ function SignupForm({ inModal = false, onSwitchToLogin }) {
   const [responseMessage, setResponseMessage] = useState("");
 
   const handleUserRegister = async () => {
-    try {
-      await signup(userSignUp, resetData, setResponseMessage);
-    } catch (error) {
-      messageApi.error({
-        content: error.message || "Registration failed. Please try again.",
-        duration: 3,
-      });
-    }
+    await signup(userSignUp, messageApi, resetData, setResponseMessage);
   };
 
   const handleUserSignIn = () => {
