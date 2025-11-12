@@ -19,9 +19,12 @@ function readJSON(key, fallback) {
   }
 }
 
+// Use the getFavoritesData from the favorites utility
+import { getFavoritesData as getFavsData } from '../Utils/favorites';
+
 function getFavoritesData() {
   try {
-    return readJSON('favoriteProjects', {});
+    return getFavsData();
   } catch (_) {
     return {};
   }
@@ -293,7 +296,39 @@ export default function Activity() {
 
   const likedList = useMemo(() => {
     const data = favData || {};
-    return Object.values(data);
+    return Object.entries(data)
+      .filter(([_, item]) => item && typeof item === 'object' && !Array.isArray(item)) // Filter out invalid items
+      .map(([id, item]) => {
+        // If item is malformed (e.g., string), create a basic object
+        const safeItem = item && typeof item === 'object' ? item : { id: String(id) };
+        
+        // Check if this item has image data
+        const hasImageData = !!(
+          safeItem?.thumbnailImage || safeItem?.thumbnail || safeItem?.frontImage || 
+          safeItem?.image || safeItem?.images || safeItem?.gallery || safeItem?.cardImage
+        );
+        
+        return {
+          ...safeItem, // Spread all original fields
+          id: safeItem?.id || safeItem?._id || id,
+          _id: safeItem?._id || safeItem?.id || id,
+          title: safeItem?.title || safeItem?.projectName || 'Property',
+          projectName: safeItem?.projectName || safeItem?.title,
+          url: safeItem?.url || (safeItem?.project_url ? `/${safeItem.project_url}/` : '#'),
+          city: safeItem?.city || safeItem?.location || '',
+          priceText: safeItem?.priceText || (() => {
+            const min = safeItem?.minPrice ?? safeItem?.price;
+            const max = safeItem?.maxPrice ?? null;
+            if (!min && !max) return '';
+            if (min && max) return `₹${min} - ${max} Cr`;
+            return min ? `₹${min} Cr` : '';
+          })(),
+          beds: safeItem?.beds || safeItem?.bedrooms || safeItem?.bhk,
+          baths: safeItem?.baths || safeItem?.bathrooms,
+          area: safeItem?.area || safeItem?.size || safeItem?.superArea,
+          _needsImageFetch: !hasImageData // Flag to fetch full project data if no images
+        };
+      });
   }, [favData]);
 
   const recommended = useMemo(() => {
