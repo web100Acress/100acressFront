@@ -174,7 +174,7 @@ export default function ProjectCard({
                 ? "Add to wishlist"
                 : "Login to add to wishlist"
             }
-            className={`inline-flex items-center justify-center w-6 h-6 rounded-full hover:shadow-md transition-all duration-200 ${
+            className={`inline-flex items-center justify-center w-6 h-6 rounded-full transition-all duration-200 ${
               favCheck(id) ? "" : "bg-transparent"
             }border-white transition`}
             onClick={(e) => handleFavoriteClick(e, id, project)}
