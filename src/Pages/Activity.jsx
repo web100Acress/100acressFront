@@ -71,6 +71,12 @@ const Card = ({ item }) => {
       .map((u) => (typeof u === 'string' ? u.trim() : ''))
       .filter((u) => u && !/^data:image\/svg\+xml/i.test(u))
       .filter((u) => { if (seen.has(u)) return false; seen.add(u); return true; });
+    
+    // Debug: log if no candidates found
+    if (list.length === 0) {
+      console.warn('No image candidates found for item:', it);
+    }
+    
     return list;
   };
   const imageCandidates = buildCandidates(item);
@@ -144,12 +150,46 @@ const Card = ({ item }) => {
     } catch (_) {}
   };
   
-  // Log image URL for debugging
+  // Log image URL for debugging and fetch full project data if needed
   useEffect(() => {
     // When item changes, reset to first candidate
     setImgIndex(0);
     const first = getImageUrl(imageCandidates[0]) || FALLBACK_IMG;
     setImgSrc(first);
+    
+    // If no image candidates and item needs fetching, fetch from API
+    if (imageCandidates.length === 0 && item?._needsImageFetch && item?.id) {
+      console.warn('Fetching full project data for:', item.title);
+      // Fetch project details from API
+      import('../Redux/utils/Api_Service').then(module => {
+        const Api_Service = module.default;
+        const { getProjectDetails } = Api_Service();
+        if (getProjectDetails) {
+          getProjectDetails(item.id).then(fullProject => {
+            if (fullProject) {
+              // Update item with full project data
+              const fullCandidates = buildCandidates(fullProject);
+              if (fullCandidates.length > 0) {
+                setImgIndex(0);
+                const fullFirst = getImageUrl(fullCandidates[0]) || FALLBACK_IMG;
+                setImgSrc(fullFirst);
+                console.log('Fetched image for', item.title, ':', fullFirst);
+              }
+            }
+          }).catch(err => {
+            console.error('Error fetching project details:', err);
+          });
+        }
+      });
+    } else if (imageCandidates.length === 0) {
+      console.warn('No image candidates for item:', {
+        title,
+        itemKeys: Object.keys(item || {}),
+        item
+      });
+    } else {
+      console.log('Image candidates found:', imageCandidates.slice(0, 3), 'Using:', first);
+    }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [item]);
 
@@ -258,27 +298,11 @@ export default function Activity() {
 
   const recommended = useMemo(() => {
     if (Array.isArray(spotlight) && spotlight.length > 0) {
-      // Helper function to find the first valid image from various possible sources
-      const findImageSource = (item) => {
-        const sources = [
-          item.image?.url,
-          item.image,
-          item.frontImage?.url,
-          item.thumbnailImage?.url,
-          ...(Array.isArray(item.images) ? item.images.map(img => 
-            typeof img === 'string' ? img : img?.url
-          ) : [])
-        ];
-        
-        // Return the first truthy value
-        return sources.find(src => Boolean(src));
-      };
-      
-      // Map to the lightweight shape that Card expects
+      // Pass the entire object to Card component so it can extract images properly
       return spotlight.slice(0, 8).map((p) => ({
+        ...p, // Spread all original fields
         id: p?._id || p?.id || p?.slug,
         title: p?.projectName,
-        image: findImageSource(p),
         url: p?.project_url ? `/${p.project_url}/` : '#',
         city: p?.city,
         priceText: (() => {
@@ -298,48 +322,18 @@ export default function Activity() {
   // Normalize viewed list into Card shape, with robust image fallbacks
   const viewedItems = useMemo(() => {
     return (viewed || []).map((v) => {
-      // Helper function to find the first valid image from various possible sources
-      const findImageSource = (item) => {
-        const sources = [
-          item.image?.url,
-          item.image,
-          item.img,
-          item.image_url,
-          item.imageUrl,
-          item.frontImage?.url,
-          typeof item.frontImage === 'string' ? item.frontImage : undefined,
-          item.front_image,
-          item.frontImageUrl,
-          item.frontImageURL,
-          item.thumbnailImage?.url,
-          item.thumbnailImageUrl,
-          item.thumbnailImageURL,
-          item.thumbnail?.url,
-          item.thumbnail,
-          item.thumbnailUrl,
-          item.thumbnailURL,
-          item.cover,
-          item.coverImage,
-          item.cover_image,
-          item.photo,
-          item.picture,
-          ...(Array.isArray(item.images) ? item.images.map(img => 
-            typeof img === 'string' ? img : img?.url
-          ) : []),
-          ...(Array.isArray(item.gallery) ? item.gallery.map(img => 
-            typeof img === 'string' ? img : img?.url
-          ) : [])
-        ];
-        
-        // Return the first truthy value
-        return sources.find(src => Boolean(src));
-      };
+      // Check if this item has image data, if not we'll fetch it
+      const hasImageData = !!(
+        v?.thumbnailImage || v?.thumbnail || v?.frontImage || 
+        v?.image || v?.images || v?.gallery || v?.cardImage
+      );
       
+      // Pass the entire object to Card component so it can extract images properly
       return {
+        ...v, // Spread all original fields
         id: v.id || v._id || v.slug,
         title: v.title || v.projectName,
         url: v.url || (v.project_url ? `/${v.project_url}/` : '#'),
-        image: findImageSource(v),
         city: v.city || v.location || '',
         priceText: v.priceText || (() => {
           const min = v?.minPrice ?? v?.price;
@@ -350,7 +344,8 @@ export default function Activity() {
         })(),
         beds: v.beds || v.bedrooms || v.bhk,
         baths: v.baths || v.bathrooms,
-        area: v.area || v.size || v.superArea
+        area: v.area || v.size || v.superArea,
+        _needsImageFetch: !hasImageData // Flag to fetch full project data
       };
     });
   }, [viewed]);
