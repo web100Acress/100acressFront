@@ -5,7 +5,7 @@ const StateProjectSlice = createSlice({
   initialState: {
     gurugram: [],
     delhi: [],
-    pushkars: [], // ✅ added this as part of the state
+    pushkar: [],
     noida: [],
     goa: [],
     ayodhya: [],
@@ -65,7 +65,7 @@ const StateProjectSlice = createSlice({
       state.dubai = action.payload;
     },
     pushkar: (state, action) => {
-      state.pushkars = action.payload;
+      state.pushkar = action.payload;
     },
     pune: (state, action) => {
       state.pune = action.payload;
