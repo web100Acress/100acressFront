@@ -13,6 +13,7 @@ const GurugramPrimeLocation = () => {
   const [selectedCity, setSelectedCity] = useState("");
   const [selectedPrice, setSelectedPrice] = useState("");
   const [selectedType, setSelectedType] = useState("");
+  const [selectedSort, setSelectedSort] = useState("");
   const [filteredProjects, setFilteredProjects] = useState([]);
   const {getPrimeLocation} = Api_Service();
 
@@ -124,11 +125,24 @@ const GurugramPrimeLocation = () => {
       );
     }
 
+    // Sort projects
+    if (selectedSort) {
+      if (selectedSort === "price-low") {
+        filtered.sort((a, b) => (parseFloat(a.minPrice) || 0) - (parseFloat(b.minPrice) || 0));
+      } else if (selectedSort === "price-high") {
+        filtered.sort((a, b) => (parseFloat(b.maxPrice) || 0) - (parseFloat(a.maxPrice) || 0));
+      } else if (selectedSort === "newest") {
+        filtered.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+      } else if (selectedSort === "name") {
+        filtered.sort((a, b) => (a.projectName || "").localeCompare(b.projectName || ""));
+      }
+    }
+
     setFilteredProjects(filtered);
-  }, [Primelocation, searchTerm, selectedCity, selectedPrice, selectedType]);
+  }, [Primelocation, searchTerm, selectedCity, selectedPrice, selectedType, selectedSort]);
 
   // Use filtered projects or all projects
-  const displayProjects = (searchTerm || selectedCity || selectedPrice || selectedType) 
+  const displayProjects = (searchTerm || selectedCity || selectedPrice || selectedType || selectedSort) 
     ? filteredProjects 
     : Primelocation;
 
@@ -199,22 +213,22 @@ const GurugramPrimeLocation = () => {
       </Helmet>
 
       {/* Red Banner Section */}
-      <section className="bg-red-900 text-white py-4 md:py-6 lg:py-8 mt-12 md:mt-16 lg:mt-16 relative">
+      <section className="bg-gradient-to-r from-red-50 to-orange-50 border-b border-red-100 py-4 md:py-6 lg:py-8 mt-12 md:mt-16 lg:mt-16 relative">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           {/* Title */}
           <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-center mb-3">
-            Discover Premium Projects in {result}
-          </h1>
+            Discover Premium Projects in <span className="text-red-600">{result}</span>
+        </h1>
 
           {/* Description */}
-          <p className="text-sm sm:text-base md:text-lg text-center max-w-4xl mx-auto mb-4 text-white/95 leading-relaxed">
+          <p className="text-sm sm:text-base md:text-lg text-center max-w-4xl mx-auto mb-4 text-gray-700 leading-relaxed">
             {getLocationDescription()}
           </p>
 
           {/* Search Interface */}
           <div className="max-w-4xl mx-auto">
             {/* Search Bar Row */}
-            <div className="flex flex-col sm:flex-row gap-2 mb-3">
+            {/* <div className="flex flex-col sm:flex-row gap-2 mb-3">
               <div className="flex-1 relative">
                 <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-lg" />
                 <input
@@ -236,81 +250,15 @@ const GurugramPrimeLocation = () => {
               >
                 Search
               </button>
-            </div>
+            </div> */}
 
             {/* Filter Dropdowns Row */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-              {/* All Cities */}
-              <div className="relative">
-                <select
-                  value={selectedCity}
-                  onChange={(e) => setSelectedCity(e.target.value)}
-                  className="w-full px-3 py-2 sm:py-2.5 bg-white text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400 appearance-none cursor-pointer text-sm sm:text-base"
-                >
-                  <option value="">All Cities</option>
-                  <option value="Gurugram">Gurugram</option>
-                  {/* <option value="Delhi">Delhi</option>
-                  <option value="Noida">Noida</option>
-                  <option value="Mumbai">Mumbai</option>
-                  <option value="Goa">Goa</option>
-                  <option value="Ayodhya">Ayodhya</option>
-                  <option value="Mumbai">Mumbai</option>
-                  <option value="Panchkula">Panchkula</option>
-                  <option value="Kasauli">Kasauli</option>
-                  <option value="Dubai">Dubai</option>
-                  <option value="Panipat">Panipat</option>
-                  <option value="Karnal">Karnal</option> */}
-                  {/* <option value="Jalandhar">Jalandhar</option> */}
-                  {/* <option value="Sonipat">Sonipat</option> */}
-                  {/* <option value="Alwar">Alwar</option> */}
-                  {/* <option value="Pune">Pune</option> */}
-                  {/* <option value="Pushkar">Pushkar</option> */}
-                </select>
-                <FiChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600 pointer-events-none text-sm" />
-              </div>
-
-              {/* All Prices */}
-              <div className="relative">
-                <select
-                  value={selectedPrice}
-                  onChange={(e) => setSelectedPrice(e.target.value)}
-                  className="w-full px-3 py-2 sm:py-2.5 bg-white text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400 appearance-none cursor-pointer text-sm sm:text-base"
-                >
-                  <option value="">All Prices</option>
-                  <option value="0-1">Under 1 Cr</option>
-                  <option value="1-5">1 to 5 Cr</option>
-                  <option value="5-10">5 to 10 Cr</option>
-                  <option value="10-20">10 to 20 Cr</option>
-                  <option value="20-50">20 to 50 Cr</option>
-                  <option value="50-Infinity">Above 50 Cr</option>
-                </select>
-                <FiChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600 pointer-events-none text-sm" />
-              </div>
-
-              {/* All Types */}
-              <div className="relative">
-                <select
-                  value={selectedType}
-                  onChange={(e) => setSelectedType(e.target.value)}
-                  className="w-full px-3 py-2 sm:py-2.5 bg-white text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400 appearance-none cursor-pointer text-sm sm:text-base"
-                >
-                  <option value="">All Types</option>
-                  <option value="Residential Flats">Residential Flats</option>
-                  <option value="Commercial Property">Commercial Property</option>
-                  <option value="SCO Plots">SCO Plots</option>
-                  <option value="Residential Plots">Residential Plots</option>
-                  <option value="Independent Floors">Independent Floors</option>
-                  <option value="Builder Floors">Builder Floors</option>
-                  <option value="Villas">Villas</option>
-                  <option value="Affordable Homes">Affordable Homes</option>
-                </select>
-                <FiChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600 pointer-events-none text-sm" />
-              </div>
-            </div>
+            
           </div>
+          
 
           {/* Down Arrow */}
-          <div className="flex justify-center mt-2">
+          {/* <div className="flex justify-center mt-2">
             <button
               onClick={scrollToProjects}
               className="animate-bounce text-white hover:text-red-200 transition-colors"
@@ -318,18 +266,106 @@ const GurugramPrimeLocation = () => {
             >
               <FiChevronDown className="text-2xl sm:text-3xl" />
             </button>
-          </div>
+          </div> */}
         </div>
       </section>
+      
+      {/* Filter Bar */}
+      <div className="bg-white border-b border-gray-200 py-3">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="flex flex-col sm:flex-row gap-3 items-center justify-center">
+            {/* Type */}
+            <div className="relative w-full sm:w-auto min-w-[140px]">
+              <select
+                value={selectedType}
+                onChange={(e) => setSelectedType(e.target.value)}
+                className="w-full px-4 py-2.5 bg-white text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400 appearance-none cursor-pointer text-sm border border-gray-200 shadow-sm"
+              >
+                <option value="">All Types</option>
+                <option value="Residential Flats">Residential Flats</option>
+                <option value="Commercial Property">Commercial Property</option>
+                <option value="SCO Plots">SCO Plots</option>
+                <option value="Residential Plots">Residential Plots</option>
+                <option value="Independent Floors">Independent Floors</option>
+                <option value="Builder Floors">Builder Floors</option>
+                <option value="Villas">Villas</option>
+                <option value="Affordable Homes">Affordable Homes</option>
+              </select>
+              <FiChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600 pointer-events-none text-sm" />
+            </div>
 
+            {/* Sort */}
+            <div className="relative w-full sm:w-auto min-w-[140px]">
+              <select
+                value={selectedSort}
+                onChange={(e) => setSelectedSort(e.target.value)}
+                className="w-full px-4 py-2.5 bg-white text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400 appearance-none cursor-pointer text-sm border border-gray-200 shadow-sm"
+              >
+                <option value="">Default</option>
+                <option value="price-low">Price: Low to High</option>
+                <option value="price-high">Price: High to Low</option>
+                <option value="newest">Newest First</option>
+                <option value="name">Name: A to Z</option>
+              </select>
+              <FiChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600 pointer-events-none text-sm" />
+            </div>
+
+            {/* Price */}
+            <div className="relative w-full sm:w-auto min-w-[140px]">
+              <select
+                value={selectedPrice}
+                onChange={(e) => setSelectedPrice(e.target.value)}
+                className="w-full px-4 py-2.5 bg-white text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400 appearance-none cursor-pointer text-sm border border-gray-200 shadow-sm"
+              >
+                <option value="">All Prices</option>
+                <option value="0-1">Under 1 Cr</option>
+                <option value="1-5">1 to 5 Cr</option>
+                <option value="5-10">5 to 10 Cr</option>
+                <option value="10-20">10 to 20 Cr</option>
+                <option value="20-50">20 to 50 Cr</option>
+                <option value="50-Infinity">Above 50 Cr</option>
+              </select>
+              <FiChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600 pointer-events-none text-sm" />
+            </div>
+
+            {/* City */}
+            <div className="relative w-full sm:w-auto min-w-[140px]">
+              <select
+                value={selectedCity}
+                onChange={(e) => setSelectedCity(e.target.value)}
+                className="w-full px-4 py-2.5 bg-white text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400 appearance-none cursor-pointer text-sm border border-gray-200 shadow-sm"
+              >
+                <option value="">All Cities</option>
+                <option value="Gurugram">Gurugram</option>
+                <option value="Delhi">Delhi</option>
+                <option value="Noida">Noida</option>
+                <option value="Mumbai">Mumbai</option>
+                <option value="Goa">Goa</option>
+                <option value="Ayodhya">Ayodhya</option>
+                <option value="Panchkula">Panchkula</option>
+                <option value="Kasauli">Kasauli</option>
+                <option value="Dubai">Dubai</option>
+                <option value="Panipat">Panipat</option>
+                <option value="Karnal">Karnal</option>
+                <option value="Jalandhar">Jalandhar</option>
+                <option value="Sonipat">Sonipat</option>
+                <option value="Alwar">Alwar</option>
+                <option value="Pune">Pune</option>
+                <option value="Pushkar">Pushkar</option>
+              </select>
+              <FiChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600 pointer-events-none text-sm" />
+            </div>
+          </div>
+        </div>
+      </div>
       {/* Projects Section */}
       <section id="projects-section" className="flex flex-col items-center pt-8 pb-8">
         {displayProjects.length > 0 ? (
-          <div className="grid max-w-md grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
+        <div className="grid max-w-md grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
             {displayProjects.map((item, index) => {
-              const pUrl = item.project_url;
-              return (
-                <Link to={`/${pUrl}/`} target="_top" key={index}>
+            const pUrl = item.project_url;
+            return (
+              <Link to={`/${pUrl}/`} target="_top" key={index}>
                 <article
                   key={index}
                   className="mb-4 transition hover:scale-105 bg-white overflow-hidden rounded-xl  border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"
@@ -385,20 +421,21 @@ const GurugramPrimeLocation = () => {
                     </ul>
                   </div>
                 </article>
-                </Link>
-              );
-            })}
-          </div>
+              </Link>
+            );
+          })}
+        </div>
         ) : (
           <div className="text-center py-12">
             <p className="text-xl text-gray-600 mb-4">No projects found matching your criteria.</p>
             <button
-              onClick={() => {
-                setSearchTerm("");
-                setSelectedCity("");
-                setSelectedPrice("");
-                setSelectedType("");
-              }}
+               onClick={() => {
+                 setSearchTerm("");
+                 setSelectedCity("");
+                 setSelectedPrice("");
+                 setSelectedType("");
+                 setSelectedSort("");
+               }}
               className="text-red-600 hover:text-red-700 font-semibold underline"
             >
               Clear all filters
