@@ -20,7 +20,7 @@ function readJSON(key, fallback) {
 }
 
 // Use the getFavoritesData from the favorites utility
-import { getFavoritesData as getFavsData } from '../Utils/favorites';
+import { getFavoritesData as getFavsData, toggleFavorite } from '../Utils/favorites';
 
 function getFavoritesData() {
   try {
@@ -40,7 +40,7 @@ function favSubscribe(callback) {
   };
 }
 
-const Card = ({ item }) => {
+const Card = ({ item, onRemove }) => {
   // Normalize incoming shapes from favorites/viewed/spotlight
   const title = item?.title || item?.projectName || "Property";
   const url = item?.url || (item?.project_url ? `/${item.project_url}/` : "#");
@@ -196,10 +196,29 @@ const Card = ({ item }) => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [item]);
 
+  // Handle remove button click
+  const handleRemoveClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (onRemove) {
+      onRemove(item.id || item._id);
+    }
+  };
+
   return (
-    <article className="group overflow-hidden rounded-2xl border border-gray-100 text-black shadow-[0_8px_24px_rgba(0,0,0,0.06)] hover:shadow-[0_12px_28px_rgba(0,0,0,0.10)] transition-all duration-300 ease-out h-full flex flex-col bg-white">
+    <article className="group relative overflow-hidden rounded-2xl border border-gray-100 text-black shadow-[0_8px_24px_rgba(0,0,0,0.06)] hover:shadow-[0_12px_28px_rgba(0,0,0,0.10)] transition-all duration-300 ease-out h-full flex flex-col bg-white">
       <Link to={url} target="_top" className="block relative">
-        <div className="overflow-hidden rounded-t-2xl bg-gray-50">
+        <div className="relative overflow-hidden rounded-t-2xl bg-gray-50">
+          {onRemove && (
+            <button 
+              onClick={handleRemoveClick}
+              className="absolute top-2 right-2 z-10 bg-white/90 hover:bg-red-500 hover:text-white text-red-500 rounded-full p-2 shadow-lg flex items-center justify-center w-8 h-8"
+              title="Remove from list"
+              aria-label="Remove from list"
+            >
+              <i className="fa-solid fa-trash text-sm"></i>
+            </button>
+          )}
           {imgSrc ? (
             <img
               src={imgSrc}
@@ -250,7 +269,7 @@ const Card = ({ item }) => {
   );
 };
 
-const Section = ({ title, items }) => (
+const Section = ({ title, items, onRemoveItem }) => (
   <section className="mt-6">
     <div className="flex items-center justify-between mb-3">
       <h2 className="text-lg font-semibold text-gray-900">{title}</h2>
@@ -260,7 +279,13 @@ const Section = ({ title, items }) => (
       <div className="p-6 rounded-xl border border-gray-100 bg-white text-gray-500">Nothing here yet.</div>
     ) : (
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {items.map((it, idx) => (<Card key={(it.id || it.url || idx) + "-a"} item={it} />))}
+        {items.map((it, idx) => (
+          <Card 
+            key={(it.id || it.url || idx) + "-a"} 
+            item={it} 
+            onRemove={onRemoveItem}
+          />
+        ))}
       </div>
     )}
   </section>
@@ -272,6 +297,25 @@ export default function Activity() {
   const [favData, setFavData] = useState(() => getFavoritesData());
   const [activeTab, setActiveTab] = useState('viewed');
   const { getSpotlight } = Api_Service();
+  
+  // Handle removing a viewed item
+  const handleRemoveViewed = (id) => {
+    const updated = viewed.filter(item => item.id !== id);
+    localStorage.setItem('viewed_projects', JSON.stringify(updated));
+    window.dispatchEvent(new Event('viewed-projects-changed'));
+  };
+  
+  // Handle removing a liked item
+  const handleRemoveLiked = (id) => {
+    // Update local state immediately for better UX
+    setFavData(prev => {
+      const newData = { ...prev };
+      delete newData[id];
+      return newData;
+    });
+    // Toggle favorite to update storage and sync across tabs
+    toggleFavorite(id, null, true); // true for isAuthenticated to bypass login check
+  };
 
   // Fetch spotlight data on component mount
   useEffect(() => {
@@ -413,13 +457,24 @@ export default function Activity() {
 
         <div className="content">
           {activeTab === 'viewed' && (
-            <Section title="Recently Viewed Properties" items={viewedItems} />
+            <Section 
+              title="Recently Viewed Properties" 
+              items={viewedItems} 
+              onRemoveItem={handleRemoveViewed}
+            />
           )}
           {activeTab === 'liked' && (
-            <Section title="Liked Properties" items={likedList} />
+            <Section 
+              title="Liked Properties" 
+              items={likedList} 
+              onRemoveItem={handleRemoveLiked}
+            />
           )}
           {activeTab === 'recommended' && (
-            <Section title="Recommended Properties" items={recommended} />
+            <Section 
+              title="Recommended Properties" 
+              items={recommended} 
+            />
           )}
         </div>
       </div>
