@@ -3,10 +3,10 @@ import {
   Mail,
   Linkedin,
   Facebook,
-  X,
   Youtube,
   Instagram,
 } from "lucide-react";
+import { FaXTwitter } from "react-icons/fa6";
 import { Button } from "../ui/button";
 import { Input } from "../ui/Input";
 import { Link } from "react-router-dom";
@@ -461,9 +461,10 @@ const CrimsonEleganceFooter = () => {
                       Icon: Linkedin,
                       href: "https://www.linkedin.com/company/100acress/",
                     },
-                   
-                    { Icon: X, href: "https://twitter.com/100acressdotcom" },
-                  
+                    {
+                      Icon: FaXTwitter,
+                      href: "https://twitter.com/100acressdotcom",
+                    },
                   ].map(({ Icon, href }, index) => (
                     <a
                       key={index}
