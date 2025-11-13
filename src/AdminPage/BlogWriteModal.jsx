@@ -2010,7 +2010,7 @@ const BlogWriteModal = () => {
               </div>
               <div>
                 <h2 className="text-3xl font-bold text-gray-900">
-                  {blogToEdit ? 'Edit Blog Post' : 'Create New Blog'}
+                  {blogToEdit ? 'Edit Blog Post ' : 'Create New Blog'}
                 </h2>
                 <p className="text-gray-600 mt-1">
                   {blogToEdit

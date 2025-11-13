@@ -336,7 +336,7 @@ const JobPosting = () => {
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-50 backdrop-blur-sm">
             <div className="bg-white p-6 rounded-lg shadow-xl w-11/12 md:w-2/3 lg:w-1/2">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-2xl font-bold text-gray-800">
+                <h2 className="text-2xl  font-bold text-gray-800">
                   Job Posting
                 </h2>
                 <button
