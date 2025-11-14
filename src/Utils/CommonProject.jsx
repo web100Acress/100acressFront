@@ -229,7 +229,7 @@ const CommonProject = ({
               )}
               
               {/* Price Display - Moved up */}
-              <div className="mb-3">
+              <div className="mb-1">
                 <span
                   className={`inline-flex items-center gap-1 ${
                     compact ? "text-[16px]" : "text-[18px]"
