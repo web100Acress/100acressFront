@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+
 import {
   Search,
   Plus,
@@ -28,6 +29,7 @@ import {
 import { toast } from 'react-hot-toast';
 import axios from 'axios';
 import { getApiBase } from '../config/apiBase';
+import Sidebar from './Sidebar';
 
 const ContactCardManagement = () => {
   const [contactCards, setContactCards] = useState([]);
@@ -135,8 +137,13 @@ const ContactCardManagement = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-6">
-      <div className="max-w-7xl mx-auto">
+    <div className="flex h-screen bg-gray-100">
+      <div className="w-1/5">
+        <Sidebar />
+      </div>
+      <div className="w-4/5 overflow-auto">
+        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-6">
+          <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between">
@@ -451,6 +458,8 @@ const ContactCardManagement = () => {
           editData={editingCard}
         />
       )}
+        </div>
+      </div>
     </div>
   );
 };
@@ -467,8 +476,16 @@ const ContactCardModal = ({ isOpen, onClose, onSuccess, editData = null }) => {
     brandColor: editData?.brandColor || '#3B82F6',
     bio: editData?.bio || '',
     profile_image_url: editData?.profile_image_url || '',
-    company_logo_url: editData?.company_logo_url || '',
-    slug: editData?.slug || ''
+    company_logo_url: editData?.company_logo_url || 'https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/logowhite.webp.webp',
+    slug: editData?.slug || '',
+    socialLinks: {
+      linkedin: editData?.socialLinks?.linkedin || '',
+      twitter: editData?.socialLinks?.twitter || '',
+      instagram: editData?.socialLinks?.instagram || '',
+      facebook: editData?.socialLinks?.facebook || '',
+      github: editData?.socialLinks?.github || '',
+      website: editData?.socialLinks?.website || ''
+    }
   });
   const [loading, setLoading] = useState(false);
 
@@ -662,6 +679,96 @@ const ContactCardModal = ({ isOpen, onClose, onSuccess, editData = null }) => {
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                 placeholder="Brief description about yourself..."
               />
+            </div>
+
+            {/* Social Media Links Section */}
+            <div className="border-t pt-6">
+              <h3 className="text-lg font-medium text-gray-900 mb-4">Social Media Links</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">LinkedIn</label>
+                  <input
+                    type="url"
+                    value={formData.socialLinks.linkedin}
+                    onChange={(e) => setFormData(prev => ({ 
+                      ...prev, 
+                      socialLinks: { ...prev.socialLinks, linkedin: e.target.value }
+                    }))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    placeholder="https://linkedin.com/in/username"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Twitter/X</label>
+                  <input
+                    type="url"
+                    value={formData.socialLinks.twitter}
+                    onChange={(e) => setFormData(prev => ({ 
+                      ...prev, 
+                      socialLinks: { ...prev.socialLinks, twitter: e.target.value }
+                    }))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    placeholder="https://twitter.com/username or https://x.com/username"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Instagram</label>
+                  <input
+                    type="url"
+                    value={formData.socialLinks.instagram}
+                    onChange={(e) => setFormData(prev => ({ 
+                      ...prev, 
+                      socialLinks: { ...prev.socialLinks, instagram: e.target.value }
+                    }))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    placeholder="https://instagram.com/username"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Facebook</label>
+                  <input
+                    type="url"
+                    value={formData.socialLinks.facebook}
+                    onChange={(e) => setFormData(prev => ({ 
+                      ...prev, 
+                      socialLinks: { ...prev.socialLinks, facebook: e.target.value }
+                    }))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    placeholder="https://facebook.com/username"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">GitHub</label>
+                  <input
+                    type="url"
+                    value={formData.socialLinks.github}
+                    onChange={(e) => setFormData(prev => ({ 
+                      ...prev, 
+                      socialLinks: { ...prev.socialLinks, github: e.target.value }
+                    }))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    placeholder="https://github.com/username"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Personal Website</label>
+                  <input
+                    type="url"
+                    value={formData.socialLinks.website}
+                    onChange={(e) => setFormData(prev => ({ 
+                      ...prev, 
+                      socialLinks: { ...prev.socialLinks, website: e.target.value }
+                    }))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    placeholder="https://yourwebsite.com"
+                  />
+                </div>
+              </div>
             </div>
 
             <div className="flex space-x-3 pt-4">

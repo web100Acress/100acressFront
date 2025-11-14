@@ -1,0 +1,256 @@
+import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
+import { Button } from "../../../Components/ui/button";
+import { Menu, X, Phone, ChevronDown } from "lucide-react";
+import { cn } from "../../../lib/utils";
+import { useDubai } from "../context/DubaiContext";
+
+// Logo URL
+const LOGO = "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/white-logo.webp";
+
+export const Header = () => {
+  const { t } = useTranslation();
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isEmiratesDropdownOpen, setIsEmiratesDropdownOpen] = useState(false);
+  const { selectedEmirate, setSelectedEmirate, currency, setCurrency } = useDubai();
+
+  const emirates = [
+    { name: "Dubai", label: "Dubai" },
+    { name: "Abu Dhabi", label: "Abu Dhabi" },
+    { name: "Sharjah", label: "Sharjah" },
+    { name: "Ajman", label: "Ajman" },
+    { name: "Ras Al Khaimah", label: "Ras Al Khaimah" },
+    { name: "Fujairah", label: "Fujairah" },
+    { name: "Umm Al Quwain", label: "Umm Al Quwain" },
+  ];
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (isEmiratesDropdownOpen && !event.target.closest('.emirates-dropdown')) {
+        setIsEmiratesDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isEmiratesDropdownOpen]);
+
+  const navLinks = [
+    { label: t('nav.properties'), href: "#properties" },
+    { label: t('nav.developers'), href: "#developers" },
+    { label: t('nav.insights'), href: "/insights" },
+    { label: t('nav.lifestyle'), href: "#lifestyle" },
+    { label: t('nav.contact'), href: "#contact" },
+  ];
+
+  return (
+    <header
+      className={cn(
+        "fixed top-0 z-50 w-full transition-all duration-300",
+        isScrolled
+          ? "glass-effect shadow-luxury py-4"
+          : "bg-transparent py-6"
+      )}
+    >
+      <div className="container flex items-center justify-between">
+        {/* Logo with Emirates Dropdown */}
+        <div className="flex items-center space-x-3">
+          <a href="/United-Arab-Emirates" className="flex items-center space-x-3 group">
+            <img 
+              src={LOGO}
+              alt="100acress" 
+              className="h-15 w-auto object-contain transition-all duration-300 group-hover:scale-105"
+            />
+          </a>
+          
+          {/* Emirates Dropdown */}
+          <div className="relative emirates-dropdown">
+            <button
+              onClick={() => setIsEmiratesDropdownOpen(!isEmiratesDropdownOpen)}
+              className="flex items-center space-x-1 text-xs text-gold uppercase tracking-widest border-l border-gold pl-3 hover:text-gold/80 transition-colors"
+            >
+              <span>{selectedEmirate}</span>
+              <ChevronDown className={cn(
+                "h-3 w-3 transition-transform duration-200",
+                isEmiratesDropdownOpen && "rotate-180"
+              )} />
+            </button>
+
+            {/* Dropdown Menu */}
+            {isEmiratesDropdownOpen && (
+              <div className="absolute top-full left-0 mt-2 w-48 glass-effect border border-white/10 rounded-lg shadow-luxury overflow-hidden z-50 animate-fade-in">
+                {emirates.map((emirate) => (
+                  <button
+                    key={emirate.name}
+                    onClick={() => {
+                      setSelectedEmirate(emirate.name);
+                      setIsEmiratesDropdownOpen(false);
+                    }}
+                    className={cn(
+                      "w-full text-left px-4 py-3 text-sm transition-colors",
+                      selectedEmirate === emirate.name
+                        ? "bg-gold/20 text-gold font-semibold"
+                        : "text-white hover:bg-white/10 hover:text-gold"
+                    )}
+                  >
+                    {emirate.label}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Desktop Navigation */}
+        <nav className="hidden lg:flex items-center space-x-8">
+          {navLinks.map((link) => (
+            <a
+              key={link.href}
+              href={link.href}
+              className="text-white hover:text-gold transition-colors duration-200 text-sm uppercase tracking-wider font-medium"
+            >
+              {link.label}
+            </a>
+          ))}
+        </nav>
+
+        {/* Right Actions */}
+        <div className="hidden lg:flex items-center space-x-4">
+          {/* Currency Toggle - Visual Icons */}
+          <div className="flex items-center gap-0.5 px-2 py-1 rounded-full glass-effect border border-white/20">
+            <button
+              onClick={() => setCurrency("INR")}
+              className={cn(
+                "p-1.5 rounded-full transition-all duration-300",
+                currency === "INR" 
+                  ? "bg-gold text-black scale-110" 
+                  : "text-white/60 hover:text-gold hover:bg-white/10"
+              )}
+              title="Indian Rupee"
+            >
+              <span className="text-base font-bold">₹</span>
+            </button>
+            <button
+              onClick={() => setCurrency("AED")}
+              className={cn(
+                "p-1.5 rounded-full transition-all duration-300",
+                currency === "AED" 
+                  ? "bg-gold text-black scale-110" 
+                  : "text-white/60 hover:text-gold hover:bg-white/10"
+              )}
+              title="UAE Dirham"
+            >
+              <span className="text-sm font-bold">د.إ</span>
+            </button>
+            <button
+              onClick={() => setCurrency("USD")}
+              className={cn(
+                "p-1.5 rounded-full transition-all duration-300",
+                currency === "USD" 
+                  ? "bg-gold text-black scale-110" 
+                  : "text-white/60 hover:text-gold hover:bg-white/10"
+              )}
+              title="US Dollar"
+            >
+              <span className="text-base font-bold">$</span>
+            </button>
+          </div>
+          
+          <a href="tel:+919811750740">
+            <Button size="sm" className="gradient-gold text-black hover:shadow-gold text-base font-semibold">
+              <Phone className="h-5 w-5 mr-2" />
+              +91 9811 750 740
+            </Button>
+          </a>
+        </div>
+
+        {/* Mobile Menu Button */}
+        <button
+          className="lg:hidden text-white p-2"
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+        >
+          {isMobileMenuOpen ? (
+            <X className="h-6 w-6" />
+          ) : (
+            <Menu className="h-6 w-6" />
+          )}
+        </button>
+      </div>
+
+      {/* Mobile Menu */}
+      {isMobileMenuOpen && (
+        <div className="lg:hidden glass-effect mt-4 border-t border-white/10">
+          <nav className="container py-4 space-y-4">
+            {navLinks.map((link) => (
+              <a
+                key={link.href}
+                href={link.href}
+                className="block text-white hover:text-gold transition-colors py-2"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                {link.label}
+              </a>
+            ))}
+            <div className="pt-4 space-y-2 border-t border-white/10">
+              {/* Currency Toggle Mobile - Visual Icons */}
+              <div className="flex items-center justify-center gap-2 p-3 rounded-lg glass-effect border border-white/20">
+                <button
+                  onClick={() => setCurrency("INR")}
+                  className={cn(
+                    "flex-1 p-3 rounded-lg transition-all duration-300 flex items-center justify-center gap-2",
+                    currency === "INR" 
+                      ? "bg-gold text-black font-bold" 
+                      : "text-white/60 hover:text-gold hover:bg-white/10"
+                  )}
+                >
+                  <span className="text-xl font-bold">₹</span>
+                  <span className="text-xs">INR</span>
+                </button>
+                <button
+                  onClick={() => setCurrency("AED")}
+                  className={cn(
+                    "flex-1 p-3 rounded-lg transition-all duration-300 flex items-center justify-center gap-2",
+                    currency === "AED" 
+                      ? "bg-gold text-black font-bold" 
+                      : "text-white/60 hover:text-gold hover:bg-white/10"
+                  )}
+                >
+                  <span className="text-lg font-bold">د.إ</span>
+                  <span className="text-xs">AED</span>
+                </button>
+                <button
+                  onClick={() => setCurrency("USD")}
+                  className={cn(
+                    "flex-1 p-3 rounded-lg transition-all duration-300 flex items-center justify-center gap-2",
+                    currency === "USD" 
+                      ? "bg-gold text-black font-bold" 
+                      : "text-white/60 hover:text-gold hover:bg-white/10"
+                  )}
+                >
+                  <span className="text-xl font-bold">$</span>
+                  <span className="text-xs">USD</span>
+                </button>
+              </div>
+              
+              <a href="tel:+919811750740" className="w-full">
+                <Button className="w-full gradient-gold text-black text-lg font-semibold">
+                  <Phone className="h-5 w-5 mr-2" />
+                  +91 9811 750 740
+                </Button>
+              </a>
+            </div>
+          </nav>
+        </div>
+      )}
+    </header>
+  );
+};

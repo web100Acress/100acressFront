@@ -13,6 +13,7 @@ import {
   Twitter,
   Instagram,
   Facebook,
+  Github,
   Building,
   User,
   ExternalLink
@@ -143,6 +144,8 @@ const ContactCard = () => {
       case 'twitter': return <Twitter {...iconProps} />;
       case 'instagram': return <Instagram {...iconProps} />;
       case 'facebook': return <Facebook {...iconProps} />;
+      case 'github': return <Github {...iconProps} />;
+      case 'website': return <Globe {...iconProps} />;
       default: return <ExternalLink {...iconProps} />;
     }
   };

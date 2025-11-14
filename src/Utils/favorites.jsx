@@ -86,15 +86,47 @@ export function toggleFavorite(id, snapshot, isAuthenticated = false) {
   } else {
     nextIds = [...ids, stringId];
     if (snapshot && typeof snapshot === 'object') {
+      // Store complete project data for display
       nextData[stringId] = {
+        ...snapshot, // Spread all original fields first
         id: stringId,
+        _id: snapshot?._id || stringId,
         title: snapshot.title || snapshot.projectName || '',
-        image: snapshot.image || snapshot.frontImage?.url || snapshot.thumbnailImage?.url || '',
-        priceText: snapshot.priceText || '',
+        projectName: snapshot.projectName || snapshot.title,
         url: snapshot.url || (snapshot.project_url ? `/${snapshot.project_url}/` : snapshot.link || '#'),
-        city: snapshot.city || '',
-        maxPrice: snapshot.maxPrice ?? snapshot.price ?? null,
-        minPrice: snapshot.minPrice ?? null,
+        project_url: snapshot.project_url,
+        city: snapshot.city || snapshot.location || '',
+        location: snapshot.location,
+        // Image fields - all variations
+        thumbnailImage: snapshot.thumbnailImage,
+        thumbnail: snapshot.thumbnail,
+        frontImage: snapshot.frontImage,
+        front_image: snapshot.front_image,
+        cardImage: snapshot.cardImage,
+        bannerImage: snapshot.bannerImage,
+        image: snapshot.image,
+        img: snapshot.img,
+        images: snapshot.images,
+        gallery: snapshot.gallery,
+        cover: snapshot.cover,
+        coverImage: snapshot.coverImage,
+        photo: snapshot.photo,
+        picture: snapshot.picture,
+        // Price and details
+        priceText: snapshot.priceText || (() => {
+          const min = snapshot?.minPrice ?? snapshot?.price;
+          const max = snapshot?.maxPrice ?? null;
+          if (!min && !max) return '';
+          if (min && max) return `₹${min} - ${max} Cr`;
+          return min ? `₹${min} Cr` : '';
+        })(),
+        minPrice: snapshot.minPrice,
+        maxPrice: snapshot.maxPrice,
+        price: snapshot.price,
+        beds: snapshot.beds || snapshot.bedrooms || snapshot.bhk,
+        baths: snapshot.baths || snapshot.bathrooms,
+        area: snapshot.area || snapshot.size || snapshot.superArea,
+        ts: Date.now()
       };
     }
   }
