@@ -14,6 +14,7 @@ import {
   Twitter,
   Instagram,
   Facebook,
+  Github,
   Building,
   User,
   ExternalLink,
@@ -24,7 +25,7 @@ import {
 import { toast } from 'react-hot-toast';
 import axios from 'axios';
 import { getApiBase } from '../../config/apiBase';
-import { getContactCardUrl, getBaseUrl } from '../../Utils/urlUtils';
+import { getContactCardUrl, getBaseUrl } from '../../utils/urlUtils';
 
 const ModernContactCard = () => {
   const { slug } = useParams();
@@ -163,6 +164,8 @@ const ModernContactCard = () => {
       case 'twitter': return <Twitter {...iconProps} />;
       case 'instagram': return <Instagram {...iconProps} />;
       case 'facebook': return <Facebook {...iconProps} />;
+      case 'github': return <Github {...iconProps} />;
+      case 'website': return <Globe {...iconProps} />;
       default: return <ExternalLink {...iconProps} />;
     }
   };
@@ -335,7 +338,7 @@ const ModernContactCard = () => {
           {/* Main Glassmorphism Card */}
           <div className="backdrop-blur-xl bg-white/30 border border-white/40 rounded-3xl shadow-2xl overflow-hidden">
             {/* Profile Header */}
-            <div className="relative p-8 pb-6 text-center">
+            <div className="relative p-6 pb-4 text-center">
               {/* Gradient Background */}
               <div 
                 className="absolute inset-0 opacity-90"
@@ -343,223 +346,223 @@ const ModernContactCard = () => {
                   background: `linear-gradient(135deg, ${contactData.brandColor || '#6366f1'}, ${contactData.brandColor ? contactData.brandColor + '80' : '#8b5cf6'})`
                 }}
               />
-              
-              {/* Company Logo - Top Left */}
-              {contactData.company_logo_url && (
-                <motion.div 
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.3 }}
-                  className="absolute top-4 left-4 z-20"
-                >
-                  <img
-                    src={contactData.company_logo_url}
-                    alt={contactData.company}
-                    className="h-12 w-auto max-w-32 object-contain drop-shadow-lg"
-                  />
-                </motion.div>
-              )}
-              
-              <div className="relative z-10 pt-8">
-                {/* Profile Picture */}
-                <motion.div
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ delay: 0.4, type: "spring", stiffness: 200 }}
-                  className="mb-6"
-                >
-                  {contactData.profile_image_url ? (
-                    <img
-                      src={contactData.profile_image_url}
-                      alt={contactData.name}
-                      className="w-36 h-36 rounded-full mx-auto object-cover border-4 border-white/40 shadow-2xl ring-4 ring-white/20"
-                    />
-                  ) : (
-                    <div className="w-36 h-36 rounded-full mx-auto bg-white/30 border-4 border-white/40 shadow-2xl ring-4 ring-white/20 flex items-center justify-center">
-                      <span className="text-4xl font-bold text-white">
-                        {getInitials(contactData.name)}
-                      </span>
-                    </div>
+                  
+                  {/* Company Logo - Top Right */}
+                  {contactData.company_logo_url && (
+                    <motion.div 
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.3 }}
+                      className="absolute top-3 left-3 z-20"
+                    >
+                      <img
+                        src={contactData.company_logo_url}
+                        alt={contactData.company || '100acress'}
+                        className="h-10 w-auto max-w-24 object-contain drop-shadow-lg opacity-90"
+                      />
+                    </motion.div>
                   )}
-                </motion.div>
+                  
+                  <div className="relative z-10 pt-8">
+                    {/* Profile Picture */}
+                    <motion.div
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      transition={{ delay: 0.4, type: "spring", stiffness: 200 }}
+                      className="mb-6"
+                    >
+                      {contactData.profile_image_url ? (
+                        <img
+                          src={contactData.profile_image_url}
+                          alt={contactData.name}
+                          className="w-36 h-36 rounded-full mx-auto object-cover border-4 border-white/40 shadow-2xl ring-4 ring-white/20"
+                        />
+                      ) : (
+                        <div className="w-36 h-36 rounded-full mx-auto bg-white/30 border-4 border-white/40 shadow-2xl ring-4 ring-white/20 flex items-center justify-center">
+                          <span className="text-4xl font-bold text-white">
+                            {getInitials(contactData.name)}
+                          </span>
+                        </div>
+                      )}
+                    </motion.div>
 
-                {/* Name and Title */}
-                <motion.h1 
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.5 }}
-                  className="text-3xl font-bold text-white mb-2 drop-shadow-lg"
-                >
-                  {contactData.name}
-                </motion.h1>
+                    {/* Name and Title */}
+                    <motion.h1 
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.5 }}
+                      className="text-3xl font-bold text-white mb-2 drop-shadow-lg"
+                    >
+                      {contactData.name}
+                    </motion.h1>
 
-                {contactData.designation && (
-                  <motion.p 
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.6 }}
-                    className="text-white/95 text-lg font-medium mb-2 drop-shadow"
-                  >
-                    {contactData.designation}
-                  </motion.p>
-                )}
+                    {contactData.designation && (
+                      <motion.p 
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.6 }}
+                        className="text-white/95 text-lg font-medium mb-2 drop-shadow"
+                      >
+                        {contactData.designation}
+                      </motion.p>
+                    )}
 
-                {/* Company Name */}
-                {contactData.company && (
-                  <motion.div 
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.7 }}
-                    className="flex items-center justify-center"
-                  >
-                    <span className="text-white/90 font-medium text-base drop-shadow">
-                      {contactData.company}
-                    </span>
-                  </motion.div>
-                )}
-              </div>
-            </div>
-
-            {/* Contact Information */}
-            <div className="p-6 space-y-4">
-              {/* Bio */}
-              {contactData.bio && (
-                <motion.div 
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.8 }}
-                  className="text-center mb-6"
-                >
-                  <p className="text-gray-700 leading-relaxed font-medium">{contactData.bio}</p>
-                </motion.div>
-              )}
-
-              {/* Contact Actions */}
-              <div className="space-y-3">
-                {/* Phone */}
-                <motion.a
-                  href={`tel:${contactData.phone}`}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.9 }}
-                  whileHover={{ scale: 1.02, x: 5 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="flex items-center p-4 backdrop-blur-sm bg-white/40 border border-white/30 rounded-2xl hover:bg-white/50 transition-all duration-300 group shadow-md hover:shadow-lg"
-                >
-                  <div className="bg-gradient-to-br from-green-500 to-green-600 p-3 rounded-xl mr-4 shadow-lg group-hover:shadow-xl transition-shadow">
-                    <Phone size={22} className="text-white" />
-                  </div>
-                  <div className="flex-1">
-                    <p className="font-semibold text-gray-800 text-sm">Call</p>
-                    <p className="text-green-600 font-medium text-base">{contactData.phone}</p>
-                  </div>
-                </motion.a>
-
-                {/* Email */}
-                <motion.a
-                  href={`mailto:${contactData.email}`}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 1.0 }}
-                  whileHover={{ scale: 1.02, x: 5 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="flex items-center p-4 backdrop-blur-sm bg-white/40 border border-white/30 rounded-2xl hover:bg-white/50 transition-all duration-300 group shadow-md hover:shadow-lg"
-                >
-                  <div className="bg-gradient-to-br from-blue-500 to-blue-600 p-3 rounded-xl mr-4 shadow-lg group-hover:shadow-xl transition-shadow">
-                    <Mail size={22} className="text-white" />
-                  </div>
-                  <div className="flex-1">
-                    <p className="font-semibold text-gray-800 text-sm">Email</p>
-                    <p className="text-blue-600 font-medium text-base truncate">{contactData.email}</p>
-                  </div>
-                </motion.a>
-
-                {/* Website */}
-                {contactData.website && (
-                  <motion.a
-                    href={contactData.website}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 1.1 }}
-                    whileHover={{ scale: 1.02, x: 5 }}
-                    whileTap={{ scale: 0.98 }}
-                    className="flex items-center p-4 backdrop-blur-sm bg-white/40 border border-white/30 rounded-2xl hover:bg-white/50 transition-all duration-300 group shadow-md hover:shadow-lg"
-                  >
-                    <div className="bg-gradient-to-br from-purple-500 to-purple-600 p-3 rounded-xl mr-4 shadow-lg group-hover:shadow-xl transition-shadow">
-                      <Globe size={22} className="text-white" />
-                    </div>
-                    <div className="flex-1">
-                      <p className="font-semibold text-gray-800 text-sm">Website</p>
-                      <p className="text-purple-600 font-medium text-base">Visit Website</p>
-                    </div>
-                  </motion.a>
-                )}
-
-                {/* Address */}
-                {contactData.address && Object.values(contactData.address).some(val => val) && (
-                  <motion.div 
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 1.2 }}
-                    className="flex items-start p-4 backdrop-blur-sm bg-white/40 border border-white/30 rounded-2xl shadow-md"
-                  >
-                    <div className="bg-gradient-to-br from-gray-500 to-gray-600 p-3 rounded-xl mr-4 mt-1 shadow-lg">
-                      <MapPin size={22} className="text-white" />
-                    </div>
-                    <div className="flex-1">
-                      <p className="font-semibold text-gray-800 mb-1 text-sm">Address</p>
-                      <div className="text-gray-700 text-sm space-y-1 leading-relaxed">
-                        {contactData.address.street && <p>{contactData.address.street}</p>}
-                        <p>
-                          {[contactData.address.city, contactData.address.state, contactData.address.zipCode]
-                            .filter(Boolean).join(', ')}
-                        </p>
-                        {contactData.address.country && <p>{contactData.address.country}</p>}
-                      </div>
-                    </div>
-                  </motion.div>
-                )}
-              </div>
-
-              {/* Social Links */}
-              {contactData.socialLinks && Object.values(contactData.socialLinks).some(val => val) && (
-                <motion.div 
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 1.3 }}
-                  className="pt-6 border-t border-white/30"
-                >
-                  <p className="font-semibold text-gray-800 mb-4 text-center">Connect with me</p>
-                  <div className="flex justify-center space-x-3">
-                    {Object.entries(contactData.socialLinks).map(([platform, url]) => 
-                      url && (
-                        <motion.a
-                          key={platform}
-                          href={url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          whileHover={{ scale: 1.15, y: -5 }}
-                          whileTap={{ scale: 0.95 }}
-                          className="p-3.5 rounded-xl shadow-lg hover:shadow-xl transition-shadow"
-                          style={{ backgroundColor: contactData.brandColor || '#6366f1' }}
-                        >
-                          {getSocialIcon(platform)}
-                        </motion.a>
-                      )
+                    {/* Company Name */}
+                    {contactData.company && (
+                      <motion.div 
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.7 }}
+                        className="flex items-center justify-center"
+                      >
+                        <span className="text-white/90 font-medium text-base drop-shadow">
+                          {contactData.company}
+                        </span>
+                      </motion.div>
                     )}
                   </div>
-                </motion.div>
-              )}
-            </div>
+                </div>
+
+                {/* Contact Information */}
+                <div className="p-4 space-y-3">
+                  {/* Bio */}
+                  {contactData.bio && (
+                    <motion.div 
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.8 }}
+                      className="text-center mb-4 p-3 backdrop-blur-sm bg-white/20 border border-white/30 rounded-xl"
+                    >
+                      <p className="text-gray-700 leading-relaxed font-medium text-sm">{contactData.bio}</p>
+                    </motion.div>
+                  )}
+
+                  {/* Contact Actions */}
+                  <div className="space-y-1">
+                    {/* Phone */}
+                    <motion.a
+                      href={`tel:${contactData.phone}`}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.9 }}
+                      whileHover={{ scale: 1.02, x: 5 }}
+                      whileTap={{ scale: 0.98 }}
+                      className="flex items-center p-3 backdrop-blur-sm bg-white/40 border border-white/30 rounded-xl hover:bg-white/50 transition-all duration-300 group shadow-md hover:shadow-lg"
+                    >
+                      <div className="bg-gradient-to-br from-green-500 to-green-600 p-3 rounded-xl mr-4 shadow-lg group-hover:shadow-xl transition-shadow">
+                        <Phone size={22} className="text-white" />
+                      </div>
+                      <div className="flex-1 space-y-0 leading-tight">
+                        <p className="font-semibold text-gray-800 text-base">Call</p>
+                        <p className="text-green-600 font-medium text-lg">{contactData.phone}</p>
+                      </div>
+                    </motion.a>
+
+                    {/* Email */}
+                    <motion.a
+                      href={`mailto:${contactData.email}`}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 1.0 }}
+                      whileHover={{ scale: 1.02, x: 5 }}
+                      whileTap={{ scale: 0.98 }}
+                      className="flex items-center p-3 backdrop-blur-sm bg-white/40 border border-white/30 rounded-xl hover:bg-white/50 transition-all duration-300 group shadow-md hover:shadow-lg"
+                    >
+                      <div className="bg-gradient-to-br from-blue-500 to-blue-600 p-3 rounded-xl mr-4 shadow-lg group-hover:shadow-xl transition-shadow">
+                        <Mail size={22} className="text-white" />
+                      </div>
+                      <div className="flex-1">
+                        <p className="font-semibold text-gray-800 text-sm">Email</p>
+                        <p className="text-blue-600 font-medium text-base truncate">{contactData.email}</p>
+                      </div>
+                    </motion.a>
+
+                    {/* Website */}
+                    {contactData.website && (
+                      <motion.a
+                        href={contactData.website}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 1.1 }}
+                        whileHover={{ scale: 1.02, x: 5 }}
+                        whileTap={{ scale: 0.98 }}
+                        className="flex items-center p-3 backdrop-blur-sm bg-white/40 border border-white/30 rounded-xl hover:bg-white/50 transition-all duration-300 group shadow-md hover:shadow-lg"
+                      >
+                        <div className="bg-gradient-to-br from-purple-500 to-purple-600 p-3 rounded-xl mr-4 shadow-lg group-hover:shadow-xl transition-shadow">
+                          <Globe size={22} className="text-white" />
+                        </div>
+                        <div className="flex-1">
+                          <p className="font-semibold text-gray-800 text-sm">Website</p>
+                          <p className="text-purple-600 font-medium text-base">Visit Website</p>
+                        </div>
+                      </motion.a>
+                    )}
+
+                    {/* Address */}
+                    {contactData.address && Object.values(contactData.address).some(val => val) && (
+                      <motion.div 
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 1.2 }}
+                        className="flex items-start p-4 backdrop-blur-sm bg-white/40 border border-white/30 rounded-2xl shadow-md"
+                      >
+                        <div className="bg-gradient-to-br from-gray-500 to-gray-600 p-3 rounded-xl mr-4 mt-1 shadow-lg">
+                          <MapPin size={22} className="text-white" />
+                        </div>
+                        <div className="flex-1">
+                          <p className="font-semibold text-gray-800 mb-1 text-sm">Address</p>
+                          <div className="text-gray-700 text-sm space-y-1 leading-relaxed">
+                            {contactData.address.street && <p>{contactData.address.street}</p>}
+                            <p>
+                              {[contactData.address.city, contactData.address.state, contactData.address.zipCode]
+                                .filter(Boolean).join(', ')}
+                            </p>
+                            {contactData.address.country && <p>{contactData.address.country}</p>}
+                          </div>
+                        </div>
+                      </motion.div>
+                    )}
+                  </div>
+
+                  {/* Social Links */}
+                  {contactData.socialLinks && Object.values(contactData.socialLinks).some(val => val) && (
+                    <motion.div 
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 1.3 }}
+                      className="pt-6 border-t border-white/30"
+                    >
+                      <p className="font-semibold text-gray-800 mb-4 text-center">Connect with me</p>
+                      <div className="flex justify-center space-x-3">
+                        {Object.entries(contactData.socialLinks).map(([platform, url]) => 
+                          url && (
+                            <motion.a
+                              key={platform}
+                              href={url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              whileHover={{ scale: 1.15, y: -5 }}
+                              whileTap={{ scale: 0.95 }}
+                              className="p-3.5 rounded-xl shadow-lg hover:shadow-xl transition-shadow"
+                              style={{ backgroundColor: contactData.brandColor || '#6366f1' }}
+                            >
+                              {getSocialIcon(platform)}
+                            </motion.a>
+                          )
+                        )}
+                      </div>
+                    </motion.div>
+                  )}
+                </div>
 
             {/* Action Buttons */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 1.4 }}
-              className="p-6 pt-0"
+              className="p-4 pt-0"
             >
               <div className="grid grid-cols-3 gap-3">
                 {/* Download vCard */}
