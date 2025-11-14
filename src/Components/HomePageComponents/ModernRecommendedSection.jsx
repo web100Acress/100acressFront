@@ -62,30 +62,28 @@ const ModernRecommendedSection = () => {
   };
 
   const formatLocation = (project) => {
+    if (project?.projectAddress) {
+      return project.projectAddress.trim();
+    }
+
     const locationParts = [];
-    
+
     if (project?.sector) {
       locationParts.push(project.sector);
     }
-    
+
     if (project?.area) {
-      // Remove Gurugram/Gurgaon from area
-      const area = project.area.replace(/,?\s*(Gurugram|Gurgaon)\s*/gi, '').trim();
-      if (area) locationParts.push(area);
-    } else if (project?.projectAddress) {
-      // Remove Gurugram/Gurgaon from address
-      const address = project.projectAddress.replace(/,?\s*(Gurugram|Gurgaon)\s*/gi, '').trim();
-      if (address) locationParts.push(address);
+      locationParts.push(project.area.trim());
     }
-    
-    if (project?.city && project?.city.toLowerCase() !== 'gurugram' && project?.city.toLowerCase() !== 'gurgaon') {
+
+    if (project?.city) {
       locationParts.push(project.city);
     }
-    
+
     if (locationParts.length === 0) {
       return 'Spain, Costa del Sol';
     }
-    
+
     return locationParts.join(', ');
   };
 
