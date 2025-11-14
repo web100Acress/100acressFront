@@ -5,6 +5,7 @@ import { CarrierIcon } from "../Assets/icons";
 import api from "../config/apiClient";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLocation, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const CareerWithUs = () => {
   const [jobs, setJobs] = useState([]);
@@ -318,13 +319,15 @@ const CareerWithUs = () => {
                   <ChevronDown size={20} className="ml-2" />
                 </motion.a>
                 
-                <motion.button
-                  className="inline-flex items-center justify-center px-8 py-4 border-2 border-white/30 text-white font-semibold rounded-2xl hover:bg-white/10 transition-all duration-300"
-                  whileHover={{ scale: 1.05, y: -2 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  Learn About Us
-                </motion.button>
+                <Link to="/about-us/">
+                  <motion.button
+                    className="inline-flex items-center justify-center px-8 py-4 border-2 border-white/30 text-white font-semibold rounded-2xl hover:bg-white/10 transition-all duration-300"
+                    whileHover={{ scale: 1.05, y: -2 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    Learn About Us
+                  </motion.button>
+                </Link>
               </div>
             </motion.div>
             
