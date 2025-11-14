@@ -7,7 +7,7 @@ import {
 } from "../Assets/icons";
 import AOS from "aos";
 import { Link } from "react-router-dom";
-import { EyeIcon } from "lucide-react";
+import { EyeIcon, Phone } from "lucide-react";
 import CustomSkeleton from "./CustomSkeleton";
 // import { MdFavoriteBorder, MdFavorite } from "react-icons/md";
 import AuthModal from "../Resister/AuthModal";
@@ -125,7 +125,7 @@ const CommonProject = ({
       <span key={index} className="mb-2 md:mb-0">
         <article
           key={index}
-          className={`group overflow-hidden rounded-2xl border border-gray-100 text-black shadow-[0_8px_24px_rgba(0,0,0,0.06)] hover:shadow-[0_12px_28px_rgba(0,0,0,0.10)] transition-all duration-300 ease-out h-full flex flex-col bg-white/70 backdrop-blur supports-[backdrop-filter]:bg-white/60 ${
+          className={`group overflow-hidden rounded-2xl border border-gray-200 text-black shadow-[0_8px_32px_rgba(0,0,0,0.08)] hover:shadow-[0_16px_40px_rgba(0,0,0,0.12)] transition-all duration-300 ease-out h-full flex flex-col bg-white ${
             compact ? "text-[13px]" : ""
           }`}
         >
@@ -153,8 +153,15 @@ const CommonProject = ({
               </div>
             </Link>
 
+            {/* RERA Badge */}
+            <div className="absolute top-3 left-3 z-[3]">
+              <div className="bg-white/95 backdrop-blur-sm rounded-lg px-2 py-1 shadow-md border border-gray-200">
+                <span className="text-[10px] font-bold text-red-600 tracking-wide">RERA</span>
+              </div>
+            </div>
+
             {/* like button ui */}
-            <div className="absolute top-0 right-0 z-[2]">
+            <div className="absolute top-3 right-3 z-[3]">
               <button
                 type="button"
                 aria-label={
@@ -171,31 +178,28 @@ const CommonProject = ({
                     ? "Add to wishlist"
                     : "Login to add to wishlist"
                 }
-                className={`inline-flex items-center justify-center w-1 h-1 rounded-full ${
-                  isFav ? "" : "bg-transparent"
-                }border-white transition`}
+                className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-white/90 backdrop-blur-sm border border-gray-200 shadow-md hover:bg-white transition-all duration-200"
                 onClick={(e) => handleFavoriteClick(e, id, item)}
               >
                 {favCheck(id) ? (
                   <svg
-                    width="24"
-                    height="24"
+                    width="18"
+                    height="18"
                     viewBox="0 0 24 24"
-                    fill="red"
+                    fill="#ef4444"
                     xmlns="http://www.w3.org/2000/svg"
                   >
                     <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
                   </svg>
                 ) : (
                   <svg
-                    width="24"
-                    height="24"
+                    width="18"
+                    height="18"
                     viewBox="0 0 24 24"
                     fill="none"
-                    stroke="#d1d5db"
+                    stroke="#6b7280"
                     strokeWidth="2"
                     xmlns="http://www.w3.org/2000/svg"
-                    className="opacity-100"
                   >
                     <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
                   </svg>
@@ -209,78 +213,90 @@ const CommonProject = ({
           {/* Body */}
           <div
             className={`flex flex-col flex-1 justify-between ${
-              compact ? "p-3 gap-1.5" : "p-4 gap-2"
+              compact ? "p-2 gap-2" : "p-2 gap-3"
             } font-['Rubik',sans-serif]`}
           >
             <div>
               {item?.projectName && (
                 <HeadingTag
                   className={`${
-                    compact ? "text-[15px]" : "text-base md:text-[17px]"
-                  } font-semibold tracking-[-0.2px] text-gray-900 mb-1 group-hover:text-red-600 transition-colors truncate whitespace-nowrap font-['Rubik',sans-serif]`}
+                    compact ? "text-[16px]" : "text-lg md:text-[19px]"
+                  } font-bold tracking-[-0.3px] text-gray-900 mb-2 pt-1 group-hover:text-red-600 transition-colors whitespace-nowrap overflow-hidden text-ellipsis font-['Rubik',sans-serif]`}
+                  title={item.projectName}
                 >
                   {item.projectName}
                 </HeadingTag>
               )}
-              <div
-                className={`mt-0.5 ${
-                  compact ? "text-[12px]" : "text-[13px]"
-                } text-gray-600 truncate max-w-full`}
-              >
-                <span title={item.projectAddress} className="truncate">
-                  {(item.projectAddress || "").slice(0, 48)}
-                  {(item.projectAddress || "").length > 48 ? "…" : ""}
+              
+              {/* Price Display - Moved up */}
+              <div className="mb-3">
+                <span
+                  className={`inline-flex items-center gap-1 ${
+                    compact ? "text-[16px]" : "text-[18px]"
+                  } font-bold text-red-600 whitespace-nowrap font-['Rubik',sans-serif]`}
+                >
+                  <RupeeIcon className="w-4 h-4" />
+                  {item.minPrice && item.maxPrice
+                    ? (item.minPrice < 1
+                        ? `${(item.minPrice * 100).toFixed(0)} L`
+                        : `${item.minPrice} Cr`) +
+                      " - " +
+                      `${item.maxPrice} Cr`
+                    : "Price on Request"}
                 </span>
               </div>
-              <p
-                className={`${
-                  compact ? "text-[12px]" : "text-sm"
-                } text-gray-700 mb-0`}
-              >
-                {item.city}, {item.state}
-              </p>
 
-              {/* <div className="mt-1">
-              <div className="inline-flex items-center gap-2 text-[13px] text-gray-800 font-semibold">
-                <PropertyIcon /> {item.type}
+              {/* Location */}
+              <div className="space-y-1">
+                <div
+                  className={`${
+                    compact ? "text-[13px]" : "text-[14px]"
+                  } text-gray-600 line-clamp-2`}
+                >
+                  <span title={item.projectAddress}>
+                    {item.projectAddress || `${item.city}, ${item.state}`}
+                  </span>
+                </div>
+                <p
+                  className={`${
+                    compact ? "text-[12px]" : "text-[13px]"
+                  } text-gray-500 font-medium`}
+                >
+                  {item.city}, {item.state}
+                </p>
               </div>
-               
-            </div> */}
             </div>
 
-            {/* Price row */}
-            <div className="pt-0">
-              <span
-                className={`inline-flex items-center gap-1 ${
-                  compact ? "text-[14px]" : "text-[15px]"
-                } font-bold text-black whitespace-nowrap font-['Rubik',sans-serif]`}
-              >
-                <RupeeIcon />
-                {item.minPrice && item.maxPrice
-                  ? (item.minPrice < 1
-                      ? `${(item.minPrice * 100).toFixed(2)} L`
-                      : `${item.minPrice} Cr`) +
-                    " - " +
-                    `${item.maxPrice} Cr`
-                  : "Reveal Soon"}
-              </span>
-            </div>
-
-            {/* Buttons row - Modified */}
-            <div className="flex items-center gap-2 mt-2">
-              {/* Explore Button */}
+            {/* Action Buttons - All in one row */}
+            <div className="flex items-center gap-2">
+              {/* Explore Button - Takes most space */}
               <Link
                 to={`/${pUrl}/`}
                 target="_top"
-                className={`flex-1 flex items-center justify-center text-white bg-[#ee1c25] hover:bg-[#d11922] focus:ring-2 focus:ring-[#ee1c25] focus:outline-none font-medium rounded-full ${
-                  compact ? "text-[11px] px-3 py-1.5" : "text-[12px] px-4 py-2"
-                } shadow-md hover:shadow-lg transition`}
+                className={`flex-1 flex items-center justify-center text-white bg-[#ee1c25] hover:bg-[#d11922] focus:ring-2 focus:ring-[#ee1c25] focus:outline-none font-semibold rounded-lg ${
+                  compact ? "text-[12px] px-3 py-2" : "text-[13px] px-4 py-2.5"
+                } shadow-lg hover:shadow-xl transition-all duration-200`}
                 onClick={() => addViewedProject(item)}
               >
                 Explore
               </Link>
 
-              {/* WhatsApp Button */}
+              {/* Phone Icon Button */}
+              <a
+                href={`tel:${(
+                  item.contactNumber ||
+                  item.whatsappNumber ||
+                  "918500900100"
+                ).replace(/\s+/g, "")}`}
+                className={`flex items-center justify-center text-gray-700 bg-gray-100 hover:bg-gray-200 border border-gray-200 rounded-lg ${
+                  compact ? "w-8 h-8" : "w-10 h-10"
+                } shadow-sm hover:shadow-md transition-all duration-200`}
+                title="Call Now"
+              >
+                <Phone className={compact ? "w-3.5 h-3.5" : "w-4 h-4"} />
+              </a>
+
+              {/* WhatsApp Icon Button */}
               <a
                 href={`https://wa.me/${(
                   item.whatsappNumber ||
@@ -296,15 +312,14 @@ const CommonProject = ({
                 )} project`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`flex-1 flex items-center justify-center text-white bg-[#ee1c25] hover:bg-[#d11922] focus:ring-2 focus:ring-[#ee1c25] focus:outline-none font-medium rounded-full ${
-                  compact ? "text-[11px] px-3 py-1.5" : "text-[12px] px-4 py-2"
-                } shadow-md hover:shadow-lg transition`}
+                className={`flex items-center justify-center text-green-700 bg-green-50 hover:bg-green-100 border border-green-200 rounded-lg ${
+                  compact ? "w-8 h-8" : "w-10 h-10"
+                } shadow-sm hover:shadow-md transition-all duration-200`}
                 title="Chat on WhatsApp"
               >
-                <i className="fab fa-whatsapp text-lg"></i>
-                <span className={`ml-1 ${compact ? "text-[11px]" : "text-xs"}`}>
-                  WhatsApp
-                </span>
+                <i
+                  className={`fab fa-whatsapp ${compact ? "text-[14px]" : "text-[16px]"}`}
+                ></i>
               </a>
             </div>
           </div>
