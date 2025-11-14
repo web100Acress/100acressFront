@@ -157,7 +157,7 @@ const UserEdit = () => {
       }
       const form = new FormData();
       form.append('avatar', file);
-      const resp = await api.post(`/users/${userId}/avatar`, form);
+      const resp = await api.post(`/postPerson/users/${userId}/avatar`, form);
       const url = resp?.data?.data?.avatarUrl || '';
       if (url) {
         const bust = `${url}${url.includes('?') ? '&' : '?'}t=${Date.now()}`;

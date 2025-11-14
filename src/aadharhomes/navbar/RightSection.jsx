@@ -48,7 +48,7 @@ export default function RightSection({
       if (!token) { toast({ title: 'Please log in to change your photo', status: 'warning', duration: 2500, isClosable: true }); return; }
       const form = new FormData();
       form.append('avatar', file);
-      const res = await api.post(`/users/${userId}/avatar`, form);
+      const res = await api.post(`/postPerson/users/${userId}/avatar`, form);
       const url = res?.data?.data?.avatarUrl || '';
       if (url && typeof onAvatarUpdated === 'function') onAvatarUpdated(url);
       toast({ title: 'Profile photo updated', status: 'success', duration: 2500, isClosable: true });

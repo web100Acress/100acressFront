@@ -279,7 +279,7 @@ export default function Navbar() {
   const fetchAndSetAvatar = async () => {
     try {
       if (!userIdForEdit) return;
-      const res = await axios.get(`${API_BASE}/users/${userIdForEdit}/profile`, {
+      const res = await axios.get(`${API_BASE}/postPerson/users/${userIdForEdit}/profile`, {
         headers: { Authorization: authToken ? `Bearer ${authToken}` : undefined },
       });
       const url = res?.data?.data?.avatarUrl || "";
