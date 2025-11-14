@@ -51,8 +51,9 @@ export const getContactCardUrl = (slug) => {
  * @returns {string} QR code image URL
  */
 export const getQRCodeUrl = (slug) => {
-  const contactUrl = getContactCardUrl(slug);
-  return `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(contactUrl)}`;
+  // Always use production URL for QR codes
+  const productionUrl = `https://100acress.com/hi/${slug}`;
+  return `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(productionUrl)}`;
 };
 
 /**
