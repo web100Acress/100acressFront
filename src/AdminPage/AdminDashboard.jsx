@@ -96,10 +96,9 @@ const sections = [
   },
   {
     name: 'Career',
-    // Merge openings and applications into one card
     openingsApi: '/career/opening/ViewAll?limit=1&page=1',
     applicationsApi: '/career/application/count',
-    link: '/Admin/jobposting',
+    link: '/hr/dashboard',
     gradientClass: 'bg-light-slate-gradient',
     icon: <MdContactMail size={32} className="card-icon" />,
     description: 'Job openings and total applications.',
