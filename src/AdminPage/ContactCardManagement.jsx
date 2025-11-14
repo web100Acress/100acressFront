@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+
 import {
   Search,
   Plus,
@@ -28,6 +29,7 @@ import {
 import { toast } from 'react-hot-toast';
 import axios from 'axios';
 import { getApiBase } from '../config/apiBase';
+import Sidebar from './Sidebar';
 
 const ContactCardManagement = () => {
   const [contactCards, setContactCards] = useState([]);
@@ -135,8 +137,13 @@ const ContactCardManagement = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-6">
-      <div className="max-w-7xl mx-auto">
+    <div className="flex h-screen bg-gray-100">
+      <div className="w-1/5">
+        <Sidebar />
+      </div>
+      <div className="w-4/5 overflow-auto">
+        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-6">
+          <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between">
@@ -451,6 +458,8 @@ const ContactCardManagement = () => {
           editData={editingCard}
         />
       )}
+        </div>
+      </div>
     </div>
   );
 };

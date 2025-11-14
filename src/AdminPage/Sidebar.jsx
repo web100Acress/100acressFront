@@ -11,6 +11,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { FaRegUserCircle } from "react-icons/fa";
 import { BiSolidGraduation } from "react-icons/bi";
 import { RiLogoutCircleRLine } from "react-icons/ri";
+import { Building } from "lucide-react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; // Import toastify CSS
@@ -162,6 +163,10 @@ const Sidebar = () => {
           <Link to="/admin/s3-manager" className={`sidebar-nav-item group flex items-center gap-3 px-4 py-2 rounded-lg transition-all duration-200 hover:bg-gradient-to-r hover:from-green-500/80 hover:to-teal-500/80 hover:text-white font-medium text-base ${location.pathname.startsWith("/admin/s3-manager") ? "bg-gradient-to-r from-green-500/80 to-teal-500/80 text-white" : "text-gray-200 dark:text-gray-300"}`}>
             <FaAws className="icon text-xl group-hover:scale-110 group-hover:text-white transition-transform duration-200" />
             <span>S3 Manager</span>
+          </Link>
+          <Link to="/admin/contact-cards" className={`sidebar-nav-item group flex items-center gap-3 px-4 py-2 rounded-lg transition-all duration-200 hover:bg-gradient-to-r hover:from-orange-500/80 hover:to-red-500/80 hover:text-white font-medium text-base ${location.pathname.startsWith("/admin/contact-cards") ? "bg-gradient-to-r from-orange-500/80 to-red-500/80 text-white" : "text-gray-200 dark:text-gray-300"}`}>
+            <Building className="icon text-xl group-hover:scale-110 group-hover:text-white transition-transform duration-200" />
+            <span>Contact Cards</span>
           </Link>
           {/* Contact Us Dropdown */}
           {/* <a href="#" onClick={toggleContactDropdown} className="sidebar-nav-item group flex items-center gap-3 px-4 py-2 rounded-lg transition-all duration-200 hover:bg-gradient-to-r hover:from-blue-500/80 hover:to-purple-500/80 hover:text-white text-gray-200 font-medium text-base cursor-pointer select-none dark:text-gray-300 dark:hover:text-white dark:hover:bg-gradient-to-r dark:hover:from-blue-700/80 dark:hover:to-purple-700/80">
