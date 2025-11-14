@@ -229,7 +229,7 @@ const CommonProject = ({
               )}
               
               {/* Price Display - Moved up */}
-              <div className="mb-3">
+              <div className="mb-1">
                 <span
                   className={`inline-flex items-center gap-1 ${
                     compact ? "text-[16px]" : "text-[18px]"
@@ -239,7 +239,7 @@ const CommonProject = ({
                   {item.minPrice && item.maxPrice
                     ? (item.minPrice < 1
                         ? `${(item.minPrice * 100).toFixed(0)} L`
-                        : `${item.minPrice} Cr`) +
+                        : `${item.minPrice} `) +
                       " - " +
                       `${item.maxPrice} Cr`
                     : "Price on Request"}
