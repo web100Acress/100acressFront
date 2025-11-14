@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import Footer from "../Components/Actual_Components/Footer";
-import { MapPin, Mail, Phone, X, Search, SlidersHorizontal, Filter, ChevronDown, Clock, Building2, Users, Briefcase } from "lucide-react";
+import { MapPin, Mail, Phone, X, Search, SlidersHorizontal, Filter, ChevronDown, Clock, Building2, Users, Briefcase, Eye, Calendar, Award, Target } from "lucide-react";
 import { CarrierIcon } from "../Assets/icons";
 import api from "../config/apiClient";
 import { motion, AnimatePresence } from "framer-motion";
@@ -11,6 +11,7 @@ const CareerWithUs = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [applyForId, setApplyForId] = useState(null);
+  const [selectedJob, setSelectedJob] = useState(null);
   const [form, setForm] = useState({ name: "", email: "", phone: "", resumeUrl: "", coverLetter: "" });
   const [resumeFile, setResumeFile] = useState(null);
   // UI enhancement states
@@ -254,7 +255,16 @@ const CareerWithUs = () => {
           )}
         </div>
 
-        <div className="mt-6 pt-4 border-t border-gray-100">
+        <div className="mt-6 pt-4 border-t border-gray-100 space-y-3">
+          <motion.button
+            onClick={() => setSelectedJob(job)}
+            className="w-full px-6 py-3 bg-white border-2 border-primaryRed text-primaryRed font-semibold rounded-2xl transition-all duration-300 hover:bg-primaryRed hover:text-white flex items-center justify-center gap-2"
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+          >
+            <Eye size={18} />
+            View Details
+          </motion.button>
           <motion.button
             onClick={() => setApplyForId(job._id)}
             className="w-full px-6 py-3 bg-gradient-to-r from-primaryRed to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold rounded-2xl transition-all duration-300 shadow-lg shadow-primaryRed/25 hover:shadow-xl hover:shadow-primaryRed/40"
@@ -771,6 +781,169 @@ const CareerWithUs = () => {
             </div>
           )}
         </section>
+
+        {/* Job Details Modal */}
+        <AnimatePresence>
+          {selectedJob && (
+            <motion.div
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-2 sm:p-4 lg:p-8"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            >
+              <motion.div
+                className="bg-white rounded-xl sm:rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-xl mx-2 sm:mx-3"
+                initial={{ scale: 0.9, y: 50 }}
+                animate={{ scale: 1, y: 0 }}
+                exit={{ scale: 0.9, y: 50 }}
+                transition={{ type: "spring", damping: 25, stiffness: 200 }}
+              >
+                {/* Modal Header */}
+                <div className="sticky top-0 bg-white/95 backdrop-blur-sm p-4 sm:p-6 border-b border-gray-100 rounded-t-2xl">
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1 pr-4">
+                      <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">{selectedJob.jobTitle}</h2>
+                      <div className="flex items-center gap-3 text-gray-600">
+                        <div className="flex items-center gap-2">
+                          <Building2 size={16} className="text-gray-400" />
+                          <span className="font-medium">{selectedJob.jobLocation || "Gurgaon, Haryana"}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Calendar size={16} className="text-gray-400" />
+                          <span className="text-sm">{calculateDaysAgo(selectedJob.createdAt || new Date().toISOString())}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => setSelectedJob(null)}
+                      className="p-2 sm:p-3 rounded-xl sm:rounded-2xl bg-gray-100 text-gray-500 hover:bg-gray-200 hover:text-gray-700 transition-all duration-200 flex-shrink-0"
+                    >
+                      <X size={24} />
+                    </button>
+                  </div>
+                </div>
+
+                {/* Modal Content */}
+                <div className="p-4 sm:p-6 space-y-8">
+                  {/* Job Profile */}
+                  {selectedJob.jobProfile && (
+                    <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6">
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="w-8 h-8 rounded-xl bg-blue-500/20 flex items-center justify-center">
+                          <Target size={18} className="text-blue-600" />
+                        </div>
+                        <h3 className="text-xl font-bold text-blue-900">Job Overview</h3>
+                      </div>
+                      <p className="text-blue-800 leading-relaxed">{selectedJob.jobProfile}</p>
+                    </div>
+                  )}
+
+                  {/* Key Details Grid */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Experience */}
+                    <div className="bg-white border border-gray-200 rounded-2xl p-6">
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="w-8 h-8 rounded-xl bg-green-500/20 flex items-center justify-center">
+                          <Users size={18} className="text-green-600" />
+                        </div>
+                        <h4 className="text-lg font-bold text-gray-900">Experience Required</h4>
+                      </div>
+                      <p className="text-gray-700 font-medium">{selectedJob.experience || "Not specified"}</p>
+                    </div>
+
+                    {/* Skills */}
+                    {selectedJob.skill && (
+                      <div className="bg-white border border-gray-200 rounded-2xl p-6">
+                        <div className="flex items-center gap-3 mb-4">
+                          <div className="w-8 h-8 rounded-xl bg-purple-500/20 flex items-center justify-center">
+                            <Award size={18} className="text-purple-600" />
+                          </div>
+                          <h4 className="text-lg font-bold text-gray-900">Skills Required</h4>
+                        </div>
+                        <p className="text-gray-700 leading-relaxed">{selectedJob.skill}</p>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Responsibilities */}
+                  {selectedJob.responsibility && (
+                    <div className="bg-white border border-gray-200 rounded-2xl p-6">
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="w-8 h-8 rounded-xl bg-orange-500/20 flex items-center justify-center">
+                          <Briefcase size={18} className="text-orange-600" />
+                        </div>
+                        <h4 className="text-lg font-bold text-gray-900">Key Responsibilities</h4>
+                      </div>
+                      <div className="text-gray-700 leading-relaxed whitespace-pre-line">
+                        {selectedJob.responsibility}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Job Meta Information */}
+                  <div className="bg-gray-50 rounded-2xl p-6">
+                    <h4 className="text-lg font-bold text-gray-900 mb-4">Job Information</h4>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Job ID:</span>
+                        <span className="font-medium text-gray-900">{selectedJob._id}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Posted Date:</span>
+                        <span className="font-medium text-gray-900">
+                          {new Date(selectedJob.createdAt).toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                          })}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Last Updated:</span>
+                        <span className="font-medium text-gray-900">
+                          {new Date(selectedJob.updatedAt).toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                          })}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Location:</span>
+                        <span className="font-medium text-gray-900">{selectedJob.jobLocation || "Gurgaon, Haryana"}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Modal Footer */}
+                <div className="sticky bottom-0 bg-white/95 backdrop-blur-sm p-4 sm:p-6 border-t border-gray-100 rounded-b-2xl">
+                  <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+                    <motion.button
+                      onClick={() => setSelectedJob(null)}
+                      className="flex-1 px-6 py-3 bg-gray-100 text-gray-700 font-semibold rounded-xl hover:bg-gray-200 transition-all duration-300"
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                    >
+                      Close
+                    </motion.button>
+                    <motion.button
+                      onClick={() => {
+                        setApplyForId(selectedJob._id);
+                        setSelectedJob(null);
+                      }}
+                      className="flex-1 px-6 py-3 bg-gradient-to-r from-primaryRed to-red-600 text-white font-semibold rounded-xl hover:from-red-600 hover:to-red-700 transition-all duration-300 shadow-lg"
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                    >
+                      Apply for This Position
+                    </motion.button>
+                  </div>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Application Modal */}
         <AnimatePresence>
