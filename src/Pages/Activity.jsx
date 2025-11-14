@@ -7,7 +7,7 @@ import { addToFavorites, removeFromFavorites } from '../Redux/slice/FavoritesSli
 import { addToViewed } from '../Redux/slice/ViewedSlice';
 import { Link } from 'react-router-dom';
 import Navbar from '../aadharhomes/navbar/Navbar';
-import LuxuryFooter from '../Components/Actual_Components/LuxuryFooter';
+import CrimsonEleganceFooter from "../Components/Footer/CrimsonEleganceFooter";
 import Api_Service from '../Redux/utils/Api_Service';
 
 function readJSON(key, fallback) {
@@ -478,7 +478,7 @@ export default function Activity() {
           )}
         </div>
       </div>
-      <LuxuryFooter />
+      <CrimsonEleganceFooter />
     </ActivityWrapper>
   );
 }

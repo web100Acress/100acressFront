@@ -7,39 +7,35 @@ const SuggestedProjects = () => {
   const topProjects = [
     {
       id: 1,
-      title: "Luxury Apartments in Gurugram",
-      location: "Sector 65, Gurugram",
-      price: "₹1.2 Cr - ₹2.5 Cr",
-      image:
-        "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/uploads/1735897666267-ban.jpg",
-      url: "/projects/luxury-apartments-gurugram",
+      title: "Omaxe State Dwarka",
+      location: "Sector 19B, Dwarka",
+      price: "₹40.00 L - 50 Cr",
+      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/thumbnails/1740914816175-100acre/project/r9ogecjzjckzyzkonezl",
+      url: "https://www.100acress.com/omaxe-dwarka/",
     },
     {
       id: 2,
-      title: "Premium Villas in Sohna Road",
-      location: "Sohna Road, Gurugram",
-      price: "₹2.5 Cr - ₹5 Cr",
-      image:
-        "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/uploads/1741245723440-thumbnail.jpg",
-      url: "/projects/premium-villas-sohna",
+      title: "ROF Pravasa",
+      location: "Sector 88A, Dwarka Expressway",
+      price: "₹2.4 Cr - 2.6 Cr",
+      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/thumbnails/1746440983993-thumb.jpg",
+      url: "https://www.100acress.com/rof-pravasa/",
     },
     {
       id: 3,
-      title: "Affordable Housing Dwarka Expressway",
-      location: "Dwarka Expressway",
-      price: "₹75 L - ₹1.2 Cr",
-      image:
-        "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/thumbnails/1740914828774-100acre/project/axam5uv3telszz9uyaqa",
-      url: "/projects/affordable-housing-dwarka",
+      title: "Trump Towers Delhi NCR",
+      location: "Sector 65, Golf Course Extn Road",
+      price: "₹12.34 Cr - 21.18 Cr",
+      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/thumbnails/1740914727615-100acre/project/xaz95xnsowxannd5lxrm",
+      url: "https://www.100acress.com/trumptowersdelhincr/",
     },
     {
       id: 4,
-      title: "Luxury Floors Golf Course Road",
-      location: "Golf Course Road, Gurugram",
-      price: "₹3 Cr - ₹6 Cr",
-      image:
-        "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/thumbnails/1740914828774-100acre/project/axam5uv3telszz9uyaqa",
-      url: "/projects/luxury-floors-golf-course",
+      title: "DLF GardenCity Central",
+      location: "Sector 84, New Gurgaon",
+      price: "₹4.09 Cr - 11.17 Cr",
+      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/thumbnails/1740914756943-100acre/project/id4wbeeyvpc1hraytjsu",
+      url: "https://www.100acress.com/dlf-gardencity-central/",
     },
   ];
 
