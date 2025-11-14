@@ -239,7 +239,7 @@ const CommonProject = ({
                   {item.minPrice && item.maxPrice
                     ? (item.minPrice < 1
                         ? `${(item.minPrice * 100).toFixed(0)} L`
-                        : `${item.minPrice} Cr`) +
+                        : `${item.minPrice} `) +
                       " - " +
                       `${item.maxPrice} Cr`
                     : "Price on Request"}
