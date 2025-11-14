@@ -327,7 +327,7 @@ const UserDashBoard = () => {
         </div>
       </div>
       
-      <LikedProjectsSection />
+      {/* <LikedProjectsSection /> */}
       
       {/* Suggested Projects */}
       <SuggestedProjects />
