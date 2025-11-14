@@ -338,7 +338,7 @@ const ModernContactCard = () => {
           {/* Main Glassmorphism Card */}
           <div className="backdrop-blur-xl bg-white/30 border border-white/40 rounded-3xl shadow-2xl overflow-hidden">
             {/* Profile Header */}
-            <div className="relative p-6 pb-4 text-center">
+            <div className="relative p-5 pb-3 text-center">
               {/* Gradient Background */}
               <div 
                 className="absolute inset-0 opacity-90"
@@ -347,10 +347,10 @@ const ModernContactCard = () => {
                 }}
               />
                   
-                  {/* Company Logo - Top Right */}
+                  {/* Company Logo - Top Left */}
                   {contactData.company_logo_url && (
                     <motion.div 
-                      initial={{ opacity: 0, x: 20 }}
+                      initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: 0.3 }}
                       className="absolute top-3 left-3 z-20"
@@ -358,50 +358,51 @@ const ModernContactCard = () => {
                       <img
                         src={contactData.company_logo_url}
                         alt={contactData.company || '100acress'}
-                        className="h-10 w-auto max-w-24 object-contain drop-shadow-lg opacity-90"
+                        className="h-12 w-auto max-w-28 object-contain drop-shadow-lg opacity-95"
                       />
                     </motion.div>
                   )}
                   
-                  <div className="relative z-10 pt-8">
+                  <div className="relative z-10 pt-4">
                     {/* Profile Picture */}
                     <motion.div
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
                       transition={{ delay: 0.4, type: "spring", stiffness: 200 }}
-                      className="mb-6"
+                      className="mb-4"
                     >
                       {contactData.profile_image_url ? (
                         <img
                           src={contactData.profile_image_url}
                           alt={contactData.name}
-                          className="w-36 h-36 rounded-full mx-auto object-cover border-4 border-white/40 shadow-2xl ring-4 ring-white/20"
+                          className="w-32 h-32 rounded-full mx-auto object-cover border-4 border-white/40 shadow-2xl ring-4 ring-white/20"
                         />
                       ) : (
-                        <div className="w-36 h-36 rounded-full mx-auto bg-white/30 border-4 border-white/40 shadow-2xl ring-4 ring-white/20 flex items-center justify-center">
-                          <span className="text-4xl font-bold text-white">
+                        <div className="w-32 h-32 rounded-full mx-auto bg-white/30 border-4 border-white/40 shadow-2xl ring-4 ring-white/20 flex items-center justify-center">
+                          <span className="text-3xl font-bold text-white">
                             {getInitials(contactData.name)}
                           </span>
                         </div>
                       )}
                     </motion.div>
 
-                    {/* Name and Title */}
+                    {/* Name */}
                     <motion.h1 
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.5 }}
-                      className="text-3xl font-bold text-white mb-2 drop-shadow-lg"
+                      className="text-2xl font-semibold text-white mb-1 drop-shadow-lg tracking-wide"
                     >
                       {contactData.name}
                     </motion.h1>
 
+                    {/* Designation */}
                     {contactData.designation && (
                       <motion.p 
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.6 }}
-                        className="text-white/95 text-lg font-medium mb-2 drop-shadow"
+                        className="text-white/80 text-sm font-normal mb-1 drop-shadow opacity-80"
                       >
                         {contactData.designation}
                       </motion.p>
@@ -413,9 +414,9 @@ const ModernContactCard = () => {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.7 }}
-                        className="flex items-center justify-center"
+                        className="flex items-center justify-center mb-2"
                       >
-                        <span className="text-white/90 font-medium text-base drop-shadow">
+                        <span className="text-white/75 font-light text-sm drop-shadow opacity-80">
                           {contactData.company}
                         </span>
                       </motion.div>
@@ -424,17 +425,26 @@ const ModernContactCard = () => {
                 </div>
 
                 {/* Contact Information */}
-                <div className="p-4 space-y-3">
-                  {/* Bio */}
+                <div className="px-4 pb-3">
+                  {/* Elegant Bio */}
                   {contactData.bio && (
                     <motion.div 
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.8 }}
-                      className="text-center mb-4 p-3 backdrop-blur-sm bg-white/20 border border-white/30 rounded-xl"
+                      className="text-center mt-2 mb-4"
                     >
-                      <p className="text-gray-700 leading-relaxed font-medium text-sm">{contactData.bio}</p>
+                      <p className="text-gray-600 text-lg leading-relaxed font-normal max-w-[80%] mx-auto" style={{ color: '#4d4d4d', fontSize: '18px', lineHeight: '1.6' }}>
+                        {contactData.bio}
+                      </p>
                     </motion.div>
+                  )}
+                  
+                  {/* Subtle Divider */}
+                  {contactData.bio && (
+                    <div className="flex justify-center mb-3">
+                      <div className="w-12 h-px bg-gray-300/50"></div>
+                    </div>
                   )}
 
                   {/* Contact Actions */}
@@ -447,14 +457,14 @@ const ModernContactCard = () => {
                       transition={{ delay: 0.9 }}
                       whileHover={{ scale: 1.02, x: 5 }}
                       whileTap={{ scale: 0.98 }}
-                      className="flex items-center p-3 backdrop-blur-sm bg-white/40 border border-white/30 rounded-xl hover:bg-white/50 transition-all duration-300 group shadow-md hover:shadow-lg"
+                      className="flex items-center p-3 backdrop-blur-sm bg-white/50 border border-white/30 rounded-2xl hover:bg-white/60 transition-all duration-300 group shadow-sm hover:shadow-md"
                     >
-                      <div className="bg-gradient-to-br from-green-500 to-green-600 p-3 rounded-xl mr-4 shadow-lg group-hover:shadow-xl transition-shadow">
-                        <Phone size={22} className="text-white" />
+                      <div className="bg-gradient-to-br from-green-500 to-green-600 p-2.5 rounded-xl mr-3 shadow-md group-hover:shadow-lg transition-shadow">
+                        <Phone size={20} className="text-white" />
                       </div>
-                      <div className="flex-1 space-y-0 leading-tight">
-                        <p className="font-semibold text-gray-800 text-base">Call</p>
-                        <p className="text-green-600 font-medium text-lg">{contactData.phone}</p>
+                      <div className="flex-1">
+                        <p className="font-medium text-gray-700 text-base leading-tight">Call</p>
+                        <p className="text-green-600 font-semibold text-base leading-tight">{contactData.phone}</p>
                       </div>
                     </motion.a>
 
@@ -466,14 +476,14 @@ const ModernContactCard = () => {
                       transition={{ delay: 1.0 }}
                       whileHover={{ scale: 1.02, x: 5 }}
                       whileTap={{ scale: 0.98 }}
-                      className="flex items-center p-3 backdrop-blur-sm bg-white/40 border border-white/30 rounded-xl hover:bg-white/50 transition-all duration-300 group shadow-md hover:shadow-lg"
+                      className="flex items-center p-3 backdrop-blur-sm bg-white/50 border border-white/30 rounded-2xl hover:bg-white/60 transition-all duration-300 group shadow-sm hover:shadow-md"
                     >
-                      <div className="bg-gradient-to-br from-blue-500 to-blue-600 p-3 rounded-xl mr-4 shadow-lg group-hover:shadow-xl transition-shadow">
-                        <Mail size={22} className="text-white" />
+                      <div className="bg-gradient-to-br from-blue-500 to-blue-600 p-2.5 rounded-xl mr-3 shadow-md group-hover:shadow-lg transition-shadow">
+                        <Mail size={20} className="text-white" />
                       </div>
                       <div className="flex-1">
-                        <p className="font-semibold text-gray-800 text-sm">Email</p>
-                        <p className="text-blue-600 font-medium text-base truncate">{contactData.email}</p>
+                        <p className="font-medium text-gray-700 text-base leading-tight">Email</p>
+                        <p className="text-blue-600 font-semibold text-base truncate leading-tight">{contactData.email}</p>
                       </div>
                     </motion.a>
 
@@ -488,14 +498,14 @@ const ModernContactCard = () => {
                         transition={{ delay: 1.1 }}
                         whileHover={{ scale: 1.02, x: 5 }}
                         whileTap={{ scale: 0.98 }}
-                        className="flex items-center p-3 backdrop-blur-sm bg-white/40 border border-white/30 rounded-xl hover:bg-white/50 transition-all duration-300 group shadow-md hover:shadow-lg"
+                        className="flex items-center p-3 backdrop-blur-sm bg-white/50 border border-white/30 rounded-2xl hover:bg-white/60 transition-all duration-300 group shadow-sm hover:shadow-md"
                       >
-                        <div className="bg-gradient-to-br from-purple-500 to-purple-600 p-3 rounded-xl mr-4 shadow-lg group-hover:shadow-xl transition-shadow">
-                          <Globe size={22} className="text-white" />
+                        <div className="bg-gradient-to-br from-purple-500 to-purple-600 p-2.5 rounded-xl mr-3 shadow-md group-hover:shadow-lg transition-shadow">
+                          <Globe size={20} className="text-white" />
                         </div>
                         <div className="flex-1">
-                          <p className="font-semibold text-gray-800 text-sm">Website</p>
-                          <p className="text-purple-600 font-medium text-base">Visit Website</p>
+                          <p className="font-medium text-gray-700 text-base leading-tight">Website</p>
+                          <p className="text-purple-600 font-semibold text-base leading-tight">Visit Website</p>
                         </div>
                       </motion.a>
                     )}
@@ -506,14 +516,14 @@ const ModernContactCard = () => {
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: 1.2 }}
-                        className="flex items-start p-4 backdrop-blur-sm bg-white/40 border border-white/30 rounded-2xl shadow-md"
+                        className="flex items-start p-3 backdrop-blur-sm bg-white/50 border border-white/30 rounded-2xl shadow-sm hover:shadow-md transition-shadow"
                       >
-                        <div className="bg-gradient-to-br from-gray-500 to-gray-600 p-3 rounded-xl mr-4 mt-1 shadow-lg">
-                          <MapPin size={22} className="text-white" />
+                        <div className="bg-gradient-to-br from-gray-500 to-gray-600 p-2.5 rounded-xl mr-3 mt-0.5 shadow-md">
+                          <MapPin size={20} className="text-white" />
                         </div>
                         <div className="flex-1">
-                          <p className="font-semibold text-gray-800 mb-1 text-sm">Address</p>
-                          <div className="text-gray-700 text-sm space-y-1 leading-relaxed">
+                          <p className="font-medium text-gray-700 mb-1 text-base leading-tight">Address</p>
+                          <div className="text-gray-600 text-sm space-y-0.5 leading-tight">
                             {contactData.address.street && <p>{contactData.address.street}</p>}
                             <p>
                               {[contactData.address.city, contactData.address.state, contactData.address.zipCode]
@@ -562,18 +572,18 @@ const ModernContactCard = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 1.4 }}
-              className="p-4 pt-0"
+              className="px-5 pb-5 pt-2"
             >
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-3 gap-2">
                 {/* Download vCard */}
                 <motion.button
                   onClick={handleDownloadVCard}
                   whileHover={{ scale: 1.05, y: -2 }}
                   whileTap={{ scale: 0.95 }}
-                  className="flex flex-col items-center p-4 backdrop-blur-sm bg-white/50 border border-white/40 rounded-2xl hover:bg-white/60 transition-all duration-300 shadow-md hover:shadow-lg"
+                  className="flex flex-col items-center p-3 backdrop-blur-sm bg-white/50 border border-white/40 rounded-xl hover:bg-white/60 transition-all duration-300 shadow-sm hover:shadow-md"
                 >
-                  <Download size={26} className="text-indigo-600 mb-2" />
-                  <span className="text-sm font-semibold text-gray-700">Save</span>
+                  <Download size={22} className="text-indigo-600 mb-1.5" />
+                  <span className="text-xs font-medium text-gray-700">Save</span>
                 </motion.button>
 
                 {/* Share */}
@@ -581,10 +591,10 @@ const ModernContactCard = () => {
                   onClick={() => setShowShareMenu(!showShareMenu)}
                   whileHover={{ scale: 1.05, y: -2 }}
                   whileTap={{ scale: 0.95 }}
-                  className="flex flex-col items-center p-4 backdrop-blur-sm bg-white/50 border border-white/40 rounded-2xl hover:bg-white/60 transition-all duration-300 shadow-md hover:shadow-lg"
+                  className="flex flex-col items-center p-3 backdrop-blur-sm bg-white/50 border border-white/40 rounded-xl hover:bg-white/60 transition-all duration-300 shadow-sm hover:shadow-md"
                 >
-                  <Share2 size={26} className="text-green-600 mb-2" />
-                  <span className="text-sm font-semibold text-gray-700">Share</span>
+                  <Share2 size={22} className="text-green-600 mb-1.5" />
+                  <span className="text-xs font-medium text-gray-700">Share</span>
                 </motion.button>
 
                 {/* QR Code */}
@@ -592,10 +602,10 @@ const ModernContactCard = () => {
                   onClick={handleShowQR}
                   whileHover={{ scale: 1.05, y: -2 }}
                   whileTap={{ scale: 0.95 }}
-                  className="flex flex-col items-center p-4 backdrop-blur-sm bg-white/50 border border-white/40 rounded-2xl hover:bg-white/60 transition-all duration-300 shadow-md hover:shadow-lg"
+                  className="flex flex-col items-center p-3 backdrop-blur-sm bg-white/50 border border-white/40 rounded-xl hover:bg-white/60 transition-all duration-300 shadow-sm hover:shadow-md"
                 >
-                  <QrCode size={26} className="text-purple-600 mb-2" />
-                  <span className="text-sm font-semibold text-gray-700">QR Code</span>
+                  <QrCode size={22} className="text-purple-600 mb-1.5" />
+                  <span className="text-xs font-medium text-gray-700">QR Code</span>
                 </motion.button>
               </div>
             </motion.div>
