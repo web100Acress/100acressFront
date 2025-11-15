@@ -78,31 +78,31 @@ const CrimsonEleganceFooter = () => {
 
   const primeLocations = [
     {
-      name: "Projects in Sohna Road",
+      name: "Projects on Sohna Road",
       href: "/property-in-gurugram/sohna-road/",
     },
     {
-      name: "Projects in Golf Course",
+      name: "Projects on Golf Course",
       href: "/property-in-gurugram/golf-course/",
     },
     {
-      name: "Projects in Northern Peripheral Road",
+      name: "Projects on Northern Peripheral Road",
       href: "/property-in-gurugram/northern-peripheral-road/",
     },
     {
-      name: "Projects in Dwarka Expressway",
+      name: "Projects on Dwarka Expressway",
       href: "/property-in-gurugram/dwarka-expressway/",
     },
     {
-      name: "Projects in New Gurgaon",
+      name: "Projects on New Gurgaon",
       href: "/property-in-gurugram/new-gurgaon/",
     },
     {
-      name: "Projects in Southern Peripheral Road",
+      name: "Projects on Southern Peripheral Road",
       href: "/property-in-gurugram/southern-peripheral-road/",
     },
     {
-      name: "Projects in Golf Course Extn Road",
+      name: "Projects on Golf Course Extn Road",
       href: "/property-in-gurugram/golf-course-extn-road/",
     },
   ];
