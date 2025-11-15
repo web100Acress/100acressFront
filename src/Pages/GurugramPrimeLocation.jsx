@@ -325,7 +325,7 @@ const GurugramPrimeLocation = () => {
             </div>
 
             {/* City */}
-            <div className="relative w-full sm:w-auto min-w-[140px]">
+            {/* <div className="relative w-full sm:w-auto min-w-[140px]">
               <select
                 value={selectedCity}
                 onChange={(e) => setSelectedCity(e.target.value)}
@@ -350,7 +350,7 @@ const GurugramPrimeLocation = () => {
                 <option value="Pushkar">Pushkar</option>
               </select>
               <FiChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600 pointer-events-none text-sm" />
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
