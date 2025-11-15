@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { getApiBase } from "../config/apiBase";
-import LuxuryFooter from "../Components/Actual_Components/LuxuryFooter";
+import Footer from "../Components/Footer/CrimsonEleganceFooter";
+import Navbar from "../aadharhomes/navbar/Navbar";
 
 const UserEditProperty = () => {
   const propertyTypes = ["Select Property Type", "Commercial", "Residential"];
@@ -34,25 +35,26 @@ const UserEditProperty = () => {
 
   useEffect(() => {
     if (selected) {
+      console.log('Selected property data:', selected); // Debug log
       setSellProperty((prev) => ({
         ...prev,
-        propertyLooking: selected.propertyLooking || "",
-        selectoption: selected.selectoption || "Select Property Type",
-        propertyType: selected.propertyType || "",
+        propertyLooking: selected.propertyLooking || selected.propertylooking || "",
+        selectoption: selected.selectoption || selected.propertyType || "Select Property Type",
+        propertyType: selected.propertyType || selected.subType || "",
         subType: selected.subType || "",
-        propertyName: selected.projectName || selected.propertyName || "",
-        address: selected.address || "",
+        propertyName: selected.projectName || selected.propertyName || selected.name || "",
+        address: selected.address || selected.location || "",
         city: selected.city || "",
         state: selected.state || "",
-        price: selected.price || "",
-        area: selected.area || "",
-        description: selected.description || selected.descripation || selected.projectDescription || "",
-        landmark: selected.landMark || selected.landmark || "",
+        price: selected.price || selected.cost || "",
+        area: selected.area || selected.size || "",
+        description: selected.description || selected.descripation || selected.projectDescription || selected.details || "",
+        landmark: selected.landMark || selected.landmark || selected.nearby || "",
         amenities: Array.isArray(selected.amenities) ? selected.amenities.join(", ") : (selected.amenities || ""),
-        builtyear: selected.builtyear || selected.builtYear || "",
-        furnishing: selected.furnishing || "",
-        type: selected.type || "",
-        availabledate: selected.availabledate || selected.availableDate || "",
+        builtyear: selected.builtyear || selected.builtYear || selected.yearBuilt || "",
+        furnishing: selected.furnishing || selected.furnished || "",
+        type: selected.type || selected.propertyType || "",
+        availabledate: selected.availabledate || selected.availableDate || selected.dateAvailable || "",
       }));
     }
   }, [selected]);
@@ -169,7 +171,9 @@ const UserEditProperty = () => {
   };
 
   return (
+
     <div className="bg-gray-100 min-h-screen overflow-x-hidden">
+      <Navbar />
       {/* The main section container is responsive with padding and max-width for different screen sizes */}
       <section className="pt-24 md:pt-28 pb-12">
         <div className="mx-auto flex max-w-sm sm:max-w-md lg:max-w-screen-xl flex-col rounded-lg lg:flex-row gap-8 lg:gap-12 p-4 md:p-8">
@@ -416,7 +420,7 @@ const UserEditProperty = () => {
           </div>
         </div>
       </section>
-      <LuxuryFooter />
+      <Footer />
     </div>
   );
 };
