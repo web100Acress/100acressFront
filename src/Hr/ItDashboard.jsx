@@ -141,8 +141,8 @@ const ItDashboard = () => {
     <div className="flex bg-gray-100 min-h-screen">
       <HrSidebar />
       
-      <div className="flex-1 p-20 sm:p-4 lg:p-6 ml-0 md:-ml-4">
-        <div className="max-w-20x1 mx-auto">
+      <div className="flex-1 p-2 sm:p-4 lg:p-6 ml-0 md:-ml-4">
+        <div className="max-w-7xl mx-auto">
           {/* Header */}
           <div className="mb-4">
             <h1 className="text-4xl sm:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 mb-2 tracking-tight text-center">
