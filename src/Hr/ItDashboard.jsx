@@ -34,7 +34,7 @@ const ItDashboard = () => {
         return;
       }
 
-      const response = await api.get("/postPerson/view/allusers", {
+      const response = await api.get("/api/hr/users", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -99,11 +99,15 @@ const ItDashboard = () => {
 
       const requestData = { status: newStatus };
 
-      await api.post(`/api/hr/user/${userId}/status`, requestData);
+      await api.post(`/api/hr/user/${userId}/status`, requestData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       fetchAllUsers();
     } catch (error) {
       console.error("API Error:", error.response?.data);
-      alert(error.response?.data?.message || "Failed to update user status");
+      alert(error.response?.data?.message || "Failed to update user status. Please check console for details.");
     } finally {
       setActionLoading(null);
     }
@@ -137,10 +141,10 @@ const ItDashboard = () => {
     <div className="flex bg-gray-100 min-h-screen">
       <HrSidebar />
       
-      <div className="flex-1 p-4 sm:p-6 lg:p-8 ml-0 md:ml-4">
-        <div className="max-w-7xl mx-auto">
+      <div className="flex-1 p-20 sm:p-4 lg:p-6 ml-0 md:-ml-4">
+        <div className="max-w-20x1 mx-auto">
           {/* Header */}
-          <div className="mb-8">
+          <div className="mb-4">
             <h1 className="text-4xl sm:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 mb-2 tracking-tight text-center">
               Users Management
             </h1>
@@ -151,7 +155,7 @@ const ItDashboard = () => {
           </div>
 
           {/* Stats Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
             <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition p-6 border-l-4 border-blue-500">
               <div className="flex items-center justify-between">
                 <div>
@@ -184,7 +188,7 @@ const ItDashboard = () => {
           </div>
 
           {/* Main Content */}
-          <div className="bg-white rounded-lg shadow-md overflow-hidden">
+          <div className="bg-white rounded-lg shadow-md overflow-hidden" style={{marginTop: '0px'}}>
             {/* Filters */}
             <div className="bg-gray-50 border-b border-gray-200 p-4 sm:p-6">
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
