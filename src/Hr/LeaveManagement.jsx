@@ -31,19 +31,17 @@ const LeaveManagement = () => {
     try {
       setLoading(true);
       setError(null);
-      // Temporarily remove token check for testing
-      // const token = localStorage.getItem('myToken') || localStorage.getItem('token');
-      // if (!token) {
-      //   setError('You are not logged in');
-      //   return;
-      // }
+      const token = localStorage.getItem('myToken') || localStorage.getItem('token');
+      if (!token) {
+        setError('You are not logged in');
+        return;
+      }
 
-      const response = await api.get('/api/hr/leave');
-        // Temporarily remove Authorization header for testing
-        // headers: {
-        //   Authorization: `Bearer ${token}`,
-        // },
-      // });
+      const response = await api.get('/api/hr/leave', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       setLeaveRequests(response.data.data || []);
     } catch (error) {
@@ -62,19 +60,17 @@ const LeaveManagement = () => {
     }
 
     try {
-      // Temporarily remove token check for testing
-      // const token = localStorage.getItem('myToken') || localStorage.getItem('token');
-      // if (!token) {
-      //   alert('You are not logged in');
-      //   return;
-      // }
+      const token = localStorage.getItem('myToken') || localStorage.getItem('token');
+      if (!token) {
+        alert('You are not logged in');
+        return;
+      }
 
-      await api.patch(`/api/hr/leave/${id}/review`, { status });
-        // Temporarily remove Authorization header for testing
-        // headers: {
-        //   Authorization: `Bearer ${token}`,
-        // },
-      // });
+      await api.patch(`/api/hr/leave/${id}/review`, { status }, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       alert(`Leave request ${status} successfully`);
       fetchAllLeaveRequests(); // Refresh the list
@@ -91,22 +87,20 @@ const LeaveManagement = () => {
     }
 
     try {
-      // Temporarily remove token check for testing
-      // const token = localStorage.getItem('myToken') || localStorage.getItem('token');
-      // if (!token) {
-      //   alert('You are not logged in');
-      //   return;
-      // }
+      const token = localStorage.getItem('myToken') || localStorage.getItem('token');
+      if (!token) {
+        alert('You are not logged in');
+        return;
+      }
 
       await api.patch(`/api/hr/leave/${selectedRequestId}/review`, {
         status: 'rejected',
         hrComments: rejectionReason
+      }, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
-        // Temporarily remove Authorization header for testing
-        // headers: {
-        //   Authorization: `Bearer ${token}`,
-        // },
-      // });
 
       alert('Leave request rejected successfully');
       setShowRejectionModal(false);
