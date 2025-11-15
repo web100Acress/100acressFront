@@ -2,10 +2,11 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import HrSidebar from "./HrSidebar";
 import api from "../config/apiClient";
-import { FaUserCircle, FaEnvelope, FaPhone, FaFileAlt, FaExclamationCircle, FaRobot, FaTimes } from 'react-icons/fa';
+import { FaUserCircle, FaEnvelope, FaPhone, FaFileAlt, FaExclamationCircle, FaRobot, FaTimes, FaFileExport } from 'react-icons/fa';
 
-const JobApplications = () => {
-  const { id } = useParams();
+const JobApplications = ({ id: propId, inModal = false }) => {
+  const { id: paramId } = useParams();
+  const openingId = propId || paramId;
   const [apps, setApps] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -15,10 +16,11 @@ const JobApplications = () => {
   const [selectedApp, setSelectedApp] = useState(null);
 
   const fetchApplications = async () => {
+    if (!openingId) return;
     setLoading(true);
     setError("");
     try {
-      const res = await api.get(`/career/opening/${id}/applications`);
+      const res = await api.get(`/career/opening/${openingId}/applications`);
       const list = res?.data?.data || [];
       setApps(Array.isArray(list) ? list : []);
     } catch (e) {
@@ -29,8 +31,8 @@ const JobApplications = () => {
   };
 
   useEffect(() => {
-    if (id) fetchApplications();
-  }, [id]);
+    if (openingId) fetchApplications();
+  }, [openingId]);
 
   const approve = async (appId) => {
     if (!appId) return;
@@ -56,7 +58,7 @@ const JobApplications = () => {
     setScoring(true);
     setError("");
     try {
-      const res = await api.post(`/career/opening/${id}/score-applications`);
+      const res = await api.post(`/career/opening/${openingId}/score-applications`);
       alert(res?.data?.message || "Scoring complete!");
       fetchApplications();
     } catch (e) {
@@ -64,6 +66,21 @@ const JobApplications = () => {
     } finally {
       setScoring(false);
     }
+  };
+
+  const exportToCsv = () => {
+    const headers = Object.keys(apps[0] || {}).join(",");
+    const csvContent =
+      "data:text/csv;charset=utf-8," +
+      headers +
+      "\n" +
+      apps.map((item) => Object.values(item).join(",")).join("\n");
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "job_applications.csv");
+    document.body.appendChild(link);
+    link.click();
   };
 
   const openCoverLetterModal = (app) => {
@@ -133,10 +150,10 @@ const JobApplications = () => {
     return <span className={colorClass}>{percentage}%</span>;
   };
 
-  return (  
-    <div className="flex bg-gray-100 min-h-screen">
-      <HrSidebar />
-      <div className="flex-1 p-3 sm:p-4 lg:p-6 ml-0 md:ml-4">
+  return (
+    <div className={`flex bg-gray-100 ${inModal ? 'min-h-0' : 'min-h-screen'}`}>
+      {!inModal && <HrSidebar />}
+      <div className={`flex-1 p-3 sm:p-4 lg:p-6 ${inModal ? 'ml-0' : 'ml-0 md:ml-4'}`}>
         <div className="w-full">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-6 gap-4">
             <div className="text-center md:text-left">
@@ -154,9 +171,16 @@ const JobApplications = () => {
                 <FaRobot className={`mr-1.5 text-sm ${scoring ? 'animate-spin' : ''}`} />
                 {scoring ? "Scoring..." : "AI Scores"}
               </button>
+              <button
+                onClick={exportToCsv}
+                className="bg-gray-800 text-white font-semibold py-2 px-4 rounded-md hover:bg-gray-700 transition duration-300 flex items-center space-x-2"
+              >
+                <FaFileExport />
+                <span>Export</span>
+              </button>
               <Link
                 className="text-blue-600 hover:text-blue-800 transition duration-300 font-semibold text-sm"
-                to={`/admin/jobposting/view/${id}`}
+                to={`/admin/jobposting/view/${openingId}`}
               >
                 ← Back
               </Link>
