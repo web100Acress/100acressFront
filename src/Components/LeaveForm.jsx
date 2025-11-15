@@ -80,7 +80,7 @@ const LeaveForm = ({ isOpen, onClose }) => {
         },
       });
 
-      if (response.status === 201) {
+      if (response.status === 200) {
         alert('Leave request submitted successfully');
         // Reset form
         setFormData({
