@@ -217,7 +217,7 @@ const GurugramPrimeLocation = () => {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           {/* Title */}
           <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-center mb-3">
-            Discover Premium Projects in <span className="text-red-600">{result}</span>
+            Discover Premium Projects on <span className="text-red-600">{result}</span>
         </h1>
 
           {/* Description */}
