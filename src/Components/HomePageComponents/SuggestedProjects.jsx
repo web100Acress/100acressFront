@@ -7,35 +7,67 @@ const SuggestedProjects = () => {
   const topProjects = [
     {
       id: 1,
-      title: "Omaxe State Dwarka",
-      location: "Sector 19B, Dwarka",
-      price: "₹40.00 L - 50 Cr",
-      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/thumbnails/1740914816175-100acre/project/r9ogecjzjckzyzkonezl",
-      url: "https://www.100acress.com/omaxe-dwarka/",
+      title: "M3M Jacob Co Residences",
+      location: "Sector 97, Noida Expressway",
+      price: "₹7.5 - 20.48 Cr",
+      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/thumbnails/1759662121452-main.webp",
+      url: "https://www.100acress.com/jacob-m3m-sector-97-noida/",
     },
     {
       id: 2,
+      title: "Emaar Serenity Hills",
+      location: "Sector 86, New Gurgaon",
+      price: "₹3.15 - 5.4 Cr",
+      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/thumbnails/1759478360355-g6.jpg",
+      url: "https://www.100acress.com/emaar-sector-86-gurgaon/",
+    },
+    {
+      id: 3,
+      title: "Experion The Trillion",
+      location: "Sector 48, Sohna Road",
+      price: "₹5.83 - 7.38 Cr",
+      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/thumbnails/1740914900042-100acre/project/loedvckg91xfhdnqulho",
+      url: "https://www.100acress.com/experion-the-trillion/",
+    },
+    {
+      id: 4,
+      title: "Signature DXP Estate",
+      location: "Sector 37D, Dwarka Expressway",
+      price: "₹2.9 - 7 Cr",
+      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/thumbnails/1760767763798-banner.webp",
+      url: "https://www.100acress.com/signature-global-dxp-estate-37D/",
+    },
+    {
+      id: 5,
       title: "ROF Pravasa",
       location: "Sector 88A, Dwarka Expressway",
-      price: "₹2.4 Cr - 2.6 Cr",
+      price: "₹2.4 - 2.6 Cr",
       image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/thumbnails/1746440983993-thumb.jpg",
       url: "https://www.100acress.com/rof-pravasa/",
     },
     {
-      id: 3,
-      title: "Trump Towers Delhi NCR",
-      location: "Sector 65, Golf Course Extn Road",
-      price: "₹12.34 Cr - 21.18 Cr",
-      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/thumbnails/1740914727615-100acre/project/xaz95xnsowxannd5lxrm",
-      url: "https://www.100acress.com/trumptowersdelhincr/",
+      id: 6,
+      title: "Signature Twin Tower DXP",
+      location: "Sector 84, Dwarka Expressway",
+      price: "₹5.57 - 7.95 Cr",
+      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/thumbnails/1740914903246-100acre/project/ala7xdbghvfvgwm1sz82",
+      url: "https://www.100acress.com/signature-twin-towers-sector-84-gurgaon/",
     },
     {
-      id: 4,
-      title: "DLF GardenCity Central",
-      location: "Sector 84, New Gurgaon",
-      price: "₹4.09 Cr - 11.17 Cr",
-      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/thumbnails/1740914756943-100acre/project/id4wbeeyvpc1hraytjsu",
-      url: "https://www.100acress.com/dlf-gardencity-central/",
+      id: 7,
+      title: "Shapoorji Pallonji Dualis",
+      location: "Sector 46, Nearby Huda Metro",
+      price: "₹6.39 - 8.45 Cr",
+      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/uploads/1741245723440-thumbnail.jpg",
+      url: "https://www.100acress.com/shapoorji-pallonji-the-dualis/",
+    },
+    {
+      id: 8,
+      title: "Central Park Delphine",
+      location: "Sector 104, Dwarka Expressway",
+      price: "₹2.94 - 13.34 Cr",
+      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/thumbnails/1740914747374-100acre/project/rojrvuyt70hunmvukquy",
+      url: "https://www.100acress.com/central-park-sector-104-gurgaon/",
     },
   ];
 
@@ -56,6 +88,18 @@ const SuggestedProjects = () => {
           <p className="mt-3 max-w-2xl mx-auto text-xl text-gray-500 sm:mt-4">
             Explore our handpicked selection of premium properties
           </p>
+        </motion.div>
+
+        <motion.div
+          className="text-center mb-6"
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.6 }}
+        >
+          <h2 className="text-3xl font-extrabold text-gray-800 sm:text-2xl text-left">
+            Trending  <span className="text-red-600">Projects</span>
+          </h2>
         </motion.div>
 
         {/* Projects Grid */}
@@ -117,7 +161,7 @@ const SuggestedProjects = () => {
           transition={{ duration: 0.6, delay: 0.8 }}
         >
           <Link
-            to="/all-projects"
+            to="/"
             className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-red-600 hover:bg-red-700 transition-colors duration-200"
           >
             View All Projects

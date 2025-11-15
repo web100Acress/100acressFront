@@ -224,7 +224,6 @@ const GurugramPrimeLocation = () => {
           <p className="text-sm sm:text-base md:text-lg text-center max-w-4xl mx-auto mb-4 text-gray-700 leading-relaxed">
             {getLocationDescription()}
           </p>
-
           {/* Search Interface */}
           <div className="max-w-4xl mx-auto">
             {/* Search Bar Row */}
@@ -252,11 +251,8 @@ const GurugramPrimeLocation = () => {
               </button>
             </div> */}
 
-            {/* Filter Dropdowns Row */}
-            
+            {/* Filter Dropdowns Row */} 
           </div>
-          
-
           {/* Down Arrow */}
           {/* <div className="flex justify-center mt-2">
             <button
@@ -329,7 +325,7 @@ const GurugramPrimeLocation = () => {
             </div>
 
             {/* City */}
-            <div className="relative w-full sm:w-auto min-w-[140px]">
+            {/* <div className="relative w-full sm:w-auto min-w-[140px]">
               <select
                 value={selectedCity}
                 onChange={(e) => setSelectedCity(e.target.value)}
@@ -354,7 +350,7 @@ const GurugramPrimeLocation = () => {
                 <option value="Pushkar">Pushkar</option>
               </select>
               <FiChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600 pointer-events-none text-sm" />
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
@@ -389,10 +385,10 @@ const GurugramPrimeLocation = () => {
                       </span>
                     </div>
 
-                    <ul className="box-border flex list-none items-center border-t border-b border-solid border-gray-200 px-0 py-2">
+                    <ul className="box-border flex list-none items-center border-solid border-gray-200 px-0">
                       <li className="mr-4 flex items-center text-left">
                         <li className="text-left">
-                          <span className="text-[13px] text-gray-400">
+                          <span className="text-[16px] text-gray-400">
                             {item.projectAddress}
                           </span>
                           <p className="m-0 text-sm font-medium">{item.type}</p>
@@ -400,7 +396,7 @@ const GurugramPrimeLocation = () => {
                       </li>
                     </ul>
 
-                    <ul className="m-0 flex list-none items-center justify-between px-0  pb-0">
+                    <ul className="m-0 flex list-none items-center justify-between px-0">
                       <li className="text-left">
                         <span className="text-sm font-extrabold text-red-600">
                           <span className="text-xl">₹ </span>
