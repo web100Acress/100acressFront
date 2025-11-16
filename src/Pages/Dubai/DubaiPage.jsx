@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { Header } from "./components/Header";
-import { Hero } from "./components/Hero";
+import { NewHero } from "./components/NewHero";
 import { PropertiesSection } from "./components/PropertiesSection";
 import { DevelopersSection } from "./components/DevelopersSection";
 import { LifestyleSection } from "./components/LifestyleSection";
@@ -8,6 +8,7 @@ import { InvestmentSection } from "./components/InvestmentSection";
 import { ContactSection } from "./components/ContactSection";
 import { Footer } from "./components/Footer";
 import { WhatsAppButton } from "./components/WhatsAppButton";
+import DubaiBottomNav from "./components/DubaiBottomNav";
 import { DubaiProvider, useDubai } from "./context/DubaiContext";
 import { ThemeProvider } from "./context/ThemeContext";
 import "./i18n/config"; // Initialize i18n
@@ -24,10 +25,10 @@ const DubaiPageContent = () => {
   return (
     <div className="min-h-screen bg-black text-white overflow-x-hidden">
       <Header />
-      <Hero />
-      {/* Spacer to allow scrolling over fixed hero */}
-      <div className="h-screen" />
-      {/* Content sections with relative positioning */}
+      <NewHero />
+      {/* Spacer to push content below the fixed hero */}
+      <div className="h-screen"></div>
+      {/* Content sections that will scroll over the fixed hero */}
       <div className="relative z-10 bg-black">
         <PropertiesSection />
         <DevelopersSection />
@@ -37,6 +38,7 @@ const DubaiPageContent = () => {
         <Footer />
       </div>
       <WhatsAppButton />
+      <DubaiBottomNav />
     </div>
   );
 };

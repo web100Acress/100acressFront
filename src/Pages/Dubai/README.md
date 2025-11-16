@@ -17,7 +17,7 @@ This is a premium Dubai real estate page integrated into the 100acress website, 
 
 The Dubai page is accessible via:
 - `/dubai/`
-- `/projects-in-dubai/`
+- `/united-arab-emirates/`
 
 ## Design Theme
 
@@ -61,4 +61,4 @@ Custom Dubai theme styles are added to `/src/index.css`:
 
 ## Usage
 
-The page is automatically loaded when navigating to `/dubai/` or `/projects-in-dubai/`.
+The page is automatically loaded when navigating to `/dubai/` or `/united-arab-emirates/`.

@@ -639,17 +639,14 @@ export default function LeftSection({
           Resale
         </Button>
       </Link>
-      {/* Insights (highlighted + opens mega dropdown on hover) */}
-      <Link to="/property-market-trends/" 
-        onMouseEnter={() => { if (onOpenInsights) { clearTimer(insightsTimer); onOpenInsights(); } }}
-        onMouseLeave={() => { if (onCloseInsights) closeFnWithDelay(insightsTimer, onCloseInsights); }}
-      >
+      {/* Dubai (highlighted button) */}
+      <Link to="/united-arab-emirates/">
         <Button
           variant="solid"
-          bg="#e53e3e"
+          bg="#B8860B"
           color="white"
-          _hover={{ bg: '#c53030' }}
-          _active={{ bg: '#9b2c2c' }}
+          _hover={{ bg: '#A0750A' }}
+          _active={{ bg: '#8B6508' }}
           px={2}
           py={0}
           height="16px"
@@ -657,12 +654,14 @@ export default function LeftSection({
           fontSize="16px"
           fontWeight="800"
           borderRadius="md"
-          boxShadow="0 6px 16px rgba(229,62,62,0.25)"
+          boxShadow="0 6px 16px rgba(184,134,11,0.25)"
           ml={{ base: 0, md: 1 }}
           display={{ base: "none", md: "inline-flex" }}
-          onMouseLeave={() => { if (onCloseInsights) closeFnWithDelay(insightsTimer, onCloseInsights); }}
+          alignItems="center"
+          gap={1}
         >
-          Market Trends
+          <Box as="img" src="/icons/noun-burj-khalifa-3945.svg" width="16px" height="16px" alt="Burj Khalifa" style={{ filter: 'brightness(0) invert(1)' }} />
+          DUBAI
         </Button>
       </Link>
      

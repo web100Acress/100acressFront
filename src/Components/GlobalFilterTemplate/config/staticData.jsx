@@ -223,7 +223,7 @@ export const staticData = {
       title: "Discover Premium Projects in Dubai",
       description: "Explore the best residential and commercial projects in Dubai with world-class amenities, luxury living, and excellent investment potential. Find your dream home in this global city.",
       metaTitle: "Best Projects in Dubai - Residential & Commercial Properties | 100acress",
-      canonical: "https://www.100acress.com/projects-in-dubai/",
+      canonical: "https://www.100acress.com/united-arab-emirates/",
       keywords: "projects in dubai, residential projects dubai, commercial projects dubai, dubai real estate, dubai properties",
       heroTitle: "Discover Premium Projects in Dubai",
       heroSubtitle: "Find your perfect home in Dubai with world-class amenities and luxury living",

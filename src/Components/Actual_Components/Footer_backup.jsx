@@ -153,7 +153,7 @@ const Footer = () => {
                 <Link to="/projects-in-karnal/" className="text-white hover:text-white hover:underline transition-all duration-200 text-sm px-3 py-1 rounded-full" style={{backgroundColor: '#8D0101'}}>Flats in Karnal</Link>
                 <Link to="/projects-in-jalandhar/" className="text-white hover:text-white hover:underline transition-all duration-200 text-sm px-3 py-1 rounded-full" style={{backgroundColor: '#8D0101'}}>Flats in Jalandhar</Link>
                 <Link to="/projects-in-pushkar/" className="text-white hover:text-white hover:underline transition-all duration-200 text-sm px-3 py-1 rounded-full" style={{backgroundColor: '#8D0101'}}>Flats in Pushkar</Link>
-                <Link to="/projects-in-dubai/" className="text-white hover:text-white hover:underline transition-all duration-200 text-sm px-3 py-1 rounded-full" style={{backgroundColor: '#8D0101'}}>Flats in Dubai</Link>
+                <Link to="/united-arab-emirates/" className="text-white hover:text-white hover:underline transition-all duration-200 text-sm px-3 py-1 rounded-full" style={{backgroundColor: '#8D0101'}}>Flats in Dubai</Link>
               </div>
             </div>
 
