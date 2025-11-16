@@ -52,7 +52,7 @@ const GurugramPrimeLocation = () => {
     'sohna-road': {
       title: 'Projects on Sohna Road in Gurugram | Luxury Projects',
       metadescription: 'Find Top Residencial & Commercial Projects on Sohna Road Gurugram with All Information at 100acress . Search upcoming Projects on Sohna by price and BHKs.',
-      keywords: 'Projects on Sohna Road'
+      keywords: 'Projects on Sohna Road,  Golf Course Road, Flats for sale on Golf Course Road, New launch projects on Golf Course Road'
     },
     'golf-course': {
       title: 'Projects on Golf Course Road in Gurugram | Luxury Projects',
@@ -66,7 +66,7 @@ const GurugramPrimeLocation = () => {
     },
     'dwarka-expressway': {
       title: 'Projects on Dwarka Expressway in Gurugram | Luxury Projects',
-      metadescription: 'Looking for your next investment or dream home in Gurgaon? At 100acress, we bring you a curated selection of projects in Dwarka Expressway, Gurugram, blending luxury, location, and lifestyle. Explore an impressive range of Residential Apartments, Commercial Space, and SCO developments designed to match every need and aspiration.',
+      metadescription: 'Search projects in Dwarka Expressway, Gurugram at 100acress for Luxury Residential Apartments, Commercial Space, and SCO opportunities in key locations.',
       keywords: 'Projects on Dwarka Expressway, Upcoming projects on Dwarka Expressway, Investment projects on Dwarka Expressway'
     },
     'new-gurgaon': {
