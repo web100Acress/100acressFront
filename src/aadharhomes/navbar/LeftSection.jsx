@@ -640,7 +640,7 @@ export default function LeftSection({
         </Button>
       </Link>
       {/* Dubai (highlighted button) */}
-      <Link to="/dubai/">
+      <Link to="/united-arab-emirates/">
         <Button
           variant="solid"
           bg="#B8860B"

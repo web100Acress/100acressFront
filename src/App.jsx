@@ -202,6 +202,7 @@ import DubaiPage from "./Pages/Dubai/DubaiPage";
 import ProjectsInDubai from "./Pages/Dubai/ProjectsInDubai";
 import InsightsPage from "./Pages/Dubai/InsightsPage";
 import DubaiContactPage from "./Pages/Dubai/ContactPage";
+import DevelopersPage from "./Pages/Dubai/DevelopersPage";
 
 // Property Types Pages
 const BhkFlatsGurgaon = lazy(() => import("./Pages/PropertyTypes/BhkFlatsGurgaon"));
@@ -407,6 +408,7 @@ function App() {
                       <Route path="/projects-in-dubai" element={<ProjectsInDubai />} />
                       <Route path="/dubai/insights" element={<InsightsPage />} />
                       <Route path="/dubai/contact" element={<DubaiContactPage />} />
+                      <Route path="/dubai/developers" element={<DevelopersPage />} />
                       <Route path="/united-arab-emirates/" element={<DubaiPage />} />
                       <Route path="/project-in-noida/" element={<CityProjectsGlobal />} />
                       <Route path="/project-in-panipat/" element={<CityProjectsGlobal />} />
@@ -787,12 +789,12 @@ function MobileBottomNav() {
               <span className={`${isActive(["/", "/projects", "/property"]) ? "text-gray-900 font-semibold" : ""}`}>Home</span>
             </Link>
 
-            {/* Blogs (Insights -> Blogs) */}
-            <Link to="/blog/" className="flex flex-col items-center gap-1 py-2">
-              <span className={`text-xl ${isActive("/blog") ? "text-red-600" : "text-gray-500"}`}>
-                <i className="fa-solid fa-blog"></i>
+            {/* Dubai */}
+            <Link to="/dubai/" className="flex flex-col items-center gap-1 py-2">
+              <span className={`text-xl ${isActive("/dubai") ? "text-red-600" : "text-gray-500"}`}>
+                <img src="/icons/noun-burj-khalifa-3945.svg" width="20" height="20" alt="Dubai" style={{ filter: isActive("/dubai") ? 'brightness(0) saturate(100%) invert(27%) sepia(51%) saturate(2878%) hue-rotate(346deg) brightness(104%) contrast(97%)' : 'brightness(0) saturate(100%) invert(60%) sepia(8%) saturate(872%) hue-rotate(169deg) brightness(99%) contrast(86%)' }} />
               </span>
-              <span className={`${isActive("/blog") ? "text-gray-900 font-semibold" : ""}`}>Blogs</span>
+              <span className={`${isActive("/dubai") ? "text-gray-900 font-semibold" : ""}`}>Dubai</span>
             </Link>
 
             {/* Center CTA: Contact (call by phone) */}
@@ -808,22 +810,13 @@ function MobileBottomNav() {
               <span className="mt-1 text-[11px]">Contact</span>
             </div>
 
-            {/* Liked (was Shortlisted) */}
-            {token ? (
-              <Link to={likedTarget} className="flex flex-col items-center gap-1 py-2">
-                <span className={`text-xl ${isActive("/userdashboard") && (new URLSearchParams(location.search).get("tab") === "liked") ? "text-red-600" : "text-gray-500"}`}>
-                  <i className="fa-solid fa-heart"></i>
-                </span>
-                <span className={`${isActive("/userdashboard") && (new URLSearchParams(location.search).get("tab") === "liked") ? "text-gray-900 font-semibold" : ""}`}>Liked</span>
-              </Link>
-            ) : (
-              <button onClick={handleLikedClick} className="flex flex-col items-center gap-1 py-2">
-                <span className="text-xl text-gray-500">
-                  <i className="fa-solid fa-heart"></i>
-                </span>
-                <span>Liked</span>
-              </button>
-            )}
+            {/* Blogs */}
+            <Link to="/blog/" className="flex flex-col items-center gap-1 py-2">
+              <span className={`text-xl ${isActive("/blog") ? "text-red-600" : "text-gray-500"}`}>
+                <i className="fa-solid fa-blog"></i>
+              </span>
+              <span className={`${isActive("/blog") ? "text-gray-900 font-semibold" : ""}`}>Blogs</span>
+            </Link>
 
             {/* Profile */}
             {token ? (

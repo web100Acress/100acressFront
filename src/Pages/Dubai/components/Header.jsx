@@ -46,10 +46,11 @@ export const Header = () => {
 
   const navLinks = [
     { label: t('nav.properties'), href: "/projects-in-dubai" },
-    { label: t('nav.developers'), href: "#developers" },
+    { label: t('nav.developers'), href: "/dubai/developers" },
     { label: t('nav.insights'), href: "/dubai/insights" },
-    { label: t('nav.lifestyle'), href: "#lifestyle" },
+    
     { label: t('nav.contact'), href: "/dubai/contact" },
+    { label: "India", href: "/" },
   ];
 
   // Smooth scroll function
@@ -138,7 +139,12 @@ export const Header = () => {
               key={link.href}
               href={link.href}
               onClick={(e) => handleSmoothScroll(e, link.href)}
-              className="text-white hover:text-gold transition-colors duration-200 text-xs xl:text-sm uppercase tracking-wider font-medium cursor-pointer"
+              className={cn(
+                "transition-colors duration-200 text-xs xl:text-sm uppercase tracking-wider font-medium cursor-pointer",
+                link.label === 'India'
+                  ? "gradient-gold text-black px-3 py-1 rounded-full hover:shadow-gold"
+                  : "text-white hover:text-gold"
+              )}
             >
               {link.label}
             </a>
@@ -234,7 +240,12 @@ export const Header = () => {
               <a
                 key={link.href}
                 href={link.href}
-                className="block text-white hover:text-gold transition-colors py-2 text-sm sm:text-base"
+                className={cn(
+                  "block transition-colors py-2 text-sm sm:text-base",
+                  link.label === 'India'
+                    ? "gradient-gold text-black rounded-lg px-3"
+                    : "text-white hover:text-gold"
+                )}
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 {link.label}
