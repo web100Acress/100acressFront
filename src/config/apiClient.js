@@ -275,3 +275,10 @@ api.interceptors.response.use(
 );
 
 export default api;
+
+// Helper function to generate QR code URL
+export const getQRCodeUrl = (slug) => {
+  // Always use production URL for QR codes
+  const productionUrl = `https://100acress.com/hi/${slug}`;
+  return `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(productionUrl)}`;
+};
