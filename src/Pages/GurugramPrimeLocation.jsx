@@ -52,7 +52,7 @@ const GurugramPrimeLocation = () => {
     'sohna-road': {
       title: 'Projects on Sohna Road in Gurugram | Luxury Projects',
       metadescription: 'Find Top Residencial & Commercial Projects on Sohna Road Gurugram with All Information at 100acress . Search upcoming Projects on Sohna by price and BHKs.',
-      keywords: 'Projects on Sohna Road,  Golf Course Road, Flats for sale on Golf Course Road, New launch projects on Golf Course Road'
+      keywords: 'Projects on Sohna Road,  New projects on Sohna Road Gurgaon, Upcoming projects on Sohna Road, Buy apartment on Sohna Road'
     },
     'golf-course': {
       title: 'Projects on Golf Course Road in Gurugram | Luxury Projects',
