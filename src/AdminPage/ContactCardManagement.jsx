@@ -521,10 +521,10 @@ const ContactCardModal = ({ isOpen, onClose, onSuccess, editData = null }) => {
       } else if (error.response?.status === 400) {
         const errorData = error.response.data;
         console.log('Validation error details:', errorData);
-        
+
         if (errorData?.errors && Array.isArray(errorData.errors)) {
           // Show specific validation errors
-          errorData.errors.forEach(err => toast.error(err));
+          errorData.errors.forEach(err => toast.error(err.msg || err.message || 'Validation error'));
         } else {
           const errorMsg = errorData?.message || 'Validation error';
           toast.error(errorMsg);
