@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { useTranslation } from "react-i18next";
 import { Button } from "../../../Components/ui/button";
 import { Menu, X, Phone, ChevronDown } from "lucide-react";
 import { cn } from "../../../lib/utils";
@@ -9,7 +8,6 @@ import { useDubai } from "../context/DubaiContext";
 const LOGO = "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/white-logo.webp";
 
 export const Header = () => {
-  const { t } = useTranslation();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isEmiratesDropdownOpen, setIsEmiratesDropdownOpen] = useState(false);
@@ -45,11 +43,10 @@ export const Header = () => {
   }, [isEmiratesDropdownOpen]);
 
   const navLinks = [
-    { label: t('nav.properties'), href: "/projects-in-dubai" },
-    { label: t('nav.developers'), href: "/dubai/developers" },
-    { label: t('nav.insights'), href: "/dubai/insights" },
-    
-    { label: t('nav.contact'), href: "/dubai/contact" },
+    { label: "Properties", href: "/projects-in-dubai" },
+    { label: "Developers", href: "/dubai/developers" },
+    { label: "Insights", href: "/dubai/insights" },
+    { label: "Contact", href: "/dubai/contact" },
     { label: "India", href: "/" },
   ];
 
