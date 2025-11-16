@@ -143,8 +143,8 @@ export const PropertyCard = ({
           <Button 
             variant="outline" 
             size="sm" 
-            className="border-gold text-gold hover:bg-gold hover:text-black"
-            onClick={(e) => e.stopPropagation()}
+            className="border-gold text-gold hover:text-black"
+            onClick={(e) => e.handleCardClick()}
           >
             View Details
           </Button>

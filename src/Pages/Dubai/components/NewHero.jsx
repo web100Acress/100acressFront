@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useDubai } from '../context/DubaiContext';
 
 export const NewHero = () => {
@@ -68,12 +69,17 @@ export const NewHero = () => {
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link to="/projects-in-dubai">
             <button className="px-8 py-4 bg-gold text-black font-semibold rounded-lg hover:bg-gold/90 transition-all duration-300 transform hover:scale-105">
               Explore Properties
             </button>
-            <button className="px-8 py-4 border-2 border-white text-white font-semibold rounded-lg hover:bg-white hover:text-black transition-all duration-300">
-              Contact Us
-            </button>
+            </Link>
+
+            <Link to="/dubai/contact/">
+              <button className="px-8 py-4 border-2 border-white text-white font-semibold rounded-lg hover:bg-[#d4af37]  hover:text-black transition-all duration-300">
+                Contact Us
+              </button>
+            </Link>
           </div>
         </div>
       </div>

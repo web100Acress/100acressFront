@@ -90,7 +90,7 @@ export const DevelopersSection = () => {
           {developers.map((developer, index) => (
             <div
               key={developer.name}
-              onClick={() => navigate(`/united-arab-emirates/developer/${developer.id}/`)}
+              // onClick={() => navigate(`/united-arab-emirates/developer/${developer.id}/`)}
               className="group relative aspect-square rounded-lg border border-white/10 hover:border-gold/50 transition-all duration-500 flex items-center justify-center animate-fade-in-scale cursor-pointer overflow-hidden bg-white/95 hover:bg-white"
               style={{ animationDelay: `${index * 0.1}s` }}
             >
