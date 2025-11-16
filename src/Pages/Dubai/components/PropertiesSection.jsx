@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { useTranslation } from "react-i18next";
 import { PropertyCard } from "./PropertyCard";
 import { Button } from "../../../Components/ui/button";
 import { ArrowRight } from "lucide-react";
@@ -9,7 +8,6 @@ import Api_service from "../../../Redux/utils/Api_Service";
 import { useDubai } from "../context/DubaiContext";
 
 export const PropertiesSection = () => {
-  const { t } = useTranslation();
   const { getProjectbyState } = Api_service();
   const dubaiProjects = useSelector(store => store?.stateproject?.dubai || []);
   const { selectedEmirate } = useDubai();
@@ -113,14 +111,14 @@ export const PropertiesSection = () => {
         {/* Section Header */}
         <div className="text-center mb-16 space-y-4">
           <span className="text-gold text-sm font-medium tracking-[0.3em] uppercase">
-            {t('properties.featuredListings')}
+            Featured Listings
           </span>
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-white">
-            {t('properties.premiumPropertiesIn')}
+            Premium Properties In
             <span className="block text-gold">{selectedEmirate}</span>
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            {t('properties.discoverLuxury', { emirate: selectedEmirate })}
+            Discover luxury living in {selectedEmirate} with our exclusive collection of premium properties
           </p>
         </div>
 
@@ -129,12 +127,12 @@ export const PropertiesSection = () => {
         {isLoading ? (
           <div className="text-center py-20">
             <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gold"></div>
-            <p className="text-white mt-4">{t('properties.loading', { emirate: selectedEmirate })}</p>
+            <p className="text-white mt-4">Loading properties in {selectedEmirate}...</p>
           </div>
         ) : properties.length === 0 ? (
           <div className="text-center py-20">
-            <p className="text-white text-xl">{t('properties.noProperties', { emirate: selectedEmirate })}</p>
-            <p className="text-muted-foreground mt-2">{t('properties.checkBackLater')}</p>
+            <p className="text-white text-xl">No properties found in {selectedEmirate}</p>
+            <p className="text-muted-foreground mt-2">Please check back later for more listings</p>
           </div>
         ) : (
           /* Properties Grid */
@@ -156,7 +154,7 @@ export const PropertiesSection = () => {
           <div className="text-center">
             <Link to="/projects-in-dubai">
               <Button size="lg" className="gradient-gold text-black hover:shadow-gold group">
-                {t('properties.viewAllProperties', { emirate: selectedEmirate })}
+                View All Properties
                 <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>
