@@ -3,7 +3,8 @@ import { Link } from 'react-router-dom';
 import apiClient from '../config/apiClient';
 import { getApiBase } from '../config/apiBase';
 import Sidebar from './Sidebar'; // Assuming Sidebar is correctly imported
-import { MdBarChart, MdAssignment, MdHome, MdShoppingCart, MdBusiness, MdContactMail, MdPerson, MdPeople, MdLibraryBooks, MdWork, MdAccountCircle } from 'react-icons/md';
+import { MdBarChart, MdAssignment, MdHome, MdShoppingCart, MdBusiness, MdContactMail, MdPerson, MdPeople, MdLibraryBooks, MdWork, MdAccountCircle, MdEmail } from 'react-icons/md';
+import { Building } from 'lucide-react';
 
 // Custom hook for count up animation
 function useCountUp(target, duration = 1000) {
@@ -107,14 +108,14 @@ const sections = [
 
   // Removed separate "Career Applications" card - merged into Career
 
-  
+
   {
-    name: 'Contact Us',
-    api: '/api/admin/contact/count',
-    link: '/Admin/contact',
+    name: 'Contact Cards',
+    api: '/api/contact-cards/count',
+    link: '/admin/contact-cards',
     gradientClass: 'bg-light-slate-gradient',
-    icon: <MdContactMail size={32} className="card-icon" />,
-    description: 'Contact form submissions.',
+    icon: <Building size={32} className="card-icon" />,
+    description: 'Contact cards management.',
     shadowClass: 'shadow-light-slate'
   },
 
