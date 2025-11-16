@@ -25,7 +25,7 @@ import {
 import { toast } from 'react-hot-toast';
 import axios from 'axios';
 import { getApiBase } from '../../config/apiBase';
-import { getContactCardUrl } from '../../config/apiClient';
+import { getContactCardUrl } from '../../Utils/urlUtils';
 
 const ModernContactCard = () => {
   const { slug } = useParams();
