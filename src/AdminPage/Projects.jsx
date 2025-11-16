@@ -631,13 +631,13 @@ const Projects = () => {
                           </button>
                         </Link>
 
-                        <button
+                        {/* <button
                           onClick={() => handleDeleteUser(id)}
                           type="button"
                           className="action-button delete-button"
                         >
                           Delete
-                        </button>
+                        </button> */}
                       </td>
                     </tr>
                   );
