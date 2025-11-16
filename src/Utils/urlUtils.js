@@ -1,4 +1,3 @@
-code scan krne per
 /**
  * Utility functions for URL generation
  * Works in both development (localhost) and production environments
