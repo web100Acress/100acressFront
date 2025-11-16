@@ -6,6 +6,7 @@ import CommonInside from "../../Utils/CommonInside";
 import { useSelector } from "react-redux";
 import Api_service from "../../Redux/utils/Api_Service";
 import Footer from "../../Components/Actual_Components/Footer";
+import Navbar from "../../aadharhomes/navbar/Navbar";
 
 // Utility: title case a slug or plain string
 const toTitle = (str = "") => str
@@ -153,6 +154,7 @@ const CityProjects = () => {
         <link rel="canonical" href={canonical} />
       </Helmet>
 
+      <Navbar />
       <main className="mt-14">
         {/* Header */}
         <section className="flex flex-col items-center pt-10 md:pt-14 px-4 mt-2 md:mt-4">

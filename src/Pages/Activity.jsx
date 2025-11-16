@@ -3,11 +3,11 @@ import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import { FaHeart, FaEye, FaMapMarkerAlt, FaBed, FaBath, FaRulerCombined, FaShare, FaPhone } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
-import { addToFavorites, removeFromFavorites } from '../Redux/slice/FavoritesSlice';
-import { addToViewed } from '../Redux/slice/ViewedSlice';
+// import { addToFavorites, removeFromFavorites } from '../Redux/slice/FavoritesSlice';
+// import { addToViewed } from '../Redux/slice/ViewedSlice';
 import { Link } from 'react-router-dom';
 import Navbar from '../aadharhomes/navbar/Navbar';
-import LuxuryFooter from '../Components/Actual_Components/LuxuryFooter';
+import CrimsonEleganceFooter from "../Components/Footer/CrimsonEleganceFooter";
 import Api_Service from '../Redux/utils/Api_Service';
 
 function readJSON(key, fallback) {
@@ -19,9 +19,12 @@ function readJSON(key, fallback) {
   }
 }
 
+// Use the getFavoritesData from the favorites utility
+import { getFavoritesData as getFavsData, toggleFavorite } from '../Utils/favorites';
+
 function getFavoritesData() {
   try {
-    return readJSON('favoriteProjects', {});
+    return getFavsData();
   } catch (_) {
     return {};
   }
@@ -37,7 +40,7 @@ function favSubscribe(callback) {
   };
 }
 
-const Card = ({ item }) => {
+const Card = ({ item, onRemove }) => {
   // Normalize incoming shapes from favorites/viewed/spotlight
   const title = item?.title || item?.projectName || "Property";
   const url = item?.url || (item?.project_url ? `/${item.project_url}/` : "#");
@@ -71,6 +74,12 @@ const Card = ({ item }) => {
       .map((u) => (typeof u === 'string' ? u.trim() : ''))
       .filter((u) => u && !/^data:image\/svg\+xml/i.test(u))
       .filter((u) => { if (seen.has(u)) return false; seen.add(u); return true; });
+    
+    // Debug: log if no candidates found
+    if (list.length === 0) {
+      console.warn('No image candidates found for item:', it);
+    }
+    
     return list;
   };
   const imageCandidates = buildCandidates(item);
@@ -144,19 +153,72 @@ const Card = ({ item }) => {
     } catch (_) {}
   };
   
-  // Log image URL for debugging
+  // Log image URL for debugging and fetch full project data if needed
   useEffect(() => {
     // When item changes, reset to first candidate
     setImgIndex(0);
     const first = getImageUrl(imageCandidates[0]) || FALLBACK_IMG;
     setImgSrc(first);
+    
+    // If no image candidates and item needs fetching, fetch from API
+    if (imageCandidates.length === 0 && item?._needsImageFetch && item?.id) {
+      console.warn('Fetching full project data for:', item.title);
+      // Fetch project details from API
+      import('../Redux/utils/Api_Service').then(module => {
+        const Api_Service = module.default;
+        const { getProjectDetails } = Api_Service();
+        if (getProjectDetails) {
+          getProjectDetails(item.id).then(fullProject => {
+            if (fullProject) {
+              // Update item with full project data
+              const fullCandidates = buildCandidates(fullProject);
+              if (fullCandidates.length > 0) {
+                setImgIndex(0);
+                const fullFirst = getImageUrl(fullCandidates[0]) || FALLBACK_IMG;
+                setImgSrc(fullFirst);
+                console.log('Fetched image for', item.title, ':', fullFirst);
+              }
+            }
+          }).catch(err => {
+            console.error('Error fetching project details:', err);
+          });
+        }
+      });
+    } else if (imageCandidates.length === 0) {
+      console.warn('No image candidates for item:', {
+        title,
+        itemKeys: Object.keys(item || {}),
+        item
+      });
+    } else {
+      console.log('Image candidates found:', imageCandidates.slice(0, 3), 'Using:', first);
+    }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [item]);
 
+  // Handle remove button click
+  const handleRemoveClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (onRemove) {
+      onRemove(item.id || item._id);
+    }
+  };
+
   return (
-    <article className="group overflow-hidden rounded-2xl border border-gray-100 text-black shadow-[0_8px_24px_rgba(0,0,0,0.06)] hover:shadow-[0_12px_28px_rgba(0,0,0,0.10)] transition-all duration-300 ease-out h-full flex flex-col bg-white">
+    <article className="group relative overflow-hidden rounded-2xl border border-gray-100 text-black shadow-[0_8px_24px_rgba(0,0,0,0.06)] hover:shadow-[0_12px_28px_rgba(0,0,0,0.10)] transition-all duration-300 ease-out h-full flex flex-col bg-white">
       <Link to={url} target="_top" className="block relative">
-        <div className="overflow-hidden rounded-t-2xl bg-gray-50">
+        <div className="relative overflow-hidden rounded-t-2xl bg-gray-50">
+          {onRemove && (
+            <button 
+              onClick={handleRemoveClick}
+              className="absolute top-2 right-2 z-10 bg-white/90 hover:bg-red-500 hover:text-white text-red-500 rounded-full p-2 shadow-lg flex items-center justify-center w-8 h-8"
+              title="Remove from list"
+              aria-label="Remove from list"
+            >
+              <i className="fa-solid fa-trash text-sm"></i>
+            </button>
+          )}
           {imgSrc ? (
             <img
               src={imgSrc}
@@ -207,7 +269,7 @@ const Card = ({ item }) => {
   );
 };
 
-const Section = ({ title, items }) => (
+const Section = ({ title, items, onRemoveItem }) => (
   <section className="mt-6">
     <div className="flex items-center justify-between mb-3">
       <h2 className="text-lg font-semibold text-gray-900">{title}</h2>
@@ -217,7 +279,13 @@ const Section = ({ title, items }) => (
       <div className="p-6 rounded-xl border border-gray-100 bg-white text-gray-500">Nothing here yet.</div>
     ) : (
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {items.map((it, idx) => (<Card key={(it.id || it.url || idx) + "-a"} item={it} />))}
+        {items.map((it, idx) => (
+          <Card 
+            key={(it.id || it.url || idx) + "-a"} 
+            item={it} 
+            onRemove={onRemoveItem}
+          />
+        ))}
       </div>
     )}
   </section>
@@ -229,6 +297,25 @@ export default function Activity() {
   const [favData, setFavData] = useState(() => getFavoritesData());
   const [activeTab, setActiveTab] = useState('viewed');
   const { getSpotlight } = Api_Service();
+  
+  // Handle removing a viewed item
+  const handleRemoveViewed = (id) => {
+    const updated = viewed.filter(item => item.id !== id);
+    localStorage.setItem('viewed_projects', JSON.stringify(updated));
+    window.dispatchEvent(new Event('viewed-projects-changed'));
+  };
+  
+  // Handle removing a liked item
+  const handleRemoveLiked = (id) => {
+    // Update local state immediately for better UX
+    setFavData(prev => {
+      const newData = { ...prev };
+      delete newData[id];
+      return newData;
+    });
+    // Toggle favorite to update storage and sync across tabs
+    toggleFavorite(id, null, true); // true for isAuthenticated to bypass login check
+  };
 
   // Fetch spotlight data on component mount
   useEffect(() => {
@@ -253,32 +340,48 @@ export default function Activity() {
 
   const likedList = useMemo(() => {
     const data = favData || {};
-    return Object.values(data);
+    return Object.entries(data)
+      .filter(([_, item]) => item && typeof item === 'object' && !Array.isArray(item)) // Filter out invalid items
+      .map(([id, item]) => {
+        // If item is malformed (e.g., string), create a basic object
+        const safeItem = item && typeof item === 'object' ? item : { id: String(id) };
+        
+        // Check if this item has image data
+        const hasImageData = !!(
+          safeItem?.thumbnailImage || safeItem?.thumbnail || safeItem?.frontImage || 
+          safeItem?.image || safeItem?.images || safeItem?.gallery || safeItem?.cardImage
+        );
+        
+        return {
+          ...safeItem, // Spread all original fields
+          id: safeItem?.id || safeItem?._id || id,
+          _id: safeItem?._id || safeItem?.id || id,
+          title: safeItem?.title || safeItem?.projectName || 'Property',
+          projectName: safeItem?.projectName || safeItem?.title,
+          url: safeItem?.url || (safeItem?.project_url ? `/${safeItem.project_url}/` : '#'),
+          city: safeItem?.city || safeItem?.location || '',
+          priceText: safeItem?.priceText || (() => {
+            const min = safeItem?.minPrice ?? safeItem?.price;
+            const max = safeItem?.maxPrice ?? null;
+            if (!min && !max) return '';
+            if (min && max) return `₹${min} - ${max} Cr`;
+            return min ? `₹${min} Cr` : '';
+          })(),
+          beds: safeItem?.beds || safeItem?.bedrooms || safeItem?.bhk,
+          baths: safeItem?.baths || safeItem?.bathrooms,
+          area: safeItem?.area || safeItem?.size || safeItem?.superArea,
+          _needsImageFetch: !hasImageData // Flag to fetch full project data if no images
+        };
+      });
   }, [favData]);
 
   const recommended = useMemo(() => {
     if (Array.isArray(spotlight) && spotlight.length > 0) {
-      // Helper function to find the first valid image from various possible sources
-      const findImageSource = (item) => {
-        const sources = [
-          item.image?.url,
-          item.image,
-          item.frontImage?.url,
-          item.thumbnailImage?.url,
-          ...(Array.isArray(item.images) ? item.images.map(img => 
-            typeof img === 'string' ? img : img?.url
-          ) : [])
-        ];
-        
-        // Return the first truthy value
-        return sources.find(src => Boolean(src));
-      };
-      
-      // Map to the lightweight shape that Card expects
+      // Pass the entire object to Card component so it can extract images properly
       return spotlight.slice(0, 8).map((p) => ({
+        ...p, // Spread all original fields
         id: p?._id || p?.id || p?.slug,
         title: p?.projectName,
-        image: findImageSource(p),
         url: p?.project_url ? `/${p.project_url}/` : '#',
         city: p?.city,
         priceText: (() => {
@@ -298,48 +401,18 @@ export default function Activity() {
   // Normalize viewed list into Card shape, with robust image fallbacks
   const viewedItems = useMemo(() => {
     return (viewed || []).map((v) => {
-      // Helper function to find the first valid image from various possible sources
-      const findImageSource = (item) => {
-        const sources = [
-          item.image?.url,
-          item.image,
-          item.img,
-          item.image_url,
-          item.imageUrl,
-          item.frontImage?.url,
-          typeof item.frontImage === 'string' ? item.frontImage : undefined,
-          item.front_image,
-          item.frontImageUrl,
-          item.frontImageURL,
-          item.thumbnailImage?.url,
-          item.thumbnailImageUrl,
-          item.thumbnailImageURL,
-          item.thumbnail?.url,
-          item.thumbnail,
-          item.thumbnailUrl,
-          item.thumbnailURL,
-          item.cover,
-          item.coverImage,
-          item.cover_image,
-          item.photo,
-          item.picture,
-          ...(Array.isArray(item.images) ? item.images.map(img => 
-            typeof img === 'string' ? img : img?.url
-          ) : []),
-          ...(Array.isArray(item.gallery) ? item.gallery.map(img => 
-            typeof img === 'string' ? img : img?.url
-          ) : [])
-        ];
-        
-        // Return the first truthy value
-        return sources.find(src => Boolean(src));
-      };
+      // Check if this item has image data, if not we'll fetch it
+      const hasImageData = !!(
+        v?.thumbnailImage || v?.thumbnail || v?.frontImage || 
+        v?.image || v?.images || v?.gallery || v?.cardImage
+      );
       
+      // Pass the entire object to Card component so it can extract images properly
       return {
+        ...v, // Spread all original fields
         id: v.id || v._id || v.slug,
         title: v.title || v.projectName,
         url: v.url || (v.project_url ? `/${v.project_url}/` : '#'),
-        image: findImageSource(v),
         city: v.city || v.location || '',
         priceText: v.priceText || (() => {
           const min = v?.minPrice ?? v?.price;
@@ -350,7 +423,8 @@ export default function Activity() {
         })(),
         beds: v.beds || v.bedrooms || v.bhk,
         baths: v.baths || v.bathrooms,
-        area: v.area || v.size || v.superArea
+        area: v.area || v.size || v.superArea,
+        _needsImageFetch: !hasImageData // Flag to fetch full project data
       };
     });
   }, [viewed]);
@@ -383,17 +457,28 @@ export default function Activity() {
 
         <div className="content">
           {activeTab === 'viewed' && (
-            <Section title="Recently Viewed Properties" items={viewedItems} />
+            <Section 
+              title="Recently Viewed Properties" 
+              items={viewedItems} 
+              onRemoveItem={handleRemoveViewed}
+            />
           )}
           {activeTab === 'liked' && (
-            <Section title="Liked Properties" items={likedList} />
+            <Section 
+              title="Liked Properties" 
+              items={likedList} 
+              onRemoveItem={handleRemoveLiked}
+            />
           )}
           {activeTab === 'recommended' && (
-            <Section title="Recommended Properties" items={recommended} />
+            <Section 
+              title="Recommended Properties" 
+              items={recommended} 
+            />
           )}
         </div>
       </div>
-      <LuxuryFooter />
+      <CrimsonEleganceFooter />
     </ActivityWrapper>
   );
 }

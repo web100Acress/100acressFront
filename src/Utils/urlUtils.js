@@ -8,6 +8,11 @@
  * @returns {string} Base URL (localhost in dev, 100acress.com in production)
  */
 export const getBaseUrl = () => {
+  // Check for environment variable first (Vite uses import.meta.env)
+  if (import.meta.env.VITE_BASE_URL) {
+    return import.meta.env.VITE_BASE_URL;
+  }
+  
   // Check if we're in browser environment
   if (typeof window !== 'undefined') {
     const hostname = window.location.hostname;
@@ -27,7 +32,7 @@ export const getBaseUrl = () => {
   }
   
   // Fallback for server-side rendering or Node.js environment
-  const isProduction = process.env.NODE_ENV === 'production';
+  const isProduction = import.meta.env.MODE === 'production';
   return isProduction ? 'https://100acress.com' : 'http://localhost:3000';
 };
 
@@ -46,8 +51,9 @@ export const getContactCardUrl = (slug) => {
  * @returns {string} QR code image URL
  */
 export const getQRCodeUrl = (slug) => {
-  const contactUrl = getContactCardUrl(slug);
-  return `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(contactUrl)}`;
+  // Always use production URL for QR codes
+  const productionUrl = `https://100acress.com/hi/${slug}`;
+  return `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(productionUrl)}`;
 };
 
 /**

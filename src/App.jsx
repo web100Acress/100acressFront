@@ -423,7 +423,7 @@ function App() {
                       <Route path="/project-in-pune/" element={<CityProjectsGlobal />} />
                       {/* Dynamic city projects route (generic template). Keep after specific routes to avoid conflicts. */}
                       <Route path="/projects-in-:citySlug/" element={<CityProjectsGlobal />} />
-                      <Route path="/project-in-:citySlug/" element={<CityProjectsGlobal />} />
+                      <Route path="/projects-in-:citySlug/" element={<CityProjectsGlobal />} />
                       <Route path="/projects-in-pushkar/" element={<CityProjectsGlobal />} />
                       <Route path="/qr-generator" element={<QRGeneratorPage />} />
                       <Route path="/emi-calculator/" element={<EMICalculatorPage />} />
@@ -445,7 +445,7 @@ function App() {
                         element={<ProjectStatusSearchGlobal />}
                       />
                       <Route path="/projects-in-newlaunch/" element={<ProjectStatusSearchGlobal />} />
-                      <Route path="/project-in-goa/" element={<CityProjects />} />
+                      
                       <Route path="/plots-in-gurugram/" element={<ProjectTypeGlobal />} />
                       <Route path="/projects/villas/" element={<ProjectTypeGlobal />} />
                       <Route path="/projects/farmhouse/" element={<ProjectTypeGlobal />} />

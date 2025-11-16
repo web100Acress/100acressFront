@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import Api_service from "../../Redux/utils/Api_Service";
 import GlobalFilterTemplate from "../../Components/GlobalFilterTemplate/GlobalFilterTemplate";
 import { cityConfigs } from "../../Components/GlobalFilterTemplate/config/pageConfigs";
+import Navbar from "../../aadharhomes/navbar/Navbar";
 
 // Utility: title case a slug or plain string
 const toTitle = (str = "") => str
@@ -131,6 +132,7 @@ const CityProjectsGlobal = () => {
 
   return (
     <>
+      <Navbar />
       <GlobalFilterTemplate
         pageType="city"
         projects={results || []}

@@ -622,7 +622,7 @@ export default function LeftSection({
           <MenuItem onClick={() => handleNavigation("/property/residential/")}>Residential Projects</MenuItem>
           <MenuItem onClick={() => handleNavigation("/projects/independentfloors/")}>Independent Floors</MenuItem>
           <MenuItem onClick={() => handleNavigation("/projects/commercial/")}>Commercial Projects</MenuItem>
-          <MenuItem onClick={() => handleNavigation("/projects/farmhouse/")}>FarmHouses</MenuItem>
+          <MenuItem onClick={() => handleNavigation("/projects/farmhouses/")}>FarmHouses</MenuItem>
           <MenuItem onClick={() => handleNavigation("/projects/industrial-plots/")}>Industrial Plots</MenuItem>
        
         </MenuList>

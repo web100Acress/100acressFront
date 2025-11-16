@@ -208,7 +208,7 @@ const ProjectHero = ({
   );
 };
 
-// Add prop types for better development experience
+
 ProjectHero.propTypes = {
   projectExists: PropTypes.bool,
   backgroundImage: PropTypes.string,

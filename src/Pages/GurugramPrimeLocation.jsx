@@ -4,10 +4,17 @@ import { Link, useParams } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import { useSelector } from "react-redux";
 import Api_Service from "../Redux/utils/Api_Service";
+import { FiSearch, FiChevronDown } from "react-icons/fi";
 
 const GurugramPrimeLocation = () => {
   const { location } = useParams();
   const [query, setQuery] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCity, setSelectedCity] = useState("");
+  const [selectedPrice, setSelectedPrice] = useState("");
+  const [selectedType, setSelectedType] = useState("");
+  const [selectedSort, setSelectedSort] = useState("");
+  const [filteredProjects, setFilteredProjects] = useState([]);
   const {getPrimeLocation} = Api_Service();
 
   const SohnaRoad = useSelector(store => store?.primelocation?.sohnaroad);
@@ -70,22 +77,96 @@ const GurugramPrimeLocation = () => {
     (word) => word.charAt(0).toUpperCase() + word.slice(1)
   );
   const primel = capitalizedWords.join(" ");
-  let filteredProjects;
-
-  // if (primel === "sohna") {
-  //   filteredProjects = allProjectData.filter(
-  //     (project) => project.projectAddress === "Sohna"
-  //   );
-  // } else {
-  //   filteredProjects = allProjectData.filter((project) =>
-  //     project.projectAddress.includes(primel)
-  //   );
-  // }
 
   let result = location
     .split("-")
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(" ");
+
+  // Filter projects based on search and filters
+  useEffect(() => {
+    let filtered = [...Primelocation];
+
+    // Filter by search term
+    if (searchTerm) {
+      filtered = filtered.filter((item) =>
+        item.projectName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.projectAddress?.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    // Filter by city
+    if (selectedCity) {
+      filtered = filtered.filter((item) =>
+        item.city?.toLowerCase() === selectedCity.toLowerCase()
+      );
+    }
+
+    // Filter by price
+    if (selectedPrice) {
+      const [min, max] = selectedPrice.split("-").map((v) => {
+        if (v === "Infinity") return Infinity;
+        return parseFloat(v);
+      });
+      filtered = filtered.filter((item) => {
+        const itemMinPrice = parseFloat(item.minPrice) || 0;
+        const itemMaxPrice = parseFloat(item.maxPrice) || 0;
+        return (
+          (min === "" || itemMaxPrice >= min) &&
+          (max === Infinity || itemMinPrice <= max)
+        );
+      });
+    }
+
+    // Filter by type
+    if (selectedType) {
+      filtered = filtered.filter((item) =>
+        item.type?.toLowerCase().includes(selectedType.toLowerCase())
+      );
+    }
+
+    // Sort projects
+    if (selectedSort) {
+      if (selectedSort === "price-low") {
+        filtered.sort((a, b) => (parseFloat(a.minPrice) || 0) - (parseFloat(b.minPrice) || 0));
+      } else if (selectedSort === "price-high") {
+        filtered.sort((a, b) => (parseFloat(b.maxPrice) || 0) - (parseFloat(a.maxPrice) || 0));
+      } else if (selectedSort === "newest") {
+        filtered.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+      } else if (selectedSort === "name") {
+        filtered.sort((a, b) => (a.projectName || "").localeCompare(b.projectName || ""));
+      }
+    }
+
+    setFilteredProjects(filtered);
+  }, [Primelocation, searchTerm, selectedCity, selectedPrice, selectedType, selectedSort]);
+
+  // Use filtered projects or all projects
+  const displayProjects = (searchTerm || selectedCity || selectedPrice || selectedType || selectedSort) 
+    ? filteredProjects 
+    : Primelocation;
+
+  const handleSearch = () => {
+    // Scroll to projects section after search
+    setTimeout(() => {
+      scrollToProjects();
+    }, 100);
+  };
+
+  const scrollToProjects = () => {
+    const projectsSection = document.getElementById("projects-section");
+    if (projectsSection) {
+      projectsSection.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
+  // Get location-specific description
+  const getLocationDescription = () => {
+    if (location === 'dwarka-expressway') {
+      return 'Looking for your next investment or dream home in Gurgaon? At 100acress, we bring you a curated selection of projects in Dwarka Expressway, Gurugram, blending luxury, location, and lifestyle. Explore an impressive range of Residential Apartments, Commercial Space, and SCO developments designed to match every need and aspiration.';
+    }
+    return `Explore the best residential and commercial projects in ${result}, Gurugram with modern amenities, prime locations, and excellent connectivity. Find your dream home in India's Millennium City.`;
+  };
   
   return (
     <div>
@@ -130,21 +211,154 @@ const GurugramPrimeLocation = () => {
           href={`https://www.100acress.com/property-in-gurugram/${location}/`}
         />
       </Helmet>
-      <section className="flex flex-col items-center pt-8 mt-24 md:mt-24 lg:mt-24">
-        <h1 className="mb-3 text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold">
-          Projects in {result}, Gurugram
+
+      {/* Red Banner Section */}
+      <section className="bg-gradient-to-r from-red-50 to-orange-50 border-b border-red-100 py-4 md:py-6 lg:py-8 mt-12 md:mt-16 lg:mt-16 relative">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Title */}
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-center mb-3">
+            Discover Premium Projects on <span className="text-red-600">{result}</span>
         </h1>
 
-        <h2 className="text-sm text-center sm:text-xl md:text-xl lg:text-sm font-normal lg:mx-20 md:mx-10 mx-5 sm:mx-4">
-          {location === 'dwarka-expressway'
-            ? 'Looking for your next investment or dream home in Gurgaon? At 100acress, we bring you a curated selection of projects in Dwarka Expressway, Gurugram, blending luxury, location, and lifestyle. Explore an impressive range of Residential Apartments, Commercial Space, and SCO developments designed to match every need and aspiration.'
-            : <>Looking for prime Real Estate in Gurgaon? Explore our exquisite
-          collection of Residential Apartments, Commercial Space, and SCO in{" "}
-          {result} Gurugram, offering unparalleled luxury and comfort. Find your
-          dream property in Gurgaon today!</>}
-        </h2>
+          {/* Description */}
+          <p className="text-sm sm:text-base md:text-lg text-center max-w-4xl mx-auto mb-4 text-gray-700 leading-relaxed">
+            {getLocationDescription()}
+          </p>
+          {/* Search Interface */}
+          <div className="max-w-4xl mx-auto">
+            {/* Search Bar Row */}
+            {/* <div className="flex flex-col sm:flex-row gap-2 mb-3">
+              <div className="flex-1 relative">
+                <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-lg" />
+                <input
+                  type="text"
+                  placeholder="Explore"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  onKeyPress={(e) => {
+                    if (e.key === 'Enter') {
+                      handleSearch();
+                    }
+                  }}
+                  className="w-full pl-10 pr-3 py-2 sm:py-2.5 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-red-400 text-sm sm:text-base"
+                />
+              </div>
+              <button
+                onClick={handleSearch}
+                className="bg-red-700 hover:bg-red-800 text-white font-semibold px-4 sm:px-6 py-2 sm:py-2.5 rounded-lg transition-colors duration-200 text-sm sm:text-base whitespace-nowrap"
+              >
+                Search
+              </button>
+            </div> */}
+
+            {/* Filter Dropdowns Row */} 
+          </div>
+          {/* Down Arrow */}
+          {/* <div className="flex justify-center mt-2">
+            <button
+              onClick={scrollToProjects}
+              className="animate-bounce text-white hover:text-red-200 transition-colors"
+              aria-label="Scroll to projects"
+            >
+              <FiChevronDown className="text-2xl sm:text-3xl" />
+            </button>
+          </div> */}
+        </div>
+      </section>
+      
+      {/* Filter Bar */}
+      <div className="bg-white border-b border-gray-200 py-3">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="flex flex-col sm:flex-row gap-3 items-center justify-center">
+            {/* Type */}
+            <div className="relative w-full sm:w-auto min-w-[140px]">
+              <select
+                value={selectedType}
+                onChange={(e) => setSelectedType(e.target.value)}
+                className="w-full px-4 py-2.5 bg-white text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400 appearance-none cursor-pointer text-sm border border-gray-200 shadow-sm"
+              >
+                <option value="">All Types</option>
+                <option value="Residential Flats">Residential Flats</option>
+                <option value="Commercial Property">Commercial Property</option>
+                <option value="SCO Plots">SCO Plots</option>
+                <option value="Residential Plots">Residential Plots</option>
+                <option value="Independent Floors">Independent Floors</option>
+                <option value="Builder Floors">Builder Floors</option>
+                <option value="Villas">Villas</option>
+                <option value="Affordable Homes">Affordable Homes</option>
+              </select>
+              <FiChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600 pointer-events-none text-sm" />
+            </div>
+
+            {/* Sort */}
+            <div className="relative w-full sm:w-auto min-w-[140px]">
+              <select
+                value={selectedSort}
+                onChange={(e) => setSelectedSort(e.target.value)}
+                className="w-full px-4 py-2.5 bg-white text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400 appearance-none cursor-pointer text-sm border border-gray-200 shadow-sm"
+              >
+                <option value="">Default</option>
+                <option value="price-low">Price: Low to High</option>
+                <option value="price-high">Price: High to Low</option>
+                <option value="newest">Newest First</option>
+                <option value="name">Name: A to Z</option>
+              </select>
+              <FiChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600 pointer-events-none text-sm" />
+            </div>
+
+            {/* Price */}
+            <div className="relative w-full sm:w-auto min-w-[140px]">
+              <select
+                value={selectedPrice}
+                onChange={(e) => setSelectedPrice(e.target.value)}
+                className="w-full px-4 py-2.5 bg-white text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400 appearance-none cursor-pointer text-sm border border-gray-200 shadow-sm"
+              >
+                <option value="">All Prices</option>
+                <option value="0-1">Under 1 Cr</option>
+                <option value="1-5">1 to 5 Cr</option>
+                <option value="5-10">5 to 10 Cr</option>
+                <option value="10-20">10 to 20 Cr</option>
+                <option value="20-50">20 to 50 Cr</option>
+                <option value="50-Infinity">Above 50 Cr</option>
+              </select>
+              <FiChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600 pointer-events-none text-sm" />
+            </div>
+
+            {/* City */}
+            {/* <div className="relative w-full sm:w-auto min-w-[140px]">
+              <select
+                value={selectedCity}
+                onChange={(e) => setSelectedCity(e.target.value)}
+                className="w-full px-4 py-2.5 bg-white text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400 appearance-none cursor-pointer text-sm border border-gray-200 shadow-sm"
+              >
+                <option value="">All Cities</option>
+                <option value="Gurugram">Gurugram</option>
+                <option value="Delhi">Delhi</option>
+                <option value="Noida">Noida</option>
+                <option value="Mumbai">Mumbai</option>
+                <option value="Goa">Goa</option>
+                <option value="Ayodhya">Ayodhya</option>
+                <option value="Panchkula">Panchkula</option>
+                <option value="Kasauli">Kasauli</option>
+                <option value="Dubai">Dubai</option>
+                <option value="Panipat">Panipat</option>
+                <option value="Karnal">Karnal</option>
+                <option value="Jalandhar">Jalandhar</option>
+                <option value="Sonipat">Sonipat</option>
+                <option value="Alwar">Alwar</option>
+                <option value="Pune">Pune</option>
+                <option value="Pushkar">Pushkar</option>
+              </select>
+              <FiChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600 pointer-events-none text-sm" />
+            </div> */}
+          </div>
+        </div>
+      </div>
+      {/* Projects Section */}
+      <section id="projects-section" className="flex flex-col items-center pt-8 pb-8">
+        {displayProjects.length > 0 ? (
         <div className="grid max-w-md grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
-          {Primelocation.map((item, index) => {
+            {displayProjects.map((item, index) => {
             const pUrl = item.project_url;
             return (
               <Link to={`/${pUrl}/`} target="_top" key={index}>
@@ -171,10 +385,10 @@ const GurugramPrimeLocation = () => {
                       </span>
                     </div>
 
-                    <ul className="box-border flex list-none items-center border-t border-b border-solid border-gray-200 px-0 py-2">
+                    <ul className="box-border flex list-none items-center border-solid border-gray-200 px-0">
                       <li className="mr-4 flex items-center text-left">
                         <li className="text-left">
-                          <span className="text-[13px] text-gray-400">
+                          <span className="text-[16px] text-gray-400">
                             {item.projectAddress}
                           </span>
                           <p className="m-0 text-sm font-medium">{item.type}</p>
@@ -182,7 +396,7 @@ const GurugramPrimeLocation = () => {
                       </li>
                     </ul>
 
-                    <ul className="m-0 flex list-none items-center justify-between px-0  pb-0">
+                    <ul className="m-0 flex list-none items-center justify-between px-0">
                       <li className="text-left">
                         <span className="text-sm font-extrabold text-red-600">
                           <span className="text-xl">₹ </span>
@@ -207,6 +421,23 @@ const GurugramPrimeLocation = () => {
             );
           })}
         </div>
+        ) : (
+          <div className="text-center py-12">
+            <p className="text-xl text-gray-600 mb-4">No projects found matching your criteria.</p>
+            <button
+               onClick={() => {
+                 setSearchTerm("");
+                 setSelectedCity("");
+                 setSelectedPrice("");
+                 setSelectedType("");
+                 setSelectedSort("");
+               }}
+              className="text-red-600 hover:text-red-700 font-semibold underline"
+            >
+              Clear all filters
+            </button>
+          </div>
+        )}
       </section>
       <Footer />
     </div>

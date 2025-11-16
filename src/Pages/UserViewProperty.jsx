@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
-import Footer from "../Components/Actual_Components/Footer";
+// import Footer from "../Components/Actual_Components/Footer";
 import axios from "axios";
 import { Link, useNavigate, useParams, useLocation } from "react-router-dom";
 import { getApiBase } from "../config/apiBase";
-import LuxuryFooter from "../Components/Actual_Components/LuxuryFooter";
+import CrimsonEleganceFooter from "../Components/Footer/CrimsonEleganceFooter";
 // import Nav from "../aadharhomes/Nav";
 
 const UserViewProperty = () => {
@@ -162,40 +162,51 @@ const UserViewProperty = () => {
             </div>
           )}
           {userViewProperty.map((item, index) => {
+            const pUrl = item.projectName ? item.projectName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') : item._id;
             return (
               <Link key={item?._id || index}>
                 <article
-                  className="mb-4 overflow-hidden rounded-xl border text-gray-700 shadow-sm hover:shadow-md duration-300 ease-in-out"
+                  className="mb-4 overflow-hidden rounded-xl border text-gray-700 shadow-lg hover:shadow-xl duration-300 ease-in-out bg-gradient-to-br from-white to-gray-50"
                 >
                   {item && item.frontImage && (
-                    <div>
+                    <div className="relative">
                       <img
                         src={item.frontImage.url}
                         alt={item.projectName || 'Property'}
                         className="w-full h-48 object-cover"
                       />
+                      <div className="absolute top-2 right-2">
+                        <span className={`px-2 py-1 text-xs font-semibold rounded-full ${item.verify === 'verified' ? 'bg-green-500 text-white' : 'bg-yellow-500 text-white'}`}>
+                          {item.verify === 'verified' ? 'Approved' : 'Pending'}
+                        </span>
+                      </div>
                     </div>
                   )}
 
                   <div className="p-4">
                     <div className="pb-2">
-                      <span className="text-base md:text-lg font-semibold hover:text-red-600 duration-300 ease-in-out">
+                      <h3 className="text-lg md:text-xl font-bold text-gray-900 hover:text-red-600 duration-300 ease-in-out mb-1">
                         {item.projectName}
-                      </span>
-                      <br />
-                      <span className="text-xs md:text-sm text-gray-500 hover:text-red-600 duration-300 ease-in-out">
-                        {item.city}
-                      </span>
+                      </h3>
+                      <p className="text-sm font-medium text-gray-600 mb-2">
+                        {item.city}, <span className="font-bold text-gray-800">{item.state}</span>
+                      </p>
+                      <div className="flex flex-wrap gap-2 text-xs font-semibold text-gray-700">
+                        <span className="bg-blue-50 text-blue-700 px-3 py-1 rounded-full border border-blue-200 font-bold">🏠 {item.propertyType || 'N/A'}</span>
+                        <span className="bg-green-50 text-green-700 px-3 py-1 rounded-full border border-green-200 font-bold">💰 {item.price ? `₹${item.price}` : 'N/A'}</span>
+                      </div>
                     </div>
                     <div className="mt-4 flex items-center justify-between">
-                      <span className="text-sm font-semibold text-gray-900 truncate pr-2">{item.state}</span>
                       <div className="flex items-center gap-2">
-                        {/* <button
-                          type="button"
-                          className="text-white bg-gradient-to-r from-red-500 to-rose-500 hover:opacity-95 focus:ring-2 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-xs md:text-sm px-3 py-2"
-                        >
-                          View Details
-                        </button> */}
+                        {item.verify === 'verified' && (
+                          <button
+                            type="button"
+                            onClick={(e) => { e.preventDefault(); e.stopPropagation(); navigate(`/buy-properties/${pUrl}/${item._id}`); }}
+                            className="text-white bg-blue-600 hover:bg-blue-700 focus:ring-2 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-xs md:text-sm px-3 py-2 flex items-center gap-1"
+                          >
+                            View on Website
+                          </button>
+                        )}
                         <button
                           type="button"
                           onClick={(e) => { e.preventDefault(); e.stopPropagation(); navigate('/usereditproperty', { state: { property: item } }); }}
@@ -213,7 +224,7 @@ const UserViewProperty = () => {
         </div>
       </section>
 
-      <LuxuryFooter />
+      <CrimsonEleganceFooter />
     </div>
   );
 };
