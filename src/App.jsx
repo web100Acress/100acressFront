@@ -403,24 +403,25 @@ function App() {
                         path="/projects/independentfloors/"
                         element={<ProjectTypeGlobal />}
                       />
-                      <Route path="/project-in-delhi/" element={<CityProjectsGlobal />} />
+                      <Route path="/projects-in-delhi/" element={<CityProjectsGlobal />} />
                       <Route path="/dubai/" element={<DubaiPage />} />
                       <Route path="/projects-in-dubai" element={<ProjectsInDubai />} />
                       <Route path="/dubai/insights" element={<InsightsPage />} />
                       <Route path="/dubai/contact" element={<DubaiContactPage />} />
                       <Route path="/dubai/developers" element={<DevelopersPage />} />
                       <Route path="/united-arab-emirates/" element={<DubaiPage />} />
-                      <Route path="/project-in-noida/" element={<CityProjectsGlobal />} />
-                      <Route path="/project-in-panipat/" element={<CityProjectsGlobal />} />
-                      <Route path="/project-in-panchkula/" element={<CityProjectsGlobal />} />
-                      <Route path="/project-in-kasauli/" element={<CityProjectsGlobal />} />
+                       <Route path="/projects-in-goa/" element={<CityProjectsGlobal />} />
+                      <Route path="/projects-in-noida/" element={<CityProjectsGlobal />} />
+                      <Route path="/projects-in-panipat/" element={<CityProjectsGlobal />} />
+                      <Route path="/projects-in-panchkula/" element={<CityProjectsGlobal />} />
+                      <Route path="/projects-in-kasauli/" element={<CityProjectsGlobal />} />
                       <Route path="/projects-in-sonipat/" element={<CityProjectsGlobal />} />
                       <Route path="/projects-in-karnal/" element={<CityProjectsGlobal />} />
                       <Route path="/projects-in-jalandhar/" element={<CityProjectsGlobal />} />
-                      <Route path="/project-in-ayodhya/" element={<CityProjectsGlobal />} />
-                      <Route path="/project-in-mumbai/" element={<CityProjectsGlobal />} />
+                      <Route path="/projects-in-ayodhya/" element={<CityProjectsGlobal />} />
+                      <Route path="/projects-in-mumbai/" element={<CityProjectsGlobal />} />
                       <Route path="/united-arab-emirates/" element={<CityProjectsGlobal />} />
-                      <Route path="/project-in-pune/" element={<CityProjectsGlobal />} />
+                      <Route path="/projects-in-pune/" element={<CityProjectsGlobal />} />
                       {/* Dynamic city projects route (generic template). Keep after specific routes to avoid conflicts. */}
                       <Route path="/projects-in-:citySlug/" element={<CityProjectsGlobal />} />
                       <Route path="/projects-in-:citySlug/" element={<CityProjectsGlobal />} />
