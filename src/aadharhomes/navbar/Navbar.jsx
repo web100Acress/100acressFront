@@ -347,7 +347,7 @@ export default function Navbar() {
     { name: "Jalandhar", path: "/projects-in-jalandhar/" },
     { name: "Pushkar", path: "/projects-in-pushkar/" },
     { name: "Dubai", path: "/united-arab-emirates/" },
-    { name: "Pune", path: "/project-in-pune/" },
+    { name: "Pune", path: "/projects-in-pune/" },
   ];
   const [selectedCity, setSelectedCity] = useState(
     (typeof window !== 'undefined' && localStorage.getItem("selectedCity")) || ""
