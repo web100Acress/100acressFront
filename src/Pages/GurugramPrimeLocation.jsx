@@ -17,6 +17,76 @@ const GurugramPrimeLocation = () => {
   const [filteredProjects, setFilteredProjects] = useState([]);
   const {getPrimeLocation} = Api_Service();
 
+  const primeLocations = [
+    {
+      name: "Projects on Sohna Road",
+      href: "/property-in-gurugram/sohna-road/",
+    },
+    {
+      name: "Projects on Golf Course",
+      href: "/property-in-gurugram/golf-course/",
+    },
+    {
+      name: "Projects on Northern Peripheral Road",
+      href: "/property-in-gurugram/northern-peripheral-road/",
+    },
+    {
+      name: "Projects on Dwarka Expressway",
+      href: "/property-in-gurugram/dwarka-expressway/",
+    },
+    {
+      name: "Projects on New Gurgaon",
+      href: "/property-in-gurugram/new-gurgaon/",
+    },
+    {
+      name: "Projects on Southern Peripheral Road",
+      href: "/property-in-gurugram/southern-peripheral-road/",
+    },
+    {
+      name: "Projects on Golf Course Extn Road",
+      href: "/property-in-gurugram/golf-course-extn-road/",
+    },
+  ];
+
+  const locationMeta = {
+    'sohna-road': {
+      title: 'Projects on Sohna Road in Gurugram | Luxury Projects',
+      metadescription: 'Find Top Residencial & Commercial Projects on Sohna Road Gurugram with All Information at 100acress . Search upcoming Projects on Sohna by price and BHKs.',
+      keywords: 'Projects on Sohna Road'
+    },
+    'golf-course': {
+      title: 'Projects on Golf Course Road in Gurugram | Luxury Projects',
+      metadescription: 'Projects On Golf Course Road is New Launch Development, Gives A Commercial, Residencial, SCO Plots with Spacious and Luxurious Appartments and Modern Aminities.',
+      keywords: 'Projects on Golf Course, Top Residential projects Golf Course Road, Flats for sale on Golf Course Road, New launch projects on Golf Course Road'
+    },
+    'northern-peripheral-road': {
+      title: 'Projects on Northern Peripheral Road in Gurugram | 100acress',
+      metadescription: 'Explore premium residential and commercial projects on Northern Peripheral Road, Gurugram. Find luxury apartments, plots, and commercial spaces with excellent connectivity.',
+      keywords: 'Projects on Northern Peripheral Road, Residential projects Northern Peripheral Road, Commercial projects Northern Peripheral Road'
+    },
+    'dwarka-expressway': {
+      title: 'Projects on Dwarka Expressway in Gurugram | Luxury Projects',
+      metadescription: 'Looking for your next investment or dream home in Gurgaon? At 100acress, we bring you a curated selection of projects in Dwarka Expressway, Gurugram, blending luxury, location, and lifestyle. Explore an impressive range of Residential Apartments, Commercial Space, and SCO developments designed to match every need and aspiration.',
+      keywords: 'Projects on Dwarka Expressway, Upcoming projects on Dwarka Expressway, Investment projects on Dwarka Expressway'
+    },
+    'new-gurgaon': {
+      title: 'Projects On New Gurgaon | Luxury Projects',
+      metadescription: 'Search Projects on New Gurgaon and You will Get homes spaces in safe, prime locations and Luxury Residences that fit your needs and Budgets.',
+      keywords: 'Projects on New Gurgaon, Buy property on New Gurgaon, Luxury apartments on New Gurgaon, Commercial projects on New Gurgaon'
+    },
+    'southern-peripheral-road': {
+      title: 'Projects On Southern Peripheral Road | Luxury Projects',
+      metadescription: 'Buy Best Ultra Luxury Projects on Southern Peripheral Road, it offers Independent Floors 3BHK,4BHK Flats and Commercial Hubs with premium Aminities on SPR.',
+      keywords: 'Projects on Southern Pheripheral Road, Top projects on SPR Gurgaon, Buy property on Southern Peripheral Road, Premium projects on Southern Peripheral Road'
+    },
+    'golf-course-extn-road': {
+      title: 'Projects on Golf Course Extn Road in Gurugram | Luxury Flats',
+      
+      metadescription: 'Projects on Golf Course Extn Road Gives Best Investment Opportunities. Find luxury homes, prime locations that offer comfort, convenience, and good value.',
+      keywords: 'Projects on Golf Course Extn Road, Top new launch projects on Golf Course Extension Road, Buy property on Golf Course Extension Road, Best projects on golf course extension road'
+    }
+  };
+
   const SohnaRoad = useSelector(store => store?.primelocation?.sohnaroad);
   const GolfCourseRoad = useSelector(store => store?.primelocation?.golfcourseroad);
   const MgRoad = useSelector(store => store?.primelocation?.mgroad);
@@ -162,54 +232,27 @@ const GurugramPrimeLocation = () => {
 
   // Get location-specific description
   const getLocationDescription = () => {
-    if (location === 'dwarka-expressway') {
-      return 'Looking for your next investment or dream home in Gurgaon? At 100acress, we bring you a curated selection of projects in Dwarka Expressway, Gurugram, blending luxury, location, and lifestyle. Explore an impressive range of Residential Apartments, Commercial Space, and SCO developments designed to match every need and aspiration.';
-    }
     return `Explore the best residential and commercial projects in ${result}, Gurugram with modern amenities, prime locations, and excellent connectivity. Find your dream home in India's Millennium City.`;
   };
   
   return (
     <div>
       <Helmet>
-        <title>
-          {location === 'dwarka-expressway'
-            ? 'New Projects in Dwarka Expressway, Gurugram – Modern Living by 100acress'
-            : `Find Top Properties in ${result} - 100acress`}
-        </title>
-        <meta
-          name="description"
-          content={location === 'dwarka-expressway'
-            ? 'Search projects in Dwarka Expressway, Gurugram at 100acress for Luxury Residential Apartments, Commercial Space, and SCO opportunities in key locations.'
-            : `Looking for property in ${result}, Gurugram. Browse 100 acres for prime real estate options, offering unmatched amenities and perfect locations`}
-        />
-        <meta
-          name="keywords"
-          content={location === 'dwarka-expressway'
-            ? 'Projects in Dwarka Expressway, Gurugram'
-            : `Properties in ${result}`}
-        />
-        <meta property="og:title" content={`Find Top Properties in ${result} - 100acress`} />
+        <title>{locationMeta[location]?.title || `Find Top Properties in ${result} - 100acress`}</title>
+        <meta name="description" content={locationMeta[location]?.metadescription || `Looking for property in ${result}, Gurugram. Browse 100 acres for prime real estate options, offering unmatched amenities and perfect locations`} />
+        <meta name="keywords" content={locationMeta[location]?.keywords || `Properties in ${result}`} />
+        <meta property="og:title" content={locationMeta[location]?.title || `Find Top Properties in ${result} - 100acress`} />
         <meta property="og:site_name" content="100acress" />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/logo.webp" />
         <meta property="og:url" content={`https://www.100acress.com/property-in-gurugram/${location}/`} />
-        <meta property="og:description" content={location === 'dwarka-expressway'
-          ? 'Search projects in Dwarka Expressway, Gurugram at 100acress for Luxury Residential Apartments, Commercial Space, and SCO opportunities in key locations.'
-          : `Looking for property in ${result}, Gurugram. Browse 100 acres for prime real estate options, offering unmatched amenities and perfect locations`} />
-        <meta property="og:keywords" content={location === 'dwarka-expressway'
-          ? 'Projects in Dwarka Expressway, Gurugram'
-          : `Properties in ${result}`} />
-        <meta name="twitter:title" content={`Find Top Properties in ${result} - 100acress`} />
-        <meta name="twitter:description" content={location === 'dwarka-expressway'
-          ? 'Search projects in Dwarka Expressway, Gurugram at 100acress for Luxury Residential Apartments, Commercial Space, and SCO opportunities in key locations.'
-          : `Looking for property in ${result}, Gurugram. Browse 100 acres for prime real estate options, offering unmatched amenities and perfect locations`} />
+        <meta property="og:description" content={locationMeta[location]?.metadescription || `Looking for property in ${result}, Gurugram. Browse 100 acres for prime real estate options, offering unmatched amenities and perfect locations`} />
+        <meta property="og:keywords" content={locationMeta[location]?.keywords || `Properties in ${result}`} />
+        <meta name="twitter:title" content={locationMeta[location]?.title || `Find Top Properties in ${result} - 100acress`} />
+        <meta name="twitter:description" content={locationMeta[location]?.metadescription || `Looking for property in ${result}, Gurugram. Browse 100 acres for prime real estate options, offering unmatched amenities and perfect locations`} />
         <meta name="twitter:url" content="https://twitter.com/100acressdotcom" />
         <meta name="twitter:card" content="summary" />
-
-        <link
-          rel="canonical"
-          href={`https://www.100acress.com/property-in-gurugram/${location}/`}
-        />
+        <link rel="canonical" href={`https://www.100acress.com/property-in-gurugram/${location}/`} />
       </Helmet>
 
       {/* Red Banner Section */}
