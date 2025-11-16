@@ -53,11 +53,15 @@ export const Footer = () => {
             <div className="space-y-3">
               <div className="flex items-center space-x-3 text-sm">
                 <Phone className="h-4 w-4 text-gold" />
-                <span className="text-muted-foreground">+971 4 XXX XXXX</span>
+                <a href="tel:+919811750740" className="text-muted-foreground hover:text-gold transition-colors">
+                  +91 9811 750 740
+                </a>
               </div>
               <div className="flex items-center space-x-3 text-sm">
                 <Mail className="h-4 w-4 text-gold" />
-                <span className="text-muted-foreground">dubai@100acress.com</span>
+                <a href="mailto:info@100acress.com" className="text-muted-foreground hover:text-gold transition-colors">
+                  info@100acress.com
+                </a>
               </div>
               <div className="flex items-center space-x-3 text-sm">
                 <MapPin className="h-4 w-4 text-gold" />
@@ -67,15 +71,42 @@ export const Footer = () => {
 
             {/* Social Links */}
             <div className="flex items-center space-x-4">
-              {[Facebook, Instagram, Twitter, Linkedin].map((Icon, index) => (
-                <a
-                  key={index}
-                  href="#"
-                  className="w-10 h-10 rounded-full glass-effect border border-white/10 flex items-center justify-center text-white hover:text-gold hover:border-gold/50 transition-all"
-                >
-                  <Icon className="h-4 w-4" />
-                </a>
-              ))}
+              <a
+                href="https://www.facebook.com/100acress"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-10 h-10 rounded-full glass-effect border border-white/10 flex items-center justify-center text-white hover:text-gold hover:border-gold/50 transition-all"
+                aria-label="Follow us on Facebook"
+              >
+                <Facebook className="h-4 w-4" />
+              </a>
+              <a
+                href="https://www.instagram.com/100acress"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-10 h-10 rounded-full glass-effect border border-white/10 flex items-center justify-center text-white hover:text-gold hover:border-gold/50 transition-all"
+                aria-label="Follow us on Instagram"
+              >
+                <Instagram className="h-4 w-4" />
+              </a>
+              <a
+                href="https://twitter.com/100acress"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-10 h-10 rounded-full glass-effect border border-white/10 flex items-center justify-center text-white hover:text-gold hover:border-gold/50 transition-all"
+                aria-label="Follow us on Twitter"
+              >
+                <Twitter className="h-4 w-4" />
+              </a>
+              <a
+                href="https://www.linkedin.com/company/100acress"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-10 h-10 rounded-full glass-effect border border-white/10 flex items-center justify-center text-white hover:text-gold hover:border-gold/50 transition-all"
+                aria-label="Follow us on LinkedIn"
+              >
+                <Linkedin className="h-4 w-4" />
+              </a>
             </div>
           </div>
 

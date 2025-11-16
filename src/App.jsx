@@ -199,6 +199,9 @@ const DocumentUpload = lazy(() => import("./Pages/DocumentUpload"));
 const UploadSuccess = lazy(() => import("./Pages/UploadSuccess"));
 import ProjectRouter from "./Pages/ProjectRouter";
 import DubaiPage from "./Pages/Dubai/DubaiPage";
+import ProjectsInDubai from "./Pages/Dubai/ProjectsInDubai";
+import InsightsPage from "./Pages/Dubai/InsightsPage";
+import DubaiContactPage from "./Pages/Dubai/ContactPage";
 
 // Property Types Pages
 const BhkFlatsGurgaon = lazy(() => import("./Pages/PropertyTypes/BhkFlatsGurgaon"));
@@ -401,6 +404,9 @@ function App() {
                       />
                       <Route path="/project-in-delhi/" element={<CityProjectsGlobal />} />
                       <Route path="/dubai/" element={<DubaiPage />} />
+                      <Route path="/projects-in-dubai" element={<ProjectsInDubai />} />
+                      <Route path="/dubai/insights" element={<InsightsPage />} />
+                      <Route path="/dubai/contact" element={<DubaiContactPage />} />
                       <Route path="/united-arab-emirates/" element={<DubaiPage />} />
                       <Route path="/project-in-noida/" element={<CityProjectsGlobal />} />
                       <Route path="/project-in-panipat/" element={<CityProjectsGlobal />} />
