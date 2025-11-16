@@ -88,7 +88,7 @@ const Cities = () => {
     },
     {
       title: "Dubai",
-      link: "/projects-in-dubai/",
+      link: "/united-arab-emirates/",
       image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/CITIES/DUBAI.webp",
       state: "UAE"
     },

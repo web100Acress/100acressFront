@@ -115,6 +115,19 @@
   }
 }
 
+/* Ensure full-viewport sizing and remove default margins to prevent gaps */
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Avoid horizontal scrollbar due to 100vw on systems with scrollbars */
+body {
+  overflow-x: hidden;
+}
+
 /* Footer specific utility classes */
 .bg-gradient-elegant {
   background: var(--gradient-elegant);

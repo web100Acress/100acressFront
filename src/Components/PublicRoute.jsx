@@ -12,6 +12,18 @@ const PublicRoute = () => {
       hideNavbar = true;
     }
     
+    // Hide navbar for Dubai pages
+    if (
+      path === '/dubai' ||
+      path === '/dubai/' ||
+      path.startsWith('/dubai/') ||
+      path === '/united-arab-emirates' ||
+      path === '/united-arab-emirates/' ||
+      path.startsWith('/united-arab-emirates/')
+    ) {
+      hideNavbar = true;
+    }
+    
     if (!hideNavbar) {
       const segments = path.split("/").filter(Boolean);
       const isSingleSlugRoot = segments.length === 1;
@@ -42,7 +54,7 @@ const PublicRoute = () => {
         "projects-in-jalandhar",
         "project-in-ayodhya",
         "project-in-mumbai",
-        "projects-in-dubai",
+        "united-arab-emirates",
         "projects-in-pushkar",
         "project-in-pune",
         "qr-generator",

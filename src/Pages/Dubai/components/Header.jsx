@@ -45,12 +45,33 @@ export const Header = () => {
   }, [isEmiratesDropdownOpen]);
 
   const navLinks = [
-    { label: t('nav.properties'), href: "#properties" },
-    { label: t('nav.developers'), href: "#developers" },
-    { label: t('nav.insights'), href: "/insights" },
-    { label: t('nav.lifestyle'), href: "#lifestyle" },
-    { label: t('nav.contact'), href: "#contact" },
+    { label: t('nav.properties'), href: "/projects-in-dubai" },
+    { label: t('nav.developers'), href: "/dubai/developers" },
+    { label: t('nav.insights'), href: "/dubai/insights" },
+    
+    { label: t('nav.contact'), href: "/dubai/contact" },
+    { label: "India", href: "/" },
   ];
+
+  // Smooth scroll function
+  const handleSmoothScroll = (e, href) => {
+    // Only handle hash links, let regular links work normally
+    if (href.startsWith('#')) {
+      e.preventDefault();
+      const targetId = href.substring(1);
+      const targetElement = document.getElementById(targetId);
+      
+      if (targetElement) {
+        const headerHeight = 80; // Account for fixed header
+        const targetPosition = targetElement.offsetTop - headerHeight;
+        
+        window.scrollTo({
+          top: targetPosition,
+          behavior: 'smooth'
+        });
+      }
+    }
+  };
 
   return (
     <header
@@ -61,24 +82,25 @@ export const Header = () => {
           : "bg-transparent py-6"
       )}
     >
-      <div className="container flex items-center justify-between">
+      <div className="container flex items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Logo with Emirates Dropdown */}
-        <div className="flex items-center space-x-3">
-          <a href="/United-Arab-Emirates" className="flex items-center space-x-3 group">
+        <div className="flex items-center space-x-2 sm:space-x-3">
+          <a href="/United-Arab-Emirates" className="flex items-center space-x-2 sm:space-x-3">
             <img 
               src={LOGO}
               alt="100acress" 
-              className="h-15 w-auto object-contain transition-all duration-300 group-hover:scale-105"
+              className="h-10 sm:h-14 md:h-16 w-auto object-contain"
             />
           </a>
           
           {/* Emirates Dropdown */}
-          <div className="relative emirates-dropdown">
+          <div className="relative emirates-dropdown hidden sm:block">
             <button
               onClick={() => setIsEmiratesDropdownOpen(!isEmiratesDropdownOpen)}
-              className="flex items-center space-x-1 text-xs text-gold uppercase tracking-widest border-l border-gold pl-3 hover:text-gold/80 transition-colors"
+              className="flex items-center space-x-1 text-xs text-gold uppercase tracking-widest border-l border-gold pl-2 sm:pl-3 hover:text-gold/80 transition-colors"
             >
-              <span>{selectedEmirate}</span>
+              <span className="hidden md:inline">{selectedEmirate}</span>
+              <span className="md:hidden">{selectedEmirate.substring(0, 3)}</span>
               <ChevronDown className={cn(
                 "h-3 w-3 transition-transform duration-200",
                 isEmiratesDropdownOpen && "rotate-180"
@@ -111,12 +133,18 @@ export const Header = () => {
         </div>
 
         {/* Desktop Navigation */}
-        <nav className="hidden lg:flex items-center space-x-8">
+        <nav className="hidden lg:flex items-center space-x-4 xl:space-x-8">
           {navLinks.map((link) => (
             <a
               key={link.href}
               href={link.href}
-              className="text-white hover:text-gold transition-colors duration-200 text-sm uppercase tracking-wider font-medium"
+              onClick={(e) => handleSmoothScroll(e, link.href)}
+              className={cn(
+                "transition-colors duration-200 text-xs xl:text-sm uppercase tracking-wider font-medium cursor-pointer",
+                link.label === 'India'
+                  ? "gradient-gold text-black px-3 py-1 rounded-full hover:shadow-gold"
+                  : "text-white hover:text-gold"
+              )}
             >
               {link.label}
             </a>
@@ -124,83 +152,106 @@ export const Header = () => {
         </nav>
 
         {/* Right Actions */}
-        <div className="hidden lg:flex items-center space-x-4">
+        <div className="hidden lg:flex items-center space-x-2 xl:space-x-4">
           {/* Currency Toggle - Visual Icons */}
-          <div className="flex items-center gap-0.5 px-2 py-1 rounded-full glass-effect border border-white/20">
+          <div className="flex items-center gap-0.5 px-1.5 xl:px-2 py-1 rounded-full glass-effect border border-white/20">
             <button
               onClick={() => setCurrency("INR")}
               className={cn(
-                "p-1.5 rounded-full transition-all duration-300",
+                "p-1 xl:p-1.5 rounded-full transition-all duration-300",
                 currency === "INR" 
                   ? "bg-gold text-black scale-110" 
                   : "text-white/60 hover:text-gold hover:bg-white/10"
               )}
               title="Indian Rupee"
             >
-              <span className="text-base font-bold">₹</span>
+              <span className="text-sm xl:text-base font-bold">₹</span>
             </button>
             <button
               onClick={() => setCurrency("AED")}
               className={cn(
-                "p-1.5 rounded-full transition-all duration-300",
+                "p-1 xl:p-1.5 rounded-full transition-all duration-300",
                 currency === "AED" 
                   ? "bg-gold text-black scale-110" 
                   : "text-white/60 hover:text-gold hover:bg-white/10"
               )}
               title="UAE Dirham"
             >
-              <span className="text-sm font-bold">د.إ</span>
+              <span className="text-xs xl:text-sm font-bold">د.إ</span>
             </button>
             <button
               onClick={() => setCurrency("USD")}
               className={cn(
-                "p-1.5 rounded-full transition-all duration-300",
+                "p-1 xl:p-1.5 rounded-full transition-all duration-300",
                 currency === "USD" 
                   ? "bg-gold text-black scale-110" 
                   : "text-white/60 hover:text-gold hover:bg-white/10"
               )}
               title="US Dollar"
             >
-              <span className="text-base font-bold">$</span>
+              <span className="text-sm xl:text-base font-bold">$</span>
             </button>
           </div>
           
           <a href="tel:+919811750740">
-            <Button size="sm" className="gradient-gold text-black hover:shadow-gold text-base font-semibold">
-              <Phone className="h-5 w-5 mr-2" />
-              +91 9811 750 740
+            <Button size="sm" className="gradient-gold text-black hover:shadow-gold text-xs xl:text-base font-semibold px-3 xl:px-4 py-2">
+              <Phone className="h-4 w-4 xl:h-5 xl:w-5 mr-1 xl:mr-2" />
+              <span className="hidden xl:inline">+91 9811 750 740</span>
+              <span className="xl:hidden">Call</span>
             </Button>
           </a>
         </div>
 
         {/* Mobile Menu Button */}
         <button
-          className="lg:hidden text-white p-2"
+          className="lg:hidden text-white p-2 hover:text-gold transition-colors"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          aria-label="Toggle menu"
         >
           {isMobileMenuOpen ? (
-            <X className="h-6 w-6" />
+            <X className="h-5 w-5 sm:h-6 sm:w-6" />
           ) : (
-            <Menu className="h-6 w-6" />
+            <Menu className="h-5 w-5 sm:h-6 sm:w-6" />
           )}
         </button>
       </div>
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="lg:hidden glass-effect mt-4 border-t border-white/10">
-          <nav className="container py-4 space-y-4">
+        <div className="lg:hidden glass-effect mt-4 border-t border-white/10 animate-fade-in">
+          <nav className="container py-4 space-y-3 px-4 sm:px-6">
+            {/* Emirates Dropdown Mobile */}
+            <div className="sm:hidden pb-3 border-b border-white/10">
+              <label className="block text-xs text-muted-foreground mb-2">Select Emirate</label>
+              <select
+                value={selectedEmirate}
+                onChange={(e) => setSelectedEmirate(e.target.value)}
+                className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white text-sm focus:outline-none focus:border-gold/50"
+              >
+                {emirates.map((emirate) => (
+                  <option key={emirate.name} value={emirate.name} className="bg-black">
+                    {emirate.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+            
             {navLinks.map((link) => (
               <a
                 key={link.href}
                 href={link.href}
-                className="block text-white hover:text-gold transition-colors py-2"
+                className={cn(
+                  "block transition-colors py-2 text-sm sm:text-base",
+                  link.label === 'India'
+                    ? "gradient-gold text-black rounded-lg px-3"
+                    : "text-white hover:text-gold"
+                )}
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 {link.label}
               </a>
             ))}
-            <div className="pt-4 space-y-2 border-t border-white/10">
+            <div className="pt-3 space-y-3 border-t border-white/10">
               {/* Currency Toggle Mobile - Visual Icons */}
               <div className="flex items-center justify-center gap-2 p-3 rounded-lg glass-effect border border-white/20">
                 <button

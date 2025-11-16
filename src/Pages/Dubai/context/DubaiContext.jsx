@@ -93,7 +93,7 @@ export const DubaiProvider = ({ children }) => {
   useEffect(() => {
     const currentPath = location.pathname;
     // Only set default emirate if we're on the UAE page and haven't selected one yet
-    if ((currentPath === '/United-Arab-Emirates' || currentPath === '/United-Arab-Emirates/') && !selectedEmirate) {
+    if ((currentPath === '/United-Arab-Emirates' || currentPath === '/united-arab-emirates/') && !selectedEmirate) {
       setSelectedEmirateState('Dubai');
     }
   }, [location.pathname]);
