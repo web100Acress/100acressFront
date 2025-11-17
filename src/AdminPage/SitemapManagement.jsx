@@ -3,6 +3,8 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { API_BASE } from '../config/apiBase';
+import Sidebar from './Sidebar';
+import { MdEdit, MdDelete, MdAdd, MdSearch } from 'react-icons/md';
 
 const SitemapManagement = () => {
   const [urls, setUrls] = useState([]);
@@ -150,244 +152,283 @@ const SitemapManagement = () => {
   );
 
   return (
-    <div className="container-fluid p-4">
-      <div className="row mb-4">
-        <div className="col-12">
-          <div className="d-flex justify-content-between align-items-center">
-            <h2 className="mb-0">Sitemap Management</h2>
-            <button
-              className="btn btn-primary"
-              onClick={handleAddNew}
-            >
-              <i className="bi bi-plus-circle me-2"></i>
-              Add New URL
-            </button>
+    <div className="bg-gray-50 dark:bg-gray-900 dark:text-gray-100 min-h-screen flex font-sans">
+      <Sidebar />
+      <div className="flex-1 p-8 ml-[250px] transition-colors duration-300">
+        <div className="max-w-7xl mx-auto">
+          {/* Header Section */}
+          <div className="mb-8 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-700 rounded-xl p-6 border border-blue-200 dark:border-gray-600">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+              <div className="flex-1">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-1 h-8 bg-gradient-to-b from-blue-500 to-indigo-600 rounded"></div>
+                  <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white">
+                    Sitemap Management
+                  </h1>
+                </div>
+                <p className="text-gray-600 dark:text-gray-400 ml-4">
+                  Manage and organize your website's sitemap URLs for better SEO
+                </p>
+              </div>
+              <button
+                className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold py-3 px-8 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 flex items-center gap-2 whitespace-nowrap hover:scale-105 transform"
+                onClick={handleAddNew}
+              >
+                <MdAdd size={22} />
+                Add New URL
+              </button>
+            </div>
           </div>
-        </div>
-      </div>
 
-      <div className="row mb-3">
-        <div className="col-md-6">
-          <div className="input-group">
-            <span className="input-group-text">
-              <i className="bi bi-search"></i>
-            </span>
-            <input
-              type="text"
-              className="form-control"
-              placeholder="Search URLs..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
+          {/* Search and Stats Section - Sticky */}
+          <div className="sticky top-0 z-40 bg-gray-50 dark:bg-gray-900 pb-4 mb-6">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div className="md:col-span-2">
+                <div className="relative group h-full">
+                  <MdSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 text-lg group-focus-within:text-blue-500 transition-colors" />
+                  <input
+                    type="text"
+                    className="w-full h-full pl-12 pr-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:focus:ring-blue-400 transition-all duration-200 shadow-sm hover:shadow-md text-sm"
+                    placeholder="Search URLs..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                  />
+                </div>
+              </div>
+              <div className="md:col-span-2 flex items-center justify-center bg-gradient-to-br from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 rounded-lg px-6 py-2.5 border border-blue-300 dark:border-blue-700 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105 h-full">
+                <div className="text-center w-full">
+                  <p className="text-lg font-bold text-white whitespace-nowrap">Total URLs - <span className="text-2xl">{urls.length}</span></p>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-        <div className="col-md-6 text-end">
-          <span className="badge bg-info fs-6">
-            Total URLs: {urls.length}
-          </span>
-        </div>
-      </div>
 
-      {loading ? (
-        <div className="text-center py-5">
-          <div className="spinner-border text-primary" role="status">
-            <span className="visually-hidden">Loading...</span>
-          </div>
-        </div>
-      ) : (
-        <div className="row">
-          <div className="col-12">
-            <div className="card shadow-sm">
-              <div className="card-body p-0">
-                <div className="table-responsive">
-                  <table className="table table-hover mb-0">
-                    <thead className="table-light">
+          {/* Table Section */}
+          {loading ? (
+            <div className="flex justify-center items-center py-16">
+              <div className="text-center">
+                <div className="inline-block">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+                </div>
+                <p className="mt-4 text-gray-600 dark:text-gray-400">Loading URLs...</p>
+              </div>
+            </div>
+          ) : (
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden border border-gray-200 dark:border-gray-700">
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-600 border-b border-gray-200 dark:border-gray-600">
+                      <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900 dark:text-white">#</th>
+                      <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900 dark:text-white">URL</th>
+                      <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900 dark:text-white">Last Modified</th>
+                      <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900 dark:text-white">Change Freq</th>
+                      <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900 dark:text-white">Priority</th>
+                      <th className="px-6 py-4 text-center text-sm font-semibold text-gray-900 dark:text-white">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                    {filteredUrls.length === 0 ? (
                       <tr>
-                        <th style={{ width: '5%' }}>#</th>
-                        <th style={{ width: '40%' }}>URL</th>
-                        <th style={{ width: '15%' }}>Last Modified</th>
-                        <th style={{ width: '12%' }}>Change Freq</th>
-                        <th style={{ width: '10%' }}>Priority</th>
-                        <th style={{ width: '18%' }} className="text-center">Actions</th>
+                        <td colSpan="6" className="px-6 py-12 text-center">
+                          <div className="flex flex-col items-center justify-center">
+                            <div className="text-4xl mb-3">📭</div>
+                            <p className="text-gray-600 dark:text-gray-400 text-lg font-medium">No URLs found</p>
+                            <p className="text-gray-500 dark:text-gray-500 text-sm mt-1">Try adjusting your search criteria</p>
+                          </div>
+                        </td>
                       </tr>
-                    </thead>
-                    <tbody>
-                      {filteredUrls.length === 0 ? (
-                        <tr>
-                          <td colSpan="6" className="text-center py-4">
-                            No URLs found
+                    ) : (
+                      filteredUrls.map((url, index) => (
+                        <tr key={url.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-150">
+                          <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-400 font-medium">{index + 1}</td>
+                          <td className="px-6 py-4">
+                            <a
+                              href={url.loc}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium break-all hover:underline transition-colors"
+                            >
+                              {url.loc}
+                            </a>
+                          </td>
+                          <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">
+                            {url.lastmod
+                              ? new Date(url.lastmod).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
+                              : 'N/A'}
+                          </td>
+                          <td className="px-6 py-4">
+                            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300">
+                              {url.changefreq || 'N/A'}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4">
+                            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300">
+                              {url.priority || 'N/A'}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 text-center">
+                            <div className="flex items-center justify-center gap-2">
+                              <button
+                                className="p-2 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/30 rounded-lg transition-colors duration-150"
+                                onClick={() => handleEdit(url)}
+                                title="Edit URL"
+                              >
+                                <MdEdit size={20} />
+                              </button>
+                              <button
+                                className="p-2 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/30 rounded-lg transition-colors duration-150"
+                                onClick={() => handleDelete(url.id)}
+                                title="Delete URL"
+                              >
+                                <MdDelete size={20} />
+                              </button>
+                            </div>
                           </td>
                         </tr>
-                      ) : (
-                        filteredUrls.map((url, index) => (
-                          <tr key={url.id}>
-                            <td>{index + 1}</td>
-                            <td>
-                              <a
-                                href={url.loc}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-decoration-none"
-                              >
-                                {url.loc}
-                              </a>
-                            </td>
-                            <td>
-                              {url.lastmod
-                                ? new Date(url.lastmod).toLocaleDateString()
-                                : 'N/A'}
-                            </td>
-                            <td>
-                              <span className="badge bg-secondary">
-                                {url.changefreq || 'N/A'}
-                              </span>
-                            </td>
-                            <td>
-                              <span className="badge bg-primary">
-                                {url.priority || 'N/A'}
-                              </span>
-                            </td>
-                            <td className="text-center">
-                              <button
-                                className="btn btn-sm btn-outline-primary me-2"
-                                onClick={() => handleEdit(url)}
-                                title="Edit"
-                              >
-                                <i className="bi bi-pencil"></i>
-                              </button>
-                              <button
-                                className="btn btn-sm btn-outline-danger"
-                                onClick={() => handleDelete(url.id)}
-                                title="Delete"
-                              >
-                                <i className="bi bi-trash"></i>
-                              </button>
-                            </td>
-                          </tr>
-                        ))
-                      )}
-                    </tbody>
-                  </table>
-                </div>
+                      ))
+                    )}
+                  </tbody>
+                </table>
               </div>
             </div>
-          </div>
-        </div>
-      )}
+          )}
 
-      {/* Modal for Add/Edit */}
-      {showModal && (
-        <div
-          className="modal fade show d-block"
-          style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}
-          tabIndex="-1"
-        >
-          <div className="modal-dialog modal-lg">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title">
-                  {editMode ? 'Edit URL' : 'Add New URL'}
-                </h5>
-                <button
-                  type="button"
-                  className="btn-close"
-                  onClick={() => setShowModal(false)}
-                ></button>
-              </div>
-              <form onSubmit={handleSubmit}>
-                <div className="modal-body">
-                  <div className="mb-3">
-                    <label className="form-label">
-                      URL (loc) <span className="text-danger">*</span>
-                    </label>
-                    <input
-                      type="url"
-                      className="form-control"
-                      value={currentUrl.loc}
-                      onChange={(e) =>
-                        setCurrentUrl({ ...currentUrl, loc: e.target.value })
-                      }
-                      placeholder="https://www.100acress.com/page-name/"
-                      required
-                    />
-                    <small className="text-muted">
-                      The full URL of the page
-                    </small>
-                  </div>
-
-                  <div className="mb-3">
-                    <label className="form-label">Last Modified</label>
-                    <input
-                      type="date"
-                      className="form-control"
-                      value={currentUrl.lastmod}
-                      onChange={(e) =>
-                        setCurrentUrl({ ...currentUrl, lastmod: e.target.value })
-                      }
-                    />
-                    <small className="text-muted">
-                      The last time this page was modified
-                    </small>
-                  </div>
-
-                  <div className="mb-3">
-                    <label className="form-label">Change Frequency</label>
-                    <select
-                      className="form-select"
-                      value={currentUrl.changefreq}
-                      onChange={(e) =>
-                        setCurrentUrl({ ...currentUrl, changefreq: e.target.value })
-                      }
-                    >
-                      <option value="">None</option>
-                      <option value="always">Always</option>
-                      <option value="hourly">Hourly</option>
-                      <option value="daily">Daily</option>
-                      <option value="weekly">Weekly</option>
-                      <option value="monthly">Monthly</option>
-                      <option value="yearly">Yearly</option>
-                      <option value="never">Never</option>
-                    </select>
-                    <small className="text-muted">
-                      How often the page's content changes
-                    </small>
-                  </div>
-
-                  <div className="mb-3">
-                    <label className="form-label">Priority</label>
-                    <input
-                      type="number"
-                      className="form-control"
-                      value={currentUrl.priority}
-                      onChange={(e) =>
-                        setCurrentUrl({ ...currentUrl, priority: e.target.value })
-                      }
-                      min="0.0"
-                      max="1.0"
-                      step="0.1"
-                    />
-                    <small className="text-muted">
-                      Importance of the page (0.0–1.0). Homepage often has 1.0
-                    </small>
-                  </div>
-                </div>
-                <div className="modal-footer">
+          {/* Modal for Add/Edit */}
+          {showModal && (
+            <div
+              className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+              onClick={() => setShowModal(false)}
+            >
+              <div
+                className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {/* Modal Header */}
+                <div className="sticky top-0 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-700 dark:to-gray-600 px-8 py-6 border-b border-gray-200 dark:border-gray-600 flex items-center justify-between">
+                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                    {editMode ? '✏️ Edit URL' : '➕ Add New URL'}
+                  </h2>
                   <button
                     type="button"
-                    className="btn btn-secondary"
+                    className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 text-2xl leading-none"
                     onClick={() => setShowModal(false)}
                   >
-                    Cancel
-                  </button>
-                  <button type="submit" className="btn btn-primary">
-                    {editMode ? 'Update' : 'Add'} URL
+                    ✕
                   </button>
                 </div>
-              </form>
+
+                {/* Modal Body */}
+                <form onSubmit={handleSubmit} className="p-8">
+                  <div className="space-y-6">
+                    {/* URL Input */}
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
+                        URL (loc) <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="url"
+                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                        value={currentUrl.loc}
+                        onChange={(e) =>
+                          setCurrentUrl({ ...currentUrl, loc: e.target.value })
+                        }
+                        placeholder="https://www.100acress.com/page-name/"
+                        required
+                      />
+                      <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                        The full URL of the page
+                      </p>
+                    </div>
+
+                    {/* Last Modified */}
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
+                        Last Modified
+                      </label>
+                      <input
+                        type="date"
+                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                        value={currentUrl.lastmod}
+                        onChange={(e) =>
+                          setCurrentUrl({ ...currentUrl, lastmod: e.target.value })
+                        }
+                      />
+                      <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                        The last time this page was modified
+                      </p>
+                    </div>
+
+                    {/* Change Frequency */}
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
+                        Change Frequency
+                      </label>
+                      <select
+                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                        value={currentUrl.changefreq}
+                        onChange={(e) =>
+                          setCurrentUrl({ ...currentUrl, changefreq: e.target.value })
+                        }
+                      >
+                        <option value="">None</option>
+                        <option value="always">Always</option>
+                        <option value="hourly">Hourly</option>
+                        <option value="daily">Daily</option>
+                        <option value="weekly">Weekly</option>
+                        <option value="monthly">Monthly</option>
+                        <option value="yearly">Yearly</option>
+                        <option value="never">Never</option>
+                      </select>
+                      <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                        How often the page's content changes
+                      </p>
+                    </div>
+
+                    {/* Priority */}
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
+                        Priority
+                      </label>
+                      <input
+                        type="number"
+                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                        value={currentUrl.priority}
+                        onChange={(e) =>
+                          setCurrentUrl({ ...currentUrl, priority: e.target.value })
+                        }
+                        min="0.0"
+                        max="1.0"
+                        step="0.1"
+                      />
+                      <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                        Importance of the page (0.0–1.0). Homepage often has 1.0
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Modal Footer */}
+                  <div className="flex items-center justify-end gap-3 mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
+                    <button
+                      type="button"
+                      className="px-6 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 font-semibold rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                      onClick={() => setShowModal(false)}
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      className="px-6 py-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all"
+                    >
+                      {editMode ? 'Update URL' : 'Add URL'}
+                    </button>
+                  </div>
+                </form>
+              </div>
             </div>
-          </div>
+          )}
         </div>
-      )}
+      </div>
     </div>
   );
 };

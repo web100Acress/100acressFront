@@ -168,6 +168,10 @@ const Sidebar = () => {
             <Building className="icon text-xl group-hover:scale-110 group-hover:text-white transition-transform duration-200" />
             <span>Contact Cards</span>
           </Link>
+          <Link to="/admin/sitemap-management" className={`sidebar-nav-item group flex items-center gap-3 px-4 py-2 rounded-lg transition-all duration-200 hover:bg-gradient-to-r hover:from-indigo-500/80 hover:to-blue-500/80 hover:text-white font-medium text-base ${location.pathname.startsWith("/admin/sitemap-management") ? "bg-gradient-to-r from-indigo-500/80 to-blue-500/80 text-white" : "text-gray-200 dark:text-gray-300"}`}>
+            <MdCloudUpload className="icon text-xl group-hover:scale-110 group-hover:text-white transition-transform duration-200" />
+            <span>Sitemap Management</span>
+          </Link>
           {/* Contact Us Dropdown */}
           {/* <a href="#" onClick={toggleContactDropdown} className="sidebar-nav-item group flex items-center gap-3 px-4 py-2 rounded-lg transition-all duration-200 hover:bg-gradient-to-r hover:from-blue-500/80 hover:to-purple-500/80 hover:text-white text-gray-200 font-medium text-base cursor-pointer select-none dark:text-gray-300 dark:hover:text-white dark:hover:bg-gradient-to-r dark:hover:from-blue-700/80 dark:hover:to-purple-700/80">
             <AiFillPropertySafety className="icon text-xl group-hover:scale-110 group-hover:text-white transition-transform duration-200" />
