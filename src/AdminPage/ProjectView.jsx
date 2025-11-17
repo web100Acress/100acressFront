@@ -154,6 +154,7 @@ const ProjectView = () => {
         { label: "City", value: city, icon: <MdInfo className="inline mr-1" /> },
         { label: "State", value: state, icon: <MdInfo className="inline mr-1" /> },
         { label: "Country", value: country, icon: <MdInfo className="inline mr-1" /> },
+        { label: "Project URL", value: project_url, icon: <MdInfo className="inline mr-1" /> },
       ]
     },
     {
@@ -216,6 +217,7 @@ const ProjectView = () => {
             {renderSingleImageCard(highlightImage, "Project highlight Image")}
             {renderSingleImageCard(projectMaster_plan, "Project Master Plan")}
             {renderSingleImageCard(project_Brochure, "Project Brochure")}
+          </div>
 
           <div className="space-y-8"> {/* Separate space for galleries */}
             {renderGalleryCard(project_floorplan_Image, "Project FloorPlan Image")}
