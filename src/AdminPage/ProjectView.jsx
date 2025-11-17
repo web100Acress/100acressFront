@@ -22,6 +22,7 @@ const ProjectView = () => {
     logo,
     highlightImage,
     projectMaster_plan,
+    project_Brochure,
     projectName,
     paymentPlan,
     country,
@@ -214,6 +215,7 @@ const ProjectView = () => {
             {renderSingleImageCard(logo, "Project Logo Image")}
             {renderSingleImageCard(highlightImage, "Project highlight Image")}
             {renderSingleImageCard(projectMaster_plan, "Project Master Plan")}
+            {renderSingleImageCard(project_Brochure, "Project Brochure")}
           </div>
 
           <div className="space-y-8"> {/* Separate space for galleries */}
