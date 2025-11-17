@@ -188,6 +188,7 @@ const AdminJobPosting = lazy(() => import("./AdminPage/AdminJobPosting"));
 const AdminJobPostingView = lazy(() => import("./AdminPage/AdminJobPostingView"));
 const AdminJobPostingEdit = lazy(() => import("./AdminPage/AdminJobPostingEdit"));
 const S3Manager = lazy(() => import("./AdminPage/S3Manager"));
+const SitemapManagement = lazy(() => import("./AdminPage/SitemapManagement"));
 const Onboarding = lazy(() => import("./Hr/Onboarding"));
 const Offboarding = lazy(() => import("./Hr/Offboarding"));
 const ItDashboard = lazy(() => import("./Hr/ItDashboard"));
@@ -672,6 +673,7 @@ function App() {
                       <Route path="jobposting/view/:id" element={<LazyLoad><AdminJobPostingView /></LazyLoad>} />
                       <Route path="jobposting/edit/:id" element={<LazyLoad><AdminJobPostingEdit /></LazyLoad>} />
                       <Route path="contact-cards" element={<LazyLoad><ContactCardManagement /></LazyLoad>} />
+                      <Route path="sitemap-management" element={<LazyLoad><SitemapManagement /></LazyLoad>} />
                       </Route>
 
                     {/* HR Department Routing */}
