@@ -29,7 +29,14 @@ const DubaiBottomNav = () => {
             {/* India (replacing Dubai) */}
             <Link to="/" className="flex flex-col items-center gap-1 py-2">
               <span className={`text-xl ${isActive("/") ? "text-gold" : "text-white/60"}`}>
-                <i className="fa-solid fa-flag"></i>
+                <img 
+                  src="/icons/noun-india-gate-1574740.svg" 
+                  alt="India Gate" 
+                  className="w-6 h-6"
+                  style={{
+                    filter: isActive("/") ? "brightness(0) saturate(100%) invert(82%) sepia(74%) saturate(1532%) hue-rotate(4deg) brightness(104%) contrast(104%)" : "brightness(0) saturate(100%) invert(60%)"
+                  }}
+                />
               </span>
               <span className={`${isActive("/") ? "text-white font-semibold" : ""}`}>India</span>
             </Link>
