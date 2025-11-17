@@ -16,49 +16,49 @@ const Cities = () => {
     },
     {
       title: "Delhi",
-      link: "/project-in-delhi/",
+      link: "/projects-in-delhi/",
       image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/CITIES/DELHI.webp",
       state: "Delhi"
     },
     {
       title: "Noida",
-      link: "/project-in-noida/",
+      link: "/projects-in-noida/",
       image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/CITIES/NOIDA.webp",
       state: "Uttar Pradesh"
     },
     {
       title: "Goa",
-      link: "/project-in-goa/",
+      link: "/projects-in-goa/",
       image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/CITIES/GOA.webp",
       state: "Goa"
     },
     {
       title: "Ayodhya",
-      link: "/project-in-ayodhya/",
+      link: "/projects-in-ayodhya/",
       image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/CITIES/AYODHYA.webp",
       state: "Uttar Pradesh"
     },
     {
       title: "Mumbai",
-      link: "/project-in-mumbai/",
+      link: "/projects-in-mumbai/",
       image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/CITIES/MUMBAI.webp",
       state: "Maharashtra"
     },
     {
       title: "Panipat",
-      link: "/project-in-panipat/",
+      link: "/projects-in-panipat/",
       image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/CITIES/panipat.webp",
       state: "Haryana"
     },
     {
       title: "Panchkula",
-      link: "/project-in-panchkula/",
+      link: "/projects-in-panchkula/",
       image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/CITIES/PANCHKULA.webp",
       state: "Haryana"
     },
     {
       title: "Kasauli",
-      link: "/project-in-kasauli/",
+      link: "/projects-in-kasauli/",
       image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/CITIES/KASULI.webp",
       state: "Himachal Pradesh"
     },
