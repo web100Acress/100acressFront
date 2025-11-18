@@ -103,7 +103,7 @@ const Sidebar = () => {
         body { font-family: 'Roboto', sans-serif; }
       `}</style>
       <div
-        className={`sidebar-wrapper fixed top-0 left-0 h-screen w-[240px] bg-gradient-to-br from-[#232526]/90 to-[#414345]/90 backdrop-blur-xl shadow-2xl border-r border-gray-200/20 flex flex-col justify-between z-50 transition-all duration-300 dark:bg-gradient-to-br dark:from-[#181a1b]/95 dark:to-[#232526]/95`}
+        className={`sidebar-wrapper fixed top-0 left-0 h-screen w-[240px] bg-gradient-to-br from-[#232526]/90 to-[#414345]/90 backdrop-blur-xl shadow-2xl border-r border-gray-200/20 flex flex-col justify-between z-50 transition-all duration-300 overflow-y-auto overflow-x-hidden pr-1 hidden lg:flex dark:bg-gradient-to-br dark:from-[#181a1b]/95 dark:to-[#232526]/95`}
       >
         {/* Brand/Logo Section */}
         <div className="sidebar-brand flex items-center gap-2 px-6 py-6 border-b border-gray-200/10 dark:border-gray-700/30">

@@ -154,7 +154,7 @@ const SitemapManagement = () => {
   return (
     <div className="bg-gray-50 dark:bg-gray-900 dark:text-gray-100 min-h-screen flex font-sans">
       <Sidebar />
-      <div className="flex-1 p-8 ml-[250px] transition-colors duration-300">
+      <div className="flex-1 p-8 ml-0 lg:ml-[250px] transition-colors duration-300">
         <div className="max-w-7xl mx-auto">
           {/* Header Section */}
           <div className="mb-8 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-700 rounded-xl p-6 border border-blue-200 dark:border-gray-600">
