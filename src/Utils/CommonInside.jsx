@@ -19,6 +19,7 @@ import {
   subscribe,
   hydrateFavoritesFromServer,
 } from "../Utils/favorites";
+import { ChevronDown } from "lucide-react";
 
 const CommonInside = ({
   title,
@@ -108,6 +109,11 @@ const CommonInside = ({
   const [showAuth, setShowAuth] = useState(false);
   const [favTick, setFavTick] = useState(0);
 
+  // Filter states
+  const [selectedType, setSelectedType] = useState("");
+  const [selectedSort, setSelectedSort] = useState("");
+  const [selectedPrice, setSelectedPrice] = useState("");
+
   useEffect(() => {
     if (Array.isArray(Actualdata) && Actualdata.length > 0) {
       import("aos").then((Aos) => {
@@ -128,7 +134,7 @@ const CommonInside = ({
   }, []);
 
   // Filter out invalid items and ensure we have valid data
-  const validData = Array.isArray(Actualdata)
+  let filteredData = Array.isArray(Actualdata)
     ? Actualdata.filter((item) => {
         return (
           item &&
@@ -140,6 +146,58 @@ const CommonInside = ({
         );
       })
     : [];
+
+  // Apply filters
+  if (selectedType) {
+    filteredData = filteredData.filter((item) => {
+      const type = item.type || item?.postProperty?.propertyType;
+      return type === selectedType;
+    });
+  }
+
+  if (selectedPrice) {
+    filteredData = filteredData.filter((item) => {
+      const minPrice = item.minPrice || item.price || item.postProperty?.price;
+      if (!minPrice) return false;
+      const price = parseFloat(minPrice);
+      if (selectedPrice === "0-1") return price >= 0 && price < 1;
+      if (selectedPrice === "1-5") return price >= 1 && price < 5;
+      if (selectedPrice === "5-10") return price >= 5 && price < 10;
+      if (selectedPrice === "10-20") return price >= 10 && price < 20;
+      if (selectedPrice === "20-50") return price >= 20 && price < 50;
+      if (selectedPrice === "50-Infinity") return price >= 50;
+      return true;
+    });
+  }
+
+  // Apply sorting
+  if (selectedSort) {
+    filteredData.sort((a, b) => {
+      if (selectedSort === "price-low") {
+        const aPrice = a.minPrice || a.price || a.postProperty?.price || 0;
+        const bPrice = b.minPrice || b.price || b.postProperty?.price || 0;
+        return parseFloat(aPrice) - parseFloat(bPrice);
+      }
+      if (selectedSort === "price-high") {
+        const aPrice = a.minPrice || a.price || a.postProperty?.price || 0;
+        const bPrice = b.minPrice || b.price || b.postProperty?.price || 0;
+        return parseFloat(bPrice) - parseFloat(aPrice);
+      }
+      if (selectedSort === "newest") {
+        const aDate = new Date(a.createdAt || a.postProperty?.createdAt || 0);
+        const bDate = new Date(b.createdAt || b.postProperty?.createdAt || 0);
+        return bDate - aDate;
+      }
+      if (selectedSort === "name") {
+        const aName = (a.propertyName || a.projectName || a.postProperty?.propertyName || "").toLowerCase();
+        const bName = (b.propertyName || b.projectName || b.postProperty?.propertyName || "").toLowerCase();
+        return aName.localeCompare(bName);
+      }
+      return 0;
+    });
+  }
+
+  const validData = filteredData;
 
   // If no valid data, show a message
   if (validData.length === 0) {
@@ -161,7 +219,7 @@ const CommonInside = ({
         {metaContent && <meta name="description" content={`${metaContent}`} />}
         {linkhref && <link rel="canonical" href={`${linkhref}`} />}
       </Helmet>
-      <section className="flex pt-2 flex-col items-center mt-2">
+      <section className="flex pt-24 flex-col items-center mt-8">
         {title && (
           <h1 className="mb-3 text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold">
             {title}
@@ -173,6 +231,8 @@ const CommonInside = ({
           </h2>
         )}
 
+        {/* Banner */}
+  
         <div className="grid max-w-md grid-cols-1 px-3 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full mb-4">
           {validData.map((item, index) => {
             const pUrl = item.project_url;

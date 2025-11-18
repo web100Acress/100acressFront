@@ -164,14 +164,14 @@ const CrimsonEleganceFooter = () => {
               <div className="space-y-4">
                 <div className="flex items-center gap-4 text-footer-text hover:text-footer-accent transition-smooth">
                   <a
-                    href="tel:+919811750740"
+                    href="tel:+918500900100"
                     className="flex items-center gap-4 text-footer-text hover:text-footer-accent transition-smooth"
                   >
                     <div className="p-3 bg-white/10 rounded-xl backdrop-blur-sm">
                       <Phone className="w-5 h-5" />
                     </div>
                     <span className="text-lg font-medium">
-                      +91 9811 750 740
+                      +91 8500-900-100
                     </span>
                   </a>
                 </div>
@@ -187,7 +187,7 @@ const CrimsonEleganceFooter = () => {
                   </span>
                 </a>
                 <a
-                  href="https://wa.me/919811750740"
+                  href="https://wa.me/918500900100"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-4 text-footer-text hover:text-footer-accent transition-smooth"
