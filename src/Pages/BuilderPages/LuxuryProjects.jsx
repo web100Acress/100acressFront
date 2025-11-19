@@ -68,7 +68,7 @@ const LuxuryProject = () => {
     <div>
       <Navbar />
       {/* Banner */}
-      <div className="bg-gradient-to-r from-red-50 to-orange-50 border-b border-red-100 py-6 md:py-8 lg:py-10 mt-20 md:mt-24 lg:mt-28 relative">
+      <div className="bg-gradient-to-r from-red-50 to-orange-50 border-b border-red-100 py-6  md:py-8 lg:py-10 mt-20 md:mt-24 lg:mt-20  relative">
         <h1 className="text-center text-2xl md:text-3xl lg:text-4xl font-bold text-red-600">Luxury Projects for You</h1>
       </div>
 
