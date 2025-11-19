@@ -117,7 +117,7 @@ const JobApplications = ({ id: propId, inModal = false }) => {
       return;
     }
     try {
-      await api.delete(`/career/followup/${followupId}`);
+      await api.delete(`/career/followups/${followupId}`);
       alert("Follow-up deleted successfully!");
       await fetchFollowUps(selectedAppForFollowUp._id);
     } catch (e) {

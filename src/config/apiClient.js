@@ -88,8 +88,12 @@ api.interceptors.request.use(
 
     // Ensure URL is properly formatted
     if (typeof config.url === 'string') {
-      // Remove leading/trailing slashes to prevent double slashes
-      config.url = config.url.replace(/^\/+|\/+$/g, '');
+      // Only remove trailing slashes, keep leading slash for proper routing
+      config.url = config.url.replace(/\/+$/g, '');
+      // Ensure leading slash exists
+      if (!config.url.startsWith('/')) {
+        config.url = '/' + config.url;
+      }
     }
 
     // Add auth token if exists
