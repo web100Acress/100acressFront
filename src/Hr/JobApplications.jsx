@@ -102,7 +102,7 @@ const JobApplications = ({ id: propId, inModal = false }) => {
   const fetchFollowUps = async (appId) => {
     setLoadingFollowUps(true);
     try {
-      const res = await api.get(`/career/application/${appId}/followups`);
+      const res = await api.get(`/career/application/${appId}/followup`);
       setFollowUps(res?.data?.data || []);
     } catch (e) {
       console.error("Failed to fetch follow-ups:", e);
@@ -117,11 +117,13 @@ const JobApplications = ({ id: propId, inModal = false }) => {
       return;
     }
     try {
-      await api.delete(`/career/followups/${followupId}`);
+      await api.delete(`/career/followup/${followupId}`);
       alert("Follow-up deleted successfully!");
       await fetchFollowUps(selectedAppForFollowUp._id);
     } catch (e) {
       alert(e?.response?.data?.error || "Failed to delete follow-up");
+    } finally {
+      setLoadingFollowUps(false);
     }
   };
 
