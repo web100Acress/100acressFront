@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import HrSidebar from "./HrSidebar";
 import api from "../config/apiClient";
-import { FaUserCircle, FaEnvelope, FaPhone, FaFileAlt, FaExclamationCircle, FaRobot, FaTimes, FaFileExport } from 'react-icons/fa';
+import { FaUserCircle, FaEnvelope, FaPhone, FaFileAlt, FaExclamationCircle, FaRobot, FaTimes, FaFileExport, FaComments } from 'react-icons/fa';
 
 const JobApplications = ({ id: propId, inModal = false }) => {
   const { id: paramId } = useParams();
@@ -14,6 +14,12 @@ const JobApplications = ({ id: propId, inModal = false }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedApp, setSelectedApp] = useState(null);
+  const [followUpModalOpen, setFollowUpModalOpen] = useState(false);
+  const [selectedAppForFollowUp, setSelectedAppForFollowUp] = useState(null);
+  const [followUpText, setFollowUpText] = useState("");
+  const [submittingFollowUp, setSubmittingFollowUp] = useState(false);
+  const [followUps, setFollowUps] = useState([]);
+  const [loadingFollowUps, setLoadingFollowUps] = useState(false);
 
   const fetchApplications = async () => {
     if (!openingId) return;
@@ -91,6 +97,65 @@ const JobApplications = ({ id: propId, inModal = false }) => {
   const closeCoverLetterModal = () => {
     setModalOpen(false);
     setSelectedApp(null);
+  };
+
+  const fetchFollowUps = async (appId) => {
+    setLoadingFollowUps(true);
+    try {
+      const res = await api.get(`/career/application/${appId}/followups`);
+      setFollowUps(res?.data?.data || []);
+    } catch (e) {
+      console.error("Failed to fetch follow-ups:", e);
+      setFollowUps([]);
+    } finally {
+      setLoadingFollowUps(false);
+    }
+  };
+
+  const deleteFollowUp = async (followupId) => {
+    if (!window.confirm("Are you sure you want to delete this follow-up?")) {
+      return;
+    }
+    try {
+      await api.delete(`/career/followup/${followupId}`);
+      alert("Follow-up deleted successfully!");
+      await fetchFollowUps(selectedAppForFollowUp._id);
+    } catch (e) {
+      alert(e?.response?.data?.error || "Failed to delete follow-up");
+    }
+  };
+
+  const openFollowUpModal = (app) => {
+    setSelectedAppForFollowUp(app);
+    setFollowUpText("");
+    setFollowUpModalOpen(true);
+    fetchFollowUps(app._id);
+  };
+
+  const closeFollowUpModal = () => {
+    setFollowUpModalOpen(false);
+    setSelectedAppForFollowUp(null);
+    setFollowUpText("");
+  };
+
+  const submitFollowUp = async () => {
+    if (!selectedAppForFollowUp || !followUpText.trim()) {
+      alert("Please enter follow-up message");
+      return;
+    }
+    setSubmittingFollowUp(true);
+    try {
+      await api.post(`/career/application/${selectedAppForFollowUp._id}/followup`, {
+        message: followUpText
+      });
+      setFollowUpText("");
+      await fetchFollowUps(selectedAppForFollowUp._id);
+      fetchApplications();
+    } catch (e) {
+      alert(e?.response?.data?.message || "Failed to send follow-up");
+    } finally {
+      setSubmittingFollowUp(false);
+    }
   };
 
   const rows = useMemo(() => {
@@ -300,6 +365,13 @@ const JobApplications = ({ id: propId, inModal = false }) => {
                           ) : (
                             <div className="flex justify-end gap-1">
                               <button
+                                className="px-2 py-1 rounded bg-blue-600 text-white hover:bg-blue-700 transition text-xs"
+                                onClick={() => openFollowUpModal(a)}
+                                title="Send Follow-up"
+                              >
+                                <FaComments />
+                              </button>
+                              <button
                                 className="px-2 py-1 rounded bg-green-600 text-white hover:bg-green-700 transition text-xs"
                                 onClick={() => approve(a._id)}
                               >
@@ -377,6 +449,12 @@ const JobApplications = ({ id: propId, inModal = false }) => {
                       ) : (
                         <>
                           <button
+                            className="flex-1 px-2 py-1 rounded bg-blue-600 text-white hover:bg-blue-700 transition text-xs flex items-center justify-center gap-1"
+                            onClick={() => openFollowUpModal(a)}
+                          >
+                            <FaComments /> Follow-up
+                          </button>
+                          <button
                             className="flex-1 px-2 py-1 rounded bg-green-600 text-white hover:bg-green-700 transition text-xs"
                             onClick={() => approve(a._id)}
                           >
@@ -422,7 +500,83 @@ const JobApplications = ({ id: propId, inModal = false }) => {
           </div>
         </div>
       )}
-    </div> 
+
+      {/* Follow-up Modal */}
+      {followUpModalOpen && selectedAppForFollowUp && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl">
+            <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-4 flex items-center justify-between">
+              <div>
+                <h2 className="font-bold text-lg flex items-center gap-2">
+                  <FaComments /> Follow-up with {selectedAppForFollowUp.name}
+                </h2>
+                <p className="text-sm opacity-90">{selectedAppForFollowUp.email}</p>
+              </div>
+              <button
+                onClick={closeFollowUpModal}
+                className="text-white hover:bg-white hover:bg-opacity-20 p-2 rounded transition"
+              >
+                <FaTimes size={20} />
+              </button>
+            </div>
+            <div className="p-6 max-h-96 overflow-y-auto">
+              {/* Previous Follow-ups */}
+              {followUps.length > 0 && (
+                <div className="mb-6 pb-6 border-b border-gray-200">
+                  <h3 className="text-sm font-semibold text-gray-700 mb-3">Previous Follow-ups</h3>
+                  <div className="space-y-3">
+                    {followUps.map((fu, idx) => (
+                      <div key={fu._id || idx} className="bg-gray-50 p-3 rounded-md border border-gray-200">
+                        <div className="flex justify-between items-start mb-2">
+                          <span className="text-xs font-medium text-gray-600">
+                            {new Date(fu.date || fu.createdAt).toLocaleDateString()} {new Date(fu.date || fu.createdAt).toLocaleTimeString()}
+                          </span>
+                          <button
+                            onClick={() => deleteFollowUp(fu._id)}
+                            className="text-red-500 hover:text-red-700 text-xs font-medium transition"
+                            title="Delete follow-up"
+                          >
+                            Delete
+                          </button>
+                        </div>
+                        <p className="text-sm text-gray-700 whitespace-pre-wrap">{fu.notes}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* New Follow-up Form */}
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Add New Follow-up
+              </label>
+              <textarea
+                value={followUpText}
+                onChange={(e) => setFollowUpText(e.target.value)}
+                placeholder="Write your follow-up message here..."
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                rows="4"
+              />
+              <div className="mt-4 flex justify-end gap-2">
+                <button
+                  onClick={closeFollowUpModal}
+                  className="px-4 py-2 rounded-md border border-gray-300 text-gray-700 hover:bg-gray-50 transition text-sm font-medium"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={submitFollowUp}
+                  disabled={submittingFollowUp || !followUpText.trim()}
+                  className="px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 transition text-sm font-medium disabled:bg-gray-400"
+                >
+                  {submittingFollowUp ? "Sending..." : "Send Follow-up"}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
 
