@@ -203,7 +203,7 @@ const CommonInside = ({
   if (validData.length === 0) {
     if (suppressEmptyMessage) return null;
     return (
-      <div className="text-center py-10">
+      <div className="text-center py-8">
         <h2 className="text-xl font-semibold text-gray-600">
           No properties found
         </h2>
@@ -219,7 +219,7 @@ const CommonInside = ({
         {metaContent && <meta name="description" content={`${metaContent}`} />}
         {linkhref && <link rel="canonical" href={`${linkhref}`} />}
       </Helmet>
-      <section className="flex pt-24 flex-col items-center mt-8">
+      <section className="flex pt-18 flex-col items-center mt-10">
         {title && (
           <h1 className="mb-3 text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold">
             {title}
