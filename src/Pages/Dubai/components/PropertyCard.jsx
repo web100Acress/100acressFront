@@ -112,21 +112,7 @@ export const PropertyCard = ({
           </p>
         </div>
 
-        {/* Features */}
-        <div className="flex items-center justify-between text-sm text-muted-foreground border-y border-white/10 py-3">
-          <div className="flex items-center">
-            <BedDouble className="h-4 w-4 mr-1 text-gold" />
-            <span>{beds} Beds</span>
-          </div>
-          <div className="flex items-center">
-            <Bath className="h-4 w-4 mr-1 text-gold" />
-            <span>{baths} Baths</span>
-          </div>
-          <div className="flex items-center">
-            <Maximize className="h-4 w-4 mr-1 text-gold" />
-            <span>{typeof sqft === 'number' ? sqft.toLocaleString() : sqft} sq ft</span>
-          </div>
-        </div>
+        
 
         {/* Price */}
         <div className="flex items-center justify-between">
