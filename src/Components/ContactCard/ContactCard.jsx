@@ -255,7 +255,7 @@ const ContactCard = () => {
                   <Phone size={20} className="text-white" />
                 </div>
                 <div className="flex-1">
-                  <p className="font-semibold text-gray-800">Call</p>
+                  {/* <p className="font-semibold text-gray-800">Call</p> */}
                   <p className="text-green-600">{contactData.phone}</p>
                 </div>
               </motion.a>
@@ -271,7 +271,7 @@ const ContactCard = () => {
                   <Mail size={20} className="text-white" />
                 </div>
                 <div className="flex-1">
-                  <p className="font-semibold text-gray-800">Email</p>
+                  {/* <p className="font-semibold text-gray-800">Email</p> */}
                   <p className="text-blue-600">{contactData.email}</p>
                 </div>
               </motion.a>
@@ -290,7 +290,7 @@ const ContactCard = () => {
                     <Globe size={20} className="text-white" />
                   </div>
                   <div className="flex-1">
-                    <p className="font-semibold text-gray-800">Website</p>
+                    {/* <p className="font-semibold text-gray-800">Website</p> */}
                     <p className="text-purple-600">Visit Website</p>
                   </div>
                 </motion.a>
@@ -303,7 +303,7 @@ const ContactCard = () => {
                     <MapPin size={20} className="text-white" />
                   </div>
                   <div className="flex-1">
-                    <p className="font-semibold text-gray-800 mb-1">Address</p>
+                    {/* <p className="font-semibold text-gray-800 mb-1">Address</p> */}
                     <div className="text-gray-600 text-sm space-y-1">
                       {contactData.address.street && <p>{contactData.address.street}</p>}
                       <p>
