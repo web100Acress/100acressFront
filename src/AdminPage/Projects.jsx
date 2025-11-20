@@ -23,6 +23,7 @@ const Projects = () => {
   const [filterHasPayment, setFilterHasPayment] = useState("");
   const [filterProjectOverview, setFilterProjectOverview] = useState("");
   const [filterYoutubeVideo, setFilterYoutubeVideo] = useState("");
+  const [filterBrochure, setFilterBrochure] = useState("");
 
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
@@ -287,6 +288,40 @@ const Projects = () => {
     ];
   }, [viewAll]);
 
+  // Brochure options with counts
+  const brochureOptions = useMemo(() => {
+    if (!viewAll || viewAll.length === 0) {
+      return [];
+    }
+
+    let withBrochure = 0;
+    let withoutBrochure = 0;
+    let pdfBrochure = 0;
+    let imageBrochure = 0;
+
+    viewAll.forEach(project => {
+      const hasBrochure = Boolean((project?.project_Brochure?.url ?? "").toString().trim());
+      if (hasBrochure) {
+        withBrochure++;
+        const url = (project?.project_Brochure?.url ?? "").toString().toLowerCase();
+        if (url.includes('.pdf')) {
+          pdfBrochure++;
+        } else {
+          imageBrochure++;
+        }
+      } else {
+        withoutBrochure++;
+      }
+    });
+
+    return [
+      { value: 'with', label: `Has Brochure (${withBrochure})` },
+      { value: 'without', label: `No Brochure (${withoutBrochure})` },
+      { value: 'pdf', label: `PDF Brochure (${pdfBrochure})` },
+      { value: 'image', label: `Image Brochure (${imageBrochure})` }
+    ];
+  }, [viewAll]);
+
   // Apply combined filters
   const filteredProjects = viewAll.filter((item) => {
     const searchTermLower = (searchTerm || "").toLowerCase();
@@ -349,7 +384,22 @@ const Projects = () => {
     const hasYoutubeVideo = Boolean((item?.youtubeVideoUrl ?? "").toString().trim());
     const matchesYoutubeVideo = !filterYoutubeVideo || (filterYoutubeVideo === "with" ? hasYoutubeVideo : !hasYoutubeVideo);
 
-    return matchesSearch && matchesType && matchesCity && matchesAddress && matchesBuilder && matchesStatus && matchesState && matchesMobile && matchesPayment && matchesOverview && matchesYoutubeVideo;
+    // Brochure filtering logic
+    let matchesBrochure = true;
+    if (filterBrochure) {
+      const hasBrochure = Boolean((item?.project_Brochure?.url ?? "").toString().trim());
+      if (filterBrochure === 'with') {
+        matchesBrochure = hasBrochure;
+      } else if (filterBrochure === 'without') {
+        matchesBrochure = !hasBrochure;
+      } else if (filterBrochure === 'pdf') {
+        matchesBrochure = hasBrochure && (item?.project_Brochure?.url ?? "").toString().toLowerCase().includes('.pdf');
+      } else if (filterBrochure === 'image') {
+        matchesBrochure = hasBrochure && !(item?.project_Brochure?.url ?? "").toString().toLowerCase().includes('.pdf');
+      }
+    }
+
+    return matchesSearch && matchesType && matchesCity && matchesAddress && matchesBuilder && matchesStatus && matchesState && matchesMobile && matchesPayment && matchesOverview && matchesYoutubeVideo && matchesBrochure;
   });
   const indexOfLastRow = currentPage * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
@@ -416,6 +466,7 @@ const Projects = () => {
     setFilterHasPayment("");
     setFilterProjectOverview("");
     setFilterYoutubeVideo("");
+    setFilterBrochure("");
     setCurrentPage(1);
   };
 
@@ -529,6 +580,17 @@ const Projects = () => {
               <option value="">YouTube Video: All</option>
               {youtubeVideoOptions.map(opt => (
                 <option key={opt.value} value={opt.value}>YouTube Video: {opt.label}</option>
+              ))}
+            </select>
+
+            <select
+              className="filter-select"
+              value={filterBrochure}
+              onChange={(e) => { setFilterBrochure(e.target.value); setCurrentPage(1); }}
+            >
+              <option value="">Brochure: All</option>
+              {brochureOptions.map(opt => (
+                <option key={opt.value} value={opt.value}>Brochure: {opt.label}</option>
               ))}
             </select>
           </div>

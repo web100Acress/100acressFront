@@ -13,7 +13,7 @@ const Enquiries = () => {
   const [data, setData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(false);
-  const pageSize = 50;
+  const pageSize = 1000;
   const [downloadProgress, setDownloadProgress] = useState(0);
   const [total, setTotal] = useState(0);
   const [includeDeletedExport, setIncludeDeletedExport] = useState(false);

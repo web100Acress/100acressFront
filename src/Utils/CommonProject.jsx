@@ -284,9 +284,7 @@ const CommonProject = ({
               {/* Phone Icon Button */}
               <a
                 href={`tel:${(
-                  item.contactNumber ||
-                  item.whatsappNumber ||
-                  "918500900100"
+                  (item.mobileNumber || "").toString()
                 ).replace(/\s+/g, "")}`}
                 className={`flex items-center justify-center text-gray-700 bg-gray-100 hover:bg-gray-200 border border-gray-200 rounded-lg ${
                   compact ? "w-8 h-8" : "w-10 h-10"
