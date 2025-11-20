@@ -470,6 +470,7 @@ const ContactCardModal = ({ isOpen, onClose, onSuccess, editData = null }) => {
     name: editData?.name || '',
     email: editData?.email || '',
     phone: editData?.phone || '',
+    whatsapp: editData?.whatsapp || '',
     company: editData?.company || '',
     designation: editData?.designation || '',
     website: editData?.website || '',
@@ -589,6 +590,18 @@ const ContactCardModal = ({ isOpen, onClose, onSuccess, editData = null }) => {
                 onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
               />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">WhatsApp Number</label>
+              <input
+                type="tel"
+                value={formData.whatsapp}
+                onChange={(e) => setFormData(prev => ({ ...prev, whatsapp: e.target.value }))}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                placeholder="e.g., +91 9876543210 or 919876543210"
+              />
+              <p className="text-xs text-gray-500 mt-1">Optional: WhatsApp number for direct messaging (with or without country code)</p>
             </div>
 
             <div>

@@ -463,10 +463,31 @@ const ModernContactCard = () => {
                         <Phone size={20} className="text-white" />
                       </div>
                       <div className="flex-1">
-                        <p className="font-medium text-gray-700 text-base leading-tight">Call</p>
+                        {/* <p className="font-medium text-gray-700 text-base leading-tight">Call</p> */}
                         <p className="text-green-600 font-semibold text-base leading-tight">{contactData.phone}</p>
                       </div>
                     </motion.a>
+                      {contactData.whatsapp && (
+                      <motion.a
+                        href={`https://wa.me/${contactData.whatsapp.replace(/\D/g, '')}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 1.1 }}
+                        whileHover={{ scale: 1.02, x: 5 }}
+                        whileTap={{ scale: 0.98 }}
+                        className="flex items-center p-3 backdrop-blur-sm bg-white/50 border border-white/30 rounded-2xl hover:bg-white/60 transition-all duration-300 group shadow-sm hover:shadow-md"
+                      >
+                        <div className="bg-gradient-to-br from-green-500 to-green-600 p-2.5 rounded-xl mr-3 shadow-md group-hover:shadow-lg transition-shadow">
+                          <MessageCircle size={20} className="text-white" />
+                        </div>
+                        <div className="flex-1">
+                          {/* <p className="font-medium text-gray-700 text-base leading-tight">WhatsApp</p> */}
+                          <p className="text-green-600 font-semibold text-base leading-tight">{contactData.whatsapp}</p>
+                        </div>
+                      </motion.a>
+                    )}
 
                     {/* Email */}
                     <motion.a
@@ -482,10 +503,13 @@ const ModernContactCard = () => {
                         <Mail size={20} className="text-white" />
                       </div>
                       <div className="flex-1">
-                        <p className="font-medium text-gray-700 text-base leading-tight">Email</p>
+                        {/* <p className="font-medium text-gray-700 text-base leading-tight">Email</p> */}
                         <p className="text-blue-600 font-semibold text-base truncate leading-tight">{contactData.email}</p>
                       </div>
                     </motion.a>
+
+                    {/* WhatsApp */}
+                  
 
                     {/* Website */}
                     {contactData.website && (
@@ -504,7 +528,7 @@ const ModernContactCard = () => {
                           <Globe size={20} className="text-white" />
                         </div>
                         <div className="flex-1">
-                          <p className="font-medium text-gray-700 text-base leading-tight">Website</p>
+                          {/* <p className="font-medium text-gray-700 text-base leading-tight">Website</p> */}
                           <p className="text-purple-600 font-semibold text-base leading-tight">Visit Website</p>
                         </div>
                       </motion.a>
@@ -522,7 +546,7 @@ const ModernContactCard = () => {
                           <MapPin size={20} className="text-white" />
                         </div>
                         <div className="flex-1">
-                          <p className="font-medium text-gray-700 mb-1 text-base leading-tight">Address</p>
+                          {/* <p className="font-medium text-gray-700 mb-1 text-base leading-tight">Address</p> */}
                           <div className="text-gray-600 text-sm space-y-0.5 leading-tight">
                             {contactData.address.street && <p>{contactData.address.street}</p>}
                             <p>
