@@ -179,6 +179,17 @@ const ModernContactCard = () => {
       .slice(0, 2);
   };
 
+  const resolveMediaUrl = (url) => {
+    if (!url) return url;
+    if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:')) {
+      return url;
+    }
+    if (url.startsWith('/uploads/')) {
+      return `${getApiBase()}${url}`;
+    }
+    return url;
+  };
+
   // Generate dynamic meta tags based on contact data
   const generateMetaTags = () => {
     if (!contactData) {
@@ -192,7 +203,7 @@ const ModernContactCard = () => {
 
     const title = `${contactData.name}${contactData.designation ? ` - ${contactData.designation}` : ''} | 100acress`;
     const description = `Connect with ${contactData.name}${contactData.designation ? `, ${contactData.designation}` : ''}${contactData.company ? ` at ${contactData.company}` : ''}. Digital contact card powered by 100acress.com`;
-    const image = contactData.profile_image_url || contactData.company_logo_url || "/favicon.ico";
+    const image = resolveMediaUrl(contactData.profile_image_url || contactData.company_logo_url || "/favicon.ico");
     const url = getContactCardUrl(contactData.slug);
 
     return { title, description, image, url };
@@ -342,9 +353,17 @@ const ModernContactCard = () => {
               {/* Gradient Background */}
               <div 
                 className="absolute inset-0 opacity-90"
-                style={{
-                  background: `linear-gradient(135deg, ${contactData.brandColor || '#6366f1'}, ${contactData.brandColor ? contactData.brandColor + '80' : '#8b5cf6'})`
-                }}
+                style={
+                  contactData.banner_image_url
+                    ? {
+                        backgroundImage: `url(${resolveMediaUrl(contactData.banner_image_url)})`,
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'center',
+                      }
+                    : {
+                        background: `linear-gradient(135deg, ${contactData.brandColor || '#6366f1'}, ${contactData.brandColor ? contactData.brandColor + '80' : '#8b5cf6'})`,
+                      }
+                }
               />
                   
                   {/* Company Logo - Top Left */}
@@ -356,7 +375,7 @@ const ModernContactCard = () => {
                       className="absolute top-3 left-3 z-20"
                     >
                       <img
-                        src={contactData.company_logo_url}
+                        src={resolveMediaUrl(contactData.company_logo_url)}
                         alt={contactData.company || '100acress'}
                         className="h-12 w-auto max-w-28 object-contain drop-shadow-lg opacity-95"
                       />
@@ -373,7 +392,7 @@ const ModernContactCard = () => {
                     >
                       {contactData.profile_image_url ? (
                         <img
-                          src={contactData.profile_image_url}
+                          src={resolveMediaUrl(contactData.profile_image_url)}
                           alt={contactData.name}
                           className="w-32 h-32 rounded-full mx-auto object-cover border-4 border-white/40 shadow-2xl ring-4 ring-white/20"
                         />
