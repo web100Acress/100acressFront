@@ -814,13 +814,13 @@ export const staticData = {
       ]
     },
     commercial: {
-      title: "Commercial Properties - Invest in Business Spaces",
-      description: "Explore premium commercial properties including offices, shops, and retail spaces. Find the perfect business location with excellent connectivity.",
-      metaTitle: "Commercial Properties - Offices, Shops & Retail Spaces | 100acress",
+      title: "Commercial Properties",
+      description: "Explore commercial properties in Gurugram with prime locations, modern amenities, and excellent connectivity. Find the ideal space for offices, retail, SCOs, and investments.",
+      metaTitle: "Commercial Properties in Gurugram – Premium Business Spaces for Sale",
       canonical: "https://www.100acress.com/projects/commercial/",
       keywords: "commercial properties, office spaces, shops, retail spaces, commercial projects, business properties",
       heroTitle: "Commercial Properties - Invest in Business Spaces",
-      heroSubtitle: "Explore premium commercial properties with excellent connectivity and business potential",
+      heroSubtitle: "Looking for commercial properties in Gurugram? Here, you can explore premium office spaces, retail shops, SCO plots, and commercial floors designed for growth. With prime locations, strong connectivity, and modern infrastructure, Gurugram offers the perfect environment to start, expand, or invest in your business.",
       faqs: [
         {
           question: "What types of commercial properties are available?",
@@ -854,7 +854,7 @@ export const staticData = {
       ]
     },
     plots: {
-      title: "Residential Plots - Build Your Dream Home",
+      title: "Plots in Gurugram",
       description: "Explore premium residential plots in prime locations. Build your custom home with modern amenities and excellent connectivity.",
       metaTitle: "Residential Plots - Build Your Dream Home | 100acress",
       canonical: "https://www.100acress.com/plots-in-gurugram/",
@@ -1013,14 +1013,58 @@ export const staticData = {
         }
       ]
     },
+    farmhouse: {
+      title: "Farmhouses in Delhi NCR",
+      description: "Find the best farmhouses in Delhi NCR. Explore exclusive listings, premium projects, investment opportunities, and verified property details.",
+      metaTitle: "Farmhouses in Delhi NCR - Your Private Green Escape",
+      canonical: "https://www.100acress.com/projects/farmhouse/",
+      keywords: "farm houses, farm house properties, agricultural investment, serene living, farm house investment",
+      heroTitle: "Farm Houses - Serene Living and Agricultural Investment",
+      heroSubtitle: "Discover premium farm houses with modern amenities and agricultural opportunities",
+      faqs: [
+        {
+          question: "What are farm houses?",
+          answer: "Farm houses are properties that combine residential living with agricultural land, offering a peaceful lifestyle with opportunities for farming and investment."
+        },
+        {
+          question: "What amenities are available in farm houses?",
+          answer: "Farm houses typically include modern homes, agricultural land, water facilities, and sometimes swimming pools, gardens, and security."
+        },
+        {
+          question: "Are farm houses good for investment?",
+          answer: "Yes, farm houses offer excellent investment potential due to land appreciation, agricultural income, and the growing demand for peaceful living."
+        },
+        {
+          question: "What is the price range for farm houses?",
+          answer: "Farm houses typically range from 1-10 crores depending on location, size, and amenities."
+        }
+      ],
+      trustBoosters: [
+        {
+          icon: "🌾",
+          title: "Agricultural Opportunity",
+          description: "Properties with agricultural land for farming and investment"
+        },
+        {
+          icon: "🏠",
+          title: "Serene Living",
+          description: "Peaceful living away from city hustle"
+        },
+        {
+          icon: "💰",
+          title: "Investment Potential",
+          description: "Excellent appreciation and rental yields"
+        }
+      ]
+    },
     "plots-in-gurugram": {
-      title: "Residential Plots in Gurugram - Build Your Dream Home",
-      description: "Explore premium residential plots in Gurugram. Build your custom home with modern amenities and excellent connectivity in this prime location.",
-      metaTitle: "Residential Plots in Gurugram - Build Your Dream Home | 100acress",
+      title: "Plots in Gurugram",
+      description: "Looking for plots in Gurugram? Explore premium residential and commercial land in prime Location with seamless connectivity, clear details, smooth processes, and trusted guidance.",
+      metaTitle: "Plots in Gurugram for Sale | Residential & Commercial Land Options",
       canonical: "https://www.100acress.com/plots-in-gurugram/",
       keywords: "residential plots gurugram, plots for sale gurugram, land for sale gurugram, residential land gurugram, plot investment gurugram",
       heroTitle: "Residential Plots in Gurugram - Build Your Dream Home",
-      heroSubtitle: "Explore premium residential plots in Gurugram with excellent connectivity",
+      heroSubtitle: "Looking to buy a plot in Gurugram? Here you’ll find premium residential and commercial land in prime locations, with clear information, easy buying support, and reliable guidance to help you make the right decision",
       faqs: [
         {
           question: "What are the benefits of buying a residential plot in Gurugram?",
@@ -1050,6 +1094,46 @@ export const staticData = {
           icon: "🏙️",
           title: "Prime Location",
           description: "Excellent connectivity and modern infrastructure"
+        }
+      ]
+    },
+    "industrial-plots": {
+      title: "Industrial Plots – Build, Expand & Grow Your Business",
+      description: "Industrial plots for sale offering premium land ideal for warehousing, manufacturing, logistics, and large-scale business development in prime locations.",
+      metaTitle: "Industrial Plots for Sale – Premium Land for Warehousing & Manufacturing",
+      canonical: "https://www.100acress.com/projects/industrial-plots/",
+      keywords: "industrial plots, industrial land for sale, warehousing land, manufacturing plots, logistics land, industrial property",
+      heroTitle: "Industrial Plots – Build, Expand & Grow Your Business",
+      heroSubtitle: "Looking for industrial plots to grow your business? Explore premium land options perfect for warehouses, manufacturing units, and logistics setups. With strong connectivity, reliable infrastructure, and high expansion potential, industrial plots offer the ideal foundation for long-term business growth.",
+      faqs: [
+        {
+          question: "Why should I invest in an industrial plot?",
+          answer: "Industrial plots provide long-term stability, space for expansion, and strong demand from warehousing, logistics, and manufacturing businesses."
+        },
+        {
+          question: "What should I check before buying an industrial plot?",
+          answer: "Check zoning approvals, road connectivity, power and water availability, legal clearances, and proximity to highways and transport hubs."
+        },
+        {
+          question: "Are industrial plots suitable for warehousing and logistics?",
+          answer: "Yes, most industrial plots are planned with wide roads, loading/unloading access, and connectivity that make them ideal for warehouses and logistics parks."
+        }
+      ],
+      trustBoosters: [
+        {
+          icon: "🏭",
+          title: "Business-Ready Land",
+          description: "Plots planned for industrial, warehousing, and logistics use"
+        },
+        {
+          icon: "🚚",
+          title: "Strategic Connectivity",
+          description: "Access to highways, transport hubs, and key industrial corridors"
+        },
+        {
+          icon: "📈",
+          title: "High Growth Potential",
+          description: "Ideal for businesses planning expansion and long-term operations"
         }
       ]
     }
@@ -1590,9 +1674,9 @@ export const staticData = {
       ]
     },
     farmhouse: {
-      title: "Farm Houses - Serene Living and Agricultural Investment",
-      description: "Discover premium farm houses with serene living, agricultural opportunities, and modern amenities. Perfect for peaceful living and investment.",
-      metaTitle: "Farm Houses - Serene Living and Agricultural Investment | 100acress",
+      title: "Farmhouses in Delhi NCR – Experience a Private Green Retreat",
+      description: "Find the best farmhouses in Delhi NCR. Explore exclusive listings, premium projects, investment opportunities, and verified property details.",
+      metaTitle: "Farmhouses in Delhi NCR - Your Private Green Escape",
       canonical: "https://www.100acress.com/projects/farmhouse/",
       keywords: "farm houses, farm house properties, agricultural investment, serene living, farm house investment",
       heroTitle: "Farm Houses - Serene Living and Agricultural Investment",
