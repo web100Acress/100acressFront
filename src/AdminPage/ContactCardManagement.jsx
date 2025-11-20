@@ -470,12 +470,14 @@ const ContactCardModal = ({ isOpen, onClose, onSuccess, editData = null }) => {
     name: editData?.name || '',
     email: editData?.email || '',
     phone: editData?.phone || '',
+    whatsapp: editData?.whatsapp || '',
     company: editData?.company || '',
     designation: editData?.designation || '',
     website: editData?.website || '',
     brandColor: editData?.brandColor || '#3B82F6',
     bio: editData?.bio || '',
     profile_image_url: editData?.profile_image_url || '',
+    banner_image_url: editData?.banner_image_url || '',
     company_logo_url: editData?.company_logo_url || 'https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/logowhite.webp.webp',
     slug: editData?.slug || '',
     socialLinks: {
@@ -487,6 +489,8 @@ const ContactCardModal = ({ isOpen, onClose, onSuccess, editData = null }) => {
       website: editData?.socialLinks?.website || ''
     }
   });
+  const [profileImageFile, setProfileImageFile] = useState(null);
+  const [bannerImageFile, setBannerImageFile] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
@@ -500,12 +504,39 @@ const ContactCardModal = ({ isOpen, onClose, onSuccess, editData = null }) => {
         : `${getApiBase()}/api/contact-cards`;
       
       const method = editData ? 'put' : 'post';
-      
+
+      const payload = new FormData();
+      payload.append('name', formData.name);
+      payload.append('email', formData.email);
+      payload.append('phone', formData.phone);
+      if (formData.whatsapp) payload.append('whatsapp', formData.whatsapp);
+      if (formData.company) payload.append('company', formData.company);
+      if (formData.designation) payload.append('designation', formData.designation);
+      if (formData.website) payload.append('website', formData.website);
+      if (formData.brandColor) payload.append('brandColor', formData.brandColor);
+      if (formData.bio) payload.append('bio', formData.bio);
+      if (formData.profile_image_url) payload.append('profile_image_url', formData.profile_image_url);
+      if (formData.banner_image_url) payload.append('banner_image_url', formData.banner_image_url);
+      if (formData.company_logo_url) payload.append('company_logo_url', formData.company_logo_url);
+      payload.append('slug', formData.slug);
+      payload.append('socialLinks', JSON.stringify(formData.socialLinks));
+
+      if (profileImageFile) {
+        payload.append('profile_image', profileImageFile);
+      }
+
+      if (bannerImageFile) {
+        payload.append('banner_image', bannerImageFile);
+      }
+
       // Debug: Log the form data being sent
-      console.log('Sending form data:', formData);
-      
-      await axios[method](url, formData, {
-        headers: { 'x-access-token': token }
+      console.log('Sending multipart form data for contact card');
+
+      await axios[method](url, payload, {
+        headers: { 
+          'x-access-token': token,
+          'Content-Type': 'multipart/form-data'
+        }
       });
 
       toast.success(`Contact card ${editData ? 'updated' : 'created'} successfully`);
@@ -592,6 +623,18 @@ const ContactCardModal = ({ isOpen, onClose, onSuccess, editData = null }) => {
             </div>
 
             <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">WhatsApp Number</label>
+              <input
+                type="tel"
+                value={formData.whatsapp}
+                onChange={(e) => setFormData(prev => ({ ...prev, whatsapp: e.target.value }))}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                placeholder="e.g., +91 9876543210 or 919876543210"
+              />
+              <p className="text-xs text-gray-500 mt-1">Optional: WhatsApp number for direct messaging (with or without country code)</p>
+            </div>
+
+            <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Slug *</label>
               <input
                 type="text"
@@ -643,6 +686,37 @@ const ContactCardModal = ({ isOpen, onClose, onSuccess, editData = null }) => {
                 value={formData.brandColor}
                 onChange={(e) => setFormData(prev => ({ ...prev, brandColor: e.target.value }))}
                 className="w-full h-10 border border-gray-300 rounded-lg"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Banner Image URL</label>
+              <input
+                type="url"
+                value={formData.banner_image_url}
+                onChange={(e) => setFormData(prev => ({ ...prev, banner_image_url: e.target.value }))}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                placeholder="https://example.com/header-banner.jpg"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Profile Picture File (optional)</label>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => setProfileImageFile(e.target.files && e.target.files[0] ? e.target.files[0] : null)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Banner Image File (optional)</label>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => setBannerImageFile(e.target.files && e.target.files[0] ? e.target.files[0] : null)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white"
               />
             </div>
 
