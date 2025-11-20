@@ -54,19 +54,19 @@ export const Footer = () => {
               <div className="flex items-center space-x-3 text-sm">
                 <Phone className="h-4 w-4 text-gold" />
                 <a href="tel:+919811750740" className="text-muted-foreground hover:text-gold transition-colors">
-                  +91 9811 750 740
+                  +91 8500-900-100
                 </a>
               </div>
               <div className="flex items-center space-x-3 text-sm">
                 <Mail className="h-4 w-4 text-gold" />
                 <a href="mailto:info@100acress.com" className="text-muted-foreground hover:text-gold transition-colors">
-                  info@100acress.com
+                  support@100acress.com
                 </a>
               </div>
-              <div className="flex items-center space-x-3 text-sm">
+              {/* <div className="flex items-center space-x-3 text-sm">
                 <MapPin className="h-4 w-4 text-gold" />
-                <span className="text-muted-foreground">ILD Trade Centre, 806, Sector 47, Gurugram, Haryana 122018</span>
-              </div>
+                <span className="text-muted-foreground">Business Bay, Dubai, UAE</span>
+              </div> */}
             </div>
 
             {/* Social Links */}
