@@ -7,7 +7,7 @@ import ProjectLayout2 from '../aadharhomes/BannerPage/updatedbannerpage/componen
 
 /**
  * ProjectRouter - Smart router that determines if a project slug belongs to:
- * 1. Dubai/United-Arab-Emirates project -> renders DubaiProjectPage
+ * 1. Dubai/united-arab-emirates project -> renders DubaiProjectPage
  * 2. Regular project -> renders ProjectLayout2
  */
 const ProjectRouter = () => {

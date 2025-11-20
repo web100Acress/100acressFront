@@ -112,8 +112,9 @@ export const ContactSection = () => {
                 </div>
                 <div>
                   <p className="text-white font-semibold mb-1">Phone</p>
+
                   <p className="text-muted-foreground">+91 8500-900-100</p>
-                  {/* <p className="text-muted-foreground">+91 XXX XXX XXXX</p> */}
+               
                 </div>
               </div>
 
@@ -123,8 +124,12 @@ export const ContactSection = () => {
                 </div>
                 <div>
                   <p className="text-white font-semibold mb-1">Email</p>
+
                   <p className="text-muted-foreground">support@100acress.com</p>
-                </div>
+
+        
+
+              </div>
               </div>
 
               {/* <div className="flex items-start space-x-4 group">
@@ -156,6 +161,7 @@ export const ContactSection = () => {
                 </div>
               </div>
             </div>
+            
           </div>
 
           {/* Right Side - Form */}
