@@ -1002,7 +1002,10 @@ const GlobalFilterTemplate = ({
             </h2>
             <div className="max-w-4xl mx-auto px-3 sm:px-4">
               <div className="border border-gray-200 rounded-lg overflow-hidden">
-                <FAQAccordion projectStatus={projectStatus} />
+                <FAQAccordion 
+                  projectStatus={projectStatus}
+                  customFAQs={currentConfig.faqs}
+                />
               </div>
             </div>
           </div>
