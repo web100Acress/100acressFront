@@ -112,8 +112,8 @@ export const ContactSection = () => {
                 </div>
                 <div>
                   <p className="text-white font-semibold mb-1">Phone</p>
-                  <p className="text-muted-foreground">+971 4 XXX XXXX</p>
-                  <p className="text-muted-foreground">+91 XXX XXX XXXX</p>
+                  <p className="text-muted-foreground">+91 8500-900-100</p>
+                  {/* <p className="text-muted-foreground">+91 XXX XXX XXXX</p> */}
                 </div>
               </div>
 
@@ -123,11 +123,11 @@ export const ContactSection = () => {
                 </div>
                 <div>
                   <p className="text-white font-semibold mb-1">Email</p>
-                  <p className="text-muted-foreground">dubai@100acress.com</p>
+                  <p className="text-muted-foreground">support@100acress.com</p>
                 </div>
               </div>
 
-              <div className="flex items-start space-x-4 group">
+              {/* <div className="flex items-start space-x-4 group">
                 <div className="w-12 h-12 rounded-full bg-gold/10 flex items-center justify-center group-hover:bg-gold/20 transition-colors">
                   <MapPin className="h-5 w-5 text-gold" />
                 </div>
@@ -135,7 +135,7 @@ export const ContactSection = () => {
                   <p className="text-white font-semibold mb-1">Office</p>
                   <p className="text-muted-foreground">Business Bay, Dubai, UAE</p>
                 </div>
-              </div>
+              </div> */}
             </div>
 
             {/* Business Hours */}
@@ -148,11 +148,11 @@ export const ContactSection = () => {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Saturday</span>
-                  <span className="text-white">10:00 AM - 6:00 PM</span>
+                  <span className="text-white">10:00 AM - 8:00 PM</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Sunday</span>
-                  <span className="text-white">Closed</span>
+                  <span className="text-white">10:00 AM - 8:00 PM</span>
                 </div>
               </div>
             </div>
@@ -166,7 +166,7 @@ export const ContactSection = () => {
                   <label className="text-sm font-medium text-white">Full Name *</label>
                   <Input
                     required
-                    placeholder="John Doe"
+                    placeholder="Enter Your Name"
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     className="bg-black/30 border-white/10 text-white placeholder:text-muted-foreground focus:border-gold"
@@ -178,7 +178,7 @@ export const ContactSection = () => {
                   <Input
                     required
                     type="email"
-                    placeholder="john@example.com"
+                    placeholder="Enter Your Email"
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     className="bg-black/30 border-white/10 text-white placeholder:text-muted-foreground focus:border-gold"
@@ -191,7 +191,7 @@ export const ContactSection = () => {
                 <Input
                   required
                   type="tel"
-                  placeholder="+971 XX XXX XXXX"
+                  placeholder="Enter Your phon Number"
                   value={formData.phone}
                   onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                   className="bg-black/30 border-white/10 text-white placeholder:text-muted-foreground focus:border-gold"
