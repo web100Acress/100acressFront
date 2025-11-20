@@ -183,7 +183,7 @@ const CrimsonEleganceFooter = () => {
                     <Mail className="w-5 h-5" />
                   </div>
                   <span className="text-lg font-medium">
-                    info@100acress.com
+                    support@100acress.com
                   </span>
                 </a>
                 <a

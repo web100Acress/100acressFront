@@ -112,7 +112,9 @@ export const ContactSection = () => {
                 </div>
                 <div>
                   <p className="text-white font-semibold mb-1">Phone</p>
-                  <p className="text-muted-foreground">+91 9811 750 740</p>
+
+                  <p className="text-muted-foreground">+91 8500-900-100</p>
+               
                 </div>
               </div>
 
@@ -122,17 +124,40 @@ export const ContactSection = () => {
                 </div>
                 <div>
                   <p className="text-white font-semibold mb-1">Email</p>
-                  <p className="text-muted-foreground">info@100acress.com</p>
-                </div>
+
+                  <p className="text-muted-foreground">support@100acress.com</p>
+
+        
+
+              </div>
               </div>
 
-              <div className="flex items-start space-x-4 group">
+              {/* <div className="flex items-start space-x-4 group">
                 <div className="w-12 h-12 rounded-full bg-gold/10 flex items-center justify-center group-hover:bg-gold/20 transition-colors">
                   <MapPin className="h-5 w-5 text-gold" />
                 </div>
                 <div>
                   <p className="text-white font-semibold mb-1">Office</p>
-                  <p className="text-muted-foreground">ILD Trade Centre, 806, Sector 47, Gurugram, Haryana 122018</p>
+                  <p className="text-muted-foreground">Business Bay, Dubai, UAE</p>
+                </div>
+              </div> */}
+            </div>
+
+            {/* Business Hours */}
+            <div className="glass-effect rounded-xl border border-white/10 p-6">
+              <h3 className="text-white font-semibold mb-4">Business Hours</h3>
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Monday - Friday</span>
+                  <span className="text-white">9:00 AM - 8:00 PM</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Saturday</span>
+                  <span className="text-white">10:00 AM - 8:00 PM</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Sunday</span>
+                  <span className="text-white">10:00 AM - 8:00 PM</span>
                 </div>
               </div>
             </div>
@@ -147,7 +172,7 @@ export const ContactSection = () => {
                   <label className="text-sm font-medium text-white">Full Name *</label>
                   <Input
                     required
-                    placeholder="John Doe"
+                    placeholder="Enter Your Name"
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     className="bg-black/30 border-white/10 text-white placeholder:text-muted-foreground focus:border-gold"
@@ -159,7 +184,7 @@ export const ContactSection = () => {
                   <Input
                     required
                     type="email"
-                    placeholder="john@example.com"
+                    placeholder="Enter Your Email"
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     className="bg-black/30 border-white/10 text-white placeholder:text-muted-foreground focus:border-gold"
@@ -172,7 +197,7 @@ export const ContactSection = () => {
                 <Input
                   required
                   type="tel"
-                  placeholder="+971 XX XXX XXXX"
+                  placeholder="Enter Your phon Number"
                   value={formData.phone}
                   onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                   className="bg-black/30 border-white/10 text-white placeholder:text-muted-foreground focus:border-gold"
