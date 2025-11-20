@@ -44,10 +44,10 @@ const DubaiBottomNav = () => {
             {/* Center CTA: Contact (call by phone) with Dubai theme */}
             <div className="flex flex-col items-center justify-center -mt-6">
               <a
-                href="tel:+971501234567"
+                href="tel:+919811750740"
                 className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-gold text-black shadow-lg ring-4 ring-black focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-black hover:shadow-gold"
-                aria-label="Call Dubai Office"
-                title="Call Dubai Office"
+                aria-label="Call 100acress Office"
+                title="Call 100acress Office"
               >
                 <i className="fa-solid fa-phone text-lg" aria-hidden="true"></i>
               </a>
