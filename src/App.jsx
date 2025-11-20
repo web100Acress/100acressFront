@@ -120,6 +120,7 @@ const LoanEligibility = lazy(() => import("./Insight/pages/LoanEligibility"));
 // Contact Card components
 const ContactCard = lazy(() => import("./Components/ContactCard/ContactCard"));
 const ModernContactCard = lazy(() => import("./Components/ContactCard/ModernContactCard"));
+const UnifiedContactCard = lazy(() => import("./Components/ContactCard/UnifiedContactCard"));
 const ContactCardLayout = lazy(() => import("./Components/Layout/ContactCardLayout"));
 
 // Admin components (already lazy loaded)
@@ -429,10 +430,10 @@ function App() {
                       <Route path="/projects-in-pushkar/" element={<CityProjectsGlobal />} />
                       <Route path="/qr-generator" element={<QRGeneratorPage />} />
                       <Route path="/emi-calculator/" element={<EMICalculatorPage />} />
-                      {/* Contact Card Route - Modern Design */}
+                      {/* Contact Card Route - Multiple Templates */}
                       <Route path="/hi/:slug" element={
                         <LazyLoad>
-                          <ModernContactCard />
+                          <UnifiedContactCard />
                         </LazyLoad>
                       } />
                       {/* Analytics (public) */}

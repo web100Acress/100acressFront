@@ -43,6 +43,7 @@
     "lucide-react": "^0.307.0",
     "mdb-react-ui-kit": "^6.2.0",
     "next-themes": "^0.4.6",
+    "qrcode": "^1.5.3",
     "quill-emoji": "^0.2.0",
     "react": "18.3.1",
     "react-beautiful-dnd": "^13.1.1",
