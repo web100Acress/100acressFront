@@ -98,6 +98,15 @@ export const getPageDataFromURL = (pathname, searchParams = {}) => {
   if (pathname.includes('/projects/farmhouse')) {
     return getTypePageData('farmhouse');
   }
+
+  if (pathname.includes('/projects/commercial')) {
+    return getTypePageData('commercial');
+  }
+
+  // Plots in Gurugram type page
+  if (pathname.includes('/plots-in-gurugram')) {
+    return getTypePageData('plots-in-gurugram');
+  }
   
   if (pathname.includes('/projects/industrial-plots')) {
     return getTypePageData('industrial-plots');
