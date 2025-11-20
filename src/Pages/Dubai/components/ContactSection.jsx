@@ -112,8 +112,7 @@ export const ContactSection = () => {
                 </div>
                 <div>
                   <p className="text-white font-semibold mb-1">Phone</p>
-                  <p className="text-muted-foreground">+971 4 XXX XXXX</p>
-                  <p className="text-muted-foreground">+91 XXX XXX XXXX</p>
+                  <p className="text-muted-foreground">+91 9811 750 740</p>
                 </div>
               </div>
 
@@ -123,7 +122,7 @@ export const ContactSection = () => {
                 </div>
                 <div>
                   <p className="text-white font-semibold mb-1">Email</p>
-                  <p className="text-muted-foreground">dubai@100acress.com</p>
+                  <p className="text-muted-foreground">info@100acress.com</p>
                 </div>
               </div>
 
@@ -133,29 +132,11 @@ export const ContactSection = () => {
                 </div>
                 <div>
                   <p className="text-white font-semibold mb-1">Office</p>
-                  <p className="text-muted-foreground">Business Bay, Dubai, UAE</p>
+                  <p className="text-muted-foreground">ILD Trade Centre, 806, Sector 47, Gurugram, Haryana 122018</p>
                 </div>
               </div>
             </div>
-
-            {/* Business Hours */}
-            <div className="glass-effect rounded-xl border border-white/10 p-6">
-              <h3 className="text-white font-semibold mb-4">Business Hours</h3>
-              <div className="space-y-2 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Monday - Friday</span>
-                  <span className="text-white">9:00 AM - 8:00 PM</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Saturday</span>
-                  <span className="text-white">10:00 AM - 6:00 PM</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Sunday</span>
-                  <span className="text-white">Closed</span>
-                </div>
-              </div>
-            </div>
+            
           </div>
 
           {/* Right Side - Form */}

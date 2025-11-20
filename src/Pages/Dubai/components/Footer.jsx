@@ -65,7 +65,7 @@ export const Footer = () => {
               </div>
               <div className="flex items-center space-x-3 text-sm">
                 <MapPin className="h-4 w-4 text-gold" />
-                <span className="text-muted-foreground">Business Bay, Dubai, UAE</span>
+                <span className="text-muted-foreground">ILD Trade Centre, 806, Sector 47, Gurugram, Haryana 122018</span>
               </div>
             </div>
 
