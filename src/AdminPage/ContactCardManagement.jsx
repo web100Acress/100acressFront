@@ -475,10 +475,11 @@ const ContactCardModal = ({ isOpen, onClose, onSuccess, editData = null }) => {
     designation: editData?.designation || '',
     website: editData?.website || '',
     brandColor: editData?.brandColor || '#3B82F6',
+    template: editData?.template || 'modern',
     bio: editData?.bio || '',
     profile_image_url: editData?.profile_image_url || '',
     banner_image_url: editData?.banner_image_url || '',
-    company_logo_url: editData?.company_logo_url || 'https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/logowhite.webp.webp',
+    company_logo_url: editData?.company_logo_url || '',
     slug: editData?.slug || '',
     socialLinks: {
       linkedin: editData?.socialLinks?.linkedin || '',
@@ -514,6 +515,7 @@ const ContactCardModal = ({ isOpen, onClose, onSuccess, editData = null }) => {
       if (formData.designation) payload.append('designation', formData.designation);
       if (formData.website) payload.append('website', formData.website);
       if (formData.brandColor) payload.append('brandColor', formData.brandColor);
+      if (formData.template) payload.append('template', formData.template);
       if (formData.bio) payload.append('bio', formData.bio);
       if (formData.profile_image_url) payload.append('profile_image_url', formData.profile_image_url);
       if (formData.banner_image_url) payload.append('banner_image_url', formData.banner_image_url);
@@ -531,6 +533,15 @@ const ContactCardModal = ({ isOpen, onClose, onSuccess, editData = null }) => {
 
       // Debug: Log the form data being sent
       console.log('Sending multipart form data for contact card');
+      console.log('Form data:', {
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        slug: formData.slug,
+        template: formData.template,
+        hasProfileImage: !!profileImageFile,
+        hasBannerImage: !!bannerImageFile
+      });
 
       await axios[method](url, payload, {
         headers: { 
@@ -552,10 +563,15 @@ const ContactCardModal = ({ isOpen, onClose, onSuccess, editData = null }) => {
       } else if (error.response?.status === 400) {
         const errorData = error.response.data;
         console.log('Validation error details:', errorData);
+        console.log('Validation errors array:', errorData?.errors);
 
         if (errorData?.errors && Array.isArray(errorData.errors)) {
           // Show specific validation errors
-          errorData.errors.forEach(err => toast.error(err.msg || err.message || 'Validation error'));
+          errorData.errors.forEach(err => {
+            const errorMsg = err.msg || err.message || 'Validation error';
+            console.log('Specific error:', err);
+            toast.error(`${err.path || err.param || 'Field'}: ${errorMsg}`);
+          });
         } else {
           const errorMsg = errorData?.message || 'Validation error';
           toast.error(errorMsg);
@@ -687,6 +703,47 @@ const ContactCardModal = ({ isOpen, onClose, onSuccess, editData = null }) => {
                 onChange={(e) => setFormData(prev => ({ ...prev, brandColor: e.target.value }))}
                 className="w-full h-10 border border-gray-300 rounded-lg"
               />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Card Template</label>
+              <div className="grid grid-cols-2 gap-3">
+                {[
+                  { id: 'modern', name: 'Modern Glassmorphism', icon: '✨', desc: 'Sleek & versatile' },
+                  { id: 'glassmorphism', name: 'Neon Glassmorphism', icon: '🌟', desc: 'Mobile-first neon' },
+                  { id: 'premium', name: 'Premium Apple Style', icon: '💎', desc: 'Ultra premium' },
+                  { id: 'executive', name: 'Executive Premium', icon: '⭐', desc: 'Dark & elegant' },
+                  { id: 'minimalist', name: 'Minimalist Clean', icon: '🎯', desc: 'Simple & clean' },
+                  { id: 'creative', name: 'Creative Colorful', icon: '🌈', desc: 'Bold & vibrant' }
+                ].map(template => (
+                  <button
+                    key={template.id}
+                    type="button"
+                    onClick={() => setFormData(prev => ({ ...prev, template: template.id }))}
+                    className={`p-3 rounded-xl border-2 transition-all text-left ${
+                      formData.template === template.id
+                        ? 'border-blue-500 bg-blue-50 shadow-md'
+                        : 'border-gray-200 hover:border-blue-300 hover:bg-gray-50'
+                    }`}
+                  >
+                    <div className="flex items-start">
+                      <span className="text-2xl mr-2">{template.icon}</span>
+                      <div className="flex-1">
+                        <div className="font-semibold text-sm text-gray-800">{template.name}</div>
+                        <div className="text-xs text-gray-500 mt-0.5">{template.desc}</div>
+                      </div>
+                      {formData.template === template.id && (
+                        <div className="ml-2">
+                          <CheckCircle size={18} className="text-blue-500" />
+                        </div>
+                      )}
+                    </div>
+                  </button>
+                ))}
+              </div>
+              <p className="text-xs text-gray-500 mt-2">
+                Choose a template style for your contact card. You can change this anytime.
+              </p>
             </div>
 
             <div>

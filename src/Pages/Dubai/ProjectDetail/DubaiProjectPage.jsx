@@ -74,7 +74,7 @@ const DubaiProjectContent = () => {
         setError("Project not found");
         setLoading(false);
         // Redirect to UAE page after 2 seconds
-        setTimeout(() => navigate("/united-arab-emirates"), 2000);
+        setTimeout(() => navigate("/united-arab-emirates/"), 2000);
       }
     }
   }, [dubaiProjects, projectSlug, navigate]);
