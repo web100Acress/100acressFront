@@ -406,7 +406,6 @@ function App() {
                         element={<ProjectTypeGlobal />}
                       />
                       <Route path="/projects-in-delhi/" element={<CityProjectsGlobal />} />
-                      <Route path="/dubai/" element={<DubaiPage />} />
                       <Route path="/projects-in-dubai" element={<ProjectsInDubai />} />
                       <Route path="/dubai/insights" element={<InsightsPage />} />
                       <Route path="/dubai/contact" element={<DubaiContactPage />} />
@@ -422,7 +421,6 @@ function App() {
                       <Route path="/projects-in-jalandhar/" element={<CityProjectsGlobal />} />
                       <Route path="/projects-in-ayodhya/" element={<CityProjectsGlobal />} />
                       <Route path="/projects-in-mumbai/" element={<CityProjectsGlobal />} />
-                      <Route path="/united-arab-emirates/" element={<CityProjectsGlobal />} />
                       <Route path="/projects-in-pune/" element={<CityProjectsGlobal />} />
                       {/* Dynamic city projects route (generic template). Keep after specific routes to avoid conflicts. */}
                       <Route path="/projects-in-:citySlug/" element={<CityProjectsGlobal />} />
@@ -793,12 +791,12 @@ function MobileBottomNav() {
               <span className={`${isActive(["/", "/projects", "/property"]) ? "text-gray-900 font-semibold" : ""}`}>Home</span>
             </Link>
 
-            {/* Dubai */}
-            <Link to="/dubai/" className="flex flex-col items-center gap-1 py-2">
-              <span className={`text-xl ${isActive("/dubai") ? "text-red-600" : "text-gray-500"}`}>
-                <img src="/icons/noun-burj-khalifa-3945.svg" width="20" height="20" alt="Dubai" style={{ filter: isActive("/dubai") ? 'brightness(0) saturate(100%) invert(27%) sepia(51%) saturate(2878%) hue-rotate(346deg) brightness(104%) contrast(97%)' : 'brightness(0) saturate(100%) invert(60%) sepia(8%) saturate(872%) hue-rotate(169deg) brightness(99%) contrast(86%)' }} />
+            {/* UAE */}
+            <Link to="/united-arab-emirates/" className="flex flex-col items-center gap-1 py-2">
+              <span className={`text-xl ${isActive("/united-arab-emirates") ? "text-red-600" : "text-gray-500"}`}>
+                <img src="/icons/noun-burj-khalifa-3945.svg" width="20" height="20" alt="UAE" style={{ filter: isActive("/united-arab-emirates") ? 'brightness(0) saturate(100%) invert(27%) sepia(51%) saturate(2878%) hue-rotate(346deg) brightness(104%) contrast(97%)' : 'brightness(0) saturate(100%) invert(60%) sepia(8%) saturate(872%) hue-rotate(169deg) brightness(99%) contrast(86%)' }} />
               </span>
-              <span className={`${isActive("/dubai") ? "text-gray-900 font-semibold" : ""}`}>Dubai</span>
+              <span className={`${isActive("/united-arab-emirates") ? "text-gray-900 font-semibold" : ""}`}>UAE</span>
             </Link>
 
             {/* Center CTA: Contact (call by phone) */}
