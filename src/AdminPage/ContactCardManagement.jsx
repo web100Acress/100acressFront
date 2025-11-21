@@ -477,8 +477,6 @@ const ContactCardModal = ({ isOpen, onClose, onSuccess, editData = null }) => {
     brandColor: editData?.brandColor || '#3B82F6',
     template: editData?.template || 'modern',
     bio: editData?.bio || '',
-    profile_image_url: editData?.profile_image_url || '',
-    banner_image_url: editData?.banner_image_url || '',
     company_logo_url: editData?.company_logo_url || '',
     slug: editData?.slug || '',
     socialLinks: {
@@ -517,8 +515,6 @@ const ContactCardModal = ({ isOpen, onClose, onSuccess, editData = null }) => {
       if (formData.brandColor) payload.append('brandColor', formData.brandColor);
       if (formData.template) payload.append('template', formData.template);
       if (formData.bio) payload.append('bio', formData.bio);
-      if (formData.profile_image_url) payload.append('profile_image_url', formData.profile_image_url);
-      if (formData.banner_image_url) payload.append('banner_image_url', formData.banner_image_url);
       if (formData.company_logo_url) payload.append('company_logo_url', formData.company_logo_url);
       payload.append('slug', formData.slug);
       payload.append('socialLinks', JSON.stringify(formData.socialLinks));
@@ -746,16 +742,6 @@ const ContactCardModal = ({ isOpen, onClose, onSuccess, editData = null }) => {
               </p>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Banner Image URL</label>
-              <input
-                type="url"
-                value={formData.banner_image_url}
-                onChange={(e) => setFormData(prev => ({ ...prev, banner_image_url: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                placeholder="https://example.com/header-banner.jpg"
-              />
-            </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Profile Picture File (optional)</label>
@@ -777,17 +763,6 @@ const ContactCardModal = ({ isOpen, onClose, onSuccess, editData = null }) => {
               />
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Profile Picture URL</label>
-              <input
-                type="url"
-                value={formData.profile_image_url}
-                onChange={(e) => setFormData(prev => ({ ...prev, profile_image_url: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                placeholder="https://example.com/profile-picture.jpg"
-              />
-              <p className="text-xs text-gray-500 mt-1">Recommended: Square image (1:1 ratio), minimum 300x300px</p>
-            </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Company Logo URL</label>
