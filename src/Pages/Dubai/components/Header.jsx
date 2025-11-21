@@ -82,7 +82,7 @@ export const Header = () => {
       <div className="container flex items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Logo with Emirates Dropdown */}
         <div className="flex items-center space-x-2 sm:space-x-3">
-          <a href="/united-arab-emirates" className="flex items-center space-x-2 sm:space-x-3">
+          <a href="/united-arab-emirates/" className="flex items-center space-x-2 sm:space-x-3">
             <img 
               src={LOGO}
               alt="100acress" 
