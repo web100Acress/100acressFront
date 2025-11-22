@@ -6,7 +6,7 @@ const HighlightsSection = ({ projectName, highlights, highlightImage, onShowCall
   return (
     <section className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-12 pb-8">
       {/* Section Title - Outside Card */}
-      <div className="text-center mb-6">
+      <div className="text-center mb-4">
         <h2 className="text-white text-2xl md:text-3xl font-bold leading-tight mb-2">
           PROJECT HIGHLIGHTS
         </h2>
