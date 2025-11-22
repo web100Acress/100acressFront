@@ -4,23 +4,27 @@ const HighlightsSection = ({ projectName, highlights, highlightImage, onShowCall
   const hasHighlights = highlights && Array.isArray(highlights) && highlights.length > 0;
 
   return (
-    <section className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
+    <section className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-12 pb-8">
+      {/* Section Title - Outside Card */}
+      <div className="text-center mb-4">
+        <h2 className="text-white text-2xl md:text-3xl font-bold leading-tight mb-2">
+          PROJECT HIGHLIGHTS
+        </h2>
+      </div>
+
       {/* Luxury Dark Card Container */}
       <div className="relative rounded-2xl overflow-hidden bg-gradient-to-br from-gray-900 via-black to-gray-800 shadow-[0_20px_60px_rgba(0,0,0,0.4)] border border-amber-900/30">
-        
         {/* Dark Golden Accent Line */}
         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-600 via-amber-500 to-amber-700"></div>
-        
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 p-8 lg:p-12">
+        {/* yaha se niche wale class highlight pointbs ke bich gap and all maintain hota hai */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 p-10">
           
           {/* Left Column - Content */}
           <div className="relative">
             {/* Section Header */}
-            <div className="mb-8">
-              <h2 className="text-amber-400 text-sm font-semibold uppercase tracking-widest mb-3">
-                PROJECT HIGHLIGHTS
-              </h2>
-              <h3 className="text-white text-2xl md:text-3xl font-bold leading-tight mb-2">
+            <div className="mb-4">
+             
+              <h3 className="text-white text-2xl md:text-3xl font-bold leading-tight mb-1">
                 {projectName ? `${projectName} Features` : "Key Features & Amenities"}
               </h3>
               <div className="w-16 h-1 bg-gradient-to-r from-amber-600 to-amber-500 rounded-full"></div>
@@ -28,16 +32,16 @@ const HighlightsSection = ({ projectName, highlights, highlightImage, onShowCall
 
             {hasHighlights ? (
               /* Dynamic Highlights Grid */
-              <div className="grid grid-cols-1 gap-4 mb-8">
+              <div className="grid grid-cols-1 gap-2 mb-2 ">
                 {highlights.map((item, index) => (
-                  <div key={index} className="flex items-start gap-4 group">
+                  <div key={index} className="flex items-start gap-2 group">
                     {/* Premium Check Icon */}
                     <div className="flex-shrink-0 w-6 h-6 rounded-full bg-gradient-to-br from-amber-600 to-amber-700 flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-200">
                       <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                       </svg>
                     </div>
-                    <p className="text-gray-300 text-base leading-relaxed group-hover:text-white transition-colors duration-200">
+                    <p className="text-gray-300 text-base leading-snug group-hover:text-white transition-colors duration-200">
                       {item.highlight_Point || item}
                     </p>
                   </div>
@@ -57,13 +61,13 @@ const HighlightsSection = ({ projectName, highlights, highlightImage, onShowCall
 
           {/* Right Column - Image */}
           <div className="relative">
-            <div className="relative h-64 lg:h-full min-h-[300px] rounded-xl overflow-hidden bg-gradient-to-br from-gray-800 to-gray-900">
+            <div className="relative rounded-xl overflow-hidden bg-gradient-to-br from-gray-800 to-gray-900">
               {highlightImage ? (
                 <>
                   <img 
                     src={highlightImage} 
                     alt={`${projectName} Highlights`}
-                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-700 ease-out"
+                    className="w-full h-auto object-contain transition-transform duration-700 ease-out"
                   />
                   {/* Subtle Overlay */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent"></div>
