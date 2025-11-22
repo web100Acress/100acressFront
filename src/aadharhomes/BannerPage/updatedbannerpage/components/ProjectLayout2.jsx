@@ -360,7 +360,7 @@ function ProjectLayout2() {
       {isResidentialProperty() && (
         <section className="mt-8 pt-0 pb-12 bg-gradient-to-b from-black via-gray-900 to-black">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <SectionHeading title="Amenities" />
+            <SectionHeading title={`Amenities of ${projectViewDetails?.projectName || ''}`} />
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
               {[
                 { name: "Cafeteria / Food Court", icon: "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z" },
@@ -404,7 +404,10 @@ function ProjectLayout2() {
       )}
 
       {/* Gallery */}
-      <Gallery galleryImages={projectViewDetails?.projectGallery || []} />
+      <Gallery 
+        galleryImages={projectViewDetails?.projectGallery || []}
+        projectName={projectViewDetails?.projectName}
+      />
 
       {/* Video Section - Positioned before Floor Plan */}
       <VideoSection
@@ -613,6 +616,7 @@ function ProjectLayout2() {
         floorPlans={projectViewDetails?.project_floorplan_Image || []} 
         bhkDetails={projectViewDetails?.BhK_Details || []}
         onShowCallback={handleShowCallback}
+        projectName={projectViewDetails?.projectName}
       />
 
       {/* Location Section */}
