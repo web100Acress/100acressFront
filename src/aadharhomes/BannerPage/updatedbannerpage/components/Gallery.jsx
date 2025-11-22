@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 
-const Gallery = ({ galleryImages = [] }) => {
+const Gallery = ({ galleryImages = [], projectName = '' }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -71,7 +71,7 @@ const Gallery = ({ galleryImages = [] }) => {
               GALLERY
             </h2>
             <h3 className="text-white text-2xl md:text-3xl font-bold leading-tight mb-2">
-              Project Images
+              Project Images{projectName ? ` of ${projectName}` : ''}
             </h3>
             <div className="w-20 h-1 bg-gradient-to-r from-amber-600 to-amber-500 rounded-full mx-auto mt-4"></div>
         </div>

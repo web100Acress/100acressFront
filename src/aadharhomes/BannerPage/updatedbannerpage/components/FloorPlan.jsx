@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const FloorPlan = ({ floorPlans = [], bhkDetails = [], onShowCallback = () => {} }) => {
+const FloorPlan = ({ floorPlans = [], bhkDetails = [], onShowCallback = () => {}, projectName = '' }) => {
   const [activeTab, setActiveTab] = useState(0);
   const [isImageUnlocked, setIsImageUnlocked] = useState(false);
 
@@ -135,7 +135,7 @@ const FloorPlan = ({ floorPlans = [], bhkDetails = [], onShowCallback = () => {}
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 z-10 relative">
         <div className="text-center mb-6">
           <h3 className="text-white text-2xl md:text-3xl font-bold leading-tight mb-2">
-            Floor Plan
+            Floor Plan{projectName ? ` of ${projectName}` : ''}
           </h3>
           <div className="w-20 h-1 bg-gradient-to-r from-amber-600 to-amber-500 rounded-full mx-auto mt-4"></div>
         </div>

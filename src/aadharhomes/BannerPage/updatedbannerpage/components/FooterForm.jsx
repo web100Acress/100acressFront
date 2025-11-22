@@ -115,8 +115,8 @@ const FooterForm = ({ builderName = "Premium", projectViewDetails = {}, projectT
                   </div>
                 </div>
                 <div className="flex-1 text-center sm:text-left">
-                  <h4 className="text-white font-semibold text-base mb-0">Need Immediate Assistance?</h4>
-                  <p className="text-gray-400 text-xs">Call our property experts directly</p>
+                  {/* <h4 className="text-white font-semibold text-base mb-0">Need Immediate Assistance?</h4> */}
+                  {/* <p className="text-gray-400 text-xs">Call our property experts directly</p> */}
                 </div>
                 <div className="flex-shrink-0">
                   <a
