@@ -33,13 +33,14 @@ const AboutSection = ({ projectName, description, imageUrl, onShowCallback = () 
         <div className="pointer-events-none absolute -top-24 -right-24 w-80 h-80 rounded-full bg-gradient-to-br from-yellow-500/10 via-yellow-400/0 to-transparent blur-2xl" />
         <div className="pointer-events-none absolute -bottom-32 -left-24 w-96 h-96 rounded-full bg-gradient-to-tr from-yellow-400/10 via-transparent to-transparent blur-2xl" />
 
-        <div ref={sectionRef} className="relative grid grid-cols-1 md:grid-cols-2 gap-6 items-center py-8 md:py-10 lg:py-12">
+        <div ref={sectionRef} className="relative grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 items-center p-6 sm:p-8 md:p-10 lg:p-12">
         {/* Left Column - Text Content */}
-        <div className="relative order-2 md:order-1 px-6 sm:px-8 md:px-10 lg:px-12">
+        <div className="relative order-2 md:order-1">
           {/* Geometric Diamond Pattern Background */}
           <div className="absolute -inset-4 opacity-[0.03] hidden md:block"><div className="diamond-pattern"></div></div>
           {/* Soft Spotlight Effect */}
           <div className="absolute -top-6 left-0 w-72 h-72 bg-gradient-radial from-yellow-400/15 via-yellow-400/0 to-transparent rounded-full blur-3xl" />
+          {/* Thin golden diagonal borders */}
           {/* Thin golden diagonal bborders */}
           <div className="pointer-events-none absolute -top-2 -left-6 w-2/3 h-px bg-gradient-to-r from-transparent via-yellow-400/70 to-transparent rotate-12" />
           <div className="pointer-events-none absolute -bottom-2 -right-6 w-2/3 h-px bg-gradient-to-r from-transparent via-yellow-400/70 to-transparent -rotate-12" />
@@ -95,7 +96,7 @@ const AboutSection = ({ projectName, description, imageUrl, onShowCallback = () 
         </div>
         
         {/* Right Column - Image with Luxury Framing */}
-        <div className="relative order-1 md:order-2 w-full px-4 md:px-8">
+        <div className="relative order-1 md:order-2 w-full">
           <div className="relative w-full h-[260px] sm:h-[300px] md:h-[340px] lg:h-[380px]">
             {/* Rounded container with golden ring and soft glow */}
             <div className="relative h-full w-full rounded-none md:rounded-[28px] overflow-hidden ring-1 ring-yellow-400/30 shadow-[0_10px_40px_rgba(250,204,21,0.10)]">
