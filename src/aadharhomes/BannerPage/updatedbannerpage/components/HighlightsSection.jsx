@@ -11,7 +11,7 @@ const HighlightsSection = ({ projectName, highlights, highlightImage, onShowCall
         {/* Dark Golden Accent Line */}
         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-600 via-amber-500 to-amber-700"></div>
         
-        <div className="grid grid-cols-1 gap-8 p-8 lg:p-12">
+        <div className="grid grid-cols-1 gap-4 p-8 lg:p-12">
           
           {/* Top - Image */}
           <div className="relative">
@@ -21,7 +21,7 @@ const HighlightsSection = ({ projectName, highlights, highlightImage, onShowCall
                   <img 
                     src={highlightImage} 
                     alt={`${projectName} Highlights`}
-                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-700 ease-out"
+                    className="w-full h-auto max-h-full object-contain transition-transform duration-700 ease-out"
                   />
                   {/* Subtle Overlay */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent"></div>
