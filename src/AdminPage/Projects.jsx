@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import axios from "axios";
 import { getApiBase } from '../config/apiBase';
-
 import Sidebar from "./Sidebar";
 import { Link } from "react-router-dom";
 import { message } from "antd"; 
@@ -23,7 +22,6 @@ const Projects = () => {
   const [filterHasPayment, setFilterHasPayment] = useState("");
   const [filterProjectOverview, setFilterProjectOverview] = useState("");
   const [filterYoutubeVideo, setFilterYoutubeVideo] = useState("");
-  const [filterBrochure, setFilterBrochure] = useState("");
 
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
@@ -244,7 +242,7 @@ const Projects = () => {
           overviewCounts.trending++;
           console.log(`✅ Project ${project.projectName} is marked as trending in DB`);
         }
-        // Define featured projects (ONLY database field - no fallback criteria)
+       
         else if (isFeaturedInDB) {
           overviewCounts.featured++;
           console.log(`✅ Project ${project.projectName} is marked as featured in DB`);
@@ -285,40 +283,6 @@ const Projects = () => {
     return [
       { value: 'with', label: `With (${withYoutube})` },
       { value: 'without', label: `Without (${withoutYoutube})` }
-    ];
-  }, [viewAll]);
-
-  // Brochure options with counts
-  const brochureOptions = useMemo(() => {
-    if (!viewAll || viewAll.length === 0) {
-      return [];
-    }
-
-    let withBrochure = 0;
-    let withoutBrochure = 0;
-    let pdfBrochure = 0;
-    let imageBrochure = 0;
-
-    viewAll.forEach(project => {
-      const hasBrochure = Boolean((project?.project_Brochure?.url ?? "").toString().trim());
-      if (hasBrochure) {
-        withBrochure++;
-        const url = (project?.project_Brochure?.url ?? "").toString().toLowerCase();
-        if (url.includes('.pdf')) {
-          pdfBrochure++;
-        } else {
-          imageBrochure++;
-        }
-      } else {
-        withoutBrochure++;
-      }
-    });
-
-    return [
-      { value: 'with', label: `Has Brochure (${withBrochure})` },
-      { value: 'without', label: `No Brochure (${withoutBrochure})` },
-      { value: 'pdf', label: `PDF Brochure (${pdfBrochure})` },
-      { value: 'image', label: `Image Brochure (${imageBrochure})` }
     ];
   }, [viewAll]);
 
@@ -384,22 +348,7 @@ const Projects = () => {
     const hasYoutubeVideo = Boolean((item?.youtubeVideoUrl ?? "").toString().trim());
     const matchesYoutubeVideo = !filterYoutubeVideo || (filterYoutubeVideo === "with" ? hasYoutubeVideo : !hasYoutubeVideo);
 
-    // Brochure filtering logic
-    let matchesBrochure = true;
-    if (filterBrochure) {
-      const hasBrochure = Boolean((item?.project_Brochure?.url ?? "").toString().trim());
-      if (filterBrochure === 'with') {
-        matchesBrochure = hasBrochure;
-      } else if (filterBrochure === 'without') {
-        matchesBrochure = !hasBrochure;
-      } else if (filterBrochure === 'pdf') {
-        matchesBrochure = hasBrochure && (item?.project_Brochure?.url ?? "").toString().toLowerCase().includes('.pdf');
-      } else if (filterBrochure === 'image') {
-        matchesBrochure = hasBrochure && !(item?.project_Brochure?.url ?? "").toString().toLowerCase().includes('.pdf');
-      }
-    }
-
-    return matchesSearch && matchesType && matchesCity && matchesAddress && matchesBuilder && matchesStatus && matchesState && matchesMobile && matchesPayment && matchesOverview && matchesYoutubeVideo && matchesBrochure;
+    return matchesSearch && matchesType && matchesCity && matchesAddress && matchesBuilder && matchesStatus && matchesState && matchesMobile && matchesPayment && matchesOverview && matchesYoutubeVideo;
   });
   const indexOfLastRow = currentPage * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
@@ -466,7 +415,6 @@ const Projects = () => {
     setFilterHasPayment("");
     setFilterProjectOverview("");
     setFilterYoutubeVideo("");
-    setFilterBrochure("");
     setCurrentPage(1);
   };
 
@@ -582,17 +530,6 @@ const Projects = () => {
                 <option key={opt.value} value={opt.value}>YouTube Video: {opt.label}</option>
               ))}
             </select>
-
-            <select
-              className="filter-select"
-              value={filterBrochure}
-              onChange={(e) => { setFilterBrochure(e.target.value); setCurrentPage(1); }}
-            >
-              <option value="">Brochure: All</option>
-              {brochureOptions.map(opt => (
-                <option key={opt.value} value={opt.value}>Brochure: {opt.label}</option>
-              ))}
-            </select>
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
             <Link to={"/admin/project-insert"}>
@@ -693,13 +630,13 @@ const Projects = () => {
                           </button>
                         </Link>
 
-                        {/* <button
+                        <button
                           onClick={() => handleDeleteUser(id)}
                           type="button"
                           className="action-button delete-button"
                         >
                           Delete
-                        </button> */}
+                        </button>
                       </td>
                     </tr>
                   );
@@ -965,17 +902,17 @@ const projectStyles = `
   border-collapse: separate;
   border-spacing: 0;
   min-width: 1000px; /* Ensure generous width */
-  font-size: 0.85rem; /* Smaller text */
+  font-size: 0.98rem; /* Slightly larger text */
 }
 
 .table-header {
-  padding: 10px 12px; /* Reduced padding */
+  padding: 20px 28px; /* More padding */
   text-align: center;
-  font-size: 0.8rem; /* Smaller header font */
+  font-size: 0.9rem; /* Slightly larger header font */
   font-weight: 700;
   color: #5c677d; /* Muted, professional header text color */
   text-transform: uppercase;
-  letter-spacing: 0.05em; /* Reduced letter spacing */
+  letter-spacing: 0.1em; /* Increased letter spacing */
   background-color: #f7f9fc; /* Very light header background */
   border-bottom: 2px solid #e8eaf1;
   position: sticky; /* Make headers sticky for large tables */
@@ -1047,9 +984,9 @@ const projectStyles = `
 }
 
 .table-cell {
-  padding: 8px 12px; /* Reduced padding for compact rows */
+  padding: 18px 28px; /* Increased padding */
   text-align: center;
-  font-size: 0.85rem; /* Smaller font */
+  font-size: 0.98rem;
   color: #333d4e;
   white-space: nowrap;
   overflow: hidden;
@@ -1094,21 +1031,21 @@ const projectStyles = `
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 6px; /* Reduced space between buttons */
+  gap: 10px; /* More space between buttons */
   flex-wrap: wrap;
-  padding: 6px 8px; /* Reduced padding for button cell */
+  padding: 15px 20px; /* Adjusted padding for button cell */
 }
 
 .action-button {
-  padding: 6px 10px; /* Smaller padding for individual buttons */
-  border-radius: 6px; /* Smaller rounded corners */
+  padding: 10px 16px; /* Larger padding for individual buttons */
+  border-radius: 10px; /* Softer rounded corners */
   border: none;
   font-weight: 500;
-  font-size: 0.75rem; /* Smaller button font */
+  font-size: 0.9rem;
   cursor: pointer;
   transition: all 0.25s ease;
   white-space: nowrap;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1); /* Smaller shadow */
+  box-shadow: 0 3px 10px rgba(0,0,0,0.1); /* More pronounced shadow */
 }
 
 .action-button:hover {
