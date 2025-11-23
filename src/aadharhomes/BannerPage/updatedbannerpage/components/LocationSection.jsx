@@ -134,7 +134,7 @@ const LocationSection = ({
           initial={{ opacity: 0, y: 20 }}
           animate={isMounted ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
-          className="text-center mb-6 md:mb-10"
+          className="text-center mb-2 md:mb-2"
         >
           <motion.div 
             className="inline-flex items-center justify-center w-14 h-14 md:w-16 md:h-16 bg-gradient-to-br from-amber-500 to-amber-600 rounded-full mb-2"
@@ -156,7 +156,7 @@ const LocationSection = ({
         </motion.div>
 
         {/* Main Content */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-4">
           {/* Location Map Card */}
           <motion.div 
             className="lg:col-span-2"
