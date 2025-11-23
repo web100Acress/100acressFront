@@ -749,7 +749,7 @@ const Home = () => {
             <div ref={setRef("feature")} data-section="feature" style={{ height: "10px" }}></div>
             <div>
               {FeaturedProjects.length === 0 ? <CustomSkeleton /> : (
-                <CommonProject data={FeaturedProjects.slice(0, 8)} title="Top Featured Residential Projects in Gurugram" animation="flip-left" path="/projects-in-gurugram/" compact />
+                <CommonProject data={FeaturedProjects.slice(0, 8)} title="Top Featured Projects" animation="flip-left" path="/projects-in-gurugram/" compact />
               )}
             </div>
 
