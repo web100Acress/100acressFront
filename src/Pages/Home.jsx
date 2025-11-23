@@ -570,9 +570,12 @@ const Home = () => {
               data-aos-duration="1000" className="py-0 mt-3 w-full">
                 <br />
               <div className="flex items-center justify-between mx-3 lg:mx-6 xl:mx-14 md:mx-6">
-                <h2 className="text-2xl xl:text-4xl lg:text-3xl md:text-2xl text-[#111] font-bold">
-                  {`${activeFilter}`} Properties in Gurugram and Delhi NCR
-                </h2>
+                <div className="flex items-center gap-3">
+                  <div className="w-1 h-12 bg-gradient-to-b from-red-500 to-red-600 rounded-full"></div>
+                  <h2 className="text-2xl xl:text-4xl lg:text-3xl md:text-2xl text-[#111] font-bold">
+                    {`${activeFilter}`} Properties in Gurugram and Delhi NCR
+                  </h2>
+                </div>
               </div>
 
 

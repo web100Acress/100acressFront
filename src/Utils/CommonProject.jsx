@@ -375,7 +375,8 @@ const CommonProject = ({
             {!hideHeader && (
               <div className="flex items-center justify-between mx-3 lg:mx-6 xl:mx-14 md:mx-6 py-2">
                 {title && (
-                  <div className="flex items-center">
+                  <div className="flex items-center gap-3">
+                    <div className="w-1 h-12 bg-gradient-to-b from-red-500 to-red-600 rounded-full"></div>
                     <h2 className="text-2xl xl:text-4xl lg:text-3xl md:text-2xl text-center sm:text-left text-[#111] font-bold font-['Rubik',sans-serif]">
                       {title}
                     </h2>
