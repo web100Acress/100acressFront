@@ -36,10 +36,13 @@ const BudgetPlotsInGurugraon = () => {
     <Wrapper className="section">
     <div data-aos="zoom-in-up" className="container" style={{ boxShadow: "0px 0px 0px 0px #0000001a" }}>
       <div className="flex items-center justify-between mx-3 sm:mx-4 lg:mx-4 xl:mx-14 md:mx-4 py-3 sm:py-5 lg:py-6 mb-3 sm:mb-4">
-        <h2 className="text-3xl xl:text-4xl lg:text-3xl md:text-2xl sm:text-left font-extrabold mb-1 text-neutral-900">
-          <span className="bg-gradient-to-r from-[#f43f5e] to-[#dc2626] bg-clip-text text-transparent">Best Budget</span>
-          <span> Plots in Gurugram</span>
-        </h2>
+        <div className="flex items-center gap-3">
+          <div className="w-1 h-12 bg-gradient-to-b from-red-500 to-red-600 rounded-full"></div>
+          <h2 className="text-3xl xl:text-4xl lg:text-3xl md:text-2xl sm:text-left font-extrabold mb-1 text-neutral-900">
+            <span className="bg-gradient-to-r from-[#f43f5e] to-[#dc2626] bg-clip-text text-transparent">Best Budget</span>
+            <span> Plots in Gurugram</span>
+          </h2>
+        </div>
         <div className=" ml-2 hidden sm:block">
         <Link to="/plots-in-gurugram/" target="_top">
         <span className="flex items-center text-white text-sm px-3 py-1 rounded-full bg-red-600 hover:bg-red-700 shadow-md transition-all duration-300">
