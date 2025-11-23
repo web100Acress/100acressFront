@@ -133,14 +133,14 @@ const FloorPlan = ({ floorPlans = [], bhkDetails = [], onShowCallback = () => {}
       </div>
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 z-10 relative">
-        <div className="text-center mb-6">
+        <div className="text-center mb-2">
           <h3 className="text-white text-2xl md:text-3xl font-bold leading-tight mb-2">
             Floor Plan{projectName ? ` of ${projectName}` : ''}
           </h3>
           <div className="w-20 h-1 bg-gradient-to-r from-amber-600 to-amber-500 rounded-full mx-auto mt-4"></div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center mt-4">
           {/* Left Side: Image and Super Area */}
           <div className="lg:col-span-2">
             {/* Horizontal Scrollable Tab Bar */}

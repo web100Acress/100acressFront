@@ -156,8 +156,8 @@ const Builder = () => {
     <Wrapper className="section">
       <div className="container">
         <div className="flex items-center justify-between mx-3 lg:mx-3 xl:mx-14 md:mx-6 py-6">
-          <div className="flex items-center">
-            <div className="w-1 h-12 bg-gradient-to-b from-red-500 to-red-600 rounded-full mr-4"></div>
+          <div className="flex items-center gap-3">
+            <div className="w-1 h-12 bg-gradient-to-b from-red-500 to-red-600 rounded-full"></div>
             <h2 className="text-2xl xl:text-4xl lg:text-3xl md:text-2xl text-center sm:text-left font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">
               Top Real Estate Developers
             </h2>

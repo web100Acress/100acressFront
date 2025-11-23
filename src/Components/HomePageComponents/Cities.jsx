@@ -104,9 +104,12 @@ const Cities = () => {
     <Wrapper className="section">
       <div className="container">
         <div className="flex items-center justify-between mx-3 sm:mx-4 lg:mx-4 xl:mx-14 md:mx-4">
-          <h2 className="text-3xl xl:text-4xl lg:text-3xl md:text-2xl sm:text-left pt-4 text-[#111] font-bold">
-          Prime Cities for Real Estate Investment
-          </h2>
+          <div className="flex items-center gap-3">
+            <div className="w-1 h-12 bg-gradient-to-b from-red-500 to-red-600 rounded-full"></div>
+            <h2 className="text-3xl xl:text-4xl lg:text-3xl md:text-2xl sm:text-left pt-4 text-[#111] font-bold">
+            Prime Cities for Real Estate Investment
+            </h2>
+          </div>
         </div>
 
         {/* City Cards Grid */}

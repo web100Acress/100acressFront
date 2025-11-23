@@ -146,6 +146,13 @@ export default function Navbar() {
   // City filter state
   // Minimal inline SVG icon set (monochrome outline) for cities
   const CityIcons = {
+    Pune: (
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="3" y="9" width="4" height="11"/>
+        <rect x="9" y="5" width="6" height="15"/>
+        <path d="M2 20h20"/>
+      </svg>
+    ),
     Gurugram: (
       <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
         <rect x="3" y="10" width="6" height="10" rx="1"/>
@@ -241,12 +248,6 @@ export default function Navbar() {
         <path d="M2 20h20"/>
       </svg>
     ),
-    Pune: (
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M12 3l6 4v10l-6 4-6-4V7l6-4Z"/>
-        <path d="M2 20h20"/>
-      </svg>
-    ),
   };
 
   // Fast navigate helper for menu clicks
@@ -279,7 +280,7 @@ export default function Navbar() {
   const fetchAndSetAvatar = async () => {
     try {
       if (!userIdForEdit) return;
-      const res = await axios.get(`${API_BASE}/postPerson/users/${userIdForEdit}/profile`, {
+      const res = await axios.get(`${API_BASE}/users/${userIdForEdit}/profile`, {
         headers: { Authorization: authToken ? `Bearer ${authToken}` : undefined },
       });
       const url = res?.data?.data?.avatarUrl || "";
@@ -332,22 +333,21 @@ export default function Navbar() {
   }, [token, userIdForEdit]);
   const CITY_OPTIONS = [
     { name: "Gurugram", path: "/projects-in-gurugram/" },
-    { name: "Delhi", path: "/projects-in-delhi/" },
-    { name: "Noida", path: "/projects-in-noida/" },
-    { name: "Goa", path: "/projects-in-goa/" },
-    { name: "Ayodhya", path: "/projects-in-ayodhya/" },
-    { name: "Mumbai", path: "/projects-in-mumbai/" },
-    { name: "Panipat", path: "/projects-in-panipat/" },
-    { name: "Panchkula", path: "/projects-in-panchkula/" },
-    { name: "Kasauli", path: "/projects-in-kasauli/" },
+    { name: "Delhi", path: "/project-in-delhi/" },
+    { name: "Noida", path: "/project-in-noida/" },
+    { name: "Goa", path: "/project-in-goa/" },
+    { name: "Ayodhya", path: "/project-in-ayodhya/" },
+    { name: "Mumbai", path: "/project-in-mumbai/" },
+    { name: "Panipat", path: "/project-in-panipat/" },
+    { name: "Panchkula", path: "/project-in-panchkula/" },
+    { name: "Kasauli", path: "/project-in-kasauli/" },
     { name: "Sonipat", path: "/projects-in-sonipat/" },
     // { name: "Alwar", path: "/projects-in-alwar/" },
     { name: "Karnal", path: "/projects-in-karnal/" },
 
     { name: "Jalandhar", path: "/projects-in-jalandhar/" },
     { name: "Pushkar", path: "/projects-in-pushkar/" },
-    { name: "Dubai", path: "/united-arab-emirates/" },
-    { name: "Pune", path: "/projects-in-pune/" },
+    { name: "Dubai", path: "/projects-in-dubai/" },
   ];
   const [selectedCity, setSelectedCity] = useState(
     (typeof window !== 'undefined' && localStorage.getItem("selectedCity")) || ""
