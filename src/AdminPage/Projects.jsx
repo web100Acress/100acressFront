@@ -722,14 +722,14 @@ const Projects = () => {
               Previous
             </button>
             {Array.from(
-              { length: Math.min(3, Math.ceil(filteredProjects.length / 50)) },
+              { length: Math.min(3, Math.ceil(filteredProjects.length / 100)) },
               (_, index) => {
                 // Show current page and 1 page before/after
                 const pageNumber = Math.min(
                   Math.max(1, currentPage - 1) + index,
-                  Math.ceil(filteredProjects.length / 50)
+                  Math.ceil(filteredProjects.length / 100)
                 );
-                if (pageNumber > Math.ceil(filteredProjects.length / 50)) return null;
+                if (pageNumber > Math.ceil(filteredProjects.length / 100)) return null;
                 return (
                   <button
                     key={index}
@@ -744,9 +744,9 @@ const Projects = () => {
               }
             )}
             <button
-              onClick={() => paginate(currentPage < Math.ceil(filteredProjects.length / 50) ? currentPage + 1 : currentPage)}
+              onClick={() => paginate(currentPage < Math.ceil(filteredProjects.length / 100) ? currentPage + 1 : currentPage)}
               className="pagination-button"
-              disabled={currentPage === Math.ceil(filteredProjects.length / 50)}
+              disabled={currentPage === Math.ceil(filteredProjects.length / 100)}
             >
               Next
             </button>
