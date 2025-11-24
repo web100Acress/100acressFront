@@ -9,7 +9,7 @@ import { message } from "antd";
 const Projects = () => {
   const [viewAll, setViewAll] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [rowsPerPage] = useState(50);
+  const [rowsPerPage] = useState(100);
   const [searchTerm, setSearchTerm] = useState("");
 
   // Additional filters
@@ -722,14 +722,14 @@ const Projects = () => {
               Previous
             </button>
             {Array.from(
-              { length: Math.min(3, Math.ceil(filteredProjects.length / 100)) },
+              { length: Math.min(3, Math.ceil(filteredProjects.length / rowsPerPage)) },
               (_, index) => {
                 // Show current page and 1 page before/after
                 const pageNumber = Math.min(
                   Math.max(1, currentPage - 1) + index,
-                  Math.ceil(filteredProjects.length / 100)
+                  Math.ceil(filteredProjects.length / rowsPerPage)
                 );
-                if (pageNumber > Math.ceil(filteredProjects.length / 100)) return null;
+                if (pageNumber > Math.ceil(filteredProjects.length / rowsPerPage)) return null;
                 return (
                   <button
                     key={index}
@@ -744,9 +744,9 @@ const Projects = () => {
               }
             )}
             <button
-              onClick={() => paginate(currentPage < Math.ceil(filteredProjects.length / 100) ? currentPage + 1 : currentPage)}
+              onClick={() => paginate(currentPage < Math.ceil(filteredProjects.length / rowsPerPage) ? currentPage + 1 : currentPage)}
               className="pagination-button"
-              disabled={currentPage === Math.ceil(filteredProjects.length / 100)}
+              disabled={currentPage === Math.ceil(filteredProjects.length / rowsPerPage)}
             >
               Next
             </button>
