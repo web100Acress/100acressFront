@@ -543,35 +543,4 @@ import { useRef, useState, useEffect } from "react";
     );
   };
 
-  export default PostPropertyButton;
-
-          
-      `}</style>
-    </div>
-  );
-};
-
-export default PostPropertyButton;
-          z-index: 1;
-        }
-
-        .arrow-icon {
-          opacity: 0.8;
-        }
-
-        @keyframes spin {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
-
-        @keyframes float {
-          0%, 100% { transform: translateY(0px) scale(0.8); opacity: 0.3; }
-          50% { transform: translateY(-10px) scale(1); opacity: 0.8; }
-        }
-          
-      `}</style>
-    </div>
-  );
-};
-
 export default PostPropertyButton;
