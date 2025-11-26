@@ -18,8 +18,16 @@ const FeaturedBlogs = () => {
     }
   };
 
+  // Slugify function matching backend model's pre-save hook
   const getSlug = (title) =>
-    title.replace(/\s+/g, "-").replace(/[?!,\.;:\{\}\(\)\$\@]+/g, "").toLowerCase();
+    (title || '')
+      .toString()
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9\s-]/g, '')  // Remove special chars except spaces and hyphens
+      .replace(/\s+/g, '-')           // Replace spaces with hyphens
+      .replace(/-+/g, '-')            // Collapse multiple hyphens
+      .replace(/^-+|-+$/g, '');       // Trim leading/trailing hyphens
 
   const blogLink = (blog) => {
     if (blog?.slug) return `/blog/${blog.slug}`;

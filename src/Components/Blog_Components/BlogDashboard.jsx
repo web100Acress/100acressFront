@@ -42,9 +42,18 @@ import { AuthContext } from "../../AuthContext";
 
 // Removed Ant Design destructured variables
 
-// Prefer slug-based blog link with fallback to legacy title/id route
+// Slugify function matching backend model's pre-save hook
 const getSlugFromTitle = (title) =>
-  (title || "").replace(/\s+/g, '-').replace(/[?!,\.;:\{\}\(\)\$\@]+/g, '').toLowerCase();
+  (title || '')
+    .toString()
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9\s-]/g, '')  // Remove special chars except spaces and hyphens
+    .replace(/\s+/g, '-')           // Replace spaces with hyphens
+    .replace(/-+/g, '-')            // Collapse multiple hyphens
+    .replace(/^-+|-+$/g, '');       // Trim leading/trailing hyphens
+
+// Prefer slug-based blog link with fallback to legacy title/id route
 const blogLink = (blog) => {
   if (blog?.slug) return `/blog/${blog.slug}`;
   return `/blog/${getSlugFromTitle(blog?.blog_Title)}/${blog?._id}`;
