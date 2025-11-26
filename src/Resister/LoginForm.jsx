@@ -99,7 +99,7 @@ function LoginForm({ inModal = false, onSwitchToRegister, preventRedirect = fals
               type="email"
               name="email"
               id="email"
-              placeholder="username@email.com"
+              placeholder="Enter your gmail"
               className="w-full border border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#e53935] focus:border-[#e53935] transition"
               onChange={handleLoginChange}
             />
@@ -113,7 +113,7 @@ function LoginForm({ inModal = false, onSwitchToRegister, preventRedirect = fals
                 type={passwordHide ? "password" : "text"}
                 name="password"
                 id="password"
-                placeholder="********"
+                placeholder="Enter Your Password"
                 className="w-full border border-slate-300 rounded-lg px-3 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-[#e53935] focus:border-[#e53935] transition"
                 onChange={handleLoginChange}
               />

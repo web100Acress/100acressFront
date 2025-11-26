@@ -170,7 +170,7 @@ function SignupForm({ inModal = false, onSwitchToLogin }) {
                 type="text"
                 name="name"
                 id="name"
-                placeholder="John Doe"
+                placeholder="Enter your name"
                 className="w-full border border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#e53935] focus:border-[#e53935] transition"
                 onChange={handleRegisterChange}
               />
@@ -182,7 +182,7 @@ function SignupForm({ inModal = false, onSwitchToLogin }) {
                 type="tel"
                 name="mobile"
                 id="mobile"
-                placeholder="+91 9876543210"
+                placeholder="Enter Your Number"
                 className="w-full border border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#e53935] focus:border-[#e53935] transition"
                 onChange={handleRegisterChange}
               />
@@ -196,7 +196,7 @@ function SignupForm({ inModal = false, onSwitchToLogin }) {
               type="email"
               name="email"
               id="email"
-              placeholder="username@email.com"
+              placeholder="Enter Your gmail"
               className="w-full border border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#e53935] focus:border-[#e53935] transition"
               onChange={handleRegisterChange}
             />
@@ -211,7 +211,7 @@ function SignupForm({ inModal = false, onSwitchToLogin }) {
                   type={passwordHide ? "password" : "text"}
                   name="password"
                   id="password"
-                  placeholder="********"
+                  placeholder="Enter Your Password"
                   className="w-full border border-slate-300 rounded-lg px-3 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-[#e53935] focus:border-[#e53935] transition"
                   onChange={handleRegisterChange}
                 />
@@ -229,7 +229,7 @@ function SignupForm({ inModal = false, onSwitchToLogin }) {
                   type={passwordHide ? "password" : "text"}
                   name="cpassword"
                   id="cpassword"
-                  placeholder="********"
+                  placeholder="Retype Password"
                   className="w-full border border-slate-300 rounded-lg px-3 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-[#e53935] focus:border-[#e53935] transition"
                   onChange={handleRegisterChange}
                 />
