@@ -266,8 +266,16 @@ const BlogView = () => {
 
   // Navigate to blog detail (used by Recent Posts)
   const handleBlogView = (title, _id, postSlug) => {
+    // Slugify function matching backend model's pre-save hook
     const createSlug = (t) =>
-      t ? t.replace(/\s+/g, "-").replace(/[?!,\.;:\{\}\(\)\$\@]+/g, "").toLowerCase() : "blog";
+      (t || 'blog')
+        .toString()
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9\s-]/g, '')  // Remove special chars except spaces and hyphens
+        .replace(/\s+/g, '-')           // Replace spaces with hyphens
+        .replace(/-+/g, '-')            // Collapse multiple hyphens
+        .replace(/^-+|-+$/g, '') || 'blog';  // Trim leading/trailing hyphens
     const path = postSlug ? `/blog/${postSlug}` : `/blog/${createSlug(title)}/${_id}`;
     history(path);
     try { window.scrollTo({ top: 0, behavior: "smooth" }); } catch (_) {}

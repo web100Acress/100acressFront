@@ -19,8 +19,16 @@ const getMeta = (blog) => {
   if (blog.location) meta.push(blog.location);
   return meta.join(" | ");
 };
+// Slugify function matching backend model's pre-save hook
 const getSlug = (title) =>
-  title.replace(/\s+/g, "-").replace(/[?!,\.;:\{\}\(\)\$\@]+/g, "").toLowerCase();
+  (title || '')
+    .toString()
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9\s-]/g, '')  // Remove special chars except spaces and hyphens
+    .replace(/\s+/g, '-')           // Replace spaces with hyphens
+    .replace(/-+/g, '-')            // Collapse multiple hyphens
+    .replace(/^-+|-+$/g, '');       // Trim leading/trailing hyphens
 
 // Prefer slug-based blog link with fallback to legacy title/id route
 const blogLink = (blog) => {

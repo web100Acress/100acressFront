@@ -369,12 +369,12 @@ export default function LeftSection({
                   <Text fontSize={{ base: 'sm', md: 'md' }} fontWeight="600" whiteSpace="normal" wordBreak="break-word" lineHeight="1.25">View Resale Properties</Text>
                 </Button>
                 {/* Insights in drawer */}
-                <Button as={Link} to="/analytics" onClick={closeDrawer}
+                <Button as={Link} to="/united-arab-emirates" onClick={closeDrawer}
                   w="100%" variant="solid" bg="#e53e3e" color="white"
                   display="flex" flexDir="column" justifyContent="center" alignItems="center" textAlign="center"
                   py={3} px={4} minH={{ base: 12, md: 12 }}
                   _hover={{ bg: '#c53030' }} _active={{ bg: '#9b2c2c' }} rounded="md" boxShadow="0 6px 16px rgba(229,62,62,0.25)">
-                  <Text fontSize={{ base: 'sm', md: 'md' }} fontWeight="800">Insights</Text>
+                  <Text fontSize={{ base: 'sm', md: 'md' }} fontWeight="800">Dubai</Text>
                 </Button>
               </>
             )}
