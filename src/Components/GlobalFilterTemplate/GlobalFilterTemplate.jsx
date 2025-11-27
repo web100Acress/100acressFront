@@ -173,8 +173,22 @@ const GlobalFilterTemplate = ({
   const readyToMoveProjects = useSelector(store => store?.allsectiondata?.readytomove);
   const newLaunchProjects = useSelector(store => store?.allsectiondata?.newlaunch);
 
-  // Selector for project type pages
+  // Selector for project type pages - also responds to filter changes
+  const [activeQuery, setActiveQuery] = useState(currentConfig.query || '');
+  
+  // Update activeQuery when currentConfig.query changes (e.g., when URL changes)
+  useEffect(() => {
+    if (currentConfig.query && currentConfig.query !== activeQuery) {
+      console.log('Updating activeQuery from currentConfig:', currentConfig.query);
+      setActiveQuery(currentConfig.query);
+    }
+  }, [currentConfig.query]);
+  
   const typeProjects = useSelector(store => {
+    // Use activeQuery which can be updated by filter changes
+    if (activeQuery) {
+      return store?.allsectiondata?.[activeQuery] || [];
+    }
     if (currentConfig.query) {
       return store?.allsectiondata?.[currentConfig.query] || [];
     }
@@ -184,12 +198,19 @@ const GlobalFilterTemplate = ({
   // Get the appropriate project data based on status
   const getProjectData = () => {
     console.log('Getting project data for status:', projectStatus);
+    console.log('Page type:', pageType);
     console.log('Available data:', {
       upcoming: upcomingProjects?.length || 0,
       underconstruction: underConstructionProjects?.length || 0,
       readytomove: readyToMoveProjects?.length || 0,
       newlaunch: newLaunchProjects?.length || 0
     });
+    
+    // For budget pages, always use the projects prop (pre-filtered by GlobalBudgetPrice)
+    if (pageType === 'budget') {
+      console.log('Budget page - using projects from props:', projects?.length || 0);
+      return projects || [];
+    }
     
     // If projects are passed as props, use them first
     if (projects && projects.length > 0) {
@@ -213,6 +234,12 @@ const GlobalFilterTemplate = ({
       }
       
       return projects;
+    }
+    
+    // If activeQuery is set (from filter change), use typeProjects
+    if (activeQuery && typeProjects && typeProjects.length > 0) {
+      console.log('Using typeProjects from activeQuery:', activeQuery, 'count:', typeProjects.length);
+      return typeProjects;
     }
     
     // If no project status (for type/city/budget pages), use typeProjects if available
@@ -360,8 +387,10 @@ const GlobalFilterTemplate = ({
       newQuery = statusToQuery[projectStatus] || 'allupcomingproject';
     }
 
-    if (newQuery && newQuery !== currentConfig.query) {
-      console.log(`Updating query from ${currentConfig.query} to ${newQuery}`);
+    if (newQuery) {
+      console.log(`Updating query from ${activeQuery} to ${newQuery}`);
+      // Update the active query so the selector picks up the new data
+      setActiveQuery(newQuery);
       // Trigger new data fetch with updated query
       throttledGetAllProjects(newQuery, 0);
     } else {
@@ -372,13 +401,35 @@ const GlobalFilterTemplate = ({
     }
   };
 
-  const handleSearch = (resetPagination = true) => {
+  const handleSearch = (searchQueryOrResetPagination = true) => {
+    // Handle both search query string and resetPagination boolean
+    let searchQuery = '';
+    let resetPagination = true;
+    
+    if (typeof searchQueryOrResetPagination === 'string') {
+      searchQuery = searchQueryOrResetPagination.trim();
+      resetPagination = true; // Always reset pagination when searching
+    } else if (typeof searchQueryOrResetPagination === 'boolean') {
+      resetPagination = searchQueryOrResetPagination;
+    }
+    
     const dataToFilter = memoizedProjectData || [];
     console.log('handleSearch - dataToFilter length:', dataToFilter.length);
     console.log('handleSearch - current filters:', filters);
+    console.log('handleSearch - search query:', searchQuery);
     
     let filtered = dataToFilter.filter((item) => {
-      return (
+      // Text search filter - searches across multiple fields
+      const matchesSearchQuery = searchQuery === '' || (
+        (item.projectName && item.projectName.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        (item.city && item.city.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        (item.projectAddress && item.projectAddress.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        (item.type && item.type.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        (item.builder_name && item.builder_name.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        (item.project_discripation && item.project_discripation.toLowerCase().includes(searchQuery.toLowerCase()))
+      );
+      
+      return matchesSearchQuery && (
         (filters.city === "" || (item.city && item.city.toLowerCase().includes(filters.city.toLowerCase()))) &&
         (filters.location === "" || (item.projectAddress && item.projectAddress.toLowerCase().includes(filters.location.toLowerCase()))) &&
         (filters.projectType === "" || (item.type && item.type.toLowerCase().includes(filters.projectType.toLowerCase()))) &&
@@ -488,11 +539,14 @@ const GlobalFilterTemplate = ({
   }, [currentConfig.query, throttledGetAllProjects]);
 
   useEffect(() => {
-    console.log('Project data updated:', projectData, 'for status:', projectStatus);
+    console.log('Project data updated:', projectData?.length, 'for status:', projectStatus, 'pageType:', pageType);
     setDatafromsearch({ [projectStatus]: projectData });
     // Clear filtered results when underlying data changes (from refetch)
-    setFilteredProjects([]);
-  }, [projectData, projectStatus]);
+    // But don't clear for budget pages as they handle their own filtering
+    if (pageType !== 'budget') {
+      setFilteredProjects([]);
+    }
+  }, [projectData, projectStatus, pageType]);
 
   // Force re-render when project status changes
   useEffect(() => {
@@ -503,8 +557,20 @@ const GlobalFilterTemplate = ({
   // Handle location changes
   useEffect(() => {
     console.log('Location changed to:', location.pathname);
-    setFilteredProjects([]); // Clear filtered results when route changes
-  }, [location.pathname]);
+    // Reset activeQuery to the current config's query when location changes
+    setActiveQuery(currentConfig.query || '');
+    // Reset filters when location changes
+    setFilters({
+      city: '',
+      location: '',
+      projectType: '',
+      price: ''
+    });
+    // Don't clear for budget pages as they handle their own filtering
+    if (pageType !== 'budget') {
+      setFilteredProjects([]); // Clear filtered results when route changes
+    }
+  }, [location.pathname, pageType, currentConfig.query]);
 
   // Auto-filter when filters or sort change (but not when data loads)
   useEffect(() => {
@@ -518,17 +584,21 @@ const GlobalFilterTemplate = ({
 
   // Initialize displayed projects when data loads
   useEffect(() => {
+    console.log('Initialize displayed projects effect - memoizedProjectData:', memoizedProjectData?.length, 'pageType:', pageType, 'isLoading:', isLoading);
     if (memoizedProjectData && memoizedProjectData.length > 0) {
+      console.log('Setting displayed projects from memoizedProjectData:', memoizedProjectData.length);
       setCurrentPage(1);
       updateDisplayedProjects(memoizedProjectData, 1);
       setFilteredProjects(memoizedProjectData);
-    } else {
-      // Reset displayed projects when no data
+    } else if (!isLoading) {
+      // Only reset displayed projects when no data AND not loading
+      // This prevents clearing during initial load
+      console.log('Resetting displayed projects - no data and not loading');
       setDisplayedProjects([]);
       setTotalPages(0);
       setFilteredProjects([]);
     }
-  }, [memoizedProjectData]);
+  }, [memoizedProjectData, isLoading, pageType]);
 
   // Cleanup on unmount
   useEffect(() => {

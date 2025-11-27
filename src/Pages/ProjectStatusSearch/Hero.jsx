@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useCallback, useEffect } from 'react';
+import React, { useMemo, useState, useCallback, useEffect, useRef } from 'react';
 import { gradients, tokens } from './DesignTokens';
 
 export default function Hero({ 
@@ -49,9 +49,36 @@ export default function Hero({
     return () => clearInterval(typeInterval);
   }, [placeholderIndex]);
   
+  // Debounce timer ref
+  const debounceTimer = useRef(null);
+  
   const handleSearch = useCallback(() => {
     const q = (text || '').trim();
-    if (onSearch && q) onSearch(q);
+    // Call onSearch with the query (even if empty, to trigger filter-based search)
+    if (onSearch) onSearch(q);
+  }, [text, onSearch]);
+  
+  // Auto-search with debounce when text changes
+  useEffect(() => {
+    // Clear previous timer
+    if (debounceTimer.current) {
+      clearTimeout(debounceTimer.current);
+    }
+    
+    // Set new timer to search after 400ms of no typing
+    debounceTimer.current = setTimeout(() => {
+      if (onSearch) {
+        const q = (text || '').trim();
+        onSearch(q);
+      }
+    }, 400);
+    
+    // Cleanup on unmount
+    return () => {
+      if (debounceTimer.current) {
+        clearTimeout(debounceTimer.current);
+      }
+    };
   }, [text, onSearch]);
   
   // Dynamic headlines based on project status
@@ -141,6 +168,25 @@ export default function Hero({
                         >
                           Search
                         </button>
+                        {/* Clear Filter Button - shows only when filters are active */}
+                        {(text || filters.city || filters.price || filters.projectType) && (
+                          <button 
+                            onClick={() => {
+                              setText('');
+                              onFilterChange?.('city', '');
+                              onFilterChange?.('price', '');
+                              onFilterChange?.('projectType', '');
+                              if (onSearch) onSearch('');
+                            }} 
+                            className="ml-2 px-3 sm:px-4 py-2 rounded-lg text-gray-600 font-semibold shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105 text-sm sm:text-base bg-gray-100 hover:bg-gray-200 border border-gray-300"
+                            title="Clear all filters"
+                          >
+                            <svg className="w-4 h-4 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                            Clear
+                          </button>
+                        )}
                       </div>
                       
                       {/* Quick Filters - Mobile Responsive */}
