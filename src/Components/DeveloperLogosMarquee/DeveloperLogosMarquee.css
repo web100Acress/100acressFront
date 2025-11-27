@@ -1,0 +1,147 @@
+@keyframes marquee-scroll-left {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes marquee-scroll-right {
+  0% {
+    transform: translateX(-50%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.marquee-wrapper {
+  width: 100%;
+  overflow: hidden;
+  padding: 24px 0 12px;
+  background: #fff;
+  position: relative;
+}
+
+/* Left/right blur (fade) overlays */
+.marquee-wrapper::before,
+.marquee-wrapper::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 80px;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.marquee-wrapper::before {
+  left: 0;
+  background: linear-gradient(to right, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0));
+}
+
+.marquee-wrapper::after {
+  right: 0;
+  background: linear-gradient(to left, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0));
+}
+
+.marquee-row {
+  width: 100%;
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+
+.marquee-track {
+  display: flex;
+  width: max-content;
+}
+
+.marquee-track-left {
+  animation: marquee-scroll-left 28s linear infinite;
+}
+
+.marquee-track-right {
+  animation: marquee-scroll-right 28s linear infinite;
+}
+
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+
+.logo-card {
+  flex-shrink: 0;
+  width: 140px;
+  height: 85px;
+  margin: 0 13.5px;
+  padding: 13.5px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  text-decoration: none;
+}
+
+.logo-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.logo-card img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.marquee-footer-text {
+  text-align: center;
+  margin-top: 4px;
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+@media (max-width: 1024px) {
+  .logo-card {
+    width: 130px;
+    height: 80px;
+    margin: 0 10px;
+    padding: 10px;
+  }
+
+  .marquee-track-left,
+  .marquee-track-right {
+    animation-duration: 26s;
+  }
+}
+
+@media (max-width: 768px) {
+  .logo-card {
+    width: 100px;
+    height: 70px;
+    margin: 0 8px;
+    padding: 8px;
+  }
+
+  .marquee-track-left,
+  .marquee-track-right {
+    animation-duration: 24s;
+  }
+}
+
+@media (max-width: 480px) {
+  .logo-card {
+    width: 90px;
+    height: 64px;
+    margin: 0 6px;
+    padding: 6px;
+  }
+
+  .marquee-track-left,
+  .marquee-track-right {
+    animation-duration: 20s;
+  }
+}
