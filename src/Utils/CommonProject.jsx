@@ -155,8 +155,11 @@ const CommonProject = ({
 
             {/* RERA Badge */}
             <div className="absolute top-3 left-3 z-[3]">
-              <div className="bg-white/95 backdrop-blur-sm rounded-lg px-2 py-1 shadow-md border border-gray-200">
-                <span className="text-[10px] font-bold text-red-600 tracking-wide">RERA</span>
+              <div className="bg-white/95 backdrop-blur-sm rounded-full px-2 py-1 shadow-md border border-gray-200 flex items-center gap-1">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="#dc2626" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                </svg>
+                <span className="text-[9px] font-bold text-red-600 tracking-wide">RERA</span>
               </div>
             </div>
 
