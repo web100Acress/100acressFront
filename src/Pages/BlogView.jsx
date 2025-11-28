@@ -437,20 +437,52 @@ const BlogView = () => {
           effectiveId = getQueryId();
           console.log('[BlogView] Using slug with query id:', { slug: effectiveSlug, id: effectiveId });
         }
-        // Check if we have only slug, need to resolve ID
+        // Check if we have only slug, fetch blog directly by slug
         else if (slug && !id) {
           effectiveSlug = slug;
           try {
-            const slugResp = await api.get(`blog/slug/${encodeURIComponent(slug)}`);
-            if (slugResp?.data?.data?.exists && slugResp?.data?.data?.id) {
-              effectiveId = slugResp.data.data.id;
-              console.log('[BlogView] Resolved ID from slug:', { slug: effectiveSlug, id: effectiveId });
+            // Use the new /blog/by-slug endpoint to fetch blog directly
+            const blogResp = await api.get(`blog/by-slug/${encodeURIComponent(slug)}`);
+            if (blogResp?.data?.data?._id) {
+              effectiveId = blogResp.data.data._id;
+              console.log('[BlogView] Fetched blog directly by slug:', { slug: effectiveSlug, id: effectiveId });
+              // We have the blog data, use it directly
+              const normalized = normalizeBlog(blogResp.data.data);
+              setData(normalized);
+              setViews(normalized.views || 0);
+              
+              // Cache the blog data
+              const cacheKey = `blog_${effectiveId}`;
+              blogCache.set(cacheKey, {
+                data: normalized,
+                timestamp: Date.now()
+              });
+              
+              // Fetch engagement data
+              try {
+                const eg = await api.get(`blog/${normalized._id}/engagement`);
+                const e = eg?.data?.data || {};
+                setLikes(e.likes || 0);
+                setShares(e.shares || 0);
+                setCommentsCount(e.commentsCount || 0);
+                setComments(Array.isArray(e.comments) ? e.comments.slice(-5).reverse() : []);
+                if (typeof e.views === 'number') {
+                  setViews(e.views);
+                }
+                try {
+                  const key = likeKeyFor(normalized._id);
+                  const flag = window.localStorage.getItem(key);
+                  setLiked(flag === '1');
+                } catch (_) {}
+              } catch (_) {}
+              
+              return;
             } else {
               setLoadError('Blog not found');
               return;
             }
           } catch (e) {
-            console.warn('[BlogView] Failed to resolve ID from slug:', e?.message || e);
+            console.warn('[BlogView] Failed to fetch blog by slug:', e?.message || e);
             setLoadError('Blog not found');
             return;
           }
