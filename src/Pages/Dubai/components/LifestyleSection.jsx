@@ -43,7 +43,7 @@ export const LifestyleSection = () => {
                 <p className="text-lg text-gray-300">
                   Wake up to breathtaking vistas of the world's most impressive skyline
                 </p>
-                <Button variant="outline" className="border-gold text-gold hover:bg-gold hover:text-black group">
+                <Button variant="outline" className="border-gold text-gold  hover:text-black group">
                   Explore Locations
                   <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                 </Button>
