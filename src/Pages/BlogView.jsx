@@ -263,6 +263,7 @@ const BlogView = () => {
       return "";
     }
   };
+// ak din ham esko hta ke testing krenege //////////////////////////////////////////////////////////////////
 
   // Navigate to blog detail (used by Recent Posts)
   const handleBlogView = (title, _id, postSlug) => {
@@ -506,21 +507,8 @@ const BlogView = () => {
                 effectiveId = slugResp.data.data.id;
                 console.log('[BlogView] Resolved ID from slug (in id param):', { slug: effectiveSlug, id: effectiveId });
               } else {
-                // Fallback: try direct search by title/content
-                try {
-                  const searchResp = await api.get(`blog/view?search=${encodeURIComponent(id)}&limit=1`);
-                  if (searchResp?.data?.data?.length > 0) {
-                    effectiveId = searchResp.data.data[0]._id;
-                    console.log('[BlogView] Found blog via search fallback:', { searchTerm: id, id: effectiveId });
-                  } else {
-                    setLoadError('Blog not found');
-                    return;
-                  }
-                } catch (searchError) {
-                  console.warn('[BlogView] Search fallback also failed:', searchError);
-                  setLoadError('Blog not found');
-                  return;
-                }
+                setLoadError('Blog not found');
+                return;
               }
             } catch (e) {
               console.warn('[BlogView] Failed to resolve ID from slug (in id param):', e?.message || e);

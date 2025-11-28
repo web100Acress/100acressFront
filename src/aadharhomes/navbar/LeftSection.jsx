@@ -640,30 +640,84 @@ export default function LeftSection({
         </Button>
       </Link>
       {/* Dubai (highlighted button) */}
-      <Link to="/united-arab-emirates/">
-        <Button
-          variant="solid"
-          bg="#B8860B"
+      <Box
+        as={motion.div}
+        position="relative"
+        display={{ base: "none", md: "inline-block" }}
+        ml={{ base: 0, md: 1.5 }}
+        zIndex={2}
+        initial={{ opacity: 0, y: -6, scale: 0.95 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+        whileHover={{ y: -1, scale: 1.02 }}
+      >
+        <Box
+          as={motion.div}
+          position="absolute"
+          top="-10px"
+          right="-6px"
+          px={2.5}
+          py={0.5}
+          bg="#E53935"
           color="white"
-          _hover={{ bg: '#A0750A' }}
-          _active={{ bg: '#8B6508' }}
-          px={2}
-          py={0}
-          height="16px"
-          lineHeight="16px"
-          fontSize="16px"
-          fontWeight="800"
-          borderRadius="md"
-          boxShadow="0 6px 16px rgba(184,134,11,0.25)"
-          ml={{ base: 0, md: 1 }}
-          display={{ base: "none", md: "inline-flex" }}
+          fontSize="8px"
+          fontWeight="600"
+          letterSpacing="0.7px"
+          borderRadius="999px"
+          textTransform="uppercase"
+          boxShadow="0 6px 16px rgba(229,57,53,0.5)"
+          zIndex={3}
+          display="flex"
           alignItems="center"
-          gap={1}
+          justifyContent="center"
+          initial={{ opacity: 0, y: -4, scale: 0.9 }}
+          animate={{ opacity: 1, y: 0, scale: [0.9, 1.06, 1] }}
+          transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
         >
-          <Box as="img" src="/icons/noun-burj-khalifa-3945.svg" width="16px" height="16px" alt="Burj Khalifa" style={{ filter: 'brightness(0) invert(1)' }} />
-          DUBAI
-        </Button>
-      </Link>
+          NEW
+        </Box>
+        <Link to="/united-arab-emirates/">
+          <Button
+            variant="solid"
+            bgGradient="linear(to-r, #D4A235, #B8860B)"
+            color="white"
+            _hover={{ bgGradient: "linear(to-r, #D9AE47, #C39317)", boxShadow: "0 10px 26px rgba(0,0,0,0.22)", transform: "translateY(-1px)" }}
+            _active={{ bgGradient: "linear(to-r, #B8860B, #8B6508)", boxShadow: "0 6px 18px rgba(0,0,0,0.3)", transform: "translateY(0)" }}
+            px={4}
+            py={1.5}
+            height="24px"
+            lineHeight="1"
+            fontSize="13px"
+            fontWeight="800"
+            borderRadius="999px"
+            borderWidth="1px"
+            borderColor="rgba(255,255,255,0.9)"
+            boxShadow="0 8px 22px rgba(0,0,0,0.2)"
+            display={{ base: "none", md: "inline-flex" }}
+            alignItems="center"
+            justifyContent="center"
+            position="relative"
+            overflow="hidden"
+          >
+            <Box
+              as={motion.div}
+              position="absolute"
+              top="0"
+              left="0"
+              right="0"
+              bottom="0"
+              rounded="999px"
+              bgGradient="linear(to-r, rgba(229,57,53,0) 0%, rgba(229,57,53,0.6) 50%, rgba(229,57,53,0) 100%)"
+              initial={{ x: "110%" }}
+              animate={{ x: "-110%" }}
+              transition={{ duration: 3, ease: "linear", repeat: Infinity }}
+              style={{ transform: "translateX(50%)" }}
+              zIndex={3}
+            />
+            <Box position="relative" zIndex={4}>DUBAI</Box>
+          </Button>
+        </Link>
+      </Box>
      
     </Flex>
   );

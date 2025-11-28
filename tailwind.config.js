@@ -106,6 +106,10 @@ module.exports = {
           '0%': { transform: 'translateX(-100%)' },
           '100%': { transform: 'translateX(100%)' },
         },
+        marquee: {
+          '0%': { transform: 'translateX(0%)' },
+          '100%': { transform: 'translateX(-50%)' },
+        },
       },
       animation: {
         fadeInLeft: 'fadeInLeft 2s ease-in-out', 
@@ -114,6 +118,7 @@ module.exports = {
         'popper-left': 'popper-left 1.5s ease-out forwards',
         'popper-right': 'popper-right 1.5s ease-out forwards',
         shine: 'shine 0.8s ease-in-out',
+        marquee: 'marquee 40s linear infinite',
       },
     },
   },
