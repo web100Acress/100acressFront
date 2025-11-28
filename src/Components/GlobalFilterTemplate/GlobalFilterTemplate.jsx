@@ -736,6 +736,7 @@ const GlobalFilterTemplate = ({
         onFilterChange={handleFilterChange}
         filters={filters}
         projectStatus={projectStatus}
+        pageType={pageType}
       />
 
       {/* Section Separator */}
