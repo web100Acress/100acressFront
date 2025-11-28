@@ -60,6 +60,7 @@ const IndustrialPlotsGurgaon = () => {
   return (
     <GlobalFilterTemplate
       key={location.pathname}
+      pageType="type"
       config={customConfig}
       projects={projects}
       isLoading={isLoading}

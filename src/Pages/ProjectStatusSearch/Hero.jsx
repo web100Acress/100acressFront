@@ -9,7 +9,8 @@ export default function Hero({
   subtitle = 'Premium projects crafted with quality, sustainability, and exceptional after‑sales service.',
   onFilterChange,
   filters = {},
-  projectStatus = 'upcoming'
+  projectStatus = 'upcoming',
+  pageType = 'status' // 'status', 'city', 'budget', or 'type'
 }) {
   // Enhanced background with city skyline and gradient overlay
   const bgStyle = useMemo(() => ({
@@ -191,54 +192,63 @@ export default function Hero({
                       
                       {/* Quick Filters - Mobile Responsive */}
                       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
-                        <select
-                          className="px-3 py-2 rounded-lg border border-gray-200 bg-white text-gray-700 font-medium shadow-sm hover:shadow-md transition-all duration-200 text-sm"
-                          value={filters.city || ''}
-                          onChange={(e) => onFilterChange?.('city', e.target.value)}
-                        >
-                          <option value="">All Cities</option>
-                          <option value="Gurugram">Gurugram</option>
-                          <option value="Noida">Noida</option>
-                          <option value="Delhi">Delhi</option>
-                          <option value="Goa">Goa</option>
-                          <option value="Ayodhya">Ayodhya</option>
-                          <option value="Mumbai">Mumbai</option>
-                          <option value="Panchkula">Panchkula</option>
-                          <option value="Kasauli">Kasauli</option>
-                          <option value="Dubai">Dubai</option>
-                        </select>
+                        {/* City Filter - Hidden on city pages */}
+                        {pageType !== 'city' && (
+                          <select
+                            className="px-3 py-2 rounded-lg border border-gray-200 bg-white text-gray-700 font-medium shadow-sm hover:shadow-md transition-all duration-200 text-sm"
+                            value={filters.city || ''}
+                            onChange={(e) => onFilterChange?.('city', e.target.value)}
+                          >
+                            <option value="">All Cities</option>
+                            <option value="Gurugram">Gurugram</option>
+                            <option value="Noida">Noida</option>
+                            <option value="Delhi">Delhi</option>
+                            <option value="Goa">Goa</option>
+                            <option value="Ayodhya">Ayodhya</option>
+                            <option value="Mumbai">Mumbai</option>
+                            <option value="Panchkula">Panchkula</option>
+                            <option value="Kasauli">Kasauli</option>
+                            <option value="Dubai">Dubai</option>
+                          </select>
+                        )}
                         
-                        <select
-                          className="px-3 py-2 rounded-lg border border-gray-200 bg-white text-gray-700 font-medium shadow-sm hover:shadow-md transition-all duration-200 text-sm"
-                          value={filters.price || ''}
-                          onChange={(e) => onFilterChange?.('price', e.target.value)}
-                        >
-                          <option value="">All Prices</option>
-                          <option value="0,1">Under 1 Cr</option>
-                          <option value="1,5">1 to 5 Cr</option>
-                          <option value="5,10">5 to 10 Cr</option>
-                          <option value="10,20">10 to 20 Cr</option>
-                          <option value="20,50">20 to 50 Cr</option>
-                          <option value="50,Infinity">Above 50 Cr</option>
-                        </select>
+                        {/* Budget/Price Filter - Hidden on budget pages */}
+                        {pageType !== 'budget' && (
+                          <select
+                            className="px-3 py-2 rounded-lg border border-gray-200 bg-white text-gray-700 font-medium shadow-sm hover:shadow-md transition-all duration-200 text-sm"
+                            value={filters.price || ''}
+                            onChange={(e) => onFilterChange?.('price', e.target.value)}
+                          >
+                            <option value="">All Prices</option>
+                            <option value="0,1">Under 1 Cr</option>
+                            <option value="1,5">1 to 5 Cr</option>
+                            <option value="5,10">5 to 10 Cr</option>
+                            <option value="10,20">10 to 20 Cr</option>
+                            <option value="20,50">20 to 50 Cr</option>
+                            <option value="50,Infinity">Above 50 Cr</option>
+                          </select>
+                        )}
                         
-                        <select
-                          className="px-3 py-2 rounded-lg border border-gray-200 bg-white text-gray-700 font-medium shadow-sm hover:shadow-md transition-all duration-200 text-sm sm:col-span-2 lg:col-span-1"
-                          value={filters.projectType || ''}
-                          onChange={(e) => onFilterChange?.('projectType', e.target.value)}
-                        >
-                          <option value="">All Types</option>
-                          <option value="Commercial Property">Commercial Property</option>
-                          <option value="Residential Flats">Residential Flats</option>
-                          <option value="SCO Plots">SCO Plots</option>
-                          <option value="Deen Dayal Plots">Deen Dayal Plots</option>
-                          <option value="Residential Plots">Residential Plots</option>
-                          <option value="Independent Floors">Independent Floors</option>
-                          <option value="Builder Floors">Builder Floors</option>
-                          <option value="Affordable Homes">Affordable Homes</option>
-                          <option value="Villas">Villas</option>
-                          <option value="Farm Houses">Farm Houses</option>
-                        </select>
+                        {/* Project Type Filter - Hidden on type pages */}
+                        {pageType !== 'type' && (
+                          <select
+                            className="px-3 py-2 rounded-lg border border-gray-200 bg-white text-gray-700 font-medium shadow-sm hover:shadow-md transition-all duration-200 text-sm sm:col-span-2 lg:col-span-1"
+                            value={filters.projectType || ''}
+                            onChange={(e) => onFilterChange?.('projectType', e.target.value)}
+                          >
+                            <option value="">All Types</option>
+                            <option value="Commercial Property">Commercial Property</option>
+                            <option value="Residential Flats">Residential Flats</option>
+                            <option value="SCO Plots">SCO Plots</option>
+                            <option value="Deen Dayal Plots">Deen Dayal Plots</option>
+                            <option value="Residential Plots">Residential Plots</option>
+                            <option value="Independent Floors">Independent Floors</option>
+                            <option value="Builder Floors">Builder Floors</option>
+                            <option value="Affordable Homes">Affordable Homes</option>
+                            <option value="Villas">Villas</option>
+                            <option value="Farm Houses">Farm Houses</option>
+                          </select>
+                        )}
                       </div>
                     </div>
                   </div>

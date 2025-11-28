@@ -515,6 +515,7 @@ const ProjectStatusSearch = () => {
         onFilterChange={handleFilterChange}
         filters={filters}
         projectStatus={projectStatus}
+        pageType="status"
       />
 
       {/* Section Separator */}
