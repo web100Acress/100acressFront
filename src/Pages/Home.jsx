@@ -564,7 +564,7 @@ const Home = () => {
         </aside>
 
         {/* Main content */}
-        <div className="relative z-0 md:col-start-1 md:row-start-1">
+        <div className="relative z-0 md:col-start-1 md:row-start-1 max-w-[1000px]">
           {TrendingProjects.length === 0 ? <CustomSkeleton /> : (
             <div data-aos="fade-up"
               data-aos-duration="1000" className="py-0 mt-3 w-full">
