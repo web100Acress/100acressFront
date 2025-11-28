@@ -22,8 +22,7 @@ const Bptp = () => {
         </title>
         <meta
           name="description"
-          content="Explore premium BPTP plots in Gurugram with 100acress. Secure your investment in prime real estate today and benefit from high returns. Contact us now!
-"
+          content="Explore premium BPTP plots in Gurugram with 100acress. Secure your investment in prime real estate today and benefit from high returns. Contact us now!"
         />
         <meta property="og:title" content="BPTP Plots in Gurugram – Prime Land Investment Opportunities" />
         <meta property="og:site_name" content="100acress" />
