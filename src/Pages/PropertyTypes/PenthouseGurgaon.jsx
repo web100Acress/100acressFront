@@ -73,7 +73,6 @@ const PenthouseGurgaon = () => {
   return (
     <GlobalFilterTemplate
       key={location.pathname}
-      pageType="type"
       config={customConfig}
       projects={filteredProjects.length > 0 ? filteredProjects : projects}
       isLoading={isLoading}

@@ -249,7 +249,23 @@ export default function Hero({
                             <option value="Farm Houses">Farm Houses</option>
                           </select>
                         )}
+                        
+                        {/* Project Status Filter - Hidden on status pages */}
+                        {pageType !== 'status' && (
+                          <select
+                            className="px-3 py-2 rounded-lg border border-gray-200 bg-white text-gray-700 font-medium shadow-sm hover:shadow-md transition-all duration-200 text-sm sm:col-span-2 lg:col-span-1"
+                            value={filters.projectStatus || ''}
+                            onChange={(e) => onFilterChange?.('projectStatus', e.target.value)}
+                          >
+                            <option value="">All Status</option>
+                            <option value="upcoming">Upcoming</option>
+                            <option value="newlaunch">New Launch</option>
+                            <option value="underconstruction">Under Construction</option>
+                            <option value="readytomove">Ready to Move</option>
+                          </select>
+                        )}
                       </div>
+                    
                     </div>
                   </div>
                 </div>
