@@ -9,12 +9,15 @@ const PricingSection = ({ projectName, minPrice, maxPrice, bhkDetails = [], paym
   console.log('hasBhkDetails:', hasBhkDetails, 'hasPaymentPlan:', hasPaymentPlan);
   // Phone number logic: backend number determines footer display
   const getFooterPhoneNumbers = () => {
-    const backendNumber = projectViewDetails?.mobileNumber;
+    const backendNumber = Number(projectViewDetails?.mobileNumber);
     
     if (backendNumber === 9811750130) {
       return { dialNumber: '8527134491', displayNumber: '+91 8527-134-491' };
     } else if (backendNumber === 9355990063) {
       return { dialNumber: '9315375335', displayNumber: '+91 9315-375-335' };
+
+     } else if (backendNumber === 9811750740) {
+      return { dialNumber: '9811750130', displayNumber: '+91 9811-750-130' };
     } else {
       // Fallback to default
       return { dialNumber: '8527134491', displayNumber: '+91 8527-134-491' };

@@ -24,6 +24,7 @@ const Projects = () => {
   const [filterProjectOverview, setFilterProjectOverview] = useState("");
   const [filterYoutubeVideo, setFilterYoutubeVideo] = useState("");
   const [filterBrochure, setFilterBrochure] = useState("");
+  const [filterSpecificNumber, setFilterSpecificNumber] = useState("");
 
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
@@ -322,6 +323,31 @@ const Projects = () => {
     ];
   }, [viewAll]);
 
+  // Specific phone numbers filter options with counts
+  const specificPhoneNumbers = ['9811750130', '9355990063', '9811750740', '8500900100', '9315375335'];
+  const specificNumberOptions = useMemo(() => {
+    if (!viewAll || viewAll.length === 0) {
+      return [];
+    }
+
+    const counts = {};
+    specificPhoneNumbers.forEach(num => {
+      counts[num] = 0;
+    });
+
+    viewAll.forEach(project => {
+      const mobileNumber = (project?.mobileNumber ?? "").toString().trim();
+      if (specificPhoneNumbers.includes(mobileNumber)) {
+        counts[mobileNumber]++;
+      }
+    });
+
+    return specificPhoneNumbers.map(num => ({
+      value: num,
+      label: `${num} (${counts[num]})`
+    }));
+  }, [viewAll]);
+
   // Apply combined filters
   const filteredProjects = viewAll.filter((item) => {
     const searchTermLower = (searchTerm || "").toLowerCase();
@@ -399,7 +425,11 @@ const Projects = () => {
       }
     }
 
-    return matchesSearch && matchesType && matchesCity && matchesAddress && matchesBuilder && matchesStatus && matchesState && matchesMobile && matchesPayment && matchesOverview && matchesYoutubeVideo && matchesBrochure;
+    // Specific phone number filtering logic
+    const itemMobileNumber = (item?.mobileNumber ?? "").toString().trim();
+    const matchesSpecificNumber = !filterSpecificNumber || itemMobileNumber === filterSpecificNumber;
+
+    return matchesSearch && matchesType && matchesCity && matchesAddress && matchesBuilder && matchesStatus && matchesState && matchesMobile && matchesPayment && matchesOverview && matchesYoutubeVideo && matchesBrochure && matchesSpecificNumber;
   });
   const indexOfLastRow = currentPage * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
@@ -467,6 +497,7 @@ const Projects = () => {
     setFilterProjectOverview("");
     setFilterYoutubeVideo("");
     setFilterBrochure("");
+    setFilterSpecificNumber("");
     setCurrentPage(1);
   };
 
@@ -591,6 +622,17 @@ const Projects = () => {
               <option value="">Brochure: All</option>
               {brochureOptions.map(opt => (
                 <option key={opt.value} value={opt.value}>Brochure: {opt.label}</option>
+              ))}
+            </select>
+
+            <select
+              className="filter-select"
+              value={filterSpecificNumber}
+              onChange={(e) => { setFilterSpecificNumber(e.target.value); setCurrentPage(1); }}
+            >
+              <option value="">Specific Number: All</option>
+              {specificNumberOptions.map(opt => (
+                <option key={opt.value} value={opt.value}>{opt.label}</option>
               ))}
             </select>
           </div>
