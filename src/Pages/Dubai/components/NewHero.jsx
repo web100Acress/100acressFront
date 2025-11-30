@@ -18,6 +18,8 @@ export const NewHero = () => {
   // Calculate blur based on scroll position
   const blurAmount = Math.min(scrollY / 300, 10); // Max blur of 10px after 300px scroll
   const opacity = Math.max(1 - scrollY / 500, 0.3); // Fade to 30% opacity
+  const textOpacity = Math.max(1 - scrollY / 200, 0); // Hide text completely after 200px scroll
+  const textTransform = `translateY(${Math.min(scrollY * 0.5, 100)}px)`; // Move text down on scroll
 
   return (
     <section 
@@ -46,7 +48,13 @@ export const NewHero = () => {
 
       {/* Hero Content */}
       <div className="relative z-10 flex items-center justify-center h-full px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-4xl mx-auto">
+        <div 
+          className="text-center max-w-4xl mx-auto transition-all duration-300"
+          style={{
+            opacity: textOpacity,
+            transform: textTransform,
+          }}
+        >
           {/* Tagline */}
           <div className="mb-6">
             <span className="inline-block text-gold text-sm sm:text-base font-medium tracking-wider uppercase border border-gold/30 px-4 py-2 rounded-full backdrop-blur-sm bg-black/20">
@@ -75,17 +83,24 @@ export const NewHero = () => {
             </button>
             </Link>
 
-            <Link to="/dubai/contact/">
-              <button className="px-8 py-4 border-2 border-white text-white font-semibold rounded-lg hover:bg-[#d4af37]  hover:text-black transition-all duration-300">
-                Contact Us
-              </button>
-            </Link>
+            <button 
+              onClick={() => window.open("https://wa.me/919811750740?text=Hi! I'm interested in Dubai properties. Can you help me?", "_blank")}
+              className="px-8 py-4 border-2 border-white text-white font-semibold rounded-lg hover:bg-[#d4af37]  hover:text-black transition-all duration-300"
+            >
+              Contact Us
+            </button>
           </div>
         </div>
       </div>
 
       {/* Scroll Indicator */}
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10">
+      <div 
+        className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10 transition-all duration-300"
+        style={{
+          opacity: textOpacity,
+          transform: `translateX(-50%) translateY(${Math.min(scrollY * 0.3, 50)}px)`,
+        }}
+      >
         <div className="flex flex-col items-center text-white/70">
           <span className="text-sm mb-2">Scroll Down</span>
           <div className="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center">

@@ -3,8 +3,7 @@ import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { PropertyCard } from "./components/PropertyCard";
 import { Header } from "./components/Header";
-import { Footer } from "./components/Footer";
-import { WhatsAppButton } from "./components/WhatsAppButton";
+import { Copyright } from "./components/Copyright";
 import { Button } from "../../Components/ui/button";
 import { Filter, X, ChevronDown, Search } from "lucide-react";
 import Api_service from "../../Redux/utils/Api_Service";
@@ -409,8 +408,7 @@ const ProjectsInDubaiContent = () => {
         </div>
       </section>
 
-      <Footer />
-      <WhatsAppButton />
+      <Copyright />
     </div>
   );
 };

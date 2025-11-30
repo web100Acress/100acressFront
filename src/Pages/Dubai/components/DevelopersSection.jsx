@@ -68,8 +68,12 @@ export const DevelopersSection = () => {
 
   return (
     <section id="developers" className="py-24 relative overflow-hidden border-y border-white/10">
-      {/* Gradient Background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black via-gray-dark to-black" />
+      {/* Blurry Video Background Effect */}
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/20 to-transparent">
+        <div className="absolute inset-0 backdrop-blur-sm">
+          <div className="h-full w-full bg-gradient-to-br from-gold/5 via-transparent to-gold/5 animate-pulse" />
+        </div>
+      </div>
       
       <div className="container relative">
         {/* Section Header */}

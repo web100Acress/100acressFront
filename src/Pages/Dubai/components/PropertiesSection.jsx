@@ -8,7 +8,7 @@ import Api_service from "../../../Redux/utils/Api_Service";
 import { useDubai } from "../context/DubaiContext";
 
 export const PropertiesSection = () => {
-  const { getProjectbyState } = Api_service();
+  const { getAllUAEProjects } = Api_service();
   const dubaiProjects = useSelector(store => store?.stateproject?.dubai || []);
   const { selectedEmirate } = useDubai();
   const [isLoading, setIsLoading] = useState(true);
@@ -16,7 +16,7 @@ export const PropertiesSection = () => {
   useEffect(() => {
     if (!Array.isArray(dubaiProjects) || dubaiProjects.length === 0) {
       setIsLoading(true);
-      getProjectbyState("Dubai", 0);
+      getAllUAEProjects();
     } else {
       setIsLoading(false);
     }
@@ -28,18 +28,11 @@ export const PropertiesSection = () => {
     }
   }, [dubaiProjects]);
 
-  // Filter projects by emirate
-  const filteredProjects = dubaiProjects.filter((project) => {
-    // Filter by emirate (check city or location field)
-    const projectLocation = (project.city || project.location || "").toLowerCase();
-    const emirateMatch = selectedEmirate === "Dubai" || 
-                        projectLocation.includes(selectedEmirate.toLowerCase());
-    
-    return emirateMatch;
-  });
+  // Show all projects without emirate filtering
+  const filteredProjects = dubaiProjects;
 
   // Map API data to PropertyCard format
-  const properties = filteredProjects.slice(0, 6).map((project) => {
+  const properties = filteredProjects.map((project) => {
     // Create a URL-friendly slug from project name
     const nameSlug = project.projectName
       ?.toLowerCase()
@@ -100,11 +93,11 @@ export const PropertiesSection = () => {
 
   return (
     <section id="properties" className="py-24 relative overflow-hidden">
-      {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-5">
-        <div className="h-full w-full" style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3z' fill='%23d4af37' fill-opacity='1' fill-rule='evenodd'/%3E%3C/svg%3E")`,
-        }} />
+      {/* Blurry Video Background Effect */}
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/20 to-transparent">
+        <div className="absolute inset-0 backdrop-blur-sm">
+          <div className="h-full w-full bg-gradient-to-br from-gold/5 via-transparent to-gold/5 animate-pulse" />
+        </div>
       </div>
 
       <div className="container relative">
@@ -146,18 +139,6 @@ export const PropertiesSection = () => {
                 <PropertyCard {...property} />
               </div>
             ))}
-          </div>
-        )}
-
-        {/* View All Button */}
-        {!isLoading && properties.length > 0 && (
-          <div className="text-center">
-            <Link to="/projects-in-dubai">
-              <Button size="lg" className="gradient-gold text-black hover:shadow-gold group">
-                View All Properties
-                <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-              </Button>
-            </Link>
           </div>
         )}
       </div>
