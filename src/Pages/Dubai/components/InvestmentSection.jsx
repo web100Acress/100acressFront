@@ -38,8 +38,12 @@ export const InvestmentSection = () => {
 
   return (
     <section id="insights" className="py-24 relative overflow-hidden">
-      {/* Background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-gray-dark to-black" />
+      {/* Blurry Video Background Effect */}
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/20 to-transparent">
+        <div className="absolute inset-0 backdrop-blur-sm">
+          <div className="h-full w-full bg-gradient-to-br from-gold/5 via-transparent to-gold/5 animate-pulse" />
+        </div>
+      </div>
       
       <div className="container relative">
         {/* Section Header */}
@@ -111,7 +115,11 @@ export const InvestmentSection = () => {
           </div>
 
           <div className="text-center">
-            <Button size="lg" className="gradient-gold text-black hover:shadow-gold">
+            <Button 
+              size="lg" 
+              className="gradient-gold text-black hover:shadow-gold"
+              onClick={() => window.open("https://wa.me/919811750740?text=Hi! I'm interested in getting the full Dubai market report. Can you send it to me?", "_blank")}
+            >
               Download Full Market Report
             </Button>
           </div>

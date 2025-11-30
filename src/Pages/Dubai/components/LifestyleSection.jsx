@@ -6,8 +6,12 @@ import lifestyle2 from "../assets/lifestyle-2.jpg";
 export const LifestyleSection = () => {
   return (
     <section id="lifestyle" className="py-24 relative overflow-hidden">
-      {/* Background Gradient */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black" />
+      {/* Blurry Video Background Effect */}
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/20 to-transparent">
+        <div className="absolute inset-0 backdrop-blur-sm">
+          <div className="h-full w-full bg-gradient-to-br from-gold/5 via-transparent to-gold/5 animate-pulse" />
+        </div>
+      </div>
 
       <div className="container relative">
         {/* Section Header */}
@@ -43,7 +47,11 @@ export const LifestyleSection = () => {
                 <p className="text-lg text-gray-300">
                   Wake up to breathtaking vistas of the world's most impressive skyline
                 </p>
-                <Button variant="outline" className="border-gold text-gold  hover:text-black group">
+                <Button 
+                  variant="outline" 
+                  className="border-gold text-gold  hover:text-black group"
+                  onClick={() => window.open("https://wa.me/919811750740?text=Hi! I'm interested in exploring Dubai locations with iconic skyline views. Can you help me?", "_blank")}
+                >
                   Explore Locations
                   <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                 </Button>
