@@ -9,7 +9,7 @@ const PricingSection = ({ projectName, minPrice, maxPrice, bhkDetails = [], paym
   console.log('hasBhkDetails:', hasBhkDetails, 'hasPaymentPlan:', hasPaymentPlan);
   // Phone number logic: backend number determines footer display
   const getFooterPhoneNumbers = () => {
-    const backendNumber = projectViewDetails?.mobileNumber;
+    const backendNumber = Number(projectViewDetails?.mobileNumber);
     
     if (backendNumber === 9811750130) {
       return { dialNumber: '8527134491', displayNumber: '+91 8527-134-491' };
