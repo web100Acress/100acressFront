@@ -203,7 +203,6 @@ import ProjectRouter from "./Pages/ProjectRouter";
 import DubaiPage from "./Pages/Dubai/DubaiPage";
 import ProjectsInDubai from "./Pages/Dubai/ProjectsInDubai";
 import InsightsPage from "./Pages/Dubai/InsightsPage";
-import DubaiContactPage from "./Pages/Dubai/ContactPage";
 import DevelopersPage from "./Pages/Dubai/DevelopersPage";
 
 // Property Types Pages
@@ -408,7 +407,6 @@ function App() {
                       <Route path="/projects-in-delhi/" element={<CityProjectsGlobal />} />
                       <Route path="/projects-in-dubai" element={<ProjectsInDubai />} />
                       <Route path="/dubai/insights" element={<InsightsPage />} />
-                      <Route path="/dubai/contact" element={<DubaiContactPage />} />
                       <Route path="/dubai/developers" element={<DevelopersPage />} />
                       <Route path="/united-arab-emirates/" element={<DubaiPage />} />
                        <Route path="/projects-in-goa/" element={<CityProjectsGlobal />} />

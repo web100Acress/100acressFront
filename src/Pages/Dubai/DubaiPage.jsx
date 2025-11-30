@@ -6,8 +6,7 @@ import { DevelopersSection } from "./components/DevelopersSection";
 import { LifestyleSection } from "./components/LifestyleSection";
 import { InvestmentSection } from "./components/InvestmentSection";
 import { ContactSection } from "./components/ContactSection";
-import { Footer } from "./components/Footer";
-import { WhatsAppButton } from "./components/WhatsAppButton";
+import { Copyright } from "./components/Copyright";
 import DubaiBottomNav from "./components/DubaiBottomNav";
 import { DubaiProvider, useDubai } from "./context/DubaiContext";
 import { ThemeProvider } from "./context/ThemeContext";
@@ -29,16 +28,15 @@ const DubaiPageContent = () => {
       {/* Spacer to push content below the fixed hero */}
       <div className="h-screen"></div>
       {/* Content sections that will scroll over the fixed hero */}
-      <div className="relative z-10 bg-black">
+      <div className="relative z-10">
         <PropertiesSection />
         <DevelopersSection />
         <LifestyleSection />
         <InvestmentSection />
         <ContactSection />
-        <Footer />
       </div>
-      <WhatsAppButton />
       <DubaiBottomNav />
+      <Copyright />
     </div>
   );
 };

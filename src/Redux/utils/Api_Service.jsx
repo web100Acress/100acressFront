@@ -291,6 +291,13 @@ const Api_service = () => {
       dispatch(alwar(ProjectbyState));
     } else if (query === 'Pune') {
       dispatch(pune(ProjectbyState));
+    } else if (query.includes(',') || query.includes(';')) {
+      // Handle multiple emirates separated by comma or semicolon
+      const emirates = query.split(/[,;]/).map(e => e.trim()).filter(e => e);
+      dispatch(dubai(ProjectbyState)); // Dispatch combined results to dubai store
+    } else {
+      // Fallback for empty query or unrecognized cities - dispatch to dubai store
+      dispatch(dubai(ProjectbyState));
     }
 
   } catch (error) {
@@ -298,7 +305,24 @@ const Api_service = () => {
   }
 };
 
-  
+  const getAllUAEProjects = async () => {
+    try {
+      const response = await api.get(`${API_ROUTES.projectsBase()}/projectsearch?limit=100`);
+      const allProjects = response.data.data;
+      
+      // Filter projects that are from UAE emirates
+      const uaeEmirates = ["Dubai", "Abu Dhabi", "Sharjah", "Ajman", "Ras Al Khaimah", "Fujairah", "Umm Al Quwain"];
+      const uaeProjects = allProjects.filter(project => {
+        const city = (project.city || "").toLowerCase();
+        return uaeEmirates.some(emirate => city.includes(emirate.toLowerCase()));
+      });
+      
+      dispatch(dubai(uaeProjects));
+      console.log(`Fetched ${uaeProjects.length} UAE projects out of ${allProjects.length} total projects`);
+    } catch (error) {
+      console.error("Error fetching UAE projects:", error);
+    }
+  };
 
   const getAllProjects= async(query ,limit )=>{
 
@@ -849,6 +873,7 @@ const Api_service = () => {
     getProjectIndelhi,
     getProjectfind,
     getProjectbyState,
+    getAllUAEProjects,
     getResaleProperties,
     getAllProjects,
     getProjectOnStatus,

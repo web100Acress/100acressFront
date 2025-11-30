@@ -43,11 +43,8 @@ export const Header = () => {
   }, [isEmiratesDropdownOpen]);
 
   const navLinks = [
-    { label: "Properties", href: "/projects-in-dubai" },
-    { label: "Developers", href: "/dubai/developers" },
-    { label: "Insights", href: "/dubai/insights" },
-    { label: "Contact", href: "/dubai/contact" },
-    { label: "India", href: "/" },
+
+
   ];
 
   // Smooth scroll function
@@ -135,7 +132,14 @@ export const Header = () => {
             <a
               key={link.href}
               href={link.href}
-              onClick={(e) => handleSmoothScroll(e, link.href)}
+              onClick={(e) => {
+                if (link.isWhatsApp) {
+                  e.preventDefault();
+                  window.open("https://wa.me/919811750740?text=Hi! I'm interested in Dubai properties. Can you help me?", "_blank");
+                } else {
+                  handleSmoothScroll(e, link.href);
+                }
+              }}
               className={cn(
                 "transition-colors duration-200 text-xs xl:text-sm uppercase tracking-wider font-medium cursor-pointer",
                 link.label === 'India'
@@ -243,7 +247,12 @@ export const Header = () => {
                     ? "gradient-gold text-black rounded-lg px-3"
                     : "text-white hover:text-gold"
                 )}
-                onClick={() => setIsMobileMenuOpen(false)}
+                onClick={() => {
+                  if (link.isWhatsApp) {
+                    window.open("https://wa.me/919811750740?text=Hi! I'm interested in Dubai properties. Can you help me?", "_blank");
+                  }
+                  setIsMobileMenuOpen(false);
+                }}
               >
                 {link.label}
               </a>

@@ -1,8 +1,7 @@
 import React, { useEffect } from "react";
 import { Header } from "./components/Header";
 import { DevelopersSection } from "./components/DevelopersSection";
-import { Footer } from "./components/Footer";
-import { WhatsAppButton } from "./components/WhatsAppButton";
+import { Copyright } from "./components/Copyright";
 import DubaiBottomNav from "./components/DubaiBottomNav";
 import { DubaiProvider, useDubai } from "./context/DubaiContext";
 import { ThemeProvider } from "./context/ThemeContext";
@@ -24,11 +23,10 @@ const DevelopersPageContent = () => {
 
       <main className="relative z-10 bg-black">
         <DevelopersSection />
-        <Footer />
       </main>
 
-      <WhatsAppButton />
       <DubaiBottomNav />
+      <Copyright />
     </div>
   );
 };

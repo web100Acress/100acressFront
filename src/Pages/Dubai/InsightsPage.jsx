@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Header } from "./components/Header";
-import { Footer } from "./components/Footer";
-import { WhatsAppButton } from "./components/WhatsAppButton";
 import { BlogCard } from "./components/BlogCard";
+import { Copyright } from "./components/Copyright";
 import { Button } from "../../Components/ui/button";
 import { Search, Filter, TrendingUp, BookOpen, Lightbulb, ChevronLeft, ChevronRight } from "lucide-react";
 import { DubaiProvider } from "./context/DubaiContext";
@@ -385,8 +384,7 @@ const InsightsPageContent = () => {
         </div>
       </section>
 
-      <Footer />
-      <WhatsAppButton />
+      <Copyright />
     </div>
   );
 };
