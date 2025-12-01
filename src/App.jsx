@@ -201,9 +201,6 @@ const DocumentUpload = lazy(() => import("./Pages/DocumentUpload"));
 const UploadSuccess = lazy(() => import("./Pages/UploadSuccess"));
 import ProjectRouter from "./Pages/ProjectRouter";
 import DubaiPage from "./Pages/Dubai/DubaiPage";
-import ProjectsInDubai from "./Pages/Dubai/ProjectsInDubai";
-import InsightsPage from "./Pages/Dubai/InsightsPage";
-import DevelopersPage from "./Pages/Dubai/DevelopersPage";
 
 // Property Types Pages
 const BhkFlatsGurgaon = lazy(() => import("./Pages/PropertyTypes/BhkFlatsGurgaon"));
@@ -405,10 +402,12 @@ function App() {
                         element={<ProjectTypeGlobal />}
                       />
                       <Route path="/projects-in-delhi/" element={<CityProjectsGlobal />} />
-                      <Route path="/projects-in-dubai" element={<ProjectsInDubai />} />
-                      <Route path="/dubai/insights" element={<InsightsPage />} />
-                      <Route path="/dubai/developers" element={<DevelopersPage />} />
                       <Route path="/united-arab-emirates/" element={<DubaiPage />} />
+                      {/* Redirect deleted Dubai routes to home */}
+                      <Route path="/projects-in-dubai" element={<Navigate to="/" replace />} />
+                      <Route path="/dubai/insights" element={<Navigate to="/" replace />} />
+                      <Route path="/dubai/developers" element={<Navigate to="/" replace />} />
+                      <Route path="/dubai/contact" element={<Navigate to="/" replace />} />
                        <Route path="/projects-in-goa/" element={<CityProjectsGlobal />} />
                       <Route path="/projects-in-noida/" element={<CityProjectsGlobal />} />
                       <Route path="/projects-in-panipat/" element={<CityProjectsGlobal />} />
