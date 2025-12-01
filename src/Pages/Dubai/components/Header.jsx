@@ -72,8 +72,8 @@ export const Header = () => {
       className={cn(
         "fixed top-0 z-50 w-full transition-all duration-300",
         isScrolled
-          ? "glass-effect shadow-luxury py-4"
-          : "bg-transparent py-6"
+          ? "glass-effect shadow-luxury py-3"
+          : "bg-transparent py-4"
       )}
     >
       <div className="container flex items-center justify-between px-4 sm:px-6 lg:px-8">
