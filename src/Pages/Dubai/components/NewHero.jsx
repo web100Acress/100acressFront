@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { useDubai } from '../context/DubaiContext';
 
 export const NewHero = () => {
@@ -77,11 +76,17 @@ export const NewHero = () => {
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/projects-in-dubai">
-            <button className="px-8 py-4 bg-gold text-black font-semibold rounded-lg hover:bg-gold/90 transition-all duration-300 transform hover:scale-105">
+            <button 
+              onClick={() => {
+                const element = document.getElementById('properties');
+                if (element) {
+                  element.scrollIntoView({ behavior: 'smooth' });
+                }
+              }}
+              className="px-8 py-4 bg-gold text-black font-semibold rounded-lg hover:bg-gold/90 transition-all duration-300 transform hover:scale-105"
+            >
               Explore Properties
             </button>
-            </Link>
 
             <button 
               onClick={() => window.open("https://wa.me/919811750740?text=Hi! I'm interested in Dubai properties. Can you help me?", "_blank")}
