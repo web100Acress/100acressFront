@@ -4,7 +4,7 @@ import { Header } from "./components/Header";
 import { Footer } from "./components/Footer";
 import { WhatsAppButton } from "./components/WhatsAppButton";
 import { Button } from "../../Components/ui/button";
-import { Input } from "../../Components/ui/Input";
+import { Input } from "../../Components/ui/input";
 import { 
   Phone, 
   Mail, 

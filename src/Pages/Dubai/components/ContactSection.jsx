@@ -1,5 +1,5 @@
 import { Button } from "../../../Components/ui/button";
-import { Input } from "../../../Components/ui/Input";
+import { Input } from "../../../Components/ui/input";
 import { Textarea } from "../../../Components/ui/Textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../Components/ui/Select";
 import { Phone, Mail, MapPin, Send } from "lucide-react";
