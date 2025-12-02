@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from "../Components/ui/button";
-import { Input } from "../Components/ui/input";
+import { Input } from "../Components/ui/Input";
 import { Avatar, AvatarFallback, AvatarImage } from "../Components/ui/avatar";
 import { Menu, Search, Bell, ChevronDown } from "lucide-react";
 import { useAuth } from '../AuthContext';
