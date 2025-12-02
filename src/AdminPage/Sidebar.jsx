@@ -93,6 +93,11 @@ const Sidebar = () => {
     }
   };
 
+  // Hide sidebar if in Sales Head section
+  if (location.pathname.startsWith('/sales-head')) {
+    return null;
+  }
+
   return (
     <div className="">
       <style>{`

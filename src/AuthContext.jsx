@@ -6,6 +6,16 @@ import { useJwt } from "react-jwt";
 import { hydrateFavoritesFromServer } from "./Utils/favorites";
 
 export const AuthContext = createContext();
+
+// Custom hook to use the AuthContext
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+};
+
 const localStorageToken = localStorage.getItem("myToken");
 
 export const AuthProvider = ({ children }) => {
@@ -19,6 +29,7 @@ export const AuthProvider = ({ children }) => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [isContentWriter, setIsContentWriter] = useState(false);
   const [isHr, setIsHr] = useState(false);
+  const [isSalesHead, setIsSalesHead] = useState(false);
 
   const [agentData, setAgentData] = useState({
     name: "",
@@ -31,6 +42,32 @@ export const AuthProvider = ({ children }) => {
       const token = localStorage.getItem("myToken");
       setDecodedTokenState(decodedToken);
       setIsAuthenticated(!!token);
+      
+      // Check user role from localStorage and set appropriate states
+      const userRole = localStorage.getItem("userRole");
+      if (userRole) {
+        try {
+          const role = JSON.parse(userRole);
+          const roleRaw = (role || "").toString();
+          const roleNormalized = roleRaw.replace(/\s+/g, "").toLowerCase();
+          
+          console.log("Checking role from localStorage:", roleRaw, "normalized:", roleNormalized);
+          
+          if (roleRaw === "Admin" || roleRaw === admin) {
+            setIsAdmin(true);
+          } else if (roleNormalized === "contentwriter" || roleNormalized === "blog") {
+            setIsContentWriter(true);
+          } else if (roleNormalized === "hr") {
+            setIsHr(true);
+          } else if (roleNormalized === "saleshead" || roleNormalized === "sales_head" || roleRaw === "Sales Head" || roleRaw === "sales head" || roleRaw === "SALES HEAD" || roleRaw === "SalesHead") {
+            console.log("Setting Sales Head role from localStorage");
+            setIsSalesHead(true);
+          }
+        } catch (error) {
+          console.error("Error parsing user role from localStorage:", error);
+        }
+      }
+      
       if (token) {
         try { hydrateFavoritesFromServer(); } catch (_) { }
       }
@@ -81,18 +118,15 @@ export const AuthProvider = ({ children }) => {
         } catch (_) { }
 
         if (roleResponse.status === 200) {
-          localStorage.setItem(
-            "userRole",
-            JSON.stringify(roleResponse.data.User.role)
-          );
+          const roleRaw = (roleResponse?.data?.User?.role || "").toString();
+          const roleNormalized = roleRaw.replace(/\s+/g, "").toLowerCase();
+
+          localStorage.setItem("userRole", JSON.stringify(roleRaw));
           const sellerId = roleResponse.data.User._id;
           localStorage.setItem("mySellerId", JSON.stringify(sellerId));
           try { hydrateFavoritesFromServer(); } catch (_) { }
 
-          const roleRaw = (roleResponse?.data?.User?.role || "").toString();
-          const roleNormalized = roleRaw.replace(/\s+/g, "").toLowerCase();
-
-          try { console.debug("[login redirect] role:", roleRaw, "normalized:", roleNormalized); } catch { }
+          console.log("Role detected:", roleRaw, "| Normalized:", roleNormalized);
 
           if (roleRaw === "Admin" || roleRaw === admin) {
             setIsAdmin(true);
@@ -103,7 +137,17 @@ export const AuthProvider = ({ children }) => {
           } else if (roleNormalized === "hr") {
             setIsHr(true);
             history("/hr/dashboard");
+          } else if (
+            roleNormalized === "saleshead" ||
+            roleNormalized === "sales_head" ||
+            roleRaw.toLowerCase() === "sales head" ||
+            roleRaw === "SalesHead"
+          ) {
+            console.log("Sales Head role detected, redirecting to dashboard");
+            setIsSalesHead(true);
+            history("/sales-head/dashboard");
           } else {
+            console.log("Role not matched, going to user dashboard. Role:", roleRaw);
             history("/userdashboard/");
           }
         } else {
@@ -305,6 +349,8 @@ export const AuthProvider = ({ children }) => {
         setIsContentWriter,
         isHr,
         setIsHr,
+        isSalesHead,
+        setIsSalesHead,
         showLogin,
       }}
     >
