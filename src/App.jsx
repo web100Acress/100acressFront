@@ -11,6 +11,7 @@ import { TooltipProvider } from "./Components/ui/Tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import PrivateRoute from "./Components/PrivateRoute";
 import HrPrivateRoute from "./Components/HrPrivateRoute";
+import SalesHeadPrivateRoute from "./Components/SalesHeadPrivateRoute";
 import PublicRoute from "./Components/PublicRoute";
 import LazyLoad from "react-lazyload";
 import "animate.css";
@@ -164,6 +165,9 @@ const CareerEdit = lazy(() => import("./Hr/CareerEdit"));
 const JobPostingView = lazy(() => import("./Hr/JobPostingView"));
 const JobApplications = lazy(() => import("./Hr/JobApplications"));
 const JobPostingEdit = lazy(() => import("./Hr/JobPostingEdit"));
+const SalesHeadAllListedProperties = lazy(() => import("./SalesHeadPage/Components/SalesHeadAllListedProperties"));
+const SalesHeadResaleEnquiries = lazy(() => import("./SalesHeadPage/Components/SalesHeadResaleEnquiries"));
+const SalesHeadRegisteredUsers = lazy(() => import("./SalesHeadPage/Components/SalesHeadRegisteredUsers"));
 const AllListedProperties = lazy(() => import("./AdminPage/AllListedProperties"));
 const Adminproperty = lazy(() => import("./AdminPage/Adminproperty"));
 const BlogViewAdmin = lazy(() => import("./AdminPage/BlogViewAdmin"));
@@ -199,6 +203,14 @@ const HrEmployees = lazy(() => import("./Hr/HrEmployees"));
 const OnboardingUpload = lazy(() => import("./OnboardingUpload"));
 const DocumentUpload = lazy(() => import("./Pages/DocumentUpload"));
 const UploadSuccess = lazy(() => import("./Pages/UploadSuccess"));
+// Sales Head Components
+const SalesHeadLayout = lazy(() => import("./SalesHeadPage/SalesHeadLayout"));
+const SalesHeadDashboard = lazy(() => import("./SalesHeadPage/SalesHeadDashboard"));
+const SalesHeadHeader = lazy(() => import("./SalesHeadPage/SalesHeadHeader"));
+const SalesHeadProjects = lazy(() => import("./SalesHeadPage/SalesHeadProjects"));
+const SalesHeadEnquiries = lazy(() => import("./SalesHeadPage/SalesHeadEnquiries"));
+// Test Component
+const TestSalesHead = lazy(() => import("./Components/TestSalesHead"));
 import ProjectRouter from "./Pages/ProjectRouter";
 import DubaiPage from "./Pages/Dubai/DubaiPage";
 
@@ -487,6 +499,7 @@ function App() {
                       />
                       <Route path="/forgetpassword" element={<ResetEmailPassword />} />
                       <Route path="/knowabouts" element={<PropertyKnow />} />
+                      <Route path="/test-sales-head" element={<LazyLoad><TestSalesHead /></LazyLoad>} />
                       <Route path="/:pUrl/" element={<ProjectLayout2 />} />
                       <Route
                         path="/userviewproperty/:id"
@@ -672,6 +685,22 @@ function App() {
                       <Route path="contact-cards" element={<LazyLoad><ContactCardManagement /></LazyLoad>} />
                       <Route path="sitemap-management" element={<LazyLoad><SitemapManagement /></LazyLoad>} />
                       </Route>
+
+                    {/* Sales Head Routing */}
+                    <Route path="/sales-head" element={<SalesHeadPrivateRoute />}>
+                      <Route index element={<LazyLoad><SalesHeadDashboard /></LazyLoad>} />
+                      <Route path="dashboard" element={<LazyLoad><SalesHeadDashboard /></LazyLoad>} />
+                      <Route path="sales-team" element={<div className="p-6"><h1 className="text-3xl font-bold text-gray-800 dark:text-white">Sales Team Management</h1><p className="mt-4 text-gray-600 dark:text-gray-300">Manage your sales team members and performance.</p></div>} />
+                      <Route path="sales-performance" element={<div className="p-6"><h1 className="text-3xl font-bold text-gray-800 dark:text-white">Sales Performance</h1><p className="mt-4 text-gray-600 dark:text-gray-300">Track and analyze sales performance metrics.</p></div>} />
+                      <Route path="projects" element={<LazyLoad><SalesHeadProjects /></LazyLoad>} />
+                      <Route path="listed-projects" element={<LazyLoad><SalesHeadAllListedProperties /></LazyLoad>} />
+                      <Route path="enquiries" element={<LazyLoad><SalesHeadEnquiries /></LazyLoad>} />
+                      <Route path="resale-enquiries" element={<LazyLoad><SalesHeadResaleEnquiries /></LazyLoad>} />
+                      <Route path="registered-users" element={<LazyLoad><SalesHeadRegisteredUsers /></LazyLoad>} />
+                      <Route path="revenue" element={<div className="p-6"><h1 className="text-3xl font-bold text-gray-800 dark:text-white">Revenue</h1><p className="mt-4 text-gray-600 dark:text-gray-300">Track revenue and financial performance.</p></div>} />
+                      <Route path="analytics" element={<div className="p-6"><h1 className="text-3xl font-bold text-gray-800 dark:text-white">Analytics</h1><p className="mt-4 text-gray-600 dark:text-gray-300">View detailed sales analytics and insights.</p></div>} />
+                      <Route path="reports" element={<div className="p-6"><h1 className="text-3xl font-bold text-gray-800 dark:text-white">Reports</h1><p className="mt-4 text-gray-600 dark:text-gray-300">Generate and view sales reports.</p></div>} />
+                    </Route>
 
                     {/* HR Department Routing */}
                     <Route path="/hr" element={<HrPrivateRoute />}>
