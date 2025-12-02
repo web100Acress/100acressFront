@@ -38,6 +38,7 @@ const UserAdmin = () => {
     { label: "Owner", value: "owner" },
     { label: "Builder", value: "builder" },
     { label: "HR", value: "hr" },
+    { label: "Sales Head", value: "sales_head" },
   ];
 
   // Normalize any incoming role value to one of ROLE_OPTIONS values
@@ -66,6 +67,8 @@ const UserAdmin = () => {
         return 'bg-purple-100 text-purple-700 border-purple-200';
       case 'blog':
         return 'bg-blue-100 text-blue-700 border-blue-200';
+      case 'sales_head':
+        return 'bg-orange-100 text-orange-700 border-orange-200';
       case 'user':
       default:
         return 'bg-gray-100 text-gray-800 border-gray-200';
