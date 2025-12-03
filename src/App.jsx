@@ -209,6 +209,9 @@ const SalesHeadDashboard = lazy(() => import("./SalesHeadPage/SalesHeadDashboard
 const SalesHeadHeader = lazy(() => import("./SalesHeadPage/SalesHeadHeader"));
 const SalesHeadProjects = lazy(() => import("./SalesHeadPage/SalesHeadProjects"));
 const SalesHeadEnquiries = lazy(() => import("./SalesHeadPage/SalesHeadEnquiries"));
+const ListedProperties = lazy(() => import("./SalesHeadPage/ListedProperties"));
+const ViewProperty = lazy(() => import("./SalesHeadPage/ViewProperty"));
+const EditProperty = lazy(() => import("./SalesHeadPage/EditProperty"));
 // Test Component
 const TestSalesHead = lazy(() => import("./Components/TestSalesHead"));
 import ProjectRouter from "./Pages/ProjectRouter";
@@ -694,6 +697,9 @@ function App() {
                       <Route path="sales-performance" element={<div className="p-6"><h1 className="text-3xl font-bold text-gray-800 dark:text-white">Sales Performance</h1><p className="mt-4 text-gray-600 dark:text-gray-300">Track and analyze sales performance metrics.</p></div>} />
                       <Route path="projects" element={<LazyLoad><SalesHeadProjects /></LazyLoad>} />
                       <Route path="listed-projects" element={<LazyLoad><SalesHeadAllListedProperties /></LazyLoad>} />
+                      <Route path="listed-properties" element={<LazyLoad><ListedProperties /></LazyLoad>} />
+                      <Route path="view-property/:id" element={<LazyLoad><ViewProperty /></LazyLoad>} />
+                      <Route path="edit-property/:id" element={<LazyLoad><EditProperty /></LazyLoad>} />
                       <Route path="enquiries" element={<LazyLoad><SalesHeadEnquiries /></LazyLoad>} />
                       <Route path="resale-enquiries" element={<LazyLoad><SalesHeadResaleEnquiries /></LazyLoad>} />
                       <Route path="registered-users" element={<LazyLoad><SalesHeadRegisteredUsers /></LazyLoad>} />
