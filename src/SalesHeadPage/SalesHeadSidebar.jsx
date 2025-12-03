@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { MdSpaceDashboard, MdAnalytics, MdPeople, MdTrendingUp, MdAttachMoney } from "react-icons/md";
-import { FaProjectDiagram, FaUserTie, FaPhone, FaChartLine, FaHome, FaRegUserCircle } from "react-icons/fa";
+import { FaProjectDiagram, FaUserTie, FaPhone, FaChartLine, FaHome, FaRegUserCircle, FaBuilding } from "react-icons/fa";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { RiLogoutCircleRLine } from "react-icons/ri";
 import { toast } from "react-toastify";
@@ -182,11 +182,6 @@ const SalesHeadSidebar = ({ sidebarOpen, setSidebarOpen }) => {
             )}
           </Link> */}
 
-          <Link to="/sales-head/enquiries" className={`sidebar-nav-item group flex items-center gap-3 px-4 py-2 rounded-lg transition-all duration-200 hover:bg-gradient-to-r hover:from-blue-500/80 hover:to-purple-500/80 hover:text-white font-medium text-base ${location.pathname.startsWith("/sales-head/enquiries") ? "bg-gradient-to-r from-blue-500/80 to-purple-500/80 text-white" : "text-gray-200 dark:text-gray-300"}`}>
-            <FaPhone className="icon text-xl group-hover:scale-110 group-hover:text-white transition-transform duration-200 flex-shrink-0" />
-            <span>Project Enquiries</span>
-          </Link>
-
           <Link to="/sales-head/resale-enquiries" className={`sidebar-nav-item group flex items-center gap-3 px-4 py-2 rounded-lg transition-all duration-200 hover:bg-gradient-to-r hover:from-blue-500/80 hover:to-purple-500/80 hover:text-white font-medium text-base ${location.pathname.startsWith("/sales-head/resale-enquiries") ? "bg-gradient-to-r from-blue-500/80 to-purple-500/80 text-white" : "text-gray-200 dark:text-gray-300"}`}>
             <FaHome className="icon text-xl group-hover:scale-110 group-hover:text-white transition-transform duration-200 flex-shrink-0" />
             <span>Resale Enquiries</span>
@@ -197,13 +192,16 @@ const SalesHeadSidebar = ({ sidebarOpen, setSidebarOpen }) => {
             )}
           </Link>
 
+          <Link to="/sales-head/listed-properties" className={`sidebar-nav-item group flex items-center gap-3 px-4 py-2 rounded-lg transition-all duration-200 hover:bg-gradient-to-r hover:from-blue-500/80 hover:to-purple-500/80 hover:text-white font-medium text-base ${location.pathname.startsWith("/sales-head/listed-properties") ? "bg-gradient-to-r from-blue-500/80 to-purple-500/80 text-white" : "text-gray-200 dark:text-gray-300"}`}>
+            <FaBuilding className="icon text-xl group-hover:scale-110 group-hover:text-white transition-transform duration-200 flex-shrink-0" />
+            <span>Listed Properties</span>
+          </Link>
+
           <Link to="/sales-head/registered-users" className={`sidebar-nav-item group flex items-center gap-3 px-4 py-2 rounded-lg transition-all duration-200 hover:bg-gradient-to-r hover:from-blue-500/80 hover:to-purple-500/80 hover:text-white font-medium text-base ${location.pathname.startsWith("/sales-head/registered-users") ? "bg-gradient-to-r from-blue-500/80 to-purple-500/80 text-white" : "text-gray-200 dark:text-gray-300"}`}>
             <FaRegUserCircle className="icon text-xl group-hover:scale-110 group-hover:text-white transition-transform duration-200 flex-shrink-0" />
             <span>Registered Users</span>
-            {/* Count removed - requires admin privileges */}
           </Link>
-
-          </div>
+        </div>
 
         {/* Dark Mode & Logout - Fixed at Bottom */}
         <div className="px-2 pb-2 flex flex-col gap-2 flex-shrink-0 border-t border-gray-200/10 dark:border-gray-700/30 pt-2 mt-auto">
