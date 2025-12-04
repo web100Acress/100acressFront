@@ -49,7 +49,7 @@ const ReadyToMoveProject = () => {
         <meta property="og:site_name" content="100acress" />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/logo.webp" />
-        <meta property="og:url" content="https://www.100acress.com/projects-in-gurugram/property-ready-to-move//" />
+        <meta property="og:url" content="https://www.100acress.com/projects/ready-to-move/" />
         <meta property="og:description" content="Find the best ready-to-move properties in Gurugram. Discover homes ready for immediate possession." />
         <meta property="og:keywords" content="Ready to Move PROPERTIES" />
         <meta name="twitter:title" content="Discover Ready-to-Move Homes in Gurugram | 100acress" />
@@ -62,7 +62,7 @@ const ReadyToMoveProject = () => {
         </title>
         <link
           rel="canonical"
-          href="https://www.100acress.com/projects-in-gurugram/property-ready-to-move/"
+          href="https://www.100acress.com/projects/ready-to-move/"
         />
       </Helmet>
       <ProjectSearching searchdata={readyToMoveData} sendDatatoparent={handleDatafromSearch}/>
