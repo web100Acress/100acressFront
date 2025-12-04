@@ -46,12 +46,7 @@ const ProjectStatusSearchGlobal = () => {
       }
     }
     
-    // Keep old patterns for backward compatibility
-    if (path.includes('upcoming-projects-in-gurgaon')) return 'upcoming';
-    if (path.includes('project-in-underconstruction')) return 'underconstruction';
-    if (path.includes('property-ready-to-move')) return 'readytomove';
-    if (path.includes('projects-in-newlaunch')) return 'newlaunch';
-    return 'upcoming'; // default
+`    return 'upcoming'; // default fallback`
   };
 
   const projectStatus = getProjectStatus();

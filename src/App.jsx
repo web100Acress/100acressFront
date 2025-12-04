@@ -377,20 +377,16 @@ function App() {
                         element={<GlobalBudgetPrice />}
                       />
                       <Route
-                        path="/projects-in-gurugram/property-ready-to-move/"
-                        element={<ProjectStatusSearch />}
-                      />
-                      <Route
                         path="/projects-in-gurugram/property-possession-after-2026/"
                         element={<PossessionAfter2028 />}
                       />
                       <Route
                         path="/projects-in-gurugram/property-possession-in-2024/"
-                        element={<Navigate to="/projects-in-gurugram/property-ready-to-move/" replace />}
+                        element={<Navigate to="/projects/ready-to-move/" replace />}
                       />
                       <Route
                         path="/projects-in-gurugram/property-possession-in-2024"
-                        element={<Navigate to="/projects-in-gurugram/property-ready-to-move/" replace />}
+                        element={<Navigate to="/projects/ready-to-move/" replace />}
                       />
                       <Route
                         path="/developers/:builderName"
@@ -426,10 +422,6 @@ function App() {
                       <Route
                         path="/property/residential/"
                         element={<ProjectTypeGlobal />}
-                      />
-                      <Route
-                        path="/projects/upcoming-projects-in-gurgaon/"
-                        element={<ProjectStatusSearchGlobal />}
                       />
                       <Route
                         path="/projects/commercial/"
@@ -479,11 +471,6 @@ function App() {
                       <Route path="/analytics/location" element={<LocationIntelligence />} />
                       <Route path="/analytics/investment" element={<InvestmentInsights />} />
                       <Route path="/loan-eligibility" element={<LoanEligibility />} />
-                      <Route
-                        path="/project-in-underconstruction/"
-                        element={<ProjectStatusSearchGlobal />}
-                      />
-                      <Route path="/projects-in-newlaunch/" element={<ProjectStatusSearchGlobal />} />
                       
                       {/* Unified status routes with projects/{filter} pattern */}
                       <Route
