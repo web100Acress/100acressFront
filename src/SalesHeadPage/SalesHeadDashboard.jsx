@@ -153,13 +153,13 @@ const SalesHeadDashboard = () => {
           color="bg-gradient-to-r from-blue-500 to-blue-600"
           onClick={() => navigate('/sales-head/users')}
         />
-        <StatCard 
+        {/* <StatCard 
           title="Total Projects" 
           value={dashboardData.totalProjects} 
           icon={MdBusiness} 
           color="bg-gradient-to-r from-purple-500 to-purple-600"
           onClick={() => navigate('/sales-head/projects')}
-        />
+        /> */}
         <StatCard 
           title="Project Enquiries" 
           value={dashboardData.totalEnquiries} 

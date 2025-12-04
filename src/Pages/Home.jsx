@@ -526,7 +526,7 @@ const Home = () => {
                 {/* Header */}
                 <div className="flex items-center justify-center gap-2 text-gray-900">
                   <HomeIcon size={18} className="text-red-600" />
-                  <span className="font-bold text-sm md:text-base">Post Your Property</span>
+                  <span className="font-bold text-sm md:text-base">Post Property</span>
                 </div>
                 {/* Subtitle */}
                 
