@@ -599,6 +599,7 @@ export const staticData = {
       metaTitle: "Upcoming Projects in Gurgaon with Luxury & Comfort | 100acress",
       canonical: "https://www.100acress.com/projects-status/upcoming-projects/",
       keywords: "upcoming projects, upcoming projects in gurgaon, upcoming residential projects, upcoming commercial projects, property launches",
+      query: "allupcomingproject",
       heroTitle: "Explore Upcoming Projects with High Investment Potential",
       heroSubtitle: "From premium apartments to budget-friendly homes, Gurgaon has it all in upcoming projects.",
       faqs: [
@@ -655,6 +656,7 @@ export const staticData = {
       metaTitle: "Premium Under-Construction Homes for Smart Investors | 100acress",
       canonical: "https://www.100acress.com/project-in-underconstruction/",
       keywords: "under construction properties, under construction projects in gurgaon, ongoing projects, construction status, property development, under construction homes",
+      query: "underconstruction",
       heroTitle: "Secure Your Future with Top Under-Construction Projects.",
       heroSubtitle: "Premium under-construction homes crafted for modern lifestyles, featuring advanced amenities, smart layouts, and strong returns on investment.",
       faqs: [
@@ -711,6 +713,7 @@ export const staticData = {
       metaTitle: "Ready to Move Projects | Instant Possession Homes | 100acress",
       canonical: "https://www.100acress.com/projects-status/readytomove-projects/",
       keywords: "ready to move properties, ready to move projects in gurugram, immediate possession, completed projects, ready homes, move in ready",
+      query: "readytomove",
       heroTitle: "Ready To Move Projects | Instant Possession Homes",
       heroSubtitle: "Find the best RERA-registered ready to move projects in Gurugram with premium features and prime locations. Start living your dream lifestyle now.",
       faqs: [
@@ -767,6 +770,7 @@ export const staticData = {
       metaTitle: "Explore the Latest New Launch Projects in Gurgaon | 100acress",
       canonical: "https://www.100acress.com/projects-status/newlaunch-projects/",
       keywords: "new launch projects in gurgaon, new launch projects, latest projects, new residential projects, property launches, new property launches",
+      query: "newlaunch",
       heroTitle: "Luxury Awaits in Gurgaon's Latest New Launch Projects",
       heroSubtitle: "Experience modern living with new launch projects in Gurgaon crafted for your lifestyle and future growth.",
       faqs: [

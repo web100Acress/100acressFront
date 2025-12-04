@@ -27,6 +27,26 @@ const ProjectStatusSearchGlobal = () => {
   const getProjectStatus = () => {
     const path = location.pathname;
     console.log('Current path:', path);
+    
+    // Check for new unified status URLs: projects/{status}
+    if (path.includes('/projects/') && !path.includes('/projects-in-')) {
+      const filter = path.split('/projects/')[1]?.replace('/', '');
+      console.log('Detected unified projects filter:', filter);
+      
+      const statusMap = {
+        'upcoming': 'upcoming',
+        'newlaunch': 'newlaunch',
+        'underconstruction': 'underconstruction',
+        'ready-to-move': 'readytomove'
+      };
+      
+      if (statusMap[filter]) {
+        console.log('Detected status from unified URL:', statusMap[filter]);
+        return statusMap[filter];
+      }
+    }
+    
+    // Keep old patterns for backward compatibility
     if (path.includes('upcoming-projects-in-gurgaon')) return 'upcoming';
     if (path.includes('project-in-underconstruction')) return 'underconstruction';
     if (path.includes('property-ready-to-move')) return 'readytomove';
