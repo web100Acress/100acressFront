@@ -361,11 +361,11 @@ const CrimsonEleganceFooter = () => {
                 { name: "Unfurnished Flats in Gurgaon", href: "/" },
                 { name: "Independent Floor for Sale in Gurgaon", href: "/" },
                 { name: "Independent Houses For Sale in Gurgaon", href: "/" },
-                { name: "Flats For Sale under 1 Cr in Gurgaon", href: "/budget-properties/under-1-cr/" },
-                { name: "Flats For Sale under 5 Cr in Gurgaon", href: "/budget-properties/1-5-cr" },
-                { name: "Flats For Sale under 10 Cr in Gurgaon", href: "/budget-properties/5-10-cr" },
-                { name: "Flats For Sale under 20 Cr In Gurgaon", href: "/budget-properties/10-20-cr" },
-                { name: "Affordable Homes in Gurgaon", href: "/budget-properties/1-5-cr" },
+                { name: "Flats For Sale under 1 Cr in Gurgaon", href: "/projects/under-1-cr/" },
+                { name: "Flats For Sale under 5 Cr in Gurgaon", href: "/projects/1-5-cr" },
+                { name: "Flats For Sale under 10 Cr in Gurgaon", href: "/projects/5-10-cr" },
+                { name: "Flats For Sale under 20 Cr In Gurgaon", href: "/projects/10-20-cr" },
+                { name: "Affordable Homes in Gurgaon", href: "/projects/1-5-cr" },
                 { name: "Farmhouse in Gurgaon", href: "/property-types/farmhouse-gurgaon/" },
                 
               ].map((location, index) => (

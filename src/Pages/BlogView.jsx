@@ -93,10 +93,10 @@ const BlogView = () => {
     { label: 'Projects in Gurugram', url: '/projects-in-gurugram' },
     { label: 'Projects in Delhi', url: '/project-in-delhi' },
     { label: 'Projects in Noida', url: '/project-in-noida' },
-    { label: 'Property under 1 Cr', url: '/budget-properties' },
-    { label: 'Upcoming Projects', url: '/upcoming-projects-in-gurgaon' },
-    { label: 'New Launch Projects', url: '/projects-in-newlaunch' },
-    { label: 'SCO Plots', url: '/sco/plots' },
+    { label: 'Property under 1 Cr', url: '/projects/under-1-cr/' },
+    { label: 'Upcoming Projects', url: '/projects/upcoming/' },
+    { label: 'New Launch Projects', url: '/projects/newlaunch/' },
+    { label: 'SCO Plots', url: '/projects/sco-plots/' },
     { label: 'Commercial Projects', url: '/projects/commercial/' },
   ];
   const popularTools = [

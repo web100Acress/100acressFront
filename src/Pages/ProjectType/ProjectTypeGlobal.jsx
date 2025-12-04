@@ -14,13 +14,24 @@ const ProjectTypeGlobal = () => {
   const getProjectTypeFromPath = () => {
     const path = location.pathname;
     
+    // Handle new unified projects/{filter} patterns
+    if (path === '/projects/sco-plots/') return 'sco-plots';
+    if (path === '/projects/villas/') return 'luxury-villas';
+    if (path === '/projects/plots/') return 'plots-in-gurugram';
+    if (path === '/projects/residential/') return 'residential-projects';
+    if (path === '/projects/independent-floors/') return 'independent-floors';
+    if (path === '/projects/commercial/') return 'commercial-projects';
+    if (path === '/projects/farmhouse/') return 'farmhouse';
+    if (path === '/projects/industrial-plots/') return 'industrial-plots';
+    if (path === '/projects/industrial-projects/') return 'industrial-projects';
+    
+    // Keep old patterns for backward compatibility
     if (path === '/sco/plots/') return 'sco-plots';
     if (path === '/projects/villas/') return 'luxury-villas';
     if (path === '/plots-in-gurugram/') return 'plots-in-gurugram';
     if (path === '/property/residential/') return 'residential-projects';
     if (path === '/projects/independentfloors/') return 'independent-floors';
     if (path === '/projects/commercial/') return 'commercial-projects';
-    // if (path === '/projects/farmhouse/') return 'farmhouse';
     if (path === '/projects/farmhouses/') return 'farmhouse';
     if (path === '/projects/industrial-plots/') return 'industrial-plots';
     if (path === '/projects/industrial-projects/') return 'industrial-projects';

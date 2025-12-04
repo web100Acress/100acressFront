@@ -70,12 +70,12 @@ export default function MegaMenu({ isOpen, onClose, handlePriceClick }) {
                 <Box fontWeight="700" color="#e53e3e" mb={2} textTransform="uppercase">Budget</Box>
                 <Box h="1px" bg="#eaeaea" mb={3} />
                 <Flex direction="column" gap={1} fontSize="14px">
-                  <Link to="/budget-properties/under-1-cr" onClick={() => handlePriceClick(0, 1)}>Under ₹1 Cr</Link>
-                  <Link to="/budget-properties/1-5-cr" onClick={() => handlePriceClick(1, 5)}>₹1 Cr - ₹5 Cr</Link>
-                  <Link to="/budget-properties/5-10-cr" onClick={() => handlePriceClick(5, 10)}>₹5 Cr - ₹10 Cr</Link>
-                  <Link to="/budget-properties/10-20-cr" onClick={() => handlePriceClick(10, 20)}>₹10 Cr - ₹20 Cr</Link>
-                  <Link to="/budget-properties/20-50-cr" onClick={() => handlePriceClick(20, 50)}>₹20 Cr - ₹50 Cr</Link>
-                  <Link to="/budget-properties/above-50-cr" onClick={() => handlePriceClick(50, Infinity)}>Above ₹50 Cr</Link>
+                  <Link to="/projects/under-1-cr/" onClick={() => handlePriceClick(0, 1)}>Under ₹1 Cr</Link>
+                  <Link to="/projects/1-5-cr/" onClick={() => handlePriceClick(1, 5)}>₹1 Cr - ₹5 Cr</Link>
+                  <Link to="/projects/5-10-cr/" onClick={() => handlePriceClick(5, 10)}>₹5 Cr - ₹10 Cr</Link>
+                  <Link to="/projects/10-20-cr/" onClick={() => handlePriceClick(10, 20)}>₹10 Cr - ₹20 Cr</Link>
+                  <Link to="/projects/20-50-cr/" onClick={() => handlePriceClick(20, 50)}>₹20 Cr - ₹50 Cr</Link>
+                  <Link to="/projects/above-50-cr/" onClick={() => handlePriceClick(50, Infinity)}>Above ₹50 Cr</Link>
                 </Flex>
               </Box>
 
@@ -84,10 +84,10 @@ export default function MegaMenu({ isOpen, onClose, handlePriceClick }) {
                 <Box fontWeight="700" color="#e53e3e" mb={2} textTransform="uppercase">Project Status</Box>
                 <Box h="1px" bg="#eaeaea" mb={3} />
                 <Flex direction="column" gap={1} fontSize="14px">
-                  <Link to="/projects/upcoming-projects-in-gurgaon/">Upcoming Projects</Link>
-                  <Link to="/projects-in-newlaunch/">New Launch Projects</Link>
-                  <Link to="/project-in-underconstruction/">Under Construction</Link>
-                  <Link to="/projects-in-gurugram/property-ready-to-move/">Ready To Move</Link>
+                  <Link to="/projects/upcoming/">Upcoming Projects</Link>
+                  <Link to="/projects/newlaunch/">New Launch Projects</Link>
+                  <Link to="/projects/underconstruction/">Under Construction</Link>
+                  <Link to="/projects/ready-to-move/">Ready To Move</Link>
                 </Flex>
               </Box>
 
@@ -96,11 +96,11 @@ export default function MegaMenu({ isOpen, onClose, handlePriceClick }) {
                 <Box fontWeight="700" color="#e53e3e" mb={2} textTransform="uppercase">Project Type</Box>
                 <Box h="1px" bg="#eaeaea" mb={3} />
                 <Flex direction="column" gap={1} fontSize="14px">
-                  <Link to="/sco/plots/">SCO Plots</Link>
+                  <Link to="/projects/sco-plots/">SCO Plots</Link>
                   <Link to="/projects/villas/">Luxury Villas</Link>
-                  <Link to="/plots-in-gurugram/">Plots In Gurugram</Link>
-                  <Link to="/property/residential/">Residential Projects</Link>
-                  <Link to="/projects/independentfloors/">Independent Floors</Link>
+                  <Link to="/projects/plots/">Plots In Gurugram</Link>
+                  <Link to="/projects/residential/">Residential Projects</Link>
+                  <Link to="/projects/independent-floors/">Independent Floors</Link>
                   <Link to="/projects/commercial/">Commercial Projects</Link>
                 </Flex>
               </Box>
