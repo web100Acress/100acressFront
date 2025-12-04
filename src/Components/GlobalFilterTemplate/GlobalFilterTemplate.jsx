@@ -86,29 +86,6 @@ const GlobalFilterTemplate = ({
       }
     }
     
-    // Check for old status URL format: projects-status/{status}-projects
-    if (path.includes('/projects-status/')) {
-      const status = path.split('/projects-status/')[1]?.split('-projects')[0];
-      console.log('Detected status from old URL format:', status);
-      
-      const statusMap = {
-        'upcoming': 'upcoming',
-        'underconstruction': 'underconstruction', 
-        'readytomove': 'readytomove',
-        'newlaunch': 'newlaunch'
-      };
-      
-      if (statusMap[status]) {
-        return statusMap[status];
-      }
-    }
-    
-    // Keep existing status patterns for backward compatibility
-    if (path.includes('upcoming-projects-in-gurgaon')) return 'upcoming';
-    if (path.includes('project-in-underconstruction')) return 'underconstruction';
-    if (path.includes('property-ready-to-move')) return 'readytomove';
-    if (path.includes('projects-in-newlaunch')) return 'newlaunch';
-    
     // For project type, city, and budget pages, return null
     if (pageType === 'type' || pageType === 'city' || pageType === 'budget') {
       return null;

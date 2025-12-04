@@ -175,25 +175,6 @@ export const getPageDataFromURL = (pathname, searchParams = {}) => {
     }
   }
   
-  // Keep existing status patterns for backward compatibility
-  if (pathname.includes('/project-in-underconstruction')) {
-    console.log('Detected underconstruction status page');
-    return getStatusPageData('underconstruction');
-  }
-  
-  if (pathname.includes('/projects-in-newlaunch')) {
-    console.log('Detected newlaunch status page');
-    return getStatusPageData('newlaunch');
-  }
-  
-  if (pathname.includes('/projects/upcoming-projects-in-gurgaon')) {
-    return getStatusPageData('upcoming');
-  }
-  
-  if (pathname.includes('/property-ready-to-move')) {
-    return getStatusPageData('readytomove');
-  }
-  
   // Extract page type and specific key from URL (city pages)
   if (pathname.includes('/projects-in-')) {
     const city = pathname.split('/projects-in-')[1]?.split('/')[0];
