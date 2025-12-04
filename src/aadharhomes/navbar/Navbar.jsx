@@ -280,7 +280,7 @@ export default function Navbar() {
   const fetchAndSetAvatar = async () => {
     try {
       if (!userIdForEdit) return;
-      const res = await axios.get(`${API_BASE}/users/${userIdForEdit}/profile`, {
+      const res = await axios.get(`${API_BASE}/postPerson/users/${userIdForEdit}/profile`, {
         headers: { Authorization: authToken ? `Bearer ${authToken}` : undefined },
       });
       const url = res?.data?.data?.avatarUrl || "";
@@ -389,6 +389,7 @@ export default function Navbar() {
   const isAdmin = roles.some((r) => r.includes('admin'));
   const isBlogger = roles.some((r) => r.includes('blog') || r.includes('contentwriter') || r.includes('writer'));
   const isHr = roles.some((r) => r.includes('hr') || r.includes('human') || r.includes('resource'));
+  const isSalesHead = roles.some((r) => r.includes('saleshead') || r.includes('sales_head') || r.includes('sales head'));
 
   // Derive first name ONLY from localStorage 'firstName' (desktop only)
   const lsFirstName = (typeof window !== 'undefined' && localStorage.getItem("firstName")) || "";
@@ -659,6 +660,7 @@ export default function Navbar() {
             isAdmin={isAdmin}
             isBlogger={isBlogger}
             isHr={isHr}
+            isSalesHead={isSalesHead}
             go={go}
             HandleUserLogout={HandleUserLogout}
             ShowLogOutMessage={ShowLogOutMessage}

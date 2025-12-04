@@ -1,11 +1,10 @@
   import React, { useEffect, useRef, useState } from "react";
-  import { Box, Flex, IconButton, Button, Menu, MenuButton, MenuItem, MenuList, useDisclosure, useBreakpointValue, Drawer, DrawerOverlay, DrawerContent, DrawerHeader, DrawerBody, DrawerCloseButton, Portal, useToast } from "@chakra-ui/react";
-  import { SearchIcon } from "@chakra-ui/icons";
-  // import { Link } from "react-router-dom";
-  import AuthModal from "../../Resister/AuthModal";
-  import api from "../../config/apiClient";
-  import { Button as MovingBorderButton } from "../../Components/ui/moving-border";
-
+import { Box, Flex, IconButton, Button, Menu, MenuButton, MenuItem, MenuList, useDisclosure, useBreakpointValue, Drawer, DrawerOverlay, DrawerContent, DrawerHeader, DrawerBody, DrawerCloseButton, Portal, useToast } from "@chakra-ui/react";
+import { SearchIcon } from "@chakra-ui/icons";
+// import { Link } from "react-router-dom";
+import AuthModal from "../../Resister/AuthModal";
+import api from "../../config/apiClient";
+import { Button as MovingBorderButton } from "../../Components/ui/moving-border";
 
 export default function RightSection({
   colorChange,
@@ -25,6 +24,7 @@ export default function RightSection({
   showAuth,
   setShowAuth,
   isHr,
+  isSalesHead,
 }) {
   const { isOpen: isAcctOpen, onOpen: onAcctOpen, onClose: onAcctClose } = useDisclosure();
   const isMobile = useBreakpointValue({ base: true, md: false });
@@ -185,14 +185,26 @@ export default function RightSection({
                       )}
                       {isHr && (
                         <Button variant="ghost" w="100%" display="flex" flexDir="column" justifyContent="center" alignItems="center" textAlign="center" py={3} px={4} minH={{ base: 14, md: 12 }} bg="white" borderWidth="1px" borderColor="#e5e7eb" rounded="xl" boxShadow="xs" transition="all 0.15s ease" _hover={{ bg: 'white', boxShadow: 'sm' }} _active={{ bg: 'white', boxShadow: 'xs' }} onClick={() => { onAcctClose(); go('/hr/dashboard'); }} my={3} mx={3} position="relative" zIndex={1}>
-                          <Box as="span" lineHeight={0} mb={1}>
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                              <path d="M12 3l8 4v5c0 4.418-3.582 8-8 8s-8-3.582-8-8V7l8-4Z" stroke="#111" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
-                              <path d="M9.5 12l1.5 1.5L14.5 10" stroke="#16a34a" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
-                            </svg>
-                          </Box>
-                          <Box as="span" color="#111" fontSize={{ base: 'sm', md: 'md' }} fontWeight="600" whiteSpace="normal" wordBreak="break-word" lineHeight="1.25">HR</Box>
-                        </Button>
+                        <Box as="span" lineHeight={0} mb={1}>
+                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 3l8 4v5c0 4.418-3.582 8-8 8s-8-3.582-8-8V7l8-4Z" stroke="#111" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+                            <path d="M9.5 12l1.5 1.5L14.5 10" stroke="#16a34a" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+                          </svg>
+                        </Box>
+                        <Box as="span" color="#111" fontSize={{ base: 'sm', md: 'md' }} fontWeight="600" whiteSpace="normal" wordBreak="break-word" lineHeight="1.25">HR</Box>
+                      </Button>
+                      )}
+                      {isSalesHead && (
+                        <Button variant="ghost" w="100%" display="flex" flexDir="column" justifyContent="center" alignItems="center" textAlign="center" py={3} px={4} minH={{ base: 14, md: 12 }} bg="white" borderWidth="1px" borderColor="#e5e7eb" rounded="xl" boxShadow="xs" transition="all 0.15s ease" _hover={{ bg: 'white', boxShadow: 'sm' }} _active={{ bg: 'white', boxShadow: 'xs' }} onClick={() => { onAcctClose(); go('/sales-head/dashboard'); }} my={3} mx={3} position="relative" zIndex={1}>
+                        <Box as="span" lineHeight={0} mb={1}>
+                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="#111" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+                            <circle cx="9" cy="7" r="4" stroke="#111" strokeWidth="1.6"/>
+                            <path d="m22 9-6 6m0-6 6 6" stroke="#111" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+                          </svg>
+                        </Box>
+                        <Box as="span" color="#111" fontSize={{ base: 'sm', md: 'md' }} fontWeight="600" whiteSpace="normal" wordBreak="break-word" lineHeight="1.25">Sales Head</Box>
+                      </Button>
                       )}
                     </Box>
                     <Box px={4} pb={3}>
@@ -305,6 +317,18 @@ export default function RightSection({
                         </svg>
                       </Box>
                       HR
+                    </MenuItem>
+                  )}
+                  {isSalesHead && (
+                    <MenuItem onClick={() => go('/sales-head/dashboard')} fontSize="14px" py={2.5} _hover={{ bg: '#f9fafb' }}>
+                      <Box as="span" lineHeight={0} mr={3}>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="#111" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+                          <circle cx="9" cy="7" r="4" stroke="#111" strokeWidth="1.6"/>
+                          <path d="m22 9-6 6m0-6 6 6" stroke="#111" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                      </Box>
+                      Sales Head
                     </MenuItem>
                   )}  
                   <Box h="1px" bg="#eee" />
