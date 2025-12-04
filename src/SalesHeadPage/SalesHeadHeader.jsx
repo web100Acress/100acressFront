@@ -8,7 +8,6 @@ import { useAuth } from '../AuthContext';
 const SalesHeadHeader = ({ onMenuClick }) => {
   const { agentData } = useAuth();
   const [userName, setUserName] = useState('Sales Head');
-
   useEffect(() => {
     // Get user name from JWT token
     try {
@@ -27,10 +26,9 @@ const SalesHeadHeader = ({ onMenuClick }) => {
         }
       }
     } catch (error) {
-      console.error('Error decoding token:', error);
+      console.error('Error decoding token:', error);       
     }
   }, []);
-
   return (
     <header className="sticky top-0 z-30 bg-card/80 backdrop-blur-sm border-b border-border">
       <div className="flex items-center justify-between p-4 lg:p-6">
@@ -44,7 +42,6 @@ const SalesHeadHeader = ({ onMenuClick }) => {
           >
             <Menu className="w-5 h-5" />
           </Button>
-       
         </div>
 
         {/* Center section - Search */}
