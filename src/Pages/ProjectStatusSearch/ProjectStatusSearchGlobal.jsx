@@ -58,7 +58,7 @@ const ProjectStatusSearchGlobal = () => {
       title: "UpComing Projects in Gurgaon",
       description: "Explore best upcoming projects in Gurgaon with modern amenities. Find residential & commercial spaces customized to your lifestyle. Visit 100acress today!",
       metaTitle: "Discover Upcoming Projects in Gurgaon - 100acress",
-      canonical: "https://www.100acress.com/projects/upcoming-projects-in-gurgaon/",
+      canonical: "https://www.100acress.com/projects/upcoming/",
       query: "allupcomingproject",
       keywords: "upcoming projects gurgaon, new residential projects gurgaon, commercial projects gurgaon, gurgaon real estate, property investment gurgaon",
       structuredData: {
@@ -74,7 +74,7 @@ const ProjectStatusSearchGlobal = () => {
       title: "Under Construction Projects in Gurgaon",
       description: "Under Construction Properties in Gurgaon include commercial and residential projects that will meet various requirements. These developments are equipped with modern amenities, great places close to business areas, as well as extensive green spaces. They're designed to meet the ever-changing demands of urban dwellers who want peace, convenience, and a vibrant lifestyle.",
       metaTitle: "Property in UnderConstruction - Flats, Villas, House in gurugram.",
-      canonical: "https://www.100acress.com/under-construction-projects-in-gurgaon/",
+      canonical: "https://www.100acress.com/projects/underconstruction/",
       query: "underconstruction",
       keywords: "under construction projects gurgaon, ongoing projects gurgaon, construction status gurgaon, gurgaon property development",
       structuredData: {
@@ -90,7 +90,7 @@ const ProjectStatusSearchGlobal = () => {
       title: "Ready To Move Projects",
       description: "Explore ready to move properties in Gurgaon with modern amenities. Find residential & commercial spaces ready for immediate possession.",
       metaTitle: "Ready To Move Properties in Gurgaon - 100acress",
-      canonical: "https://www.100acress.com/projects-in-gurugram/property-ready-to-move/",
+      canonical: "https://www.100acress.com/projects/ready-to-move/",
       query: "readytomove",
       keywords: "ready to move properties gurgaon, immediate possession gurgaon, completed projects gurgaon, gurgaon ready homes",
       structuredData: {
@@ -106,7 +106,7 @@ const ProjectStatusSearchGlobal = () => {
       title: "Projects in New Launch",
       description: "Explore new launch projects in Gurgaon with modern amenities. Find the latest residential & commercial spaces.",
       metaTitle: "New Launch Projects in Gurgaon - 100acress",
-      canonical: "https://www.100acress.com/projects-in-newlaunch/",
+      canonical: "https://www.100acress.com/projects/newlaunch/",
       query: "newlaunch",
       keywords: "new launch projects gurgaon, latest projects gurgaon, new residential projects gurgaon, gurgaon property launches",
       structuredData: {
