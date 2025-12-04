@@ -420,17 +420,17 @@ function App() {
                       />
                       <Route path="/propviewcard" element={<PropViewCardPro />} />
                       <Route
-                        path="/property/residential/"
+                        path="/projects/residential/"
                         element={<ProjectTypeGlobal />}
                       />
                       <Route
                         path="/projects/commercial/"
                         element={<ProjectTypeGlobal />}
                       />
-                      <Route path="/sco/plots/" element={<ProjectTypeGlobal />} />
+                      <Route path="/projects/sco-plots/" element={<ProjectTypeGlobal />} />
                       {/* <Route path="/dlf-homes-sco-plots/" element={<DlfSco />} /> */}
                       <Route
-                        path="/projects/independentfloors/"
+                        path="/projects/independent-floors/"
                         element={<ProjectTypeGlobal />}
                       />
                       <Route path="/projects-in-delhi/" element={<CityProjectsGlobal />} />
