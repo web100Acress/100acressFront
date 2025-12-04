@@ -351,6 +351,31 @@ function App() {
                         path="/budget-properties/above-50-cr"
                         element={<GlobalBudgetPrice />}
                       />
+                      {/* Unified projects/{filter} routes */}
+                      <Route
+                        path="/projects/under-1-cr/"
+                        element={<GlobalBudgetPrice />}
+                      />
+                      <Route
+                        path="/projects/1-5-cr/"
+                        element={<GlobalBudgetPrice />}
+                      />
+                      <Route
+                        path="/projects/5-10-cr/"
+                        element={<GlobalBudgetPrice />}
+                      />
+                      <Route
+                        path="/projects/10-20-cr/"
+                        element={<GlobalBudgetPrice />}
+                      />
+                      <Route
+                        path="/projects/20-50-cr/"
+                        element={<GlobalBudgetPrice />}
+                      />
+                      <Route
+                        path="/projects/above-50-cr/"
+                        element={<GlobalBudgetPrice />}
+                      />
                       <Route
                         path="/projects-in-gurugram/property-ready-to-move/"
                         element={<ProjectStatusSearch />}
@@ -460,12 +485,61 @@ function App() {
                       />
                       <Route path="/projects-in-newlaunch/" element={<ProjectStatusSearchGlobal />} />
                       
-                      <Route path="/plots-in-gurugram/" element={<ProjectTypeGlobal />} />
-                      <Route path="/projects/villas/" element={<ProjectTypeGlobal />} />
-                      <Route path="/projects/farmhouse/" element={<ProjectTypeGlobal />} />
-                      <Route path="/projects/farmhouses/" element={<ProjectTypeGlobal />} />
-                      <Route path="/projects/industrial-plots/" element={<ProjectTypeGlobal />} />
-                      <Route path="/projects/industrial-projects/" element={<ProjectTypeGlobal />} />
+                      {/* Unified status routes with projects/{filter} pattern */}
+                      <Route
+                        path="/projects/upcoming/"
+                        element={<ProjectStatusSearchGlobal />}
+                      />
+                      <Route
+                        path="/projects/underconstruction/"
+                        element={<ProjectStatusSearchGlobal />}
+                      />
+                      <Route
+                        path="/projects/ready-to-move/"
+                        element={<ProjectStatusSearchGlobal />}
+                      />
+                      <Route
+                        path="/projects/newlaunch/"
+                        element={<ProjectStatusSearchGlobal />}
+                      />
+                      
+                      {/* Unified type routes with projects/{filter} pattern */}
+                      <Route
+                        path="/projects/farmhouse/"
+                        element={<ProjectTypeGlobal />}
+                      />
+                      <Route
+                        path="/projects/commercial/"
+                        element={<ProjectTypeGlobal />}
+                      />
+                      <Route
+                        path="/projects/residential/"
+                        element={<ProjectTypeGlobal />}
+                      />
+                      <Route
+                        path="/projects/villas/"
+                        element={<ProjectTypeGlobal />}
+                      />
+                      <Route
+                        path="/projects/plots/"
+                        element={<ProjectTypeGlobal />}
+                      />
+                      <Route
+                        path="/projects/industrial-plots/"
+                        element={<ProjectTypeGlobal />}
+                      />
+                      <Route
+                        path="/projects/industrial-projects/"
+                        element={<ProjectTypeGlobal />}
+                      />
+                      <Route
+                        path="/projects/sco-plots/"
+                        element={<ProjectTypeGlobal />}
+                      />
+                      <Route
+                        path="/projects/independent-floors/"
+                        element={<ProjectTypeGlobal />}
+                      />
                       <Route path="/news-and-articals/" element={<NewsandArtical />} />
                       {/* New dynamic project type routes */}
                       <Route path="/project-type/:type" element={<ProjectTypeGlobal />} />
@@ -502,8 +576,10 @@ function App() {
                       />
                       <Route path="/forgetpassword" element={<ResetEmailPassword />} />
                       <Route path="/knowabouts" element={<PropertyKnow />} />
+
                       <Route path="/test-sales-head" element={<LazyLoad><TestSalesHead /></LazyLoad>} />
                       <Route path="/:pUrl/" element={<ProjectLayout2 />} />
+
                       <Route
                         path="/userviewproperty/:id"
                         element={<UserViewProperty />}
@@ -748,7 +824,8 @@ function App() {
                         <Route path="drafts" element={<DraftManagement />} />
                       </Route>
                     </Route>
-                  </Routes>
+                  <Route path="/:pUrl/" element={<ProjectLayout2 />} />
+                </Routes>
                 </Suspense>
               </ErrorBoundary>
             </QueryClientProvider>
