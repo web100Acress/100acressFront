@@ -1,7 +1,7 @@
-// Project Type Routes Configuration - Using Original URLs
+// Project Type Routes Configuration - Using Unified URL Structure
 export const projectTypeRoutes = {
   "sco-plots": {
-    path: "/sco/plots/",
+    path: "/projects/sco-plots/",
     title: "SCO Plots in Gurugram",
     description: "Discover Premium SCO Plots in Gurugram – Your Gateway to Shop-Cum-Office Investment and Business Growth."
   },
@@ -11,17 +11,17 @@ export const projectTypeRoutes = {
     description: "Discover Premium Luxury Villas Across India – Your Gateway to Exquisite Living and Prime Real Estate Investment."
   },
   "plots-in-gurugram": {
-    path: "/plots-in-gurugram/",
+    path: "/projects/plots/",
     title: "Plots in Gurugram", 
     description: "Discover Premium Plots in Gurugram – Your Gateway to Prime Real Estate Investment."
   },
   "residential-projects": {
-    path: "/property/residential/",
+    path: "/projects/residential/",
     title: "Residential Property",
     description: "Residential properties range from homes to apartments, each crafted to match unique lifestyles and comfort needs."
   },
   "independent-floors": {
-    path: "/projects/independentfloors/",
+    path: "/projects/independent-floors/",
     title: "Independent & Builder Floors",
     description: "Discover Premium Independent & Builder Floors – Curated Living Spaces in Top Cities."
   },

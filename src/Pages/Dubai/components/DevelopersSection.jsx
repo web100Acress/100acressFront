@@ -77,20 +77,20 @@ export const DevelopersSection = () => {
       
       <div className="container relative">
         {/* Section Header */}
-        <div className="text-center mb-16 space-y-4 animate-fade-in">
-          <span className="text-gold text-sm font-medium tracking-[0.3em] uppercase">
+        <div className="text-center mb-8 sm:mb-12 lg:mb-16 space-y-3 sm:space-y-4 px-4 animate-fade-in">
+          <span className="text-gold text-xs sm:text-sm font-medium tracking-[0.2em] sm:tracking-[0.3em] uppercase">
             Trusted Partners
           </span>
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-white">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-display font-bold text-white leading-tight">
             Top Developers
           </h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-sm sm:text-base lg:text-xl text-muted-foreground max-w-lg sm:max-w-2xl mx-auto">
             Partnering with Dubai's most prestigious property developers
           </p>
         </div>
 
         {/* Developers Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 max-w-6xl mx-auto">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6 max-w-6xl mx-auto px-4">
           {developers.map((developer, index) => (
             <div
               key={developer.name}

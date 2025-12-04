@@ -68,7 +68,24 @@ const GlobalFilterTemplate = ({
     const path = location.pathname;
     console.log('Current path:', path);
     
-    // Only return status for status pages, not for type/city/budget pages
+    // Check for new status URL format first: projects-status/{status}-projects
+    if (path.includes('/projects-status/')) {
+      const status = path.split('/projects-status/')[1]?.split('-projects')[0];
+      console.log('Detected status from new URL format:', status);
+      
+      const statusMap = {
+        'upcoming': 'upcoming',
+        'underconstruction': 'underconstruction', 
+        'readytomove': 'readytomove',
+        'newlaunch': 'newlaunch'
+      };
+      
+      if (statusMap[status]) {
+        return statusMap[status];
+      }
+    }
+    
+    // Keep existing status patterns for backward compatibility
     if (path.includes('upcoming-projects-in-gurgaon')) return 'upcoming';
     if (path.includes('project-in-underconstruction')) return 'underconstruction';
     if (path.includes('property-ready-to-move')) return 'readytomove';

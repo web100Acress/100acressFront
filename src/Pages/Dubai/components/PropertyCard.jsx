@@ -64,7 +64,7 @@ export const PropertyCard = ({
       className="group relative overflow-hidden rounded-xl glass-effect border border-white/10 hover:border-gold/50 transition-all duration-500 hover:shadow-gold cursor-pointer"
     >
         {/* Image */}
-        <div className="relative h-64 overflow-hidden">
+        <div className="relative h-48 sm:h-56 md:h-64 overflow-hidden">
         <img
           src={image}
           alt={title}
@@ -101,13 +101,13 @@ export const PropertyCard = ({
       </div>
 
       {/* Content */}
-      <div className="p-6 space-y-4">
+      <div className="p-3 sm:p-4 md:p-6 space-y-2 sm:space-y-3 md:space-y-4">
         <div>
-          <h3 className="text-xl font-display font-semibold text-white mb-2 group-hover:text-gold transition-colors">
+          <h3 className="text-base sm:text-lg md:text-xl font-display font-semibold text-white mb-1 sm:mb-2 group-hover:text-gold transition-colors">
             {title}
           </h3>
-          <p className="text-sm text-muted-foreground flex items-center">
-            <MapPin className="h-4 w-4 mr-1 text-gold" />
+          <p className="text-xs sm:text-sm text-muted-foreground flex items-center">
+            <MapPin className="h-3 w-3 sm:h-4 sm:w-4 mr-1 text-gold" />
             {location}
           </p>
         </div>
@@ -122,14 +122,14 @@ export const PropertyCard = ({
               <p className="text-xs text-muted-foreground">Starting Price</p>
               
             </div>
-            <p className="text-2xl font-bold text-gold mb-1">
+            <p className="text-lg sm:text-xl md:text-2xl font-bold text-gold mb-1">
               {formatPrice(price)}
             </p>
           </div>
           <Button 
             variant="outline" 
             size="sm" 
-            className="border-gold text-gold hover:text-black"
+            className="border-gold text-gold hover:text-black text-xs sm:text-sm"
             onClick={(e) => e.handleCardClick()}
           >
             View Details

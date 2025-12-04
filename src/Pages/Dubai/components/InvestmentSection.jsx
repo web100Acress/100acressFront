@@ -47,20 +47,20 @@ export const InvestmentSection = () => {
       
       <div className="container relative">
         {/* Section Header */}
-        <div className="text-center mb-16 space-y-4 animate-fade-in">
-          <span className="text-gold text-sm font-medium tracking-[0.3em] uppercase">
+        <div className="text-center mb-8 sm:mb-12 lg:mb-16 space-y-3 sm:space-y-4 px-4 animate-fade-in">
+          <span className="text-gold text-xs sm:text-sm font-medium tracking-[0.2em] sm:tracking-[0.3em] uppercase">
             Market Intelligence
           </span>
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-white">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-display font-bold text-white leading-tight">
             Investment Insights
           </h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-sm sm:text-base lg:text-xl text-muted-foreground max-w-lg sm:max-w-2xl mx-auto">
             Dubai offers exceptional returns and investment opportunities
           </p>
         </div>
 
         {/* Insights Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-12 lg:mb-16 px-4">
           {insights.map((insight, index) => {
             const Icon = insight.icon;
             return (

@@ -323,11 +323,11 @@ const Home = () => {
         break;
       case "Featured":
         setDisplayedProjects(memoizedProjects.featured);
-        setPath("/projects-in-gurugram/");
+        setPath("/projects/featured/");
         break;
       case "Upcoming":
         setDisplayedProjects(memoizedProjects.upcoming);
-        setPath("/projects/upcoming-projects-in-gurgaon/");
+        setPath("/projects/upcoming/");
         break;
       case "Commercial":
         setDisplayedProjects(memoizedProjects.commercial.slice(0, 4));
@@ -335,7 +335,7 @@ const Home = () => {
         break;
       case "SCO":
         setDisplayedProjects(memoizedProjects.sco.slice(0, 4));
-        setPath("/sco/plots/");
+        setPath("/projects/sco-plots/");
         break;
       case "Affordable":
         setDisplayedProjects(memoizedProjects.affordable.slice(0, 4));
@@ -343,7 +343,7 @@ const Home = () => {
         break;
       case "Budget":
         setDisplayedProjects(memoizedProjects.budget);
-        setPath("/budget-properties/");
+        setPath("/projects/");
         break;
       case "Luxury":
         setDisplayedProjects(memoizedProjects.luxury.slice(0, 4));

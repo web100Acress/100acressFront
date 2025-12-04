@@ -55,27 +55,27 @@ export const NewHero = () => {
           }}
         >
           {/* Tagline */}
-          <div className="mb-6">
-            <span className="inline-block text-gold text-sm sm:text-base font-medium tracking-wider uppercase border border-gold/30 px-4 py-2 rounded-full backdrop-blur-sm bg-black/20">
+          <div className="mb-4 sm:mb-6">
+            <span className="inline-block text-gold text-xs sm:text-sm font-medium tracking-wider uppercase border border-gold/30 px-2 sm:px-4 py-1 sm:py-2 rounded-full backdrop-blur-sm bg-black/20 text-xs sm:text-sm">
               {emirateConfig.tagline}
             </span>
           </div>
           
           {/* Main Headline */}
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-tight mb-6">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-white leading-tight mb-4 sm:mb-6">
             {emirateConfig.headline.split(' ').slice(0, -2).join(' ')}
-            <span className="block text-gold mt-2">
+            <span className="block text-gold mt-1 sm:mt-2">
               {emirateConfig.headline.split(' ').slice(-2).join(' ')}
             </span>
           </h1>
           
           {/* Description */}
-          <p className="text-lg sm:text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto leading-relaxed mb-8">
+          <p className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-300 max-w-2xl sm:max-w-3xl mx-auto leading-relaxed mb-6 sm:mb-8 px-2">
             {emirateConfig.description}
           </p>
 
           {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4">
             <button 
               onClick={() => {
                 const element = document.getElementById('properties');
@@ -83,14 +83,14 @@ export const NewHero = () => {
                   element.scrollIntoView({ behavior: 'smooth' });
                 }
               }}
-              className="px-8 py-4 bg-gold text-black font-semibold rounded-lg hover:bg-gold/90 transition-all duration-300 transform hover:scale-105"
+              className="px-4 sm:px-6 py-2 sm:py-3 bg-gold text-black font-semibold rounded-lg hover:bg-gold/90 transition-all duration-300 transform hover:scale-105 text-sm sm:text-base"
             >
               Explore Properties
             </button>
 
             <button 
               onClick={() => window.open("https://wa.me/919811750740?text=Hi! I'm interested in Dubai properties. Can you help me?", "_blank")}
-              className="px-8 py-4 border-2 border-white text-white font-semibold rounded-lg hover:bg-[#d4af37]  hover:text-black transition-all duration-300"
+              className="px-4 sm:px-6 py-2 sm:py-3 border-2 border-white text-white font-semibold rounded-lg hover:bg-[#d4af37]  hover:text-black transition-all duration-300 text-sm sm:text-base"
             >
               Contact Us
             </button>
