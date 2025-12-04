@@ -68,10 +68,28 @@ const GlobalFilterTemplate = ({
     const path = location.pathname;
     console.log('Current path:', path);
     
-    // Check for new status URL format first: projects-status/{status}-projects
+    // Check for new unified status URLs: projects/{status}
+    if (path.includes('/projects/') && !path.includes('/projects-in-')) {
+      const filter = path.split('/projects/')[1]?.replace('/', '');
+      console.log('Detected unified projects filter:', filter);
+      
+      const statusMap = {
+        'upcoming': 'upcoming',
+        'newlaunch': 'newlaunch',
+        'underconstruction': 'underconstruction',
+        'ready-to-move': 'readytomove'
+      };
+      
+      if (statusMap[filter]) {
+        console.log('Detected status from unified URL:', statusMap[filter]);
+        return statusMap[filter];
+      }
+    }
+    
+    // Check for old status URL format: projects-status/{status}-projects
     if (path.includes('/projects-status/')) {
       const status = path.split('/projects-status/')[1]?.split('-projects')[0];
-      console.log('Detected status from new URL format:', status);
+      console.log('Detected status from old URL format:', status);
       
       const statusMap = {
         'upcoming': 'upcoming',

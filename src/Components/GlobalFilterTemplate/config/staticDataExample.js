@@ -99,7 +99,19 @@ export const getPageDataFromURL = (pathname, searchParams = {}) => {
     
     // Check if it's a budget filter
     if (filter.includes('cr') || filter.includes('under-') || filter.includes('above-')) {
-      return getBudgetPageData(filter);
+      // Convert URL format to data format
+      const budgetMap = {
+        'under-1-cr': 'under1cr',
+        '1-5-cr': '1to5cr',
+        '5-10-cr': '5to10cr',
+        '10-20-cr': '10to20cr',
+        '20-50-cr': '20to50cr',
+        'above-50-cr': 'above50cr'
+      };
+      
+      const budgetKey = budgetMap[filter] || 'under1cr';
+      console.log('Budget filter detected - URL format:', filter, '-> Data format:', budgetKey);
+      return getBudgetPageData(budgetKey);
     }
     
     // Otherwise, treat as project type
