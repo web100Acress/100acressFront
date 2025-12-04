@@ -111,20 +111,20 @@ const SalesHeadDashboard = () => {
 
   const StatCard = ({ title, value, icon: Icon, color, trend, onClick }) => (
     <div 
-      className={`${color} rounded-xl p-6 shadow-lg transform transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer`}
+      className={`${color} rounded-xl p-8 shadow-lg transform transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer`}
       onClick={onClick}
     >
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-white/80 text-sm font-medium mb-1">{title}</p>
-          <p className="text-white text-2xl font-bold">{value}</p>
+          <p className="text-white/80 text-base font-medium mb-2">{title}</p>
+          <p className="text-white text-4xl font-bold">{value}</p>
           {trend && (
-            <p className="text-white/70 text-xs mt-1">
+            <p className="text-white/70 text-sm mt-2">
               {trend > 0 ? `↑ ${trend}%` : `↓ ${Math.abs(trend)}%`} from last month
             </p>
           )}
         </div>
-        <Icon className="text-white/80 text-3xl" />
+        <Icon className="text-white/80 text-5xl" />
       </div>
     </div>
   );
@@ -145,13 +145,20 @@ const SalesHeadDashboard = () => {
     
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+          <StatCard 
+          title="Dashboard" 
+          value="0"
+          icon={MdGroup} 
+          color="bg-gradient-to-r from-indigo-500 to-purple-600"
+          onClick={() => navigate('/sales-head/dashboard')}
+        />
         <StatCard 
           title="All Users" 
           value={dashboardData.totalSalesTeam} 
           icon={MdGroup} 
           color="bg-gradient-to-r from-blue-500 to-blue-600"
-          onClick={() => navigate('/sales-head/users')}
+          onClick={() => navigate('/sales-head/registered-users')}
         />
         {/* <StatCard 
           title="Total Projects" 
@@ -160,19 +167,26 @@ const SalesHeadDashboard = () => {
           color="bg-gradient-to-r from-purple-500 to-purple-600"
           onClick={() => navigate('/sales-head/projects')}
         /> */}
-        <StatCard 
+        {/* <StatCard 
           title="Project Enquiries" 
           value={dashboardData.totalEnquiries} 
           icon={MdPhone} 
           color="bg-gradient-to-r from-green-500 to-green-600"
           onClick={() => navigate('/sales-head/enquiries')}
-        />
+        /> */}
         <StatCard 
           title="Resale Enquiries" 
           value={dashboardData.totalResaleEnquiries} 
           icon={MdHome} 
           color="bg-gradient-to-r from-orange-500 to-orange-600"
           onClick={() => navigate('/sales-head/resale-enquiries')}
+        />
+        <StatCard 
+          title="Listed Properties" 
+          value={dashboardData.totalProjects} 
+          icon={MdBusiness} 
+          color="bg-gradient-to-r from-purple-500 to-purple-600"
+          onClick={() => navigate('/sales-head/listed-properties')}
         />
       </div>
     </div>
