@@ -703,7 +703,7 @@ const Home = () => {
             <div ref={setRef("upcoming")} data-section="upcoming" style={{ height: "10px" }}></div>
             <div>
               {UpcomingProjects.length === 0 ? <CustomSkeleton /> : (
-                <CommonProject data={UpcomingProjects} title="New Launch Housing Projects in Gurgaon" animation="fade-down" path={"/projects-in-newlaunch/"} compact />
+                <CommonProject data={UpcomingProjects} title="New Launch Housing Projects in Gurgaon" animation="fade-down" path={"/projects/newlaunch/"} compact />
               )}
             </div>
 
@@ -728,7 +728,7 @@ const Home = () => {
             <div ref={setRef("SCO")} data-section="SCO" style={{ height: "10px" }}></div>
             <div>
               {SCOProjects.length === 0 ? <CustomSkeleton /> : (
-                <CommonProject data={SCOProjects.slice(0, 4)} title="SCO Projects in Gurugram" animation="flip-left" path="/sco/plots/" compact />
+                <CommonProject data={SCOProjects.slice(0, 4)} title="SCO Projects in Gurugram" animation="flip-left" path="/projects/sco-plots/" compact />
               )}
             </div>
 
@@ -756,7 +756,7 @@ const Home = () => {
             <div ref={setRef("delhi")} data-section="delhi" style={{ height: "10px" }}></div>
             <div>
               {ProjectinDelhi.length === 0 ? <CustomSkeleton /> : (
-                <CommonProject data={ProjectinDelhi} title="Top Projects in Delhi" animation="zoom-out-left" path="/project-in-delhi/" compact />
+                <CommonProject data={ProjectinDelhi} title="Top Projects in Delhi" animation="zoom-out-left" path="/projects-in-delhi/" compact />
               )}
             </div>
 
