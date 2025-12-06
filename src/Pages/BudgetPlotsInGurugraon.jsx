@@ -44,7 +44,7 @@ const BudgetPlotsInGurugraon = () => {
           </h2>
         </div>
         <div className=" ml-2 hidden sm:block">
-        <Link to="/plots-in-gurugram/" target="_top">
+        <Link to="/projects/plots/" target="_top">
         <span className="flex items-center text-white text-sm px-3 py-1 rounded-full bg-red-600 hover:bg-red-700 shadow-md transition-all duration-300">
           <EyeIcon />
           <span className="ml-2">View All</span>

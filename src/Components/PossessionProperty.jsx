@@ -141,7 +141,7 @@ const PossessionProperty = () => {
 
   const carouselItems = [
     {
-      to: "/projects-in-gurugram/property-ready-to-move/",
+      to: "/projects/ready-to-move/",
       imgSrc: "../../Images/p1.webp",
       title: "Ready to Move",
       propertiesCount: "620+ Properties",
