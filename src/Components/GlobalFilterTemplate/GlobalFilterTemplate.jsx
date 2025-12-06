@@ -316,6 +316,11 @@ const GlobalFilterTemplate = ({
     };
     
     loadProjectOrders();
+    
+    // Reload project orders every 5 seconds to catch updates from admin panel
+    const interval = setInterval(loadProjectOrders, 5000);
+    
+    return () => clearInterval(interval);
   }, []);
 
   function handleDatafromSearch(data) {
