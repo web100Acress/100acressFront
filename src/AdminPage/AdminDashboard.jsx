@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import apiClient from '../config/apiClient';
 import { getApiBase } from '../config/apiBase';
 import Sidebar from './Sidebar'; // Assuming Sidebar is correctly imported
-import { MdBarChart, MdAssignment, MdHome, MdShoppingCart, MdBusiness, MdContactMail, MdPerson, MdPeople, MdLibraryBooks, MdWork, MdAccountCircle, MdEmail } from 'react-icons/md';
+import { MdBarChart, MdAssignment, MdHome, MdShoppingCart, MdBusiness, MdContactMail, MdPerson, MdPeople, MdLibraryBooks, MdWork, MdAccountCircle, MdEmail, MdFilterList } from 'react-icons/md';
 import { Building } from 'lucide-react';
 
 // Custom hook for count up animation
@@ -119,6 +119,16 @@ const sections = [
     shadowClass: 'shadow-light-slate'
   },
 
+  {
+    name: 'Project Filter Order',
+    api: null, // No API needed for this management tool
+    link: '/Admin/project-filter-order',
+    gradientClass: 'bg-purple-gradient',
+    icon: <MdFilterList size={32} className="card-icon" />,
+    description: 'Manage project display order in filters.',
+    shadowClass: 'shadow-purple'
+  },
+
 ];
 
 function formatNumber(num) {
@@ -212,6 +222,11 @@ const AdminDashboard = () => {
                 return 0;
               })
             ]).then(([openings, applications]) => ({ openings, applications }));
+          }
+
+          // Skip API call for management tools that don't need counts
+          if (section.api === null) {
+            return Promise.resolve(0);
           }
 
           // Default single-endpoint handling
@@ -427,6 +442,20 @@ const AdminDashboard = () => {
                             ></div>
                           </div>
                         </>
+                      ) : section.name === 'Project Filter Order' ? (
+                        <>
+                          <div className="card-number">
+                            Manage
+                          </div>
+                          <div className="progress-bar-container">
+                            <div
+                              className="progress-bar-fill"
+                              style={{
+                                width: '100%'
+                              }}
+                            ></div>
+                          </div>
+                        </>
                       ) : (
                         <>
                           <div className="card-number">
@@ -620,6 +649,9 @@ const dashboardStyles = `
 .bg-medium-slate-gradient {
   background: linear-gradient(to bottom right, #64748b, #475569, #94a3b8);
 }
+.bg-purple-gradient {
+  background: linear-gradient(to bottom right, #7c3aed, #6d28d9, #5b21b6);
+}
 
 /* Card Shadow Colors */
 .shadow-slate {
@@ -654,6 +686,9 @@ const dashboardStyles = `
 }
 .shadow-medium-slate {
   box-shadow: 0 10px 15px -3px rgba(203, 213, 225, 0.2), 0 4px 6px -2px rgba(203, 213, 225, 0.2);
+}
+.shadow-purple {
+  box-shadow: 0 10px 15px -3px rgba(124, 58, 237, 0.2), 0 4px 6px -2px rgba(124, 58, 237, 0.2);
 }
 
 
