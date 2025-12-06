@@ -128,6 +128,7 @@ const ContactCardLayout = lazy(() => import("./Components/Layout/ContactCardLayo
 const Addnew = lazy(() => import("./AdminPage/Addnew"));
 const InsertProject = lazy(() => import("./AdminPage/InsertProject"));
 const AdminDashboard = lazy(() => import("./AdminPage/AdminDashboard"));
+const ProjectFilterOrderManagement = lazy(() => import("./AdminPage/ProjectFilterOrderManagement"));
 const ContactCardManagement = lazy(() => import("./AdminPage/ContactCardManagement"));
 const Blog = lazy(() => import("./AdminPage/Blog"));
 const EditProject = lazy(() => import("./AdminPage/EditProject"));
@@ -797,6 +798,9 @@ function App() {
 
                     {/* Admin route for Market Reports */}
                     <Route path="/admin/insights/market-report-generator" element={<LazyLoad><MarketReportsAdmin /></LazyLoad>} />
+
+                    {/* Admin route for Project Filter Order Management */}
+                    <Route path="/Admin/project-filter-order" element={<LazyLoad><ProjectFilterOrderManagement /></LazyLoad>} />
 
                     
                     {/* Blog route only user with role Blog will be able to login */}
