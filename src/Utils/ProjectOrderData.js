@@ -12,8 +12,12 @@ export const getProjectOrderData = async () => {
     let orderData = null;
     
     if (response.data && response.data.data) {
-      // Format: { data: { ... } }
-      orderData = response.data.data;
+      // Format: { data: { customOrders: { ... } } }
+      if (response.data.data.customOrders) {
+        orderData = response.data.data.customOrders;
+      } else {
+        orderData = response.data.data;
+      }
     } else if (response.data && typeof response.data === 'object') {
       // Format: { luxury: [...], trending: [...], ... }
       orderData = response.data;
