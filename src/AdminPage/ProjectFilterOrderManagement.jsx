@@ -41,7 +41,7 @@ const ProjectFilterOrderManagement = () => {
       console.log('Loading project orders from database...');
       
       // Load project orders from database
-      const ordersResponse = await api.get('/api/project-orders');
+      const ordersResponse = await api.get('/api/admin/project-orders');
       const orders = ordersResponse.data?.data || {};
       console.log('Project orders loaded from database:', orders);
       setProjectOrders(orders);
@@ -262,7 +262,7 @@ const ProjectFilterOrderManagement = () => {
         return;
       }
       
-      const response = await api.put('/api/project-orders', { data: projectOrders });
+      const response = await api.put('/api/admin/project-orders', { data: projectOrders });
       console.log('Save response:', response);
       
       if (response.data && response.data.success) {
