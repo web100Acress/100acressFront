@@ -1,10 +1,12 @@
-import React, { useContext, useState, useEffect, useRef, useCallback } from "react";
-import { DataContext } from "../../MyContext";
-import { useLocation } from "react-router-dom";
-import { Helmet } from "react-helmet";
-import { useSelector } from "react-redux";
-import Api_Service from "../../Redux/utils/Api_Service";
+import React, { useContext, useEffect, useState, useCallback, useMemo, useRef } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { useParams, useLocation, useNavigate } from "react-router-dom";
+import { allupcomingproject, newlaunch, underconstruction, readytomove } from "../../Redux/slice/AllSectionData.jsx";
+import Api_Service from "../../Redux/utils/Api_Service.jsx";
+import { getProjectOrderData } from "../../Utils/ProjectOrderData";
 import Footer from "../Actual_Components/Footer";
+import { DataContext } from "../../MyContext.jsx";
+import { Helmet } from "react-helmet";
 
 // Import modular components from ProjectStatusSearch
 import Hero from "../../Pages/ProjectStatusSearch/Hero";
@@ -62,6 +64,10 @@ const GlobalFilterTemplate = ({
   const requestThrottle = useRef(new Map());
   const isRequestInProgress = useRef(false);
   const lastRequestTime = useRef(0);
+  
+  // Project order state
+  const [projectOrders, setProjectOrders] = useState(null);
+  const [projectOrdersLoading, setProjectOrdersLoading] = useState(true);
   
   // Get project status from URL or props
   const getProjectStatus = () => {
@@ -180,10 +186,11 @@ const GlobalFilterTemplate = ({
   }, [getAllProjects]);
   
   // Redux selectors for different project types
-  const upcomingProjects = useSelector(store => store?.allsectiondata?.allupcomingproject);
-  const underConstructionProjects = useSelector(store => store?.allsectiondata?.underconstruction);
-  const readyToMoveProjects = useSelector(store => store?.allsectiondata?.readytomove);
-  const newLaunchProjects = useSelector(store => store?.allsectiondata?.newlaunch);
+  const allSectionData = useSelector(store => store?.allsectiondata);
+  const upcomingProjects = allSectionData?.allupcomingproject || [];
+  const underConstructionProjects = allSectionData?.underconstruction || [];
+  const readyToMoveProjects = allSectionData?.readytomove || [];
+  const newLaunchProjects = allSectionData?.newlaunch || [];
 
   // Selector for project type pages - also responds to filter changes
   const [activeQuery, setActiveQuery] = useState(currentConfig.query || '');
@@ -205,7 +212,7 @@ const GlobalFilterTemplate = ({
       return store?.allsectiondata?.[currentConfig.query] || [];
     }
     return [];
-  });
+  }, (left, right) => JSON.stringify(left) === JSON.stringify(right));
 
   // Get the appropriate project data based on status
   const getProjectData = () => {
@@ -292,6 +299,24 @@ const GlobalFilterTemplate = ({
 
   // Use the original project data - filtering will be handled by handleSearch
   const filteredProjectData = memoizedProjectData;
+
+  // Load project orders
+  useEffect(() => {
+    const loadProjectOrders = async () => {
+      try {
+        setProjectOrdersLoading(true);
+        const orders = await getProjectOrderData();
+        console.log('Project orders loaded in GlobalFilterTemplate:', orders);
+        setProjectOrders(orders);
+      } catch (error) {
+        console.error('Error loading project orders:', error);
+      } finally {
+        setProjectOrdersLoading(false);
+      }
+    };
+    
+    loadProjectOrders();
+  }, []);
 
   function handleDatafromSearch(data) {
     setFilteredProjects(data);
@@ -455,8 +480,64 @@ const GlobalFilterTemplate = ({
 
     console.log('handleSearch - filtered length:', filtered.length);
 
-    // Apply sorting
-    if (sort === 'price') {
+    // Apply custom project order if available and no explicit sort is selected
+    if (sort === 'newest' && projectOrders && !projectOrdersLoading) {
+      // Determine which city to use based on filters or page type
+      let orderCity = null;
+      
+      // Check if city filter is applied
+      if (filters.city) {
+        orderCity = filters.city;
+        console.log('Using city from filters:', filters.city);
+      } else if (pageType === 'city') {
+        // Extract city from URL for city pages
+        const path = location.pathname;
+        console.log('Checking path for city:', path);
+        if (path.includes('/projects-in-')) {
+          const cityFromPath = path.split('/projects-in-')[1]?.replace('/', '');
+          if (cityFromPath) {
+            orderCity = cityFromPath;
+            console.log('Extracted city from path:', cityFromPath);
+          }
+        }
+      }
+      
+      console.log('Final orderCity:', orderCity);
+      console.log('Available project orders:', Object.keys(projectOrders || {}));
+      
+      // Apply custom ordering if city is found
+      if (orderCity && projectOrders[orderCity]) {
+        const desiredOrder = projectOrders[orderCity]
+          .filter(item => item.isActive)
+          .map(item => item.name.toLowerCase());
+        
+        console.log(`Applying custom order for city: ${orderCity}`, desiredOrder);
+        
+        filtered = filtered.sort((a, b) => {
+          const aName = (a.projectName || '').toLowerCase();
+          const bName = (b.projectName || '').toLowerCase();
+          
+          const aIndex = desiredOrder.indexOf(aName);
+          const bIndex = desiredOrder.indexOf(bName);
+          
+          // If both projects are in the desired order, sort by that order
+          if (aIndex !== -1 && bIndex !== -1) {
+            return aIndex - bIndex;
+          }
+          
+          // If only one project is in the desired order, prioritize it
+          if (aIndex !== -1) return -1;
+          if (bIndex !== -1) return 1;
+          
+          // If neither is in the desired order, maintain original order
+          return 0;
+        });
+        
+        console.log('Applied custom order, first 5 projects:', filtered.slice(0, 5).map(p => p.projectName));
+      } else {
+        console.log('No custom order applied - city not found or no orders for city');
+      }
+    } else if (sort === 'price') {
       filtered = filtered.sort((a, b) => (a.minPrice || 0) - (b.minPrice || 0));
     } else if (sort === 'newest') {
       filtered = filtered.sort((a, b) => new Date(b.createdAt || b.updatedAt || 0) - new Date(a.createdAt || a.updatedAt || 0));
@@ -584,15 +665,15 @@ const GlobalFilterTemplate = ({
     }
   }, [location.pathname, pageType, currentConfig.query]);
 
-  // Auto-filter when filters or sort change (but not when data loads)
+  // Auto-filter when filters, sort, or project orders change (but not when data loads)
   useEffect(() => {
-    if (memoizedProjectData && memoizedProjectData.length > 0) {
+    if (memoizedProjectData && memoizedProjectData.length > 0 && !projectOrdersLoading) {
       // Only auto-filter if filters or sort have been set (not on initial data load)
       if (Object.keys(filters).some(key => filters[key] !== '') || sort) {
         handleSearch(false); // Don't reset pagination for auto-filter
       }
     }
-  }, [filters, sort]);
+  }, [filters, sort, projectOrders, projectOrdersLoading]);
 
   // Initialize displayed projects when data loads
   useEffect(() => {
