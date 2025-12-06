@@ -69,16 +69,16 @@ export const PropertiesSection = () => {
     
     console.log('Project Image Data:', {
       name: project.projectName,
-      thumbnail: project.thumbnail,
+      thumbnailImage: project.thumbnailImage,
       frontImage: project.frontImage,
-      images: project.images,
+      thumbnail: project.thumbnail,
       allImageFields: {
-        thumbnail: project.thumbnail,
+        thumbnailImage: project.thumbnailImage,
         frontImage: project.frontImage,
-        images: project.images,
-        image: project.image,
+        thumbnail: project.thumbnail,
         coverImage: project.coverImage,
-        mainImage: project.mainImage
+        mainImage: project.mainImage,
+        images: project.images
       }
     });
     
@@ -92,9 +92,26 @@ export const PropertiesSection = () => {
       allFields: Object.keys(project)
     });
     
+    // Determine the best image URL using the correct field names
+    let imageUrl = project.thumbnailImage?.url || project.thumbnailImage?.cdn_url || project.frontImage?.url || project.frontImage?.cdn_url || project.thumbnail?.url || project.thumbnail?.cdn_url;
+    
+    // Log the determined image URL for debugging
+    console.log('Final image URL for', project.projectName, ':', imageUrl);
+    
+    // Validate URL format
+    if (imageUrl && (imageUrl.startsWith('http') || imageUrl.startsWith('/'))) {
+      // URL looks valid
+    } else if (imageUrl) {
+      console.warn('Invalid image URL format:', imageUrl, 'for project:', project.projectName);
+      imageUrl = "/Images/100acresslogo.png";
+    } else {
+      console.log('No image found for project:', project.projectName, 'using fallback');
+      imageUrl = "/Images/100acresslogo.png";
+    }
+    
     return {
       id: project._id,
-      image: project.thumbnail?.url || project.thumbnail?.image || project.coverImage?.url || project.mainImage?.url || project.images?.[0]?.url || "/Images/logo.png",
+      image: imageUrl,
       title: project.projectName || "Luxury Property",
       location: project.city || "Dubai",
       price: priceValue, // Pass as number or null
