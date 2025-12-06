@@ -501,46 +501,113 @@ const GlobalFilterTemplate = ({
         if (path.includes('/projects-in-')) {
           const cityFromPath = path.split('/projects-in-')[1]?.replace('/', '');
           if (cityFromPath) {
-            orderCity = cityFromPath;
-            console.log('Extracted city from path:', cityFromPath);
+            // Capitalize first letter to match projectOrders keys
+            orderCity = cityFromPath.charAt(0).toUpperCase() + cityFromPath.slice(1);
+            console.log('Extracted city from path:', cityFromPath, '-> normalized:', orderCity);
           }
         }
       }
       
       console.log('Final orderCity:', orderCity);
       console.log('Available project orders:', Object.keys(projectOrders || {}));
+      console.log('Full projectOrders structure:', projectOrders);
       
       // Apply custom ordering if city is found
-      if (orderCity && projectOrders[orderCity]) {
-        const desiredOrder = projectOrders[orderCity]
-          .filter(item => item.isActive)
-          .map(item => item.name.toLowerCase());
+      if (orderCity && projectOrders && projectOrders[orderCity]) {
+        const cityOrders = projectOrders[orderCity];
+        console.log(`City orders for ${orderCity}:`, cityOrders);
+        
+        const desiredOrder = Array.isArray(cityOrders) 
+          ? cityOrders.filter(item => item.isActive).map(item => item.name.toLowerCase())
+          : [];
         
         console.log(`Applying custom order for city: ${orderCity}`, desiredOrder);
+        console.log('Projects to sort:', filtered.slice(0, 3).map(p => p.projectName));
         
-        filtered = filtered.sort((a, b) => {
-          const aName = (a.projectName || '').toLowerCase();
-          const bName = (b.projectName || '').toLowerCase();
+        if (desiredOrder.length > 0) {
+          filtered = filtered.sort((a, b) => {
+            const aName = (a.projectName || '').toLowerCase();
+            const bName = (b.projectName || '').toLowerCase();
+            
+            const aIndex = desiredOrder.indexOf(aName);
+            const bIndex = desiredOrder.indexOf(bName);
+            
+            console.log(`Comparing: "${aName}" (index: ${aIndex}) vs "${bName}" (index: ${bIndex})`);
+            
+            // If both projects are in the desired order, sort by that order
+            if (aIndex !== -1 && bIndex !== -1) {
+              return aIndex - bIndex;
+            }
+            
+            // If only one project is in the desired order, prioritize it
+            if (aIndex !== -1) return -1;
+            if (bIndex !== -1) return 1;
+            
+            // If neither is in the desired order, maintain original order
+            return 0;
+          });
           
-          const aIndex = desiredOrder.indexOf(aName);
-          const bIndex = desiredOrder.indexOf(bName);
-          
-          // If both projects are in the desired order, sort by that order
-          if (aIndex !== -1 && bIndex !== -1) {
-            return aIndex - bIndex;
-          }
-          
-          // If only one project is in the desired order, prioritize it
-          if (aIndex !== -1) return -1;
-          if (bIndex !== -1) return 1;
-          
-          // If neither is in the desired order, maintain original order
-          return 0;
-        });
-        
-        console.log('Applied custom order, first 5 projects:', filtered.slice(0, 5).map(p => p.projectName));
+          console.log('Applied custom order, first 5 projects:', filtered.slice(0, 5).map(p => p.projectName));
+        }
       } else {
         console.log('No custom order applied - city not found or no orders for city');
+        console.log('orderCity:', orderCity);
+        console.log('projectOrders[orderCity]:', projectOrders ? projectOrders[orderCity] : 'projectOrders is null');
+      }
+      
+      // Apply status-based ordering for status pages
+      let orderStatus = null;
+      if (typeof window !== 'undefined') {
+        const path = window.location.pathname;
+        console.log('Checking path for status:', path);
+        
+        if (path.includes('/upcoming-projects')) {
+          orderStatus = 'upcoming';
+        } else if (path.includes('/new-launch-projects')) {
+          orderStatus = 'newlaunch';
+        } else if (path.includes('/coming-soon-projects')) {
+          orderStatus = 'comingsoon';
+        } else if (path.includes('/under-construction-projects')) {
+          orderStatus = 'underconstruction';
+        } else if (path.includes('/ready-to-move-projects')) {
+          orderStatus = 'readytomove';
+        }
+      }
+      
+      console.log('Final orderStatus:', orderStatus);
+      
+      // Apply custom ordering if status is found
+      if (orderStatus && projectOrders && projectOrders[orderStatus]) {
+        const statusOrders = projectOrders[orderStatus];
+        console.log(`Status orders for ${orderStatus}:`, statusOrders);
+        
+        const desiredOrder = Array.isArray(statusOrders) 
+          ? statusOrders.filter(item => item.isActive).map(item => item.name.toLowerCase())
+          : [];
+        
+        console.log(`Applying custom order for status: ${orderStatus}`, desiredOrder);
+        
+        if (desiredOrder.length > 0) {
+          // First, separate projects into ordered and unordered
+          const orderedProjects = [];
+          const unorderedProjects = [];
+          
+          filtered.forEach(project => {
+            const projectName = (project.projectName || '').toLowerCase();
+            const orderIndex = desiredOrder.indexOf(projectName);
+            
+            if (orderIndex !== -1) {
+              orderedProjects[orderIndex] = project;
+            } else {
+              unorderedProjects.push(project);
+            }
+          });
+          
+          // Combine: ordered projects first (in exact order), then unordered
+          filtered = [...orderedProjects.filter(Boolean), ...unorderedProjects];
+          
+          console.log('Applied status custom order, first 5 projects:', filtered.slice(0, 5).map(p => p.projectName));
+        }
       }
     } else if (sort === 'price') {
       filtered = filtered.sort((a, b) => (a.minPrice || 0) - (b.minPrice || 0));
