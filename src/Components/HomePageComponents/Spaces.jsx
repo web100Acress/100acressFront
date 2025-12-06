@@ -10,7 +10,7 @@ function SpacesAvailable() {
   const projects = [
     { 
       title: "Residential Projects", 
-      link: "/property/residential/", 
+      link: "/projects/residential/", 
       image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/residential.webp",
       description: "Luxury apartments and homes in prime locations",
       badge: "Popular"
@@ -24,21 +24,21 @@ function SpacesAvailable() {
     },
     { 
       title: "SCO Plots", 
-      link: "/sco/plots/", 
+      link: "/projects/sco-plots/", 
       image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/sco.webp",
       description: "Shop-cum-office plots for business growth",
       badge: "New"
     },
     { 
       title: "Builder & Independent Floor", 
-      link: "/projects/independentfloors/", 
+      link: "/projects/independent-floors/", 
       image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/builderandindepedent.webp",
       description: "Independent floors and builder floors",
       badge: "Featured"
     },
     { 
       title: "Plots In Gurugram", 
-      link: "/plots-in-gurugram/", 
+      link: "/projects/plots/", 
       image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/deendayal.webp",
       description: "Investment-ready plots in prime locations",
       badge: "Best Value"
