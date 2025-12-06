@@ -15,6 +15,7 @@ const ProjectFilterOrderManagement = () => {
   const [projectCount, setProjectCount] = useState(4);
   const [searchTerm, setSearchTerm] = useState('');
   const [showAddProjectModal, setShowAddProjectModal] = useState(false);
+  const [currentView, setCurrentView] = useState('dashboard'); // 'dashboard', 'city', 'status', 'type'
 
   const categories = [
     { key: 'luxury', label: 'Luxury', description: 'Premium luxury projects' },
@@ -120,17 +121,12 @@ const ProjectFilterOrderManagement = () => {
   };
 
   const handleAddProjectFromModal = () => {
-    const city = activeCity;
-    const currentItems = projectOrders[city] || [];
+    const key = activeCity;
+    const currentItems = projectOrders[key] || [];
     const maxOrder = Math.max(...currentItems.map(item => item.order), 0);
     
-    // Find available projects not already in this city
-    const usedProjectNames = new Set(currentItems.map(item => item.name));
-    const availableProjects = allProjects.filter(project => 
-      project.city === city && 
-      !usedProjectNames.has(project.projectName) &&
-      project.projectName.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    // Use the same filtering logic as getAvailableProjects
+    const availableProjects = getAvailableProjects();
     
     if (!searchTerm.trim()) {
       setError('Please enter a project name');
@@ -138,7 +134,7 @@ const ProjectFilterOrderManagement = () => {
     }
     
     if (availableProjects.length === 0) {
-      setError('No matching projects found for this city');
+      setError('No matching projects found');
       return;
     }
     
@@ -151,7 +147,7 @@ const ProjectFilterOrderManagement = () => {
     
     setProjectOrders({
       ...projectOrders,
-      [city]: [...currentItems, newProject]
+      [key]: [...currentItems, newProject]
     });
     
     setSuccessMessage('Project added successfully');
@@ -161,15 +157,47 @@ const ProjectFilterOrderManagement = () => {
   };
 
   const getAvailableProjects = () => {
-    const city = activeCity;
-    const currentItems = projectOrders[city] || [];
+    const key = activeCity;
+    const currentItems = projectOrders[key] || [];
     const usedProjectNames = new Set(currentItems.map(item => item.name));
     
-    return allProjects.filter(project => 
-      project.city === city && 
-      !usedProjectNames.has(project.projectName) &&
-      project.projectName.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    // For City view - filter by city
+    if (currentView === 'city') {
+      return allProjects.filter(project => 
+        project.city === key && 
+        !usedProjectNames.has(project.projectName) &&
+        project.projectName.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+    
+    // For Status view - filter by status AND search by project name
+    if (currentView === 'status') {
+      // If no search term, show all projects with that status
+      if (!searchTerm.trim()) {
+        return allProjects.filter(project => 
+          project.project_Status === key && 
+          !usedProjectNames.has(project.projectName)
+        );
+      }
+      
+      // If search term provided, filter by status AND project name
+      return allProjects.filter(project => 
+        project.project_Status === key && 
+        !usedProjectNames.has(project.projectName) &&
+        project.projectName.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+    
+    // For Type view - filter by type
+    if (currentView === 'type') {
+      return allProjects.filter(project => 
+        project.propertyType === key && 
+        !usedProjectNames.has(project.projectName) &&
+        project.projectName.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+    
+    return [];
   };
 
   const handleRemoveProject = (projectId) => {
@@ -296,7 +324,7 @@ const ProjectFilterOrderManagement = () => {
             Project Filter Order Management
           </h1>
           <p className="text-gray-600">
-            Manage the order of top projects displayed in filter categories
+            Manage the order of projects by city, status, and type
           </p>
         </div>
 
@@ -313,28 +341,82 @@ const ProjectFilterOrderManagement = () => {
           </div>
         )}
 
-        {/* City Selection */}
-        <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-          <h2 className="text-xl font-semibold mb-4">Select City</h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-            {cities.map(city => (
-              <button
-                key={city}
-                onClick={() => setActiveCity(city)}
-                className={`p-3 rounded-lg border transition-all ${
-                  activeCity === city
-                    ? 'bg-blue-500 text-white border-blue-500'
-                    : 'bg-white text-gray-700 border-gray-300 hover:border-blue-300'
-                }`}
-              >
-                <div className="font-medium">{city}</div>
-                <div className="text-xs opacity-75 mt-1">
-                  {getCurrentCityProjects().filter(p => p.isActive).length} active
-                </div>
-              </button>
-            ))}
+        {/* Dashboard View */}
+        {currentView === 'dashboard' && (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* City Card */}
+            <div 
+              onClick={() => setCurrentView('city')}
+              className="bg-white rounded-lg shadow-md p-8 cursor-pointer hover:shadow-lg transition-shadow"
+            >
+              <div className="text-center">
+                <div className="text-5xl mb-4">🏙️</div>
+                <h2 className="text-2xl font-bold text-gray-900 mb-2">City</h2>
+                <p className="text-gray-600 mb-4">Manage project order by city</p>
+                <button className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition">
+                  Manage
+                </button>
+              </div>
+            </div>
+
+            {/* Status Card */}
+            <div 
+              onClick={() => setCurrentView('status')}
+              className="bg-white rounded-lg shadow-md p-8 cursor-pointer hover:shadow-lg transition-shadow"
+            >
+              <div className="text-center">
+                <div className="text-5xl mb-4">📊</div>
+                <h2 className="text-2xl font-bold text-gray-900 mb-2">Status</h2>
+                <p className="text-gray-600 mb-4">Manage project order by status</p>
+                <button className="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition">
+                  Manage
+                </button>
+              </div>
+            </div>
+
+            {/* Type Card */}
+            <div 
+              onClick={() => setCurrentView('type')}
+              className="bg-white rounded-lg shadow-md p-8 cursor-pointer hover:shadow-lg transition-shadow"
+            >
+              <div className="text-center">
+                <div className="text-5xl mb-4">🏢</div>
+                <h2 className="text-2xl font-bold text-gray-900 mb-2">Type</h2>
+                <p className="text-gray-600 mb-4">Manage project order by type</p>
+                <button className="px-6 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition">
+                  Manage
+                </button>
+              </div>
+            </div>
           </div>
-        </div>
+        )}
+
+        {/* City Management View */}
+        {currentView === 'city' && (
+          <div>
+            <button
+              onClick={() => setCurrentView('dashboard')}
+              className="mb-6 px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition"
+            >
+              ← Back to Dashboard
+            </button>
+
+            {/* City Selection Dropdown */}
+            <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+              <h2 className="text-xl font-semibold mb-4">Select City</h2>
+              <select
+                value={activeCity}
+                onChange={(e) => setActiveCity(e.target.value)}
+                className="w-full md:w-64 border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
+              >
+                <option value="">-- Choose a city --</option>
+                {cities.map(city => (
+                  <option key={city} value={city}>
+                    {city} ({getCurrentCityProjects().filter(p => p.isActive).length} active)
+                  </option>
+                ))}
+              </select>
+            </div>
 
         {/* Project Count Selection */}
         <div className="bg-white rounded-lg shadow-md p-6 mb-6">
@@ -473,7 +555,190 @@ const ProjectFilterOrderManagement = () => {
             )}
           </div>
         </div>
-      </div>
+          </div>
+        )}
+
+        {/* Status Management View */}
+        {currentView === 'status' && (
+          <div>
+            <button
+              onClick={() => setCurrentView('dashboard')}
+              className="mb-6 px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition"
+            >
+              ← Back to Dashboard
+            </button>
+
+            {/* Status Selection Dropdown */}
+            <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+              <h2 className="text-xl font-semibold mb-4">Select Status</h2>
+              <select
+                value={activeCity}
+                onChange={(e) => setActiveCity(e.target.value)}
+                className="w-full md:w-64 border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-900"
+              >
+                <option value="">-- Choose a status --</option>
+                <option value="newlaunch">New Launch</option>
+                <option value="comingsoon">Coming Soon</option>
+                <option value="underconstruction">Under Construction</option>
+                <option value="readytomove">Ready to Move</option>
+              </select>
+            </div>
+
+            {/* Project Count Selection */}
+            <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+              <h2 className="text-xl font-semibold mb-4">Display Settings</h2>
+              <div className="flex items-center space-x-4">
+                <label className="text-gray-700">Show top projects:</label>
+                <select
+                  value={projectCount}
+                  onChange={(e) => setProjectCount(Number(e.target.value))}
+                  className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+                >
+                  <option value={4}>Top 4</option>
+                  <option value={8}>Top 8</option>
+                  <option value={12}>Top 12</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Current Status Projects */}
+            <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-semibold">
+                  {activeCity} Projects
+                </h2>
+                <div className="space-x-2">
+                  <button
+                    onClick={handleAddProject}
+                    className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition"
+                  >
+                    Add Project
+                  </button>
+                  <button
+                    onClick={handleSave}
+                    disabled={saving}
+                    className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition disabled:opacity-50"
+                  >
+                    {saving ? 'Saving...' : 'Save Changes'}
+                  </button>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                {getCurrentCityProjects().map((project, index) => (
+                  <div
+                    key={project.id}
+                    className="p-4 border rounded-lg bg-gray-50 border-gray-200 hover:border-gray-300 transition-all"
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-3">
+                        <div className="w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center text-sm font-medium">
+                          {index + 1}
+                        </div>
+                        <div>
+                          <div className="font-medium text-gray-900">
+                            {project.name}
+                          </div>
+                          <div className="text-sm text-gray-500">
+                            Order: {project.order}
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-center space-x-2">
+                        <label className="flex items-center">
+                          <input
+                            type="checkbox"
+                            checked={project.isActive}
+                            onChange={(e) => handleProjectToggle(project.id, e.target.checked)}
+                            className="mr-2"
+                          />
+                          <span className="text-sm">Active</span>
+                        </label>
+                        
+                        <div className="flex flex-col space-y-1">
+                          <button
+                            onClick={() => handleMoveProject(project.id, 'up')}
+                            disabled={index === 0}
+                            className="p-1 text-gray-500 hover:bg-gray-200 rounded transition disabled:opacity-50 disabled:cursor-not-allowed"
+                          >
+                            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                              <path fillRule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clipRule="evenodd"/>
+                            </svg>
+                          </button>
+                          <button
+                            onClick={() => handleMoveProject(project.id, 'down')}
+                            disabled={index === getCurrentCityProjects().length - 1}
+                            className="p-1 text-gray-500 hover:bg-gray-200 rounded transition disabled:opacity-50 disabled:cursor-not-allowed"
+                          >
+                            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                              <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd"/>
+                            </svg>
+                          </button>
+                        </div>
+                        
+                        <button
+                          onClick={() => handleRemoveProject(project.id)}
+                          className="p-2 text-red-500 hover:bg-red-50 rounded transition"
+                        >
+                          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd"/>
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+                {getCurrentCityProjects().length === 0 && (
+                  <div className="text-center py-8 text-gray-500">
+                    No projects in this status. Click "Add Project" to get started.
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Preview */}
+            <div className="bg-white rounded-lg shadow-md p-6">
+              <h2 className="text-xl font-semibold mb-4">Preview</h2>
+              <div className="text-sm text-gray-600 mb-4">
+                This shows how the top {projectCount} projects will appear in the {activeCity} status section:
+              </div>
+              <div className="space-y-2">
+                {getVisibleProjects().map((project, index) => (
+                  <div key={project.id} className="flex items-center space-x-3 p-3 bg-gray-50 rounded">
+                    <div className="w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center text-sm font-medium">
+                      {index + 1}
+                    </div>
+                    <div className="flex-1">
+                      <div className="font-medium">{project.name}</div>
+                    </div>
+                  </div>
+                ))}
+                {getVisibleProjects().length === 0 && (
+                  <div className="text-center py-4 text-gray-500">
+                    No active projects to display
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Type Management View */}
+        {currentView === 'type' && (
+          <div>
+            <button
+              onClick={() => setCurrentView('dashboard')}
+              className="mb-6 px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition"
+            >
+              ← Back to Dashboard
+            </button>
+            <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+              <h2 className="text-xl font-semibold mb-4">Type Management (Coming Soon)</h2>
+              <p className="text-gray-600">Type-based project ordering will be available soon.</p>
+            </div>
+          </div>
+        )}
 
       {/* Add Project Modal */}
       {showAddProjectModal && (
@@ -539,6 +804,7 @@ const ProjectFilterOrderManagement = () => {
           </div>
         </div>
       )}
+      </div>
     </div>
   );
 };
