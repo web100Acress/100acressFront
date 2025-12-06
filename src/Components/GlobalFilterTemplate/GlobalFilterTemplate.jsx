@@ -561,15 +561,15 @@ const GlobalFilterTemplate = ({
         const path = window.location.pathname;
         console.log('Checking path for status:', path);
         
-        if (path.includes('/upcoming-projects')) {
+        if (path.includes('/projects/upcoming')) {
           orderStatus = 'upcoming';
-        } else if (path.includes('/new-launch-projects')) {
+        } else if (path.includes('/projects/newlaunch')) {
           orderStatus = 'newlaunch';
-        } else if (path.includes('/coming-soon-projects')) {
+        } else if (path.includes('/projects/comingsoon')) {
           orderStatus = 'comingsoon';
-        } else if (path.includes('/under-construction-projects')) {
+        } else if (path.includes('/projects/underconstruction')) {
           orderStatus = 'underconstruction';
-        } else if (path.includes('/ready-to-move-projects')) {
+        } else if (path.includes('/projects/readytomove')) {
           orderStatus = 'readytomove';
         }
       }

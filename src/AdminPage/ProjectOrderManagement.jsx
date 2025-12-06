@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Sidebar from './Sidebar';
+import api from '../config/apiClient';
 import { 
   MdAdd, 
   MdEdit, 
@@ -72,20 +73,13 @@ const ProjectOrderManagement = () => {
   const loadProjectOrders = async () => {
     try {
       // First try to fetch from backend API
-      const response = await fetch(`${import.meta.env.VITE_API_BASE}/api/admin/project-orders`, {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('myToken')}`
-        }
-      });
-
-      if (response.ok) {
-        const result = await response.json();
-        if (result.success && result.data) {
-          setProjectOrders(result.data);
-          // Also save to localStorage as backup
-          localStorage.setItem('projectOrders', JSON.stringify(result.data));
-          return;
-        }
+      const response = await api.get('/api/admin/project-orders');
+      
+      if (response.data && response.data.success) {
+        setProjectOrders(response.data.data);
+        // Also save to localStorage as backup
+        localStorage.setItem('projectOrders', JSON.stringify(response.data.data));
+        return;
       }
     } catch (error) {
       console.error('Error fetching project orders from API:', error);
@@ -164,17 +158,9 @@ const ProjectOrderManagement = () => {
   const saveProjectOrders = async (newOrders) => {
     try {
       // Save to backend API
-      const response = await fetch(`${import.meta.env.VITE_API_BASE}/api/admin/project-orders`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('myToken')}`
-        },
-        body: JSON.stringify({ data: newOrders })
-      });
-
-      if (response.ok) {
-        const result = await response.json();
+      const response = await api.put('/api/admin/project-orders', { data: newOrders });
+      
+      if (response.data && response.data.success) {
         setProjectOrders(newOrders);
         // Also save to localStorage as backup
         localStorage.setItem('projectOrders', JSON.stringify(newOrders));
@@ -193,7 +179,7 @@ const ProjectOrderManagement = () => {
       name: '',
       link: '',
       image: '',
-      order: projectOrders[activeTab].length + 1,
+      order: (projectOrders[activeTab] || []).length + 1,
       isActive: true
     });
     setEditingItem(null);
@@ -213,7 +199,7 @@ const ProjectOrderManagement = () => {
     }
 
     const newOrders = { ...projectOrders };
-    const currentTabData = [...newOrders[activeTab]];
+    const currentTabData = [...(newOrders[activeTab] || [])];
 
     if (editingItem) {
       // Update existing item
@@ -239,14 +225,14 @@ const ProjectOrderManagement = () => {
   const handleDelete = (itemId) => {
     if (window.confirm('Are you sure you want to delete this project?')) {
       const newOrders = { ...projectOrders };
-      newOrders[activeTab] = newOrders[activeTab].filter(item => item.id !== itemId);
+      newOrders[activeTab] = (newOrders[activeTab] || []).filter(item => item.id !== itemId);
       saveProjectOrders(newOrders);
     }
   };
 
   const handleToggleStatus = (itemId) => {
     const newOrders = { ...projectOrders };
-    const item = newOrders[activeTab].find(item => item.id === itemId);
+    const item = (newOrders[activeTab] || []).find(item => item.id === itemId);
     if (item) {
       item.isActive = !item.isActive;
       saveProjectOrders(newOrders);
@@ -255,7 +241,7 @@ const ProjectOrderManagement = () => {
 
   const handleReorder = (dragIndex, dropIndex) => {
     const newOrders = { ...projectOrders };
-    const currentTabData = [...newOrders[activeTab]];
+    const currentTabData = [...(newOrders[activeTab] || [])];
     
     const draggedItem = currentTabData[dragIndex];
     currentTabData.splice(dragIndex, 1);
