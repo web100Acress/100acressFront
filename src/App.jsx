@@ -76,15 +76,10 @@ const ProjectTypePage = lazy(() => import("./Pages/ProjectType/[type]"));
 const ProjectTypeDemo = lazy(() => import("./Components/ProjectTypeDemo"));
 const Bptp = lazy(() => import("./Pages/Bptp"));
 const Orris = lazy(() => import("./Pages/Orris"));
-const Jms = lazy(() => import("./Pages/Jms"));
-const Rof = lazy(() => import("./Pages/Rof"));
 const HrSidebar = lazy(() => import("./Hr/HrSidebar"));
 const HrDashboard = lazy(() => import("./Hr/HrDashboard"));
 const Hr = lazy(() => import("./Hr/Hr"));
 const HrJobPosting = lazy(() => import("./Hr/JobPosting"));
-const EmaarIndia = lazy(() => import("./Pages/EmaarIndia"));
-const M3mIndia = lazy(() => import("./Pages/M3mIndia"));
-const Microtek = lazy(() => import("./Pages/Microtek"));
 const Possessionin2024 = lazy(() => import("./Pages/Possessionin2024"));
 const Possessionin2025 = lazy(() => import("./Pages/Possessionin2025"));
 // const Mumbai = lazy(() => import("./Pages/ProjectCities/Mumbai"));
@@ -92,7 +87,6 @@ const Possessionin2025 = lazy(() => import("./Pages/Possessionin2025"));
 // const Sonipat = lazy(() => import("./Pages/ProjectCities/Sonipat"));
 const NewLaunch = lazy(() => import("./Pages/NewLaunch"));
 // const Ayodhya = lazy(() => import("./Pages/ProjectCities/Ayodhya"));
-const SignatureGlobal = lazy(() => import("./Pages/SignatureGlobal"));
 // const DlfSco = lazy(() => import("./Pages/DlfSco"));
 const ProjectLayout2 = lazy(() => import("./aadharhomes/BannerPage/updatedbannerpage/components/ProjectLayout2"));
 const Possessionin2026 = lazy(() => import("./Pages/Possessionin2026"));
@@ -580,31 +574,14 @@ function App() {
                       <Route path="*" element={<PageNotFound />} />
                       <Route path="/contactmainpage" element={<ContactPage />} />
                       <Route path="/searchdata/:key" element={<SearchData />} />
-                      <Route path="/bptp-plots-gurugram/" element={<Bptp />} />
-                      <Route path="/orris-plots-gurugram/" element={<Orris />} />
-                      <Route path="/jms-plots-gurugram/" element={<Jms />} />
-                      <Route path="/top-luxury-projects/" element={<LuxuryProject />} />
-                      <Route path="/rof-plots-gurugram/" element={<Rof />} />
-                      <Route
-                        path="/signatureglobal-plots-gurugram/"
-                        element={<SignatureGlobal />}
-                      />
-                      <Route
-                        path="/emaar-india-sco-plots-gurugram/"
-                        element={<EmaarIndia />}
-                      />
-                      <Route
-                        path="/m3m-india-sco-plots-gurugram/"
-                        element={<M3mIndia />}
-                      />
-                      <Route
-                        path="/microtek-infra-sco-plots-gurugram/"
-                        element={<Microtek />}
-                      />
+                       <Route path="/bptp-plots-gurugram/" element={<Bptp />} />
+                       <Route path="/orris-plots-gurugram/" element={<Orris />} />
+                       <Route path="/top-luxury-projects/" element={<LuxuryProject />} />
                       <Route path="/onboarding/upload" element={<OnboardingUpload />} />
                       <Route path="/document-upload/:token" element={<DocumentUpload />} />
                       <Route path="/upload-success" element={<UploadSuccess />} />
                       
+
                       {/* Property Types Routes */}
                       <Route path="/property-types/1-bhk-flats-gurgaon/" element={<BhkFlatsGurgaon bhkType="1" />} />
                       <Route path="/property-types/2-bhk-flats-gurgaon/" element={<BhkFlatsGurgaon bhkType="2" />} />
