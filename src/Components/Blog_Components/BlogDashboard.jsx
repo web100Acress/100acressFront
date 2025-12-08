@@ -1,5 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import api from "../../config/apiClient";
+import { getApiBase, setApiBase } from "../../config/apiBase";
 import { 
   Eye, 
   ThumbsUp, 
@@ -34,6 +35,7 @@ import {
   Smartphone,
   Tablet,
   Download,
+  X,
   
 } from "lucide-react";
 // Removed all Ant Design imports - using simple JSX with Tailwind CSS
@@ -127,6 +129,16 @@ export default function BlogDashboard() {
   // const [currentPage, setCurrentPage] = useState(1);
   // const [totalPages, setTotalPages] = useState(1);
   // const [pageSize, setPageSize] = useState(10);
+
+  // AI auto-generate modal state
+  const [showAutoModal, setShowAutoModal] = useState(false);
+  const [autoTopic, setAutoTopic] = useState("");
+  const [autoCategory, setAutoCategory] = useState("General");
+  const [autoPublish, setAutoPublish] = useState(true);
+  const [autoLoading, setAutoLoading] = useState(false);
+  const [autoError, setAutoError] = useState("");
+  const [autoSuccess, setAutoSuccess] = useState("");
+  const [apiBase, setApiBaseState] = useState(getApiBase());
 
   useEffect(() => {
     fetchDashboardData();
@@ -395,6 +407,49 @@ export default function BlogDashboard() {
       
       console.error(errorMessage);
     }
+  };
+
+  const handleAutoGenerate = async () => {
+    const topic = autoTopic.trim();
+    if (!topic) {
+      setAutoError("Topic is required");
+      return;
+    }
+    setAutoLoading(true);
+    setAutoError("");
+    setAutoSuccess("");
+    try {
+      const payload = {
+        topic,
+        blog_Category: autoCategory.trim() || "General",
+        author: currentUserName || "Admin",
+        isPublished: autoPublish,
+      };
+      const res = await api.post("/blog/auto-generate", payload);
+      setAutoSuccess("Blog created successfully");
+      setShowAutoModal(false);
+      setAutoTopic("");
+      fetchDashboardData();
+      console.log("Auto-generated blog:", res?.data);
+    } catch (error) {
+      const msg =
+        error?.response?.data?.message ||
+        error?.message ||
+        "Failed to generate blog";
+      setAutoError(msg);
+      console.error("Auto generate error:", error);
+    } finally {
+      setAutoLoading(false);
+    }
+  };
+
+  const handleApiBaseChange = (value) => {
+    const url =
+      value === "local" ? "http://localhost:3500" : "https://api.100acress.com";
+    const result = setApiBase(url);
+    const next = result?.url || url || getApiBase();
+    setApiBaseState(next);
+    fetchDashboardData();
   };
 
   const getGrowthIcon = (value) => {
@@ -785,6 +840,26 @@ export default function BlogDashboard() {
         <option value="90d">90d</option>
         <option value="1y">1y</option>
       </select>
+    <select
+      value={apiBase.includes("localhost") ? "local" : "prod"}
+      onChange={(e) => handleApiBaseChange(e.target.value)}
+      className="text-xs sm:text-sm px-2 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-orange-500 focus:border-orange-500"
+      title={`Current API: ${apiBase}`}
+    >
+      <option value="local">API: Local</option>
+      <option value="prod">API: Production</option>
+    </select>
+      <button
+        onClick={() => {
+          setShowAutoModal(true);
+          setAutoError("");
+          setAutoSuccess("");
+        }}
+        className="flex items-center justify-center space-x-1 sm:space-x-2 w-full sm:w-auto text-xs sm:text-sm px-3 py-1.5 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-md shadow hover:shadow-md transition-all duration-200"
+      >
+        <Zap size={14} />
+        <span>Auto Generate</span>
+      </button>
       <Link to="/seo/blogs/write" className="flex-1 sm:flex-none">
         <button className="flex items-center justify-center space-x-1 sm:space-x-2 w-full sm:w-auto text-xs sm:text-sm px-3 py-1.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-md shadow hover:shadow-md transition-all duration-200">
           <Plus size={14} />
@@ -1194,6 +1269,90 @@ export default function BlogDashboard() {
           </div>
 
         </div>
+
+        {/* Auto-generate Modal */}
+        {showAutoModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center">
+            <div
+              className="fixed inset-0 bg-black bg-opacity-50"
+              onClick={() => setShowAutoModal(false)}
+            ></div>
+            <div className="relative bg-white rounded-lg shadow-xl max-w-md w-full mx-4 p-6 z-10">
+              <div className="flex items-center justify-between mb-4">
+                <span className="flex items-center text-lg font-semibold text-orange-600">
+                  <Zap size={22} className="mr-2" />
+                  Auto-generate Blog
+                </span>
+                <button
+                  onClick={() => setShowAutoModal(false)}
+                  className="text-gray-400 hover:text-gray-600 transition-colors"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              <div className="space-y-3">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Topic
+                  </label>
+                  <input
+                    value={autoTopic}
+                    onChange={(e) => setAutoTopic(e.target.value)}
+                    placeholder="e.g., Gurgaon luxury apartments investment guide"
+                    className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-1 focus:ring-orange-500 focus:border-orange-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Category
+                  </label>
+                  <input
+                    value={autoCategory}
+                    onChange={(e) => setAutoCategory(e.target.value)}
+                    className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-1 focus:ring-orange-500 focus:border-orange-500"
+                  />
+                </div>
+                <label className="inline-flex items-center space-x-2 text-sm text-gray-700">
+                  <input
+                    type="checkbox"
+                    checked={autoPublish}
+                    onChange={(e) => setAutoPublish(e.target.checked)}
+                    className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
+                  />
+                  <span>Publish immediately</span>
+                </label>
+
+                {autoError && (
+                  <div className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-md px-3 py-2">
+                    {autoError}
+                  </div>
+                )}
+                {autoSuccess && (
+                  <div className="text-sm text-green-600 bg-green-50 border border-green-100 rounded-md px-3 py-2">
+                    {autoSuccess}
+                  </div>
+                )}
+              </div>
+
+              <div className="flex justify-end space-x-3 mt-6">
+                <button
+                  onClick={() => setShowAutoModal(false)}
+                  className="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleAutoGenerate}
+                  disabled={autoLoading}
+                  className={`px-4 py-2 rounded-lg text-white transition-colors ${autoLoading ? "bg-orange-300" : "bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600"}`}
+                >
+                  {autoLoading ? "Generating..." : "Generate"}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Professional Delete Modal */}
         {deleteModalVisible && (
