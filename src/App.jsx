@@ -396,6 +396,13 @@ function App() {
                         path="/projects-in-gurugram/property-possession-in-2026/"
                         element={<Possessionin2026 />}
                       />
+                      {/* Redirects to home page */}
+                      <Route path="/property/residential/" element={<Navigate to="/" replace />} />
+                      <Route path="/property/residential" element={<Navigate to="/" replace />} />
+                      <Route path="/projects-status/newlaunch-projects/" element={<Navigate to="/" replace />} />
+                      <Route path="/projects-status/newlaunch-projects" element={<Navigate to="/" replace />} />
+                      <Route path="/sco/plots" element={<Navigate to="/" replace />} />
+                      <Route path="/sco/plots/" element={<Navigate to="/" replace />} />
                       <Route
                         path="/rental-properties/best-rental-property-in-gurugram/"
                         element={<RentPropViewCard />}

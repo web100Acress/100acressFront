@@ -43,7 +43,8 @@ const getApiBaseUrl = () => {
 
 // Create axios instance with defaults
 const api = axios.create({
-  baseURL: getApiBaseUrl(),
+  // Use dynamic resolver; we also override per-request below
+  baseURL: getBaseUrl() || getApiBaseUrl(),
   timeout: 30000,
   headers: {
     'Content-Type': 'application/json',
@@ -68,6 +69,9 @@ api.interceptors.request.use(
     if (config.url.startsWith('http')) {
       return config;
     }
+
+    // Always apply current base (honors apiBaseOverride)
+    config.baseURL = getBaseUrl();
 
     // Rate limiting check
     const requestKey = `${config.method?.toUpperCase()}_${config.url}`;
