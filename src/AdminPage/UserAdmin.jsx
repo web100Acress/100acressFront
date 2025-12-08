@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import { MdPeople, MdSearch, MdVisibility } from "react-icons/md";
 import "tippy.js/dist/tippy.css";
 import "tippy.js/animations/scale.css";
-import { API_ROUTES } from "../Redux/utils/Constant_Service";
+// import { API_ROUTES } from "../Redux/utils/Constant_Service";
 
 const UserAdmin = () => {
   const [viewAll, setViewAll] = useState([]);
