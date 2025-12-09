@@ -1,56 +1,51 @@
-name: Deploy web100Acress-100acressFront
+name: Deploy CRM Frontend & Backend to EC2
 
-on: 
+on:
   push:
     branches:
-      - master
+      - main
+
+env:
+  EC2_USER: ubuntu
+  EC2_HOST: 3.7.71.56       # Your new EC2 instance
+  FRONTEND_DIR: acre-flow-crm
+  BACKEND_DIR: crm-backend
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Source
-        uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Login to Docker Hub
-        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-
-      - name: Build Docker Image
-        run: docker build -t hunderedacress/100acressfront:latest .
-
-      - name: Publish Image to Docker Hub
-        run: docker push hunderedacress/100acressfront:latest
-
   deploy:
-    needs: build
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
+
     steps:
-      - name: Pull image from Docker Hub
-        run: docker pull hunderedacress/100acressfront:latest
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - name: Stop and remove existing container if running
+      - name: Save EC2 SSH key
         run: |
-          if [ "$(docker ps -aq -f name=hundredacress-frontend-container)" ]; then
-            docker rm -f hundredacress-frontend-container
-          fi
+          echo "${{ secrets.EC2_SSH_KEY }}" > ec2_key.pem
+          chmod 400 ec2_key.pem
 
-      - name: Install lsof if not available
+      - name: Build Frontend Docker image
+        run: docker build -t crm-frontend:latest ./${{ env.FRONTEND_DIR }}
+
+      - name: Build Backend Docker image
+        run: docker build -t crm-backend:latest ./${{ env.BACKEND_DIR }}
+
+      - name: Deploy Frontend & Backend to EC2
         run: |
-          if ! command -v lsof &> /dev/null; then
-            sudo apt-get update && sudo apt-get install -y lsof
-          fi
+          ssh -o StrictHostKeyChecking=no -i ec2_key.pem ${{ env.EC2_USER }}@${{ env.EC2_HOST }} << 'EOF'
+            # --- Frontend ---
+            docker stop crm-frontend || true
+            docker rm crm-frontend || true
+            docker run -d -p 80:80 --name crm-frontend crm-frontend:latest
 
-      - name: Free up port 3001 if already in use
-        run: |
-          PID=$(lsof -t -i:3001 || true)
-          if [ ! -z "$PID" ]; then
-            echo "Port 3001 in use by PID $PID, killing..."
-            kill -9 $PID || true
-          else
-            echo "Port 3001 is free"
-          fi
+            # --- Backend ---
+            docker stop crm-backend || true
+            docker rm crm-backend || true
+            docker run -d -p 5001:5001 --name crm-backend crm-backend:latest
 
-      - name: Run Docker Container on port 3001
-        run: docker run -d -p 3001:80 --name hundredacress-frontend-container hunderedacress/100acressfront:latest
+            # Optional: remove dangling images to save space
+            docker image prune -f
+          EOF
+
+      - name: Cleanup SSH Key
+        run: rm -f ec2_key.pem
