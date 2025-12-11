@@ -6,6 +6,12 @@
     <priority>1.0</priority>
   </url>
   <url>
+    <loc>https://www.100acress.com/aura-sector-79-gurgaon/</loc>
+    <lastmod>2025-12-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://www.100acress.com/max-estate-361-senior-living-residences/</loc>
     <lastmod>2025-09-16T09:04:16+00:00</lastmod>
     <priority>1.0</priority>
@@ -2605,4 +2611,5 @@
     <lastmod>2025-09-16T09:04:16+00:00</lastmod>
     <priority>0.8</priority>
   </url>
+  
 </urlset>
