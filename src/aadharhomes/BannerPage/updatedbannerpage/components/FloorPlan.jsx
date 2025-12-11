@@ -1,92 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 const FloorPlan = ({ floorPlans = [], bhkDetails = [], onShowCallback = () => {}, projectName = '' }) => {
-  const [activeTab, setActiveTab] = useState(0);
   const [isImageUnlocked, setIsImageUnlocked] = useState(false);
-
-  const [showLeftArrow, setShowLeftArrow] = useState(false);
-  const [showRightArrow, setShowRightArrow] = useState(false);
-  const [isDragging, setIsDragging] = useState(false);
-  const [startX, setStartX] = useState(0);
-  const [scrollLeft, setScrollLeft] = useState(0);
-
-  // Handle scroll position and arrow visibility
-  useEffect(() => {
-    const container = document.getElementById('tab-container');
-    if (!container || bhkDetails.length <= 4) return;
-
-    const updateArrows = () => {
-      const { scrollLeft, scrollWidth, clientWidth } = container;
-      setShowLeftArrow(scrollLeft > 0);
-      setShowRightArrow(scrollLeft < scrollWidth - clientWidth - 1);
-    };
-
-    updateArrows();
-    container.addEventListener('scroll', updateArrows);
-    window.addEventListener('resize', updateArrows);
-
-    return () => {
-      container.removeEventListener('scroll', updateArrows);
-      window.removeEventListener('resize', updateArrows);
-    };
-  }, [bhkDetails.length]);
-
-  // Mouse wheel scrolling
-  const handleWheel = (e) => {
-    const container = document.getElementById('tab-container');
-    if (container && bhkDetails.length > 4) {
-      e.preventDefault();
-      container.scrollBy({ left: e.deltaY > 0 ? 100 : -100, behavior: 'smooth' });
-    }
-  };
-
-  // Mouse drag scrolling
-  const handleMouseDown = (e) => {
-    const container = document.getElementById('tab-container');
-    if (container && bhkDetails.length > 4) {
-      setIsDragging(true);
-      setStartX(e.pageX - container.offsetLeft);
-      setScrollLeft(container.scrollLeft);
-    }
-  };
-
-  const handleMouseMove = (e) => {
-    if (!isDragging) return;
-    e.preventDefault();
-    const container = document.getElementById('tab-container');
-    if (container) {
-      const x = e.pageX - container.offsetLeft;
-      const walk = (x - startX) * 2;
-      container.scrollLeft = scrollLeft - walk;
-    }
-  };
-
-  const handleMouseUp = () => {
-    setIsDragging(false);
-  };
-
-  // Touch scrolling for mobile
-  const handleTouchStart = (e) => {
-    const container = document.getElementById('tab-container');
-    if (container && bhkDetails.length > 4) {
-      setStartX(e.touches[0].pageX - container.offsetLeft);
-      setScrollLeft(container.scrollLeft);
-    }
-  };
-
-  const handleTouchMove = (e) => {
-    if (!startX) return;
-    const container = document.getElementById('tab-container');
-    if (container) {
-      const x = e.touches[0].pageX - container.offsetLeft;
-      const walk = (x - startX) * 2;
-      container.scrollLeft = scrollLeft - walk;
-    }
-  };
-
-  const handleTouchEnd = () => {
-    setStartX(0);
-  };
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   // Handle form submission success - unlock images
   const handleFormSuccess = () => {
@@ -100,12 +16,18 @@ const FloorPlan = ({ floorPlans = [], bhkDetails = [], onShowCallback = () => {}
     onShowCallback(handleFormSuccess);
   };
 
+  // Navigation functions
+  const goToPrevious = () => {
+    setCurrentIndex((prev) => (prev === 0 ? floorPlans.length - 1 : prev - 1));
+  };
+
+  const goToNext = () => {
+    setCurrentIndex((prev) => (prev === floorPlans.length - 1 ? 0 : prev + 1));
+  };
+
   if (!floorPlans || floorPlans.length === 0 || !floorPlans.some(plan => plan && plan.url)) {
     return null; // Don't render if no floor plans are available or no valid URLs
   }
-
-  const activePlan = floorPlans[activeTab];
-  const activeBhkDetails = bhkDetails[activeTab];
 
   return (
     <>
@@ -116,6 +38,15 @@ const FloorPlan = ({ floorPlans = [], bhkDetails = [], onShowCallback = () => {}
         }
         .scrollbar-hide::-webkit-scrollbar {
           display: none;
+        }
+        
+        /* Additional scrollbar hiding for the gallery */
+        #floorplan-gallery::-webkit-scrollbar {
+          display: none;
+        }
+        #floorplan-gallery {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
         }
       `}</style>
       <section className="py-10 bg-black text-white relative overflow-hidden">
@@ -141,114 +72,97 @@ const FloorPlan = ({ floorPlans = [], bhkDetails = [], onShowCallback = () => {}
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center mt-4">
-          {/* Left Side: Image and Super Area */}
+          {/* Left Side: Single Floor Plan Display */}
           <div className="lg:col-span-2">
-            {/* Horizontal Scrollable Tab Bar */}
-            <div className="relative mb-3 flex items-center">
-              {/* Left Navigation Arrow */}
-              <button
-                onClick={() => {
-                  const container = document.getElementById('tab-container');
-                  if (container) {
-                    container.scrollBy({ left: -200, behavior: 'smooth' });
-                  }
-                }}
-                className={`flex-shrink-0 z-20 group ${
-                  !showLeftArrow ? 'opacity-0 pointer-events-none scale-75' : 'opacity-100 scale-100'
-                } transition-all duration-300`}
-              >
+
+            {/* Single Floor Plan Display with Navigation */}
+            <div className="bg-gray-800/50 p-3 rounded-lg border border-gray-700">
+              <div className="relative">
+                {/* Navigation Arrows */}
+                {floorPlans.length > 1 && (
+                  <>
+                    <button
+                      onClick={goToPrevious}
+                      className="absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-black/70 hover:bg-black/90 text-white p-3 rounded-full transition-all duration-300"
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                      </svg>
+                    </button>
+                    <button
+                      onClick={goToNext}
+                      className="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-black/70 hover:bg-black/90 text-white p-3 rounded-full transition-all duration-300"
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </button>
+                  </>
+                )}
+                
+                {/* Single Image Display */}
                 <div className="relative">
-                  <div className="absolute -inset-1 bg-gradient-to-r from-amber-600 to-amber-400 rounded-full blur opacity-30 group-hover:opacity-50 transition-all duration-300"></div>
-                  <div className="relative  group-hover:bg-gray-800/95 text-amber-400 group-hover:text-amber-300 border-2 border-amber-500/40 group-hover:border-amber-400/60 rounded-full p-3 shadow-xl group-hover:shadow-amber-500/25 transition-all duration-300 backdrop-blur-sm">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
-                    </svg>
-                  </div>
-                </div>
-              </button>
-
-              {/* Scrollable Tab Container */}
-              <div
-                id="tab-container"
-                className="flex items-center gap-3 overflow-x-auto scrollbar-hide flex-1 mx-4 rounded-full shadow-2xl backdrop-blur-md py-3"
-                onWheel={handleWheel}
-                onMouseDown={handleMouseDown}
-                onMouseMove={handleMouseMove}
-                onMouseUp={handleMouseUp}
-                onMouseLeave={handleMouseUp}
-                onTouchStart={handleTouchStart}
-                onTouchMove={handleTouchMove}
-                onTouchEnd={handleTouchEnd}
-              >
-                {bhkDetails.map((bhk, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setActiveTab(index)}
-                    className={`relative whitespace-nowrap px-7 py-3.5 rounded-full font-semibold transition-all duration-300 transform hover:scale-105 ${
-                      activeTab === index
-                        ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-white shadow-xl shadow-amber-500/40 ring-2 ring-amber-400/50'
-                        : 'bg-white/10 text-amber-300 border-2 border-amber-400/50 hover:border-amber-300 hover:bg-white/20 hover:text-amber-200 hover:shadow-lg hover:shadow-amber-400/20'
-                    }`}
-                    style={{
-                      fontSize: 'clamp(0.875rem, 1vw, 1rem)',
-                      minWidth: 'fit-content'
-                    }}
-                  >
-                    {bhk.bhk_type}
-                  </button>
-                ))}
-              </div>
-
-              {/* Right Navigation Arrow */}
-              <button
-                onClick={() => {
-                  const container = document.getElementById('tab-container');
-                  if (container) {
-                    container.scrollBy({ left: 200, behavior: 'smooth' });
-                  }
-                }}
-                className={`flex-shrink-0 z-20 group ${
-                  !showRightArrow ? 'opacity-0 pointer-events-none scale-75' : 'opacity-100 scale-100'
-                } transition-all duration-300`}
-              >
-                <div className="relative">
-                  <div className="absolute -inset-1 bg-gradient-to-r from-amber-600 to-amber-400 rounded-full blur opacity-30 group-hover:opacity-50 transition-all duration-300"></div>
-                  <div className="relative bg-gray-900/90 group-hover:bg-gray-800/95 text-amber-400 group-hover:text-amber-300 border-2 border-amber-500/40 group-hover:border-amber-400/60 rounded-full p-3 shadow-xl group-hover:shadow-amber-500/25 transition-all duration-300 backdrop-blur-sm">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
-                    </svg>
-                  </div>
-                </div>
-              </button>
-            </div>
-
-            <div className="bg-gray-800/50 p-3 rounded-lg border border-gray-700 relative">
-              {activePlan && (
-                <>
                   <img 
-                    src={activePlan.url} 
-                    alt={`Floor plan for ${activeBhkDetails?.bhk_type}`}
-                    className={`w-full h-auto object-contain rounded-md max-h-[400px] transition-all duration-500 ${
+                    src={floorPlans[currentIndex].url} 
+                    alt={`Floor plan ${currentIndex + 1} for ${bhkDetails[currentIndex]?.bhk_type || 'Project'}`}
+                    className={`w-full h-96 object-contain rounded-md transition-all duration-500 ${
                       isImageUnlocked ? '' : 'blur-md'
                     }`}
                   />
                   
+                  {/* BHK Type Badge */}
+                  {bhkDetails[currentIndex] && (
+                    <div className="absolute top-4 left-4 bg-amber-500 text-black px-4 py-2 rounded-full text-sm font-semibold">
+                      {bhkDetails[currentIndex].bhk_type}
+                    </div>
+                  )}
+                  
+                  {/* Area Badge */}
+                  {bhkDetails[currentIndex]?.bhk_Area && (
+                    <div className="absolute top-4 right-4 bg-black/70 text-white px-4 py-2 rounded-full text-sm">
+                      {bhkDetails[currentIndex].bhk_Area}
+                    </div>
+                  )}
+                  
                   {/* Blur Overlay with Get Details Button */}
                   {!isImageUnlocked && (
                     <div className="absolute inset-0 bg-black/40 flex items-center justify-center rounded-md p-4">
-                      <p className="text-white text-center text-sm sm:text-base md:text-lg font-medium">
-                        To access the master layout, kindly{' '}
+                      <p className="text-white text-center text-lg font-medium">
+                        To access floor plans, kindly{' '}
                         <button 
                           onClick={handleGetDetails}
-                          className="text-blue-400 hover:text-blue-300 underline underline-offset-2 sm:underline-offset-4 decoration-1 sm:decoration-2 decoration-blue-400/80 hover:decoration-blue-300 transition-colors duration-200 font-medium text-sm sm:text-base md:text-lg whitespace-nowrap"
+                          className="text-blue-400 hover:text-blue-300 underline underline-offset-2 decoration-1 decoration-blue-400/80 hover:decoration-blue-300 transition-colors duration-200 font-medium text-lg whitespace-nowrap"
                         >
                           share your details
                         </button>
                       </p>
                     </div>
                   )}
-                </>
-              )}
+                </div>
+                
+                {/* Plan Details Below Image */}
+                <div className="mt-4 text-center">
+                  
+                  
+                  
+                  {/* Image Indicators */}
+                  {floorPlans.length > 1 && (
+                    <div className="flex justify-center gap-2 mt-3">
+                      {floorPlans.map((_, index) => (
+                        <button
+                          key={index}
+                          onClick={() => setCurrentIndex(index)}
+                          className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                            index === currentIndex 
+                              ? 'bg-amber-500 w-8' 
+                              : 'bg-gray-500 hover:bg-gray-400'
+                          }`}
+                        />
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
 
             

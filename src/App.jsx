@@ -50,6 +50,7 @@ const Activity = lazy(() => import("./Pages/Activity"));
 const CareerWithUs = lazy(() => import("./Pages/CareerWithUs"));
 const UserEditProperty = lazy(() => import("./Pages/UserEditProperty"));
 const Blogging = lazy(() => import("./Pages/Blogging"));
+import ModernBlogPage from "./Components/Blog_Components/ModernBlogPage";
 const ProjectStatusSearch = lazy(() => import("./Pages/ProjectStatusSearch"));
 // Global Template Components
 const ProjectStatusSearchGlobal = lazy(() => import("./Pages/ProjectStatusSearch/ProjectStatusSearchGlobal"));
@@ -59,7 +60,7 @@ const DeenDayalPlots = lazy(() => import("./Components/HomePageComponents/DeenDa
 const NewsandArtical = lazy(() => import("./Pages/NewsandArtical"));
 const UserDashBoard = lazy(() => import("./Components/HomePageComponents/UserDashBoard"));
 const UserEdit = lazy(() => import("./Components/HomePageComponents/UserEdit"));
-const BlogView = lazy(() => import("./Pages/BlogView"));
+import ModernBlogView from "./Components/Blog_Components/ModernBlogView";
 const BlogInsights = lazy(() => import("./Insight/pages/BlogInsights"));
 const GurugramPrimeLocation = lazy(() => import("./Pages/GurugramPrimeLocation"));
 // Per-city pages are now handled by CityProjects; imports removed
@@ -544,15 +545,15 @@ function App() {
                       <Route path="/contact-us/" element={<ContactUs />} />
                       <Route path="/activity" element={<Activity />} />
                       <Route path="/career-with-us/" element={<CareerWithUs />} />
-                      <Route path="/blog/" element={<Blogging />} />
+                      <Route path="/blog/" element={<ModernBlogPage />} />
                       {/* Place static path before dynamic ones to avoid '/blog/write' matching ':slug' */}
                       <Route path="/blog/write" element={<BlogWrite />} />
                       {/* Direct ID access - must come before slug to avoid conflicts */}
-                      <Route path="/blog/:id" element={<BlogView />} />
+                      <Route path="/blog/:id" element={<ModernBlogView />} />
                       {/* Handle slug-only URLs like /blog/my-blog-slug */}
-                      <Route path="/blog/:slug" element={<BlogView />} />
+                      <Route path="/blog/:slug" element={<ModernBlogView />} />
                       {/* Handle slug/id URLs like /blog/my-blog-slug/67f7bd08edb6d0442ad0012e */}
-                      <Route path="/blog/:slug/:id" element={<BlogView />} />
+                      <Route path="/blog/:slug/:id" element={<ModernBlogView />} />
                       <Route path="/blogging" element={<Blogging />} />
                       <Route path="/blog-insights" element={<BlogInsights />} />
                       <Route path="/insights/price-trends" element={<PriceTrends />} />
@@ -794,7 +795,7 @@ function App() {
                         <Route path="dashboard" element={<BlogDashboard />} />
                         <Route path="manage" element={<BlogManagement />} />
                         <Route path="write" element={<BlogWriteModal />} />
-                        <Route path="view/:id" element={<BlogView />} />
+                        <Route path="view/:id" element={<ModernBlogView />} />
                         <Route path="edit/:id" element={<BlogWriteModal />} />
                         <Route path="drafts" element={<DraftManagement />} />
                       </Route>

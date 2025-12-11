@@ -1072,11 +1072,11 @@ const BlogView = () => {
           {/* Main Content Area (70%) */}
           <main className="lg:col-span-7 space-y-8">
             
-            {/* Phase 2: Modern Header Section with Split Layout */}
+            {/* Phase 2: Modern Header Section with Stacked Layout */}
             <div className="bg-white rounded-2xl shadow-lg p-6 md:p-8 border border-gray-100">
-              <div className="grid md:grid-cols-2 gap-6 md:gap-8 items-start">
+              <div className="space-y-6">
                 
-                {/* Left Side: Title and Meta */}
+                {/* Top Section: Title and Meta */}
                 <div className="space-y-4">
                   {/* Category Tag */}
                   {blog_Category && (
@@ -1204,12 +1204,12 @@ const BlogView = () => {
                   </div>
                 </div>
                 
-                {/* Right Side: Featured Image */}
+                {/* Bottom Section: Featured Image */}
                 {(blog_Image?.display || FALLBACK_IMG) && (
                   <div className="relative overflow-hidden rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300">
                     <img
                       {...createSafeImageProps(blog_Image?.display || FALLBACK_IMG, blog_Title || 'Blog post image', {
-                        className: "w-full h-64 md:h-72 object-cover",
+                        className: "w-full h-64 md:h-96 object-cover",
                         'data-alt-src': blog_Image?.cdn_url && blog_Image?.url && blog_Image.cdn_url !== blog_Image.url ? (blog_Image.display === blog_Image.cdn_url ? blog_Image.url : blog_Image.cdn_url) : ''
                       })}
                     />
