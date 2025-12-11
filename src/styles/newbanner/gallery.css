@@ -7,7 +7,7 @@
 .nb-gallery-line { width: 48px; height: 2px; background: linear-gradient(to right, #CFAF6E, #E5C78A); border-radius: 9999px; }
 .nb-gallery-eyebrow-text { color: #B8985A; font-weight: 600; font-size: 0.875rem; letter-spacing: .08em; text-transform: uppercase; }
 
-.nb-gallery-title { font-weight: 800; color: #111827; line-height: 1.2; font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif; font-size: 1.875rem; margin: 0 0 8px; }
+.nb-gallery-title { font-weight: 800; color: #111827; line-height: 1.2; font-family: 'Jost', sans-serif; font-size: 1.875rem; margin: 0 0 8px; }
 @media (min-width: 1024px) { .nb-gallery-title { font-size: 2.25rem; } }
 @media (min-width: 1280px) { .nb-gallery-title { font-size: 3rem; } }
 .nb-gallery-title-accent { display: block; color: #B8985A; margin-top: 8px; }
