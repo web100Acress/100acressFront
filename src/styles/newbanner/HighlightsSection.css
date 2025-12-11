@@ -63,7 +63,7 @@
 .nb-pricing-table { border-radius: 16px; overflow: hidden; box-shadow: 0 25px 50px rgba(0,0,0,0.25); border: 1px solid #D4AF37; background: #fff; }
 .nb-pricing-header { display: flex; flex-shrink: 0; background: linear-gradient(to right, #CFAF6E, #E5C78A); color: #fff; box-shadow: 0 10px 15px rgba(0,0,0,0.15); }
 .nb-pricing-cell { display: flex; align-items: center; justify-content: center; flex-grow: 1; min-width: 0; height: 64px; padding: 16px; }
-.nb-cell-head span { font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif; font-size: 1.25rem; font-weight: 800; letter-spacing: .02em; }
+.nb-cell-head span { font-family: 'Jost', sans-serif; font-size: 1.25rem; font-weight: 800; letter-spacing: .02em; }
 .nb-cell-divider { border-right: 1px solid rgba(212, 175, 55, 0.3); }
 
 .nb-pricing-body { overflow: hidden; }
@@ -81,7 +81,7 @@
 .nb-pricing-mobile-card { background: #fff; border-radius: 16px; box-shadow: 0 10px 15px rgba(0,0,0,0.12); border: 1px solid rgba(212, 175, 55, 0.3); padding: 24px; transition: box-shadow .3s ease, border-color .3s ease; }
 .nb-pricing-mobile-card:hover { box-shadow: 0 20px 30px rgba(0,0,0,0.18); border-color: rgba(212, 175, 55, 0.5); }
 .nb-pricing-mobile-head { margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid rgba(212, 175, 55, 0.2); }
-.nb-pricing-mobile-title { font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif; font-size: 1.5rem; font-weight: 700; color: #111827; text-align: center; margin: 0; }
+.nb-pricing-mobile-title { font-family: 'Jost', sans-serif; font-size: 1.5rem; font-weight: 700; color: #111827; text-align: center; margin: 0; }
 .nb-pricing-mobile-size { margin-bottom: 24px; text-align: center; }
 .nb-pricing-mobile-sizechip { display: inline-flex; align-items: center; padding: 8px 16px; background: linear-gradient(to right, #FFF9F1, #F7F3E9); border-radius: 9999px; border: 1px solid rgba(212, 175, 55, 0.3); box-shadow: 0 4px 10px rgba(0,0,0,0.08); }
 .nb-pricing-size-label { font-size: 0.875rem; font-weight: 700; color: #8B7355; text-transform: uppercase; letter-spacing: .08em; margin-right: 8px; }
@@ -113,7 +113,7 @@
 .nb-floor-card:hover .nb-floor-img { transform: scale(1.02); }
 
 .nb-floor-caption { background: linear-gradient(to right, #CFAF6E, #E5C78A); color: #fff; width: 100%; text-align: center; padding: 12px 0; }
-.nb-floor-caption-title { margin: 0; font-size: 1.125rem; font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif; font-weight: 700; letter-spacing: .02em; }
+.nb-floor-caption-title { margin: 0; font-size: 1.125rem; font-family: 'Jost', sans-serif; font-weight: 700; letter-spacing: .02em; }
 .nb-floor-caption-sub { margin: 0; font-size: .95rem; opacity: .95; }
 
 /* Modal */

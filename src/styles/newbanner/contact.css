@@ -5,7 +5,7 @@
 .nb-contact-left { display: flex; flex-direction: column; justify-content: center; gap: 16px; }
 .nb-contact-eyebrow { display: flex; align-items: center; justify-content: flex-start; gap: 8px; color: #B8985A; font-weight: 600; font-size: clamp(1rem, 2vw, 1.25rem); }
 .nb-contact-eyebrow-icon { display: flex; align-items: center; justify-content: center; padding: 4px; }
-.nb-contact-title { font-size: clamp(2rem, 4vw, 3rem); font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif; font-weight: 700; color: #111827; margin: 0; }
+.nb-contact-title { font-size: clamp(2rem, 4vw, 3rem); font-family: 'Jost', sans-serif; font-weight: 700; color: #111827; margin: 0; }
 .nb-contact-call { color: #1f2937; font-size: 1.125rem; }
 .nb-contact-call-link { display: flex; align-items: center; justify-content: center; color: #111827; font-size: 1.875rem; text-decoration: none; }
 .nb-contact-call-icon { font-size: 1.25rem; }

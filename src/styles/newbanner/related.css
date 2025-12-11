@@ -6,7 +6,7 @@
 .nb-related-col { width: 100%; padding: 16px; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; }
 .nb-related-container { max-width: 1120px; margin: 0 auto; width: 100%; padding: 0 16px; }
 .nb-related-header { margin-bottom: 32px; text-align: center; }
-.nb-related-title { margin: 0; color: #111827; font-weight: 700; font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif; font-size: 1.875rem; line-height: 2.25rem; }
+.nb-related-title { margin: 0; color: #111827; font-weight: 700; font-family: 'Jost', sans-serif; font-size: 1.875rem; line-height: 2.25rem; }
 @media (min-width: 768px) { .nb-related-title { font-size: 2.25rem; line-height: 2.5rem; } }
 @media (min-width: 1280px) { .nb-related-title { font-size: 3rem; line-height: 1.1; } }
 
@@ -24,7 +24,7 @@
 .nb-related-body { padding: 8px; }
 .nb-related-meta { margin-top: 8px; display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
 .nb-related-texts { display: flex; flex-direction: column; align-items: flex-start; }
-.nb-related-name { letter-spacing: 0.01em; font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif; font-weight: 700; text-align: center; font-size: 1rem; margin: 0; color: #111827; }
+.nb-related-name { letter-spacing: 0.01em; font-family: 'Jost', sans-serif; font-weight: 700; text-align: center; font-size: 1rem; margin: 0; color: #111827; }
 .nb-related-location { letter-spacing: 0.01em; text-align: center; font-size: 0.875rem; margin: 0; color: #4b5563; }
 .nb-related-price { font-size: 1.125rem; font-weight: 700; color: #111827; text-align: center; }
 .nb-related-price-soon { color: #8B7355; }

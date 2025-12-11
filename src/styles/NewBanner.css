@@ -283,7 +283,7 @@ div[id],
 }
 
 .premium-heading {
-  font-family: 'Playfair Display', 'Georgia', serif;
+  font-family: 'Jost', sans-serif;
   font-size: clamp(2.5rem, 18vw, 4.5rem);
   font-weight: 800;
   color: #fff;
@@ -369,7 +369,7 @@ div[id],
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
   color: #ffffff;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Jost', sans-serif;
   font-size: 1.1rem;
   font-weight: 600;
   padding: 16px 32px;
@@ -412,7 +412,7 @@ div[id],
 }
 
 .premium-subheading {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Jost', sans-serif;
   font-size: 1.25rem;
   color: rgba(255, 255, 255, 0.9);
   margin-bottom: 2rem;
@@ -1102,7 +1102,7 @@ div[id],
 }
 
 .premium-modal-title {
-  font-family: 'Playfair Display', serif;
+  font-family: 'Jost', sans-serif;
   font-size: 1.75rem;
   font-weight: 700;
   color: #fff;

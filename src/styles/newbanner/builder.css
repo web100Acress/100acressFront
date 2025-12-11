@@ -4,7 +4,7 @@
 @media (min-width: 1024px) { .nb-builder-container { padding: 96px 32px; } }
 
 .nb-builder-header { margin-bottom: 24px; text-align: center; }
-.nb-builder-title { margin: 0; font-size: 1.5rem; line-height: 2rem; font-weight: 700; color: #111827; font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif; }
+.nb-builder-title { margin: 0; font-size: 1.5rem; line-height: 2rem; font-weight: 700; color: #111827; font-family: 'Jost', sans-serif; }
 @media (min-width: 768px) { .nb-builder-title { font-size: 2rem; line-height: 2.25rem; } }
 @media (min-width: 1280px) { .nb-builder-title { font-size: 2.25rem; line-height: 1.2; } }
 

@@ -3,7 +3,7 @@
 @media (min-width: 1024px) { .nb-amenities-section { padding: 48px 24px 0; } }
 .nb-amenities-header { margin-bottom: 8px; }
 .nb-amenities-title { margin: 0; font-size: 1.75rem; line-height: 1.2; }
-.nb-amenities-subtitle { display: inline; color: #B8985A; margin-left: 8px; font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif; }
+.nb-amenities-subtitle { display: inline; color: #B8985A; margin-left: 8px; font-family: 'Jost', sans-serif; }
 
 .nb-amenities-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 16px; margin-top: 16px; }
 @media (min-width: 640px) { .nb-amenities-grid { grid-template-columns: repeat(3, minmax(0,1fr)); } }
