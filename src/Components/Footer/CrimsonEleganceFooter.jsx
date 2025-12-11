@@ -366,7 +366,7 @@ const CrimsonEleganceFooter = () => {
                 { name: "Flats For Sale under 10 Cr in Gurgaon", href: "/projects/5-10-cr" },
                 { name: "Flats For Sale under 20 Cr In Gurgaon", href: "/projects/10-20-cr" },
                 { name: "Affordable Homes in Gurgaon", href: "/projects/1-5-cr" },
-                { name: "Farmhouse in Gurgaon", href: "/property-types/farmhouse-gurgaon/" },
+                { name: "Farmhouse in Gurgaon", href: "/projects/farmhouse/" },
                 
               ].map((location, index) => (
                 <Link
@@ -388,14 +388,14 @@ const CrimsonEleganceFooter = () => {
     <div className="w-full border-t border-white/10 pt-8">
       <div className="flex flex-wrap justify-center gap-3">
         {[
-          { name: "Residential Flats in Gurgaon", href: "/property/residential/" },
+          { name: "Residential Flats in Gurgaon", href: "/projects/residential/" },
           { name: "Retail Shops in Gurgaon", href: "/projects/commercial/" },
-          { name: "Builder Floor in Gurgaon", href: "/projects/independentfloors/" },
+          { name: "Builder Floor in Gurgaon", href: "/projects/independent-floors/" },
           { name: "Farmhouse in Gurgaon", href: "/projects/farmhouse/" },
           { name: "Industrial Plots in Gurgaon", href: "/projects/industrial-plots/" },
-          { name: "Independent Floor in Gurgaon", href: "/projects/independentfloors/" },
-          { name: "SCO Plots in Gurgaon", href: "/sco/plots/" },
-          { name: "Shop Cum Office Plots in Gurgaon", href: "/sco/plots/" },
+          { name: "Independent Floor in Gurgaon", href: "/projects/independent-floors/" },
+          { name: "SCO Plots in Gurgaon", href: "/projects/sco-plots/" },
+          { name: "Shop Cum Office Plots in Gurgaon", href: "/projects/sco-plots/" },
           { name: "Luxury Villas in Gurgaon", href: "/projects/villas/" },
         ].map((location, index) => (
           <Link
