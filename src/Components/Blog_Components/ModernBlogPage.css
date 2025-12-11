@@ -1,7 +1,6 @@
 /* Modern Blog Page - Responsive Design */
 
 /* Font Imports */
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap');
 
 /* CSS Custom Properties */
 :root {
@@ -25,7 +24,7 @@
 
 /* Base Responsive Styles */
 .modern-blog-page {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: 'Jost', sans-serif;
   line-height: 1.6;
   color: var(--gray-900);
   background: var(--gray-50);
@@ -34,11 +33,11 @@
 
 /* Typography Classes */
 .font-serif {
-  font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: 'Jost', sans-serif;
 }
 
 .font-sans {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: 'Jost', sans-serif;
 }
 
 /* Responsive Container */

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -108,10 +108,12 @@
 @layer base {
   * {
     @apply border-border;
+    font-family: "Jost", sans-serif !important;
   }
 
   body {
     @apply bg-background text-foreground;
+    font-family: "Jost", sans-serif !important;
   }
 }
 
@@ -181,13 +183,13 @@ html {
   scroll-behavior: smooth;
 }
 
-.font-Gluten{
-  font-family: "Gluten", cursive !important;
+.font-Jost{
+  font-family: "Jost", sans-serif !important;
 }
 
 
 .font-AbrialFatFace{
-  font-family: "Abril Fatface", sans-serif !important;
+  font-family: "Jost", sans-serif !important;
 }
 
 .custom-ok-button {
@@ -234,7 +236,7 @@ html {
   }
 
   .abril-fatface-regular {
-    font-family: "Abril Fatface", serif;
+    font-family: "Jost", sans-serif;
     font-weight: 400;
     font-style: normal;
   }
