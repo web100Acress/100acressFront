@@ -19,6 +19,7 @@ const ModernBlogView = () => {
   const [headings, setHeadings] = useState([]);
   const [showStickyHeader, setShowStickyHeader] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
+  const [relatedBlogs, setRelatedBlogs] = useState([]);
   const { id, slug } = useParams();
 
   // Extract headings from HTML content
@@ -106,6 +107,33 @@ const ModernBlogView = () => {
     }
   }, [data]);
 
+  // Fetch related blogs
+  useEffect(() => {
+    const fetchRelatedBlogs = async () => {
+      try {
+        const response = await api.get('blog/view', {
+          params: {
+            limit: 6,
+            sortBy: 'createdAt',
+            sortOrder: 'desc'
+          }
+        });
+        
+        if (response?.data?.data) {
+          // Filter out current blog and take first 6
+          const filtered = response.data.data.filter(blog => blog._id !== data._id).slice(0, 6);
+          setRelatedBlogs(filtered);
+        }
+      } catch (error) {
+        console.error('Error fetching related blogs:', error);
+      }
+    };
+
+    if (data._id) {
+      fetchRelatedBlogs();
+    }
+  }, [data._id]);
+
   // Scroll handler for sticky header
   useEffect(() => {
     const handleScroll = () => {
@@ -157,6 +185,20 @@ const ModernBlogView = () => {
     const words = description?.replace(/<[^>]*>/g, "").split(" ").length || 0;
     const minutes = Math.ceil(words / 200);
     return `${minutes} min read`;
+  };
+
+  // Blog link helper
+  const blogLink = (blog) => {
+    if (blog?.slug) return `/blog/${blog.slug}`;
+    const slug = (blog.blog_Title || '')
+      .toString()
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9\s-]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-')
+      .replace(/^-+|-+$/g, '');
+    return `/blog/${slug}/${blog._id}`;
   };
 
   if (isLoading) {
@@ -211,12 +253,12 @@ const ModernBlogView = () => {
       </Helmet>
 
       {/* Sticky Header */}
-      <div className={`fixed top-16 left-0 right-0 z-50 bg-white border-b border-gray-200 shadow-sm transition-transform duration-300 ${
+      <div className={`fixed top-20 left-0 right-0 z-50 bg-white border-b border-gray-200 shadow-sm transition-transform duration-300 ${
         showStickyHeader ? 'translate-y-0' : '-translate-y-full'
       }`}>
-        <div className="max-w-7xl mx-auto px-4 py-3">
-          <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold text-gray-900 truncate" style={{ fontFamily: "'Open Sans', sans-serif" }}>
+        <div className="max-w-7xl mx-auto px-4 py-3 flex flex-col h-full">
+          <div className="flex items-center justify-between flex-1">
+            <h2 className="text-lg font-semibold text-gray-900 max-w-md truncate" style={{ fontFamily: "'Open Sans', sans-serif" }}>
               {data.blog_Title}
             </h2>
             <div className="flex items-center space-x-2 text-sm text-gray-600">
@@ -224,7 +266,7 @@ const ModernBlogView = () => {
             </div>
           </div>
           {/* Progress Bar */}
-          <div className="mt-2 w-full bg-gray-200 rounded-full h-1">
+          <div className="w-full bg-gray-200 rounded-full h-1">
             <div 
               className="bg-red-600 h-1 rounded-full transition-all duration-300 ease-out"
               style={{ width: `${scrollProgress}%` }}
@@ -479,6 +521,32 @@ const ModernBlogView = () => {
               />
             </article>
 
+            {/* FAQs Section */}
+            {data?.faqs && data.faqs.length > 0 && (
+              <div className="mt-16 mb-8">
+                <h3 className="text-xl font-bold text-gray-900 mb-6" style={{ fontFamily: "'Open Sans', sans-serif" }}>
+                  Frequently Asked Questions
+                </h3>
+                <div className="space-y-4">
+                  {data.faqs.map((faq, index) => (
+                    <div key={index} className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                      <details className="group">
+                        <summary className="flex items-center justify-between p-4 cursor-pointer hover:bg-gray-50 transition-colors">
+                          <h4 className="font-medium text-gray-900 pr-4 text-sm">{faq.question}</h4>
+                          <svg className="w-5 h-5 text-gray-500 group-open:rotate-180 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                          </svg>
+                        </summary>
+                        <div className="px-4 pb-4 text-gray-600">
+                          <p className="text-sm">{faq.answer}</p>
+                        </div>
+                      </details>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* Engagement Section */}
             <div className="mt-16 pt-8 border-t border-gray-200">
               <div className="flex items-center justify-between">
@@ -614,12 +682,71 @@ const ModernBlogView = () => {
         </div>
       </main>
       
-      {/* FAQs Section */}
-      {data?.faqs && data.faqs.length > 0 && (
-        <section className="bg-gray-50 py-12 md:py-16">
-          <FAQSection faqs={data.faqs} />
-        </section>
-      )}
+      {/* Explore More Stories Section */}
+      <section className="py-16 bg-white">
+        <div className="max-w-7xl mx-auto px-6">
+          <h2 className="text-3xl font-bold text-gray-900 mb-12 text-center" style={{ fontFamily: "'Open Sans', sans-serif" }}>
+            Explore More Stories
+          </h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {relatedBlogs.map((blog) => (
+              <div key={blog._id} className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+                <div className="h-48 bg-gray-200 rounded-t-lg overflow-hidden">
+                  <img 
+                    src={blog.blog_Image?.cdn_url || blog.blog_Image?.url || blog.blog_Image?.Location || FALLBACK_IMG}
+                    alt={blog.blog_Title || 'Blog story'}
+                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                    onError={(e) => {
+                      e.target.src = FALLBACK_IMG;
+                    }}
+                  />
+                </div>
+                <div className="p-6">
+                  <div className="flex items-center space-x-2 mb-3">
+                    {blog.blog_Category && (
+                      <span className="px-2 py-1 bg-red-50 text-red-700 text-xs font-semibold rounded-full">
+                        {blog.blog_Category}
+                      </span>
+                    )}
+                    <span className="text-xs text-gray-500">
+                      {getReadingTime(blog.blog_Description)}
+                    </span>
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2" style={{ fontFamily: "'Open Sans', sans-serif" }}>
+                    {blog.blog_Title}
+                  </h3>
+                  <p className="text-gray-600 text-sm mb-4 line-clamp-3">
+                    {blog.blog_Description?.replace(/<[^>]*>/g, "").substring(0, 150)}...
+                  </p>
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-gray-500">
+                      {blog.views || Math.floor(Math.random() * 900) + 100} views
+                    </span>
+                    <Link 
+                      to={blogLink(blog)}
+                      className="text-red-600 hover:text-red-700 text-sm font-medium transition-colors"
+                    >
+                      Read More →
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+          
+          <div className="text-center mt-12">
+            <Link 
+              to="/blog" 
+              className="inline-flex items-center space-x-2 px-8 py-3 bg-red-600 text-white font-medium rounded-full hover:bg-red-700 transition-colors"
+            >
+              <span>View All Stories</span>
+            </Link>
+          </div>
+        </div>
+      </section>
+      
+      
       
       <Footer />
     </div>

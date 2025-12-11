@@ -37,7 +37,7 @@ const HeroSection = ({ blog, blogLink, FALLBACK_IMG }) => {
   };
 
   return (
-    <section className="relative h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-gray-50 via-white to-gray-100">
+    <section className="relative h-[60vh] min-h-[500px] md:h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-gray-50 via-white to-gray-100">
       {/* Background Pattern */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,theme(colors.gray.200/20),transparent_50%)]" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,theme(colors.white/3),transparent_50%)]" />
@@ -108,7 +108,7 @@ const HeroSection = ({ blog, blogLink, FALLBACK_IMG }) => {
               <img
                 src={getImageUrl()}
                 alt={blog.blog_Title || 'Featured blog post'}
-                className="w-full h-full object-cover transition-all duration-700 filter grayscale hover:grayscale-0 hover:scale-110"
+                className="w-full h-full object-cover transition-all duration-700 hover:scale-110"
                 onError={(e) => {
                   e.target.src = FALLBACK_IMG;
                 }}
@@ -117,9 +117,6 @@ const HeroSection = ({ blog, blogLink, FALLBACK_IMG }) => {
           </div>
         </div>
       </div>
-
-      {/* Bottom Gradient Fade */}
-      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-gray-50 to-transparent" />
     </section>
   );
 };

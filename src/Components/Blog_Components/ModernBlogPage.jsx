@@ -5,7 +5,7 @@ import api from "../../config/apiClient";
 import HeroSection from "./HeroSection";
 import BlogCard from "./BlogCard";
 import Header from "./Header";
-import Footer from "./Footer";
+import CrimsonEleganceFooter from "../Footer/CrimsonEleganceFooter";
 
 const ModernBlogPage = () => {
   const [allBlogs, setAllBlogs] = useState([]);
@@ -66,26 +66,6 @@ const ModernBlogPage = () => {
     return blogs;
   }, [allBlogs, featuredBlog, sort]);
 
-  // Generate bento grid sizes for visual variety
-  const getBentoSize = (index) => {
-    const sizes = [
-      'col-span-1 row-span-1', // Small (1x1)
-      'col-span-2 row-span-1', // Wide (2x1)
-      'col-span-1 row-span-2', // Tall (1x2)
-      'col-span-2 row-span-2', // Large (2x2)
-    ];
-    
-    // Create a pattern for visual interest
-    const pattern = [
-      0, 1, 0, 2,  // First row
-      3, 0, 1, 0,  // Second row
-      0, 2, 0, 1,  // Third row
-      1, 0, 3, 0,  // Fourth row
-    ];
-    
-    return sizes[pattern[index % pattern.length]] || sizes[0];
-  };
-
   // Blog link helper
   const blogLink = (blog) => {
     if (blog?.slug) return `/blog/${blog.slug}`;
@@ -128,7 +108,7 @@ const ModernBlogPage = () => {
 
       {/* Bento Grid Section */}
       <section className="max-w-7xl mx-auto px-6 py-16">
-        <div className="mb-12 text-center">
+        <div className="mb-4 text-center">
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4" style={{ fontFamily: "'Open Sans', sans-serif" }}>
             Explore More Stories
           </h2>
@@ -146,11 +126,11 @@ const ModernBlogPage = () => {
             <p className="text-gray-600 text-lg">No blogs found.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 auto-rows-[200px] gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {filteredBlogs.slice(0, 12).map((blog, index) => (
               <div
                 key={blog._id}
-                className={getBentoSize(index)}
+                className="h-[400px]"
               >
                 <BlogCard 
                   blog={blog} 
@@ -173,7 +153,7 @@ const ModernBlogPage = () => {
       </section>
 
       {/* Footer */}
-      <Footer />
+      <CrimsonEleganceFooter />
     </div>
   );
 };
