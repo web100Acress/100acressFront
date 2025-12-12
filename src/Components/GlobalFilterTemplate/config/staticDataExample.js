@@ -15,7 +15,8 @@ export const getCityPageData = (cityName) => {
     heroTitle: cityData?.heroTitle || "Discover Premium Projects",
     heroSubtitle: cityData?.heroSubtitle || "Discover the latest new launch projects in Gurgaon with modern apartments, villas, and premium amenities for a luxurious lifestyle.",
     faqs: getFAQData('city', cityName),
-    trustBoosters: getTrustBoosters('city', cityName)
+    trustBoosters: getTrustBoosters('city', cityName),
+    hiddenContent: cityData?.hiddenContent || null
   };
 };
 
