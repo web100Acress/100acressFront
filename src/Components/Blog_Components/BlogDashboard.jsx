@@ -139,6 +139,7 @@ export default function BlogDashboard() {
   const [autoError, setAutoError] = useState("");
   const [autoSuccess, setAutoSuccess] = useState("");
   const [apiBase, setApiBaseState] = useState(getApiBase());
+  const [targetLinks, setTargetLinks] = useState([""]);
 
   useEffect(() => {
     fetchDashboardData();
@@ -419,16 +420,20 @@ export default function BlogDashboard() {
     setAutoError("");
     setAutoSuccess("");
     try {
+      // Filter out empty links
+      const validLinks = targetLinks.filter(link => link.trim() !== '');
       const payload = {
         topic,
         blog_Category: autoCategory.trim() || "General",
         author: currentUserName || "Admin",
         isPublished: autoPublish,
+        targetLinks: validLinks,
       };
       const res = await api.post("/blog/auto-generate", payload);
       setAutoSuccess("Blog created successfully");
       setShowAutoModal(false);
       setAutoTopic("");
+      setTargetLinks([""]);
       fetchDashboardData();
       console.log("Auto-generated blog:", res?.data);
     } catch (error) {
@@ -1313,6 +1318,54 @@ export default function BlogDashboard() {
                     className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-1 focus:ring-orange-500 focus:border-orange-500"
                   />
                 </div>
+                
+                {/* Target Links Section */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Target Links
+                  </label>
+                  <div className="space-y-2">
+                    {targetLinks.map((link, index) => (
+                      <div key={index} className="flex gap-2">
+                        <input
+                          value={link}
+                          onChange={(e) => {
+                            const newLinks = [...targetLinks];
+                            newLinks[index] = e.target.value;
+                            setTargetLinks(newLinks);
+                          }}
+                          placeholder={`Enter target link ${index + 1}`}
+                          className="flex-1 border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-1 focus:ring-orange-500 focus:border-orange-500"
+                        />
+                        {targetLinks.length > 1 && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const newLinks = targetLinks.filter((_, i) => i !== index);
+                              setTargetLinks(newLinks.length > 0 ? newLinks : [""]);
+                            }}
+                            className="p-2 text-red-600 hover:bg-red-50 rounded-md transition-colors"
+                            title="Remove link"
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        )}
+                      </div>
+                    ))}
+                    <button
+                      type="button"
+                      onClick={() => setTargetLinks([...targetLinks, ""])}
+                      className="w-full py-2 px-3 border border-dashed border-gray-300 rounded-md text-sm text-gray-600 hover:border-orange-500 hover:text-orange-600 transition-colors flex items-center justify-center gap-2"
+                    >
+                      <Plus size={16} />
+                      Add Another Link
+                    </button>
+                  </div>
+                  <p className="mt-1 text-xs text-gray-500">
+                    These links will be incorporated into the generated blog content
+                  </p>
+                </div>
+                
                 <label className="inline-flex items-center space-x-2 text-sm text-gray-700">
                   <input
                     type="checkbox"

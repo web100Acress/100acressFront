@@ -548,28 +548,48 @@ export const staticData = {
     },
     pune: {
       title: "Discover Premium Projects in Pune",
-      description: "Explore the best residential and commercial projects in Pune with modern amenities, excellent connectivity, and vibrant lifestyle. Find your dream home in this IT hub and cultural capital.",
-      metaTitle: "Best Projects in Pune - Residential & Commercial Properties | 100acress",
+      description: "Explore the best New Projects in Pune 2025. From luxury apartments to affordable ready-to-move flats, find verified homes in Baner, Hinjewadi & more. Check prices now!",
+      metaTitle: "New Projects in Pune 2025 | Upcoming & Ready to Move Flats",
       canonical: "https://www.100acress.com/projects-in-pune/",
       keywords: "projects in pune, residential projects pune, commercial projects pune, pune real estate, pune properties",
       heroTitle: "Discover Premium Projects in Pune",
       heroSubtitle: "Find your perfect home in Pune with world-class amenities and excellent connectivity",
       faqs: [
         {
-          question: "What are the best residential areas in Pune?",
-          answer: "Top residential areas in Pune include Koregaon Park, Viman Nagar, Baner, Hadapsar, Kharadi, and Wakad. Each area offers unique advantages and connectivity."
+          question: "Where are some good New Projects available in Pune?",
+          answer: "The best places for New Projects in Pune are Baner, Kharadi, and Wakad. These places have everything from ella towers to large townships like Vanaha Pune."
         },
         {
-          question: "What is the average property price in Pune?",
-          answer: "Property prices in Pune range from ₹4,000 per sq ft in developing areas to ₹12,000+ per sq ft in prime locations like Koregaon Park. The average price for a 3BHK apartment is ₹1-2.5 Crores."
+          question: "Luxury flats price trend at Pune.",
+          answer: "Luxury flats at Pune price depends on location. A 2 BHK at Pune costs approximately Rs. 50 Lakhs, and 3 BHK at Pune or luxury apartments at Pune goes up to Rs. 2.5 Crores."
         },
         {
-          question: "Is Pune a good place for property investment?",
-          answer: "Yes, Pune offers excellent investment opportunities due to its IT industry growth, affordable property prices, and strong rental market."
+          question: "Is buying property in Pune a good option?",
+          answer: "Yes, buying property in Pune will be a great option. Property in Pune will appreciate and generate good rental income."
         },
         {
-          question: "What amenities should I look for in Pune projects?",
-          answer: "Look for projects with 24/7 security, power backup, swimming pool, gym, clubhouse, landscaped gardens, parking, and proximity to schools, hospitals, and shopping centers."
+          question: "List some facilities that are offered in luxury projects at Pune.",
+          answer: "Luxury projects at Pune have a set of luxury facilities including pools, gym, and clubhouse. Latest luxury apartments at Pune offer intelligent security and lush gardens."
+        },
+        {
+          question: "How do I check a new project in Pune?",
+          answer: "Verify RERA and builder status. Try visiting the website of your new project at Pune yourself and check the status of your properties at Pune."
+        },
+        {
+          question: "What papers are required for buying projects in Pune?",
+          answer: "RERA certificate, approved plans, and Title Deeds. All these documents are highly necessary for a secure investment at any project in Pune."
+        },
+        {
+          question: "When should I invest in residential projects at Pune?",
+          answer: "To get the best deal on residential projects at Pune, it is advised that you invest or buy properties at the pre-launch stage of 'New Projects at Pune'. However, if you want properties at 'Pune' urgently, then 'Ready-to-Move Luxury Apartments at Pune'"
+        },
+        {
+          question: "How can I get the best deal on a flat?",
+          answer: "You should compare luxury flats in Pune price trends and check for launch offers. It is the best method to cut costs on 2 BHK flats in Pune and 3 BHK flats in Pune."
+        },
+        {
+          question: "Are there any hidden charges associated with properties in Pune?",
+          answer: "Yes, apart from the cost associated with projects in Pune, you will have to include Stamp Duty, Registration Fees, and Maintenance Charges."
         }
       ],
       trustBoosters: [
@@ -588,7 +608,29 @@ export const staticData = {
           title: "Premium Properties",
           description: "Handpicked luxury properties with modern amenities and prime locations"
         }
-      ]
+      ],
+      hiddenContent: {
+        title: "New Projects in Pune",
+        description: "Get to know the best New Projects in Pune. From Luxury Apartments in Baner to affordable flats near the IT hub, we list verified upcoming Projects in Pune, and ready-to-move Projects in Pune. Filter by price and location to find your dream property with world-class amenities today.",
+        sections: [
+          {
+            title: "Why is the Pune Real Estate Market Booming?",
+            content: "Pune has changed a lot in the last ten years. A once-quiet city has now changed into an IT and automobile hub. It is this reason for economic growth that new projects in Pune are very much in demand. With Hinjewadi and Kharadi witnessing the opening of big companies' companies, professionals all over India are migrating to this place. This immigration creates a huge demand for housing, which makes developers new launch projects in Pune regularly to cater to modern homebuyers' needs. It has the perfect blend of growth in career opportunities with good weather and an un-chaotic lifestyle compared to Mumbai, making it a perfect destination for families."
+          },
+          {
+            title: "Why invest in New Projects in Pune?",
+            content: "Pune is great to give excellent returns on invested money. Here's why:\n\nVariety at each step: Be it a small 2 BHK flat in Pune, which one aims to let out, or spacious 3 BHK flats in Pune that one needs for a growing family, the city has everything.\nInfrastructure Growth: The new Metro lines and the upcoming Ring Road are massive game-changers. IT parks are getting better connectivity, and that is what again drives property rates upwards.\nAppreciation Potential: Presently, the luxury flats in Pune price trends only show an upward graph. Investing now, especially in developing areas, can ensure that your asset grows in value over time.\nHigh Demand for Rentals: Due to the student population and IT workforce, renting a tenant is never a struggle here."
+          },
+          {
+            title: "Top Localities for New Projects in Pune",
+            content: "Location is everything, and depending on your budget and lifestyle, here's where you should be looking:\n\nBaner: This is the hub for luxury living. If you are looking for high-end apartments in Pune, Baner offers premium societies alongside the highway with great restaurants and malls nearby.\nKharadi: It is housed as the IT hub in the east and offers premium luxury flats in Pune. It is perfect for people who want to work in EON IT Park with a walk-to-work lifestyle.\nHinjewadi & Wakad: These are the most sought-after areas for mid-segment buyers and investors, offering excellent connectivity with modern amenities.\nTownships: Large townships are becoming the trend. Vanaha Pune-type projects are a fast catch because they offer a green resort lifestyle within the gates, schools, hospitals, and all.\nKoregaon Park: For those who want nothing but the best, this remains the destination for ultra-luxury living."
+          },
+          {
+            title: "Investment Tips For New Projects in Pune",
+            content: "Buying a house is a major step, so here's some advice to consider:\n\nCheck RERA: Check whether the particular new project in Pune you are interested in is registered with MahaRERA. It will guarantee 'your money' and 'on-time delivery.\n\"Luxury\" means different things to different builders. When reviewing so-called luxury new projects in Pune, take a closer look at the actual amenities, floor-to-ceiling height, and the density of the project-aka how many flats per acre.\nA visit to the site is a must: Do not totally rely on brochures. Visit the site for understanding the carpet area, the view, and so on.\nTiming Matters: If you are looking at the best possible price, try to book during the pre-launch phase. If you urgently require possession to save on rent, then look for ready-to-move options."
+          }
+        ]
+      }
     }
   },
 
