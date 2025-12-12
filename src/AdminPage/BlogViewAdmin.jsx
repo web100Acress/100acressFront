@@ -1,5 +1,3 @@
-
-
 import React, { useState, useEffect } from "react";
 import Sidebar from "./Sidebar";
 import { useParams } from "react-router-dom";
