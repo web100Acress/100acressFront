@@ -547,7 +547,7 @@ export const staticData = {
       ]
     },
     pune: {
-      title: "Discover Premium Projects in Pune",
+      title: "New Projects in Pune",
       description: "Explore the best New Projects in Pune 2025. From luxury apartments to affordable ready-to-move flats, find verified homes in Baner, Hinjewadi & more. Check prices now!",
       metaTitle: "New Projects in Pune 2025 | Upcoming & Ready to Move Flats",
       canonical: "https://www.100acress.com/projects-in-pune/",
