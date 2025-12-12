@@ -220,9 +220,11 @@ const BlogView = () => {
   const navigateProject = (proj) => {
     try {
       if (!proj) return;
-      // Prefer canonical project_url used by NewBanner route
+      
+      // Try multiple possible URL fields in order of preference
       const raw = proj.project_url || proj.pUrl || proj.slug || proj.url || proj.projectSlug || '';
       let slug = raw;
+      
       // If raw looks like a full URL, extract the last path segment
       if (slug && /^(https?:)?\/\//i.test(slug)) {
         try {
@@ -231,17 +233,32 @@ const BlogView = () => {
           slug = parts[parts.length - 1] || '';
         } catch (_) { /* ignore */ }
       }
+      
+      // If still no slug, try to generate from project name
       if (!slug) {
         const name = proj.projectName || proj.name || proj.title || '';
         slug = name
           ? String(name).toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
           : '';
       }
-      if (!slug) return;
+      
+      // Final fallback - use ID if available
+      if (!slug && proj._id) {
+        slug = proj._id;
+      }
+      
+      if (!slug) {
+        console.warn('No valid slug or ID found for project:', proj);
+        return;
+      }
+      
       const path = `/${slug}/`;
+      console.log('Navigating to project:', { originalUrl: raw, finalSlug: slug, path });
       history(path);
       try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (_) {}
-    } catch (_) { /* noop */ }
+    } catch (error) {
+      console.error('Error navigating to project:', error);
+    }
   };
 
   const resetData = () => {
@@ -1328,21 +1345,7 @@ const BlogView = () => {
                     const img = getBestImageUrl(rawImg);
 
                     const handleProjectClick = () => {
-                      try {
-                        if (!url) return;
-                        let slug = url;
-                        if (slug && /^(https?:)?\/\//i.test(slug)) {
-                          try {
-                            const u = new URL(slug, window.location.origin);
-                            const parts = u.pathname.split('/').filter(Boolean);
-                            slug = parts[parts.length - 1] || '';
-                          } catch (_) { /* ignore */ }
-                        }
-                        if (!slug) return;
-                        const path = `/${slug}/`;
-                        history(path);
-                        try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (_) {}
-                      } catch (_) { /* noop */ }
+                      navigateProject(project);
                     };
 
                     const meta = relatedMeta[url] || {};
@@ -1492,6 +1495,19 @@ const BlogView = () => {
                             </div>
                           );
                         })}
+                        {/* View All Projects Link */}
+                        <div className="pt-3 border-t border-gray-100 mt-3">
+                          <Link 
+                            to="/projects/" 
+                            className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-red-50 hover:bg-red-100 text-red-600 font-medium rounded-lg transition-all duration-200 text-sm group"
+                            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                          >
+                            <span>View All Projects</span>
+                            <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                            </svg>
+                          </Link>
+                        </div>
                       </div>
                     </div>
                   )}

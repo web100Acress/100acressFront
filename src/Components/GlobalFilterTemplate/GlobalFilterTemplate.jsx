@@ -1257,6 +1257,36 @@ const GlobalFilterTemplate = ({
         onRemove={(project) => toggleCompareProject(project)}
       />
 
+      {/* Knowledge Center - Only for Pune */}
+      {currentConfig.hiddenContent && (
+        <div className="bg-gradient-to-br from-gray-50 to-gray-100 py-16 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+                Knowledge Center
+              </h2>
+              <div className="w-24 h-1 bg-red-600 mx-auto mb-6"></div>
+              <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+                {currentConfig.hiddenContent.description}
+              </p>
+            </div>
+            
+            <div className="grid md:grid-cols-2 gap-8">
+              {currentConfig.hiddenContent.sections.map((section, index) => (
+                <div key={index} className="bg-white rounded-xl shadow-lg p-6 sm:p-8 hover:shadow-xl transition-shadow duration-300">
+                  <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4">
+                    {section.title}
+                  </h3>
+                  <div className="text-gray-600 leading-relaxed whitespace-pre-line">
+                    {section.content}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Footer */}
       <Footer />
     </>
