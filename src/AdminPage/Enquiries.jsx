@@ -58,7 +58,7 @@ const Enquiries = () => {
       return;
     }
     try {
-      const base = getApiB();
+      const base = getApiBase();
       const response = await axios.get(
         `${base}/userViewAll?limit=${pageSize}&page=${page}&search=${encodeURIComponent(search)}`,
         {
