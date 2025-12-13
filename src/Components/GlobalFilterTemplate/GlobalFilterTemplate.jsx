@@ -117,11 +117,8 @@ const GlobalFilterTemplate = ({
   console.log('Page config:', pageConfig);
   console.log('Budget page loaded successfully - no custom filtering needed');
   
-  // Use static page data directly - filtering will be handled by existing handleSearch function
-  const finalStaticPageData = staticPageData;
-  
-  // Use static data first, then pageConfig, then fallback to default config
-  const currentConfig = finalStaticPageData || pageConfig || {
+  // Use pageConfig first, then static data, then fallback to default config
+  const currentConfig = pageConfig || staticPageData || {
     title: "Discover Projects",
     description: "Premium projects crafted with quality, sustainability, and exceptional after‑sales service.",
     metaTitle: "Discover Projects - 100acress",
@@ -896,7 +893,7 @@ const GlobalFilterTemplate = ({
       {/* Hero Section */}
       <Hero 
         title={currentConfig.title}
-        subtitle={currentConfig.description}
+        subtitle={currentConfig.subtitle || currentConfig.description}
         onSearch={handleSearch}
         onFilterChange={handleFilterChange}
         filters={filters}
