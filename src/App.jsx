@@ -591,11 +591,11 @@ function App() {
                       
 
                       {/* Property Types Routes */}
-                      <Route path="/property-types/1-bhk-flats-gurgaon/" element={<BhkFlatsGurgaon bhkType="1" />} />
-                      <Route path="/property-types/2-bhk-flats-gurgaon/" element={<BhkFlatsGurgaon bhkType="2" />} />
-                      <Route path="/property-types/3-bhk-flats-gurgaon/" element={<BhkFlatsGurgaon bhkType="3" />} />
-                      <Route path="/property-types/4-bhk-flats-gurgaon/" element={<BhkFlatsGurgaon bhkType="4" />} />
-                      <Route path="/property-types/5-bhk-flats-gurgaon/" element={<BhkFlatsGurgaon bhkType="5" />} />
+                      <Route path="/1-bhk-flats-in-gurgaon/" element={<BhkFlatsGurgaon bhkType="1" />} />
+                      <Route path="/2-bhk-flats-in-gurgaon/" element={<BhkFlatsGurgaon bhkType="2" />} />
+                      <Route path="/3-bhk-flats-in-gurgaon/" element={<BhkFlatsGurgaon bhkType="3" />} />
+                      <Route path="/4-bhk-flats-in-gurgaon/" element={<BhkFlatsGurgaon bhkType="4" />} />
+                      <Route path="/5-bhk-flats-in-gurgaon/" element={<BhkFlatsGurgaon bhkType="5" />} />
                       <Route path="/property-types/fully-furnished-flats-gurgaon/" element={<FurnishedFlatsGurgaon furnishingType="Fully Furnished" />} />
                       <Route path="/property-types/semi-furnished-flats-gurgaon/" element={<FurnishedFlatsGurgaon furnishingType="Semi Furnished" />} />
                       <Route path="/property-types/unfurnished-flats-gurgaon/" element={<FurnishedFlatsGurgaon furnishingType="Unfurnished" />} />
