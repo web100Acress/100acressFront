@@ -350,11 +350,11 @@ const CrimsonEleganceFooter = () => {
           <div className="container mx-auto px-6 py-0">
             <div className="flex flex-wrap gap-2">
               {[
-                { name: "1 BHK Flats in Gurgaon", href: "/" },
-                { name: "2 BHK Flats in Gurgaon", href: "/" },
-                { name: "3 BHK Flats in Gurgaon", href: "/" },
-                { name: "4 BHK Flats in Gurgaon", href: "/" },
-                { name: "5 BHK Flats in Gurgaon", href: "/" },
+                { name: "1 BHK Flats in Gurgaon", href: "/1-bhk-flats-in-gurgaon/" },
+                { name: "2 BHK Flats in Gurgaon", href: "/2-bhk-flats-in-gurgaon/" },
+                { name: "3 BHK Flats in Gurgaon", href: "/3-bhk-flats-in-gurgaon/" },
+                { name: "4 BHK Flats in Gurgaon", href: "/4-bhk-flats-in-gurgaon/" },
+                { name: "5 BHK Flats in Gurgaon", href: "/5-bhk-flats-in-gurgaon/" },
                 { name: "Fully Furnished Flats in Gurgaon", href: "/" },
                 { name: "Penthouse in Gurgaon", href: "/" },
                 { name: "Semi Furnished Flats in Gurgaon", href: "/" },
