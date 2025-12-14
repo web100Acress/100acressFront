@@ -6,13 +6,28 @@ export const getProjectOrderData = async () => {
     console.log('🌐 Fetching project orders from API...');
     // Use the configured api client which has proper CORS and auth setup
     const response = await api.get('/api/project-orders');
-    console.log('📡 API Response status:', response.status);
+    console.log('📡 API Response:', response.data);
     
-    if (response.data && response.data.success && response.data.data) {
+    // Handle different response formats
+    let orderData = null;
+    
+    if (response.data && response.data.data) {
+      // Format: { data: { customOrders: { ... } } }
+      if (response.data.data.customOrders) {
+        orderData = response.data.data.customOrders;
+      } else {
+        orderData = response.data.data;
+      }
+    } else if (response.data && typeof response.data === 'object') {
+      // Format: { luxury: [...], trending: [...], ... }
+      orderData = response.data;
+    }
+    
+    if (orderData) {
       // Cache the data in localStorage for offline use
-      localStorage.setItem('projectOrders', JSON.stringify(response.data.data));
+      localStorage.setItem('projectOrders', JSON.stringify(orderData));
       console.log('✅ Project orders fetched from API and cached');
-      return response.data.data;
+      return orderData;
     }
   } catch (error) {
     console.error('❌ Error fetching project orders from API:', error);

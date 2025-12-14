@@ -67,6 +67,21 @@ export const PropertiesSection = () => {
       priceValue = parseFloat(priceValue.replace(/[^0-9.]/g, ''));
     }
     
+    console.log('Project Image Data:', {
+      name: project.projectName,
+      thumbnailImage: project.thumbnailImage,
+      frontImage: project.frontImage,
+      thumbnail: project.thumbnail,
+      allImageFields: {
+        thumbnailImage: project.thumbnailImage,
+        frontImage: project.frontImage,
+        thumbnail: project.thumbnail,
+        coverImage: project.coverImage,
+        mainImage: project.mainImage,
+        images: project.images
+      }
+    });
+    
     console.log('Project Price Data:', {
       name: project.projectName,
       minPrice: project.minPrice,
@@ -77,9 +92,26 @@ export const PropertiesSection = () => {
       allFields: Object.keys(project)
     });
     
+    // Determine the best image URL using the correct field names
+    let imageUrl = project.thumbnailImage?.url || project.thumbnailImage?.cdn_url || project.frontImage?.url || project.frontImage?.cdn_url || project.thumbnail?.url || project.thumbnail?.cdn_url;
+    
+    // Log the determined image URL for debugging
+    console.log('Final image URL for', project.projectName, ':', imageUrl);
+    
+    // Validate URL format
+    if (imageUrl && (imageUrl.startsWith('http') || imageUrl.startsWith('/'))) {
+      // URL looks valid
+    } else if (imageUrl) {
+      console.warn('Invalid image URL format:', imageUrl, 'for project:', project.projectName);
+      imageUrl = "/Images/100acresslogo.png";
+    } else {
+      console.log('No image found for project:', project.projectName, 'using fallback');
+      imageUrl = "/Images/100acresslogo.png";
+    }
+    
     return {
       id: project._id,
-      image: project.frontImage?.url || project.images?.[0]?.url || "/Images/logo.png",
+      image: imageUrl,
       title: project.projectName || "Luxury Property",
       location: project.city || "Dubai",
       price: priceValue, // Pass as number or null
@@ -102,15 +134,15 @@ export const PropertiesSection = () => {
 
       <div className="container relative">
         {/* Section Header */}
-        <div className="text-center mb-16 space-y-4">
-          <span className="text-gold text-sm font-medium tracking-[0.3em] uppercase">
+        <div className="text-center mb-8 sm:mb-12 lg:mb-16 space-y-3 sm:space-y-4 px-4">
+          <span className="text-gold text-xs sm:text-sm font-medium tracking-[0.2em] sm:tracking-[0.3em] uppercase">
             Featured Listings
           </span>
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-white">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-display font-bold text-white leading-tight">
             Premium Properties In
             <span className="block text-gold">{selectedEmirate}</span>
           </h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-sm sm:text-base lg:text-xl text-muted-foreground max-w-lg sm:max-w-2xl mx-auto">
             Discover luxury living in {selectedEmirate} with our exclusive collection of premium properties
           </p>
         </div>
@@ -129,7 +161,7 @@ export const PropertiesSection = () => {
           </div>
         ) : (
           /* Properties Grid */
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 mb-12">
             {properties.map((property, index) => (
               <div
                 key={property.id || index}

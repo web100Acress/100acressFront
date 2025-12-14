@@ -11,7 +11,7 @@
 
 /* Typography consistent with theme */
 .prc-subtitle { font-weight: 800; letter-spacing: 0.08em; font-size: 12px; text-transform: uppercase; color: #9ca3af; }
-.prc-title { font-family: 'Playfair Display', serif; font-weight: 800; font-size: clamp(1.6rem, 3.8vw, 2.4rem); color: #111827; line-height: 1.2; position: relative; display: inline-block; margin: 0; text-align: center; }
+.prc-title { font-family: 'Jost', sans-serif; font-weight: 800; font-size: clamp(1.6rem, 3.8vw, 2.4rem); color: #111827; line-height: 1.2; position: relative; display: inline-block; margin: 0; text-align: center; }
 .prc-title .block { display: block; font-family: 'Jost', sans-serif; font-weight: 700; color: #6b7280; font-size: 0.9em; }
 .prc-underline { height: 4px; width: 0; background: linear-gradient(90deg, #CFAF6E, #E5C78A); margin: 10px auto 0; border-radius: 999px; animation: expandUnderline .9s .15s both; }
 

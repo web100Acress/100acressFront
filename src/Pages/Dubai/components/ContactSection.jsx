@@ -92,19 +92,19 @@ export const ContactSection = () => {
         </div>
       </div>
       
-      <div className="container relative">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
+      <div className="container relative px-4">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16">
           {/* Left Side - Info */}
-          <div className="space-y-8 animate-fade-in">
+          <div className="space-y-6 lg:space-y-8 animate-fade-in">
             <div>
-              <span className="text-gold text-sm font-medium tracking-[0.3em] uppercase">
+              <span className="text-gold text-xs sm:text-sm font-medium tracking-[0.2em] sm:tracking-[0.3em] uppercase">
                 Get in Touch
               </span>
-              <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-white mt-4 mb-6">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-display font-bold text-white mt-2 sm:mt-4 mb-4 sm:mb-6 leading-tight">
                 Let's Find Your
                 <span className="block text-gold">Dream Property</span>
               </h2>
-              <p className="text-xl text-muted-foreground">
+              <p className="text-sm sm:text-base lg:text-xl text-muted-foreground">
                 Connect with our Dubai property experts for personalized assistance
               </p>
             </div>

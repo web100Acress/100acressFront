@@ -50,6 +50,7 @@ const Activity = lazy(() => import("./Pages/Activity"));
 const CareerWithUs = lazy(() => import("./Pages/CareerWithUs"));
 const UserEditProperty = lazy(() => import("./Pages/UserEditProperty"));
 const Blogging = lazy(() => import("./Pages/Blogging"));
+import ModernBlogPage from "./Components/Blog_Components/ModernBlogPage";
 const ProjectStatusSearch = lazy(() => import("./Pages/ProjectStatusSearch"));
 // Global Template Components
 const ProjectStatusSearchGlobal = lazy(() => import("./Pages/ProjectStatusSearch/ProjectStatusSearchGlobal"));
@@ -59,7 +60,7 @@ const DeenDayalPlots = lazy(() => import("./Components/HomePageComponents/DeenDa
 const NewsandArtical = lazy(() => import("./Pages/NewsandArtical"));
 const UserDashBoard = lazy(() => import("./Components/HomePageComponents/UserDashBoard"));
 const UserEdit = lazy(() => import("./Components/HomePageComponents/UserEdit"));
-const BlogView = lazy(() => import("./Pages/BlogView"));
+import ModernBlogView from "./Components/Blog_Components/ModernBlogView";
 const BlogInsights = lazy(() => import("./Insight/pages/BlogInsights"));
 // Per-city pages are now handled by CityProjects; imports removed
 // const DelhiProject = lazy(() => import("./Pages/ProjectCities/DelhiProject"));
@@ -121,6 +122,7 @@ const ContactCardLayout = lazy(() => import("./Components/Layout/ContactCardLayo
 const Addnew = lazy(() => import("./AdminPage/Addnew"));
 const InsertProject = lazy(() => import("./AdminPage/InsertProject"));
 const AdminDashboard = lazy(() => import("./AdminPage/AdminDashboard"));
+const ProjectFilterOrderManagement = lazy(() => import("./AdminPage/ProjectFilterOrderManagement"));
 const ContactCardManagement = lazy(() => import("./AdminPage/ContactCardManagement"));
 const Blog = lazy(() => import("./AdminPage/Blog"));
 const EditProject = lazy(() => import("./AdminPage/EditProject"));
@@ -345,9 +347,30 @@ function App() {
                         path="/budget-properties/above-50-cr"
                         element={<GlobalBudgetPrice />}
                       />
+                      {/* Unified projects/{filter} routes */}
                       <Route
-                        path="/projects-in-gurugram/property-ready-to-move/"
-                        element={<ProjectStatusSearch />}
+                        path="/projects/under-1-cr/"
+                        element={<GlobalBudgetPrice />}
+                      />
+                      <Route
+                        path="/projects/1-5-cr/"
+                        element={<GlobalBudgetPrice />}
+                      />
+                      <Route
+                        path="/projects/5-10-cr/"
+                        element={<GlobalBudgetPrice />}
+                      />
+                      <Route
+                        path="/projects/10-20-cr/"
+                        element={<GlobalBudgetPrice />}
+                      />
+                      <Route
+                        path="/projects/20-50-cr/"
+                        element={<GlobalBudgetPrice />}
+                      />
+                      <Route
+                        path="/projects/above-50-cr/"
+                        element={<GlobalBudgetPrice />}
                       />
                       <Route
                         path="/projects-in-gurugram/property-possession-after-2026/"
@@ -355,11 +378,11 @@ function App() {
                       />
                       <Route
                         path="/projects-in-gurugram/property-possession-in-2024/"
-                        element={<Navigate to="/projects-in-gurugram/property-ready-to-move/" replace />}
+                        element={<Navigate to="/projects/ready-to-move/" replace />}
                       />
                       <Route
                         path="/projects-in-gurugram/property-possession-in-2024"
-                        element={<Navigate to="/projects-in-gurugram/property-ready-to-move/" replace />}
+                        element={<Navigate to="/projects/ready-to-move/" replace />}
                       />
                       <Route
                         path="/developers/:builderName"
@@ -374,6 +397,13 @@ function App() {
                         path="/projects-in-gurugram/property-possession-in-2026/"
                         element={<Possessionin2026 />}
                       />
+                      {/* Redirects to home page */}
+                      <Route path="/property/residential/" element={<Navigate to="/" replace />} />
+                      <Route path="/property/residential" element={<Navigate to="/" replace />} />
+                      <Route path="/projects-status/newlaunch-projects/" element={<Navigate to="/" replace />} />
+                      <Route path="/projects-status/newlaunch-projects" element={<Navigate to="/" replace />} />
+                      <Route path="/sco/plots" element={<Navigate to="/" replace />} />
+                      <Route path="/sco/plots/" element={<Navigate to="/" replace />} />
                       <Route
                         path="/rental-properties/best-rental-property-in-gurugram/"
                         element={<RentPropViewCard />}
@@ -393,21 +423,17 @@ function App() {
                       />
                       <Route path="/propviewcard" element={<PropViewCardPro />} />
                       <Route
-                        path="/property/residential/"
+                        path="/projects/residential/"
                         element={<ProjectTypeGlobal />}
-                      />
-                      <Route
-                        path="/projects/upcoming-projects-in-gurgaon/"
-                        element={<ProjectStatusSearchGlobal />}
                       />
                       <Route
                         path="/projects/commercial/"
                         element={<ProjectTypeGlobal />}
                       />
-                      <Route path="/sco/plots/" element={<ProjectTypeGlobal />} />
+                      <Route path="/projects/sco-plots/" element={<ProjectTypeGlobal />} />
                       {/* <Route path="/dlf-homes-sco-plots/" element={<DlfSco />} /> */}
                       <Route
-                        path="/projects/independentfloors/"
+                        path="/projects/independent-floors/"
                         element={<ProjectTypeGlobal />}
                       />
                       <Route path="/projects-in-delhi/" element={<CityProjectsGlobal />} />
@@ -448,11 +474,24 @@ function App() {
                       <Route path="/analytics/location" element={<LocationIntelligence />} />
                       <Route path="/analytics/investment" element={<InvestmentInsights />} />
                       <Route path="/loan-eligibility" element={<LoanEligibility />} />
+                      
+                      {/* Unified status routes with projects/{filter} pattern */}
                       <Route
-                        path="/project-in-underconstruction/"
+                        path="/projects/upcoming/"
                         element={<ProjectStatusSearchGlobal />}
                       />
-                      <Route path="/projects-in-newlaunch/" element={<ProjectStatusSearchGlobal />} />
+                      <Route
+                        path="/projects/underconstruction/"
+                        element={<ProjectStatusSearchGlobal />}
+                      />
+                      <Route
+                        path="/projects/ready-to-move/"
+                        element={<ProjectStatusSearchGlobal />}
+                      />
+                      <Route
+                        path="/projects/newlaunch/"
+                        element={<ProjectStatusSearchGlobal />}
+                      />
                       
                       <Route path="/plots-in-gurugram/" element={<ProjectTypeGlobal />} />
                       <Route path="/projects/villas/" element={<ProjectTypeGlobal />} />
@@ -476,15 +515,15 @@ function App() {
                       <Route path="/contact-us/" element={<ContactUs />} />
                       <Route path="/activity" element={<Activity />} />
                       <Route path="/career-with-us/" element={<CareerWithUs />} />
-                      <Route path="/blog/" element={<Blogging />} />
+                      <Route path="/blog/" element={<ModernBlogPage />} />
                       {/* Place static path before dynamic ones to avoid '/blog/write' matching ':slug' */}
                       <Route path="/blog/write" element={<BlogWrite />} />
                       {/* Direct ID access - must come before slug to avoid conflicts */}
-                      <Route path="/blog/:id" element={<BlogView />} />
+                      <Route path="/blog/:id" element={<ModernBlogView />} />
                       {/* Handle slug-only URLs like /blog/my-blog-slug */}
-                      <Route path="/blog/:slug" element={<BlogView />} />
+                      <Route path="/blog/:slug" element={<ModernBlogView />} />
                       {/* Handle slug/id URLs like /blog/my-blog-slug/67f7bd08edb6d0442ad0012e */}
-                      <Route path="/blog/:slug/:id" element={<BlogView />} />
+                      <Route path="/blog/:slug/:id" element={<ModernBlogView />} />
                       <Route path="/blogging" element={<Blogging />} />
                       <Route path="/blog-insights" element={<BlogInsights />} />
                       <Route path="/insights/price-trends" element={<PriceTrends />} />
@@ -497,8 +536,10 @@ function App() {
                       />
                       <Route path="/forgetpassword" element={<ResetEmailPassword />} />
                       <Route path="/knowabouts" element={<PropertyKnow />} />
+
                       <Route path="/test-sales-head" element={<LazyLoad><TestSalesHead /></LazyLoad>} />
                       <Route path="/:pUrl/" element={<ProjectLayout2 />} />
+
                       <Route
                         path="/userviewproperty/:id"
                         element={<UserViewProperty />}
@@ -517,11 +558,11 @@ function App() {
                       
 
                       {/* Property Types Routes */}
-                      <Route path="/property-types/1-bhk-flats-gurgaon/" element={<BhkFlatsGurgaon bhkType="1" />} />
-                      <Route path="/property-types/2-bhk-flats-gurgaon/" element={<BhkFlatsGurgaon bhkType="2" />} />
-                      <Route path="/property-types/3-bhk-flats-gurgaon/" element={<BhkFlatsGurgaon bhkType="3" />} />
-                      <Route path="/property-types/4-bhk-flats-gurgaon/" element={<BhkFlatsGurgaon bhkType="4" />} />
-                      <Route path="/property-types/5-bhk-flats-gurgaon/" element={<BhkFlatsGurgaon bhkType="5" />} />
+                      <Route path="/1-bhk-flats-in-gurgaon/" element={<BhkFlatsGurgaon bhkType="1" />} />
+                      <Route path="/2-bhk-flats-in-gurgaon/" element={<BhkFlatsGurgaon bhkType="2" />} />
+                      <Route path="/3-bhk-flats-in-gurgaon/" element={<BhkFlatsGurgaon bhkType="3" />} />
+                      <Route path="/4-bhk-flats-in-gurgaon/" element={<BhkFlatsGurgaon bhkType="4" />} />
+                      <Route path="/5-bhk-flats-in-gurgaon/" element={<BhkFlatsGurgaon bhkType="5" />} />
                       <Route path="/property-types/fully-furnished-flats-gurgaon/" element={<FurnishedFlatsGurgaon furnishingType="Fully Furnished" />} />
                       <Route path="/property-types/semi-furnished-flats-gurgaon/" element={<FurnishedFlatsGurgaon furnishingType="Semi Furnished" />} />
                       <Route path="/property-types/unfurnished-flats-gurgaon/" element={<FurnishedFlatsGurgaon furnishingType="Unfurnished" />} />
@@ -710,6 +751,9 @@ function App() {
                     {/* Admin route for Market Reports */}
                     <Route path="/admin/insights/market-report-generator" element={<LazyLoad><MarketReportsAdmin /></LazyLoad>} />
 
+                    {/* Admin route for Project Filter Order Management */}
+                    <Route path="/Admin/project-filter-order" element={<LazyLoad><ProjectFilterOrderManagement /></LazyLoad>} />
+
                     
                     {/* Blog route only user with role Blog will be able to login */}
                     <Route path="/seo/" element={<SeoPrivateRoute />}>
@@ -718,12 +762,13 @@ function App() {
                         <Route path="dashboard" element={<BlogDashboard />} />
                         <Route path="manage" element={<BlogManagement />} />
                         <Route path="write" element={<BlogWriteModal />} />
-                        <Route path="view/:id" element={<BlogView />} />
+                        <Route path="view/:id" element={<ModernBlogView />} />
                         <Route path="edit/:id" element={<BlogWriteModal />} />
                         <Route path="drafts" element={<DraftManagement />} />
                       </Route>
                     </Route>
-                  </Routes>
+                  <Route path="/:pUrl/" element={<ProjectLayout2 />} />
+                </Routes>
                 </Suspense>
               </ErrorBoundary>
             </QueryClientProvider>

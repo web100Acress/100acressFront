@@ -5,7 +5,7 @@
 .nb-master-container { padding: 64px 16px; max-width: 1120px; margin: 0 auto; width: 100%; }
 @media (min-width: 1024px) { .nb-master-container { padding: 96px 32px; } }
 .nb-master-header { margin-bottom: 8px; text-align: center; }
-.nb-master-title { margin: 0; font-size: 1.875rem; line-height: 2.25rem; font-weight: 700; color: #111827; font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif; }
+.nb-master-title { margin: 0; font-size: 1.875rem; line-height: 2.25rem; font-weight: 700; color: #111827; font-family: 'Jost', sans-serif; }
 @media (min-width: 768px) { .nb-master-title { font-size: 2.25rem; line-height: 2.5rem; } }
 @media (min-width: 1280px) { .nb-master-title { font-size: 3rem; line-height: 1.1; } }
 

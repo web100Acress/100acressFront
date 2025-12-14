@@ -15,21 +15,21 @@ export const LifestyleSection = () => {
 
       <div className="container relative">
         {/* Section Header */}
-        <div className="text-center mb-16 space-y-4 animate-fade-in">
-          <span className="text-gold text-sm font-medium tracking-[0.3em] uppercase">
+        <div className="text-center mb-8 sm:mb-12 lg:mb-16 space-y-3 sm:space-y-4 px-4 animate-fade-in">
+          <span className="text-gold text-xs sm:text-sm font-medium tracking-[0.2em] sm:tracking-[0.3em] uppercase">
             The Dubai Experience
           </span>
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-white">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-display font-bold text-white leading-tight">
             Luxury Living
             <span className="block text-gold">Redefined</span>
           </h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-sm sm:text-base lg:text-xl text-muted-foreground max-w-lg sm:max-w-2xl mx-auto">
             Experience world-class amenities, stunning architecture, and an unparalleled lifestyle
           </p>
         </div>
 
         {/* Lifestyle Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 px-4">
           {/* Large Feature */}
           <div className="lg:row-span-2 relative group overflow-hidden rounded-2xl animate-fade-in-scale">
             <div className="relative h-[600px] lg:h-full">

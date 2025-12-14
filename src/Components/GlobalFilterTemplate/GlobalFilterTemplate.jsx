@@ -1,10 +1,12 @@
-import React, { useContext, useState, useEffect, useRef, useCallback } from "react";
-import { DataContext } from "../../MyContext";
-import { useLocation } from "react-router-dom";
-import { Helmet } from "react-helmet";
-import { useSelector } from "react-redux";
-import Api_Service from "../../Redux/utils/Api_Service";
+import React, { useContext, useEffect, useState, useCallback, useMemo, useRef } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { useParams, useLocation, useNavigate } from "react-router-dom";
+import { allupcomingproject, newlaunch, underconstruction, readytomove } from "../../Redux/slice/AllSectionData.jsx";
+import Api_Service from "../../Redux/utils/Api_Service.jsx";
+import { getProjectOrderData } from "../../Utils/ProjectOrderData";
 import Footer from "../Actual_Components/Footer";
+import { DataContext } from "../../MyContext.jsx";
+import { Helmet } from "react-helmet";
 
 // Import modular components from ProjectStatusSearch
 import Hero from "../../Pages/ProjectStatusSearch/Hero";
@@ -63,16 +65,32 @@ const GlobalFilterTemplate = ({
   const isRequestInProgress = useRef(false);
   const lastRequestTime = useRef(0);
   
+  // Project order state
+  const [projectOrders, setProjectOrders] = useState(null);
+  const [projectOrdersLoading, setProjectOrdersLoading] = useState(true);
+  
   // Get project status from URL or props
   const getProjectStatus = () => {
     const path = location.pathname;
     console.log('Current path:', path);
     
-    // Only return status for status pages, not for type/city/budget pages
-    if (path.includes('upcoming-projects-in-gurgaon')) return 'upcoming';
-    if (path.includes('project-in-underconstruction')) return 'underconstruction';
-    if (path.includes('property-ready-to-move')) return 'readytomove';
-    if (path.includes('projects-in-newlaunch')) return 'newlaunch';
+    // Check for new unified status URLs: projects/{status}
+    if (path.includes('/projects/') && !path.includes('/projects-in-')) {
+      const filter = path.split('/projects/')[1]?.replace('/', '');
+      console.log('Detected unified projects filter:', filter);
+      
+      const statusMap = {
+        'upcoming': 'upcoming',
+        'newlaunch': 'newlaunch',
+        'underconstruction': 'underconstruction',
+        'ready-to-move': 'readytomove'
+      };
+      
+      if (statusMap[filter]) {
+        console.log('Detected status from unified URL:', statusMap[filter]);
+        return statusMap[filter];
+      }
+    }
     
     // For project type, city, and budget pages, return null
     if (pageType === 'type' || pageType === 'city' || pageType === 'budget') {
@@ -99,11 +117,8 @@ const GlobalFilterTemplate = ({
   console.log('Page config:', pageConfig);
   console.log('Budget page loaded successfully - no custom filtering needed');
   
-  // Use static page data directly - filtering will be handled by existing handleSearch function
-  const finalStaticPageData = staticPageData;
-  
-  // Use static data first, then pageConfig, then fallback to default config
-  const currentConfig = finalStaticPageData || pageConfig || {
+  // Use pageConfig first, then static data, then fallback to default config
+  const currentConfig = pageConfig || staticPageData || {
     title: "Discover Projects",
     description: "Premium projects crafted with quality, sustainability, and exceptional after‑sales service.",
     metaTitle: "Discover Projects - 100acress",
@@ -168,10 +183,11 @@ const GlobalFilterTemplate = ({
   }, [getAllProjects]);
   
   // Redux selectors for different project types
-  const upcomingProjects = useSelector(store => store?.allsectiondata?.allupcomingproject);
-  const underConstructionProjects = useSelector(store => store?.allsectiondata?.underconstruction);
-  const readyToMoveProjects = useSelector(store => store?.allsectiondata?.readytomove);
-  const newLaunchProjects = useSelector(store => store?.allsectiondata?.newlaunch);
+  const allSectionData = useSelector(store => store?.allsectiondata);
+  const upcomingProjects = allSectionData?.allupcomingproject || [];
+  const underConstructionProjects = allSectionData?.underconstruction || [];
+  const readyToMoveProjects = allSectionData?.readytomove || [];
+  const newLaunchProjects = allSectionData?.newlaunch || [];
 
   // Selector for project type pages - also responds to filter changes
   const [activeQuery, setActiveQuery] = useState(currentConfig.query || '');
@@ -193,7 +209,7 @@ const GlobalFilterTemplate = ({
       return store?.allsectiondata?.[currentConfig.query] || [];
     }
     return [];
-  });
+  }, (left, right) => JSON.stringify(left) === JSON.stringify(right));
 
   // Get the appropriate project data based on status
   const getProjectData = () => {
@@ -280,6 +296,29 @@ const GlobalFilterTemplate = ({
 
   // Use the original project data - filtering will be handled by handleSearch
   const filteredProjectData = memoizedProjectData;
+
+  // Load project orders
+  useEffect(() => {
+    const loadProjectOrders = async () => {
+      try {
+        setProjectOrdersLoading(true);
+        const orders = await getProjectOrderData();
+        console.log('Project orders loaded in GlobalFilterTemplate:', orders);
+        setProjectOrders(orders);
+      } catch (error) {
+        console.error('Error loading project orders:', error);
+      } finally {
+        setProjectOrdersLoading(false);
+      }
+    };
+    
+    loadProjectOrders();
+    
+    // Reload project orders every 5 seconds to catch updates from admin panel
+    const interval = setInterval(loadProjectOrders, 5000);
+    
+    return () => clearInterval(interval);
+  }, []);
 
   function handleDatafromSearch(data) {
     setFilteredProjects(data);
@@ -443,8 +482,131 @@ const GlobalFilterTemplate = ({
 
     console.log('handleSearch - filtered length:', filtered.length);
 
-    // Apply sorting
-    if (sort === 'price') {
+    // Apply custom project order if available and no explicit sort is selected
+    if (sort === 'newest' && projectOrders && !projectOrdersLoading) {
+      // Determine which city to use based on filters or page type
+      let orderCity = null;
+      
+      // Check if city filter is applied
+      if (filters.city) {
+        orderCity = filters.city;
+        console.log('Using city from filters:', filters.city);
+      } else if (pageType === 'city') {
+        // Extract city from URL for city pages
+        const path = location.pathname;
+        console.log('Checking path for city:', path);
+        if (path.includes('/projects-in-')) {
+          const cityFromPath = path.split('/projects-in-')[1]?.replace('/', '');
+          if (cityFromPath) {
+            // Capitalize first letter to match projectOrders keys
+            orderCity = cityFromPath.charAt(0).toUpperCase() + cityFromPath.slice(1);
+            console.log('Extracted city from path:', cityFromPath, '-> normalized:', orderCity);
+          }
+        }
+      }
+      
+      console.log('Final orderCity:', orderCity);
+      console.log('Available project orders:', Object.keys(projectOrders || {}));
+      console.log('Full projectOrders structure:', projectOrders);
+      
+      // Apply custom ordering if city is found
+      if (orderCity && projectOrders && projectOrders[orderCity]) {
+        const cityOrders = projectOrders[orderCity];
+        console.log(`City orders for ${orderCity}:`, cityOrders);
+        
+        const desiredOrder = Array.isArray(cityOrders) 
+          ? cityOrders.filter(item => item.isActive).map(item => item.name.toLowerCase())
+          : [];
+        
+        console.log(`Applying custom order for city: ${orderCity}`, desiredOrder);
+        console.log('Projects to sort:', filtered.slice(0, 3).map(p => p.projectName));
+        
+        if (desiredOrder.length > 0) {
+          filtered = filtered.sort((a, b) => {
+            const aName = (a.projectName || '').toLowerCase();
+            const bName = (b.projectName || '').toLowerCase();
+            
+            const aIndex = desiredOrder.indexOf(aName);
+            const bIndex = desiredOrder.indexOf(bName);
+            
+            console.log(`Comparing: "${aName}" (index: ${aIndex}) vs "${bName}" (index: ${bIndex})`);
+            
+            // If both projects are in the desired order, sort by that order
+            if (aIndex !== -1 && bIndex !== -1) {
+              return aIndex - bIndex;
+            }
+            
+            // If only one project is in the desired order, prioritize it
+            if (aIndex !== -1) return -1;
+            if (bIndex !== -1) return 1;
+            
+            // If neither is in the desired order, maintain original order
+            return 0;
+          });
+          
+          console.log('Applied custom order, first 5 projects:', filtered.slice(0, 5).map(p => p.projectName));
+        }
+      } else {
+        console.log('No custom order applied - city not found or no orders for city');
+        console.log('orderCity:', orderCity);
+        console.log('projectOrders[orderCity]:', projectOrders ? projectOrders[orderCity] : 'projectOrders is null');
+      }
+      
+      // Apply status-based ordering for status pages
+      let orderStatus = null;
+      if (typeof window !== 'undefined') {
+        const path = window.location.pathname;
+        console.log('Checking path for status:', path);
+        
+        if (path.includes('/projects/upcoming')) {
+          orderStatus = 'upcoming';
+        } else if (path.includes('/projects/newlaunch')) {
+          orderStatus = 'newlaunch';
+        } else if (path.includes('/projects/comingsoon')) {
+          orderStatus = 'comingsoon';
+        } else if (path.includes('/projects/underconstruction')) {
+          orderStatus = 'underconstruction';
+        } else if (path.includes('/projects/readytomove')) {
+          orderStatus = 'readytomove';
+        }
+      }
+      
+      console.log('Final orderStatus:', orderStatus);
+      
+      // Apply custom ordering if status is found
+      if (orderStatus && projectOrders && projectOrders[orderStatus]) {
+        const statusOrders = projectOrders[orderStatus];
+        console.log(`Status orders for ${orderStatus}:`, statusOrders);
+        
+        const desiredOrder = Array.isArray(statusOrders) 
+          ? statusOrders.filter(item => item.isActive).map(item => item.name.toLowerCase())
+          : [];
+        
+        console.log(`Applying custom order for status: ${orderStatus}`, desiredOrder);
+        
+        if (desiredOrder.length > 0) {
+          // First, separate projects into ordered and unordered
+          const orderedProjects = [];
+          const unorderedProjects = [];
+          
+          filtered.forEach(project => {
+            const projectName = (project.projectName || '').toLowerCase();
+            const orderIndex = desiredOrder.indexOf(projectName);
+            
+            if (orderIndex !== -1) {
+              orderedProjects[orderIndex] = project;
+            } else {
+              unorderedProjects.push(project);
+            }
+          });
+          
+          // Combine: ordered projects first (in exact order), then unordered
+          filtered = [...orderedProjects.filter(Boolean), ...unorderedProjects];
+          
+          console.log('Applied status custom order, first 5 projects:', filtered.slice(0, 5).map(p => p.projectName));
+        }
+      }
+    } else if (sort === 'price') {
       filtered = filtered.sort((a, b) => (a.minPrice || 0) - (b.minPrice || 0));
     } else if (sort === 'newest') {
       filtered = filtered.sort((a, b) => new Date(b.createdAt || b.updatedAt || 0) - new Date(a.createdAt || a.updatedAt || 0));
@@ -572,15 +734,15 @@ const GlobalFilterTemplate = ({
     }
   }, [location.pathname, pageType, currentConfig.query]);
 
-  // Auto-filter when filters or sort change (but not when data loads)
+  // Auto-filter when filters, sort, or project orders change (but not when data loads)
   useEffect(() => {
-    if (memoizedProjectData && memoizedProjectData.length > 0) {
+    if (memoizedProjectData && memoizedProjectData.length > 0 && !projectOrdersLoading) {
       // Only auto-filter if filters or sort have been set (not on initial data load)
       if (Object.keys(filters).some(key => filters[key] !== '') || sort) {
         handleSearch(false); // Don't reset pagination for auto-filter
       }
     }
-  }, [filters, sort]);
+  }, [filters, sort, projectOrders, projectOrdersLoading]);
 
   // Initialize displayed projects when data loads
   useEffect(() => {
@@ -731,7 +893,7 @@ const GlobalFilterTemplate = ({
       {/* Hero Section */}
       <Hero 
         title={currentConfig.title}
-        subtitle={currentConfig.description}
+        subtitle={currentConfig.subtitle || currentConfig.description}
         onSearch={handleSearch}
         onFilterChange={handleFilterChange}
         filters={filters}
@@ -1091,6 +1253,36 @@ const GlobalFilterTemplate = ({
         onOpen={() => console.log('Open comparison')}
         onRemove={(project) => toggleCompareProject(project)}
       />
+
+      {/* Knowledge Center - Only for Pune */}
+      {currentConfig.hiddenContent && (
+        <div className="bg-gradient-to-br from-gray-50 to-gray-100 py-16 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+                Knowledge Center
+              </h2>
+              <div className="w-24 h-1 bg-red-600 mx-auto mb-6"></div>
+              <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+                {currentConfig.hiddenContent.description}
+              </p>
+            </div>
+            
+            <div className="grid md:grid-cols-2 gap-8">
+              {currentConfig.hiddenContent.sections.map((section, index) => (
+                <div key={index} className="bg-white rounded-xl shadow-lg p-6 sm:p-8 hover:shadow-xl transition-shadow duration-300">
+                  <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4">
+                    {section.title}
+                  </h3>
+                  <div className="text-gray-600 leading-relaxed whitespace-pre-line">
+                    {section.content}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Footer */}
       <Footer />

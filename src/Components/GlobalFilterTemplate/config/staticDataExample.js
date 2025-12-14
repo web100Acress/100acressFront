@@ -15,7 +15,8 @@ export const getCityPageData = (cityName) => {
     heroTitle: cityData?.heroTitle || "Discover Premium Projects",
     heroSubtitle: cityData?.heroSubtitle || "Discover the latest new launch projects in Gurgaon with modern apartments, villas, and premium amenities for a luxurious lifestyle.",
     faqs: getFAQData('city', cityName),
-    trustBoosters: getTrustBoosters('city', cityName)
+    trustBoosters: getTrustBoosters('city', cityName),
+    hiddenContent: cityData?.hiddenContent || null
   };
 };
 
@@ -63,33 +64,148 @@ export const getPageDataFromURL = (pathname, searchParams = {}) => {
   console.log('getPageDataFromURL called with pathname:', pathname);
   console.log('Search params:', searchParams);
   
-  // Check for status pages FIRST (before city pages)
-  if (pathname.includes('/project-in-underconstruction')) {
-    console.log('Detected underconstruction status page');
-    return getStatusPageData('underconstruction');
+  // Handle new unified projects/{filter} pattern
+  if (pathname.includes('/projects/') && !pathname.includes('/projects-in-')) {
+    const filter = pathname.split('/projects/')[1]?.replace('/', '');
+    console.log('Detected unified projects filter page:', filter);
+    
+    // Check if it's a status filter
+    if (filter.includes('-projects')) {
+      const status = filter.split('-projects')[0];
+      
+      const statusMap = {
+        'upcoming': 'upcoming',
+        'underconstruction': 'underconstruction',
+        'readytomove': 'readytomove',
+        'ready-to-move': 'readytomove',
+        'newlaunch': 'newlaunch'
+      };
+      
+      if (statusMap[status]) {
+        return getStatusPageData(statusMap[status]);
+      }
+    }
+    
+    // Check for direct status patterns (like 'upcoming')
+    const directStatusMap = {
+      'upcoming': 'upcoming',
+      'underconstruction': 'underconstruction',
+      'ready-to-move': 'readytomove',
+      'newlaunch': 'newlaunch'
+    };
+    
+    if (directStatusMap[filter]) {
+      return getStatusPageData(directStatusMap[filter]);
+    }
+    
+    // Check if it's a budget filter
+    if (filter.includes('cr') || filter.includes('under-') || filter.includes('above-')) {
+      // Convert URL format to data format
+      const budgetMap = {
+        'under-1-cr': 'under1cr',
+        '1-5-cr': '1to5cr',
+        '5-10-cr': '5to10cr',
+        '10-20-cr': '10to20cr',
+        '20-50-cr': '20to50cr',
+        'above-50-cr': 'above50cr'
+      };
+      
+      const budgetKey = budgetMap[filter] || 'under1cr';
+      console.log('Budget filter detected - URL format:', filter, '-> Data format:', budgetKey);
+      return getBudgetPageData(budgetKey);
+    }
+    
+    // Otherwise, treat as project type
+    
+    // Map type to existing type keys
+    const typeMap = {
+      'farmhouse': 'farmhouse',
+      'commercial': 'commercial',
+      'residential': 'residential',
+      'villas': 'luxury-villas',
+      'plots': 'plots-in-gurugram',
+      'industrial-plots': 'industrial-plots',
+      'industrial-projects': 'industrial-projects',
+      'sco-plots': 'sco',
+      'sco': 'sco',
+      'independent-floors': 'independentfloors'
+    };
+    
+    if (typeMap[filter]) {
+      return getTypePageData(typeMap[filter]);
+    }
   }
   
-  if (pathname.includes('/projects-in-newlaunch')) {
-    console.log('Detected newlaunch status page');
-    return getStatusPageData('newlaunch');
+  // Keep existing patterns for backward compatibility
+  if (pathname.includes('/projects-status/')) {
+    const status = pathname.split('/projects-status/')[1]?.split('-projects')[0];
+    console.log('Detected status page:', status);
+    
+    // Map status to existing status types
+    const statusMap = {
+      'upcoming': 'upcoming',
+      'underconstruction': 'underconstruction',
+      'readytomove': 'readytomove',
+      'newlaunch': 'newlaunch'
+    };
+    
+    if (statusMap[status]) {
+      return getStatusPageData(statusMap[status]);
+    }
   }
   
-  if (pathname.includes('/projects/upcoming-projects-in-gurgaon')) {
-    return getStatusPageData('upcoming');
-  }
-  
-  if (pathname.includes('/property-ready-to-move')) {
-    return getStatusPageData('readytomove');
+  if (pathname.includes('/projects-type/')) {
+    const type = pathname.split('/projects-type/')[1]?.split('/')[0];
+    console.log('Detected type page:', type);
+    
+    // Map type to existing type keys
+    const typeMap = {
+      'farmhouse': 'farmhouse',
+      'commercial': 'commercial',
+      'residential': 'residential',
+      'villas': 'luxury-villas',
+      'plots': 'plots-in-gurugram',
+      'industrial-plots': 'industrial-plots',
+      'industrial-projects': 'industrial-projects',
+      'sco': 'sco',
+      'independent-floors': 'independentfloors'
+    };
+    
+    if (typeMap[type]) {
+      return getTypePageData(typeMap[type]);
+    }
   }
   
   // Extract page type and specific key from URL (city pages)
-  if (pathname.includes('/projects-in-') || pathname.includes('/project-in-')) {
-    const city = pathname.split('/projects-in-')[1]?.split('/')[0] || 
-                 pathname.split('/project-in-')[1]?.split('/')[0];
+  if (pathname.includes('/projects-in-')) {
+    const city = pathname.split('/projects-in-')[1]?.split('/')[0];
     console.log('Detected city page:', city);
     return getCityPageData(city);
   }
   
+  if (pathname.includes('/projects-type/')) {
+    const type = pathname.split('/projects-type/')[1]?.split('/')[0];
+    console.log('Detected type page:', type);
+    
+    // Map type to existing type keys
+    const typeMap = {
+      'farmhouse': 'farmhouse',
+      'commercial': 'commercial',
+      'residential': 'residential',
+      'villas': 'luxury-villas',
+      'plots': 'plots-in-gurugram',
+      'industrial-plots': 'industrial-plots',
+      'industrial-projects': 'industrial-projects',
+      'sco': 'sco',
+      'independent-floors': 'independentfloors'
+    };
+    
+    if (typeMap[type]) {
+      return getTypePageData(typeMap[type]);
+    }
+  }
+  
+  // Keep existing type patterns for backward compatibility
   if (pathname.includes('/property/residential')) {
     // console.log('Detected residential type page');
     return getTypePageData('residential');
@@ -128,8 +244,12 @@ export const getPageDataFromURL = (pathname, searchParams = {}) => {
     return getTypePageData('luxury-villas');
   }
   
-  if (pathname.includes('/budget-properties')) {
+  if (pathname.includes('/projects-budget/')) {
     console.log('Detected budget page:', pathname);
+    
+    // Extract budget range from URL
+    const budgetRange = pathname.split('/projects-budget/')[1]?.split('/')[0];
+    console.log('Budget range from URL:', budgetRange);
     
     // Check for budget range in query parameters first
     if (searchParams.budget) {
@@ -138,27 +258,27 @@ export const getPageDataFromURL = (pathname, searchParams = {}) => {
     }
     
     // Check for specific budget ranges in URL
-    if (pathname.includes('under-1-cr') || pathname.includes('under1cr')) {
+    if (pathname.includes('under-1-cr') || pathname.includes('under1cr') || budgetRange === 'under-1-cr') {
       console.log('Detected under1cr budget range');
       return getBudgetPageData('under1cr');
     }
-    if (pathname.includes('1-5-cr') || pathname.includes('1to5cr')) {
+    if (pathname.includes('1-5-cr') || pathname.includes('1to5cr') || budgetRange === '1-5-cr') {
       console.log('Detected 1to5cr budget range');
       return getBudgetPageData('1to5cr');
     }
-    if (pathname.includes('5-10-cr') || pathname.includes('5to10cr')) {
+    if (pathname.includes('5-10-cr') || pathname.includes('5to10cr') || budgetRange === '5-10-cr') {
       console.log('Detected 5to10cr budget range');
       return getBudgetPageData('5to10cr');
     }
-    if (pathname.includes('10-20-cr') || pathname.includes('10to20cr')) {
+    if (pathname.includes('10-20-cr') || pathname.includes('10to20cr') || budgetRange === '10-20-cr') {
       console.log('Detected 10to20cr budget range');
       return getBudgetPageData('10to20cr');
     }
-    if (pathname.includes('20-50-cr') || pathname.includes('20to50cr')) {
+    if (pathname.includes('20-50-cr') || pathname.includes('20to50cr') || budgetRange === '20-50-cr') {
       console.log('Detected 20to50cr budget range');
       return getBudgetPageData('20to50cr');
     }
-    if (pathname.includes('above-50-cr') || pathname.includes('above50cr')) {
+    if (pathname.includes('above-50-cr') || pathname.includes('above50cr') || budgetRange === 'above-50-cr') {
       console.log('Detected above50cr budget range');
       return getBudgetPageData('above50cr');
     }

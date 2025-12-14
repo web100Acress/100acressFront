@@ -89,6 +89,7 @@ export const projectTypeConfigs = {
     description: "Discover Premium SCO Plots in Gurugram – Your Gateway to Shop-Cum-Office Investment and Business Growth.",
     query: "scoplots",
     reduxKey: "scoplotsall",
+    canonical: "https://www.100acress.com/projects/sco-plots/",
     badgeColor: "bg-blue-500",
     badgeText: "SCO Plot",
     typeFilter: (project) => {
@@ -112,6 +113,7 @@ export const projectTypeConfigs = {
     description: "Discover Premium Luxury Villas Across India – Your Gateway to Exquisite Living and Prime Real Estate Investment.",
     query: "villas",
     reduxKey: "luxuryvillas",
+    canonical: "https://www.100acress.com/projects/villas/",
     badgeColor: "bg-purple-500",
     badgeText: "Luxury Villa",
     typeFilter: (project) => {
@@ -128,6 +130,7 @@ export const projectTypeConfigs = {
     description: "Discover Premium Plots in Gurugram – Your Gateway to Prime Real Estate Investment.",
     query: "plotsingurugram",
     reduxKey: "plotsingurugram",
+    canonical: "https://www.100acress.com/projects/plots/",
     badgeColor: "bg-green-500",
     badgeText: "Plot",
     typeFilter: (project) => {
@@ -144,6 +147,7 @@ export const projectTypeConfigs = {
     description: "Residential properties range from homes to apartments, each crafted to match unique lifestyles and comfort needs.",
     query: "residentiaProject",
     reduxKey: "residential",
+    canonical: "https://www.100acress.com/projects/residential/",
     badgeColor: "bg-red-500",
     badgeText: "Residential",
     typeFilter: (project) => true // Show all residential projects
@@ -153,6 +157,7 @@ export const projectTypeConfigs = {
     description: "Discover Premium Independent & Builder Floors – Curated Living Spaces in Top Cities.",
     query: "builderindepedentfloor",
     reduxKey: "builderindependentfloor",
+    canonical: "https://www.100acress.com/projects/independent-floors/",
     badgeColor: "bg-red-500",
     badgeText: "Independent Floor",
     typeFilter: (project) => true // Show all independent floor projects
@@ -162,6 +167,7 @@ export const projectTypeConfigs = {
     description: "Discover Premium Commercial Projects – Your Gateway to Business Investment and Growth.",
     query: "commercial",
     reduxKey: "commercialProjectAll",
+    canonical: "https://www.100acress.com/projects/commercial/",
     badgeColor: "bg-orange-500",
     badgeText: "Commercial",
     typeFilter: (project) => {
@@ -238,6 +244,7 @@ export const projectTypeConfigs = {
     description: "Discover Premium Industrial Plots – Your Gateway to Industrial Investment and Business Expansion.",
     query: "industrialplots",
     reduxKey: "industrialplots",
+    canonical: "https://www.100acress.com/projects/industrial-plots/",
     badgeColor: "bg-gray-500",
     badgeText: "Industrial Plot",
     typeFilter: (project) => {
@@ -255,6 +262,7 @@ export const projectTypeConfigs = {
     description: "Discover Premium Industrial Projects – Your Gateway to Industrial Investment and Business Expansion.",
     query: "industrialprojects",
     reduxKey: "industrialprojects",
+    canonical: "https://www.100acress.com/projects/industrial-projects/",
     badgeColor: "bg-gray-600",
     badgeText: "Industrial Project",
     typeFilter: (project) => {

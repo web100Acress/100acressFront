@@ -1,5 +1,178 @@
 // Static data for all page types - titles, descriptions, FAQs, and other content
 export const staticData = {
+  // BHK Pages Data
+  bhk: {
+    '1': {
+      title: '1 BHK Flats in Gurgaon | Affordable Apartments for Sale',
+      description: 'Find budget-friendly 1 BHK flats in Gurgaon starting from ₹30 Lakhs. Perfect for bachelors and small families. Explore 1 bedroom apartments with modern amenities in prime locations.',
+      metaTitle: '1 BHK Flats in Gurgaon | Affordable Apartments for Sale - 100acress',
+      h1: '1 BHK Flats in Gurgaon - Your Perfect Affordable Home',
+      subtitle: 'Discover the best 1 BHK apartments in Gurgaon with modern amenities, strategic locations, and excellent connectivity. Ideal for first-time homebuyers and investors.',
+      canonical: 'https://www.100acress.com/1-bhk-flats-in-gurgaon/',
+      keywords: '1 BHK flats gurgaon, 1 bedroom apartments gurgaon, affordable flats gurgaon, bachelor apartments gurgaon, budget homes gurgaon, 1BHK properties gurgaon',
+      heroTitle: '1 BHK Flats in Gurgaon - Your Perfect Affordable Home',
+      heroSubtitle: 'Discover the best 1 BHK apartments in Gurgaon with modern amenities, strategic locations, and excellent connectivity. Ideal for first-time homebuyers and investors.',
+      faqs: [
+        {
+          question: "What is the average price of 1 BHK flats in Gurgaon?",
+          answer: "1 BHK flats in Gurgaon typically range from ₹30 Lakhs to ₹1.2 Crore, depending on the location, amenities, and builder reputation. Budget options are available in developing sectors, while premium properties are found in established areas."
+        },
+        {
+          question: "Which are the best areas in Gurgaon for 1 BHK apartments?",
+          answer: "Popular areas for 1 BHK flats include Sector 56, Sector 57, Sector 45, Sector 23, New Gurgaon sectors 82-115, and areas near Rapid Metro. These locations offer good connectivity and infrastructure."
+        },
+        {
+          question: "Is 1 BHK a good investment in Gurgaon?",
+          answer: "Yes, 1 BHK flats in Gurgaon offer excellent ROI due to high demand from working professionals and students. They provide good rental yields and are easier to sell compared to larger configurations."
+        },
+        {
+          question: "What amenities are typically included in 1 BHK flats in Gurgaon?",
+          answer: "Most 1 BHK apartments include 24/7 security, power backup, parking, gym, swimming pool, and community spaces. Premium projects offer additional amenities like clubhouses, landscaped gardens, and retail spaces."
+        },
+        {
+          question: "What is the average size of 1 BHK flats in Gurgaon?",
+          answer: "1 BHK flats in Gurgaon typically range from 450 to 650 sq. ft. Super built-up area, with carpet area ranging from 320 to 450 sq. ft. depending on the project and layout efficiency."
+        }
+      ]
+    },
+    '2': {
+      title: '2 BHK Flats in Gurgaon | Spacious Family Apartments',
+      description: 'Explore spacious 2 BHK flats in Gurgaon ideal for small families. Find 2 bedroom apartments with premium amenities in prime locations starting from ₹50 Lakhs.',
+      metaTitle: '2 BHK Flats in Gurgaon | Spacious Family Apartments - 100acress',
+      h1: '2 BHK Flats in Gurgaon - Perfect Family Living Spaces',
+      subtitle: 'Find your ideal 2 BHK home in Gurgaon with modern layouts, excellent facilities, and great connectivity. Perfect for growing families seeking comfort and convenience.',
+      canonical: 'https://www.100acress.com/2-bhk-flats-in-gurgaon/',
+      keywords: '2 BHK flats gurgaon, 2 bedroom apartments gurgaon, family flats gurgaon, affordable 2BHK gurgaon, spacious apartments gurgaon, 2BHK homes gurgaon',
+      heroTitle: '2 BHK Flats in Gurgaon - Perfect Family Living Spaces',
+      heroSubtitle: 'Find your ideal 2 BHK home in Gurgaon with modern layouts, excellent facilities, and great connectivity. Perfect for growing families seeking comfort and convenience.',
+      faqs: [
+        {
+          question: "What is the average price of 2 BHK flats in Gurgaon?",
+          answer: "2 BHK flats in Gurgaon range from ₹50 Lakhs to ₹2.5 Crore, varying by location, builder, and amenities. Prime locations like Golf Course Road and Cyber Hub command premium prices, while emerging sectors offer more affordable options."
+        },
+        {
+          question: "Which sectors are best for 2 BHK apartments in Gurgaon?",
+          answer: "Top sectors for 2 BHK include Sector 56, 57, 58, 59, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, and New Gurgaon sectors 82-115. These areas offer good schools, hospitals, and connectivity."
+        },
+        {
+          question: "Are 2 BHK flats in Gurgaon good for families?",
+          answer: "Absolutely! 2 BHK flats are ideal for small families, offering the perfect balance of space and affordability. They provide adequate room for couples with 1-2 children and are easier to maintain than larger apartments."
+        },
+        {
+          question: "What is the typical carpet area for 2 BHK flats in Gurgaon?",
+          answer: "2 BHK flats typically have a carpet area of 550-850 sq. ft. with super built-up area ranging from 900-1,400 sq. ft. depending on the project's efficiency and included common areas."
+        },
+        {
+          question: "What financing options are available for 2 BHK flats in Gurgaon?",
+          answer: "Banks offer home loans up to 80-90% of the property value for 2 BHK flats. Interest rates start from 8.5% with tenure up to 30 years. Many developers also offer payment plans and subvention schemes."
+        }
+      ]
+    },
+    '3': {
+      title: '3 BHK Flats in Gurgaon | Luxury Family Apartments',
+      description: 'Explore luxury 3 BHK flats in Gurgaon perfect for growing families. Find premium 3 bedroom apartments with world-class amenities starting from ₹80 Lakhs.',
+      metaTitle: '3 BHK Flats in Gurgaon | Luxury Family Apartments - 100acress',
+      h1: '3 BHK Flats in Gurgaon - Premium Family Living Experience',
+      subtitle: 'Discover luxurious 3 BHK apartments in Gurgaon with spacious layouts, modern amenities, and excellent connectivity. Ideal for families seeking upscale living.',
+      canonical: 'https://www.100acress.com/3-bhk-flats-in-gurgaon/',
+      keywords: '3 BHK flats gurgaon, 3 bedroom apartments gurgaon, luxury flats gurgaon, family apartments gurgaon, premium 3BHK gurgaon, spacious homes gurgaon',
+      heroTitle: '3 BHK Flats in Gurgaon - Premium Family Living Experience',
+      heroSubtitle: 'Discover luxurious 3 BHK apartments in Gurgaon with spacious layouts, modern amenities, and excellent connectivity. Ideal for families seeking upscale living.',
+      faqs: [
+        {
+          question: "What is the price range for 3 BHK flats in Gurgaon?",
+          answer: "3 BHK flats in Gurgaon typically cost between ₹80 Lakhs to ₹4 Crore. Premium locations like Golf Course Road, DLF Phase 5, and South City 1 command higher prices, while developing sectors offer more competitive rates."
+        },
+        {
+          question: "Which are the premium locations for 3 BHK apartments in Gurgaon?",
+          answer: "Prime locations include Golf Course Road, Golf Course Extension Road, DLF Phase 1-5, Sushant Lok 1-3, South City 1-2, Vipul Gardens, and sectors 56, 57, 58, 59 with excellent infrastructure and connectivity."
+        },
+        {
+          question: "What is the average size of 3 BHK flats in Gurgaon?",
+          answer: "3 BHK flats typically range from 1,200 to 2,200 sq. ft. super built-up area, with carpet area between 850-1,550 sq. ft. Luxury projects offer larger sizes up to 3,000 sq. ft. with additional servant rooms."
+        },
+        {
+          question: "Are 3 BHK flats in Gurgaon good for investment?",
+          answer: "Yes, 3 BHK flats offer excellent investment potential with steady appreciation and good rental demand. They attract high-income tenants and families, ensuring consistent rental income and long-term value growth."
+        },
+        {
+          question: "What amenities do luxury 3 BHK apartments in Gurgaon offer?",
+          answer: "Premium 3 BHK apartments feature world-class amenities including swimming pools, gyms, clubhouses, sports facilities, landscaped gardens, 24/7 security, power backup, parking, and concierge services. Many offer smart home features and high-end finishes."
+        }
+      ]
+    },
+    '4': {
+      title: '4 BHK Flats in Gurgaon | Ultra-Luxury Apartments',
+      description: 'Discover ultra-luxury 4 BHK flats in Gurgaon for premium living. Find spacious 4 bedroom apartments with exclusive amenities and prime locations starting from ₹1.5 Crore.',
+      metaTitle: '4 BHK Flats in Gurgaon | Ultra-Luxury Apartments - 100acress',
+      h1: '4 BHK Flats in Gurgaon - Exclusive Luxury Residences',
+      subtitle: 'Experience ultra-luxury living with 4 BHK apartments in Gurgaon featuring expansive spaces, premium amenities, and exclusive locations for discerning homeowners.',
+      canonical: 'https://www.100acress.com/4-bhk-flats-in-gurgaon/',
+      keywords: '4 BHK flats gurgaon, 4 bedroom apartments gurgaon, luxury 4BHK gurgaon, premium apartments gurgaon, ultra-luxury homes gurgaon, spacious 4BHK gurgaon',
+      heroTitle: '4 BHK Flats in Gurgaon - Exclusive Luxury Residences',
+      heroSubtitle: 'Experience ultra-luxury living with 4 BHK apartments in Gurgaon featuring expansive spaces, premium amenities, and exclusive locations for discerning homeowners.',
+      faqs: [
+        {
+          question: "What is the price range for 4 BHK flats in Gurgaon?",
+          answer: "4 BHK flats in Gurgaon range from ₹1.5 Crore to ₹8 Crore, depending on location, luxury level, and builder reputation. Ultra-luxury projects on Golf Course Road and premium sectors command the highest prices."
+        },
+        {
+          question: "Which are the most prestigious locations for 4 BHK apartments?",
+          answer: "Elite locations include Golf Course Road, DLF Phase 5, Sushant Lok, Aralias, The Close, South City 1, and premium sectors 56-59. These areas offer exclusive neighborhoods with high-end infrastructure and proximity to business hubs."
+        },
+        {
+          question: "What is the typical size of 4 BHK flats in Gurgaon?",
+          answer: "4 BHK flats typically range from 2,000 to 4,500 sq. ft. super built-up area, with carpet area between 1,400-3,200 sq. ft. Ultra-luxury projects offer even larger sizes up to 6,000 sq. ft. with multiple servant rooms and study areas."
+        },
+        {
+          question: "What luxury amenities are included in 4 BHK apartments?",
+          answer: "4 BHK luxury apartments offer premium amenities including private elevators, personal terraces, swimming pools, gyms, spa facilities, clubhouses, sports courts, 24/7 concierge, smart home automation, high security, and premium finishes."
+        },
+        {
+          question: "Are 4 BHK flats good for long-term investment in Gurgaon?",
+          answer: "Absolutely! 4 BHK flats in prime Gurgaon locations show excellent appreciation potential and attract high-net-worth individuals and expatriates. They offer lower supply but high demand, ensuring strong value growth and premium rental yields."
+        }
+      ]
+    },
+    '5': {
+      title: '5 BHK Flats in Gurgaon | Ultimate Luxury Living',
+      description: 'Find exclusive 5 BHK flats in Gurgaon offering ultimate luxury and space. Discover premium 5 bedroom apartments with world-class amenities starting from ₹2.5 Crore.',
+      metaTitle: '5 BHK Flats in Gurgaon | Ultimate Luxury Living - 100acress',
+      h1: '5 BHK Flats in Gurgaon - The Pinnacle of Luxury Living',
+      subtitle: 'Indulge in the ultimate luxury with 5 BHK apartments in Gurgaon offering expansive living spaces, premium amenities, and exclusive locations for the elite lifestyle.',
+      canonical: 'https://www.100acress.com/5-bhk-flats-in-gurgaon/',
+      keywords: '5 BHK flats gurgaon, 5 bedroom apartments gurgaon, ultra-luxury flats gurgaon, exclusive apartments gurgaon, premium 5BHK gurgaon, luxury penthouses gurgaon',
+      heroTitle: '5 BHK Flats in Gurgaon - The Pinnacle of Luxury Living',
+      heroSubtitle: 'Indulge in the ultimate luxury with 5 BHK apartments in Gurgaon offering expansive living spaces, premium amenities, and exclusive locations for the elite lifestyle.',
+      faqs: [
+        {
+          question: "What is the price range for 5 BHK flats in Gurgaon?",
+          answer: "5 BHK flats in Gurgaon range from ₹2.5 Crore to ₹15 Crore, with ultra-luxury penthouses and villas reaching even higher prices. Prices vary significantly based on location, exclusivity, and luxury amenities offered."
+        },
+        {
+          question: "Which are the most exclusive locations for 5 BHK apartments?",
+          answer: "Ultra-premium locations include Golf Course Road, DLF Phase 5, The Aralias, The Magnolias, The Close, Sushant Lok, and premium low-density sectors. These areas offer privacy, exclusivity, and proximity to business districts and international schools."
+        },
+        {
+          question: "What is the typical size of 5 BHK flats in Gurgaon?",
+          answer: "5 BHK flats typically range from 3,500 to 7,000 sq. ft. super built-up area, with carpet area between 2,500-5,000 sq. ft. Ultra-luxury penthouses can exceed 10,000 sq. ft. with multiple terraces, private pools, and servant quarters."
+        },
+        {
+          question: "What ultra-luxury amenities do 5 BHK apartments offer?",
+          answer: "5 BHK ultra-luxury apartments feature exclusive amenities including private elevators, personal swimming pools, rooftop terraces, home theaters, wine cellars, smart home systems, 24/7 butler service, high-security systems, and premium Italian marble and designer finishes."
+        },
+        {
+          question: "Who typically buys 5 BHK flats in Gurgaon?",
+          answer: "5 BHK flats attract ultra-high-net-worth individuals, business tycoons, NRIs, expatriates, and multinational executives. These buyers seek exclusivity, privacy, premium amenities, and locations that reflect their status and lifestyle requirements."
+        },
+        {
+          question: "What is the rental yield for 5 BHK flats in Gurgaon?",
+          answer: "5 BHK flats typically generate rental yields of 2-3% annually, with monthly rentals ranging from ₹1.5 Lakhs to ₹5 Lakhs depending on location and luxury level. While yields may be lower, capital appreciation is significantly higher."
+        }
+      ]
+    }
+  },
+  
   // City Pages Data
   city: {
     alwar: {
@@ -547,29 +720,49 @@ export const staticData = {
       ]
     },
     pune: {
-      title: "Discover Premium Projects in Pune",
-      description: "Explore the best residential and commercial projects in Pune with modern amenities, excellent connectivity, and vibrant lifestyle. Find your dream home in this IT hub and cultural capital.",
-      metaTitle: "Best Projects in Pune - Residential & Commercial Properties | 100acress",
+      title: "New Projects in Pune",
+      description: "Explore the best New Projects in Pune 2025. From luxury apartments to affordable ready-to-move flats, find verified homes in Baner, Hinjewadi & more. Check prices now!",
+      metaTitle: "New Projects in Pune 2025 | Upcoming & Ready to Move Flats",
       canonical: "https://www.100acress.com/projects-in-pune/",
       keywords: "projects in pune, residential projects pune, commercial projects pune, pune real estate, pune properties",
       heroTitle: "Discover Premium Projects in Pune",
       heroSubtitle: "Find your perfect home in Pune with world-class amenities and excellent connectivity",
       faqs: [
         {
-          question: "What are the best residential areas in Pune?",
-          answer: "Top residential areas in Pune include Koregaon Park, Viman Nagar, Baner, Hadapsar, Kharadi, and Wakad. Each area offers unique advantages and connectivity."
+          question: "Where are some good New Projects available in Pune?",
+          answer: "The best places for New Projects in Pune are Baner, Kharadi, and Wakad. These places have everything from ella towers to large townships like Vanaha Pune."
         },
         {
-          question: "What is the average property price in Pune?",
-          answer: "Property prices in Pune range from ₹4,000 per sq ft in developing areas to ₹12,000+ per sq ft in prime locations like Koregaon Park. The average price for a 3BHK apartment is ₹1-2.5 Crores."
+          question: "Luxury flats price trend at Pune.",
+          answer: "Luxury flats at Pune price depends on location. A 2 BHK at Pune costs approximately Rs. 50 Lakhs, and 3 BHK at Pune or luxury apartments at Pune goes up to Rs. 2.5 Crores."
         },
         {
-          question: "Is Pune a good place for property investment?",
-          answer: "Yes, Pune offers excellent investment opportunities due to its IT industry growth, affordable property prices, and strong rental market."
+          question: "Is buying property in Pune a good option?",
+          answer: "Yes, buying property in Pune will be a great option. Property in Pune will appreciate and generate good rental income."
         },
         {
-          question: "What amenities should I look for in Pune projects?",
-          answer: "Look for projects with 24/7 security, power backup, swimming pool, gym, clubhouse, landscaped gardens, parking, and proximity to schools, hospitals, and shopping centers."
+          question: "List some facilities that are offered in luxury projects at Pune.",
+          answer: "Luxury projects at Pune have a set of luxury facilities including pools, gym, and clubhouse. Latest luxury apartments at Pune offer intelligent security and lush gardens."
+        },
+        {
+          question: "How do I check a new project in Pune?",
+          answer: "Verify RERA and builder status. Try visiting the website of your new project at Pune yourself and check the status of your properties at Pune."
+        },
+        {
+          question: "What papers are required for buying projects in Pune?",
+          answer: "RERA certificate, approved plans, and Title Deeds. All these documents are highly necessary for a secure investment at any project in Pune."
+        },
+        {
+          question: "When should I invest in residential projects at Pune?",
+          answer: "To get the best deal on residential projects at Pune, it is advised that you invest or buy properties at the pre-launch stage of 'New Projects at Pune'. However, if you want properties at 'Pune' urgently, then 'Ready-to-Move Luxury Apartments at Pune'"
+        },
+        {
+          question: "How can I get the best deal on a flat?",
+          answer: "You should compare luxury flats in Pune price trends and check for launch offers. It is the best method to cut costs on 2 BHK flats in Pune and 3 BHK flats in Pune."
+        },
+        {
+          question: "Are there any hidden charges associated with properties in Pune?",
+          answer: "Yes, apart from the cost associated with projects in Pune, you will have to include Stamp Duty, Registration Fees, and Maintenance Charges."
         }
       ],
       trustBoosters: [
@@ -588,7 +781,29 @@ export const staticData = {
           title: "Premium Properties",
           description: "Handpicked luxury properties with modern amenities and prime locations"
         }
-      ]
+      ],
+      hiddenContent: {
+        title: "New Projects in Pune",
+        description: "Get to know the best New Projects in Pune. From Luxury Apartments in Baner to affordable flats near the IT hub, we list verified upcoming Projects in Pune, and ready-to-move Projects in Pune. Filter by price and location to find your dream property with world-class amenities today.",
+        sections: [
+          {
+            title: "Why is the Pune Real Estate Market Booming?",
+            content: "Pune has changed a lot in the last ten years. A once-quiet city has now changed into an IT and automobile hub. It is this reason for economic growth that new projects in Pune are very much in demand. With Hinjewadi and Kharadi witnessing the opening of big companies' companies, professionals all over India are migrating to this place. This immigration creates a huge demand for housing, which makes developers new launch projects in Pune regularly to cater to modern homebuyers' needs. It has the perfect blend of growth in career opportunities with good weather and an un-chaotic lifestyle compared to Mumbai, making it a perfect destination for families."
+          },
+          {
+            title: "Why invest in New Projects in Pune?",
+            content: "Pune is great to give excellent returns on invested money. Here's why:\n\nVariety at each step: Be it a small 2 BHK flat in Pune, which one aims to let out, or spacious 3 BHK flats in Pune that one needs for a growing family, the city has everything.\nInfrastructure Growth: The new Metro lines and the upcoming Ring Road are massive game-changers. IT parks are getting better connectivity, and that is what again drives property rates upwards.\nAppreciation Potential: Presently, the luxury flats in Pune price trends only show an upward graph. Investing now, especially in developing areas, can ensure that your asset grows in value over time.\nHigh Demand for Rentals: Due to the student population and IT workforce, renting a tenant is never a struggle here."
+          },
+          {
+            title: "Top Localities for New Projects in Pune",
+            content: "Location is everything, and depending on your budget and lifestyle, here's where you should be looking:\n\nBaner: This is the hub for luxury living. If you are looking for high-end apartments in Pune, Baner offers premium societies alongside the highway with great restaurants and malls nearby.\nKharadi: It is housed as the IT hub in the east and offers premium luxury flats in Pune. It is perfect for people who want to work in EON IT Park with a walk-to-work lifestyle.\nHinjewadi & Wakad: These are the most sought-after areas for mid-segment buyers and investors, offering excellent connectivity with modern amenities.\nTownships: Large townships are becoming the trend. Vanaha Pune-type projects are a fast catch because they offer a green resort lifestyle within the gates, schools, hospitals, and all.\nKoregaon Park: For those who want nothing but the best, this remains the destination for ultra-luxury living."
+          },
+          {
+            title: "Investment Tips For New Projects in Pune",
+            content: "Buying a house is a major step, so here's some advice to consider:\n\nCheck RERA: Check whether the particular new project in Pune you are interested in is registered with MahaRERA. It will guarantee 'your money' and 'on-time delivery.\n\"Luxury\" means different things to different builders. When reviewing so-called luxury new projects in Pune, take a closer look at the actual amenities, floor-to-ceiling height, and the density of the project-aka how many flats per acre.\nA visit to the site is a must: Do not totally rely on brochures. Visit the site for understanding the carpet area, the view, and so on.\nTiming Matters: If you are looking at the best possible price, try to book during the pre-launch phase. If you urgently require possession to save on rent, then look for ready-to-move options."
+          }
+        ]
+      }
     }
   },
 
@@ -597,8 +812,9 @@ export const staticData = {
       title: "Upcoming Projects in Gurgaon with Luxury & Comfort",
       description: "Find luxury homes in Gurgaon's upcoming projects featuring spacious apartments, designer villas, and world-class facilities for families and investors.",
       metaTitle: "Upcoming Projects in Gurgaon with Luxury & Comfort | 100acress",
-      canonical: "https://www.100acress.com/projects/upcoming-projects-in-gurgaon/",
+      canonical: "https://www.100acress.com/projects/upcoming/",
       keywords: "upcoming projects, upcoming projects in gurgaon, upcoming residential projects, upcoming commercial projects, property launches",
+      query: "allupcomingproject",
       heroTitle: "Explore Upcoming Projects with High Investment Potential",
       heroSubtitle: "From premium apartments to budget-friendly homes, Gurgaon has it all in upcoming projects.",
       faqs: [
@@ -653,8 +869,9 @@ export const staticData = {
       title: "Secure Your Future with Top Under-Construction Projects.",
       description: "Premium under-construction homes crafted for modern lifestyles, featuring advanced amenities, smart layouts, and strong returns on investment.",
       metaTitle: "Premium Under-Construction Homes for Smart Investors | 100acress",
-      canonical: "https://www.100acress.com/project-in-underconstruction/",
+      canonical: "https://www.100acress.com/projects/underconstruction/",
       keywords: "under construction properties, under construction projects in gurgaon, ongoing projects, construction status, property development, under construction homes",
+      query: "underconstruction",
       heroTitle: "Secure Your Future with Top Under-Construction Projects.",
       heroSubtitle: "Premium under-construction homes crafted for modern lifestyles, featuring advanced amenities, smart layouts, and strong returns on investment.",
       faqs: [
@@ -709,8 +926,9 @@ export const staticData = {
       title: "Ready To Move Projects | Instant Possession Homes",
       description: "Find the best RERA-registered ready to move projects in Gurugram with premium features and prime locations. Start living your dream lifestyle now.",
       metaTitle: "Ready to Move Projects | Instant Possession Homes | 100acress",
-      canonical: "https://www.100acress.com/projects-in-gurugram/property-ready-to-move/",
+      canonical: "https://www.100acress.com/projects/ready-to-move/",
       keywords: "ready to move properties, ready to move projects in gurugram, immediate possession, completed projects, ready homes, move in ready",
+      query: "readytomove",
       heroTitle: "Ready To Move Projects | Instant Possession Homes",
       heroSubtitle: "Find the best RERA-registered ready to move projects in Gurugram with premium features and prime locations. Start living your dream lifestyle now.",
       faqs: [
@@ -765,8 +983,9 @@ export const staticData = {
       title: "Explore the Latest New Launch Projects in Gurgaon",
       description: "Discover the latest new launch projects in Gurgaon with modern apartments, villas, and premium amenities for a luxurious lifestyle.",
       metaTitle: "Explore the Latest New Launch Projects in Gurgaon | 100acress",
-      canonical: "https://www.100acress.com/projects-in-newlaunch/",
+      canonical: "https://www.100acress.com/projects/newlaunch/",
       keywords: "new launch projects in gurgaon, new launch projects, latest projects, new residential projects, property launches, new property launches",
+      query: "newlaunch",
       heroTitle: "Luxury Awaits in Gurgaon's Latest New Launch Projects",
       heroSubtitle: "Experience modern living with new launch projects in Gurgaon crafted for your lifestyle and future growth.",
       faqs: [
@@ -825,7 +1044,7 @@ export const staticData = {
       title: "Residential Properties - Find Your Dream Home",
       description: "Explore the best residential properties with modern amenities, prime locations, and excellent connectivity. Find your perfect home from apartments to villas.",
       metaTitle: "Residential Properties - Apartments, Villas & Homes | 100acress",
-      canonical: "https://www.100acress.com/property/residential/",
+      canonical: "https://www.100acress.com/projects/residential/",
       keywords: "residential properties, apartments, villas, homes, residential flats, residential projects",
       heroTitle: "Residential Properties - Find Your Dream Home",
       heroSubtitle: "Explore the best residential properties with modern amenities and prime locations",
@@ -865,7 +1084,7 @@ export const staticData = {
       title: "Commercial Properties",
       description: "Explore commercial properties in Gurugram with prime locations, modern amenities, and excellent connectivity. Find the ideal space for offices, retail, SCOs, and investments.",
       metaTitle: "Commercial Properties in Gurugram – Premium Business Spaces for Sale",
-      canonical: "https://www.100acress.com/projects/commercial/",
+      canonical: "https://www.100acress.com/projects-type/commercial/",
       keywords: "commercial properties, office spaces, shops, retail spaces, commercial projects, business properties",
       heroTitle: "Commercial Properties - Invest in Business Spaces",
       heroSubtitle: "Looking for commercial properties in Gurugram? Here, you can explore premium office spaces, retail shops, SCO plots, and commercial floors designed for growth. With prime locations, strong connectivity, and modern infrastructure, Gurugram offers the perfect environment to start, expand, or invest in your business.",
@@ -905,7 +1124,7 @@ export const staticData = {
       title: "Plots in Gurugram",
       description: "Explore premium residential plots in prime locations. Build your custom home with modern amenities and excellent connectivity.",
       metaTitle: "Residential Plots - Build Your Dream Home | 100acress",
-      canonical: "https://www.100acress.com/plots-in-gurugram/",
+      canonical: "https://www.100acress.com/projects/plots/",
       keywords: "residential plots, plots for sale, land for sale, residential land, plot investment",
       heroTitle: "Residential Plots - Build Your Dream Home",
       heroSubtitle: "Explore premium residential plots in prime locations with excellent connectivity",
@@ -1025,7 +1244,7 @@ export const staticData = {
       title: "Luxury Villas - Premium Living",
       description: "Explore the best luxury villas with world-class amenities, spacious layouts, and prime locations. Find your perfect luxury villa for an exceptional lifestyle.",
       metaTitle: "Luxury Villas - Premium Living | 100acress",
-      canonical: "https://www.100acress.com/projects/villas/",
+      canonical: "https://www.100acress.com/projects-type/villas/",
       keywords: "luxury villas, premium villas, luxury homes, villa properties, luxury living",
       heroTitle: "Luxury Villas - Premium Living",
       heroSubtitle: "Find your perfect luxury villa with world-class amenities and spacious layouts",
@@ -1065,7 +1284,7 @@ export const staticData = {
       title: "Farmhouses in Delhi NCR",
       description: "Find the best farmhouses in Delhi NCR. Explore exclusive listings, premium projects, investment opportunities, and verified property details.",
       metaTitle: "Farmhouses in Delhi NCR - Your Private Green Escape",
-      canonical: "https://www.100acress.com/projects/farmhouse/",
+      canonical: "https://www.100acress.com/projects-type/farmhouse/",
       keywords: "farm houses, farm house properties, agricultural investment, serene living, farm house investment",
       heroTitle: "Farm Houses - Serene Living and Agricultural Investment",
       heroSubtitle: "Discover premium farm houses with modern amenities and agricultural opportunities",
@@ -1109,7 +1328,7 @@ export const staticData = {
       title: "Plots in Gurugram",
       description: "Looking for plots in Gurugram? Explore premium residential and commercial land in prime Location with seamless connectivity, clear details, smooth processes, and trusted guidance.",
       metaTitle: "Plots in Gurugram for Sale | Residential & Commercial Land Options",
-      canonical: "https://www.100acress.com/plots-in-gurugram/",
+      canonical: "https://www.100acress.com/projects/plots/",
       keywords: "residential plots gurugram, plots for sale gurugram, land for sale gurugram, residential land gurugram, plot investment gurugram",
       heroTitle: "Residential Plots in Gurugram - Build Your Dream Home",
       heroSubtitle: "Looking to buy a plot in Gurugram? Here you’ll find premium residential and commercial land in prime locations, with clear information, easy buying support, and reliable guidance to help you make the right decision",
@@ -1193,7 +1412,7 @@ export const staticData = {
       title: "Properties Under 1 Crore - Affordable Homes",
       description: "Find the best properties under 1 crore with modern amenities and excellent connectivity. Discover affordable homes that fit your budget.",
       metaTitle: "Properties Under 1 Crore - Affordable Homes | 100acress",
-      canonical: "https://www.100acress.com/budget-properties/",
+      canonical: "https://www.100acress.com/projects/under-1-cr/",
       keywords: "properties under 1 crore, affordable homes, budget properties, cheap properties, low cost homes",
       heroTitle: "Properties Under 1 Crore - Affordable Homes",
       heroSubtitle: "Find the best properties under 1 crore with modern amenities and excellent connectivity",
@@ -1233,7 +1452,7 @@ export const staticData = {
       title: "Properties 1-5 Crore - Premium Homes",
       description: "Explore premium properties between 1-5 crores with luxury amenities, prime locations, and excellent connectivity. Find your dream home in this price range.",
       metaTitle: "Properties 1-5 Crore - Premium Homes | 100acress",
-      canonical: "https://www.100acress.com/budget-properties/",
+      canonical: "https://www.100acress.com/projects/1-5-cr/",
       keywords: "properties 1-5 crore, premium homes, luxury properties, mid-range properties, 1-5 crore homes",
       heroTitle: "Properties 1-5 Crore - Premium Homes",
       heroSubtitle: "Explore premium properties with luxury amenities and prime locations",
@@ -1273,7 +1492,7 @@ export const staticData = {
       title: "Properties 5-10 Crore - Luxury Homes",
       description: "Discover luxury properties between 5-10 crores with world-class amenities, premium locations, and exceptional lifestyle. Find your perfect luxury home.",
       metaTitle: "Properties 5-10 Crore - Luxury Homes | 100acress",
-      canonical: "https://www.100acress.com/budget-properties/",
+      canonical: "https://www.100acress.com/projects/5-10-cr/",
       keywords: "properties 5-10 crore, luxury homes, high-end properties, premium homes, luxury apartments",
       heroTitle: "Properties 5-10 Crore - Luxury Homes",
       heroSubtitle: "Discover luxury properties with world-class amenities and premium locations",
@@ -1313,7 +1532,7 @@ export const staticData = {
       title: "Properties 10-20 Crore - Ultra Luxury Homes",
       description: "Discover ultra luxury properties between 10-20 crores with exclusive amenities, premium locations, and exceptional lifestyle. Find your perfect ultra luxury home.",
       metaTitle: "Properties 10-20 Crore - Ultra Luxury Homes | 100acress",
-      canonical: "https://www.100acress.com/budget-properties/",
+      canonical: "https://www.100acress.com/projects/10-20-cr/",
       keywords: "properties 10-20 crore, ultra luxury homes, high-end properties, premium homes, luxury penthouses",
       heroTitle: "Properties 10-20 Crore - Ultra Luxury Homes",
       heroSubtitle: "Discover ultra luxury properties with exclusive amenities and premium locations",
@@ -1353,7 +1572,7 @@ export const staticData = {
       title: "Properties 20-50 Crore - Super Luxury Homes",
       description: "Explore super luxury properties between 20-50 crores with world-class amenities, exclusive locations, and unparalleled lifestyle. Find your perfect super luxury home.",
       metaTitle: "Properties 20-50 Crore - Super Luxury Homes | 100acress",
-      canonical: "https://www.100acress.com/budget-properties/",
+      canonical: "https://www.100acress.com/projects/20-50-cr/",
       keywords: "properties 20-50 crore, super luxury homes, ultra high-end properties, premium penthouses, luxury villas",
       heroTitle: "Properties 20-50 Crore - Super Luxury Homes",
       heroSubtitle: "Explore super luxury properties with world-class amenities and exclusive locations",
@@ -1393,7 +1612,7 @@ export const staticData = {
       title: "Properties Above 50 Crore - Ultra Premium Homes",
       description: "Discover ultra premium properties above 50 crores with exclusive amenities, prime locations, and exceptional lifestyle. Find your perfect ultra premium home.",
       metaTitle: "Properties Above 50 Crore - Ultra Premium Homes | 100acress",
-      canonical: "https://www.100acress.com/budget-properties/",
+      canonical: "https://www.100acress.com/projects/above-50-cr/",
       keywords: "properties above 50 crore, ultra premium homes, ultra high-end properties, luxury penthouses, premium villas",
       heroTitle: "Properties Above 50 Crore - Ultra Premium Homes",
       heroSubtitle: "Discover ultra premium properties with exclusive amenities and prime locations",
@@ -1437,7 +1656,7 @@ export const staticData = {
       title: "Properties Under 1 Cr - Affordable Homes in Gurgaon",
       description: "Find the best properties under 1 crore in Gurgaon with modern amenities, excellent connectivity, and great investment potential. Perfect for first-time buyers and budget-conscious investors.",
       metaTitle: "Properties Under 1 Cr in Gurgaon - Affordable Homes | 100acress",
-      canonical: "https://www.100acress.com/budget-properties/under-1-cr/",
+      canonical: "https://www.100acress.com/projects/under-1-cr/",
       keywords: "properties under 1 cr, affordable homes gurgaon, budget properties, under 1 crore properties",
       heroTitle: "Properties Under 1 Cr in Gurgaon",
       heroSubtitle: "Affordable homes with modern amenities and excellent connectivity",
@@ -1485,7 +1704,7 @@ export const staticData = {
       title: "Properties Between 1-5 Cr - Mid-Range Homes in Gurgaon",
       description: "Discover premium properties between 1-5 crore in Gurgaon with modern amenities, excellent locations, and great investment potential. Perfect for growing families and smart investors.",
       metaTitle: "Properties 1-5 Cr in Gurgaon - Mid-Range Homes | 100acress",
-      canonical: "https://www.100acress.com/budget-properties/1-5-cr/",
+      canonical: "https://www.100acress.com/projects/1-5-cr/",
       keywords: "properties 1-5 cr, mid range homes gurgaon, 1-5 crore properties",
       heroTitle: "Properties Between 1-5 Cr in Gurgaon",
       heroSubtitle: "Premium mid-range homes with modern amenities and excellent locations",
@@ -1533,7 +1752,7 @@ export const staticData = {
       title: "Properties Between 5-10 Cr - Luxury Homes in Gurgaon",
       description: "Explore luxury properties between 5-10 crore in Gurgaon with premium amenities, prime locations, and exceptional lifestyle features. Perfect for discerning buyers seeking quality and exclusivity.",
       metaTitle: "Properties 5-10 Cr in Gurgaon - Luxury Homes | 100acress",
-      canonical: "https://www.100acress.com/budget-properties/5-10-cr/",
+      canonical: "https://www.100acress.com/projects/5-10-cr/",
       keywords: "properties 5-10 cr, luxury homes gurgaon, 5-10 crore properties",
       heroTitle: "Properties Between 5-10 Cr in Gurgaon",
       heroSubtitle: "Luxury homes with premium amenities and prime locations",
@@ -1581,7 +1800,7 @@ export const staticData = {
       title: "Properties Between 10-20 Cr - Ultra Luxury Homes in Gurgaon",
       description: "Discover ultra-luxury properties between 10-20 crore in Gurgaon with exceptional amenities, exclusive locations, and unparalleled lifestyle features. For those who demand the extraordinary.",
       metaTitle: "Properties 10-20 Cr in Gurgaon - Ultra Luxury Homes | 100acress",
-      canonical: "https://www.100acress.com/budget-properties/10-20-cr/",
+      canonical: "https://www.100acress.com/projects/10-20-cr/",
       keywords: "properties 10-20 cr, ultra luxury homes gurgaon, 10-20 crore properties",
       heroTitle: "Properties Between 10-20 Cr in Gurgaon",
       heroSubtitle: "Ultra-luxury homes with exceptional amenities and exclusive locations",
@@ -1629,7 +1848,7 @@ export const staticData = {
       title: "Properties Between 20-50 Cr - Elite Luxury Homes in Gurgaon",
       description: "Explore elite luxury properties between 20-50 crore in Gurgaon with extraordinary amenities, ultra-exclusive locations, and unmatched sophistication. For the discerning few.",
       metaTitle: "Properties 20-50 Cr in Gurgaon - Elite Luxury Homes | 100acress",
-      canonical: "https://www.100acress.com/budget-properties/20-50-cr/",
+      canonical: "https://www.100acress.com/projects/20-50-cr/",
       keywords: "properties 20-50 cr, elite luxury homes gurgaon, 20-50 crore properties",
       heroTitle: "Properties Between 20-50 Cr in Gurgaon",
       heroSubtitle: "Elite luxury homes with extraordinary amenities and ultra-exclusive locations",
@@ -1677,7 +1896,7 @@ export const staticData = {
       title: "Properties Above 50 Cr - Ultra Elite Luxury Homes in Gurgaon",
       description: "Discover ultra-elite luxury properties above 50 crore in Gurgaon with palatial designs, extraordinary amenities, and unmatched exclusivity. For those who seek perfection.",
       metaTitle: "Properties Above 50 Cr in Gurgaon - Ultra Elite Luxury | 100acress",
-      canonical: "https://www.100acress.com/budget-properties/above-50-cr/",
+      canonical: "https://www.100acress.com/projects/above-50-cr/",
       keywords: "properties above 50 cr, ultra elite luxury homes gurgaon, above 50 crore properties",
       heroTitle: "Properties Above 50 Cr in Gurgaon",
       heroSubtitle: "Ultra-elite luxury homes with palatial designs and unmatched exclusivity",
@@ -1725,7 +1944,7 @@ export const staticData = {
       title: "Farmhouses in Delhi NCR – Experience a Private Green Retreat",
       description: "Find the best farmhouses in Delhi NCR. Explore exclusive listings, premium projects, investment opportunities, and verified property details.",
       metaTitle: "Farmhouses in Delhi NCR - Your Private Green Escape",
-      canonical: "https://www.100acress.com/projects/farmhouse/",
+      canonical: "https://www.100acress.com/projects-type/farmhouse/",
       keywords: "farm houses, farm house properties, agricultural investment, serene living, farm house investment",
       heroTitle: "Farm Houses - Serene Living and Agricultural Investment",
       heroSubtitle: "Discover premium farm houses with modern amenities and agricultural opportunities",
