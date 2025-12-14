@@ -15,6 +15,8 @@ const CareerWithUs = () => {
   const [selectedJob, setSelectedJob] = useState(null);
   const [form, setForm] = useState({ name: "", email: "", phone: "", resumeUrl: "", coverLetter: "" });
   const [resumeFile, setResumeFile] = useState(null);
+  const [closedJobInfo, setClosedJobInfo] = useState(null);
+
   // UI enhancement states
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
@@ -132,6 +134,20 @@ const CareerWithUs = () => {
   const submitApplication = async (e) => {
     e.preventDefault();
     if (!applyForId) return;
+
+    const jobToApply = jobs.find((j) => j?._id === applyForId);
+    if (jobToApply?.status === "closed") {
+      setClosedJobInfo({
+        title: jobToApply?.jobTitle || "This position",
+        email: "support@100acress.com",
+        phone: "+91 8500-900-100",
+      });
+      setFormError(
+        "This position is currently closed. Please reach out to our support team for assistance."
+      );
+      return;
+    }
+
     // basic validations
     setFormError("");
     const emailOk = /\S+@\S+\.\S+/.test(form.email);
@@ -177,11 +193,23 @@ const CareerWithUs = () => {
       });
       alert("Application submitted successfully! We will get back to you shortly.");
       setApplyForId(null);
+      setClosedJobInfo(null);
       setForm({ name: "", email: "", phone: "", resumeUrl: "", coverLetter: "" });
       setResumeFile(null);
     } catch (err) {
       console.error(err);
-      setFormError(err?.response?.data?.message || "Failed to submit application. Please try again.");
+      const code = err?.response?.data?.code;
+      if (code === "JOB_CLOSED") {
+        const support = err?.response?.data?.support || {};
+        setClosedJobInfo({
+          title: jobToApply?.jobTitle || "This position",
+          email: support.email || "support@100acress.com",
+          phone: support.phone || "+91 8500-900-100",
+        });
+        setFormError(err?.response?.data?.message || "This position is currently closed.");
+      } else {
+        setFormError(err?.response?.data?.message || "Failed to submit application. Please try again.");
+      }
     }
     finally {
       setSubmitting(false);
@@ -259,7 +287,7 @@ const CareerWithUs = () => {
         <div className="mt-6 pt-4 border-t border-gray-100 space-y-3">
           <motion.button
             onClick={() => setSelectedJob(job)}
-            className="w-full px-6 py-3 bg-white border-2 border-primaryRed text-primaryRed font-semibold rounded-2xl transition-all duration-300 hover:bg-primaryRed hover:text-white flex items-center justify-center gap-2"
+            className="w-full px-6 py-3 bg-white border-2 border-primaryRed text-primaryRed font-semibold rounded-2xl hover:bg-primaryRed hover:text-white flex items-center justify-center gap-2"
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
           >
@@ -267,12 +295,29 @@ const CareerWithUs = () => {
             View Details
           </motion.button>
           <motion.button
-            onClick={() => setApplyForId(job._id)}
-            className="w-full px-6 py-3 bg-gradient-to-r from-primaryRed to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold rounded-2xl transition-all duration-300 shadow-lg shadow-primaryRed/25 hover:shadow-xl hover:shadow-primaryRed/40"
+            onClick={() => {
+              if (job.status === "closed") {
+                setClosedJobInfo({
+                  title: job?.jobTitle || "This position",
+                  email: "support@100acress.com",
+                  phone: "+91 8500-900-100",
+                });
+                setFormError("");
+                setApplyForId(job._id);
+                return;
+              }
+              setClosedJobInfo(null);
+              setApplyForId(job._id);
+            }}
+            className={`w-full px-6 py-3 text-white font-semibold rounded-2xl transition-all duration-300 shadow-lg ${
+              job.status === "closed"
+                ? "bg-gray-400 hover:bg-gray-500 shadow-none"
+                : "bg-gradient-to-r from-primaryRed to-red-600 hover:from-red-600 hover:to-red-700 shadow-primaryRed/25 hover:shadow-xl hover:shadow-primaryRed/40"
+            }`}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
           >
-            Apply Now
+            {job.status === "closed" ? "Closed" : "Apply Now"}
           </motion.button>
         </div>
       </motion.div>
@@ -627,7 +672,6 @@ const CareerWithUs = () => {
                           setSearch('');
                           setLocationFilter('all');
                           setExperienceFilter('all');
-                          setSortBy('newest');
                         }}
                         className="flex-1 px-6 py-3 bg-gray-100 text-gray-700 font-medium rounded-2xl hover:bg-gray-200 transition-colors"
                       >
@@ -754,7 +798,7 @@ const CareerWithUs = () => {
                       <motion.button
                         key={page}
                         onClick={() => setCurrentPage(page)}
-                        className={`w-10 h-10 rounded-xl font-medium transition-all ${
+                        className={`w-10 h-10 rounded-xl font-medium transition-all duration-300 ${
                           currentPage === page
                             ? 'bg-gradient-to-r from-primaryRed to-red-600 text-white shadow-lg'
                             : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50'
@@ -932,6 +976,19 @@ const CareerWithUs = () => {
                     </motion.button>
                     <motion.button
                       onClick={() => {
+                        if (selectedJob?.status === "closed") {
+                          setClosedJobInfo({
+                            title: selectedJob?.jobTitle || "This position",
+                            email: "support@100acress.com",
+                            phone: "+91 8500-900-100",
+                          });
+                          setFormError(
+                            "This position is currently closed. Please reach out to our support team for assistance."
+                          );
+                        } else {
+                          setClosedJobInfo(null);
+                          setFormError("");
+                        }
                         setApplyForId(selectedJob._id);
                         setSelectedJob(null);
                       }}
@@ -971,7 +1028,11 @@ const CareerWithUs = () => {
                       <p className="text-xs sm:text-sm text-gray-500 text-center">Submit your application and we'll get back to you soon</p>
                     </div>
                     <button
-                      onClick={() => setApplyForId(null)}
+                      onClick={() => {
+                        setApplyForId(null);
+                        setClosedJobInfo(null);
+                        setFormError("");
+                      }}
                       className="p-2 sm:p-3 rounded-xl sm:rounded-2xl bg-gray-100 text-gray-500 hover:bg-gray-200 hover:text-gray-700 transition-all duration-200 flex-shrink-0"
                     >
                       <X size={20} className="sm:hidden" />
@@ -981,6 +1042,33 @@ const CareerWithUs = () => {
                 </div>
 
                 <form onSubmit={submitApplication} className="p-3 sm:p-4 space-y-3 sm:space-y-4">
+                  {closedJobInfo && (
+                    <motion.div
+                      className="bg-amber-50 border border-amber-200 text-amber-900 p-4 sm:p-5 rounded-2xl"
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                    >
+                      <div className="space-y-2">
+                        <p className="text-sm sm:text-base font-semibold">
+                          Job Closed: {closedJobInfo.title}
+                        </p>
+                        <p className="text-xs sm:text-sm text-amber-800 leading-relaxed">
+                          This position is no longer accepting applications at the moment. For support, please email
+                          {" "}
+                          <a className="font-semibold underline" href={`mailto:${closedJobInfo.email}`}>
+                            {closedJobInfo.email}
+                          </a>
+                          {" "}
+                          or call
+                          {" "}
+                          <a className="font-semibold underline" href={`tel:${closedJobInfo.phone.replace(/[^\d+]/g, "")}`}>
+                            {closedJobInfo.phone}
+                          </a>
+                          .
+                        </p>
+                      </div>
+                    </motion.div>
+                  )}
                   {formError && (
                     <motion.div 
                       className="bg-red-50 border border-red-200 text-red-700 p-4 sm:p-5 rounded-2xl"
@@ -1095,8 +1183,12 @@ const CareerWithUs = () => {
                   <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-6 lg:pt-8 border-t border-gray-100">
                     <motion.button
                       type="button"
-                      onClick={() => setApplyForId(null)}
-                      className="flex-1 px-6 sm:px-8 py-3 sm:py-4 text-sm sm:text-base bg-gray-100 text-gray-700 font-semibold rounded-xl sm:rounded-2xl hover:bg-gray-200 transition-all duration-300"
+                      onClick={() => {
+                        setApplyForId(null);
+                        setClosedJobInfo(null);
+                        setFormError("");
+                      }}
+                      className="flex-1 px-6 py-3 bg-gray-100 text-gray-700 font-semibold rounded-xl hover:bg-gray-200 transition-all duration-300"
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                     >
@@ -1104,9 +1196,9 @@ const CareerWithUs = () => {
                     </motion.button>
                     <motion.button
                       type="submit"
-                      disabled={submitting}
-                      className={`flex-1 px-6 sm:px-8 py-3 sm:py-4 text-sm sm:text-base font-semibold rounded-xl sm:rounded-2xl transition-all duration-300 ${
-                        submitting 
+                      disabled={submitting || (jobs.find((j) => j?._id === applyForId)?.status === "closed")}
+                      className={`flex-1 px-6 py-3 text-sm sm:text-base font-semibold rounded-xl sm:rounded-2xl transition-all duration-300 ${
+                        submitting || (jobs.find((j) => j?._id === applyForId)?.status === "closed")
                           ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
                           : 'bg-gradient-to-r from-primaryRed to-red-600 text-white shadow-lg hover:shadow-xl'
                       }`}
@@ -1118,6 +1210,8 @@ const CareerWithUs = () => {
                           <div className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-gray-400 border-t-transparent rounded-full animate-spin"></div>
                           <span>Submitting...</span>
                         </div>
+                      ) : (jobs.find((j) => j?._id === applyForId)?.status === "closed") ? (
+                        'Job Closed'
                       ) : (
                         'Submit Application'
                       )}
