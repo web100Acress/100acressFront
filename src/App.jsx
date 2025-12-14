@@ -62,7 +62,6 @@ const UserDashBoard = lazy(() => import("./Components/HomePageComponents/UserDas
 const UserEdit = lazy(() => import("./Components/HomePageComponents/UserEdit"));
 import ModernBlogView from "./Components/Blog_Components/ModernBlogView";
 const BlogInsights = lazy(() => import("./Insight/pages/BlogInsights"));
-const GurugramPrimeLocation = lazy(() => import("./Pages/GurugramPrimeLocation"));
 // Per-city pages are now handled by CityProjects; imports removed
 // const DelhiProject = lazy(() => import("./Pages/ProjectCities/DelhiProject"));
 // const NoidaProject = lazy(() => import("./Pages/ProjectCities/NoidaProject"));
@@ -575,10 +574,6 @@ function App() {
                         element={<UserViewProperty />}
                       />
                       <Route path="/usereditproperty" element={<UserEditProperty />} />
-                      <Route
-                        path="/property-in-gurugram/:location"
-                        element={<GurugramPrimeLocation />}
-                      />
                       <Route path="*" element={<PageNotFound />} />
                       <Route path="/contactmainpage" element={<ContactPage />} />
                       <Route path="/searchdata/:key" element={<SearchData />} />
