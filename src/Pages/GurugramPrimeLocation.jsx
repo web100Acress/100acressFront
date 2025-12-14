@@ -26,10 +26,7 @@ const GurugramPrimeLocation = () => {
       name: "Projects on Golf Course",
       href: "/property-in-gurugram/golf-course/",
     },
-    {
-      name: "Projects on Northern Peripheral Road",
-      href: "/property-in-gurugram/northern-peripheral-road/",
-    },
+   
     {
       name: "Projects on Dwarka Expressway",
       href: "/property-in-gurugram/dwarka-expressway/",
@@ -37,10 +34,6 @@ const GurugramPrimeLocation = () => {
     {
       name: "Projects on New Gurgaon",
       href: "/property-in-gurugram/new-gurgaon/",
-    },
-    {
-      name: "Projects on Southern Peripheral Road",
-      href: "/property-in-gurugram/southern-peripheral-road/",
     },
     {
       name: "Projects on Golf Course Extn Road",
@@ -58,11 +51,6 @@ const GurugramPrimeLocation = () => {
       title: 'Projects on Golf Course Road in Gurugram | Luxury Projects',
       metadescription: 'Projects On Golf Course Road is New Launch Development, Gives A Commercial, Residencial, SCO Plots with Spacious and Luxurious Appartments and Modern Aminities.',
       keywords: 'Projects on Golf Course, Top Residential projects Golf Course Road, Flats for sale on Golf Course Road, New launch projects on Golf Course Road'
-    },
-    'northern-peripheral-road': {
-      title: 'Projects on Northern Peripheral Road in Gurugram | 100acress',
-      metadescription: 'Explore premium residential and commercial projects on Northern Peripheral Road, Gurugram. Find luxury apartments, plots, and commercial spaces with excellent connectivity.',
-      keywords: 'Projects on Northern Peripheral Road, Residential projects Northern Peripheral Road, Commercial projects Northern Peripheral Road'
     },
     'dwarka-expressway': {
       title: 'Projects on Dwarka Expressway in Gurugram | Luxury Projects',
@@ -90,7 +78,6 @@ const GurugramPrimeLocation = () => {
   const SohnaRoad = useSelector(store => store?.primelocation?.sohnaroad);
   const GolfCourseRoad = useSelector(store => store?.primelocation?.golfcourseroad);
   const MgRoad = useSelector(store => store?.primelocation?.mgroad);
-  const NPRRoad = useSelector(store => store?.primelocation?.nprroad);
   const DwarkaExpressway = useSelector(store => store?.primelocation?.dwarkaexpressway);
   const NewGurgaon = useSelector(store => store?.primelocation?.newgurgaon);
   const Sohna = useSelector(store => store?.primelocation?.sohna);
@@ -102,7 +89,6 @@ const GurugramPrimeLocation = () => {
     'sohna-road':SohnaRoad,
     'golf-course':GolfCourseRoad,
     'mg-road': MgRoad ,
-    'northern-peripheral-road' : NPRRoad ,
     'dwarka-expressway' : DwarkaExpressway,
     'new-gurgaon' : NewGurgaon,
     'sohna' : Sohna,
@@ -119,7 +105,6 @@ const GurugramPrimeLocation = () => {
           'sohna-road': 'sohnaroad',
           'golf-course': 'golfcourseroad',
           'mg-road': 'mgroad',
-          'northern-peripheral-road': 'nprroad',
           'dwarka-expressway': 'dwarkaexpressway',
           'new-gurgaon' : 'newgurgaon',
           'sohna': 'sohna',
