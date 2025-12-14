@@ -109,8 +109,8 @@ const CrimsonEleganceFooter = () => {
     { name: "QR Generator", href: "/qr-generator" },
     { name: "Gurugram Master Plan 2031", href: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/masterplan/gurgaon+master+plan.pdf", external: true },
 
-    { name: "Resale Properties in Gurugram", href: "/buy-properties/best-resale-property-in-gurugram/" },
-    { name: "Rental Properties in Gurugram", href: "/rental-properties/best-rental-property-in-gurugram/" },
+    // { name: "Resale Properties in Gurugram", href: "/buy-properties/best-resale-property-in-gurugram/" },
+    // { name: "Rental Properties in Gurugram", href: "/rental-properties/best-rental-property-in-gurugram/" },
     { name: "Privacy Policy", href: "/privacy-policy/" },
     { name: "Terms & Conditions", href: "/terms-and-conditions/" },
     { name: "Disclaimer", href: "/disclaimer"},
