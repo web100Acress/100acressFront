@@ -218,6 +218,7 @@ const IndependentFloorGurgaon = lazy(() => import("./Pages/PropertyTypes/Indepen
 const IndependentHousesGurgaon = lazy(() => import("./Pages/PropertyTypes/IndependentHousesGurgaon"));
 const BudgetFlatsGurgaon = lazy(() => import("./Pages/PropertyTypes/BudgetFlatsGurgaon"));
 const AffordableHomesGurgaon = lazy(() => import("./Pages/PropertyTypes/AffordableHomesGurgaon"));
+const AffordableHomes = lazy(() => import("./Pages/PropertyTypes/AffordableHomes"));
 const FarmhouseGurgaon = lazy(() => import("./Pages/PropertyTypes/FarmhouseGurgaon"));
 const LuxuryVillasGurgaon = lazy(() => import("./Pages/PropertyTypes/LuxuryVillasGurgaon"));
 const ResidentialFlatsGurgaon = lazy(() => import("./Pages/PropertyTypes/ResidentialFlatsGurgaon"));
@@ -457,6 +458,7 @@ function App() {
                       <Route path="/projects/villas/" element={<ProjectTypeGlobal />} />
                       <Route path="/projects/farmhouse/" element={<ProjectTypeGlobal />} />
                       <Route path="/projects/farmhouses/" element={<ProjectTypeGlobal />} />
+                      <Route path="/projects/affordable-homes/" element={<AffordableHomes />} />
                       <Route path="/projects/industrial-plots/" element={<ProjectTypeGlobal />} />
                       <Route path="/projects/industrial-projects/" element={<ProjectTypeGlobal />} />
                       <Route path="/news-and-articals/" element={<NewsandArtical />} />

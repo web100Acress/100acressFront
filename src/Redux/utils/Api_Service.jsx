@@ -418,6 +418,9 @@ const Api_service = () => {
       }else
       if(query === "industrialprojects"){
         dispatch(industrialprojects(AllProjectbyQuery))
+      }else
+      if(query === "affordable"){
+        dispatch(affordable(AllProjectbyQuery))
       }
     }catch(error){
       console.error("Error fetching ",error);

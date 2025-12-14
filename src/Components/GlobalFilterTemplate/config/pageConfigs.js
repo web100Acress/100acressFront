@@ -266,6 +266,23 @@ export const projectTypeConfigs = {
              project.description?.toLowerCase().includes('industrial') ||
              project.type === 'Industrial Projects';
     }
+  },
+  "affordable homes": {
+    title: "Affordable Homes in Gurgaon",
+    description: "Discover Premium Affordable Homes in Gurgaon – Your Gateway to Budget-Friendly Living and Smart Real Estate Investment.",
+    query: "affordable",
+    reduxKey: "affordable",
+    badgeColor: "bg-teal-500",
+    badgeText: "Affordable Home",
+    typeFilter: (project) => {
+      return project.type?.toLowerCase().includes('affordable') ||
+             project.projectType?.toLowerCase().includes('affordable') ||
+             project.category?.toLowerCase().includes('affordable') ||
+             project.propertyType?.toLowerCase().includes('affordable') ||
+             project.projectName?.toLowerCase().includes('affordable') ||
+             project.description?.toLowerCase().includes('affordable') ||
+             project.type === 'Affordable Homes';
+    }
   }
 };
 
