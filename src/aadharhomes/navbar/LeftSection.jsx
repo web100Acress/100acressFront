@@ -624,7 +624,7 @@ export default function LeftSection({
           <MenuItem onClick={() => handleNavigation("/projects/commercial/")}>Commercial Projects</MenuItem>
           <MenuItem onClick={() => handleNavigation("/projects/farmhouse/")}>FarmHouses</MenuItem>
           <MenuItem onClick={() => handleNavigation("/projects/industrial-plots/")}>Industrial Plots</MenuItem>
-       
+          <MenuItem onClick={() => handleNavigation("/projects/affordable-homes/")}>Affordable Homes</MenuItem>
         </MenuList>
       </Menu>
             

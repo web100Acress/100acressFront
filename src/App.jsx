@@ -220,6 +220,7 @@ const IndependentFloorGurgaon = lazy(() => import("./Pages/PropertyTypes/Indepen
 const IndependentHousesGurgaon = lazy(() => import("./Pages/PropertyTypes/IndependentHousesGurgaon"));
 const BudgetFlatsGurgaon = lazy(() => import("./Pages/PropertyTypes/BudgetFlatsGurgaon"));
 const AffordableHomesGurgaon = lazy(() => import("./Pages/PropertyTypes/AffordableHomesGurgaon"));
+const AffordableHomes = lazy(() => import("./Pages/PropertyTypes/AffordableHomes"));
 const FarmhouseGurgaon = lazy(() => import("./Pages/PropertyTypes/FarmhouseGurgaon"));
 const LuxuryVillasGurgaon = lazy(() => import("./Pages/PropertyTypes/LuxuryVillasGurgaon"));
 const ResidentialFlatsGurgaon = lazy(() => import("./Pages/PropertyTypes/ResidentialFlatsGurgaon"));
@@ -492,43 +493,13 @@ function App() {
                         element={<ProjectStatusSearchGlobal />}
                       />
                       
-                      {/* Unified type routes with projects/{filter} pattern */}
-                      <Route
-                        path="/projects/farmhouse/"
-                        element={<ProjectTypeGlobal />}
-                      />
-                      <Route
-                        path="/projects/commercial/"
-                        element={<ProjectTypeGlobal />}
-                      />
-                      <Route
-                        path="/projects/residential/"
-                        element={<ProjectTypeGlobal />}
-                      />
-                      <Route
-                        path="/projects/villas/"
-                        element={<ProjectTypeGlobal />}
-                      />
-                      <Route
-                        path="/projects/plots/"
-                        element={<ProjectTypeGlobal />}
-                      />
-                      <Route
-                        path="/projects/industrial-plots/"
-                        element={<ProjectTypeGlobal />}
-                      />
-                      <Route
-                        path="/projects/industrial-projects/"
-                        element={<ProjectTypeGlobal />}
-                      />
-                      <Route
-                        path="/projects/sco-plots/"
-                        element={<ProjectTypeGlobal />}
-                      />
-                      <Route
-                        path="/projects/independent-floors/"
-                        element={<ProjectTypeGlobal />}
-                      />
+                      <Route path="/plots-in-gurugram/" element={<ProjectTypeGlobal />} />
+                      <Route path="/projects/villas/" element={<ProjectTypeGlobal />} />
+                      <Route path="/projects/farmhouse/" element={<ProjectTypeGlobal />} />
+                      <Route path="/projects/farmhouses/" element={<ProjectTypeGlobal />} />
+                      <Route path="/projects/affordable-homes/" element={<AffordableHomes />} />
+                      <Route path="/projects/industrial-plots/" element={<ProjectTypeGlobal />} />
+                      <Route path="/projects/industrial-projects/" element={<ProjectTypeGlobal />} />
                       <Route path="/news-and-articals/" element={<NewsandArtical />} />
                       {/* New dynamic project type routes */}
                       <Route path="/project-type/:type" element={<ProjectTypeGlobal />} />
