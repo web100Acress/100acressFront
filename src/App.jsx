@@ -502,6 +502,7 @@ function App() {
                         element={<UserViewProperty />}
                       />
                       <Route path="/usereditproperty" element={<UserEditProperty />} />
+                      <Route path="/property-in-gurugram/*" element={<Navigate to="/" replace />} />
                       <Route path="*" element={<PageNotFound />} />
                       <Route path="/contactmainpage" element={<ContactPage />} />
                       <Route path="/searchdata/:key" element={<SearchData />} />
