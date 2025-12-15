@@ -248,7 +248,7 @@ const FloorPlan = ({ floorPlans = [], bhkDetails = [], onShowCallback = () => {}
               {/* Up Arrow Button */}
               <button
                 onClick={handleArrowUp}
-                className="absolute top-16 right-2 z-30 bg-amber-500/80 hover:bg-amber-500 text-black p-2 rounded-full transition-all duration-300 transform hover:scale-110 shadow-lg hover:shadow-amber-500/40"
+                className="absolute -top-10 right-16 z-30 hover:bg-amber-500 text-white p-2 rounded-full transition-all duration-300 transform hover:scale-110 shadow-lg hover:shadow-amber-500/40"
                 aria-label="Previous configuration"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -259,7 +259,7 @@ const FloorPlan = ({ floorPlans = [], bhkDetails = [], onShowCallback = () => {}
               {/* Down Arrow Button */}
               <button
                 onClick={handleArrowDown}
-                className="absolute bottom-16 right-2 z-30 bg-amber-500/80 hover:bg-amber-500 text-black p-2 rounded-full transition-all duration-300 transform hover:scale-110 shadow-lg hover:shadow-amber-500/40"
+                className="absolute -bottom-10 right-16 z-30 hover:bg-amber-500 text-white p-2 rounded-full transition-all duration-300 transform hover:scale-110 shadow-lg hover:shadow-amber-500/40"
                 aria-label="Next configuration"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -279,7 +279,7 @@ const FloorPlan = ({ floorPlans = [], bhkDetails = [], onShowCallback = () => {}
                 <button
                   key={index}
                   onClick={() => setCurrentIndex(index)}
-                  className={`w-full text-left transition-all duration-500 transform hover:scale-[1.02] rounded-2xl p-6 border ${
+                  className={`w-full text-left transition-all duration-500 transform hover:scale-[1.02] rounded-2xl p-3 border ${
                     index === currentIndex 
                       ? 'bg-gradient-to-r from-gray-900/80 to-gray-800/80 border-2 border-amber-500 shadow-xl shadow-amber-500/30' 
                       : 'bg-gradient-to-r from-gray-800/40 to-gray-900/40 border border-gray-600/50 hover:border-amber-500/50 hover:shadow-lg'
@@ -287,34 +287,34 @@ const FloorPlan = ({ floorPlans = [], bhkDetails = [], onShowCallback = () => {}
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex-1">
-                      <div className="flex items-center space-x-3">
+                      <div className="flex items-start space-x-3">
                         {index === currentIndex && (
-                          <div className="w-6 h-6 bg-amber-500 rounded-full flex items-center justify-center flex-shrink-0">
+                          <div className="w-6 h-6 bg-amber-500 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
                             <svg className="w-4 h-4 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                             </svg>
                           </div>
                         )}
-                        <div>
-                          <h3 className={`font-bold text-lg transition-colors duration-300 ${
+                        <div className="flex-1">
+                          <h3 className={`font-bold text-sm transition-colors duration-300 ${
                             index === currentIndex ? 'text-white' : 'text-gray-200 group-hover:text-white'
                           }`}>
                             {bhkDetails[index]?.bhk_type || `Configuration ${index + 1}`}
                           </h3>
+                          
+                          {bhkDetails[index]?.bhk_Area && (
+                            <div className="mt-2">
+                              <span className={`text-xs font-bold px-3 py-1 rounded-full transition-all duration-300 inline-block ${
+                                index === currentIndex 
+                                  ? 'bg-amber-500/20 text-amber-300 border border-amber-500/50' 
+                                  : 'bg-gray-700/50 text-amber-400 group-hover:bg-amber-500/10 group-hover:text-amber-300 border border-amber-500/30'
+                              }`}>
+                                {bhkDetails[index].bhk_Area}
+                              </span>
+                            </div>
+                          )}
                         </div>
                       </div>
-                      
-                      {bhkDetails[index]?.bhk_Area && (
-                        <div className="mt-3">
-                          <span className={`text-sm font-bold px-4 py-2 rounded-full transition-all duration-300 ${
-                            index === currentIndex 
-                              ? 'bg-amber-500/20 text-amber-300 border border-amber-500/50' 
-                              : 'bg-gray-700/50 text-amber-400 group-hover:bg-amber-500/10 group-hover:text-amber-300 border border-amber-500/30'
-                          }`}>
-                            {bhkDetails[index].bhk_Area}
-                          </span>
-                        </div>
-                      )}
                     </div>
                     
                     
