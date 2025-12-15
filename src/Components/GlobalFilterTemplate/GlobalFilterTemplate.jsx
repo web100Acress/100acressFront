@@ -314,10 +314,9 @@ const GlobalFilterTemplate = ({
     
     loadProjectOrders();
     
-    // Reload project orders every 5 seconds to catch updates from admin panel
-    const interval = setInterval(loadProjectOrders, 5000);
-    
-    return () => clearInterval(interval);
+    // Removed auto-refresh interval to prevent unnecessary API calls
+    // Project orders will only be loaded once when component mounts
+    // Users can manually refresh if needed
   }, []);
 
   function handleDatafromSearch(data) {
