@@ -85,7 +85,10 @@ const CrimsonEleganceFooter = () => {
       name: "Projects on Golf Course",
       href: "/property-in-gurugram/golf-course/",
     },
-   
+    {
+      name: "Projects on Northern Peripheral Road",
+      href: "/property-in-gurugram/northern-peripheral-road/",
+    },
     {
       name: "Projects on Dwarka Expressway",
       href: "/property-in-gurugram/dwarka-expressway/",
