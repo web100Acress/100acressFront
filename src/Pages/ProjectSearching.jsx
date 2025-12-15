@@ -78,7 +78,6 @@ const ProjectSearching = ({searchdata, sendDatatoparent, city, showPrimeOnly = f
                       <option value="NH-48">NH-48</option>
                       <option value="Golf Course Extn Road">Golf Course Extn Road</option>
                       <option value="New Gurgaon">New Gurgaon</option>
-                      <option value="Northern Peripheral Road">Northern Peripheral Road</option>
                       <option value="Dwarka Expressway">Dwarka Expressway</option>
                     </select>
                     <ChevronDown size={18} className="pointer-events-none text-gray-400 absolute right-3 top-1/2 -translate-y-1/2 transition-transform duration-300 peer-focus:rotate-180" />
