@@ -221,6 +221,7 @@ const IndependentFloorGurgaon = lazy(() => import("./Pages/PropertyTypes/Indepen
 const IndependentHousesGurgaon = lazy(() => import("./Pages/PropertyTypes/IndependentHousesGurgaon"));
 const BudgetFlatsGurgaon = lazy(() => import("./Pages/PropertyTypes/BudgetFlatsGurgaon"));
 const AffordableHomesGurgaon = lazy(() => import("./Pages/PropertyTypes/AffordableHomesGurgaon"));
+const AffordableHomes = lazy(() => import("./Pages/PropertyTypes/AffordableHomes"));
 const FarmhouseGurgaon = lazy(() => import("./Pages/PropertyTypes/FarmhouseGurgaon"));
 const LuxuryVillasGurgaon = lazy(() => import("./Pages/PropertyTypes/LuxuryVillasGurgaon"));
 const ResidentialFlatsGurgaon = lazy(() => import("./Pages/PropertyTypes/ResidentialFlatsGurgaon"));
@@ -493,43 +494,13 @@ function App() {
                         element={<ProjectStatusSearchGlobal />}
                       />
                       
-                      {/* Unified type routes with projects/{filter} pattern */}
-                      <Route
-                        path="/projects/farmhouse/"
-                        element={<ProjectTypeGlobal />}
-                      />
-                      <Route
-                        path="/projects/commercial/"
-                        element={<ProjectTypeGlobal />}
-                      />
-                      <Route
-                        path="/projects/residential/"
-                        element={<ProjectTypeGlobal />}
-                      />
-                      <Route
-                        path="/projects/villas/"
-                        element={<ProjectTypeGlobal />}
-                      />
-                      <Route
-                        path="/projects/plots/"
-                        element={<ProjectTypeGlobal />}
-                      />
-                      <Route
-                        path="/projects/industrial-plots/"
-                        element={<ProjectTypeGlobal />}
-                      />
-                      <Route
-                        path="/projects/industrial-projects/"
-                        element={<ProjectTypeGlobal />}
-                      />
-                      <Route
-                        path="/projects/sco-plots/"
-                        element={<ProjectTypeGlobal />}
-                      />
-                      <Route
-                        path="/projects/independent-floors/"
-                        element={<ProjectTypeGlobal />}
-                      />
+                      <Route path="/plots-in-gurugram/" element={<ProjectTypeGlobal />} />
+                      <Route path="/projects/villas/" element={<ProjectTypeGlobal />} />
+                      <Route path="/projects/farmhouse/" element={<ProjectTypeGlobal />} />
+                      <Route path="/projects/farmhouses/" element={<ProjectTypeGlobal />} />
+                      <Route path="/projects/affordable-homes/" element={<AffordableHomes />} />
+                      <Route path="/projects/industrial-plots/" element={<ProjectTypeGlobal />} />
+                      <Route path="/projects/industrial-projects/" element={<ProjectTypeGlobal />} />
                       <Route path="/news-and-articals/" element={<NewsandArtical />} />
                       {/* New dynamic project type routes */}
                       <Route path="/project-type/:type" element={<ProjectTypeGlobal />} />
@@ -591,11 +562,11 @@ function App() {
                       
 
                       {/* Property Types Routes */}
-                      <Route path="/property-types/1-bhk-flats-gurgaon/" element={<BhkFlatsGurgaon bhkType="1" />} />
-                      <Route path="/property-types/2-bhk-flats-gurgaon/" element={<BhkFlatsGurgaon bhkType="2" />} />
-                      <Route path="/property-types/3-bhk-flats-gurgaon/" element={<BhkFlatsGurgaon bhkType="3" />} />
-                      <Route path="/property-types/4-bhk-flats-gurgaon/" element={<BhkFlatsGurgaon bhkType="4" />} />
-                      <Route path="/property-types/5-bhk-flats-gurgaon/" element={<BhkFlatsGurgaon bhkType="5" />} />
+                      <Route path="/1-bhk-flats-in-gurgaon/" element={<BhkFlatsGurgaon bhkType="1" />} />
+                      <Route path="/2-bhk-flats-in-gurgaon/" element={<BhkFlatsGurgaon bhkType="2" />} />
+                      <Route path="/3-bhk-flats-in-gurgaon/" element={<BhkFlatsGurgaon bhkType="3" />} />
+                      <Route path="/4-bhk-flats-in-gurgaon/" element={<BhkFlatsGurgaon bhkType="4" />} />
+                      <Route path="/5-bhk-flats-in-gurgaon/" element={<BhkFlatsGurgaon bhkType="5" />} />
                       <Route path="/property-types/fully-furnished-flats-gurgaon/" element={<FurnishedFlatsGurgaon furnishingType="Fully Furnished" />} />
                       <Route path="/property-types/semi-furnished-flats-gurgaon/" element={<FurnishedFlatsGurgaon furnishingType="Semi Furnished" />} />
                       <Route path="/property-types/unfurnished-flats-gurgaon/" element={<FurnishedFlatsGurgaon furnishingType="Unfurnished" />} />

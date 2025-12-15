@@ -112,8 +112,8 @@ const CrimsonEleganceFooter = () => {
     { name: "QR Generator", href: "/qr-generator" },
     { name: "Gurugram Master Plan 2031", href: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/masterplan/gurgaon+master+plan.pdf", external: true },
 
-    { name: "Resale Properties in Gurugram", href: "/buy-properties/best-resale-property-in-gurugram/" },
-    { name: "Rental Properties in Gurugram", href: "/rental-properties/best-rental-property-in-gurugram/" },
+    // { name: "Resale Properties in Gurugram", href: "/buy-properties/best-resale-property-in-gurugram/" },
+    // { name: "Rental Properties in Gurugram", href: "/rental-properties/best-rental-property-in-gurugram/" },
     { name: "Privacy Policy", href: "/privacy-policy/" },
     { name: "Terms & Conditions", href: "/terms-and-conditions/" },
     { name: "Disclaimer", href: "/disclaimer"},
@@ -350,11 +350,11 @@ const CrimsonEleganceFooter = () => {
           <div className="container mx-auto px-6 py-0">
             <div className="flex flex-wrap gap-2">
               {[
-                { name: "1 BHK Flats in Gurgaon", href: "/" },
-                { name: "2 BHK Flats in Gurgaon", href: "/" },
-                { name: "3 BHK Flats in Gurgaon", href: "/" },
-                { name: "4 BHK Flats in Gurgaon", href: "/" },
-                { name: "5 BHK Flats in Gurgaon", href: "/" },
+                { name: "1 BHK Flats in Gurgaon", href: "/1-bhk-flats-in-gurgaon/" },
+                { name: "2 BHK Flats in Gurgaon", href: "/2-bhk-flats-in-gurgaon/" },
+                { name: "3 BHK Flats in Gurgaon", href: "/3-bhk-flats-in-gurgaon/" },
+                { name: "4 BHK Flats in Gurgaon", href: "/4-bhk-flats-in-gurgaon/" },
+                { name: "5 BHK Flats in Gurgaon", href: "/5-bhk-flats-in-gurgaon/" },
                 { name: "Fully Furnished Flats in Gurgaon", href: "/" },
                 { name: "Penthouse in Gurgaon", href: "/" },
                 { name: "Semi Furnished Flats in Gurgaon", href: "/" },

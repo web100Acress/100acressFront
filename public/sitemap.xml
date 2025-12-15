@@ -187,6 +187,11 @@
     <priority>1.0</priority>
   </url>
   <url>
+    <loc>https://www.100acress.com/projects/affordable-homes/</loc>
+    <lastmod>2025-09-16T09:04:16+00:00</lastmod>
+    <priority>1.0</priority>
+  </url>
+   <url>
     <loc>https://www.100acress.com/projects/farmhouses/</loc>
     <lastmod>2025-09-16T09:04:16+00:00</lastmod>
     <priority>1.0</priority>
@@ -2610,6 +2615,36 @@
     <loc>https://www.100acress.com/projects-in-ayodhya/</loc>
     <lastmod>2025-09-16T09:04:16+00:00</lastmod>
     <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.100acress.com/1-bhk-flats-in-gurgaon/</loc>
+    <lastmod>2025-12-13T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.100acress.com/2-bhk-flats-in-gurgaon/</loc>
+    <lastmod>2025-12-13T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.100acress.com/3-bhk-flats-in-gurgaon/</loc>
+    <lastmod>2025-12-13T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.100acress.com/4-bhk-flats-in-gurgaon/</loc>
+    <lastmod>2025-12-13T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.100acress.com/5-bhk-flats-in-gurgaon/</loc>
+    <lastmod>2025-12-13T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
   </url>
   
 </urlset>
