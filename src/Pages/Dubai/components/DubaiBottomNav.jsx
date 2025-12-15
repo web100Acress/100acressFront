@@ -21,7 +21,9 @@ const DubaiBottomNav = () => {
             {/* Home */}
             <Link to="/" className="flex flex-col items-center gap-1 py-2">
               <span className={`text-xl ${isActive(["/", "/projects", "/property"]) ? "text-gold" : "text-white/60"}`}>
-                <i className="fa-solid fa-house"></i>
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+                </svg>
               </span>
               <span className={`${isActive(["/", "/projects", "/property"]) ? "text-white font-semibold" : ""}`}>Home</span>
             </Link>
@@ -49,7 +51,9 @@ const DubaiBottomNav = () => {
                 aria-label="Call 100acress Office"
                 title="Call 100acress Office"
               >
-                <i className="fa-solid fa-phone text-lg" aria-hidden="true"></i>
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
+                </svg>
               </a>
               <span className="mt-1 text-[11px] text-white/70">Contact</span>
             </div>
@@ -57,7 +61,9 @@ const DubaiBottomNav = () => {
             {/* Blogs */}
             <Link to="/blog/" className="flex flex-col items-center gap-1 py-2">
               <span className={`text-xl ${isActive("/blog") ? "text-gold" : "text-white/60"}`}>
-                <i className="fa-solid fa-blog"></i>
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+                </svg>
               </span>
               <span className={`${isActive("/blog") ? "text-white font-semibold" : ""}`}>Blogs</span>
             </Link>
@@ -65,7 +71,9 @@ const DubaiBottomNav = () => {
             {/* Profile */}
             <Link to="/userdashboard/" className="flex flex-col items-center gap-1 py-2">
               <span className={`text-xl ${isActive("/userdashboard") ? "text-gold" : "text-white/60"}`}>
-                <i className="fa-solid fa-user"></i>
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                </svg>
               </span>
               <span className={`${isActive("/userdashboard") ? "text-white font-semibold" : ""}`}>Profile</span>
             </Link>
