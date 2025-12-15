@@ -860,10 +860,6 @@ function SearchBar() {
     { name: "Golf Course Road", link: "/property-in-gurugram/golf-course/" },
     { name: "MG Road", link: "/property-in-gurugram/mg-road/" },
     {
-      name: "Northern Peripheral Road",
-      link: "/property-in-gurugram/northern-peripheral-road/",
-    },
-    {
       name: "Dwarka Expressway",
       link: "/property-in-gurugram/dwarka-expressway/",
     },
