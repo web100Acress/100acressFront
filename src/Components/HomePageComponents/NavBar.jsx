@@ -470,6 +470,8 @@ const Wrapper = styled.section`
     display: flex;
     align-items: center;
     background: transparent !important; /* default transparent navbar */
+    background-color: transparent !important; /* force transparent background */
+    background-image: none !important; /* remove any background images */
     padding: 0 12px !important; /* horizontal spacing */
     border-radius: 0; /* remove rounded bottom so hero shows cleanly */
     box-shadow: none;
@@ -481,6 +483,34 @@ const Wrapper = styled.section`
   .Mflx.scrolled {
     background: #e53e3e !important; /* solid red */
     box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+  }
+
+  /* Force transparency for any dynamically generated classes */
+  .Mflx[class*="css-"] {
+    background: transparent !important;
+    background-color: transparent !important;
+    background-image: none !important;
+  }
+
+  /* Override any inline styles that might set background */
+  .Mflx[style*="background"] {
+    background: transparent !important;
+    background-color: transparent !important;
+    background-image: none !important;
+  }
+
+  /* Additional override for any element with Mflx class */
+  div.Mflx,
+  .section > div:first-child {
+    background: transparent !important;
+    background-color: transparent !important;
+    background-image: none !important;
+  }
+
+  /* Force transparency on the wrapper as well */
+  .Wrapper {
+    background: transparent !important;
+    background-color: transparent !important;
   }
   hr{
     color:black !important;
