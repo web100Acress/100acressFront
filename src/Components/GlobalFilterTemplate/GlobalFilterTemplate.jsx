@@ -54,11 +54,9 @@ const GlobalFilterTemplate = ({
     price: ''
   });
   
-  // Pagination state
+  
+  // Displayed projects state (no pagination)
   const [displayedProjects, setDisplayedProjects] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(40);
-  const [totalPages, setTotalPages] = useState(0);
   
   // Request throttling
   const requestThrottle = useRef(new Map());
@@ -615,15 +613,7 @@ const GlobalFilterTemplate = ({
     }
 
     setFilteredProjects(filtered);
-    
-    // Only reset pagination when explicitly requested (not from auto-filter)
-    if (resetPagination) {
-      setCurrentPage(1);
-      updateDisplayedProjects(filtered, 1);
-    } else {
-      // Always update displayed projects when filtering, but keep current page
-      updateDisplayedProjects(filtered, currentPage);
-    }
+    updateDisplayedProjects(filtered);
   };
 
   const handleExplore = (project) => {
@@ -644,43 +634,12 @@ const GlobalFilterTemplate = ({
     }
   };
 
-  // Update displayed projects based on pagination
-  const updateDisplayedProjects = (projectsToDisplay, page) => {
+  // Update displayed projects (now just shows all projects)
+  const updateDisplayedProjects = (projectsToDisplay) => {
     console.log('updateDisplayedProjects - projectsToDisplay length:', projectsToDisplay.length);
-    console.log('updateDisplayedProjects - page:', page);
-    
-    const startIndex = (page - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    const projectsToShow = projectsToDisplay.slice(startIndex, endIndex);
-    
-    console.log('updateDisplayedProjects - projectsToShow length:', projectsToShow.length);
-    console.log('updateDisplayedProjects - startIndex:', startIndex, 'endIndex:', endIndex);
-    
-    setDisplayedProjects(projectsToShow);
-    setTotalPages(Math.ceil(projectsToDisplay.length / itemsPerPage));
-    
-    // If current page has no projects to show, go to last available page
-    if (projectsToShow.length === 0 && projectsToDisplay.length > 0) {
-      const lastPage = Math.ceil(projectsToDisplay.length / itemsPerPage);
-      if (lastPage > 0 && page !== lastPage) {
-        console.log('Current page empty, moving to last page:', lastPage);
-        setCurrentPage(lastPage);
-        const lastStartIndex = (lastPage - 1) * itemsPerPage;
-        const lastEndIndex = lastStartIndex + itemsPerPage;
-        const lastProjectsToShow = projectsToDisplay.slice(lastStartIndex, lastEndIndex);
-        setDisplayedProjects(lastProjectsToShow);
-      }
-    }
+    setDisplayedProjects(projectsToDisplay);
   };
 
-  // Handle page change
-  const handlePageChange = (page) => {
-    if (page >= 1 && page <= totalPages) {
-      setCurrentPage(page);
-      const allProjects = filteredProjects.length > 0 ? filteredProjects : memoizedProjectData || [];
-      updateDisplayedProjects(allProjects, page);
-    }
-  };
 
   // Scroll detection for filter bar visibility
   useEffect(() => {
@@ -751,15 +710,13 @@ const GlobalFilterTemplate = ({
     console.log('Initialize displayed projects effect - memoizedProjectData:', memoizedProjectData?.length, 'pageType:', pageType, 'isLoading:', isLoading);
     if (memoizedProjectData && memoizedProjectData.length > 0) {
       console.log('Setting displayed projects from memoizedProjectData:', memoizedProjectData.length);
-      setCurrentPage(1);
-      updateDisplayedProjects(memoizedProjectData, 1);
+      updateDisplayedProjects(memoizedProjectData);
       setFilteredProjects(memoizedProjectData);
     } else if (!isLoading) {
       // Only reset displayed projects when no data AND not loading
       // This prevents clearing during initial load
       console.log('Resetting displayed projects - no data and not loading');
       setDisplayedProjects([]);
-      setTotalPages(0);
       setFilteredProjects([]);
     }
   }, [memoizedProjectData, isLoading, pageType]);
@@ -1151,11 +1108,11 @@ const GlobalFilterTemplate = ({
       <div className="bg-gradient-to-r from-gray-100 to-gray-50 h-1"></div>
 
       {/* Main Content Area */}
-      <div className={`min-h-screen bg-gray-50 transition-all duration-500 ease-in-out ${showFilterBar ? 'lg:pt-32' : 'pt-0'}`}>
+      <div className={`bg-gray-50 transition-all duration-500 ease-in-out ${showFilterBar ? 'lg:pt-32' : 'pt-0'}`}>
 
         {/* Main Content with Sidebar */}
         <div className="max-w-screen-xl mx-auto px-2 sm:px-4 md:px-6 py-4 sm:py-8 lg:pt-0">
-          <div className="flex flex-col lg:flex-row gap-4 sm:gap-8 min-h-screen">
+          <div className="flex flex-col lg:flex-row gap-4 sm:gap-8">
             
             {/* Sidebar - Enhanced SEO Content */}
             <div className="lg:w-1/3 xl:w-1/4 hidden">
@@ -1307,88 +1264,6 @@ const GlobalFilterTemplate = ({
                 </div>
               )}
 
-              {/* Pagination Controls */}
-              {totalPages > 1 && displayedProjects.length > 0 && (
-                <div className="flex justify-center items-center mt-6 sm:mt-8 px-2 sm:px-4">
-                  <div className="flex items-center gap-2 sm:gap-4">
-                    {/* Previous Button */}
-                    <button
-                      onClick={() => handlePageChange(currentPage - 1)}
-                      disabled={currentPage === 1}
-                      className={`px-3 py-2 rounded-lg font-medium transition-all duration-300 ${
-                        currentPage === 1
-                          ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                          : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300 hover:border-gray-400'
-                      }`}
-                    >
-                      Previous
-                    </button>
-
-                    {/* Page Numbers */}
-                    <div className="flex items-center gap-1 sm:gap-2">
-                      {/* First page */}
-                      {currentPage > 3 && (
-                        <>
-                          <button
-                            onClick={() => handlePageChange(1)}
-                            className="px-3 py-2 rounded-lg font-medium bg-white text-gray-700 hover:bg-gray-50 border border-gray-300 hover:border-gray-400 transition-all duration-300"
-                          >
-                            1
-                          </button>
-                          {currentPage > 4 && <span className="text-gray-400">...</span>}
-                        </>
-                      )}
-
-                      {/* Current page and surrounding pages */}
-                      {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                        const startPage = Math.max(1, currentPage - 2);
-                        const pageNum = startPage + i;
-                        if (pageNum > totalPages) return null;
-                        
-                        return (
-                          <button
-                            key={pageNum}
-                            onClick={() => handlePageChange(pageNum)}
-                            className={`px-3 py-2 rounded-lg font-medium transition-all duration-300 ${
-                              pageNum === currentPage
-                                ? 'bg-red-600 text-white border border-red-600'
-                                : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300 hover:border-gray-400'
-                            }`}
-                          >
-                            {pageNum}
-                          </button>
-                        );
-                      })}
-
-                      {/* Last page */}
-                      {currentPage < totalPages - 2 && (
-                        <>
-                          {currentPage < totalPages - 3 && <span className="text-gray-400">...</span>}
-                          <button
-                            onClick={() => handlePageChange(totalPages)}
-                            className="px-3 py-2 rounded-lg font-medium bg-white text-gray-700 hover:bg-gray-50 border border-gray-300 hover:border-gray-400 transition-all duration-300"
-                          >
-                            {totalPages}
-                          </button>
-                        </>
-                      )}
-                    </div>
-
-                    {/* Next Button */}
-                    <button
-                      onClick={() => handlePageChange(currentPage + 1)}
-                      disabled={currentPage === totalPages}
-                      className={`px-3 py-2 rounded-lg font-medium transition-all duration-300 ${
-                        currentPage === totalPages
-                          ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                          : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300 hover:border-gray-400'
-                      }`}
-                    >
-                      Next
-                    </button>
-                  </div>
-                </div>
-              )}
 
               {/* Empty State */}
               {(!filteredProjects.length && !memoizedProjectData?.length) && (
@@ -1419,7 +1294,35 @@ const GlobalFilterTemplate = ({
 
           {/* Section Separator */}
           <div className="mt-16 bg-gradient-to-r from-gray-50 to-gray-100 h-1"></div>
-
+          {/* Knowledge Center - Only for Pune */}
+      {currentConfig.hiddenContent && (
+        <div className="bg-gradient-to-br from-gray-50 to-gray-100 py-16 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-4">
+              <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+                Discover <span className="text-red-600 text-4xl sm:text-5xl">{currentConfig.title?.split(' in ')?.[1] || 'PUNE'}</span>'s Real Estate
+              </h2>
+              <div className="w-24 h-1 bg-red-600 mx-auto mb-6"></div>
+              <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+                {currentConfig.hiddenContent.description}
+              </p>
+            </div>
+            
+            <div className="grid md:grid-cols-2 gap-8">
+              {currentConfig.hiddenContent.sections.map((section, index) => (
+                <div key={index} className="bg-white rounded-xl shadow-lg p-6 sm:p-8 hover:shadow-xl transition-shadow duration-300">
+                  <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4">
+                    {section.title}
+                  </h3>
+                  <div className="text-gray-600 leading-relaxed whitespace-pre-line">
+                    {section.content}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
           {/* Trust Boosters Section */}
           <div className="mt-12 sm:mt-16 py-8 sm:py-12">
             <div className="max-w-6xl mx-auto px-3 sm:px-4 md:px-6">
@@ -1428,7 +1331,7 @@ const GlobalFilterTemplate = ({
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8">
                 <div className="text-center group hover:scale-105 transition-all duration-300">
-                  <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:rotate-12 transition-transform duration-300">
+                  <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
                     <span className="text-2xl">🛡️</span>
                   </div>
                   <h3 className="text-lg font-semibold text-gray-900 mb-2">RERA Approved</h3>
@@ -1480,35 +1383,7 @@ const GlobalFilterTemplate = ({
         onRemove={(project) => toggleCompareProject(project)}
       />
 
-      {/* Knowledge Center - Only for Pune */}
-      {currentConfig.hiddenContent && (
-        <div className="bg-gradient-to-br from-gray-50 to-gray-100 py-16 px-4 sm:px-6 lg:px-8">
-          <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-                Knowledge Center
-              </h2>
-              <div className="w-24 h-1 bg-red-600 mx-auto mb-6"></div>
-              <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-                {currentConfig.hiddenContent.description}
-              </p>
-            </div>
-            
-            <div className="grid md:grid-cols-2 gap-8">
-              {currentConfig.hiddenContent.sections.map((section, index) => (
-                <div key={index} className="bg-white rounded-xl shadow-lg p-6 sm:p-8 hover:shadow-xl transition-shadow duration-300">
-                  <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4">
-                    {section.title}
-                  </h3>
-                  <div className="text-gray-600 leading-relaxed whitespace-pre-line">
-                    {section.content}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
+      
 
       {/* Footer */}
       <Footer />
