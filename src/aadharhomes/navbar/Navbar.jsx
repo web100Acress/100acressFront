@@ -572,10 +572,20 @@ export default function Navbar() {
         right="0"
         zIndex="9999"
         width="100%"
-        bg={colorChange ? "red.500" : "#ffffff"}
+        bg={colorChange ? "red.500" : "transparent"}
         boxShadow="0 6px 18px rgba(0,0,0,0.08)"
         transition="background-color 200ms ease, box-shadow 200ms ease"
       >
+        {/* Black gradient overlay from top to bottom */}
+        <Box
+          position="absolute"
+          top="0"
+          left="0"
+          right="0"
+          bottom="0"
+          background="linear-gradient(180deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.1) 100%)"
+          zIndex="1"
+        />
         <Box
           w="100%"
           px={{ base: 2, md: 6 }}
@@ -586,6 +596,8 @@ export default function Navbar() {
           alignItems="center"
           minH={{ base: '52px', md: '64px' }}
           columnGap={{ base: 2, md: 4 }}
+          position="relative"
+          zIndex="2"
         >
           {/* Left: Logo */}
           <Box

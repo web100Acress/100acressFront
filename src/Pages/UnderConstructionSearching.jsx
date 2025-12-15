@@ -19,7 +19,6 @@ const UnderConstructionSearching = () => {
     "NH-48",
     "Golf Course Extn Road",
     "New Gurgaon",
-    "Northern Peripheral Road",
     "Dwarka Expressway",
   ];
   const locDelhi = [];

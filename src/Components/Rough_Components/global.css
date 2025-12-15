@@ -2,7 +2,7 @@
     .ieuNB{display:flex;}
     .ulfx{list-style: none;display: flex;align-items: center;font-size: large;height:100%;margin-bottom: 5px; margin-top: 0px;}
     .NBflx{display: flex;color:red;font-weight:600;width: 100%;}
-    .Mflx{display: flex;width: 100%;align-items:center;background: linear-gradient(white,white,white,white,rgb(231, 231, 231));height: 100%;}
+    .Mflx{display: flex;width: 100%;align-items:center;background: transparent !important;height: 100%;}
     ._1grx>li,._2grx>li{font-weight: 600;position: relative;padding:0px 12px}
     ._2grx{justify-content: flex-end;flex-grow: 1;padding-right: 20px;margin-top: 2px;}
     ._1grx>li>ul{opacity: 0;visibility: hidden;transition-timing-function:ease-in-out;transition-duration: 0.15s;transition-property: visibility;transition-delay: 0s;border-radius: 8px;display: flex;flex-direction: row;font-weight: 500;height: auto;left:-12px;padding: 8px;position: absolute;top: 140%;z-index:20;}
