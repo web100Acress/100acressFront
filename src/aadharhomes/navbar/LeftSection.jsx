@@ -148,7 +148,7 @@ export default function LeftSection({
         icon={<RoundedHamburgerIcon boxSize={7} />}
         aria-label="Menu"
         variant="ghost"
-        color="#111"
+        color={!colorChange ? "#111" : "white"}
         mr={0}
         onClick={() => (isDrawerOpen ? closeDrawer() : openDrawer())}
         display={{ base: "inline-flex", md: (forceHamburger || showHamburgerOnDesktop || isSmallScreen) ? "inline-flex" : "none" }}
@@ -405,8 +405,8 @@ export default function LeftSection({
           size="sm"
           variant="ghost"
           bg="transparent"
-          color={colorChange ? "white" : "#e53e3e"}
-          _hover={{ bg: "transparent", color: colorChange ? "white" : "#e53e3e" }}
+          color={!colorChange ? "white" : "#e53e3e"}
+          _hover={{ bg: "transparent", color: !colorChange ? "white" : "#e53e3e" }}
           _active={{ bg: "transparent" }}
           px={0}
           fontWeight="600"
@@ -427,8 +427,8 @@ export default function LeftSection({
           onMouseLeave={() => closeWithDelay(cityTimer, setIsCityOpen)}
         >
           <Flex alignItems="center" gap={0} lineHeight="1" display="inline-flex" sx={{ 'svg': { display: 'inline-block', verticalAlign: 'middle' } }}>
-            <Text lineHeight="1" color={colorChange ? "white" : "#e53e3e"} fontSize="16px" m={0} p={0}>City</Text>
-            <ChevronDownIcon boxSize="1em" color={colorChange ? "white" : "#e53e3e"} m={0} p={0} />
+            <Text lineHeight="1" color={!colorChange ? "white" : "#e53e3e"} fontSize="16px" m={0} p={0}>City</Text>
+            <ChevronDownIcon boxSize="1em" color={!colorChange ? "white" : "#e53e3e"} m={0} p={0} />
           </Flex>
         </MenuButton>
         <MenuList
@@ -473,8 +473,8 @@ export default function LeftSection({
           size="sm"
           variant="ghost"
           bg="transparent"
-          color={colorChange ? "white" : "#111"}
-          _hover={{ bg: "transparent", color: colorChange ? "white" : "#111" }}
+          color={!colorChange ? "#111" : "white"}
+          _hover={{ bg: "transparent", color: !colorChange ? "#111" : "white" }}
           _active={{ bg: "transparent" }}
           px={1}
           fontWeight="600"
@@ -495,8 +495,8 @@ export default function LeftSection({
           onMouseLeave={() => closeWithDelay(budgetTimer, setIsBudgetOpen)}
         >
           <Flex alignItems="center" gap={0} lineHeight="1" display="inline-flex" sx={{ 'svg': { display: 'inline-block', verticalAlign: 'middle' } }}>
-            <Text color={colorChange ? "white" : "#e53e3e"} lineHeight="1" fontSize="16px" m={0} p={0}>Budget</Text>
-            <ChevronDownIcon boxSize="1em" color={colorChange ? "white" : "#e53e3e"} m={0} p={0} />
+            <Text color={!colorChange ? "white" : "#e53e3e"} lineHeight="1" fontSize="16px" m={0} p={0}>Budget</Text>
+            <ChevronDownIcon boxSize="1em" color={!colorChange ? "white" : "#e53e3e"} m={0} p={0} />
           </Flex>
         </MenuButton>
         <MenuList
@@ -524,8 +524,8 @@ export default function LeftSection({
           size="sm"
           variant="ghost"
           bg="transparent"
-          color={colorChange ? "white" : "#111"}
-          _hover={{ bg: "transparent", color: colorChange ? "white" : "#111" }}
+          color={!colorChange ? "#111" : "white"}
+          _hover={{ bg: "transparent", color: !colorChange ? "#111" : "white" }}
           _active={{ bg: "transparent" }}
           px={1}
           fontWeight="600"
@@ -552,8 +552,8 @@ export default function LeftSection({
           onMouseLeave={() => closeWithDelay(statusTimer, setIsStatusOpen)}
         >
           <Flex alignItems="center" gap={0} lineHeight="1" display="inline-flex" sx={{ 'svg': { display: 'inline-block', verticalAlign: 'middle' } }}>
-            <Text color={colorChange ? "white" : "#e53e3e"} lineHeight="1" fontSize="16px" m={0} p={0}>Project Status</Text>
-            <ChevronDownIcon boxSize="1em" color={colorChange ? "white" : "#e53e3e"} m={0} p={0} />
+            <Text color={!colorChange ? "white" : "#e53e3e"} lineHeight="1" fontSize="16px" m={0} p={0}>Project Status</Text>
+            <ChevronDownIcon boxSize="1em" color={!colorChange ? "white" : "#e53e3e"} m={0} p={0} />
           </Flex>
         </MenuButton>
         <MenuList
@@ -579,8 +579,8 @@ export default function LeftSection({
           size="sm"
           variant="ghost"
           bg="transparent"
-          color={colorChange ? "white" : "#111"}
-          _hover={{ bg: "transparent", color: colorChange ? "white" : "#111" }}
+          color={!colorChange ? "#111" : "white"}
+          _hover={{ bg: "transparent", color: !colorChange ? "#111" : "white" }}
           _active={{ bg: "transparent" }}
           px={1}
           fontWeight="600"
@@ -603,8 +603,8 @@ export default function LeftSection({
           onMouseLeave={() => closeWithDelay(typeTimer, setIsTypeOpen)}
         >
           <Flex alignItems="center" gap={0} lineHeight="1" display="inline-flex" sx={{ 'svg': { display: 'inline-block', verticalAlign: 'middle' } }}>
-            <Text color={colorChange ? "white" : "#e53e3e"} lineHeight="1" fontSize="16px" m={0} p={0}>Project Type</Text>
-            <ChevronDownIcon boxSize="1em" color={colorChange ? "white" : "#e53e3e"} m={0} p={0} />
+            <Text color={!colorChange ? "white" : "#e53e3e"} lineHeight="1" fontSize="16px" m={0} p={0}>Project Type</Text>
+            <ChevronDownIcon boxSize="1em" color={!colorChange ? "white" : "#e53e3e"} m={0} p={0} />
           </Flex>
         </MenuButton>
         <MenuList
@@ -630,12 +630,12 @@ export default function LeftSection({
             
       {/* Quick links */}
       <Link to="/rental-properties/best-rental-property-in-gurugram/">
-        <Button size="sm" variant="ghost" bg="transparent" color={colorChange ? "white" : "#e53e3e"} _hover={{ bg: "transparent", color: colorChange ? "white" : "#e53e3e" }} px={1} fontWeight="600" fontSize="16px" display={{ base: "none", md: forceHamburger || hideRental ? "none" : "inline-flex" }}>
+        <Button size="sm" variant="ghost" bg="transparent" color={!colorChange ? "white" : "#e53e3e"} _hover={{ bg: "transparent", color: !colorChange ? "white" : "#e53e3e" }} px={1} fontWeight="600" fontSize="16px" display={{ base: "none", md: forceHamburger || hideRental ? "none" : "inline-flex" }}>
           Rental
         </Button>
       </Link>
       <Link to="/buy-properties/best-resale-property-in-gurugram/">
-        <Button size="sm" variant="ghost" bg="transparent" color={colorChange ? "white" : "#e53e3e"} _hover={{ bg: "transparent", color: colorChange ? "white" : "#e53e3e" }} px={1} fontWeight="600" fontSize="16px" display={{ base: "none", md: forceHamburger || hideResale ? "none" : "inline-flex" }}>
+        <Button size="sm" variant="ghost" bg="transparent" color={!colorChange ? "white" : "#e53e3e"} _hover={{ bg: "transparent", color: !colorChange ? "white" : "#e53e3e" }} px={1} fontWeight="600" fontSize="16px" display={{ base: "none", md: forceHamburger || hideResale ? "none" : "inline-flex" }}>
           Resale
         </Button>
       </Link>

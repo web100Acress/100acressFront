@@ -19,9 +19,9 @@ export default function CenterLogo({ colorChange, isSearchOpen, centerOnCompact 
       <Link to="/">
         <Image
           src={
-            colorChange
+            !colorChange
               ? "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/logowhite.webp.webp"
-              : "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/red.100acresslogo.webp"
+              : "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/logowhite.webp.webp"
           }
           alt="100acress logo"
           height={{ base: '45px', sm: '50px', md: '60px' }}

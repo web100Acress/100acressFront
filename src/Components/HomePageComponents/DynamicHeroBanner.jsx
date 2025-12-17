@@ -71,7 +71,7 @@ const DynamicHeroBanner = () => {
     if (heroBanners.length > 1) {
       const interval = setInterval(() => {
         setCurrentIndex((prevIndex) => (prevIndex + 1) % heroBanners.length);
-      }, 3000);
+      }, 15000);
       return () => clearInterval(interval);
     }
   }, [heroBanners.length]);
@@ -149,7 +149,7 @@ const DynamicHeroBanner = () => {
               backgroundSize: "cover",
               backgroundPosition: "center",
               backgroundRepeat: "no-repeat",
-              height: "400px",
+              height: "450px",
               width: "100%",
             }}
           />
@@ -179,7 +179,7 @@ const DynamicHeroBanner = () => {
   console.log("Error state:", error);
 
   return (
-    <HeroWrapper>
+    <HeroWrapper data-hero>
       {/* Banner Carousel Container */}
       <div className="relative w-full">
         {heroBanners.length > 0 ? (
@@ -251,6 +251,7 @@ const DynamicHeroBanner = () => {
                     >
                       <div
                         className="hero-strip-99-dynamic"
+                        aria-hidden="true"
                         style={{
                           backfaceVisibility: "hidden",
                           backgroundImage: imageUrl
@@ -259,10 +260,9 @@ const DynamicHeroBanner = () => {
                           backgroundSize: "cover",
                           backgroundPosition: "center",
                           backgroundRepeat: "no-repeat",
-                          height: "400px",
+                          height: "450px",
                           width: "100%",
                         }}
-                        aria-hidden="true"
                       />
                       {/* Banner Content Overlay - Removed title and description */}
                       {/* Debug overlay to show if image is loading */}
@@ -344,11 +344,11 @@ export default DynamicHeroBanner;
 const HeroWrapper = styled.div`
   .hero-strip-99-loading {
     width: 100%;
-    height: 340px;
+    height: 450px;
+    margin: 0 auto;
     background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
     background-size: 200% 100%;
     animation: none;
-    margin-top: 64px;
     position: relative;
     overflow: hidden;
   }
@@ -369,11 +369,25 @@ const HeroWrapper = styled.div`
   .hero-strip-99-dynamic,
   .hero-strip-99-default {
     width: 100%;
-    height: 340px;
-    margin-top: 64px;
+    height: 450px;
+    margin: 0 auto;
     position: relative;
     overflow: hidden;
     transition: none;
+  }
+
+  /* Dark overlay only for navbar area */
+  .hero-strip-99-dynamic::after,
+  .hero-strip-99-default::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 80px; /* Only cover navbar area */
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.1), transparent);
+    pointer-events: none;
+    z-index: 1;
   }
 
   .hero-strip-99-dynamic.active {
@@ -390,11 +404,13 @@ const HeroWrapper = styled.div`
   /* Bootstrap Carousel Styles */
   .carousel {
     position: relative;
+    height: 450px;
   }
 
   .carousel-inner {
     position: relative;
     width: 100%;
+    height: 100%;
     overflow: hidden;
   }
 
@@ -403,6 +419,7 @@ const HeroWrapper = styled.div`
     display: none;
     align-items: center;
     width: 100%;
+    height: 450px;
     backface-visibility: hidden;
     perspective: 1000px;
   }
@@ -414,17 +431,20 @@ const HeroWrapper = styled.div`
   /* Enhanced Fade Effect */
   .carousel-fade .carousel-item {
     opacity: 0;
-    transition-duration: 2s;
-    transition-property: opacity;
+    transition-duration: 3s;
+    transition-timing-function: ease-in-out;
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
+    height: 450px;
+    transform: scale(0.98);
   }
 
   .carousel-fade .carousel-item.active {
     opacity: 1;
     position: relative;
+    transform: scale(1);
   }
 
   .carousel-fade .carousel-item-next,
@@ -450,6 +470,7 @@ const HeroWrapper = styled.div`
     text-align: center;
     opacity: 0.5;
     transition: opacity 0.15s ease;
+    z-index: 2;
   }
 
   .carousel-control-prev:hover,
@@ -485,7 +506,7 @@ const HeroWrapper = styled.div`
   .carousel-indicators {
     position: absolute;
     right: 0;
-    bottom: 10px;
+    bottom: 20px;
     left: 0;
     z-index: 15;
     display: flex;
@@ -550,7 +571,11 @@ const HeroWrapper = styled.div`
   @media (max-width: 640px) {
     .hero-strip-99-loading,
     .hero-strip-99-dynamic {
-      margin-top: 52px;
+      height: 450px;
+    }
+    
+    .carousel-item {
+      height: 450px;
     }
     
     .carousel-control-prev,
@@ -559,7 +584,7 @@ const HeroWrapper = styled.div`
     }
     
     .carousel-indicators {
-      bottom: 5px;
+      bottom: 10px;
     }
   }
 `;

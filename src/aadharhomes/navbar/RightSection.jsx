@@ -80,11 +80,11 @@ export default function RightSection({
         icon={<SearchIcon />}
         size="sm"
         variant="ghost"
-        color={colorChange ? "white" : "#111"}
-        _hover={{ bg: "transparent", color: colorChange ? "whiteAlpha.800" : "#111" }}
-        opacity={{ base: !isSearchOpen ? 1 : 0, md: colorChange && !isSearchOpen ? 1 : 0 }}
+        color={!colorChange ? "#111" : "white"}
+        _hover={{ bg: "transparent", color: !colorChange ? "whiteAlpha.800" : "white" }}
+        opacity={{ base: !isSearchOpen ? 1 : 0, md: !colorChange && !isSearchOpen ? 1 : 0 }}
         transition="opacity 300ms ease"
-        pointerEvents={{ base: !isSearchOpen ? "auto" : "none", md: colorChange && !isSearchOpen ? "auto" : "none" }}
+        pointerEvents={{ base: !isSearchOpen ? "auto" : "none", md: !colorChange && !isSearchOpen ? "auto" : "none" }}
         display={{ base: "none", md: "inline-flex" }}
         onClick={() => setIsSearchOpen(true)}
       />
@@ -259,7 +259,7 @@ export default function RightSection({
                     </Box>
                   </Box>
                   {firstName && (
-                    <Box as="span" color={colorChange ? "white" : "#111"} fontSize="14px" fontWeight="600" display={{ base: "none", xl: "inline" }}>
+                    <Box as="span" color={!colorChange ? "#111" : "white"} fontSize="14px" fontWeight="600" display={{ base: "none", xl: "inline" }}>
                       {firstName}
                     </Box>
                   )}
@@ -358,7 +358,7 @@ export default function RightSection({
                     </svg>
                   </Box>
                 </Box>
-                <Box as="span" color={colorChange ? "white" : "#111"} fontSize="14px" display={{ base: "none", xl: "inline" }}>Log in</Box>
+                <Box as="span" color={!colorChange ? "#111" : "white"} fontSize="14px" display={{ base: "none", xl: "inline" }}>Log in</Box>
               </Flex>
             </Button>
             <AuthModal open={showAuth} onClose={() => setShowAuth(false)} defaultView="login" />
