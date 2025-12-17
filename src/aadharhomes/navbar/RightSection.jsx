@@ -9,6 +9,7 @@ import { Button as MovingBorderButton } from "../../Components/ui/moving-border"
 export default function RightSection({
   colorChange,
   isSearchOpen,
+  isHome,
   setIsSearchOpen,
   token,
   avatarUrl,
@@ -80,8 +81,8 @@ export default function RightSection({
         icon={<SearchIcon />}
         size="sm"
         variant="ghost"
-        color={!colorChange ? "#111" : "white"}
-        _hover={{ bg: "transparent", color: !colorChange ? "whiteAlpha.800" : "white" }}
+        color={isHome ? "white" : (!colorChange ? "red" : "white")}
+        _hover={{ bg: "transparent", color: isHome ? "white" : (!colorChange ? "red" : "white") }}
         opacity={{ base: !isSearchOpen ? 1 : 0, md: !colorChange && !isSearchOpen ? 1 : 0 }}
         transition="opacity 300ms ease"
         pointerEvents={{ base: !isSearchOpen ? "auto" : "none", md: !colorChange && !isSearchOpen ? "auto" : "none" }}
@@ -120,7 +121,7 @@ export default function RightSection({
                       w="100%" 
                       h="100%" 
                       bg="blue.500" 
-                      color="white"
+                      color={isHome ? "white" : (!colorChange ? "red" : "white")}
                       fontSize="sm"
                       fontWeight="bold"
                     >
@@ -246,7 +247,7 @@ export default function RightSection({
                       w="100%" 
                       h="100%" 
                       bg="blue.500" 
-                      color="white"
+                      color={isHome ? "white" : (!colorChange ? "red" : "white")}
                       fontSize="sm"
                       fontWeight="bold"
                     >
@@ -259,7 +260,7 @@ export default function RightSection({
                     </Box>
                   </Box>
                   {firstName && (
-                    <Box as="span" color={!colorChange ? "#111" : "white"} fontSize="14px" fontWeight="600" display={{ base: "none", xl: "inline" }}>
+                    <Box as="span" color={isHome ? "white" : (!colorChange ? "red" : "white")} fontSize="14px" fontWeight="600" display={{ base: "none", xl: "inline" }}>
                       {firstName}
                     </Box>
                   )}
@@ -358,7 +359,7 @@ export default function RightSection({
                     </svg>
                   </Box>
                 </Box>
-                <Box as="span" color={!colorChange ? "#111" : "white"} fontSize="14px" display={{ base: "none", xl: "inline" }}>Log in</Box>
+                <Box as="span" color={isHome ? "white" : (!colorChange ? "red" : "white")} fontSize="14px" display={{ base: "none", xl: "inline" }}>Log in</Box>
               </Flex>
             </Button>
             <AuthModal open={showAuth} onClose={() => setShowAuth(false)} defaultView="login" />

@@ -569,7 +569,7 @@ export default function Navbar() {
         zIndex="9999"
         width="100%"
         bg="transparent"
-        transition="all 300ms ease-in-out"
+        transition="all 150ms ease-in-out"
         className={colorChange ? "navbar-scrolled" : "navbar-transparent"}
       >
         {/* Gradient Overlay */}
@@ -580,7 +580,7 @@ export default function Navbar() {
           right="0"
           bottom="0"
           bg="transparent"
-          transition="opacity 300ms ease-in-out"
+          transition="opacity 150ms ease-in-out"
           pointerEvents="none"
         />
         
@@ -602,7 +602,7 @@ export default function Navbar() {
             gridColumn={{ base: 2, md: 'auto' }}
             alignSelf={{ base: 'center', md: 'center' }}
           >
-            <CenterLogo colorChange={colorChange} isSearchOpen={isSearchOpen} centerOnCompact={isCompactTablet} />
+            <CenterLogo colorChange={colorChange} isSearchOpen={isSearchOpen} centerOnCompact={isCompactTablet} isHome={isHome} />
           </Box>
 
           {/* Center: Filters & Menus */}
@@ -612,8 +612,9 @@ export default function Navbar() {
             alignSelf={{ base: 'center', md: 'center' }}
           >
           <LeftSection
-            colorChange={colorChange}
+            colorChange={isHome ? colorChange : colorChange}
             isSearchOpen={isSearchOpen}
+            isHome={isHome}
             onToggle={onOpen}
             CITY_OPTIONS={CITY_OPTIONS}
             CityIcons={CityIcons}
@@ -654,6 +655,7 @@ export default function Navbar() {
           <RightSection
             colorChange={colorChange}
             isSearchOpen={isSearchOpen}
+            isHome={isHome}
             setIsSearchOpen={setIsSearchOpen}
             token={token}
             avatarUrl={avatarUrl}
