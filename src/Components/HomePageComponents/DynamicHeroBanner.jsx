@@ -6,9 +6,6 @@ import {
 } from "../../Redux/slice/BannerSlice";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import Slider from "react-slick";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
 
 const DynamicHeroBanner = () => {
   const dispatch = useDispatch();
@@ -58,6 +55,9 @@ const DynamicHeroBanner = () => {
     return () => window.removeEventListener('resize', onResize);
   }, []);
 
+  // Filter to ensure only hero banners are shown (not small banners)
+  const heroBanners = filterHeroBanners(activeBanners);
+
   useEffect(() => {
     if (activeBanners.length > 0) {
       // Set the first banner as current
@@ -66,10 +66,15 @@ const DynamicHeroBanner = () => {
     }
   }, [activeBanners, dispatch]);
 
-  // Auto-rotate disabled to remove animations
+  // Auto-rotate carousel
   useEffect(() => {
-    // no-op: keep first banner static
-  }, [activeBanners]);
+    if (heroBanners.length > 1) {
+      const interval = setInterval(() => {
+        setCurrentIndex((prevIndex) => (prevIndex + 1) % heroBanners.length);
+      }, 3000);
+      return () => clearInterval(interval);
+    }
+  }, [heroBanners.length]);
 
   // Update current banner when index changes
   useEffect(() => {
@@ -153,38 +158,18 @@ const DynamicHeroBanner = () => {
     );
   }
 
-  const sliderSettings = {
-    dots: true,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    autoplay: true,
-    autoplaySpeed: 3000,
-    fade: false,
-    cssEase: "ease-in-out",
-    arrows: true,
-    pauseOnHover: true,
-    beforeChange: (oldIndex, newIndex) => {
-      setCurrentIndex(newIndex);
-    },
-    responsive: [
-      {
-        breakpoint: 768,
-        settings: {
-          arrows: false,
-          dots: true,
-          autoplay: true,
-          autoplaySpeed: 3000,
-          fade: false,
-          cssEase: "ease-in-out",
-        },
-      },
-    ],
+  // Carousel navigation functions
+  const goToSlide = (index) => {
+    setCurrentIndex(index);
   };
 
-  // Filter to ensure only hero banners are shown (not small banners)
-  const heroBanners = filterHeroBanners(activeBanners);
+  const nextSlide = () => {
+    setCurrentIndex((prevIndex) => (prevIndex + 1) % heroBanners.length);
+  };
+
+  const prevSlide = () => {
+    setCurrentIndex((prevIndex) => (prevIndex - 1 + heroBanners.length) % heroBanners.length);
+  };
 
   console.log("Rendering banners:", activeBanners);
   console.log("Filtered hero banners:", heroBanners);
@@ -198,102 +183,156 @@ const DynamicHeroBanner = () => {
       {/* Banner Carousel Container */}
       <div className="relative w-full">
         {heroBanners.length > 0 ? (
-          <Slider {...sliderSettings}>
-            {heroBanners.map((banner, index) => {
-              // Resolve desktop and mobile image URLs from hero banner shape
-              const desktopUrl =
-                banner.image?.cdn_url ||
-                banner.image?.url ||
-                banner.cdn_url ||
-                banner.imageUrl;
-              const mobileUrl =
-                banner.mobileImage?.cdn_url ||
-                banner.mobileImage?.url ||
-                null;
+          <div 
+            id="carouselExampleFade" 
+            className="carousel slide carousel-fade" 
+            data-ride="carousel"
+          >
+            <div className="carousel-inner">
+              {heroBanners.map((banner, index) => {
+                // Resolve desktop and mobile image URLs from hero banner shape
+                const desktopUrl =
+                  banner.image?.cdn_url ||
+                  banner.image?.url ||
+                  banner.cdn_url ||
+                  banner.imageUrl;
+                const mobileUrl =
+                  banner.mobileImage?.cdn_url ||
+                  banner.mobileImage?.url ||
+                  null;
 
-              const isMobile = windowWidth <= 768;
+                const isMobile = windowWidth <= 768;
 
-              // Enhanced mobile image logic with fallback
-              let imageUrl;
-              if (isMobile) {
-                // For mobile view:
-                // 1. Use mobile image if available
-                // 2. Fall back to default mobile image if no mobile image set
-                // 3. Fall back to desktop image as last resort
-                imageUrl = mobileUrl || "/Images/m3m-jacob-noida-mobile.webp" || desktopUrl;
-              } else {
-                // For desktop view: use desktop image
-                imageUrl = desktopUrl;
-              }
+                // Enhanced mobile image logic with fallback
+                let imageUrl;
+                if (isMobile) {
+                  // For mobile view:
+                  // 1. Use mobile image if available
+                  // 2. Fall back to default mobile image if no mobile image set
+                  // 3. Fall back to desktop image as last resort
+                  imageUrl = mobileUrl || "/Images/m3m-jacob-noida-mobile.webp" || desktopUrl;
+                } else {
+                  // For desktop view: use desktop image
+                  imageUrl = desktopUrl;
+                }
 
-              console.log(`Banner ${index} mobile logic:`, {
-                isMobile,
-                hasMobileUrl: !!mobileUrl,
-                desktopUrl,
-                mobileUrl,
-                finalImageUrl: imageUrl
-              });
-              console.log(`Banner ${index} full object:`, banner);
-              console.log(`Banner ${index} image object:`, banner.image);
-              console.log(`Banner ${index} mobileImage object:`, banner.mobileImage);
-              console.log(`Banner ${index} resolved imageUrl:`, imageUrl);
-              console.log(`Banner ${index} slug:`, banner.slug);
-              console.log(`Banner ${index} link:`, banner.link);
+                console.log(`Banner ${index} mobile logic:`, {
+                  isMobile,
+                  hasMobileUrl: !!mobileUrl,
+                  desktopUrl,
+                  mobileUrl,
+                  finalImageUrl: imageUrl
+                });
+                console.log(`Banner ${index} full object:`, banner);
+                console.log(`Banner ${index} image object:`, banner.image);
+                console.log(`Banner ${index} mobileImage object:`, banner.mobileImage);
+                console.log(`Banner ${index} resolved imageUrl:`, imageUrl);
+                console.log(`Banner ${index} slug:`, banner.slug);
+                console.log(`Banner ${index} link:`, banner.link);
 
-              return (
-                <div key={banner._id}>
-                  <Link
-                    to={
-                      banner.slug
-                        ? `https://www.100acress.com/${banner.slug}`
-                        : banner.link || "/developers/signature-global/"
-                    }
-                    className="block relative w-full group"
-                    target={
-                      (banner.slug || banner.link)?.startsWith("http")
-                        ? "_blank"
-                        : "_self"
-                    }
-                    aria-label={banner.title}
+                return (
+                  <div 
+                    key={banner._id} 
+                    className={`carousel-item ${index === currentIndex ? 'active' : ''}`}
                   >
-                    <div
-                      className="hero-strip-99-dynamic"
-                      style={{
-                        backfaceVisibility: "hidden",
-                        backgroundImage: imageUrl
-                          ? `url("${imageUrl}")`
-                          : 'url("/Images/m3m-jacob-noida-mobile.webp")',
-                        backgroundSize: "cover",
-                        backgroundPosition: "center",
-                        backgroundRepeat: "no-repeat",
-                        height: "400px",
-                        width: "100%",
-                      }}
-                      aria-hidden="true"
-                    />
-                    {/* Banner Content Overlay - Removed title and description */}
-                    {/* Debug overlay to show if image is loading */}
-                    {!imageUrl && (
+                    <Link
+                      to={
+                        banner.slug
+                          ? `https://www.100acress.com/${banner.slug}`
+                          : banner.link || "/developers/signature-global/"
+                      }
+                      className="block relative w-full group"
+                      target={
+                        (banner.slug || banner.link)?.startsWith("http")
+                          ? "_blank"
+                          : "_self"
+                      }
+                      aria-label={banner.title}
+                    >
                       <div
+                        className="hero-strip-99-dynamic"
                         style={{
-                          position: "absolute",
-                          top: "50%",
-                          left: "50%",
-                          transform: "translate(-50%, -50%)",
-                          color: "red",
-                          background: "white",
-                          padding: "10px",
-                          borderRadius: "5px",
+                          backfaceVisibility: "hidden",
+                          backgroundImage: imageUrl
+                            ? `url("${imageUrl}")`
+                            : 'url("/Images/m3m-jacob-noida-mobile.webp")',
+                          backgroundSize: "cover",
+                          backgroundPosition: "center",
+                          backgroundRepeat: "no-repeat",
+                          height: "400px",
+                          width: "100%",
                         }}
-                      >
-                        No Image URL Found
-                      </div>
-                    )}
-                  </Link>
-                </div>
-              );
-            })}
-          </Slider>
+                        aria-hidden="true"
+                      />
+                      {/* Banner Content Overlay - Removed title and description */}
+                      {/* Debug overlay to show if image is loading */}
+                      {!imageUrl && (
+                        <div
+                          style={{
+                            position: "absolute",
+                            top: "50%",
+                            left: "50%",
+                            transform: "translate(-50%, -50%)",
+                            color: "red",
+                            background: "white",
+                            padding: "10px",
+                            borderRadius: "5px",
+                          }}
+                        >
+                          No Image URL Found
+                        </div>
+                      )}
+                    </Link>
+                  </div>
+                );
+              })}
+            </div>
+            
+            {/* Carousel Controls */}
+            {heroBanners.length > 1 && (
+              <>
+                <a 
+                  className="carousel-control-prev" 
+                  href="#carouselExampleFade" 
+                  role="button" 
+                  data-slide="prev"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    prevSlide();
+                  }}
+                >
+                  <span className="carousel-control-prev-icon" aria-hidden="true"></span>
+                  <span className="sr-only">Previous</span>
+                </a>
+                <a 
+                  className="carousel-control-next" 
+                  href="#carouselExampleFade" 
+                  role="button" 
+                  data-slide="next"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    nextSlide();
+                  }}
+                >
+                  <span className="carousel-control-next-icon" aria-hidden="true"></span>
+                  <span className="sr-only">Next</span>
+                </a>
+                
+                {/* Carousel Indicators */}
+                <ol className="carousel-indicators">
+                  {heroBanners.map((_, index) => (
+                    <li
+                      key={index}
+                      data-target="#carouselExampleFade"
+                      data-slide-to={index}
+                      className={index === currentIndex ? 'active' : ''}
+                      onClick={() => goToSlide(index)}
+                    ></li>
+                  ))}
+                </ol>
+              </>
+            )}
+          </div>
         ) : null}
       </div>
     </HeroWrapper>
@@ -348,6 +387,148 @@ const HeroWrapper = styled.div`
     left: 0;
   }
 
+  /* Bootstrap Carousel Styles */
+  .carousel {
+    position: relative;
+  }
+
+  .carousel-inner {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .carousel-item {
+    position: relative;
+    display: none;
+    align-items: center;
+    width: 100%;
+    backface-visibility: hidden;
+    perspective: 1000px;
+  }
+
+  .carousel-item.active {
+    display: block;
+  }
+
+  /* Enhanced Fade Effect */
+  .carousel-fade .carousel-item {
+    opacity: 0;
+    transition-duration: 2s;
+    transition-property: opacity;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+  }
+
+  .carousel-fade .carousel-item.active {
+    opacity: 1;
+    position: relative;
+  }
+
+  .carousel-fade .carousel-item-next,
+  .carousel-fade .carousel-item-prev {
+    opacity: 0;
+  }
+
+  .carousel-fade .carousel-item-next.active,
+  .carousel-fade .carousel-item-prev.active {
+    opacity: 1;
+  }
+
+  .carousel-control-prev,
+  .carousel-control-next {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 15%;
+    color: #fff;
+    text-align: center;
+    opacity: 0.5;
+    transition: opacity 0.15s ease;
+  }
+
+  .carousel-control-prev:hover,
+  .carousel-control-next:hover {
+    opacity: 0.9;
+  }
+
+  .carousel-control-prev {
+    left: 0;
+  }
+
+  .carousel-control-next {
+    right: 0;
+  }
+
+  .carousel-control-prev-icon,
+  .carousel-control-next-icon {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    background: transparent no-repeat center center;
+    background-size: 100% 100%;
+  }
+
+  .carousel-control-prev-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='%23fff' viewBox='0 0 8 8'%3e%3cpath d='M5.25 0l-4 4 4 4 1.5-1.5L4.25 4l2.5-2.5L5.25 0z'/%3e%3c/svg%3e");
+  }
+
+  .carousel-control-next-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='%23fff' viewBox='0 0 8 8'%3e%3cpath d='M2.75 0l-1.5 1.5L3.75 4l-2.5 2.5L2.75 8l4-4-4-4z'/%3e%3c/svg%3e");
+  }
+
+  .carousel-indicators {
+    position: absolute;
+    right: 0;
+    bottom: 10px;
+    left: 0;
+    z-index: 15;
+    display: flex;
+    justify-content: center;
+    padding-left: 0;
+    margin-right: 15%;
+    margin-left: 15%;
+    list-style: none;
+  }
+
+  .carousel-indicators li {
+    box-sizing: content-box;
+    flex: 0 1 auto;
+    width: 30px;
+    height: 3px;
+    margin-right: 3px;
+    margin-left: 3px;
+    text-indent: -999px;
+    cursor: pointer;
+    background-color: rgba(255, 255, 255, 0.5);
+    background-clip: padding-box;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    opacity: .5;
+    transition: opacity .6s ease;
+  }
+
+  .carousel-indicators li.active {
+    opacity: 1;
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
   @keyframes loading {
     0% {
       background-position: 200% 0;
@@ -370,6 +551,15 @@ const HeroWrapper = styled.div`
     .hero-strip-99-loading,
     .hero-strip-99-dynamic {
       margin-top: 52px;
+    }
+    
+    .carousel-control-prev,
+    .carousel-control-next {
+      width: 20%;
+    }
+    
+    .carousel-indicators {
+      bottom: 5px;
     }
   }
 `;

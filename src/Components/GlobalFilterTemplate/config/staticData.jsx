@@ -1204,7 +1204,7 @@ export const staticData = {
       title: "Independent Floors - Your Own Space",
       description: "Explore the best independent floors with modern amenities, privacy, and excellent connectivity. Find your perfect independent floor for comfortable living.",
       metaTitle: "Independent Floors - Your Own Space | 100acress",
-      canonical: "https://www.100acress.com/projects/independentfloors/",
+      canonical: "https://www.100acress.com/projects/independent-floors/",
       keywords: "independent floors, builder floors, independent houses, independent properties, independent living",
       heroTitle: "Independent Floors - Your Own Space",
       heroSubtitle: "Find your perfect independent floor with modern amenities and privacy",
