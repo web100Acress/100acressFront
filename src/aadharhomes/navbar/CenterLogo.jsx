@@ -2,7 +2,7 @@ import React from "react";
 import { Flex, Image } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 
-export default function CenterLogo({ colorChange, isSearchOpen, centerOnCompact = false }) {
+export default function CenterLogo({ colorChange, isSearchOpen, centerOnCompact = false, isHome }) {
   return (
     <Flex
       order={{ base: 2, md: 1 }}
@@ -19,9 +19,11 @@ export default function CenterLogo({ colorChange, isSearchOpen, centerOnCompact 
       <Link to="/">
         <Image
           src={
-            colorChange
+            isHome 
               ? "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/logowhite.webp.webp"
-              : "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/red.100acresslogo.webp"
+              : (colorChange 
+                ? "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/logowhite.webp.webp"
+                : "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/red.100acresslogo.webp")
           }
           alt="100acress logo"
           height={{ base: '45px', sm: '50px', md: '60px' }}
