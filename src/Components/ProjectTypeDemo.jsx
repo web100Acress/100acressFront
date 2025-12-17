@@ -37,7 +37,7 @@ const ProjectTypeDemo = () => {
     },
     {
       type: "independent-floors",
-      path: "/projects/independentfloors/",
+      path: "/projects/independent-floors/",
       title: "Independent & Builder Floors",
       description: "Independent living spaces",
       icon: "🏢",

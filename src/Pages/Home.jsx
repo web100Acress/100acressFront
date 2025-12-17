@@ -920,7 +920,7 @@ const SearchBarContainer = styled.div`
  
    @media (max-width: 640px) {
      .hero-strip-99 {
-       margin-top: 72px; /* ensure no overlap on small screens */
+       margin-top: 0; /* removed margin-top to ensure hero starts from top on mobile */
      }
    }
  

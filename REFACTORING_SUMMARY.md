@@ -44,7 +44,7 @@ src/
 | Luxury Villas | `/projects/villas/` | ✅ Now uses template |
 | Plots in Gurugram | `/plots-in-gurugram/` | ✅ Now uses template |
 | Residential Projects | `/property/residential/` | ✅ Now uses template |
-| Independent Floors | `/projects/independentfloors/` | ✅ Now uses template |
+| Independent Floors | `/projects/independent-floors/` | ✅ Now uses template |
 | Commercial Projects | `/projects/commercial/` | ✅ Now uses template |
 
 **Demo Page:** `/project-types-demo` - Shows all available project types
@@ -157,7 +157,7 @@ Edit `ProjectTypeTemplate.jsx` to change UI, add features, or modify layout.
 - [ ] `/projects/villas/` - Luxury Villas page (now uses template)
 - [ ] `/plots-in-gurugram/` - Plots page (now uses template)
 - [ ] `/property/residential/` - Residential page (now uses template)
-- [ ] `/projects/independentfloors/` - Independent Floors page (now uses template)
+- [ ] `/projects/independent-floors/` - Independent Floors page (now uses template)
 - [ ] `/projects/commercial/` - Commercial page (now uses template)
 - [ ] `/project-types-demo` - Demo page
 - [ ] Filters work on all pages

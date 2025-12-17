@@ -16,6 +16,7 @@ const RoundedHamburgerIcon = ({ boxSize = 5, color = "currentColor" }) => (
 export default function LeftSection({
   colorChange,
   isSearchOpen,
+  isHome,
   onToggle,
   CITY_OPTIONS,
   CityIcons,
@@ -148,7 +149,7 @@ export default function LeftSection({
         icon={<RoundedHamburgerIcon boxSize={7} />}
         aria-label="Menu"
         variant="ghost"
-        color="#111"
+        color={isHome ? "white" : (!colorChange ? "red" : "white")}
         mr={0}
         onClick={() => (isDrawerOpen ? closeDrawer() : openDrawer())}
         display={{ base: "inline-flex", md: (forceHamburger || showHamburgerOnDesktop || isSmallScreen) ? "inline-flex" : "none" }}
@@ -161,7 +162,7 @@ export default function LeftSection({
           <DrawerBody p={3} overflowY="auto" pb={6}>
             {(forceHamburger || hideCity) && (
               <>
-                <Box fontWeight="700" fontSize={{ base: "14px", md: "12px" }} color="#e53e3e" textTransform="uppercase" letterSpacing={{ base: "0.6px", md: "0.2px" }} mb={{ base: 2, md: 2 }} mt={{ base: 1, md: 0 }} px={{ base: 1, md: 0 }}>City</Box>
+                <Box fontWeight="700" fontSize={{ base: "14px", md: "12px" }} color={isHome ? "white" : (!colorChange ? "red" : "white")} textTransform="uppercase" letterSpacing={{ base: "0.6px", md: "0.2px" }} mb={{ base: 2, md: 2 }} mt={{ base: 1, md: 0 }} px={{ base: 1, md: 0 }}>City</Box>
                 <SimpleGrid columns={{ base: 2, md: 3 }} spacing={2} mb={3}>
                   {CITY_OPTIONS.map((c) => (
                     <Button
@@ -190,7 +191,7 @@ export default function LeftSection({
 
             {(forceHamburger || hideBudget) && (
               <>
-                <Box fontWeight="700" fontSize={{ base: "14px", md: "12px" }} color="#e53e3e" textTransform="uppercase" letterSpacing={{ base: "0.6px", md: "0.2px" }} mb={{ base: 2, md: 1 }} mt={{ base: 1, md: 0 }} px={{ base: 1, md: 0 }}>Budget</Box>
+                <Box fontWeight="700" fontSize={{ base: "14px", md: "12px" }} color={isHome ? "white" : (!colorChange ? "red" : "white")} textTransform="uppercase" letterSpacing={{ base: "0.6px", md: "0.2px" }} mb={{ base: 2, md: 1 }} mt={{ base: 1, md: 0 }} px={{ base: 1, md: 0 }}>Budget</Box>
                 <SimpleGrid columns={{ base: 2, md: 1 }} spacing={2}>
                   <Button onClick={() => handleNavigation("/projects/under-1-cr/", () => handlePriceClick(0, 1), true)}
                     w="100%" variant="ghost" justifyContent="center" textAlign="center" py={3}
@@ -229,7 +230,7 @@ export default function LeftSection({
 
             {(forceHamburger || hideProjectStatus || isSmallScreen) && (
               <>
-                <Box fontWeight="700" fontSize={{ base: "14px", md: "12px" }} color="#e53e3e" textTransform="uppercase" letterSpacing={{ base: "0.6px", md: "0.2px" }} mb={{ base: 2, md: 1 }} mt={{ base: 1, md: 0 }} px={{ base: 1, md: 0 }}>Project Status</Box>
+                <Box fontWeight="700" fontSize={{ base: "14px", md: "12px" }} color={isHome ? "white" : (!colorChange ? "red" : "white")} textTransform="uppercase" letterSpacing={{ base: "0.6px", md: "0.2px" }} mb={{ base: 2, md: 1 }} mt={{ base: 1, md: 0 }} px={{ base: 1, md: 0 }}>Project Status</Box>
                 <SimpleGrid columns={{ base: 2, md: 2 }} spacing={3}>
                   <Button onClick={() => handleNavigation("/projects/upcoming/", null, true)}
                     w="100%" variant="ghost" display="flex" flexDir="column"
@@ -266,7 +267,7 @@ export default function LeftSection({
 
             {(forceHamburger || hideProjectType || isSmallScreen) && (
               <>
-                <Box fontWeight="700" fontSize={{ base: "14px", md: "12px" }} color="#e53e3e" textTransform="uppercase" letterSpacing={{ base: "0.6px", md: "0.2px" }} mb={{ base: 2, md: 1 }} mt={{ base: 1, md: 0 }} px={{ base: 1, md: 0 }}>Project Type</Box>
+                <Box fontWeight="700" fontSize={{ base: "14px", md: "12px" }} color={isHome ? "white" : (!colorChange ? "red" : "white")} textTransform="uppercase" letterSpacing={{ base: "0.6px", md: "0.2px" }} mb={{ base: 2, md: 1 }} mt={{ base: 1, md: 0 }} px={{ base: 1, md: 0 }}>Project Type</Box>
                 <SimpleGrid columns={{ base: 2, md: 2 }} spacing={3}>
                   <Button onClick={() => handleNavigation("/projects/sco-plots/", null, true)}
                     w="100%" variant="ghost" display="flex" flexDir="column"
@@ -332,7 +333,7 @@ export default function LeftSection({
             {/* Activity Option */}
             {(forceHamburger) && (
               <>
-                <Box fontWeight="700" fontSize={{ base: "14px", md: "12px" }} color="#e53e3e" textTransform="uppercase" letterSpacing={{ base: "0.6px", md: "0.2px" }} mb={{ base: 2, md: 1 }} mt={{ base: 1, md: 0 }} px={{ base: 1, md: 0 }}>Activity</Box>
+                <Box fontWeight="700" fontSize={{ base: "14px", md: "12px" }} color={isHome ? "white" : (!colorChange ? "red" : "white")} textTransform="uppercase" letterSpacing={{ base: "0.6px", md: "0.2px" }} mb={{ base: 2, md: 1 }} mt={{ base: 1, md: 0 }} px={{ base: 1, md: 0 }}>Activity</Box>
                 <Button as={Link} to="/activity" onClick={closeDrawer}
                   w="100%" variant="ghost" display="flex" flexDir="column"
                   justifyContent="center" alignItems="center" textAlign="center"
@@ -346,7 +347,7 @@ export default function LeftSection({
 
             {(forceHamburger || hideRental) && (
               <>
-                <Box fontWeight="700" fontSize={{ base: "14px", md: "12px" }} color="#e53e3e" textTransform="uppercase" letterSpacing={{ base: "0.6px", md: "0.2px" }} mb={{ base: 2, md: 1 }} mt={{ base: 1, md: 0 }} px={{ base: 1, md: 0 }}>Rental</Box>
+                <Box fontWeight="700" fontSize={{ base: "14px", md: "12px" }} color={isHome ? "white" : (!colorChange ? "red" : "white")} textTransform="uppercase" letterSpacing={{ base: "0.6px", md: "0.2px" }} mb={{ base: 2, md: 1 }} mt={{ base: 1, md: 0 }} px={{ base: 1, md: 0 }}>Rental</Box>
                 <Button as={Link} to="/rental-properties/best-rental-property-in-gurugram/" onClick={closeDrawer}
                   w="100%" variant="ghost" display="flex" flexDir="column"
                   justifyContent="center" alignItems="center" textAlign="center"
@@ -360,7 +361,7 @@ export default function LeftSection({
 
             {(forceHamburger || hideResale) && (
               <>
-                <Box fontWeight="700" fontSize={{ base: "14px", md: "12px" }} color="#e53e3e" textTransform="uppercase" letterSpacing={{ base: "0.6px", md: "0.2px" }} mb={{ base: 2, md: 1 }} mt={{ base: 1, md: 0 }} px={{ base: 1, md: 0 }}>Resale</Box>
+                <Box fontWeight="700" fontSize={{ base: "14px", md: "12px" }} color={isHome ? "white" : (!colorChange ? "red" : "white")} textTransform="uppercase" letterSpacing={{ base: "0.6px", md: "0.2px" }} mb={{ base: 2, md: 1 }} mt={{ base: 1, md: 0 }} px={{ base: 1, md: 0 }}>Resale</Box>
                 <Button as={Link} to="/buy-properties/best-resale-property-in-gurugram/" onClick={closeDrawer}
                   w="100%" variant="ghost" display="flex" flexDir="column"
                   justifyContent="center" alignItems="center" textAlign="center"
@@ -370,7 +371,7 @@ export default function LeftSection({
                 </Button>
                 {/* Insights in drawer */}
                 <Button as={Link} to="/united-arab-emirates" onClick={closeDrawer}
-                  w="100%" variant="solid" bg="#e53e3e" color="white"
+                  w="100%" variant="solid" bg="#e53e3e" color={isHome ? "white" : (!colorChange ? "red" : "white")}
                   display="flex" flexDir="column" justifyContent="center" alignItems="center" textAlign="center"
                   py={3} px={4} minH={{ base: 12, md: 12 }}
                   _hover={{ bg: '#c53030' }} _active={{ bg: '#9b2c2c' }} rounded="md" boxShadow="0 6px 16px rgba(229,62,62,0.25)">
@@ -405,8 +406,8 @@ export default function LeftSection({
           size="sm"
           variant="ghost"
           bg="transparent"
-          color={colorChange ? "white" : "#e53e3e"}
-          _hover={{ bg: "transparent", color: colorChange ? "white" : "#e53e3e" }}
+          color={isHome ? "white" : (!colorChange ? "red" : "white")}
+          _hover={{ bg: "transparent", color: isHome ? "white" : (!colorChange ? "red" : "white") }}
           _active={{ bg: "transparent" }}
           px={0}
           fontWeight="600"
@@ -427,8 +428,8 @@ export default function LeftSection({
           onMouseLeave={() => closeWithDelay(cityTimer, setIsCityOpen)}
         >
           <Flex alignItems="center" gap={0} lineHeight="1" display="inline-flex" sx={{ 'svg': { display: 'inline-block', verticalAlign: 'middle' } }}>
-            <Text lineHeight="1" color={colorChange ? "white" : "#e53e3e"} fontSize="16px" m={0} p={0}>City</Text>
-            <ChevronDownIcon boxSize="1em" color={colorChange ? "white" : "#e53e3e"} m={0} p={0} />
+            <Text lineHeight="1" color={isHome ? "white" : (!colorChange ? "red" : "white")} fontSize="16px" m={0} p={0}>City</Text>
+            <ChevronDownIcon boxSize="1em" color={isHome ? "white" : (!colorChange ? "red" : "white")} m={0} p={0} />
           </Flex>
         </MenuButton>
         <MenuList
@@ -440,7 +441,7 @@ export default function LeftSection({
           onMouseEnter={() => { clearTimer(cityTimer); setIsCityOpen(true); }}
           onMouseLeave={() => closeWithDelay(cityTimer, setIsCityOpen)}
         >
-          <Box fontWeight="700" fontSize="12px" color="#e53e3e" textTransform="uppercase" mb={2}>Top Cities</Box>
+          <Box fontWeight="700" fontSize="12px" color={isHome ? "white" : (!colorChange ? "red" : "white")} textTransform="uppercase" mb={2}>Top Cities</Box>
           <SimpleGrid columns={3} spacing={2}>
             {CITY_OPTIONS.map((c) => (
               <Button
@@ -473,8 +474,8 @@ export default function LeftSection({
           size="sm"
           variant="ghost"
           bg="transparent"
-          color={colorChange ? "white" : "#111"}
-          _hover={{ bg: "transparent", color: colorChange ? "white" : "#111" }}
+          color={isHome ? "white" : (!colorChange ? "red" : "white")}
+          _hover={{ bg: "transparent", color: isHome ? "white" : (!colorChange ? "red" : "white") }}
           _active={{ bg: "transparent" }}
           px={1}
           fontWeight="600"
@@ -495,8 +496,8 @@ export default function LeftSection({
           onMouseLeave={() => closeWithDelay(budgetTimer, setIsBudgetOpen)}
         >
           <Flex alignItems="center" gap={0} lineHeight="1" display="inline-flex" sx={{ 'svg': { display: 'inline-block', verticalAlign: 'middle' } }}>
-            <Text color={colorChange ? "white" : "#e53e3e"} lineHeight="1" fontSize="16px" m={0} p={0}>Budget</Text>
-            <ChevronDownIcon boxSize="1em" color={colorChange ? "white" : "#e53e3e"} m={0} p={0} />
+            <Text color={isHome ? "white" : (!colorChange ? "red" : "white")} lineHeight="1" fontSize="16px" m={0} p={0}>Budget</Text>
+            <ChevronDownIcon boxSize="1em" color={isHome ? "white" : (!colorChange ? "red" : "white")} m={0} p={0} />
           </Flex>
         </MenuButton>
         <MenuList
@@ -524,8 +525,8 @@ export default function LeftSection({
           size="sm"
           variant="ghost"
           bg="transparent"
-          color={colorChange ? "white" : "#111"}
-          _hover={{ bg: "transparent", color: colorChange ? "white" : "#111" }}
+          color={isHome ? "white" : (!colorChange ? "red" : "white")}
+          _hover={{ bg: "transparent", color: isHome ? "white" : (!colorChange ? "red" : "white") }}
           _active={{ bg: "transparent" }}
           px={1}
           fontWeight="600"
@@ -552,8 +553,8 @@ export default function LeftSection({
           onMouseLeave={() => closeWithDelay(statusTimer, setIsStatusOpen)}
         >
           <Flex alignItems="center" gap={0} lineHeight="1" display="inline-flex" sx={{ 'svg': { display: 'inline-block', verticalAlign: 'middle' } }}>
-            <Text color={colorChange ? "white" : "#e53e3e"} lineHeight="1" fontSize="16px" m={0} p={0}>Project Status</Text>
-            <ChevronDownIcon boxSize="1em" color={colorChange ? "white" : "#e53e3e"} m={0} p={0} />
+            <Text color={isHome ? "white" : (!colorChange ? "red" : "white")} lineHeight="1" fontSize="16px" m={0} p={0}>Project Status</Text>
+            <ChevronDownIcon boxSize="1em" color={isHome ? "white" : (!colorChange ? "red" : "white")} m={0} p={0} />
           </Flex>
         </MenuButton>
         <MenuList
@@ -579,8 +580,8 @@ export default function LeftSection({
           size="sm"
           variant="ghost"
           bg="transparent"
-          color={colorChange ? "white" : "#111"}
-          _hover={{ bg: "transparent", color: colorChange ? "white" : "#111" }}
+          color={isHome ? "white" : (!colorChange ? "red" : "white")}
+          _hover={{ bg: "transparent", color: isHome ? "white" : (!colorChange ? "red" : "white") }}
           _active={{ bg: "transparent" }}
           px={1}
           fontWeight="600"
@@ -603,8 +604,8 @@ export default function LeftSection({
           onMouseLeave={() => closeWithDelay(typeTimer, setIsTypeOpen)}
         >
           <Flex alignItems="center" gap={0} lineHeight="1" display="inline-flex" sx={{ 'svg': { display: 'inline-block', verticalAlign: 'middle' } }}>
-            <Text color={colorChange ? "white" : "#e53e3e"} lineHeight="1" fontSize="16px" m={0} p={0}>Project Type</Text>
-            <ChevronDownIcon boxSize="1em" color={colorChange ? "white" : "#e53e3e"} m={0} p={0} />
+            <Text color={isHome ? "white" : (!colorChange ? "red" : "white")} lineHeight="1" fontSize="16px" m={0} p={0}>Project Type</Text>
+            <ChevronDownIcon boxSize="1em" color={isHome ? "white" : (!colorChange ? "red" : "white")} m={0} p={0} />
           </Flex>
         </MenuButton>
         <MenuList
@@ -630,12 +631,12 @@ export default function LeftSection({
             
       {/* Quick links */}
       <Link to="/rental-properties/best-rental-property-in-gurugram/">
-        <Button size="sm" variant="ghost" bg="transparent" color={colorChange ? "white" : "#e53e3e"} _hover={{ bg: "transparent", color: colorChange ? "white" : "#e53e3e" }} px={1} fontWeight="600" fontSize="16px" display={{ base: "none", md: forceHamburger || hideRental ? "none" : "inline-flex" }}>
+        <Button size="sm" variant="ghost" bg="transparent" color={isHome ? "white" : (!colorChange ? "red" : "white")} _hover={{ bg: "transparent", color: isHome ? "white" : (!colorChange ? "red" : "white") }} px={1} fontWeight="600" fontSize="16px" display={{ base: "none", md: forceHamburger || hideRental ? "none" : "inline-flex" }}>
           Rental
         </Button>
       </Link>
       <Link to="/buy-properties/best-resale-property-in-gurugram/">
-        <Button size="sm" variant="ghost" bg="transparent" color={colorChange ? "white" : "#e53e3e"} _hover={{ bg: "transparent", color: colorChange ? "white" : "#e53e3e" }} px={1} fontWeight="600" fontSize="16px" display={{ base: "none", md: forceHamburger || hideResale ? "none" : "inline-flex" }}>
+        <Button size="sm" variant="ghost" bg="transparent" color={isHome ? "white" : (!colorChange ? "red" : "white")} _hover={{ bg: "transparent", color: isHome ? "white" : (!colorChange ? "red" : "white") }} px={1} fontWeight="600" fontSize="16px" display={{ base: "none", md: forceHamburger || hideResale ? "none" : "inline-flex" }}>
           Resale
         </Button>
       </Link>
@@ -659,7 +660,7 @@ export default function LeftSection({
           px={2.5}
           py={0.5}
           bg="#E53935"
-          color="white"
+          color={isHome ? "white" : (!colorChange ? "red" : "white")}
           fontSize="8px"
           fontWeight="600"
           letterSpacing="0.7px"
@@ -680,7 +681,7 @@ export default function LeftSection({
           <Button
             variant="solid"
             bgGradient="linear(to-r, #D4A235, #B8860B)"
-            color="white"
+            color={isHome ? "white" : (!colorChange ? "red" : "white")}
             _hover={{ bgGradient: "linear(to-r, #D9AE47, #C39317)", boxShadow: "0 10px 26px rgba(0,0,0,0.22)", transform: "translateY(-1px)" }}
             _active={{ bgGradient: "linear(to-r, #B8860B, #8B6508)", boxShadow: "0 6px 18px rgba(0,0,0,0.3)", transform: "translateY(0)" }}
             px={4}

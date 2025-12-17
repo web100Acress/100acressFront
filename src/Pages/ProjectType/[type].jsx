@@ -96,7 +96,7 @@ const projectTypeConfigs = {
     metaTitle: "Independent & Builder Floors | 100Acress",
     metaDescription: "Discover premium independent and builder floors in Gurugram. Find your dream property with detailed information, pricing, and location details. Your trusted partner for property investment.",
     keywords: "independent floors, builder floors, property in gurugram, real estate, property investment, buy property, residential properties",
-    canonical: "https://www.100acress.com/projects/independentfloors/",
+    canonical: "https://www.100acress.com/projects/independent-floors/",
     query: "builderindepedentfloor",
     reduxKey: "builderindependentfloor",
     badgeColor: "bg-red-500",
@@ -140,7 +140,7 @@ const ProjectTypePage = () => {
     if (path === '/projects/villas/') return 'luxury-villas';
     if (path === '/plots-in-gurugram/') return 'plots-in-gurugram';
     if (path === '/property/residential/') return 'residential-projects';
-    if (path === '/projects/independentfloors/') return 'independent-floors';
+    if (path === '/projects/independent-floors/') return 'independent-floors';
     if (path === '/projects/commercial/') return 'commercial-projects';
     
     // Fallback to type parameter for /project-type/:type routes

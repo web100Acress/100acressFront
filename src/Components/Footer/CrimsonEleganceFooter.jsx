@@ -423,7 +423,7 @@ const CrimsonEleganceFooter = () => {
           {/* Bottom Section */}
           <div className="border-t border-white/10 pt-8">
             <div className="container mx-auto px-6 pb-8">
-              <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+              <div className="flex flex-col md:flex-row items-center justify-between gap-6 w-full">
                 {/* Copyright */}
                 <div className="text-footer-text-muted text-center md:text-left">
                   © 2025{" "}
@@ -439,7 +439,7 @@ const CrimsonEleganceFooter = () => {
                 </div>
 
                 {/* Social Media */}
-                <div className="flex items-center gap-4">
+                <div className="flex flex-wrap items-center justify-center md:justify-end gap-3 md:gap-4 w-full md:w-auto">
                   {[
                     {
                       Icon: Facebook,
@@ -467,9 +467,9 @@ const CrimsonEleganceFooter = () => {
                       href={href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="p-3 bg-white/10 hover:bg-footer-accent rounded-xl text-footer-text hover:text-burgundy-dark transition-all duration-300 hover:scale-110 hover:rotate-6"
+                      className="p-2 md:p-3 bg-white/20 hover:bg-footer-accent rounded-xl text-white hover:text-burgundy-dark transition-all duration-300 hover:scale-110 hover:rotate-6 border border-white/30"
                     >
-                      <Icon className="w-5 h-5" />
+                      <Icon className="w-4 h-4 md:w-5 md:h-5" />
                     </a>
                   ))}
                 </div>

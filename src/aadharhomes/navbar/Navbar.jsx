@@ -14,10 +14,6 @@ import RightSection from "./RightSection";
 import SearchBarOverlay from "./SearchBarOverlay";
 import MegaMenu from "./MegaMenu";
 import InsightsMega from "../../Insight/pages/InsightsMega";
-// import CityMega from "./CityMega.jsx";
-// import BudgetMega from "./BudgetMega.jsx";
-// import StatusMega from "./StatusMega.jsx";
-// import TypeMega from "./TypeMega.jsx";
 // import { SpacerComponent } from "./SpacerComponent"; // unused spacer
 import { getApiBase } from "../../config/apiBase";
 
@@ -566,17 +562,30 @@ export default function Navbar() {
     <Wrapper>
       <Box
         ref={navRef}
-        position="fixed"
+        position={isHome ? "absolute" : "fixed"}
         top="0"
         left="0"
         right="0"
         zIndex="9999"
         width="100%"
-        bg={colorChange ? "red.500" : "#ffffff"}
-        boxShadow="0 6px 18px rgba(0,0,0,0.08)"
-        transition="background-color 200ms ease, box-shadow 200ms ease"
+        bg="transparent"
+        transition="all 150ms ease-in-out"
+        className={colorChange ? "navbar-scrolled" : "navbar-transparent"}
       >
+        {/* Gradient Overlay */}
         <Box
+          position="absolute"
+          top="0"
+          left="0"
+          right="0"
+          bottom="0"
+          bg="transparent"
+          transition="opacity 150ms ease-in-out"
+          pointerEvents="none"
+        />
+        
+        <Box
+          position="relative"
           w="100%"
           px={{ base: 2, md: 6 }}
           py={{ base: 1, md: 2 }}
@@ -593,7 +602,7 @@ export default function Navbar() {
             gridColumn={{ base: 2, md: 'auto' }}
             alignSelf={{ base: 'center', md: 'center' }}
           >
-            <CenterLogo colorChange={colorChange} isSearchOpen={isSearchOpen} centerOnCompact={isCompactTablet} />
+            <CenterLogo colorChange={colorChange} isSearchOpen={isSearchOpen} centerOnCompact={isCompactTablet} isHome={isHome} />
           </Box>
 
           {/* Center: Filters & Menus */}
@@ -603,8 +612,9 @@ export default function Navbar() {
             alignSelf={{ base: 'center', md: 'center' }}
           >
           <LeftSection
-            colorChange={colorChange}
+            colorChange={isHome ? colorChange : colorChange}
             isSearchOpen={isSearchOpen}
+            isHome={isHome}
             onToggle={onOpen}
             CITY_OPTIONS={CITY_OPTIONS}
             CityIcons={CityIcons}
@@ -645,6 +655,7 @@ export default function Navbar() {
           <RightSection
             colorChange={colorChange}
             isSearchOpen={isSearchOpen}
+            isHome={isHome}
             setIsSearchOpen={setIsSearchOpen}
             token={token}
             avatarUrl={avatarUrl}
@@ -683,21 +694,6 @@ export default function Navbar() {
           {/* Desktop Mega Menu for SEARCH PROJECTS */}
           <MegaMenu isOpen={isOpen} onClose={onClose} handlePriceClick={handlePriceClick} />
           <InsightsMega isOpen={insightsDisclosure.isOpen} onClose={insightsDisclosure.onClose} />
-          {/* <CityMega isOpen={cityDisclosure.isOpen} onClose={cityDisclosure.onClose} cityOptions={CITY_OPTIONS} CityIcons={CityIcons} onSelectCity={handleCitySelect} />
-          <BudgetMega isOpen={budgetDisclosure.isOpen} onClose={budgetDisclosure.onClose} onRange={handlePriceClick} />
-          <StatusMega isOpen={statusDisclosure.isOpen} onClose={statusDisclosure.onClose} />
-          <TypeMega isOpen={typeDisclosure.isOpen} onClose={typeDisclosure.onClose} /> */}
-
-          {/* Gradient divider: strong in center, fades toward edges */}
-          <Box
-            position="absolute"
-            left={0}
-            right={0}
-            bottom={0}
-            height="2px"
-            pointerEvents="none"
-            background="linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.7) 25%, rgba(255,255,255,0.7) 75%, rgba(255,255,255,0) 100%)"
-          />
         </Box>
       </Wrapper>
     );
@@ -705,6 +701,19 @@ export default function Navbar() {
 
 const Wrapper = styled.section`
   font-family: 'Rubik', sans-serif;
+  
+  /* Navbar styles for transparent and scrolled states */
+  .navbar-transparent {
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+  
+  .navbar-scrolled {
+    background: rgba(231, 55, 55, 0.95) !important;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 20px rgba(128, 14, 14, 0.2) !important;
+    position: fixed !important;
+  }
   
   .shimmer-container {
     position: relative;
