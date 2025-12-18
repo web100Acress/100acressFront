@@ -252,29 +252,6 @@ const ModernBlogView = () => {
         <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
       </Helmet>
 
-      {/* Sticky Header */}
-      <div className={`fixed top-20 left-0 right-0 z-50 bg-white border-b border-gray-200 shadow-sm transition-transform duration-300 ${
-        showStickyHeader ? 'translate-y-0' : '-translate-y-full'
-      }`}>
-        <div className="max-w-7xl mx-auto px-4 py-3 flex flex-col h-full">
-          <div className="flex items-center justify-between flex-1">
-            <h2 className="text-lg font-semibold text-gray-900 max-w-md truncate" style={{ fontFamily: "'Open Sans', sans-serif" }}>
-              {data.blog_Title}
-            </h2>
-            <div className="flex items-center space-x-2 text-sm text-gray-600">
-              <span>{Math.round(scrollProgress)}%</span>
-            </div>
-          </div>
-          {/* Progress Bar */}
-          <div className="w-full bg-gray-200 rounded-full h-1">
-            <div 
-              className="bg-red-600 h-1 rounded-full transition-all duration-300 ease-out"
-              style={{ width: `${scrollProgress}%` }}
-            />
-          </div>
-        </div>
-      </div>
-
       {/* Hero Section */}
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-red-50 via-white to-gray-100" />
@@ -283,13 +260,21 @@ const ModernBlogView = () => {
           
           {/* Metadata Section */}
           <div className="max-w-4xl mx-auto mb-8 pt-8">
-            <div className="flex items-center justify-between">
-              {/* Left - Blog Category */}
-              <div className="flex-shrink-0">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+              {/* Left - Blog Category and Author */}
+              <div className="flex flex-col sm:flex-row gap-3">
                 {data.blog_Category && (
                   <div className="inline-flex items-center space-x-2 px-3 py-1 bg-red-50 border border-red-200 rounded-full">
                     <span className="text-red-700 font-sans text-sm font-semibold">{data.blog_Category}</span>
                   </div>
+                )}
+                {data.author && (
+                  <Link 
+                    to={`/author/${encodeURIComponent(data.author)}`}
+                    className="inline-flex items-center space-x-2 px-3 py-1 bg-gray-100 border border-gray-300 rounded-full hover:bg-gray-200 transition-colors cursor-pointer"
+                  >
+                    <span className="text-gray-700 font-sans text-sm font-medium">By {data.author}</span>
+                  </Link>
                 )}
               </div>
 

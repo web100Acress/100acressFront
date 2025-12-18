@@ -871,6 +871,12 @@ export default function BlogDashboard() {
           <span>New Blog</span>
         </button>
       </Link>
+      <Link to="/seo/blogs/profile" className="flex-1 sm:flex-none">
+        <button className="flex items-center justify-center space-x-1 sm:space-x-2 w-full sm:w-auto text-xs sm:text-sm px-3 py-1.5 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-md shadow hover:shadow-md transition-all duration-200">
+          <User size={14} />
+          <span>Profile</span>
+        </button>
+      </Link>
       <Link to="/seo/blogs/manage" className="flex-1 sm:flex-none">
         <button className="flex items-center justify-center space-x-1 sm:space-x-2 w-full sm:w-auto text-xs sm:text-sm px-3 py-1.5 border border-gray-300 text-gray-700 rounded-md hover:border-blue-500 hover:text-blue-500 transition-all duration-200">
           <FileText size={14} />

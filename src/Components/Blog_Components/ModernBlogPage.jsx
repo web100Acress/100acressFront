@@ -4,12 +4,14 @@ import { Helmet } from "react-helmet";
 import api from "../../config/apiClient";
 import HeroSection from "./HeroSection";
 import BlogCard from "./BlogCard";
-import Header from "./Header";
 import CrimsonEleganceFooter from "../Footer/CrimsonEleganceFooter";
 
 const ModernBlogPage = () => {
   const [allBlogs, setAllBlogs] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("latest");
 
@@ -80,6 +82,50 @@ const ModernBlogPage = () => {
     return `/blog/${slug}/${blog._id}`;
   };
 
+  // Load more blogs
+  const loadMoreBlogs = async () => {
+    if (loadingMore || !hasMore) return;
+    
+    setLoadingMore(true);
+    try {
+      const nextPage = currentPage + 1;
+      const params = {
+        page: nextPage,
+        limit: 12, // Load 12 more blogs each time
+        sortBy: 'createdAt',
+        sortOrder: 'desc'
+      };
+
+      if (search && search.trim()) {
+        params.search = search.trim();
+      }
+
+      const response = await api.get(`blog/view`, { params });
+      
+      if (response?.data?.data && Array.isArray(response.data.data)) {
+        const newBlogs = response.data.data;
+        
+        if (newBlogs.length === 0) {
+          setHasMore(false);
+        } else {
+          setAllBlogs(prev => [...prev, ...newBlogs]);
+          setCurrentPage(nextPage);
+          
+          // If we got fewer blogs than requested, assume no more
+          if (newBlogs.length < 12) {
+            setHasMore(false);
+          }
+        }
+      } else {
+        setHasMore(false);
+      }
+    } catch (error) {
+      console.error('Error loading more blogs:', error);
+    } finally {
+      setLoadingMore(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 text-gray-900">
       <Helmet>
@@ -93,9 +139,6 @@ const ModernBlogPage = () => {
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
       </Helmet>
-
-      {/* Header */}
-      <Header search={search} setSearch={setSearch} sort={sort} setSort={setSort} />
 
       {/* Hero Section */}
       {featuredBlog && (
@@ -127,7 +170,7 @@ const ModernBlogPage = () => {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {filteredBlogs.slice(0, 12).map((blog, index) => (
+            {filteredBlogs.map((blog, index) => (
               <div
                 key={blog._id}
                 className="h-[400px]"
@@ -143,10 +186,14 @@ const ModernBlogPage = () => {
         )}
 
         {/* Load More Button */}
-        {filteredBlogs.length > 12 && (
+        {filteredBlogs.length > 12 && hasMore && (
           <div className="flex justify-center mt-12">
-            <button className="px-8 py-3 bg-white border border-gray-300 rounded-full text-gray-900 font-sans font-medium hover:bg-gray-50 hover:border-gray-400 transition-all duration-300 hover:scale-105 shadow-sm">
-              Load More Stories
+            <button 
+              onClick={loadMoreBlogs}
+              disabled={loadingMore}
+              className="px-8 py-3 bg-white border border-gray-300 rounded-full text-gray-900 font-sans font-medium hover:bg-gray-50 hover:border-gray-400 transition-all duration-300 hover:scale-105 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {loadingMore ? 'Loading...' : 'Load More Stories'}
             </button>
           </div>
         )}
