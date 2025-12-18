@@ -91,7 +91,7 @@ const ProjectHero = ({
           <div className="flex items-center gap-4">
             {/* WhatsApp Button - Visible on all screen sizes */}
             <a
-              href={`https://wa.me/91${phoneNumber}?text=Hi%2C%20I%27m%20interested%20in%20${encodeURIComponent(projectTitle)}%20property.%20Can%20you%20provide%20more%20details%3F`}
+              href={`https://wa.me/918500900100?text=Hi%2C%20I%27m%20interested%20in%20${encodeURIComponent(projectTitle)}%20property.%20Can%20you%20provide%20more%20details%3F`}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center justify-center w-12 h-12"
