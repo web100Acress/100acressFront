@@ -44,6 +44,7 @@ const RentPropViewCard = lazy(() => import("./Components/Actual_Components/RentP
 const Privacy = lazy(() => import("./Pages/privacy/Privacy"));
 const Disclaimer = lazy(() => import("./Pages/privacy/Disclaimer"));
 const ContactUs = lazy(() => import("./Pages/ContactUs"));
+const EnquireNow = lazy(() => import("./Pages/EnquireNow"));
 const SearchData = lazy(() => import("./Pages/SearchData"));
 const UserViewProperty = lazy(() => import("./Pages/UserViewProperty"));
 const Activity = lazy(() => import("./Pages/Activity"));
@@ -242,7 +243,7 @@ function App() {
   // Consider dynamic project pages like '/experion-the-trillion/' etc. (single segment with trailing slash)
   const singleSegment = /^\/[A-Za-z0-9-]+\/?$/.test(currentPath);
   const blockedPrefixes = [
-    'blog', 'auth', 'projects', 'project', 'property', 'property-types', 'loan', 'contact-us', 'userdashboard', 'admin', 'emi-calculator', 'postproperty', 'news-and-articals', 'searchdata', 'developers', 'privacy-policy', 'terms-and-conditions', 'qr-generator', 'hi'
+    'blog', 'auth', 'projects', 'project', 'property', 'property-types', 'loan', 'contact-us', 'userdashboard', 'admin', 'emi-calculator', 'postproperty', 'news-and-articals', 'searchdata', 'developers', 'privacy-policy', 'terms-and-conditions', 'qr-generator', 'enquire-now', 'hi'
   ];
   const hasBlockedPrefix = blockedPrefixes.some((p) => currentPath.startsWith(`/${p}`));
   const isProjectPage = singleSegment && !hasBlockedPrefix && currentPath !== '/';
@@ -493,6 +494,7 @@ function App() {
                       <Route path="/useredit/:id" element={<UserEdit />} />
                       <Route path="/viewallproperty" element={<ViewAllProperty />} />
                       <Route path="/contact-us/" element={<ContactUs />} />
+                      <Route path="/enquire-now/" element={<LazyLoad><EnquireNow /></LazyLoad>} />
                       <Route path="/activity" element={<Activity />} />
                       <Route path="/career-with-us/" element={<CareerWithUs />} />
                       <Route path="/blog/" element={<ModernBlogPage />} />
