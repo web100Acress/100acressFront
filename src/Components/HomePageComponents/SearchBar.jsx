@@ -28,9 +28,54 @@ function SearchBar() {
   const [itemsPerPage, setItemsPerPage] = useState(6);
   const [latitude, setLatitude] = useState(28.6139); // Default to Delhi/NCR coordinates
   const [longitude, setLongitude] = useState(77.209);
+  const [placeholderIndex, setPlaceholderIndex] = useState(0);
+
+  // Quick links for animated placeholder
+  const quickLinks = [
+    "City, Locality, or Project",
+    "Sohna Road",
+    "Smartworld GIC",
+    "Golf Course Road",
+    "Signature Sarvam at DXP Estate",
+    "Dwarka Expressway",
+    "M3M Elie Saab at SCDA",
+    "New Gurgaon",
+    "M3M GIC",
+    "Southern Peripheral Road",
+    "NH-48",
+  ];
 
   const searchRef = useRef(null);
   const debounceTimer = useRef(null);
+
+  // Animated placeholder effect
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setPlaceholderIndex((prevIndex) => (prevIndex + 1) % quickLinks.length);
+    }, 2000); // Change every 2 seconds
+
+    return () => clearInterval(interval); // Cleanup on unmount
+  }, [quickLinks.length]);
+
+  // Close suggestions when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      // Check if click is outside the search container
+      if (showSuggestions && searchRef.current && !searchRef.current.contains(event.target)) {
+        setShowSuggestions(false);
+      }
+    };
+
+    // Add event listener when suggestions are shown
+    if (showSuggestions) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    // Cleanup event listener
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showSuggestions]);
 
   const trendingSearches = [
     "Luxury Apartment in Mumbai",
@@ -858,22 +903,23 @@ function SearchBar() {
   const localities = [
     { name: "Sohna Road", link: "/property-in-gurugram/sohna-road/" },
     { name: "Golf Course Road", link: "/property-in-gurugram/golf-course/" },
-    { name: "MG Road", link: "/property-in-gurugram/mg-road/" },
+    
     {
       name: "Dwarka Expressway",
       link: "/property-in-gurugram/dwarka-expressway/",
     },
     { name: "New Gurgaon", link: "/property-in-gurugram/new-gurgaon/" },
-    { name: "Sohna", link: "/property-in-gurugram/sohna/" },
+    
     {
       name: "Southern Peripheral Road",
       link: "/property-in-gurugram/southern-peripheral-road/",
     },
-    { name: "NH-48", link: "/property-in-gurugram/nh-48/" },
+    
     {
       name: "Golf Course Extn Road",
       link: "/property-in-gurugram/golf-course-extn-road/",
     },
+    { name: "NH-48", link: "/property-in-gurugram/nh-48/" },
   ];
 
   // Location-based suggestions using existing localities
@@ -1022,78 +1068,66 @@ function SearchBar() {
 
   return (
     <Wrapper>
-      <div className="w-full max-w-6xl mx-auto px-1 mt-2">
-        {/* Main Search Container */}
-        <div className="glass-container group w-full mx-auto p-6 rounded-3xl overflow-hidden border border-gray-100 -mt-4 sm:-mt-8 md:-mt-36 bg-white shadow-2xl">
-          {/* Category Tabs */}
-          <div className="tabs-container flex justify-center mb-1">
-            <div className="inline-flex p-1 bg-gray-100 rounded-xl">
-              {["Buy", "Rent", "New Launch", "Commercial", "Plots", "SCO"].map(
-                (linkName) => (
-                  <button
-                    key={linkName}
-                    className={`px-4 py-2 text-sm font-medium rounded-lg transition-all duration-300 ${
-                      activeLink === linkName
-                        ? "bg-white text-black shadow-md"
-                        : "text-gray-600 hover:bg-white/50"
-                    }`}
-                    onClick={() => handleLinkClick(linkName)}
-                  >
-                    {linkName}
-                  </button>
-                )
-              )}
-            </div>
-          </div>
+      <div className="w-full max-w-7xl mx-auto px-4">
+        {/* Main Search Container - Layout Locked Design */}
+        <div className="search-container-wrapper">
+          <div className="search-container">
+            {/* Inner Wrapper with Border */}
+            <div className="search-inner-wrapper">
+              {/* Property Type Tabs - Above Input */}
+              <div className="property-tabs">
+                {["Buy", "Rent", "New Launch", "Commercial", "Plots", "SCO"].map(
+                  (linkName, index, array) => (
+                    <React.Fragment key={linkName}>
+                      <button
+                        className={`tab-button ${
+                          activeLink === linkName ? "active" : ""
+                        }`}
+                        onClick={() => handleLinkClick(linkName)}
+                      >
+                        {linkName}
+                      </button>
+                      {index < array.length - 1 && (
+                        <span className="tab-separator">|</span>
+                      )}
+                    </React.Fragment>
+                  )
+                )}
+              </div>
 
-          {/* Search Bar */}
-          <div
-            ref={searchRef}
-            className={`search-bar flex items-center bg-white/90 backdrop-blur-sm rounded-2xl sm:rounded-full p-1 sm:p-0.5 shadow-lg transition-all duration-300 relative ${
-              isFocused ? "ring-2 ring-white/50" : ""
-            }`}
-          >
-            <div className="flex items-center px-3 text-gray-500">
-              <FiMapPin className="w-5 h-5" />
-            </div>
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              onFocus={() => {
-                setIsFocused(true);
-                setShowSuggestions(true);
-              }}
-              onBlur={() => setIsFocused(false)}
-              placeholder="Search by City, Locality, or Project"
-              className="flex-1 py-2 sm:py-3 px-2 bg-transparent outline-none text-gray-800 placeholder-gray-500"
-              onKeyDown={handleKeyDown}
-            />
-            <button
-              type="button"
-              onClick={handleUseCurrentLocation}
-              className="mobile-hidden p-2 mr-2 text-gray-500 hover:text-gray-700 rounded-full hover:bg-gray-100 transition-colors"
-              aria-label="Use current location"
-              title="Use current location"
-            >
-              <FiCrosshair className="w-5 h-5" />
-            </button>
-            <button className="mobile-hidden p-2 mr-2 text-gray-500 hover:text-gray-700 rounded-full hover:bg-gray-100 transition-colors">
-              <FiMic className="w-5 h-5" />
-            </button>
-            <div className="relative">
-              <motion.button
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.98 }}
-                className="search-btn flex items-center justify-center bg-[#e53e3e] hover:bg-[#cc2f3b] text-white px-4 py-3 sm:px-5 md:px-6 rounded-full font-medium transition-all duration-200 hover:shadow-lg text-sm sm:text-base min-w-[50px] h-[50px] sm:h-12 md:h-14 sm:min-w-[120px]"
-                onClick={handleSearch}
-                aria-label="Search"
-              >
-                <FiSearch className="w-5 h-5 sm:w-6 sm:h-6" />
-                <span className="search-btn-text hidden sm:inline ml-2">
-                  Search
-                </span>
-              </motion.button>
+              {/* Search Input Row - Below Tabs */}
+              <div className="search-input-wrapper">
+                <div className="search-input-with-button">
+                  <div
+                    ref={searchRef}
+                    className={`search-input-box ${
+                      isFocused ? "focused" : ""
+                    }`}
+                  >
+                    <input
+                      type="text"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      onFocus={() => {
+                        setIsFocused(true);
+                        setShowSuggestions(true);
+                      }}
+                      onBlur={() => setIsFocused(false)}
+                      placeholder={`Search "${quickLinks[placeholderIndex]}"`}
+                      className="search-input"
+                      onKeyDown={handleKeyDown}
+                    />
+                  </div>
+                  <button
+                    className="search-button"
+                    onClick={handleSearch}
+                    aria-label="Search"
+                  >
+                    <span className="search-text">SEARCH</span>
+                    <FiSearch className="search-icon" />
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -1301,43 +1335,22 @@ function SearchBar() {
               )}
             </AnimatePresence>
           </div>
-          {/* Top Localities (single row, overflow hidden, arrow navigation) */}
-          <div className="trending-searches mt-6 relative">
-            <div className="flex items-center gap-2">
-              {/* Prev */}
-              <button
-                type="button"
-                onClick={handlePrev}
-                className="nav-btn h-9 w-9 md:h-10 md:w-10 flex items-center justify-center shrink-0 rounded-full bg-white shadow-sm hover:shadow border border-gray-200 text-gray-700 transition active:scale-[0.98]"
-                aria-label="Previous"
+        </div>
+
+        {/* Trending Localities Row - Outside Search Container */}
+        <div className="trending-row-external">
+          <span className="trending-label">TRENDING</span>
+          <div className="trending-chips">
+            {localities.slice(0, 9).map((loc) => (
+              <a
+                key={loc.name}
+                href={loc.link}
+                className="trending-chip"
+                title={loc.name}
               >
-                <FiChevronLeft />
-              </button>
-              {/* Viewport */}
-              <div className="relative flex-1 overflow-hidden">
-                <div className="flex flex-nowrap gap-2 sm:gap-3 whitespace-nowrap">
-                  {visibleLocalities.map((loc) => (
-                    <a
-                      key={loc.name}
-                      href={loc.link}
-                      className="inline-flex items-center px-3 py-1.5 rounded-full border border-gray-200 bg-white text-gray-800 text-xs sm:text-sm hover:bg-gray-50 transition shadow-sm max-w-[160px] sm:max-w-[220px] truncate"
-                      title={loc.name}
-                    >
-                      <span className="truncate">{loc.name}</span>
-                    </a>
-                  ))}
-                </div>
-              </div>
-              {/* Next */}
-              <button
-                type="button"
-                onClick={handleNext}
-                className="nav-btn h-9 w-9 md:h-10 md:w-10 flex items-center justify-center shrink-0 rounded-full bg-white shadow-sm hover:shadow border border-gray-200 text-gray-700 transition active:scale-[0.98]"
-                aria-label="Next"
-              >
-                <FiChevronRight />
-              </button>
-            </div>
+                {loc.name}
+              </a>
+            ))}
           </div>
         </div>
       </div>
@@ -1378,44 +1391,257 @@ const pulse = keyframes`
 const Wrapper = styled.section`
   position: relative;
   z-index: 10;
-  padding: 2rem 1rem;
-  /* Removed section-level background and blur to avoid outer glass effect */
   width: 100%;
   box-sizing: border-box;
   overflow: visible !important;
+  margin-top: -98px; /* Half inside banner overlap */
 
-  .glass-container {
+  /* Search Container Wrapper */
+  .search-container-wrapper {
     position: relative;
-    overflow: visible !important;
+    width: 100%;
+    overflow: visible;
+  }
 
-    &::before {
-      content: "";
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: radial-gradient(
-        circle,
-        rgba(255, 255, 255, 0.1) 0%,
-        rgba(255, 255, 255, 0) 60%
-      );
-      transform: rotate(30deg);
-      pointer-events: none;
+  /* Main Search Container - Premium Modern Styling */
+  .search-container {
+    position: relative;
+    background: #ffffff;
+    border: none;
+    border-radius: 12px;
+    padding: 0;
+    max-width: 1000px;
+    margin: 0 auto;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04);
+    overflow: visible;
+  }
+
+  /* Inner Wrapper with Border */
+  .search-inner-wrapper {
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  /* Search Input Wrapper */
+  .search-input-wrapper {
+    padding: 10px 10px;
+    border-bottom: none;
+  }
+
+  /* Search Input with Button Container */
+  .search-input-with-button {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  /* Search Input Box - Premium Modern */
+  .search-input-box {
+    display: flex;
+    align-items: center;
+    background: #fafafa;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.25s ease;
+    height: 56px;
+    flex: 1;
+
+    &.focused {
+      border-color: #dc2626;
+      background: #ffffff;
+      box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1), 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    &:hover:not(.focused) {
+      border-color: #d1d5db;
+      background: #ffffff;
     }
   }
 
-  .search-btn {
-    box-shadow: 0 4px 15px -5px rgba(239, 68, 68, 0.4);
+  /* Search Input */
+  .search-input {
+    flex: 1;
+    padding: 0 18px;
+    border: none;
+    outline: none;
+    font-size: 15px;
+    color: #1f2937;
+    background: transparent;
+    font-weight: 400;
+
+    &::placeholder {
+      color: #9ca3af;
+      font-weight: 400;
+    }
+  }
+
+  /* Search Button - Text Premium */
+  .search-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 20px;
+    height: 56px;
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: #ffffff;
+    box-shadow: 0 2px 8px rgba(220, 38, 38, 0.3);
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    flex-shrink: 0;
+
     &:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px -5px rgba(239, 68, 68, 0.6);
+      transform: scale(1.02);
+      background: linear-gradient(135deg, #b91c1c 0%, #991b1b 100%);
+      box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4);
     }
 
-    &.pulse {
-      animation: ${pulse} 2s infinite;
+    &:active {
+      transform: scale(0.98);
+    }
+
+    .search-text {
+      display: block;
+    }
+
+    .search-icon {
+      display: none;
     }
   }
+
+  /* Property Type Tabs - Spread Horizontally */
+  .property-tabs {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0;
+    padding: 10px 40px;
+    border-bottom: 1px solid #f3f4f6;
+    flex-wrap: nowrap;
+  }
+
+  /* Tab Button - Borderless */
+  .tab-button {
+    padding: 10px 16px;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    color: #6b7280;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.18s ease;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+
+    &:hover {
+      color: #dc2626;
+    }
+
+    &.active {
+      background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+      color: #ffffff;
+      font-weight: 600;
+      border-radius: 20px;
+      padding: 10px 20px;
+      box-shadow: 0 2px 6px rgba(220, 38, 38, 0.2);
+    }
+  }
+
+  /* Tab Separator */
+  .tab-separator {
+    color: #d1d5db;
+    font-size: 14px;
+    font-weight: 300;
+    user-select: none;
+  }
+
+  /* Trending Row - Cleaner & Luxe */
+  .trending-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 24px;
+    overflow-x: auto;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  /* Trending Row External - Outside Search Container */
+  .trending-row-external {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 0 0;
+    margin-top: 16px;
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+    overflow-x: auto;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  /* Trending Label - Subtle Uppercase */
+  .trending-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  /* Trending Chips Container */
+  .trending-chips {
+    display: flex;
+    gap: 6px;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  /* Trending Chip - Soft Refined Pills */
+  .trending-chip {
+    padding: 7px 16px;
+    border: none;
+    border-radius: 20px;
+    background: #f3f4f6;
+    color: #4b5563;
+    font-size: 13px;
+    font-weight: 500;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+
+    &:hover {
+      background: #e5e7eb;
+      color: #1f2937;
+      transform: translateY(-2px);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+  }
+
 
   .suggestions-dropdown {
     position: absolute;
@@ -1423,15 +1649,12 @@ const Wrapper = styled.section`
     right: 0;
     z-index: 99999 !important;
     margin-top: 0.5rem;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1),
-      0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
     width: 100%;
-    max-width: 500px;
-    margin-left: auto;
-    margin-right: auto;
+    max-width: 100%;
     background: white;
-    border-radius: 1rem;
+    border-radius: 8px;
   }
 
   /* Desktop-specific suggestions styling */
@@ -1449,97 +1672,207 @@ const Wrapper = styled.section`
       left: 0 !important;
       right: 0 !important;
       width: 100% !important;
-      max-width: 500px !important;
-      margin: 0.5rem auto 0 auto !important;
+      max-width: 100% !important;
+      margin: 0.5rem 0 0 0 !important;
       z-index: 99999 !important;
-      background: rgba(255, 255, 255, 0.98) !important;
-      backdrop-filter: blur(10px) !important;
-      border: 1px solid rgba(255, 255, 255, 0.2) !important;
-      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1),
-        0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+      background: #ffffff !important;
+      border: 1px solid #e5e7eb !important;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
     }
   }
 
   @media (max-width: 768px) {
-    padding: 1rem 0.5rem;
+    margin-top: -40px;
 
-    /* Hide category tabs on mobile */
-    .tabs-container {
-      display: none;
+    .search-container {
+      border-radius: 10px;
+      max-width: 95vw;
     }
 
-    /* Remove card look so it blends with background */
-    .glass-container {
-      background: transparent !important;
-      border: none !important;
-      box-shadow: none !important;
-      padding: 0 !important;
-      border-radius: 0 !important;
-      overflow: visible !important;
-      margin-top: 0 !important;
+    .search-inner-wrapper {
+      border-radius: 10px;
     }
 
-    .search-bar {
-      /* Keep row layout on mobile to avoid tall circular block */
-      flex-direction: row;
-      padding: 0.25rem 0.5rem;
-      border-radius: 1rem;
+    .search-input-wrapper {
+      padding: 12px 16px;
+    }
 
-      input {
-        width: 100%;
-        margin: 0; /* no extra vertical spacing */
+    .search-input-with-button {
+      gap: 6px;
+    }
+
+    .search-input-box {
+      height: 48px;
+      border-radius: 10px;
+      background: transparent;
+      border: none;
+
+      &.focused {
+        background: transparent;
+        box-shadow: none;
+      }
+
+      &:hover:not(.focused) {
+        background: transparent;
       }
     }
 
-    /* Hide non-essential controls on small screens */
-    .mobile-hidden {
-      display: none;
+    .search-input {
+      font-size: 16px; /* Prevents zoom on iOS */
+      padding: 0 14px;
     }
 
-    /* Ensure at least 2–3 chips fit on one line */
-    .flex-nowrap {
-      flex-wrap: nowrap !important;
-    }
-    .nav-btn {
-      width: 28px;
-      height: 28px;
-    }
-    .trending-searches .flex {
-      gap: 0.5rem;
-    }
-    .trending-searches .text-sm {
-      font-size: 12px;
-    }
-    .top-localities-label {
-      display: none;
-    }
-
-    /* Icon-only search button style on mobile */
-    .search-btn {
-      width: 48px;
+    .search-button {
       height: 48px;
-      padding: 0 !important;
-      background: transparent !important;
-      background-image: none !important;
-      color: inherit;
-      box-shadow: none !important;
-    }
-    .search-btn:hover {
-      box-shadow: none !important;
-      background: transparent !important;
-    }
-    .search-btn svg {
-      color: #e53e3e !important;
-    } /* unified red */
-    .search-btn:hover svg {
-      color: #cc2f3b !important;
+      padding: 0 16px;
+      font-size: 13px;
+
+      .search-text {
+        display: none;
+      }
+
+      .search-icon {
+        display: block;
+        font-size: 16px;
+      }
     }
 
-    /* Compact suggestions dropdown on mobile */
+    .property-tabs {
+      display: none; /* Hide on mobile */
+    }
+
+    .tab-button {
+      padding: 8px 12px;
+      font-size: 14px;
+      min-height: 32px;
+      touch-action: manipulation;
+
+      &.active {
+        padding: 8px 14px;
+        min-height: 32px;
+      }
+    }
+
+    .tab-separator {
+      font-size: 14px;
+      margin: 0 6px;
+      align-self: center;
+    }
+
+    .trending-row-external {
+      padding: 12px 0;
+      margin-top: 12px;
+      max-width: 95vw;
+    }
+
+    .trending-label {
+      font-size: 10px;
+      margin-right: 8px;
+    }
+
+    .trending-chips {
+      gap: 8px;
+    }
+
+    .trending-chip {
+      padding: 6px 12px;
+      font-size: 12px;
+      touch-action: manipulation;
+    }
+
     .suggestions-dropdown {
-      width: 95% !important; /* Even more compact on mobile */
-      max-width: 400px !important;
-      font-size: 14px; /* Smaller text on mobile */
+      border-radius: 10px;
+      max-width: 95vw;
+    }
+  }
+
+  @media (max-width: 480px) {
+    margin-top: -30px;
+
+    .search-container {
+      max-width: 98vw;
+      border-radius: 8px;
+    }
+
+    .search-inner-wrapper {
+      border-radius: 8px;
+    }
+
+    .search-input-wrapper {
+      padding: 10px 12px;
+    }
+
+    .search-input-with-button {
+      gap: 4px;
+    }
+
+    .search-input-box {
+      height: 44px;
+      border-radius: 8px;
+      background: transparent;
+      border: none;
+
+      &.focused {
+        background: transparent;
+        box-shadow: none;
+      }
+
+      &:hover:not(.focused) {
+        background: transparent;
+      }
+    }
+
+    .search-input {
+      font-size: 16px;
+      padding: 0 12px;
+    }
+
+    .search-button {
+      height: 44px;
+      padding: 0 12px;
+      font-size: 12px;
+
+      .search-text {
+        display: none;
+      }
+
+      .search-icon {
+        display: block;
+        font-size: 14px;
+      }
+    }
+
+    .property-tabs {
+      display: none; /* Hide on mobile */
+    }
+
+    .tab-button {
+      padding: 6px 10px;
+      font-size: 13px;
+      flex-shrink: 0;
+
+      &.active {
+        padding: 6px 12px;
+      }
+    }
+
+    .tab-separator {
+      margin: 0 4px;
+      flex-shrink: 0;
+    }
+
+    .trending-row-external {
+      padding: 10px 0;
+      max-width: 98vw;
+    }
+
+    .trending-chips {
+      gap: 6px;
+    }
+
+    .trending-chip {
+      padding: 5px 10px;
+      font-size: 11px;
     }
   }
 
