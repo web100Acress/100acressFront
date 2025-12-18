@@ -21,6 +21,7 @@ export default function Navbar() {
   const history = useNavigate();
   const location = useLocation();
   const isHome = location.pathname === "/";
+  const isBlogPage = location.pathname.startsWith("/blog");
   // Safely read JWT from localStorage (may be raw string or JSON-quoted)
   let usertoken = (typeof window !== 'undefined' && localStorage.getItem("myToken")) || "";
   if (usertoken && usertoken.startsWith('"') && usertoken.endsWith('"')) {
@@ -570,7 +571,7 @@ export default function Navbar() {
         width="100%"
         bg="transparent"
         transition="all 150ms ease-in-out"
-        className={colorChange ? "navbar-scrolled" : "navbar-transparent"}
+        className={isBlogPage ? (colorChange ? "navbar-scrolled" : "navbar-blog") : (colorChange ? "navbar-scrolled" : "navbar-transparent")}
       >
         {/* Gradient Overlay */}
         <Box
@@ -712,6 +713,12 @@ const Wrapper = styled.section`
     background: rgba(231, 55, 55, 0.95) !important;
     backdrop-filter: blur(10px);
     box-shadow: 0 4px 20px rgba(128, 14, 14, 0.2) !important;
+    position: fixed !important;
+  }
+  
+  .navbar-blog {
+    background: white !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1) !important;
     position: fixed !important;
   }
   
