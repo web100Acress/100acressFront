@@ -61,6 +61,8 @@ const NewsandArtical = lazy(() => import("./Pages/NewsandArtical"));
 const UserDashBoard = lazy(() => import("./Components/HomePageComponents/UserDashBoard"));
 const UserEdit = lazy(() => import("./Components/HomePageComponents/UserEdit"));
 import ModernBlogView from "./Components/Blog_Components/ModernBlogView";
+import AuthorPage from "./Components/Blog_Components/AuthorPage";
+import AuthorProfileUpdate from "./Components/Blog_Components/AuthorProfileUpdate";
 const BlogInsights = lazy(() => import("./Insight/pages/BlogInsights"));
 const GurugramPrimeLocation = lazy(() => import("./Pages/GurugramPrimeLocation"));
 // Per-city pages are now handled by CityProjects; imports removed
@@ -324,30 +326,7 @@ function App() {
                         path="/projects-in-gurugram/budget"
                         element={<BudgetPrice />}
                       />
-                      <Route
-                        path="/budget-properties/under-1-cr"
-                        element={<GlobalBudgetPrice />}
-                      />
-                      <Route
-                        path="/budget-properties/1-5-cr"
-                        element={<GlobalBudgetPrice />}
-                      />
-                      <Route
-                        path="/budget-properties/5-10-cr"
-                        element={<GlobalBudgetPrice />}
-                      />
-                      <Route
-                        path="/budget-properties/10-20-cr"
-                        element={<GlobalBudgetPrice />}
-                      />
-                      <Route
-                        path="/budget-properties/20-50-cr"
-                        element={<GlobalBudgetPrice />}
-                      />
-                      <Route
-                        path="/budget-properties/above-50-cr"
-                        element={<GlobalBudgetPrice />}
-                      />
+                      
                       {/* Unified projects/{filter} routes */}
                       <Route
                         path="/projects/under-1-cr/"
@@ -517,6 +496,7 @@ function App() {
                       <Route path="/activity" element={<Activity />} />
                       <Route path="/career-with-us/" element={<CareerWithUs />} />
                       <Route path="/blog/" element={<ModernBlogPage />} />
+                      <Route path="/author/:authorName" element={<AuthorPage />} />
                       {/* Place static path before dynamic ones to avoid '/blog/write' matching ':slug' */}
                       <Route path="/blog/write" element={<BlogWrite />} />
                       {/* Direct ID access - must come before slug to avoid conflicts */}
@@ -766,6 +746,7 @@ function App() {
                         <Route path="dashboard" element={<BlogDashboard />} />
                         <Route path="manage" element={<BlogManagement />} />
                         <Route path="write" element={<BlogWriteModal />} />
+                        <Route path="profile" element={<AuthorProfileUpdate />} />
                         <Route path="view/:id" element={<ModernBlogView />} />
                         <Route path="edit/:id" element={<BlogWriteModal />} />
                         <Route path="drafts" element={<DraftManagement />} />
