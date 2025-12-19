@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Footer from "../Components/Actual_Components/Footer";
 import Navbar from "../aadharhomes/navbar/Navbar";
 import axios from "axios";
+import { getApiBase } from "../config/apiBase";
 import { Helmet } from "react-helmet";
 import { FaWhatsapp, FaMapMarkerAlt, FaShieldAlt, FaHeadset, FaCheckCircle, FaPhone, FaEnvelope, FaClock, FaGift, FaPercent, FaCalendarAlt, FaRocket } from "react-icons/fa";
 import { toast } from "react-hot-toast";
@@ -37,11 +38,12 @@ const EnquireNow = () => {
   ];
 
   const budgetRanges = [
-    "Under 50 Lakhs",
-    "50 Lakhs - 1 Crore", 
-    "1 Crore - 2 Crores",
-    "2 Crores - 5 Crores",
-    "Above 5 Crores"
+    "Under 1 Crore",
+    "1 Crore - 5 Crore", 
+    "5 Crore - 10 Crores",
+    "10 Crores - 20 Crores",
+    "20 Crores - 50 Crores",
+    "Above 50 Crores"
   ];
 
   const cities = [
@@ -77,11 +79,7 @@ const EnquireNow = () => {
         }
         break;
       case "message":
-        if (!value) {
-          errorMessage = "Message is required";
-        } else if (value.length < 10) {
-          errorMessage = "Message must be at least 10 characters long";
-        }
+        // Message is optional - no validation required
         break;
       default:
         break;
@@ -119,7 +117,7 @@ const EnquireNow = () => {
     const errors = Object.values(formValidationErrors);
     const hasErrors = errors.some(error => error !== "");
     // Check all required fields
-    const requiredFields = ['name', 'mobile', 'budget', 'message'];
+    const requiredFields = ['name', 'mobile', 'budget'];
     const hasAllRequiredFields = requiredFields.every(field => 
       formData[field] && formData[field].trim() !== ""
     );
@@ -146,7 +144,7 @@ const EnquireNow = () => {
     setIsSubmitting(true);
     
     try {
-      const response = await axios.post('http://localhost:3500/api/enquiry/end-of-year-sale', {
+      const response = await axios.post(`${getApiBase()}/api/enquiry/end-of-year-sale`, {
         ...formData,
         enquiryType: "end_of_year_sale",
         timestamp: new Date().toISOString(),
@@ -394,7 +392,7 @@ const EnquireNow = () => {
                   {/* Message Field */}
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Message *
+                      Message
                     </label>
                     <textarea
                       name="message"
