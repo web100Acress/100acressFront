@@ -474,7 +474,8 @@ function App() {
                         element={<ProjectStatusSearchGlobal />}
                       />
                       
-                      <Route path="/plots-in-gurugram/" element={<ProjectTypeGlobal />} />
+                      
+                      <Route path="/projects/plots/" element={<ProjectTypeGlobal />} />
                       <Route path="/projects/villas/" element={<ProjectTypeGlobal />} />
                       <Route path="/projects/farmhouse/" element={<ProjectTypeGlobal />} />
                       <Route path="/projects/farmhouses/" element={<ProjectTypeGlobal />} />
