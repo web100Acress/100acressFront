@@ -374,6 +374,8 @@ const HeroWrapper = styled.div`
     position: relative;
     overflow: hidden;
     transition: none;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
   }
 
   /* Dark overlay only for navbar area */
