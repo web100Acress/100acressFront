@@ -626,6 +626,38 @@ const UnifiedBannerManagement = () => {
                         required
                       />
                     </div>
+                    {activeTab === 'hero' ? (
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                          Order
+                        </label>
+                        <input
+                          type="number"
+                          value={bannerData.order}
+                          onChange={(e) => setBannerData(prev => ({ ...prev, order: parseInt(e.target.value) || 0 }))}
+                          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-gray-100"
+                        />
+                      </div>
+                    ) : (
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                          Link
+                        </label>
+                        <input
+                          type="url"
+                          value={bannerData.link}
+                          onChange={(e) => setBannerData(prev => ({ ...prev, link: e.target.value }))}
+                          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-gray-100"
+                          placeholder="https://www.100acress.com/slug"
+                        />
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                          Leave empty to use slug-based link: https://www.100acress.com/{bannerData.slug || 'your-slug'}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+
+                  {activeTab === 'hero' && (
                     <div>
                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                         Link
@@ -641,7 +673,7 @@ const UnifiedBannerManagement = () => {
                         Leave empty to use slug-based link: https://www.100acress.com/{bannerData.slug || 'your-slug'}
                       </p>
                     </div>
-                  </div>
+                  )}
 
                   {activeTab === 'small' && (
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -687,6 +719,7 @@ const UnifiedBannerManagement = () => {
                     </div>
                   )}
 
+                  
                   {/* Image Upload Section */}
                   <div className="space-y-4">
                     <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">

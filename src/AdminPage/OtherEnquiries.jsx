@@ -20,8 +20,8 @@ const OtherEnquiries = () => {
       setLoading(true);
       setError("");
       
-      // Fetch from all three sources: old contact, user enquiries, and new Insight contacts
-      const [contactRes, userRes, insightContactRes] = await Promise.all([
+      // Fetch from all four sources: old contact, user enquiries, insight contacts, and new enquiries
+      const [contactRes, userRes, insightContactRes, enquiryRes] = await Promise.all([
         api.get(`contact/viewAll`).catch(err => {
           console.error('Old contact fetch failed:', err);
           return { data: { data: [] } };
@@ -33,12 +33,17 @@ const OtherEnquiries = () => {
         api.get(`/api/admin/contacts?limit=1000`).catch(err => {
           console.error('Insight contacts fetch failed:', err);
           return { data: { data: [] } };
+        }),
+        api.get(`/api/admin/enquiries`).catch(err => {
+          console.error('New enquiries fetch failed:', err);
+          return { data: { data: [] } };
         })
       ]);
 
       const contactData = contactRes?.data?.data || [];
       const userData = userRes?.data?.data || [];
       const insightContactData = insightContactRes?.data?.data || [];
+      const enquiryData = enquiryRes?.data?.data || [];
 
       // Add a type field to distinguish between data sources
       const contactDataWithType = contactData.map(item => ({ 
@@ -74,8 +79,20 @@ const OtherEnquiries = () => {
         inquiryType: item.inquiryType || 'General'
       }));
 
-      // Combine all three datasets
-      const combinedData = [...contactDataWithType, ...userDataWithType, ...insightContactDataWithType];
+      // Map new enquiry data to match the display format
+      const enquiryDataWithType = enquiryData.map(item => ({
+        ...item,
+        enquiryType: 'enquiry',
+        name: item.name || '',
+        mobile: item.mobile || '',
+        email: item.email || '',
+        message: item.query || item.message || '',
+        source: item.source || 'End of Year Sale',
+        status: item.status || 'Pending'
+      }));
+
+      // Combine all four datasets
+      const combinedData = [...contactDataWithType, ...userDataWithType, ...insightContactDataWithType, ...enquiryDataWithType];
 
       // Sort by createdAt in descending order (newest first)
       const sortedData = combinedData.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
@@ -169,6 +186,8 @@ const OtherEnquiries = () => {
         await api.delete(`userdataDelete/delete/${id}`);
       } else if (item.enquiryType === 'insight') {
         await api.delete(`/api/admin/contacts/${id}`);
+      } else if (item.enquiryType === 'enquiry') {
+        await api.delete(`/api/admin/enquiries/${id}`);
       }
 
       setRows(prev => prev.filter(r => r._id !== id));
@@ -399,9 +418,11 @@ const OtherEnquiries = () => {
                                       : 'bg-gradient-to-r from-blue-500 to-blue-600 text-white border border-blue-400 shadow-sm')
                                   : item.enquiryType === 'insight'
                                     ? 'bg-gradient-to-r from-indigo-500 to-indigo-600 text-white border border-indigo-400 shadow-sm'
-                                    : (item.projectName === 'Footer Instant Call'
-                                        ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-white border border-orange-400 shadow-sm'
-                                        : 'bg-gradient-to-r from-emerald-500 to-emerald-600 text-white border border-emerald-400 shadow-sm')
+                                    : item.enquiryType === 'enquiry'
+                                      ? 'bg-gradient-to-r from-red-500 to-red-600 text-white border border-red-400 shadow-sm'
+                                      : (item.projectName === 'Footer Instant Call'
+                                          ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-white border border-orange-400 shadow-sm'
+                                          : 'bg-gradient-to-r from-emerald-500 to-emerald-600 text-white border border-emerald-400 shadow-sm')
                               }`}>
                                 {item.enquiryType === 'contact'
                                   ? (item.message && item.message.includes('footer_instant_call')
@@ -409,7 +430,9 @@ const OtherEnquiries = () => {
                                       : 'Contact')
                                   : item.enquiryType === 'insight'
                                     ? item.source || 'GetInTouch'
-                                    : 'Project'
+                                    : item.enquiryType === 'enquiry'
+                                      ? item.source || 'Enquiry'
+                                      : 'Project'
                                 }
                               </span>
                             </div>

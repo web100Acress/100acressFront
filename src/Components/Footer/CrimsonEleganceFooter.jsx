@@ -361,8 +361,9 @@ const CrimsonEleganceFooter = () => {
                 { name: "Flats For Sale under 5 Cr in Gurgaon", href: "/projects/1-5-cr" },
                 { name: "Flats For Sale under 10 Cr in Gurgaon", href: "/projects/5-10-cr" },
                 { name: "Flats For Sale under 20 Cr In Gurgaon", href: "/projects/10-20-cr" },
-                { name: "Affordable Homes in Gurgaon", href: "/projects/1-5-cr" },
-                { name: "Farmhouse in Gurgaon", href: "/projects/farmhouse/" },
+                { name: "Resale Property in Gurgaon", href: "/buy-properties/best-resale-property-in-gurugram/" },
+                { name: "Rental Property in Gurgaon", href: "/rental-properties/best-rental-property-in-gurugram/" },
+                
                 
               ].map((location, index) => (
                 <Link
@@ -393,6 +394,7 @@ const CrimsonEleganceFooter = () => {
           { name: "SCO Plots in Gurgaon", href: "/projects/sco-plots/" },
           { name: "Shop Cum Office Plots in Gurgaon", href: "/projects/sco-plots/" },
           { name: "Luxury Villas in Gurgaon", href: "/projects/villas/" },
+          { name: "Affordable Homes in Gurgaon", href: "/projects/affordable-homes/" },
         ].map((location, index) => (
           <Link
             key={index}
