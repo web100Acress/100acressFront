@@ -18,6 +18,7 @@ import CallbackModal from './CallbackModal';
 import FooterForm from './FooterForm';
 import StickyBrochureButton from './StickyBrochureButton';
 import BrochureDownloadModal from './BrochureDownloadModal';
+import SimpleNotification from './SimpleNotification';
 import { Helmet } from 'react-helmet-async';
 import { useParams, useNavigate } from "react-router-dom";
 import api from "../../../../config/apiClient";
@@ -241,6 +242,7 @@ function ProjectLayout2() {
 
   return (
     <div className="min-h-screen bg-black text-white">
+      <SimpleNotification />
       {renderMetaTags()}
       {/* Hero Section */}
       <ProjectHero

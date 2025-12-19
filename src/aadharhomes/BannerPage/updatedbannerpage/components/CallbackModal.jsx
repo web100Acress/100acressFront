@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
-import { message } from 'antd';
 import api from '../../../../config/apiClient';
 import CountryCodeSelector from '../../../../Components/Actual_Components/CountryCodeSelector';
+import { showNotification } from './SimpleNotification';
 
 const CallbackModal = ({ isOpen, onClose, projectViewDetails = {}, projectTitle = "", location = "", onSuccess = null }) => {
   const [sideDetails, setSideDetails] = useState({ name: '', mobile: '', countryCode: '+91' });
@@ -38,12 +38,12 @@ const CallbackModal = ({ isOpen, onClose, projectViewDetails = {}, projectTitle 
     const genericEmail = `${name.toLowerCase().replace(/\s+/g, '')}.${mobile}@100acress.com`;
     
     if (!name || !mobile) {
-      message.error('Please fill in all required fields');
+      showNotification('Please fill in all required fields', 'error');
       return;
     }
 
     if (mobile.length < 7) {
-      message.error('Please enter a valid mobile number');
+      showNotification('Please enter a valid mobile number', 'error');
       return;
     }
 
@@ -60,16 +60,26 @@ const CallbackModal = ({ isOpen, onClose, projectViewDetails = {}, projectTitle 
       });
       
       // If we reach here, the request was successful
-      message.success('Callback Requested Successfully');
+      showNotification('Callback Requested Successfully', 'success');
       resetData();
-      onClose();
-      // Call success callback if provided (for unlocking images)
-      if (onSuccess) {
-        onSuccess();
-      }
+      
+      // Close the modal after a short delay
+      setTimeout(() => {
+        if (typeof onClose === 'function') {
+          onClose();
+        }
+        // Call success callback if provided (for unlocking images)
+        if (typeof onSuccess === 'function') {
+          onSuccess();
+        }
+      }, 500);
+      
     } catch (error) {
       console.error('CallbackModal API Error:', error);
-      message.error('Failed to submit request. Please try again.');
+      if (!error.isAxiosError || error.response) {
+        // Only show error if it's a server error (not a network error)
+        showNotification('Failed to submit request. Please try again.', 'error');
+      }
     } finally {
       setIsLoading(false);
       setSideButtonText('Submit');

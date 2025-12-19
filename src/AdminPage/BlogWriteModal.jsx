@@ -61,7 +61,7 @@ const BlogWriteModal = () => {
   // Configure global message behavior: auto-dismiss and limit stacking
   useEffect(() => {
     try {
-      message.config({ duration: 2, maxCount: 3 });
+      message.config({ duration: 3, maxCount: 1 });
     } catch {}
   }, []);
 
