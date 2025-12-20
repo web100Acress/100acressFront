@@ -340,11 +340,10 @@ const SmallBannerManagement = () => {
                           value={bannerData.slug}
                           onChange={(e) => {
                             const formattedSlug = e.target.value
-                              .toLowerCase()
-                              .replace(/[^a-z0-9\s-]/g, '')
-                              .replace(/\s+/g, '-')
-                              .replace(/-+/g, '-')
-                              .trim();
+  .replace(/[^a-zA-Z0-9\s\/-]/g, '')
+  .replace(/\s+/g, '-')
+  .replace(/-+/g, '-')
+  .trim();
                             setBannerData({...bannerData, slug: formattedSlug});
                           }}
                           className="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-all duration-200"
@@ -355,8 +354,7 @@ const SmallBannerManagement = () => {
                           onClick={() => {
                             if (bannerData.title) {
                               const autoSlug = bannerData.title
-                                .toLowerCase()
-                                .replace(/[^a-z0-9\s-]/g, '')
+                                .replace(/[^a-zA-Z0-9\s-]/g, '')
                                 .replace(/\s+/g, '-')
                                 .replace(/-+/g, '-')
                                 .trim();
