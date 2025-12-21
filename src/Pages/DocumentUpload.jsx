@@ -24,9 +24,20 @@ const DocumentUpload = () => {
   useEffect(() => {
     const verifyToken = async () => {
       try {
-        const res = await api.get(`/api/hr/onboarding/verify-upload-token/${token}`);
-        setCandidate(res.data.candidate);
+        // Use the correct endpoint that matches the token system
+        const res = await api.get(`/career/verify-upload-token/${token}`);
+        if (res.data.success && res.data.data) {
+          // Map the response to match expected format
+          setCandidate({
+            id: res.data.data.onboardingId,
+            name: res.data.data.candidateName,
+            email: res.data.data.candidateEmail || res.data.data.jobDetails?.email
+          });
+        } else {
+          setError(res.data.message || 'Invalid or expired link');
+        }
       } catch (e) {
+        console.error('Token verification error:', e);
         setError(e?.response?.data?.message || 'Invalid or expired link');
       } finally {
         setLoading(false);
