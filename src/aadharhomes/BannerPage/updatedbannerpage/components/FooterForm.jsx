@@ -88,7 +88,7 @@ const FooterForm = ({ builderName = "Premium", projectViewDetails = {}, projectT
   const { dialNumber, displayNumber } = getFooterPhoneNumbers();
 
   return (
-    <div className="bg-gradient-to-b from-gray-900 to-black py-8 md:py-16 border-t border-gray-800">
+    <div className="bg-gradient-to-b from-gray-900 to-black py-8 md:py-2 border-t border-gray-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start lg:items-center">
           
@@ -96,7 +96,9 @@ const FooterForm = ({ builderName = "Premium", projectViewDetails = {}, projectT
           <div className="space-y-6 md:space-y-8">
             <div className="space-y-6">
               <div className="inline-flex items-center px-4 py-2 bg-amber-500/10 rounded-full border border-amber-500/20">
-                <i className="fa-solid fa-award text-amber-400 mr-2"></i>
+                <svg className="w-4 h-4 text-amber-400 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                </svg>
                 <span className="text-amber-300 text-sm font-medium">Trusted by 10,000+ Customers</span>
               </div>
               
@@ -130,7 +132,9 @@ const FooterForm = ({ builderName = "Premium", projectViewDetails = {}, projectT
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
               <div className="flex items-start space-x-3 md:space-x-4 p-3 md:p-4 bg-gray-800/30 rounded-xl border border-gray-700/50">
                 <div className="flex-shrink-0 w-10 h-10 md:w-12 md:h-12 bg-green-500/10 rounded-lg flex items-center justify-center">
-                  <i className="fa-solid fa-shield-check text-green-400 text-lg md:text-xl"></i>
+                  <svg className="w-5 h-5 text-green-400 text-lg md:text-xl" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/>
+                  </svg>
                 </div>
                 <div>
                   <h4 className="text-white font-semibold mb-1 text-sm md:text-base">100% Secure</h4>
@@ -140,7 +144,9 @@ const FooterForm = ({ builderName = "Premium", projectViewDetails = {}, projectT
               
               <div className="flex items-start space-x-3 md:space-x-4 p-3 md:p-4 bg-gray-800/30 rounded-xl border border-gray-700/50">
                 <div className="flex-shrink-0 w-10 h-10 md:w-12 md:h-12 bg-blue-500/10 rounded-lg flex items-center justify-center">
-                  <i className="fa-solid fa-clock text-blue-400 text-lg md:text-xl"></i>
+                  <svg className="w-5 h-5 text-blue-400 text-lg md:text-xl" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
+                  </svg>
                 </div>
                 <div>
                   <h4 className="text-white font-semibold mb-1 text-sm md:text-base">Quick Response</h4>
@@ -150,7 +156,9 @@ const FooterForm = ({ builderName = "Premium", projectViewDetails = {}, projectT
               
               <div className="flex items-start space-x-3 md:space-x-4 p-3 md:p-4 bg-gray-800/30 rounded-xl border border-gray-700/50">
                 <div className="flex-shrink-0 w-10 h-10 md:w-12 md:h-12 bg-amber-500/10 rounded-lg flex items-center justify-center">
-                  <i className="fa-solid fa-users text-amber-400 text-lg md:text-xl"></i>
+                  <svg className="w-5 h-5 text-amber-400 text-lg md:text-xl" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
+                  </svg>
                 </div>
                 <div>
                   <h4 className="text-white font-semibold mb-1 text-sm md:text-base">Expert Guidance</h4>
@@ -160,7 +168,9 @@ const FooterForm = ({ builderName = "Premium", projectViewDetails = {}, projectT
               
               <div className="flex items-start space-x-3 md:space-x-4 p-3 md:p-4 bg-gray-800/30 rounded-xl border border-gray-700/50">
                 <div className="flex-shrink-0 w-10 h-10 md:w-12 md:h-12 bg-purple-500/10 rounded-lg flex items-center justify-center">
-                  <i className="fa-solid fa-star text-purple-400 text-lg md:text-xl"></i>
+                  <svg className="w-5 h-5 text-purple-400 text-lg md:text-xl" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                  </svg>
                 </div>
                 <div>
                   <h4 className="text-white font-semibold mb-1 text-sm md:text-base">Premium Service</h4>
@@ -200,7 +210,9 @@ const FooterForm = ({ builderName = "Premium", projectViewDetails = {}, projectT
                 {/* Name Field */}
                 <div className="relative">
                   
-                  <i className="fa-solid fa-user absolute left-3 md:left-4 top-1/2 transform -translate-y-1/2 text-amber-400 text-base md:text-lg"></i>
+                  <svg className="w-4 h-4 text-amber-400 absolute left-3 md:left-4 top-1/2 transform -translate-y-1/2 text-base md:text-lg" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                  </svg>
                   <input
                     className="peer w-full pl-10 md:pl-12 pr-4 py-3 md:py-4 rounded-xl bg-gray-800/70 text-white focus:ring-2 focus:ring-amber-400 border border-gray-600 outline-none placeholder-transparent transition-all duration-300 text-sm md:text-base"
                     type="text"
@@ -251,11 +263,34 @@ const FooterForm = ({ builderName = "Premium", projectViewDetails = {}, projectT
 
               {/* Privacy Notice */}
               <p className="text-xs text-gray-400 mt-6 text-center">
-                <i className="fa-solid fa-shield-halved text-amber-400 mr-2"></i>
+                <svg className="w-3 h-3 text-amber-400 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/>
+                </svg>
                 Your information is secure and will not be shared with third parties
               </p>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* Disclaimer Section */}
+      <div className="bg-gradient-to-b from-gray-900 to-black py-8 px-4 border-t border-gray-800 mt-8">
+        <div className="max-w-6xl mx-auto">
+          
+          <div className="text-sm text-gray-300 leading-relaxed text-justify">
+            <p className="mb-4">
+              <strong>Disclaimer:</strong> The information provided on this project page is shared only for general awareness and user understanding. It does not represent any offer, commitment, warranty, or endorsement. Project details are gathered from publicly available sources such as State RERA websites, official builder portals, and documents shared by authorized channel partners, including brochures, price lists, and payment plans. The platform presents this information in a simplified format to help users with research and comparison. It does not own or control the content. Buyers are strongly advised to verify all project details, approvals, pricing, and terms directly with the builder or promoter before making any purchase decision.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Copyright Section */}
+      <div className="border-t border-white/20">
+        <div className="max-w-6xl mx-auto px-4 py-4">
+          <p className="text-center text-gray-400 text-sm">
+            Copyright © 2025. {projectViewDetails.projectName || projectTitle || "100acress"}
+          </p>
         </div>
       </div>
     </div>
