@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchAllBanners } from '../Redux/slice/BannerSlice.jsx';
 import { fetchAllSmallBanners } from '../Redux/slice/SmallBannerSlice.jsx';
+import { fetchAllSideBanners } from '../Redux/slice/SideBannerSlice.jsx';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Sidebar from './Sidebar';
@@ -23,6 +24,7 @@ const UnifiedBannerManagement = () => {
   const dispatch = useDispatch();
   const { allBanners, loading: bannerLoading } = useSelector(state => state.banner);
   const { allSmallBanners, loading: smallBannerLoading } = useSelector(state => state.smallBanner);
+  const { allSideBanners, loading: sideBannerLoading } = useSelector(state => state.sideBanner);
   
   const [activeTab, setActiveTab] = useState('hero'); // 'hero' or 'small'
   const [showUploadForm, setShowUploadForm] = useState(false);
@@ -48,13 +50,22 @@ const UnifiedBannerManagement = () => {
   useEffect(() => {
     if (activeTab === 'hero') {
       dispatch(fetchAllBanners());
-    } else {
+    } else if (activeTab === 'small') {
       dispatch(fetchAllSmallBanners());
+    } else {
+      dispatch(fetchAllSideBanners());
     }
   }, [dispatch, activeTab]);
 
-  const currentBanners = activeTab === 'hero' ? allBanners : allSmallBanners;
-  const loading = activeTab === 'hero' ? bannerLoading : smallBannerLoading;
+  const currentBanners = activeTab === 'hero' ? allBanners : activeTab === 'small' ? allSmallBanners : allSideBanners;
+  const loading = activeTab === 'hero' ? bannerLoading : activeTab === 'small' ? smallBannerLoading : sideBannerLoading;
+
+  // Debug: Log side banner state changes
+  useEffect(() => {
+    if (activeTab === 'side') {
+      console.log('Side banners state updated:', { allSideBanners, sideBannerLoading });
+    }
+  }, [allSideBanners, sideBannerLoading, activeTab]);
 
   const handleFileSelect = (file, type) => {
     if (type === 'desktop') {
@@ -71,8 +82,77 @@ const UnifiedBannerManagement = () => {
   const handleUpload = async () => {
     if (activeTab === 'hero') {
       await uploadHeroBanner();
-    } else {
+    } else if (activeTab === 'small') {
       await uploadSmallBanner();
+    } else {
+      await uploadSideBanner();
+    }
+  };
+
+  const uploadSideBanner = async () => {
+    try {
+      if (!bannerData.title) {
+        toast.error('Title is required');
+        return;
+      }
+      if (!bannerData.slug) {
+        toast.error('Slug is required');
+        return;
+      }
+      if (!editingBanner && !selectedDesktopFile) {
+        toast.error('Image is required');
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('title', bannerData.title);
+      formData.append('subtitle', bannerData.subtitle);
+      formData.append('slug', bannerData.slug);
+      formData.append('link', bannerData.link);
+      formData.append('isActive', bannerData.isActive);
+      formData.append('order', bannerData.order);
+      if (selectedDesktopFile) {
+        formData.append('bannerImage', selectedDesktopFile);
+      }
+
+      const isDevelopment = import.meta.env.DEV;
+      const apiBase = isDevelopment 
+        ? (import.meta.env.VITE_API_BASE || 'http://localhost:3500')
+        : 'https://api.100acress.com';
+
+      const method = editingBanner ? 'PATCH' : 'POST';
+      const url = editingBanner
+        ? `${apiBase}/api/admin/side-banners/${editingBanner._id}`
+        : `${apiBase}/api/admin/side-banners/upload`;
+
+      const response = await fetch(url, {
+        method,
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('myToken')}`
+        },
+        body: formData
+      });
+
+      if (response.ok) {
+        const responseData = await response.json();
+        console.log('Side banner upload response:', responseData);
+        toast.success(editingBanner ? 'Side banner updated successfully!' : 'Side banner uploaded successfully!');
+        console.log('Dispatching fetchAllSideBanners...');
+        dispatch(fetchAllSideBanners());
+        resetForm();
+      } else {
+        const errorText = await response.text();
+        let errorData;
+        try {
+          errorData = JSON.parse(errorText);
+        } catch (e) {
+          errorData = { message: errorText };
+        }
+        toast.error(errorData.message || `Failed to ${editingBanner ? 'update' : 'upload'} side banner`);
+      }
+    } catch (error) {
+      console.error(`Error ${editingBanner ? 'updating' : 'uploading'} side banner:`, error);
+      toast.error(`Error ${editingBanner ? 'updating' : 'uploading'} side banner`);
     }
   };
 
@@ -255,7 +335,7 @@ const UnifiedBannerManagement = () => {
       order: banner.order || 0,
       position: banner.position || 'bottom',
       size: banner.size || 'small',
-      desktopImage: banner.desktopImage?.url || banner.desktopImage || '',
+      desktopImage: banner.desktopImage?.url || banner.desktopImage || banner.image?.url || '',
       mobileImage: banner.mobileImage?.url || banner.mobileImage || ''
     });
     setShowUploadForm(true);
@@ -266,7 +346,9 @@ const UnifiedBannerManagement = () => {
       try {
         const endpoint = activeTab === 'hero' 
           ? `${import.meta.env.VITE_API_BASE}/api/admin/banners/${bannerId}`
-          : `${import.meta.env.VITE_API_BASE}/api/admin/small-banners/${bannerId}`;
+          : activeTab === 'small'
+            ? `${import.meta.env.VITE_API_BASE}/api/admin/small-banners/${bannerId}`
+            : `${import.meta.env.VITE_API_BASE}/api/admin/side-banners/${bannerId}`;
           
         const response = await fetch(endpoint, {
           method: 'DELETE',
@@ -279,8 +361,10 @@ const UnifiedBannerManagement = () => {
           toast.success('Banner deleted successfully!');
           if (activeTab === 'hero') {
             dispatch(fetchAllBanners());
-          } else {
+          } else if (activeTab === 'small') {
             dispatch(fetchAllSmallBanners());
+          } else {
+            dispatch(fetchAllSideBanners());
           }
         } else {
           toast.error('Failed to delete banner');
@@ -296,7 +380,9 @@ const UnifiedBannerManagement = () => {
     try {
       const endpoint = activeTab === 'hero' 
         ? `${import.meta.env.VITE_API_BASE}/api/admin/banners/${bannerId}/toggle`
-        : `${import.meta.env.VITE_API_BASE}/api/admin/small-banners/${bannerId}/toggle`;
+        : activeTab === 'small'
+          ? `${import.meta.env.VITE_API_BASE}/api/admin/small-banners/${bannerId}/toggle`
+          : `${import.meta.env.VITE_API_BASE}/api/admin/side-banners/${bannerId}/toggle`;
         
       const response = await fetch(endpoint, {
         method: 'PATCH',
@@ -311,8 +397,10 @@ const UnifiedBannerManagement = () => {
         toast.success(`Banner ${!currentStatus ? 'activated' : 'deactivated'} successfully!`);
         if (activeTab === 'hero') {
           dispatch(fetchAllBanners());
-        } else {
+        } else if (activeTab === 'small') {
           dispatch(fetchAllSmallBanners());
+        } else {
+          dispatch(fetchAllSideBanners());
         }
       } else {
         toast.error('Failed to update banner status');
@@ -390,8 +478,10 @@ const UnifiedBannerManagement = () => {
                 onClick={() => {
                   if (activeTab === 'hero') {
                     dispatch(fetchAllBanners());
-                  } else {
+                  } else if (activeTab === 'small') {
                     dispatch(fetchAllSmallBanners());
+                  } else {
+                    dispatch(fetchAllSideBanners());
                   }
                 }}
                 className="flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
@@ -432,6 +522,16 @@ const UnifiedBannerManagement = () => {
               >
                 Small Banners
               </button>
+              <button
+                onClick={() => setActiveTab('side')}
+                className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
+                  activeTab === 'side'
+                    ? 'bg-white dark:bg-gray-600 text-gray-900 dark:text-white shadow-sm'
+                    : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+                }`}
+              >
+                Side Banners
+              </button>
             </div>
           </div>
         </div>
@@ -447,7 +547,7 @@ const UnifiedBannerManagement = () => {
             <div className="p-8 text-center">
               <MdImage className="text-6xl text-gray-300 mx-auto mb-4" />
               <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
-                No {activeTab === 'hero' ? 'hero' : 'small'} banners found
+                No {activeTab === 'hero' ? 'hero' : activeTab === 'small' ? 'small' : 'side'} banners found
               </h3>
               <p className="text-gray-600 dark:text-gray-400 mb-4">
                 Get started by adding your first banner
@@ -496,9 +596,9 @@ const UnifiedBannerManagement = () => {
                             <img
                               className="h-12 w-20 rounded-lg object-cover"
                               src={
-                                activeTab === 'hero' 
-                                  ? banner.image?.cdn_url || banner.image?.url || '/Images/placeholder-banner.jpg'
-                                  : banner.desktopImage?.cdn_url || banner.desktopImage?.url || '/Images/placeholder-banner.jpg'
+                                activeTab === 'small'
+                                  ? banner.desktopImage?.cdn_url || banner.desktopImage?.url || '/Images/placeholder-banner.jpg'
+                                  : banner.image?.cdn_url || banner.image?.url || '/Images/placeholder-banner.jpg'
                               }
                               alt={banner.title}
                             />
@@ -576,7 +676,7 @@ const UnifiedBannerManagement = () => {
               <div className="p-6">
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">
-                    {editingBanner ? 'Edit' : 'Add'} {activeTab === 'hero' ? 'Hero' : 'Small'} Banner
+                    {editingBanner ? 'Edit' : 'Add'} {activeTab === 'hero' ? 'Hero' : activeTab === 'small' ? 'Small' : 'Side'} Banner
                   </h2>
                   <button
                     onClick={resetForm}
@@ -638,6 +738,35 @@ const UnifiedBannerManagement = () => {
                           className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-gray-100"
                         />
                       </div>
+                    ) : activeTab === 'side' ? (
+                      <>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            Order
+                          </label>
+                          <input
+                            type="number"
+                            value={bannerData.order}
+                            onChange={(e) => setBannerData(prev => ({ ...prev, order: parseInt(e.target.value) || 0 }))}
+                            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-gray-100"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            Link
+                          </label>
+                          <input
+                            type="url"
+                            value={bannerData.link}
+                            onChange={(e) => setBannerData(prev => ({ ...prev, link: e.target.value }))}
+                            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-gray-100"
+                            placeholder="https://www.100acress.com/slug"
+                          />
+                          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                            Leave empty to use slug-based link: https://www.100acress.com/{bannerData.slug || 'your-slug'}
+                          </p>
+                        </div>
+                      </>
                     ) : (
                       <div>
                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -723,7 +852,7 @@ const UnifiedBannerManagement = () => {
                   {/* Image Upload Section */}
                   <div className="space-y-4">
                     <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">
-                      {activeTab === 'hero' ? 'Banner Image' : 'Banner Images'}
+                      {activeTab === 'small' ? 'Banner Images' : 'Banner Image'}
                     </h3>
                     
                     {activeTab === 'hero' ? (
@@ -757,6 +886,25 @@ const UnifiedBannerManagement = () => {
                           {mobilePreviewUrl && (
                             <div className="mt-2">
                               <img src={mobilePreviewUrl} alt="Mobile Preview" className="h-32 w-auto rounded-lg" />
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    ) : activeTab === 'side' ? (
+                      <div className="space-y-6">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            Image *
+                          </label>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => handleFileSelect(e.target.files[0], 'desktop')}
+                            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          />
+                          {desktopPreviewUrl && (
+                            <div className="mt-2">
+                              <img src={desktopPreviewUrl} alt="Preview" className="h-32 w-auto rounded-lg" />
                             </div>
                           )}
                         </div>
