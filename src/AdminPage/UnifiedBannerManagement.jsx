@@ -39,7 +39,8 @@ const UnifiedBannerManagement = () => {
     position: 'bottom',
     size: 'small',
     desktopImage: '',
-    mobileImage: ''
+    mobileImage: '',
+    linkType: 'slug' // 'slug' or 'link'
   });
   
   const [selectedDesktopFile, setSelectedDesktopFile] = useState(null);
@@ -95,8 +96,12 @@ const UnifiedBannerManagement = () => {
         toast.error('Title is required');
         return;
       }
-      if (!bannerData.slug) {
-        toast.error('Slug is required');
+      if (bannerData.linkType === 'slug' && !bannerData.slug) {
+        toast.error('Slug is required when using slug-based link');
+        return;
+      }
+      if (bannerData.linkType === 'link' && !bannerData.link) {
+        toast.error('Link is required when using custom link');
         return;
       }
       if (!editingBanner && !selectedDesktopFile) {
@@ -107,8 +112,12 @@ const UnifiedBannerManagement = () => {
       const formData = new FormData();
       formData.append('title', bannerData.title);
       formData.append('subtitle', bannerData.subtitle);
-      formData.append('slug', bannerData.slug);
-      formData.append('link', bannerData.link);
+      formData.append('linkType', bannerData.linkType);
+      if (bannerData.linkType === 'slug') {
+        formData.append('slug', bannerData.slug);
+      } else {
+        formData.append('link', bannerData.link);
+      }
       formData.append('isActive', bannerData.isActive);
       formData.append('order', bannerData.order);
       if (selectedDesktopFile) {
@@ -161,8 +170,12 @@ const UnifiedBannerManagement = () => {
       const formData = new FormData();
       formData.append('title', bannerData.title);
       formData.append('subtitle', bannerData.subtitle);
-      formData.append('slug', bannerData.slug);
-      formData.append('link', bannerData.link);
+      formData.append('linkType', bannerData.linkType);
+      if (bannerData.linkType === 'slug') {
+        formData.append('slug', bannerData.slug);
+      } else {
+        formData.append('link', bannerData.link);
+      }
       formData.append('isActive', bannerData.isActive);
       formData.append('order', bannerData.order);
       
@@ -237,8 +250,12 @@ const UnifiedBannerManagement = () => {
         toast.error('Title is required');
         return;
       }
-      if (!bannerData.slug) {
-        toast.error('Slug is required');
+      if (bannerData.linkType === 'slug' && !bannerData.slug) {
+        toast.error('Slug is required when using slug-based link');
+        return;
+      }
+      if (bannerData.linkType === 'link' && !bannerData.link) {
+        toast.error('Link is required when using custom link');
         return;
       }
       if (!selectedDesktopFile && !bannerData.desktopImage) {
@@ -249,8 +266,12 @@ const UnifiedBannerManagement = () => {
       const formData = new FormData();
       formData.append('title', bannerData.title);
       formData.append('subtitle', bannerData.subtitle);
-      formData.append('slug', bannerData.slug);
-      formData.append('link', bannerData.link);
+      formData.append('linkType', bannerData.linkType);
+      if (bannerData.linkType === 'slug') {
+        formData.append('slug', bannerData.slug);
+      } else {
+        formData.append('link', bannerData.link);
+      }
       formData.append('isActive', bannerData.isActive);
       formData.append('order', bannerData.order);
       formData.append('position', bannerData.position);
@@ -336,7 +357,8 @@ const UnifiedBannerManagement = () => {
       position: banner.position || 'bottom',
       size: banner.size || 'small',
       desktopImage: banner.desktopImage?.url || banner.desktopImage || banner.image?.url || '',
-      mobileImage: banner.mobileImage?.url || banner.mobileImage || ''
+      mobileImage: banner.mobileImage?.url || banner.mobileImage || '',
+      linkType: banner.link ? 'link' : 'slug'
     });
     setShowUploadForm(true);
   };
@@ -422,7 +444,8 @@ const UnifiedBannerManagement = () => {
       position: 'bottom',
       size: 'small',
       desktopImage: '',
-      mobileImage: ''
+      mobileImage: '',
+      linkType: 'slug'
     });
     setSelectedDesktopFile(null);
     setSelectedMobileFile(null);
@@ -449,9 +472,8 @@ const UnifiedBannerManagement = () => {
     const title = e.target.value;
     setBannerData(prev => ({
       ...prev,
-      title,
-      // Generate slug for both new and editing banners
-      slug: generateSlug(title)
+      title
+      // Remove automatic slug generation
     }));
   };
 
@@ -713,20 +735,76 @@ const UnifiedBannerManagement = () => {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        Slug *
+                        Link Type *
                       </label>
-                      <input
-                        type="text"
-                        value={bannerData.slug}
-                        onChange={(e) => setBannerData(prev => ({ ...prev, slug: e.target.value }))}
-                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-gray-100"
-                        required
-                      />
+                      <div className="flex gap-4">
+                        <label className="flex items-center">
+                          <input
+                            type="radio"
+                            name="linkType"
+                            value="slug"
+                            checked={bannerData.linkType === 'slug'}
+                            onChange={(e) => setBannerData(prev => ({ ...prev, linkType: e.target.value, link: '' }))}
+                            className="mr-2"
+                          />
+                          <span className="text-sm text-gray-700 dark:text-gray-300">Use Slug</span>
+                        </label>
+                        <label className="flex items-center">
+                          <input
+                            type="radio"
+                            name="linkType"
+                            value="link"
+                            checked={bannerData.linkType === 'link'}
+                            onChange={(e) => setBannerData(prev => ({ ...prev, linkType: e.target.value, slug: '' }))}
+                            className="mr-2"
+                          />
+                          <span className="text-sm text-gray-700 dark:text-gray-300">Use Custom Link</span>
+                        </label>
+                      </div>
                     </div>
-                    {activeTab === 'hero' ? (
+
+                    {bannerData.linkType === 'slug' ? (
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                          Slug *
+                        </label>
+                        <input
+                          type="text"
+                          value={bannerData.slug}
+                          onChange={(e) => setBannerData(prev => ({ ...prev, slug: e.target.value }))}
+                          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-gray-100"
+                          required
+                          placeholder="Enter slug exactly as you want it"
+                        />
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                          The slug will be used as: https://www.100acress.com/{bannerData.slug || 'your-slug'}
+                        </p>
+                      </div>
+                    ) : (
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                          Link *
+                        </label>
+                        <input
+                          type="url"
+                          value={bannerData.link}
+                          onChange={(e) => setBannerData(prev => ({ ...prev, link: e.target.value }))}
+                          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-gray-100"
+                          required
+                          placeholder="https://www.example.com/page"
+                        />
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                          Enter the complete URL where the banner should link to
+                        </p>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {activeTab === 'hero' && (
                       <div>
                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                           Order
@@ -738,71 +816,21 @@ const UnifiedBannerManagement = () => {
                           className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-gray-100"
                         />
                       </div>
-                    ) : activeTab === 'side' ? (
-                      <>
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                            Order
-                          </label>
-                          <input
-                            type="number"
-                            value={bannerData.order}
-                            onChange={(e) => setBannerData(prev => ({ ...prev, order: parseInt(e.target.value) || 0 }))}
-                            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-gray-100"
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                            Link
-                          </label>
-                          <input
-                            type="url"
-                            value={bannerData.link}
-                            onChange={(e) => setBannerData(prev => ({ ...prev, link: e.target.value }))}
-                            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-gray-100"
-                            placeholder="https://www.100acress.com/slug"
-                          />
-                          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                            Leave empty to use slug-based link: https://www.100acress.com/{bannerData.slug || 'your-slug'}
-                          </p>
-                        </div>
-                      </>
-                    ) : (
+                    )}
+                    {activeTab === 'side' && (
                       <div>
                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                          Link
+                          Order
                         </label>
                         <input
-                          type="url"
-                          value={bannerData.link}
-                          onChange={(e) => setBannerData(prev => ({ ...prev, link: e.target.value }))}
+                          type="number"
+                          value={bannerData.order}
+                          onChange={(e) => setBannerData(prev => ({ ...prev, order: parseInt(e.target.value) || 0 }))}
                           className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-gray-100"
-                          placeholder="https://www.100acress.com/slug"
                         />
-                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                          Leave empty to use slug-based link: https://www.100acress.com/{bannerData.slug || 'your-slug'}
-                        </p>
                       </div>
                     )}
                   </div>
-
-                  {activeTab === 'hero' && (
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        Link
-                      </label>
-                      <input
-                        type="url"
-                        value={bannerData.link}
-                        onChange={(e) => setBannerData(prev => ({ ...prev, link: e.target.value }))}
-                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-gray-100"
-                        placeholder="https://www.100acress.com/slug"
-                      />
-                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                        Leave empty to use slug-based link: https://www.100acress.com/{bannerData.slug || 'your-slug'}
-                      </p>
-                    </div>
-                  )}
 
                   {activeTab === 'small' && (
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
