@@ -455,19 +455,7 @@ const UnifiedBannerManagement = () => {
     setShowUploadForm(false);
   };
 
-  const generateSlug = (title) => {
-    const baseSlug = title
-      .toLowerCase()
-      .replace(/[^a-z0-9\s-]/g, '')
-      .replace(/\s+/g, '-')
-      .replace(/-+/g, '-')
-      .trim();
-    
-    // Add timestamp to make slug unique
-    const timestamp = Date.now().toString().slice(-6);
-    return `${baseSlug}-${timestamp}`;
-  };
-
+  
   const handleTitleChange = (e) => {
     const title = e.target.value;
     setBannerData(prev => ({
