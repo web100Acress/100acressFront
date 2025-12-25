@@ -275,6 +275,16 @@ function App() {
     };
   }, []);
 
+  const VerifyEmailRedirect = () => {
+    const location = useLocation();
+    return (
+      <Navigate
+        to={`/auth/signup/email-verification/${location.search || ''}`}
+        replace
+      />
+    );
+  };
+
   return (
     <>
       <DataProvider>
@@ -292,6 +302,7 @@ function App() {
                   <Routes>
                     <Route element={<PublicRoute />}>
                       <Route index element={<Home />} />
+                      <Route path="/verify-email/*" element={<VerifyEmailRedirect />} />
                       <Route
                         path="/postproperty"
                         element={
