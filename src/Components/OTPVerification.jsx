@@ -8,8 +8,56 @@ import "react-toastify/dist/ReactToastify.css";
 function OTPVerification() {
   const [otp, setOtp] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [resendLoading, setResendLoading] = useState(false);
+  const [resendCooldown, setResendCooldown] = useState(0);
   const navigate = useNavigate();
   const hasSubmittedRef = useRef(false);
+
+  useEffect(() => {
+    if (resendCooldown <= 0) return;
+    const t = setInterval(() => {
+      setResendCooldown((s) => Math.max(0, s - 1));
+    }, 1000);
+    return () => clearInterval(t);
+  }, [resendCooldown]);
+
+  const handleResendOtp = async () => {
+    if (resendLoading || resendCooldown > 0) return;
+    const email = localStorage.getItem('userEmail');
+    if (!email) {
+      toast.error('Email not found. Please go back and enter your email again.', {
+        position: 'top-center',
+        autoClose: 3000,
+      });
+      return;
+    }
+
+    setResendLoading(true);
+    try {
+      await api.post('/postPerson/verifyEmail', { email });
+      toast.success('OTP sent again. Please check your email.', {
+        position: 'top-center',
+        autoClose: 3000,
+      });
+      setResendCooldown(60);
+    } catch (error) {
+      const retryAfter = Number(error?.response?.data?.retryAfterSeconds);
+      if (error?.response?.status === 429 && Number.isFinite(retryAfter) && retryAfter > 0) {
+        setResendCooldown(retryAfter);
+        toast.info(`Please wait ${retryAfter}s before resending OTP.`, {
+          position: 'top-center',
+          autoClose: 2500,
+        });
+      } else {
+        toast.error(error?.response?.data?.message || 'Failed to resend OTP. Try again.', {
+          position: 'top-center',
+          autoClose: 3000,
+        });
+      }
+    } finally {
+      setResendLoading(false);
+    }
+  };
 
   const handleCompleteAction = async (otpValue) => {
     // Prevent multiple submissions
@@ -232,9 +280,14 @@ function OTPVerification() {
                   <button 
                     type="button" 
                     className="text-primaryRed hover:text-red-700 font-semibold hover:underline transition-colors"
-                    onClick={() => toast.info("Resend feature coming soon!")}
+                    onClick={handleResendOtp}
+                    disabled={resendLoading || resendCooldown > 0}
                   >
-                    Resend OTP
+                    {resendLoading
+                      ? 'Resending...'
+                      : resendCooldown > 0
+                        ? `Resend OTP in ${resendCooldown}s`
+                        : 'Resend OTP'}
                   </button>
                 </p>
               </div>
