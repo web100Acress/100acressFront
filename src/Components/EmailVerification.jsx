@@ -8,8 +8,19 @@ function EmailVerification() {
   const [email, setEmail] = useState("");
   const history = useNavigate();
   const [messageApi,contextHolder] = message.useMessage();
-  
-  
+
+  useEffect(() => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const qEmail = params.get('email');
+      if (qEmail && qEmail.trim()) {
+        setEmail(qEmail.trim());
+      }
+    } catch {
+      // ignore
+    }
+  }, []);
+
   const handleSendOTP = () => {
     if(email.length === 0){
       messageApi.open({
@@ -99,7 +110,7 @@ function EmailVerification() {
         <div className="flex flex-col justify-center items-center">
           <div className="text-2xl font-semibold text-center mt-10">Verify Your Email address</div>
           <div className="text-2xl my-5" >Please Enter your Email to receive OTP</div>
-          <Input type="email" size="large" placeholder="Enter your Email" onChange={(e) => onChange(e.target.value)} className="w-1/2" />
+          <Input type="email" size="large" placeholder="Enter your Email" value={email} onChange={(e) => onChange(e.target.value)} className="w-1/2" />
             <button
               className="my-4 px-4 py-2 bg-primaryRed text-white rounded"
               onClick={handleClick}
