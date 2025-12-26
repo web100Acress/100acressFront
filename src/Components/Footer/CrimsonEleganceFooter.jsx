@@ -352,9 +352,10 @@ const CrimsonEleganceFooter = () => {
                 { name: "4 BHK Flats in Gurgaon", href: "/4-bhk-flats-in-gurgaon/" },
                 { name: "5 BHK Flats in Gurgaon", href: "/5-bhk-flats-in-gurgaon/" },
                 { name: "Fully Furnished Flats in Gurgaon", href: "/top-luxury-projects/" },
-                { name: "Penthouse in Gurgaon", href: "/" },
-                { name: "Semi Furnished Flats in Gurgaon", href: "/" },
-                { name: "Unfurnished Flats in Gurgaon", href: "/" },
+                
+                { name: "Penthouses in Gurgaon", href: "/penthouses-in-gurgaon/" },
+                { name: "Semi Furnished Flats in Gurgaon", href: "/semi-furnished-flats-in-gurgaon/" },
+                { name: "Unfurnished Flats in Gurgaon", href: "/unfurnished-flats-in-gurgaon/" },
                 { name: "Independent Floor for Sale in Gurgaon", href: "/projects/independent-floors/" },
                 { name: "Independent Houses For Sale in Gurgaon", href: "/projects/independent-floors/" },
                 { name: "Flats For Sale under 1 Cr in Gurgaon", href: "/projects/under-1-cr/" },
@@ -363,6 +364,8 @@ const CrimsonEleganceFooter = () => {
                 { name: "Flats For Sale under 20 Cr In Gurgaon", href: "/projects/10-20-cr" },
                 { name: "Affordable Homes in Gurgaon", href: "/projects/1-5-cr" },
                 { name: "Farmhouse in Gurgaon", href: "/projects/farmhouse/" },
+                { name: "Studio Apartments in Gurgaon", href: "" },
+                { name: "Service Apartments in Gurgaon", href: "" },
                 
               ].map((location, index) => (
                 <Link

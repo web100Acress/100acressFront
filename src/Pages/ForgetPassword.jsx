@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const ForgetPassword = () => {
   const history = useNavigate();
   const [newPassword, setNewPassword] = useState({
@@ -25,30 +27,46 @@ const ForgetPassword = () => {
 
     const { password, cpassword } = newPassword; 
     try {
-      if (!token) {
-        console.error('Token not found in URL parameters');
+      if (!token?.token) {
+        toast.error('Reset link is invalid or expired.', { position: 'top-center', autoClose: 3500 });
         return;
       }
-      if (password === cpassword) {
-        const apiUrl = `/postPerson/reset/${token.token}`;
-        console.log(apiUrl.message)
-        const response = await axios.post(apiUrl, {
-          password: password,
-          cpassword: cpassword,
-        });
-        console.log(response.data);
-        alert('Password updated');
-        history('/auth/signin')
-      } else {
-        console.error('Passwords do not match');
+
+      if (!password || !cpassword) {
+        toast.error('Please enter and confirm your new password.', { position: 'top-center', autoClose: 3500 });
+        return;
       }
+
+      if (password !== cpassword) {
+        toast.error('Passwords do not match.', { position: 'top-center', autoClose: 3500 });
+        return;
+      }
+
+      const apiUrl = `/postPerson/reset/${token.token}`;
+      const response = await axios.post(apiUrl, {
+        password: password,
+        cpassword: cpassword,
+      });
+
+      toast.success(response?.data?.message || 'Password reset successful', {
+        position: 'top-center',
+        autoClose: 2500,
+      });
+
+      setTimeout(() => {
+        history('/auth/signin');
+      }, 800);
     } catch (error) {
-      console.error('Error:', error);
+      toast.error(error?.response?.data?.message || 'Failed to reset password. Try again.', {
+        position: 'top-center',
+        autoClose: 4000,
+      });
     }
   };
 
   return (
     <div>
+      <ToastContainer />
       <div className="w-screen h-72 bg-red-600 relative">
         <>
           <div className="max-w-lg mx-auto my-10 bg-white p-8 rounded-xl absolute top-1/2 mt-48 left-1/2 transform -translate-x-2/4 -translate-y-2/4 shadow shadow-slate-300">
