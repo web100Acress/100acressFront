@@ -496,14 +496,14 @@ function SearchBar() {
       case "Rent":
         window.open(
           window.location.origin +
-            "/buy-properties/best-resale-property-in-gurugram/",
+            "/rental-properties/best-rental-property-in-gurugram/",
           "_blank"
         );
         break;
 
       case "New Launch":
         window.open(
-          window.location.origin + "/projects-in-newlaunch/",
+          window.location.origin + "/projects/newlaunch/",
           "_blank"
         );
         break;
@@ -513,11 +513,11 @@ function SearchBar() {
         break;
 
       case "Plots":
-        window.open(window.location.origin + "/plots-in-gurugram/", "_blank");
+        window.open(window.location.origin + "/projects/plots/", "_blank");
         break;
 
       case "SCO":
-        window.open(window.location.origin + "/sco/plots/", "_blank");
+        window.open(window.location.origin + "/projects/sco-plots/", "_blank");
         break;
     }
   };

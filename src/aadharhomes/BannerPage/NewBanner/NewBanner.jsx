@@ -526,7 +526,7 @@ const items =text.map((item, index) => ({
 
   return (
       <div>
-        <Wrapper className="section" style={{ overflow: "hidden", overflowX: "hidden" }}>
+        <Wrapper className="section" style={{ overflowX: "hidden" }}>
           <Helmet>
             <title>{projectViewDetails?.meta_title}</title>
             <meta
@@ -1885,6 +1885,22 @@ const items =text.map((item, index) => ({
                 </div>
               </div>
             </section>
+
+            {/* Disclaimer Section */}
+            <div className="bg-gray-100 py-8 px-4 border-t border-gray-300">
+              <div className="max-w-6xl mx-auto">
+                <h4 className="text-lg font-semibold text-gray-800 mb-4 text-center">Disclaimer</h4>
+                <div className="text-sm text-gray-600 leading-relaxed text-justify">
+                  <p className="mb-4">
+                    The information provided on this project page is shared only for general awareness and user understanding. It does not represent any offer, commitment, warranty, or endorsement. Project details are gathered from publicly available sources such as State RERA websites, official builder portals, and documents shared by authorized channel partners, including brochures, price lists, and payment plans.
+                  </p>
+                  <p className="mb-4">
+                    The platform presents this information in a simplified format to help users with research and comparison. It does not own or control the content. Buyers are strongly advised to verify all project details, approvals, pricing, and terms directly with the builder or promoter before making any purchase decision.
+                  </p>
+                </div>
+              </div>
+            </div>
+
             <div>
               <a
                 href="#"

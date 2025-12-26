@@ -15,6 +15,7 @@ import favoritesReducer from "../slice/FavoritesSlice.jsx";
 import viewedReducer from "../slice/ViewedSlice.jsx";
 import bannerReducer from "../slice/BannerSlice.jsx";
 import smallBannerReducer from "../slice/SmallBannerSlice.jsx";
+import sideBannerReducer from "../slice/SideBannerSlice.jsx";
 
 const AppStore = configureStore({
     reducer: {
@@ -34,6 +35,7 @@ const AppStore = configureStore({
         viewed: viewedReducer,
         banner: bannerReducer,
         smallBanner: smallBannerReducer,
+        sideBanner: sideBannerReducer,
     },
     devTools: process.env.NODE_ENV !== 'production',
 });
