@@ -285,6 +285,16 @@ function App() {
     );
   };
 
+  const PostPropertyRedirect = () => {
+    const location = useLocation();
+    return (
+      <Navigate
+        to={`/postproperty${location.search || ''}`}
+        replace
+      />
+    );
+  };
+
   return (
     <>
       <DataProvider>
@@ -303,6 +313,7 @@ function App() {
                     <Route element={<PublicRoute />}>
                       <Route index element={<Home />} />
                       <Route path="/verify-email/*" element={<VerifyEmailRedirect />} />
+                      <Route path="/post-property/*" element={<PostPropertyRedirect />} />
                       <Route
                         path="/postproperty"
                         element={
