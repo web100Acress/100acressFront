@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import Footer from "../Components/Actual_Components/Footer";
-import FinalNavBar from "../Components/HomePageComponents/NavBar";
+import Navbar from "../aadharhomes/navbar/Navbar";
 import axios from "axios";
+import { getApiBase } from "../config/apiBase";
 import { Helmet } from "react-helmet";
 import { FaWhatsapp, FaMapMarkerAlt, FaShieldAlt, FaHeadset, FaCheckCircle, FaPhone, FaEnvelope, FaClock, FaGift, FaPercent, FaCalendarAlt, FaRocket } from "react-icons/fa";
 import { toast } from "react-hot-toast";
@@ -11,20 +12,14 @@ const EnquireNow = () => {
   const [formData, setFormData] = useState({
     name: "",
     mobile: "",
-    email: "",
-    city: "",
     budget: "",
-    propertyType: "",
     message: "",
   });
 
   const [formValidationErrors, setFormValidationErrors] = useState({
     name: "",
     mobile: "",
-    email: "",
-    city: "",
     budget: "",
-    propertyType: "",
     message: ""
   });
 
@@ -43,11 +38,12 @@ const EnquireNow = () => {
   ];
 
   const budgetRanges = [
-    "Under 50 Lakhs",
-    "50 Lakhs - 1 Crore", 
-    "1 Crore - 2 Crores",
-    "2 Crores - 5 Crores",
-    "Above 5 Crores"
+    "Under 1 Crore",
+    "1 Crore - 5 Crore", 
+    "5 Crore - 10 Crores",
+    "10 Crores - 20 Crores",
+    "20 Crores - 50 Crores",
+    "Above 50 Crores"
   ];
 
   const cities = [
@@ -77,32 +73,13 @@ const EnquireNow = () => {
           errorMessage = "Please enter a valid 10-digit mobile number";
         }
         break;
-      case "email":
-        if (value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
-          errorMessage = "Please enter a valid email address";
-        }
-        break;
-      case "city":
-        if (!value) {
-          errorMessage = "City is required";
-        }
-        break;
       case "budget":
         if (!value) {
           errorMessage = "Budget range is required";
         }
         break;
-      case "propertyType":
-        if (!value) {
-          errorMessage = "Property type is required";
-        }
-        break;
       case "message":
-        if (!value) {
-          errorMessage = "Message is required";
-        } else if (value.length < 10) {
-          errorMessage = "Message must be at least 10 characters long";
-        }
+        // Message is optional - no validation required
         break;
       default:
         break;
@@ -139,8 +116,10 @@ const EnquireNow = () => {
   useEffect(() => {
     const errors = Object.values(formValidationErrors);
     const hasErrors = errors.some(error => error !== "");
-    const hasAllRequiredFields = Object.values(formData).every(value => 
-      value !== "" && value.trim() !== ""
+    // Check all required fields
+    const requiredFields = ['name', 'mobile', 'budget'];
+    const hasAllRequiredFields = requiredFields.every(field => 
+      formData[field] && formData[field].trim() !== ""
     );
     
     setIsFormValid(!hasErrors && hasAllRequiredFields);
@@ -165,7 +144,7 @@ const EnquireNow = () => {
     setIsSubmitting(true);
     
     try {
-      const response = await axios.post(`${process.env.REACT_APP_API_URL || 'http://localhost:5000'}/api/enquiry/end-of-year-sale`, {
+      const response = await axios.post(`${getApiBase()}/api/enquiry/end-of-year-sale`, {
         ...formData,
         enquiryType: "end_of_year_sale",
         timestamp: new Date().toISOString(),
@@ -180,19 +159,13 @@ const EnquireNow = () => {
         setFormData({
           name: "",
           mobile: "",
-          email: "",
-          city: "",
           budget: "",
-          propertyType: "",
           message: "",
         });
         setFormValidationErrors({
           name: "",
           mobile: "",
-          email: "",
-          city: "",
           budget: "",
-          propertyType: "",
           message: ""
         });
       } else {
@@ -240,42 +213,41 @@ const EnquireNow = () => {
         <meta name="keywords" content="end of year sale, property deals, exclusive offers, real estate discounts, limited time offers" />
       </Helmet>
 
+      <Navbar transparentWhiteText={true} />
+
   
       
       <div className="min-h-screen bg-gradient-to-br from-red-50 via-white to-red-50">
         {/* Hero Section */}
-        <div className="relative overflow-hidden bg-gradient-to-r from-red-600 to-red-700 text-white">
-          <div className="absolute inset-0 bg-black opacity-10"></div>
-          <div className="relative max-w-7xl mx-auto px-4 py-16 sm:px-6 lg:px-8">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              className="text-center"
-            >
-              <div className="flex justify-center mb-4">
-                <FaGift className="w-12 h-12 text-yellow-300" />
-              </div>
-              <h1 className="text-4xl md:text-5xl font-bold mb-4">
-                End of Year Sale
-              </h1>
-              <p className="text-xl md:text-2xl mb-2 text-red-100">
-                Exclusive Property Deals - Limited Time Only!
-              </p>
-            
-              <div className="flex justify-center gap-4 mt-6">
-                <div className="flex items-center gap-2 bg-white/20 px-4 py-2 rounded-full">
-                  <FaCalendarAlt className="w-4 h-4" />
-                  <span className="text-sm font-medium">Valid until Dec 31, 2025</span>
-                </div>
-                
-              </div>
-            </motion.div>
+        <div className="relative overflow-hidden">
+          <div className="absolute inset-0">
+            {/* Mobile Image */}
+            <img 
+              src="https://d16gdc5rm7f21b.cloudfront.net/uploads/1766044910223-end-year-sale-mobile.webp" 
+              alt="End of Year Sale"
+              className="w-full h-full object-cover lg:hidden"
+            />
+            {/* Desktop Image */}
+            <img 
+              src="https://d16gdc5rm7f21b.cloudfront.net/uploads/1766044083906-end-year-sale.webp" 
+              alt="End of Year Sale"
+              className="w-full h-full object-cover hidden lg:block"
+            />
           </div>
+          <div className="relative h-96"></div>
         </div>
 
         {/* Main Content */}
-        <div className="max-w-7xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8 pt-0">
+          {/* Common Header */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-6"
+          >
+            
+          </motion.div>
           <div className="grid lg:grid-cols-2 gap-12">
             
             {/* Left Column - Benefits */}
@@ -283,10 +255,10 @@ const EnquireNow = () => {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
+              className="hidden lg:block"
             >
-              <h2 className="text-3xl font-bold text-gray-900 mb-6">
-                Why Choose Our End of Year Sale?
-              </h2>
+              {/* Contact Info */}
+              
               
               <div className="space-y-4">
                 {[
@@ -316,24 +288,7 @@ const EnquireNow = () => {
                 ))}
               </div>
 
-              {/* Contact Info */}
-              <div className="mt-8 p-6 bg-red-50 rounded-lg border border-red-200">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Need Immediate Assistance?</h3>
-                <div className="space-y-3">
-                  <a href="tel:918500900100" className="flex items-center gap-3 text-gray-700 hover:text-red-600 transition-colors">
-                    <FaPhone className="w-5 h-5 text-red-600" />
-                    <span>+91 85009 00100</span>
-                  </a>
-                  <a href="https://wa.me/918500900100" className="flex items-center gap-3 text-gray-700 hover:text-red-600 transition-colors">
-                    <FaWhatsapp className="w-5 h-5 text-green-600" />
-                    <span>Chat on WhatsApp</span>
-                  </a>
-                  <div className="flex items-center gap-3 text-gray-700">
-                    <FaEnvelope className="w-5 h-5 text-red-600" />
-                    <span>sales@100acress.com</span>
-                  </div>
-                </div>
-              </div>
+              
             </motion.div>
 
             {/* Right Column - Enquiry Form */}
@@ -341,8 +296,9 @@ const EnquireNow = () => {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
+              className="block"
             >
-              <div className="bg-white rounded-2xl shadow-xl p-8">
+              <div className="bg-white rounded-2xl shadow-2xl shadow-red-900/20 p-8 border-2 border-red-500">
                 <h2 className="text-2xl font-bold text-gray-900 mb-6">
                   Submit Your Enquiry
                 </h2>
@@ -401,60 +357,7 @@ const EnquireNow = () => {
                     )}
                   </div>
 
-                  {/* Email Field */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Email Address
-                    </label>
-                    <input
-                      type="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleInputChange}
-                      onFocus={() => handleFieldFocus("email")}
-                      onBlur={() => handleFieldBlur("email")}
-                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all ${
-                        formValidationErrors.email 
-                          ? "border-red-500" 
-                          : focusedField === "email" 
-                          ? "border-red-500" 
-                          : "border-gray-300"
-                      }`}
-                      placeholder="Enter your email address"
-                    />
-                    {formValidationErrors.email && (
-                      <p className="mt-1 text-sm text-red-600">{formValidationErrors.email}</p>
-                    )}
-                  </div>
 
-                  {/* City Field */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Preferred City *
-                    </label>
-                    <select
-                      name="city"
-                      value={formData.city}
-                      onChange={handleInputChange}
-                      onFocus={() => handleFieldFocus("city")}
-                      onBlur={() => handleFieldBlur("city")}
-                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all ${
-                        formValidationErrors.city 
-                          ? "border-red-500" 
-                          : focusedField === "city" 
-                          ? "border-red-500" 
-                          : "border-gray-300"
-                      }`}
-                    >
-                      <option value="">Select City</option>
-                      {cities.map(city => (
-                        <option key={city} value={city}>{city}</option>
-                      ))}
-                    </select>
-                    {formValidationErrors.city && (
-                      <p className="mt-1 text-sm text-red-600">{formValidationErrors.city}</p>
-                    )}
-                  </div>
 
                   {/* Budget Field */}
                   <div>
@@ -485,39 +388,11 @@ const EnquireNow = () => {
                     )}
                   </div>
 
-                  {/* Property Type Field */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Property Type *
-                    </label>
-                    <select
-                      name="propertyType"
-                      value={formData.propertyType}
-                      onChange={handleInputChange}
-                      onFocus={() => handleFieldFocus("propertyType")}
-                      onBlur={() => handleFieldBlur("propertyType")}
-                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all ${
-                        formValidationErrors.propertyType 
-                          ? "border-red-500" 
-                          : focusedField === "propertyType" 
-                          ? "border-red-500" 
-                          : "border-gray-300"
-                      }`}
-                    >
-                      <option value="">Select Property Type</option>
-                      {propertyTypes.map(type => (
-                        <option key={type} value={type}>{type}</option>
-                      ))}
-                    </select>
-                    {formValidationErrors.propertyType && (
-                      <p className="mt-1 text-sm text-red-600">{formValidationErrors.propertyType}</p>
-                    )}
-                  </div>
 
                   {/* Message Field */}
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Message *
+                      Message
                     </label>
                     <textarea
                       name="message"
@@ -525,7 +400,7 @@ const EnquireNow = () => {
                       onChange={handleInputChange}
                       onFocus={() => handleFieldFocus("message")}
                       onBlur={() => handleFieldBlur("message")}
-                      rows={4}
+                      rows={2}
                       className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all resize-none ${
                         formValidationErrors.message 
                           ? "border-red-500" 
@@ -564,9 +439,8 @@ const EnquireNow = () => {
                   </button>
                 </form>
 
-                <div className="mt-6 text-center text-sm text-gray-600">
-                  <p>By submitting this form, you agree to be contacted by our team regarding your property enquiry.</p>
-                </div>
+                
+                
               </div>
             </motion.div>
           </div>

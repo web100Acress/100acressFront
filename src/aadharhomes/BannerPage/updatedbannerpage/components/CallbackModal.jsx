@@ -1,12 +1,95 @@
 import React, { useState, useCallback } from 'react';
-import { message } from 'antd';
 import api from '../../../../config/apiClient';
 import CountryCodeSelector from '../../../../Components/Actual_Components/CountryCodeSelector';
+import { showNotification } from './SimpleNotification';
 
 const CallbackModal = ({ isOpen, onClose, projectViewDetails = {}, projectTitle = "", location = "", onSuccess = null }) => {
   const [sideDetails, setSideDetails] = useState({ name: '', mobile: '', countryCode: '+91' });
   const [sideButtonText, setSideButtonText] = useState('Submit');
   const [isLoading, setIsLoading] = useState(false);
+
+  // Country-specific phone validation rules
+  const validatePhoneNumber = (phoneNumber, countryCode) => {
+    const phone = phoneNumber.replace(/\s/g, ''); // Remove spaces
+    
+    switch (countryCode) {
+      case '+91': // India
+        return /^[6-9]\d{9}$/.test(phone);
+      case '+1': // USA/Canada
+        return /^[2-9]\d{2}[2-9]\d{2}\d{4}$/.test(phone);
+      case '+44': // UK
+        return /^[1-9]\d{9,10}$/.test(phone);
+      case '+61': // Australia
+        return /^[2-478]\d{8}$/.test(phone);
+      case '+971': // UAE
+        return /^[5]\d{8}$/.test(phone);
+      case '+966': // Saudi Arabia
+        return /^5\d{8}$/.test(phone);
+      case '+65': // Singapore
+        return /^[689]\d{7}$/.test(phone);
+      case '+60': // Malaysia
+        return /^[1]\d{8,9}$/.test(phone);
+      case '+81': // Japan
+        return /^[789]\d{8}$/.test(phone);
+      case '+82': // South Korea
+        return /^[1]\d{8,9}$/.test(phone);
+      case '+86': // China
+        return /^1[3-9]\d{9}$/.test(phone);
+      case '+49': // Germany
+        return /^[1]\d{10,11}$/.test(phone);
+      case '+33': // France
+        return /^[67]\d{8}$/.test(phone);
+      case '+39': // Italy
+        return /^[3]\d{8,9}$/.test(phone);
+      case '+34': // Spain
+        return /^[67]\d{8}$/.test(phone);
+      case '+31': // Netherlands
+        return /^[6]\d{8}$/.test(phone);
+      case '+46': // Sweden
+        return /^[7]\d{8}$/.test(phone);
+      case '+47': // Norway
+        return /^[4-9]\d{7}$/.test(phone);
+      case '+358': // Finland
+        return /^[4-5]\d{7,8}$/.test(phone);
+      case '+45': // Denmark
+        return /^[2-9]\d{7}$/.test(phone);
+      case '+41': // Switzerland
+        return /^[7]\d{8}$/.test(phone);
+      case '+43': // Austria
+        return /^[6]\d{8,12}$/.test(phone);
+      case '+32': // Belgium
+        return /^[4]\d{8}$/.test(phone);
+      case '+48': // Poland
+        return /^[5-8]\d{8}$/.test(phone);
+      case '+420': // Czech Republic
+        return /^[6-7]\d{8}$/.test(phone);
+      case '+36': // Hungary
+        return /^[2-9]\d{8,9}$/.test(phone);
+      case '+40': // Romania
+        return /^[2-9]\d{8}$/.test(phone);
+      case '+30': // Greece
+        return /^[2]\d{9}$/.test(phone);
+      case '+90': // Turkey
+        return /^[5]\d{9}$/.test(phone);
+      case '+20': // Egypt
+        return /^[1]\d{8}$/.test(phone);
+      case '+27': // South Africa
+        return /^[6-8]\d{8}$/.test(phone);
+      case '+234': // Nigeria
+        return /^[7-9]\d{9}$/.test(phone);
+      case '+254': // Kenya
+        return /^[7]\d{8}$/.test(phone);
+      case '+212': // Morocco
+        return /^[6-7]\d{8}$/.test(phone);
+      case '+213': // Algeria
+        return /^[5-7]\d{8}$/.test(phone);
+      case '+216': // Tunisia
+        return /^[2-9]\d{7}$/.test(phone);
+      default:
+        // Generic validation for other countries - 7-15 digits
+        return /^\d{7,15}$/.test(phone);
+    }
+  };
 
   const handleChangeSide = (e) => {
     const { name, value } = e.target;
@@ -38,12 +121,51 @@ const CallbackModal = ({ isOpen, onClose, projectViewDetails = {}, projectTitle 
     const genericEmail = `${name.toLowerCase().replace(/\s+/g, '')}.${mobile}@100acress.com`;
     
     if (!name || !mobile) {
-      message.error('Please fill in all required fields');
+      showNotification('Please fill in all required fields', 'error');
       return;
     }
 
-    if (mobile.length < 7) {
-      message.error('Please enter a valid mobile number');
+    // Validate phone number based on country code
+    if (!validatePhoneNumber(mobile, countryCode)) {
+      const countryName = countryCode === '+91' ? 'India' : 
+                        countryCode === '+1' ? 'USA/Canada' :
+                        countryCode === '+44' ? 'UK' :
+                        countryCode === '+61' ? 'Australia' :
+                        countryCode === '+971' ? 'UAE' :
+                        countryCode === '+966' ? 'Saudi Arabia' :
+                        countryCode === '+65' ? 'Singapore' :
+                        countryCode === '+60' ? 'Malaysia' :
+                        countryCode === '+81' ? 'Japan' :
+                        countryCode === '+82' ? 'South Korea' :
+                        countryCode === '+86' ? 'China' :
+                        countryCode === '+49' ? 'Germany' :
+                        countryCode === '+33' ? 'France' :
+                        countryCode === '+39' ? 'Italy' :
+                        countryCode === '+34' ? 'Spain' :
+                        countryCode === '+31' ? 'Netherlands' :
+                        countryCode === '+46' ? 'Sweden' :
+                        countryCode === '+47' ? 'Norway' :
+                        countryCode === '+358' ? 'Finland' :
+                        countryCode === '+45' ? 'Denmark' :
+                        countryCode === '+41' ? 'Switzerland' :
+                        countryCode === '+43' ? 'Austria' :
+                        countryCode === '+32' ? 'Belgium' :
+                        countryCode === '+48' ? 'Poland' :
+                        countryCode === '+420' ? 'Czech Republic' :
+                        countryCode === '+36' ? 'Hungary' :
+                        countryCode === '+40' ? 'Romania' :
+                        countryCode === '+30' ? 'Greece' :
+                        countryCode === '+90' ? 'Turkey' :
+                        countryCode === '+20' ? 'Egypt' :
+                        countryCode === '+27' ? 'South Africa' :
+                        countryCode === '+234' ? 'Nigeria' :
+                        countryCode === '+254' ? 'Kenya' :
+                        countryCode === '+212' ? 'Morocco' :
+                        countryCode === '+213' ? 'Algeria' :
+                        countryCode === '+216' ? 'Tunisia' :
+                        'your country';
+      
+      showNotification(`Please enter a valid ${countryName} phone number`, 'error');
       return;
     }
 
@@ -60,16 +182,26 @@ const CallbackModal = ({ isOpen, onClose, projectViewDetails = {}, projectTitle 
       });
       
       // If we reach here, the request was successful
-      message.success('Callback Requested Successfully');
+      showNotification('Callback Requested Successfully', 'success');
       resetData();
-      onClose();
-      // Call success callback if provided (for unlocking images)
-      if (onSuccess) {
-        onSuccess();
-      }
+      
+      // Close the modal after a short delay
+      setTimeout(() => {
+        if (typeof onClose === 'function') {
+          onClose();
+        }
+        // Call success callback if provided (for unlocking images)
+        if (typeof onSuccess === 'function') {
+          onSuccess();
+        }
+      }, 500);
+      
     } catch (error) {
       console.error('CallbackModal API Error:', error);
-      message.error('Failed to submit request. Please try again.');
+      if (!error.isAxiosError || error.response) {
+        // Only show error if it's a server error (not a network error)
+        showNotification('Failed to submit request. Please try again.', 'error');
+      }
     } finally {
       setIsLoading(false);
       setSideButtonText('Submit');
