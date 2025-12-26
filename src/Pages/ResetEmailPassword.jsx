@@ -30,10 +30,8 @@ const ResetEmailPassword = () => {
         duration: 3,
       });
 
-      const resetToken = generateResetToken();
       const response = await axios.post(apiUrl, {
         email: email,
-        resetToken: resetToken,
       });
       if (response.status === 200) {
         messageApi.destroy("PasswordResetLoading");
@@ -54,12 +52,6 @@ const ResetEmailPassword = () => {
         duration: 3,
       });
     }
-  };
-
-  const generateResetToken = () => {
-    // Logic to generate a reset token (optional, you can generate it on the server)
-    // Example: return some unique identifier or use a library like uuid
-    return "example-reset-token";
   };
 
   return (

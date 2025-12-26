@@ -631,13 +631,10 @@ const Home = () => {
               </div>
             )}
             <div>
-              {/* Upcoming Projects */}
-              <div ref={setRef("upcoming")} data-section="upcoming" style={{ height: "10px" }}></div>
-              <div>
-                {UpcomingProjects.length === 0 ? <CustomSkeleton /> : (
-                  <CommonProject data={UpcomingProjects} title="New Launch Housing Projects in Gurgaon" animation="fade-down" path={"/projects/newlaunch/"} compact />
-                )}
-              </div>
+              {UpcomingProjects.length === 0 ? <CustomSkeleton /> : (
+                <CommonProject data={UpcomingProjects} title="New Launch Projects in Gurgaon" animation="fade-down" path={"/projects/newlaunch/"} compact />
+              )}
+            </div>
 
               {/* Luxury Projects */}
               <div ref={setRef("luxury")} data-section="luxury" style={{ height: "10px" }}></div>
