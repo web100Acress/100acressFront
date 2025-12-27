@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Box, Flex, IconButton, Button, Menu, MenuButton, MenuItem, MenuList, Text, SimpleGrid, useDisclosure, Drawer, DrawerOverlay, DrawerContent, DrawerHeader, DrawerBody, DrawerCloseButton } from "@chakra-ui/react";
+import { Box, Flex, IconButton, Button, Menu, MenuButton, MenuItem, MenuList, Text, SimpleGrid } from "@chakra-ui/react";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -34,7 +34,9 @@ export default function LeftSection({
   onCloseInsights,
   isInsightsOpen,
 }) {
-  const { isOpen: isDrawerOpen, onOpen: openDrawer, onClose: closeDrawer } = useDisclosure();
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const openDrawer = () => setIsDrawerOpen(true);
+  const closeDrawer = () => setIsDrawerOpen(false);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -97,13 +99,13 @@ export default function LeftSection({
     // Prevent page (body) from scrolling when drawer is open to avoid double scrollbars
     try {
       if (isDrawerOpen) {
-        document.body.style.overflow = 'hidden';
+        document.body.classList.add('mobile-menu-open');
       } else {
-        document.body.style.overflow = '';
+        document.body.classList.remove('mobile-menu-open');
       }
     } catch {}
     return () => {
-      try { document.body.style.overflow = ''; } catch {}
+      try { document.body.classList.remove('mobile-menu-open'); } catch {}
     };
   }, [isDrawerOpen]);
   useEffect(() => {
@@ -154,15 +156,46 @@ export default function LeftSection({
         onClick={() => (isDrawerOpen ? closeDrawer() : openDrawer())}
         display={{ base: "inline-flex", md: (forceHamburger || showHamburgerOnDesktop || isSmallScreen) ? "inline-flex" : "none" }}
       />
-      <Drawer placement="left" isOpen={isDrawerOpen} onClose={closeDrawer} size="xs" motionPreset="slideInLeft" closeOnOverlayClick>
-        <DrawerOverlay />
-        <DrawerContent borderRightRadius={{ base: 0, md: 8 }} h="100vh">
-          <DrawerCloseButton />
-          <DrawerHeader borderBottomWidth="1px">Explore</DrawerHeader>
-          <DrawerBody p={3} overflowY="auto" pb={6}>
-            {(forceHamburger || hideCity) && (
+
+      {isDrawerOpen && (
+        <>
+          <div
+            onClick={closeDrawer}
+            className="mobile-menu-overlay"
+          />
+          <aside
+            role="dialog"
+            aria-modal="true"
+            aria-label="Explore"
+            onClick={(e) => e.stopPropagation()}
+            className="mobile-menu-drawer"
+          >
+            <div
+              className="mobile-menu-header"
+            >
+              <div className="mobile-menu-brand">
+                <img
+                  src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/red-logo.webp"
+                  alt="100acress"
+                  className="mobile-menu-logo"
+                  loading="lazy"
+                />
+              </div>
+              <button
+                type="button"
+                onClick={closeDrawer}
+                aria-label="Close"
+                className="mobile-menu-close"
+              >
+                ×
+              </button>
+            </div>
+
+            <div className="mobile-menu-content">
+              <div className="mobile-menu-section">
+              {(forceHamburger || hideCity) && (
               <>
-                <Box fontWeight="700" fontSize={{ base: "14px", md: "12px" }} color={isHome ? "white" : (!colorChange ? "red" : "white")} textTransform="uppercase" letterSpacing={{ base: "0.6px", md: "0.2px" }} mb={{ base: 2, md: 2 }} mt={{ base: 1, md: 0 }} px={{ base: 1, md: 0 }}>City</Box>
+                <Box fontWeight="800" fontSize={{ base: "12px", md: "12px" }} color="#64748B" textTransform="uppercase" letterSpacing={{ base: "0.9px", md: "0.6px" }} mb={{ base: 2, md: 2 }} mt={{ base: 1, md: 0 }} px={{ base: 1, md: 0 }}>City</Box>
                 <SimpleGrid columns={{ base: 2, md: 3 }} spacing={2} mb={3}>
                   {CITY_OPTIONS.map((c) => (
                     <Button
@@ -187,11 +220,11 @@ export default function LeftSection({
                 </SimpleGrid>
                 <Box h="1px" bg="#eee" my={2} />
               </>
-            )}
+              )}
 
-            {(forceHamburger || hideBudget) && (
+              {(forceHamburger || hideBudget) && (
               <>
-                <Box fontWeight="700" fontSize={{ base: "14px", md: "12px" }} color={isHome ? "white" : (!colorChange ? "red" : "white")} textTransform="uppercase" letterSpacing={{ base: "0.6px", md: "0.2px" }} mb={{ base: 2, md: 1 }} mt={{ base: 1, md: 0 }} px={{ base: 1, md: 0 }}>Budget</Box>
+                <Box fontWeight="800" fontSize={{ base: "12px", md: "12px" }} color="#64748B" textTransform="uppercase" letterSpacing={{ base: "0.9px", md: "0.6px" }} mb={{ base: 2, md: 1 }} mt={{ base: 1, md: 0 }} px={{ base: 1, md: 0 }}>Budget</Box>
                 <SimpleGrid columns={{ base: 2, md: 1 }} spacing={2}>
                   <Button onClick={() => handleNavigation("/projects/under-1-cr/", () => handlePriceClick(0, 1), true)}
                     w="100%" variant="ghost" justifyContent="center" textAlign="center" py={3}
@@ -226,11 +259,11 @@ export default function LeftSection({
                 </SimpleGrid>
                 <Box h="1px" bg="#eee" my={2} />
               </>
-            )}
+              )}
 
-            {(forceHamburger || hideProjectStatus || isSmallScreen) && (
+              {(forceHamburger || hideProjectStatus || isSmallScreen) && (
               <>
-                <Box fontWeight="700" fontSize={{ base: "14px", md: "12px" }} color={isHome ? "white" : (!colorChange ? "red" : "white")} textTransform="uppercase" letterSpacing={{ base: "0.6px", md: "0.2px" }} mb={{ base: 2, md: 1 }} mt={{ base: 1, md: 0 }} px={{ base: 1, md: 0 }}>Project Status</Box>
+                <Box fontWeight="800" fontSize={{ base: "12px", md: "12px" }} color="#64748B" textTransform="uppercase" letterSpacing={{ base: "0.9px", md: "0.6px" }} mb={{ base: 2, md: 1 }} mt={{ base: 1, md: 0 }} px={{ base: 1, md: 0 }}>Project Status</Box>
                 <SimpleGrid columns={{ base: 2, md: 2 }} spacing={3}>
                   <Button onClick={() => handleNavigation("/projects/upcoming/", null, true)}
                     w="100%" variant="ghost" display="flex" flexDir="column"
@@ -263,11 +296,11 @@ export default function LeftSection({
                 </SimpleGrid>
                 <Box h="1px" bg="#eee" my={2} />
               </>
-            )}
+              )}
 
-            {(forceHamburger || hideProjectType || isSmallScreen) && (
+              {(forceHamburger || hideProjectType || isSmallScreen) && (
               <>
-                <Box fontWeight="700" fontSize={{ base: "14px", md: "12px" }} color={isHome ? "white" : (!colorChange ? "red" : "white")} textTransform="uppercase" letterSpacing={{ base: "0.6px", md: "0.2px" }} mb={{ base: 2, md: 1 }} mt={{ base: 1, md: 0 }} px={{ base: 1, md: 0 }}>Project Type</Box>
+                <Box fontWeight="800" fontSize={{ base: "12px", md: "12px" }} color="#64748B" textTransform="uppercase" letterSpacing={{ base: "0.9px", md: "0.6px" }} mb={{ base: 2, md: 1 }} mt={{ base: 1, md: 0 }} px={{ base: 1, md: 0 }}>Project Type</Box>
                 <SimpleGrid columns={{ base: 2, md: 2 }} spacing={3}>
                   <Button onClick={() => handleNavigation("/projects/sco-plots/", null, true)}
                     w="100%" variant="ghost" display="flex" flexDir="column"
@@ -331,9 +364,9 @@ export default function LeftSection({
             )}
 
             {/* Activity Option */}
-            {(forceHamburger) && (
+              {(forceHamburger) && (
               <>
-                <Box fontWeight="700" fontSize={{ base: "14px", md: "12px" }} color={isHome ? "white" : (!colorChange ? "red" : "white")} textTransform="uppercase" letterSpacing={{ base: "0.6px", md: "0.2px" }} mb={{ base: 2, md: 1 }} mt={{ base: 1, md: 0 }} px={{ base: 1, md: 0 }}>Activity</Box>
+                <Box fontWeight="800" fontSize={{ base: "12px", md: "12px" }} color="#64748B" textTransform="uppercase" letterSpacing={{ base: "0.9px", md: "0.6px" }} mb={{ base: 2, md: 1 }} mt={{ base: 1, md: 0 }} px={{ base: 1, md: 0 }}>Activity</Box>
                 <Button as={Link} to="/activity" onClick={closeDrawer}
                   w="100%" variant="ghost" display="flex" flexDir="column"
                   justifyContent="center" alignItems="center" textAlign="center"
@@ -343,11 +376,11 @@ export default function LeftSection({
                 </Button>
                 <Box h="1px" bg="#eee" my={2} />
               </>
-            )}
+              )}
 
-            {(forceHamburger || hideRental) && (
+              {(forceHamburger || hideRental) && (
               <>
-                <Box fontWeight="700" fontSize={{ base: "14px", md: "12px" }} color={isHome ? "white" : (!colorChange ? "red" : "white")} textTransform="uppercase" letterSpacing={{ base: "0.6px", md: "0.2px" }} mb={{ base: 2, md: 1 }} mt={{ base: 1, md: 0 }} px={{ base: 1, md: 0 }}>Rental</Box>
+                <Box fontWeight="800" fontSize={{ base: "12px", md: "12px" }} color="#64748B" textTransform="uppercase" letterSpacing={{ base: "0.9px", md: "0.6px" }} mb={{ base: 2, md: 1 }} mt={{ base: 1, md: 0 }} px={{ base: 1, md: 0 }}>Rental</Box>
                 <Button as={Link} to="/rental-properties/best-rental-property-in-gurugram/" onClick={closeDrawer}
                   w="100%" variant="ghost" display="flex" flexDir="column"
                   justifyContent="center" alignItems="center" textAlign="center"
@@ -357,11 +390,11 @@ export default function LeftSection({
                 </Button>
                 <Box h="1px" bg="#eee" my={2} />
               </>
-            )}
+              )}
 
-            {(forceHamburger || hideResale) && (
+              {(forceHamburger || hideResale) && (
               <>
-                <Box fontWeight="700" fontSize={{ base: "14px", md: "12px" }} color={isHome ? "white" : (!colorChange ? "red" : "white")} textTransform="uppercase" letterSpacing={{ base: "0.6px", md: "0.2px" }} mb={{ base: 2, md: 1 }} mt={{ base: 1, md: 0 }} px={{ base: 1, md: 0 }}>Resale</Box>
+                <Box fontWeight="800" fontSize={{ base: "12px", md: "12px" }} color="#64748B" textTransform="uppercase" letterSpacing={{ base: "0.9px", md: "0.6px" }} mb={{ base: 2, md: 1 }} mt={{ base: 1, md: 0 }} px={{ base: 1, md: 0 }}>Resale</Box>
                 <Button as={Link} to="/buy-properties/best-resale-property-in-gurugram/" onClick={closeDrawer}
                   w="100%" variant="ghost" display="flex" flexDir="column"
                   justifyContent="center" alignItems="center" textAlign="center"
@@ -378,12 +411,14 @@ export default function LeftSection({
                   <Text fontSize={{ base: 'sm', md: 'md' }} fontWeight="800">Dubai</Text>
                 </Button>
               </>
-            )}
+              )}
             {/* Spacer so last items remain visible above mobile bottom nav */}
             <Box h={{ base: 16, md: 0 }} />
-          </DrawerBody>
-        </DrawerContent>
-      </Drawer>
+              </div>
+            </div>
+          </aside>
+        </>
+      )}
 
       {/* Hidden desktop text trigger (kept for parity) */}
       <Box 

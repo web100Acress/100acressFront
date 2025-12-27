@@ -417,7 +417,6 @@ const ContactBlock = ({ href, icon: Icon, label, value, brandColor, delay, exter
               {value}
             </p>
           </div>
-
           {/* Arrow Icon */}
           <div className="ml-3 opacity-0 group-hover:opacity-100 transition-opacity">
             <ExternalLink size={18} style={{ color: brandColor }} />
