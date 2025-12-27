@@ -384,11 +384,11 @@ const CrimsonEleganceFooter = () => {
             </div>
           </div>
           {/* </div> */}
-          <div className="max-w-7xl mx-auto px-4">
+          <div className="max-w-7xl mx-auto px-2">
   {/* Bottom Tag Section */}
   <div className="relative flex justify-center py-8">
     <div className="w-full border-t border-white/10 pt-8">
-      <div className="flex flex-wrap justify-center gap-3">
+      <div className="flex flex-wrap gap-2">
         {[
           { name: "Residential Flats in Gurgaon", href: "/projects/residential/" },
           { name: "Retail Shops in Gurgaon", href: "/projects/commercial/" },
