@@ -279,6 +279,10 @@ export default function LeftSection({
                   <button type="button" className="mobile-menu-primary" onClick={() => { closeDrawer(); navigate('/united-arab-emirates'); }}>
                     Dubai
                   </button>
+                
+                   <button type="button" className="mobile-menu-primary" onClick={() => { closeDrawer(); navigate('/property-market-trends'); }} style={{ background: '#3B82F6', borderColor: 'rgba(59, 130, 246, 0.25)', boxShadow: '0 12px 26px rgba(59, 130, 246, 0.25)', marginTop: '10px' }}>
+                    Insights
+                  </button>
                 </>
               )}
            
