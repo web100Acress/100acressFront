@@ -3,6 +3,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Eye, EyeOff, X } from "lucide-react";
 import { AuthContext } from "../AuthContext";
+import axios from "axios";
 
 function LoginForm({ inModal = false, onSwitchToRegister, preventRedirect = false }) {
   const { login } = useContext(AuthContext);
@@ -10,10 +11,48 @@ function LoginForm({ inModal = false, onSwitchToRegister, preventRedirect = fals
   const [userLogin, setUserLogin] = useState({ email: "", password: "" });
   const [passwordHide, setPasswordHide] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  const [showForgot, setShowForgot] = useState(false);
+  const [forgotEmail, setForgotEmail] = useState("");
+  const [forgotLoading, setForgotLoading] = useState(false);
 
   const handleLoginChange = (e) => {
     const { name, value } = e.target;
     setUserLogin((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSendResetLink = async (e) => {
+    e.preventDefault();
+    if (forgotLoading) return;
+
+    const email = String(forgotEmail || '').trim();
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      toast.error('Please enter a valid email address.', {
+        position: 'top-center',
+        autoClose: 3000,
+        style: { marginTop: '20px' },
+      });
+      return;
+    }
+
+    setForgotLoading(true);
+    try {
+      await axios.post('/postPerson/postProperty_forget', { email });
+      toast.success('Password reset link sent. Please check your email.', {
+        position: 'top-center',
+        autoClose: 3500,
+        style: { marginTop: '20px' },
+      });
+      setShowForgot(false);
+      setForgotEmail('');
+    } catch (err) {
+      toast.error(err?.response?.data?.message || 'Failed to send reset link. Try again.', {
+        position: 'top-center',
+        autoClose: 4000,
+        style: { marginTop: '20px' },
+      });
+    } finally {
+      setForgotLoading(false);
+    }
   };
 
   const handleUserLogin = async () => {
@@ -124,6 +163,43 @@ function LoginForm({ inModal = false, onSwitchToRegister, preventRedirect = fals
               )}
             </div>
           </div>
+
+          <div className="flex items-center justify-end">
+            <button
+              type="button"
+              className="text-sm font-semibold text-[#e53935] hover:underline"
+              onClick={() => setShowForgot((s) => !s)}
+            >
+              Forgot password?
+            </button>
+          </div>
+
+          {showForgot && (
+            <div className="rounded-lg border border-slate-200 bg-slate-50 p-3">
+              <div className="text-sm font-semibold text-slate-800">Reset your password</div>
+              <div className="mt-2 flex gap-2">
+                <input
+                  type="email"
+                  value={forgotEmail}
+                  onChange={(e) => setForgotEmail(e.target.value)}
+                  placeholder="Enter your email"
+                  className="flex-1 border border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#e53935] focus:border-[#e53935] transition"
+                  disabled={forgotLoading}
+                />
+                <button
+                  type="button"
+                  onClick={handleSendResetLink}
+                  disabled={forgotLoading}
+                  className="px-4 py-2 rounded-lg bg-[#e53935] hover:bg-[#c62828] disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-bold transition"
+                >
+                  {forgotLoading ? 'Sending…' : 'Send'}
+                </button>
+              </div>
+              <div className="mt-2 text-xs text-slate-600">
+                We’ll email you a secure link to set a new password.
+              </div>
+            </div>
+          )}
 
           {/* Submit */}
           <button 
