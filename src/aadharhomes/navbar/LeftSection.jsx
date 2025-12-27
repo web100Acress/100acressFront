@@ -194,225 +194,94 @@ export default function LeftSection({
             <div className="mobile-menu-content">
               <div className="mobile-menu-section">
               {(forceHamburger || hideCity) && (
-              <>
-                <Box fontWeight="800" fontSize={{ base: "12px", md: "12px" }} color="#64748B" textTransform="uppercase" letterSpacing={{ base: "0.9px", md: "0.6px" }} mb={{ base: 2, md: 2 }} mt={{ base: 1, md: 0 }} px={{ base: 1, md: 0 }}>City</Box>
-                <SimpleGrid columns={{ base: 2, md: 3 }} spacing={2} mb={3}>
-                  {CITY_OPTIONS.map((c) => (
-                    <Button
-                      key={c.name}
-                      size="sm"
-                      variant="ghost"
-                      onClick={() => { handleCitySelect(c); closeDrawer(); }}
-                      justifyContent="center"
-                      display="flex"
-                      flexDir="column"
-                      alignItems="center"
-                      gap={1}
-                      borderWidth="1px"
-                      borderColor="#eaeaea"
-                      _hover={{ bg: "gray.50" }}
-                      py={3}
-                    >
-                      <Box color="#666" display={{ base: 'none', md: 'block' }}>{CityIcons[c.name] || CityIcons.Delhi}</Box>
-                      <Text fontSize="12px" color="#111">{c.name}</Text>
-                    </Button>
-                  ))}
-                </SimpleGrid>
-                <Box h="1px" bg="#eee" my={2} />
-              </>
+                <>
+                  <div className="mobile-menu-heading">City</div>
+                  <div className="mobile-menu-grid">
+                    {CITY_OPTIONS.map((c) => (
+                      <button
+                        key={c.name}
+                        type="button"
+                        className="mobile-menu-tile"
+                        onClick={() => {
+                          handleCitySelect(c);
+                          closeDrawer();
+                        }}
+                      >
+                        {c.name}
+                      </button>
+                    ))}
+                  </div>
+                  <div className="mobile-menu-sep" />
+                </>
               )}
 
               {(forceHamburger || hideBudget) && (
-              <>
-                <Box fontWeight="800" fontSize={{ base: "12px", md: "12px" }} color="#64748B" textTransform="uppercase" letterSpacing={{ base: "0.9px", md: "0.6px" }} mb={{ base: 2, md: 1 }} mt={{ base: 1, md: 0 }} px={{ base: 1, md: 0 }}>Budget</Box>
-                <SimpleGrid columns={{ base: 2, md: 1 }} spacing={2}>
-                  <Button onClick={() => handleNavigation("/projects/under-1-cr/", () => handlePriceClick(0, 1), true)}
-                    w="100%" variant="ghost" justifyContent="center" textAlign="center" py={3}
-                    borderWidth="1px" borderColor="#eaeaea" _hover={{ bg: "gray.50" }} rounded="md">
-                    Under ₹1 Cr
-                  </Button>
-                  <Button onClick={() => handleNavigation("/projects/1-5-cr/", () => handlePriceClick(1, 5), true)}
-                    w="100%" variant="ghost" justifyContent="center" textAlign="center" py={3}
-                    borderWidth="1px" borderColor="#eaeaea" _hover={{ bg: "gray.50" }} rounded="md">
-                    ₹1 Cr - ₹5 Cr
-                  </Button>
-                  <Button onClick={() => handleNavigation("/projects/5-10-cr/", () => handlePriceClick(5, 10), true)}
-                    w="100%" variant="ghost" justifyContent="center" textAlign="center" py={3}
-                    borderWidth="1px" borderColor="#eaeaea" _hover={{ bg: "gray.50" }} rounded="md">
-                    ₹5 Cr - ₹10 Cr
-                  </Button>
-                  <Button onClick={() => handleNavigation("/projects/10-20-cr/", () => handlePriceClick(10, 20), true)}
-                    w="100%" variant="ghost" justifyContent="center" textAlign="center" py={3}
-                    borderWidth="1px" borderColor="#eaeaea" _hover={{ bg: "gray.50" }} rounded="md">
-                    ₹10 Cr - ₹20 Cr
-                  </Button>
-                  <Button onClick={() => handleNavigation("/projects/20-50-cr/", () => handlePriceClick(20, 50), true)}
-                    w="100%" variant="ghost" justifyContent="center" textAlign="center" py={3}
-                    borderWidth="1px" borderColor="#eaeaea" _hover={{ bg: "gray.50" }} rounded="md">
-                    ₹20 Cr - ₹50 Cr
-                  </Button>
-                  <Button onClick={() => handleNavigation("/projects/above-50-cr/", () => handlePriceClick(50, Infinity), true)}
-                    w="100%" variant="ghost" justifyContent="center" textAlign="center" py={3}
-                    borderWidth="1px" borderColor="#eaeaea" _hover={{ bg: "gray.50" }} rounded="md">
-                    Above ₹50 Cr
-                  </Button>
-                </SimpleGrid>
-                <Box h="1px" bg="#eee" my={2} />
-              </>
+                <>
+                  <div className="mobile-menu-heading">Budget</div>
+                  <div className="mobile-menu-grid">
+                    <button type="button" className="mobile-menu-tile" onClick={() => handleNavigation("/projects/under-1-cr/", () => handlePriceClick(0, 1), true)}>Under ₹1 Cr</button>
+                    <button type="button" className="mobile-menu-tile" onClick={() => handleNavigation("/projects/1-5-cr/", () => handlePriceClick(1, 5), true)}>₹1 Cr - ₹5 Cr</button>
+                    <button type="button" className="mobile-menu-tile" onClick={() => handleNavigation("/projects/5-10-cr/", () => handlePriceClick(5, 10), true)}>₹5 Cr - ₹10 Cr</button>
+                    <button type="button" className="mobile-menu-tile" onClick={() => handleNavigation("/projects/10-20-cr/", () => handlePriceClick(10, 20), true)}>₹10 Cr - ₹20 Cr</button>
+                    <button type="button" className="mobile-menu-tile" onClick={() => handleNavigation("/projects/20-50-cr/", () => handlePriceClick(20, 50), true)}>₹20 Cr - ₹50 Cr</button>
+                    <button type="button" className="mobile-menu-tile" onClick={() => handleNavigation("/projects/above-50-cr/", () => handlePriceClick(50, Infinity), true)}>Above ₹50 Cr</button>
+                  </div>
+                  <div className="mobile-menu-sep" />
+                </>
               )}
 
               {(forceHamburger || hideProjectStatus || isSmallScreen) && (
-              <>
-                <Box fontWeight="800" fontSize={{ base: "12px", md: "12px" }} color="#64748B" textTransform="uppercase" letterSpacing={{ base: "0.9px", md: "0.6px" }} mb={{ base: 2, md: 1 }} mt={{ base: 1, md: 0 }} px={{ base: 1, md: 0 }}>Project Status</Box>
-                <SimpleGrid columns={{ base: 2, md: 2 }} spacing={3}>
-                  <Button onClick={() => handleNavigation("/projects/upcoming/", null, true)}
-                    w="100%" variant="ghost" display="flex" flexDir="column"
-                    justifyContent="center" alignItems="center" textAlign="center"
-                    py={3} px={4} minH={{ base: 14, md: 12 }}
-                    borderWidth="1px" borderColor="#eaeaea" _hover={{ bg: "gray.50" }} rounded="md">
-                    <Text fontSize={{ base: 'sm', md: 'md' }} fontWeight="600" whiteSpace="normal" wordBreak="break-word" lineHeight="1.25" textAlign="center">Upcoming Projects</Text>
-                  </Button>
-                  <Button onClick={() => handleNavigation("/projects/newlaunch/", null, true)}
-                    w="100%" variant="ghost" display="flex" flexDir="column"
-                    justifyContent="center" alignItems="center" textAlign="center"
-                    py={3} px={4} minH={{ base: 14, md: 12 }}
-                    borderWidth="1px" borderColor="#eaeaea" _hover={{ bg: "gray.50" }} rounded="md">
-                    <Text fontSize={{ base: 'sm', md: 'md' }} fontWeight="600" whiteSpace="normal" wordBreak="break-word" lineHeight="1.25" textAlign="center">New Launch Projects</Text>
-                  </Button>
-                  <Button onClick={() => handleNavigation("/projects/underconstruction/", null, true)}
-                    w="100%" variant="ghost" display="flex" flexDir="column"
-                    justifyContent="center" alignItems="center" textAlign="center"
-                    py={3} px={4} minH={{ base: 14, md: 12 }}
-                    borderWidth="1px" borderColor="#eaeaea" _hover={{ bg: "gray.50" }} rounded="md">
-                    <Text fontSize={{ base: 'sm', md: 'md' }} fontWeight="600" whiteSpace="normal" wordBreak="break-word" lineHeight="1.25" textAlign="center">Under Construction</Text>
-                  </Button>
-                  <Button onClick={() => handleNavigation("/projects/ready-to-move/", null, true)}
-                    w="100%" variant="ghost" display="flex" flexDir="column"
-                    justifyContent="center" alignItems="center" textAlign="center"
-                    py={3} px={4} minH={{ base: 14, md: 12 }}
-                    borderWidth="1px" borderColor="#eaeaea" _hover={{ bg: "gray.50" }} rounded="md">
-                    <Text fontSize={{ base: 'sm', md: 'md' }} fontWeight="600" whiteSpace="normal" wordBreak="break-word" lineHeight="1.25" textAlign="center">Ready To Move</Text>
-                  </Button>
-                </SimpleGrid>
-                <Box h="1px" bg="#eee" my={2} />
-              </>
+                <>
+                  <div className="mobile-menu-heading">Project Status</div>
+                  <div className="mobile-menu-grid">
+                    <button type="button" className="mobile-menu-tile" onClick={() => handleNavigation("/projects/upcoming/", null, true)}>Upcoming Projects</button>
+                    <button type="button" className="mobile-menu-tile" onClick={() => handleNavigation("/projects/newlaunch/", null, true)}>New Launch Projects</button>
+                    <button type="button" className="mobile-menu-tile" onClick={() => handleNavigation("/projects/underconstruction/", null, true)}>Under Construction</button>
+                    <button type="button" className="mobile-menu-tile" onClick={() => handleNavigation("/projects/ready-to-move/", null, true)}>Ready To Move</button>
+                  </div>
+                  <div className="mobile-menu-sep" />
+                </>
               )}
 
               {(forceHamburger || hideProjectType || isSmallScreen) && (
-              <>
-                <Box fontWeight="800" fontSize={{ base: "12px", md: "12px" }} color="#64748B" textTransform="uppercase" letterSpacing={{ base: "0.9px", md: "0.6px" }} mb={{ base: 2, md: 1 }} mt={{ base: 1, md: 0 }} px={{ base: 1, md: 0 }}>Project Type</Box>
-                <SimpleGrid columns={{ base: 2, md: 2 }} spacing={3}>
-                  <Button onClick={() => handleNavigation("/projects/sco-plots/", null, true)}
-                    w="100%" variant="ghost" display="flex" flexDir="column"
-                    justifyContent="center" alignItems="center" textAlign="center"
-                    py={3} px={4} minH={{ base: 14, md: 12 }}
-                    borderWidth="1px" borderColor="#eaeaea" _hover={{ bg: "gray.50" }} rounded="md">
-                    <Text fontSize={{ base: 'sm', md: 'md' }} fontWeight="600" whiteSpace="normal" wordBreak="break-word" lineHeight="1.25">SCO Plots</Text>
-                  </Button>
-                  <Button onClick={() => handleNavigation("/projects/villas/", null, true)}
-                    w="100%" variant="ghost" display="flex" flexDir="column"
-                    justifyContent="center" alignItems="center" textAlign="center"
-                    py={3} px={4} minH={{ base: 14, md: 12 }}
-                    borderWidth="1px" borderColor="#eaeaea" _hover={{ bg: "gray.50" }} rounded="md">
-                    <Text fontSize={{ base: 'sm', md: 'md' }} fontWeight="600" whiteSpace="normal" wordBreak="break-word" lineHeight="1.25">Luxury Villas</Text>
-                  </Button>
-                  <Button onClick={() => handleNavigation("/projects/plots/", null, true)}
-                    w="100%" variant="ghost" display="flex" flexDir="column"
-                    justifyContent="center" alignItems="center" textAlign="center"
-                    py={3} px={4} minH={{ base: 14, md: 12 }}
-                    borderWidth="1px" borderColor="#eaeaea" _hover={{ bg: "gray.50" }} rounded="md">
-                    <Text fontSize={{ base: 'sm', md: 'md' }} fontWeight="600" whiteSpace="normal" wordBreak="break-word" lineHeight="1.25">Plots In Gurugram</Text>
-                  </Button>
-                  <Button onClick={() => handleNavigation("/projects/residential/", null, true)}
-                    w="100%" variant="ghost" display="flex" flexDir="column"
-                    justifyContent="center" alignItems="center" textAlign="center"
-                    py={3} px={4} minH={{ base: 14, md: 12 }}
-                    borderWidth="1px" borderColor="#eaeaea" _hover={{ bg: "gray.50" }} rounded="md">
-                    <Text fontSize={{ base: 'sm', md: 'md' }} fontWeight="600" whiteSpace="normal" wordBreak="break-word" lineHeight="1.25">Residential Projects</Text>
-                  </Button>
-                  <Button onClick={() => handleNavigation("/projects/independent-floors/", null, true)}
-                    w="100%" variant="ghost" display="flex" flexDir="column"
-                    justifyContent="center" alignItems="center" textAlign="center"
-                    py={3} px={4} minH={{ base: 14, md: 12 }}
-                    borderWidth="1px" borderColor="#eaeaea" _hover={{ bg: "gray.50" }} rounded="md">
-                    <Text fontSize={{ base: 'sm', md: 'md' }} fontWeight="600" whiteSpace="normal" wordBreak="break-word" lineHeight="1.25">Independent Floors</Text>
-                  </Button>
-                  <Button onClick={() => handleNavigation("/projects/commercial/", null, true)}
-                    w="100%" variant="ghost" display="flex" flexDir="column"
-                    justifyContent="center" alignItems="center" textAlign="center"
-                    py={3} px={4} minH={{ base: 14, md: 12 }}
-                    borderWidth="1px" borderColor="#eaeaea" _hover={{ bg: "gray.50" }} rounded="md">
-                    <Text fontSize={{ base: 'sm', md: 'md' }} fontWeight="600" whiteSpace="normal" wordBreak="break-word" lineHeight="1.25">Commercial Projects</Text>
-                  </Button>
-                  <Button onClick={() => handleNavigation("/projects/farmhouse/", null, true)}
-                    w="100%" variant="ghost" display="flex" flexDir="column"
-                    justifyContent="center" alignItems="center" textAlign="center"
-                    py={3} px={4} minH={{ base: 14, md: 12 }}
-                    borderWidth="1px" borderColor="#eaeaea" _hover={{ bg: "gray.50" }} rounded="md">
-                    <Text fontSize={{ base: 'sm', md: 'md' }} fontWeight="600" whiteSpace="normal" wordBreak="break-word" lineHeight="1.25">Farm Houses</Text>
-                  </Button>
-                  <Button onClick={() => handleNavigation("/projects/industrial-projects/", null, true)}
-                    w="100%" variant="ghost" display="flex" flexDir="column"
-                    justifyContent="center" alignItems="center" textAlign="center"
-                    py={3} px={4} minH={{ base: 14, md: 12 }}
-                    borderWidth="1px" borderColor="#eaeaea" _hover={{ bg: "gray.50" }} rounded="md">
-                    <Text fontSize={{ base: 'sm', md: 'md' }} fontWeight="600" whiteSpace="normal" wordBreak="break-word" lineHeight="1.25">Industrial Projects</Text>
-                  </Button>
-                </SimpleGrid>
-                <Box h="1px" bg="#eee" my={2} />
-              </>
-            )}
-
-            {/* Activity Option */}
-              {(forceHamburger) && (
-              <>
-                <Box fontWeight="800" fontSize={{ base: "12px", md: "12px" }} color="#64748B" textTransform="uppercase" letterSpacing={{ base: "0.9px", md: "0.6px" }} mb={{ base: 2, md: 1 }} mt={{ base: 1, md: 0 }} px={{ base: 1, md: 0 }}>Activity</Box>
-                <Button as={Link} to="/activity" onClick={closeDrawer}
-                  w="100%" variant="ghost" display="flex" flexDir="column"
-                  justifyContent="center" alignItems="center" textAlign="center"
-                  py={3} px={4} minH={{ base: 14, md: 12 }}
-                  borderWidth="1px" borderColor="#eaeaea" _hover={{ bg: "gray.50" }} rounded="md">
-                  <Text fontSize={{ base: 'sm', md: 'md' }} fontWeight="600" whiteSpace="normal" wordBreak="break-word" lineHeight="1.25">View Activity</Text>
-                </Button>
-                <Box h="1px" bg="#eee" my={2} />
-              </>
+                <>
+                  <div className="mobile-menu-heading">Project Type</div>
+                  <div className="mobile-menu-grid">
+                    <button type="button" className="mobile-menu-tile" onClick={() => handleNavigation("/projects/sco-plots/", null, true)}>SCO Plots</button>
+                    <button type="button" className="mobile-menu-tile" onClick={() => handleNavigation("/projects/villas/", null, true)}>Luxury Villas</button>
+                    <button type="button" className="mobile-menu-tile" onClick={() => handleNavigation("/projects/plots/", null, true)}>Plots In Gurugram</button>
+                    <button type="button" className="mobile-menu-tile" onClick={() => handleNavigation("/projects/residential/", null, true)}>Residential Projects</button>
+                    <button type="button" className="mobile-menu-tile" onClick={() => handleNavigation("/projects/independent-floors/", null, true)}>Independent Floors</button>
+                    <button type="button" className="mobile-menu-tile" onClick={() => handleNavigation("/projects/commercial/", null, true)}>Commercial Projects</button>
+                    <button type="button" className="mobile-menu-tile" onClick={() => handleNavigation("/projects/farmhouse/", null, true)}>Farm Houses</button>
+                    <button type="button" className="mobile-menu-tile" onClick={() => handleNavigation("/projects/industrial-projects/", null, true)}>Industrial Projects</button>
+                  </div>
+                  <div className="mobile-menu-sep" />
+                </>
               )}
 
               {(forceHamburger || hideRental) && (
-              <>
-                <Box fontWeight="800" fontSize={{ base: "12px", md: "12px" }} color="#64748B" textTransform="uppercase" letterSpacing={{ base: "0.9px", md: "0.6px" }} mb={{ base: 2, md: 1 }} mt={{ base: 1, md: 0 }} px={{ base: 1, md: 0 }}>Rental</Box>
-                <Button as={Link} to="/rental-properties/best-rental-property-in-gurugram/" onClick={closeDrawer}
-                  w="100%" variant="ghost" display="flex" flexDir="column"
-                  justifyContent="center" alignItems="center" textAlign="center"
-                  py={3} px={4} minH={{ base: 14, md: 12 }}
-                  borderWidth="1px" borderColor="#eaeaea" _hover={{ bg: "gray.50" }} rounded="md">
-                  <Text fontSize={{ base: 'sm', md: 'md' }} fontWeight="600" whiteSpace="normal" wordBreak="break-word" lineHeight="1.25">View Rental Properties</Text>
-                </Button>
-                <Box h="1px" bg="#eee" my={2} />
-              </>
+                <>
+                  <div className="mobile-menu-heading">Rental</div>
+                  <button type="button" className="mobile-menu-tile" onClick={() => { closeDrawer(); navigate('/rental-properties/best-rental-property-in-gurugram/'); }}>
+                    View Rental Properties
+                  </button>
+                  <div className="mobile-menu-sep" />
+                </>
               )}
 
               {(forceHamburger || hideResale) && (
-              <>
-                <Box fontWeight="800" fontSize={{ base: "12px", md: "12px" }} color="#64748B" textTransform="uppercase" letterSpacing={{ base: "0.9px", md: "0.6px" }} mb={{ base: 2, md: 1 }} mt={{ base: 1, md: 0 }} px={{ base: 1, md: 0 }}>Resale</Box>
-                <Button as={Link} to="/buy-properties/best-resale-property-in-gurugram/" onClick={closeDrawer}
-                  w="100%" variant="ghost" display="flex" flexDir="column"
-                  justifyContent="center" alignItems="center" textAlign="center"
-                  py={3} px={4} minH={{ base: 14, md: 12 }}
-                  borderWidth="1px" borderColor="#eaeaea" _hover={{ bg: "gray.50" }} rounded="md">
-                  <Text fontSize={{ base: 'sm', md: 'md' }} fontWeight="600" whiteSpace="normal" wordBreak="break-word" lineHeight="1.25">View Resale Properties</Text>
-                </Button>
-                {/* Insights in drawer */}
-                <Button as={Link} to="/united-arab-emirates" onClick={closeDrawer}
-                  w="100%" variant="solid" bg="#e53e3e" color={isHome ? "white" : (!colorChange ? "red" : "white")}
-                  display="flex" flexDir="column" justifyContent="center" alignItems="center" textAlign="center"
-                  py={3} px={4} minH={{ base: 12, md: 12 }}
-                  _hover={{ bg: '#c53030' }} _active={{ bg: '#9b2c2c' }} rounded="md" boxShadow="0 6px 16px rgba(229,62,62,0.25)">
-                  <Text fontSize={{ base: 'sm', md: 'md' }} fontWeight="800">Dubai</Text>
-                </Button>
-              </>
+                <>
+                  <div className="mobile-menu-heading">Resale</div>
+                  <button type="button" className="mobile-menu-tile" onClick={() => { closeDrawer(); navigate('/buy-properties/best-resale-property-in-gurugram/'); }}>
+                    View Resale Properties
+                  </button>
+                  <button type="button" className="mobile-menu-primary" onClick={() => { closeDrawer(); navigate('/united-arab-emirates'); }}>
+                    Dubai
+                  </button>
+                </>
               )}
-            {/* Spacer so last items remain visible above mobile bottom nav */}
+           
             <Box h={{ base: 16, md: 0 }} />
               </div>
             </div>
