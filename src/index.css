@@ -331,6 +331,10 @@ html {
   box-shadow: 0 12px 26px rgba(229, 62, 62, 0.25);
 }
 
+.mobile-menu-tile + .mobile-menu-primary {
+  margin-top: 10px;
+}
+
 .mobile-menu-primary:hover {
   background: #c53030;
 }

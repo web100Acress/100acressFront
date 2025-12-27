@@ -281,7 +281,7 @@ export default function LeftSection({
                   </button>
                 </>
               )}
-            {/* Spacer so last items remain visible above mobile bottom nav */}
+           
             <Box h={{ base: 16, md: 0 }} />
               </div>
             </div>
