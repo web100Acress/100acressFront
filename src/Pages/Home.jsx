@@ -715,7 +715,6 @@ const Home = () => {
  
               {/* <Snapshot /> */}
             </div>
-          </div>
       </div> {/* Closing div for the grid container */}
       </div> {/* Closing div for the blur container */}
 
