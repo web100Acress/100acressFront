@@ -135,89 +135,172 @@ export default function RightSection({
                   </Box>
                 </Flex>
               </Button>
-              <Drawer isOpen={isAcctOpen} placement="right" onClose={onAcctClose} size="xs" zIndex={15000}>
-                <DrawerOverlay />
-                <DrawerContent maxW="260px" h="100vh">
-                  <DrawerCloseButton />
-                  <DrawerHeader borderBottomWidth="1px">{firstName || 'Account'}</DrawerHeader>
-                  <DrawerBody display="flex" flexDirection="column" justifyContent="space-between" p={0} overflowY="auto" pb={6}>
-                    <Box>
-                      <Box position="sticky" top={0} zIndex={0} bg="white" borderBottom="1px solid #eee">
-                        <Box px={4} py={3} color="#666" fontSize="12px">Signed in</Box>
-                      </Box>
-                      <Button variant="ghost" w="90%" display="flex" flexDir="column" justifyContent="center" alignItems="center" textAlign="center" py={3} px={4} minH={{ base: 14, md: 12 }} bg="white" borderWidth="1px" borderColor="#e5e7eb" rounded="xl" boxShadow="xs" transition="all 0.15s ease" _hover={{ bg: 'white', boxShadow: 'sm' }} _active={{ bg: 'white', boxShadow: 'xs' }} onClick={() => { onAcctClose(); go('/userdashboard/'); }} my={3} mx={3} position="relative" zIndex={1}>
-                        <Box as="span" lineHeight={0} mb={1}>
+              {/* Mobile Drawer */}
+              <div className={`fixed inset-0 z-[15000] ${isAcctOpen ? 'visible' : 'invisible'}`}>
+                {/* Overlay */}
+                <div 
+                  className={`absolute inset-0 bg-black transition-opacity duration-300 ${isAcctOpen ? 'opacity-50' : 'opacity-0'}`}
+                  onClick={onAcctClose}
+                />
+                
+                {/* Drawer Content */}
+                <div className={`absolute right-0 top-0 h-full w-[260px] max-w-[260px] bg-white shadow-xl transform transition-transform duration-300 ${isAcctOpen ? 'translate-x-0' : 'translate-x-full'}`}>
+                  {/* Drawer Header - Close button on LEFT, Avatar on RIGHT */}
+                  <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200">
+                    {/* Close Button - LEFT SIDE */}
+                    <button 
+                      onClick={onAcctClose}
+                      className="p-1 rounded-full hover:bg-gray-100 transition-colors"
+                      aria-label="Close"
+                    >
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M18 6L6 18M6 6l12 12" stroke="#666" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    </button>
+                    
+                    {/* Name and Avatar - RIGHT SIDE */}
+                    <div className="flex items-center gap-3">
+                      <span className="text-base font-semibold text-gray-900">
+                        {firstName || 'Account'}
+                      </span>
+                      <div className="w-9 h-9 rounded-full overflow-hidden border border-gray-200 bg-gray-100 flex items-center justify-center">
+                        {avatarUrl ? (
+                          <img 
+                            src={avatarUrl.includes('http') ? avatarUrl : `${process.env.REACT_APP_API_URL || ''}${avatarUrl}`}
+                            alt={firstName || 'Profile'}
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              e.target.onerror = null;
+                              e.target.style.display = 'none';
+                              e.target.nextSibling.style.display = 'flex';
+                            }}
+                          />
+                        ) : null}
+                        <span 
+                          className={`${!avatarUrl ? 'flex' : 'hidden'} items-center justify-center w-full h-full bg-blue-500 text-white text-sm font-bold`}
+                        >
+                          {firstName ? firstName.charAt(0).toUpperCase() : (
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <path d="M12 12c2.485 0 4.5-2.015 4.5-4.5S14.485 3 12 3 7.5 5.015 7.5 7.5 9.515 12 12 12Z" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                              <path d="M4 20.25c1.9-3.3 5.2-4.75 8-4.75s6.1 1.45 8 4.75" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                            </svg>
+                          )}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Drawer Body */}
+                  <div className="flex flex-col justify-between h-[calc(100%-60px)] overflow-y-auto pb-6">
+                    <div className="p-3 space-y-3">
+                      {/* View Profile */}
+                      <button 
+                        onClick={() => { onAcctClose(); go('/userdashboard/'); }}
+                        className="w-full flex flex-col items-center justify-center text-center py-3 px-4 min-h-[56px] bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow transition-all"
+                      >
+                        <span className="mb-1">
                           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M12 12c2.485 0 4.5-2.015 4.5-4.5S14.485 3 12 3 7.5 5.015 7.5 7.5 9.515 12 12 12Z" stroke="#111" strokeWidth="1.6" strokeLinecap="round" />
                             <path d="M4 20.25c1.9-3.3 5.2-4.75 8-4.75s6.1 1.45 8 4.75" stroke="#111" strokeWidth="1.6" strokeLinecap="round" />
                           </svg>
-                        </Box>
-                        <Box as="span" color="#111" fontSize={{ base: 'sm', md: 'md' }} fontWeight="600" whiteSpace="normal" wordBreak="break-word" lineHeight="1.25">View Profile</Box>
-                      </Button>
-                      <Button variant="ghost" w="90%" display="flex" flexDir="column" justifyContent="center" alignItems="center" textAlign="center" py={3} px={4} minH={{ base: 14, md: 12 }} bg="white" borderWidth="1px" borderColor="#e5e7eb" rounded="xl" boxShadow="xs" transition="all 0.15s ease" _hover={{ bg: 'white', boxShadow: 'sm' }} _active={{ bg: 'white', boxShadow: 'xs' }} onClick={() => { onAcctClose(); go('/activity'); }} my={3} mx={3} position="relative" zIndex={1}>
-                        <Box as="span" lineHeight={0} mb={1}>
+                        </span>
+                        <span className="text-gray-900 text-sm font-semibold">View Profile</span>
+                      </button>
+      
+                      {/* Activity */}
+                      <button 
+                        onClick={() => { onAcctClose(); go('/activity'); }}
+                        className="w-full flex flex-col items-center justify-center text-center py-3 px-4 min-h-[56px] bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow transition-all"
+                      >
+                        <span className="mb-1">
                           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M22 12h-4l-3 9L9 3l-3 9H2" stroke="#111" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
                           </svg>
-                        </Box>
-                        <Box as="span" color="#111" fontSize={{ base: 'sm', md: 'md' }} fontWeight="600" whiteSpace="normal" wordBreak="break-word" lineHeight="1.25">Activity</Box>
-                      </Button>
+                        </span>
+                        <span className="text-gray-900 text-sm font-semibold">Activity</span>
+                      </button>
+      
+                      {/* Admin */}
                       {isAdmin && (
-                        <Button variant="ghost" w="90%" display="flex" flexDir="column" justifyContent="center" alignItems="center" textAlign="center" py={3} px={4} minH={{ base: 14, md: 12 }} bg="white" borderWidth="1px" borderColor="#e5e7eb" rounded="lg" boxShadow="xs" transition="all 0.15s ease" _hover={{ bg: 'white', boxShadow: 'sm' }} _active={{ bg: 'white', boxShadow: 'xs' }} onClick={() => { onAcctClose(); go('/admin/'); }} my={3} mx={4} position="relative" zIndex={2} borderRadius="xl">
-                          <Box as="span" lineHeight={0} mb={1}>
+                        <button 
+                          onClick={() => { onAcctClose(); go('/admin/'); }}
+                          className="w-full flex flex-col items-center justify-center text-center py-3 px-4 min-h-[56px] bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow transition-all"
+                        >
+                          <span className="mb-1">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                               <path d="M12 3l8 4v5c0 4.418-3.582 8-8 8s-8-3.582-8-8V7l8-4Z" stroke="#111" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
                               <path d="M9.5 12l1.5 1.5L14.5 10" stroke="#16a34a" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
                             </svg>
-                          </Box>
-                          <Box as="span" color="#111" fontSize={{ base: 'sm', md: 'md' }} fontWeight="600" whiteSpace="normal" wordBreak="break-word" lineHeight="1.25">Admin</Box>
-                        </Button>
+                          </span>
+                          <span className="text-gray-900 text-sm font-semibold">Admin</span>
+                        </button>
                       )}
+      
+                      {/* Blogger */}
                       {isBlogger && (
-                        <Button variant="ghost" w="100%" display="flex" flexDir="column" justifyContent="center" alignItems="center" textAlign="center" py={3} px={4} minH={{ base: 14, md: 12 }} bg="white" borderWidth="1px" borderColor="#e5e7eb" rounded="xl" boxShadow="xs" transition="all 0.15s ease" _hover={{ bg: 'white', boxShadow: 'sm' }} _active={{ bg: 'white', boxShadow: 'xs' }} onClick={() => { onAcctClose(); go('/seo/blogs'); }} my={3} mx={3} position="relative" zIndex={1}>
-                          <Box as="span" lineHeight={0} mb={1}>
+                        <button 
+                          onClick={() => { onAcctClose(); go('/seo/blogs'); }}
+                          className="w-full flex flex-col items-center justify-center text-center py-3 px-4 min-h-[56px] bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow transition-all"
+                        >
+                          <span className="mb-1">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                               <path d="M5 5h14v14H5z" stroke="#111" strokeWidth="1.6"/>
                               <path d="M8 9h8M8 12h8M8 15h5" stroke="#111" strokeWidth="1.6" strokeLinecap="round"/>
                             </svg>
-                          </Box>
-                          <Box as="span" color="#111" fontSize={{ base: 'sm', md: 'md' }} fontWeight="600" whiteSpace="normal" wordBreak="break-word" lineHeight="1.25">Blog</Box>
-                        </Button>
+                          </span>
+                          <span className="text-gray-900 text-sm font-semibold">Blog</span>
+                        </button>
                       )}
+      
+                      {/* HR */}
                       {isHr && (
-                        <Button variant="ghost" w="100%" display="flex" flexDir="column" justifyContent="center" alignItems="center" textAlign="center" py={3} px={4} minH={{ base: 14, md: 12 }} bg="white" borderWidth="1px" borderColor="#e5e7eb" rounded="xl" boxShadow="xs" transition="all 0.15s ease" _hover={{ bg: 'white', boxShadow: 'sm' }} _active={{ bg: 'white', boxShadow: 'xs' }} onClick={() => { onAcctClose(); go('/hr/dashboard'); }} my={3} mx={3} position="relative" zIndex={1}>
-                        <Box as="span" lineHeight={0} mb={1}>
-                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 3l8 4v5c0 4.418-3.582 8-8 8s-8-3.582-8-8V7l8-4Z" stroke="#111" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
-                            <path d="M9.5 12l1.5 1.5L14.5 10" stroke="#16a34a" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
-                          </svg>
-                        </Box>
-                        <Box as="span" color="#111" fontSize={{ base: 'sm', md: 'md' }} fontWeight="600" whiteSpace="normal" wordBreak="break-word" lineHeight="1.25">HR</Box>
-                      </Button>
+                        <button 
+                          onClick={() => { onAcctClose(); go('/hr/dashboard'); }}
+                          className="w-full flex flex-col items-center justify-center text-center py-3 px-4 min-h-[56px] bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow transition-all"
+                        >
+                          <span className="mb-1">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <path d="M12 3l8 4v5c0 4.418-3.582 8-8 8s-8-3.582-8-8V7l8-4Z" stroke="#111" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+                              <path d="M9.5 12l1.5 1.5L14.5 10" stroke="#16a34a" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+                            </svg>
+                          </span>
+                          <span className="text-gray-900 text-sm font-semibold">HR</span>
+                        </button>
                       )}
+      
+                      {/* Sales Head */}
                       {isSalesHead && (
-                        <Button variant="ghost" w="100%" display="flex" flexDir="column" justifyContent="center" alignItems="center" textAlign="center" py={3} px={4} minH={{ base: 14, md: 12 }} bg="white" borderWidth="1px" borderColor="#e5e7eb" rounded="xl" boxShadow="xs" transition="all 0.15s ease" _hover={{ bg: 'white', boxShadow: 'sm' }} _active={{ bg: 'white', boxShadow: 'xs' }} onClick={() => { onAcctClose(); go('/sales-head/dashboard'); }} my={3} mx={3} position="relative" zIndex={1}>
-                        <Box as="span" lineHeight={0} mb={1}>
-                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="#111" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
-                            <circle cx="9" cy="7" r="4" stroke="#111" strokeWidth="1.6"/>
-                            <path d="m22 9-6 6m0-6 6 6" stroke="#111" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
-                          </svg>
-                        </Box>
-                        <Box as="span" color="#111" fontSize={{ base: 'sm', md: 'md' }} fontWeight="600" whiteSpace="normal" wordBreak="break-word" lineHeight="1.25">Sales Head</Box>
-                      </Button>
+                        <button 
+                          onClick={() => { onAcctClose(); go('/sales-head/dashboard'); }}
+                          className="w-full flex flex-col items-center justify-center text-center py-3 px-4 min-h-[56px] bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow transition-all"
+                        >
+                          <span className="mb-1">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="#111" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+                              <circle cx="9" cy="7" r="4" stroke="#111" strokeWidth="1.6"/>
+                              <path d="m22 9-6 6m0-6 6 6" stroke="#111" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+                            </svg>
+                          </span>
+                          <span className="text-gray-900 text-sm font-semibold">Sales Head</span>
+                        </button>
                       )}
-                    </Box>
-                    <Box px={4} pb={3}>
-                      <Button colorScheme="red" w="100%" borderRadius="md" fontWeight="600" onClick={() => { onAcctClose(); HandleUserLogout(); ShowLogOutMessage(); }}>
+                    </div>
+      
+                    {/* Logout Button */}
+                    <div className="px-4 pb-3">
+                      <button 
+                        onClick={() => { onAcctClose(); HandleUserLogout(); ShowLogOutMessage(); }}
+                        className="w-full py-2.5 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-md transition-colors"
+                      >
                         Log out
-                      </Button>
-                    </Box>
-                    {/* Spacer to ensure last item is not hidden behind mobile bottom nav */}
-                    <Box h={{ base: 16, md: 0 }} />
-                  </DrawerBody>
-                </DrawerContent>
-              </Drawer>
+                      </button>
+                    </div>
+                    
+                    {/* Bottom spacer for mobile nav */}
+                    <div className="h-16 md:h-0" />
+                  </div>
+                </div>
+              </div>
             </>
           ) : (
             <Menu placement="bottom-end" isLazy strategy="fixed">
@@ -286,7 +369,7 @@ export default function RightSection({
                         {firstName}
                       </Box>
                     )}
-                    <Box color="#666" fontSize="12px">Signed in</Box>
+                    {/* <Box color="#666" fontSize="12px">Signed in</Box> */}
                   </Box>
                   <Box h="1px" bg="#eee" />
                   <MenuItem onClick={() => go('/userdashboard/')} fontSize="14px" py={2.5} _hover={{ bg: '#f9fafb' }}>
