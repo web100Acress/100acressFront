@@ -24,6 +24,7 @@ const ProjectTypeGlobal = () => {
     if (path === '/projects/farmhouse/') return 'farmhouse';
     if (path === '/projects/industrial-plots/') return 'industrial-plots';
     if (path === '/projects/industrial-projects/') return 'industrial-projects';
+    if (path === '/projects/senior-living/') return 'senior-living';
     
     // Keep old patterns for backward compatibility
     if (path === '/sco/plots/') return 'sco-plots';

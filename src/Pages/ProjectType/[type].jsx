@@ -124,6 +124,31 @@ const projectTypeConfigs = {
              project.projectName?.toLowerCase().includes('commercial') ||
              project.description?.toLowerCase().includes('commercial');
     }
+  },
+  "senior-living": {
+    title: "Seniar living in Gurgaon",
+    description: "Explore seniar living communities in Gurgaon with tailored amenities, comfort, and care-focused living.",
+    metaTitle: "Seniar living in Gurgaon | 100Acress",
+    metaDescription: "Discover premium seniar living communities in Gurgaon. Find your dream senior living home with detailed information, pricing, and location details. Your trusted partner for senior living investment.",
+    keywords: "seniar living gurgaon, senior living communities, retirement homes, care living, senior apartments, elderly care, assisted living",
+    canonical: "https://www.100acress.com/projects/senior-living/",
+    query: "seniorliving",
+    reduxKey: "seniorliving",
+    badgeColor: "bg-indigo-500",
+    badgeText: "Senior Living",
+    typeFilter: (project) => {
+      return project.type?.toLowerCase().includes('senior') ||
+             project.projectType?.toLowerCase().includes('senior') ||
+             project.category?.toLowerCase().includes('senior') ||
+             project.propertyType?.toLowerCase().includes('senior') ||
+             project.projectName?.toLowerCase().includes('senior') ||
+             project.description?.toLowerCase().includes('senior') ||
+             project.type?.toLowerCase().includes('retirement') ||
+             project.projectType?.toLowerCase().includes('retirement') ||
+             project.category?.toLowerCase().includes('retirement') ||
+             project.projectName?.toLowerCase().includes('retirement') ||
+             project.description?.toLowerCase().includes('retirement');
+    }
   }
 };
 
@@ -142,6 +167,7 @@ const ProjectTypePage = () => {
     if (path === '/property/residential/') return 'residential-projects';
     if (path === '/projects/independent-floors/') return 'independent-floors';
     if (path === '/projects/commercial/') return 'commercial-projects';
+    if (path === '/projects/senior-living/') return 'senior-living';
     
     // Fallback to type parameter for /project-type/:type routes
     return type;
@@ -227,7 +253,7 @@ const ProjectTypePage = () => {
       
       // Debounce the API call
       apiCallTimeoutRef.current = setTimeout(() => {
-        getAllProjects(config.query, 0)
+        getAllProjects(config.query, 100)
           .then(() => {
             setApiError(null);
           })
