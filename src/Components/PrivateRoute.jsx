@@ -16,7 +16,7 @@ const PrivateRoute = () => {
     const verifyAccess = async () => {
       if (!rawToken) {
         setLoading(false);
-        return navigate("/");
+        return <Navigate to="/auth/signin" replace />;
       }
       try {
         // Sanitize token from localStorage: remove quotes and any leading 'Bearer '

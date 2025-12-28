@@ -267,8 +267,27 @@ export default function RightSection({
                 </Flex>
               </MenuButton>
               <Portal>
-                <MenuList p={1} minW="220px" maxH="60vh" overflowY="auto" zIndex={14000} border="1px solid #e5e7eb" boxShadow="lg" rounded="xl" bg="white">
-                  <Box px={3} pt={2} pb={2} color="#666" fontSize="12px">Signed in</Box>
+                <MenuList p={1} minW="220px" maxH="60vh" overflowY="auto" zIndex={14000} border="1px solid #e5e7eb" boxShadow="lg" rounded="xl" bg="white" position="relative">
+                  <Flex justify="flex-end" p={2} position="absolute" top={0} right={0} zIndex={1}>
+                    <IconButton
+                      aria-label="Close menu"
+                      icon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M18 6L6 18M6 6l12 12" stroke="#666" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>}
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => {}}
+                      _hover={{ bg: '#f3f4f6' }}
+                    />
+                  </Flex>
+                  <Box px={3} pt={6} pb={2} textAlign="center">
+                    {firstName && (
+                      <Box color="#111" fontSize="16px" fontWeight="600" mb={1}>
+                        {firstName}
+                      </Box>
+                    )}
+                    <Box color="#666" fontSize="12px">Signed in</Box>
+                  </Box>
                   <Box h="1px" bg="#eee" />
                   <MenuItem onClick={() => go('/userdashboard/')} fontSize="14px" py={2.5} _hover={{ bg: '#f9fafb' }}>
                     <Box as="span" lineHeight={0} mr={3}>
