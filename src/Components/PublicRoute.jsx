@@ -1,11 +1,19 @@
 import React from "react";
-import { Outlet, useLocation } from "react-router-dom";
+import { Navigate, Outlet, useLocation } from "react-router-dom";
 import Navbar from "../aadharhomes/navbar/Navbar"; // Correct path to Navbar component
 
 const PublicRoute = () => {
-    const location = useLocation();
-    const path = location.pathname || "";
-    let hideNavbar = false;
+  const token = localStorage.getItem("myToken");
+  const location = useLocation();
+  const path = location.pathname || "";
+
+  // Only redirect if already authenticated AND trying to access /auth/*
+  if (token && path.startsWith("/auth")) {
+    return <Navigate to="/" replace />;
+  }
+
+  // --- existing navbar logic below ---
+  let hideNavbar = false;
     
     // Hide navbar for contact card routes (/hi/:slug)
     if (path.startsWith('/hi/')) {
