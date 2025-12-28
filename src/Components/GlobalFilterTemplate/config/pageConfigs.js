@@ -275,6 +275,21 @@ export const projectTypeConfigs = {
              project.type === 'Industrial Projects';
     }
   },
+  "senior-living": {
+    title: "Seniar living in Gurgaon",
+    description: "Explore seniar living communities in Gurgaon with tailored amenities, comfort, and care-focused living.",
+    query: "seniorliving",
+    reduxKey: "seniorliving",
+    canonical: "https://www.100acress.com/projects/senior-living/",
+    badgeColor: "bg-indigo-500",
+    badgeText: "Senior Living",
+    typeFilter: (project) => {
+      return project.type === 'Senior Living' ||
+             project.projectType === 'Senior Living' ||
+             project.category === 'Senior Living' ||
+             project.propertyType === 'Senior Living';
+    }
+  },
   "affordable homes": {
     title: "Affordable Homes in Gurgaon",
     description: "Discover Premium Affordable Homes in Gurgaon – Your Gateway to Budget-Friendly Living and Smart Real Estate Investment.",
