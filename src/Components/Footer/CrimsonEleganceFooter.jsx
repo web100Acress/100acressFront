@@ -368,6 +368,7 @@ const CrimsonEleganceFooter = () => {
                 { name: "Service Apartments in Gurgaon", href: "" },
                 { name: "Resale Property in Gurgaon", href: "/buy-properties/best-resale-property-in-gurugram/" },
                 { name: "Rental Property in Gurgaon", href: "/rental-properties/best-rental-property-in-gurugram/" },
+                { name: "Senior living in Gurgaon", href: "" },
                 
                 
               ].map((location, index) => (
@@ -400,6 +401,7 @@ const CrimsonEleganceFooter = () => {
           { name: "Shop Cum Office Plots in Gurgaon", href: "/projects/sco-plots/" },
           { name: "Luxury Villas in Gurgaon", href: "/projects/villas/" },
           { name: "Affordable Homes in Gurgaon", href: "/projects/affordable-homes/" },
+          { name: "Plots in Gurgaon", href: "/projects/plots/" },
         ].map((location, index) => (
           <Link
             key={index}

@@ -234,6 +234,8 @@ const Home = () => {
   const ProjectinDelhi = useSelector(store => store?.project?.projectindelhi) || [];
   const DubaiProjects = useSelector(store => store?.stateproject?.dubai) || [];
   const LuxuryAllProject = useSelector(store => store?.allsectiondata?.luxuryAll) || [];
+  const NewLaunchProjects = useSelector(store => store?.allsectiondata?.newlaunch) || [];
+
   const { getTrending, getFeatured, getUpcoming, getCommercial, getAffordable, getLuxury, getScoplots, getBudgetHomes, getProjectIndelhi, getAllProjects, getProjectbyState } = Api_Service();
   const [dataLoaded, setDataLoaded] = useState({
     trending: false,
@@ -330,6 +332,13 @@ const Home = () => {
   useEffect(() => {
     loadData(activeFilter);
   }, [activeFilter, loadData]);
+
+  // Fetch new launch projects for the dedicated section
+  useEffect(() => {
+    if (!NewLaunchProjects || NewLaunchProjects.length === 0) {
+      getAllProjects("newlaunch", 4);
+    }
+  }, [NewLaunchProjects]);
 
   // Set the displayed projects based on the active filter
   useEffect(() => {
@@ -631,8 +640,8 @@ const Home = () => {
               </div>
             )}
             <div>
-              {UpcomingProjects.length === 0 ? <CustomSkeleton /> : (
-                <CommonProject data={UpcomingProjects} title="New Launch Projects in Gurgaon" animation="fade-down" path={"/projects/newlaunch/"} compact />
+              {NewLaunchProjects.length === 0 ? <CustomSkeleton /> : (
+                <CommonProject data={NewLaunchProjects.slice(0, 4)} title="New Launch Projects in Gurgaon" animation="fade-down" path={"/projects/newlaunch/"} compact />
               )}
             </div>
 
