@@ -30,26 +30,28 @@ jobs:
       - name: Pull image from Docker Hub
         run: docker pull hunderedacress/100acressfront:latest
 
-      - name: Stop and remove existing container if running
+      - name: Free port 3001 and remove conflicting containers
         run: |
-          if [ "$(docker ps -aq -f name=hundredacress-frontend-container)" ]; then
+          # remove container by name if present
+          if docker ps -a --filter "name=hundredacress-frontend-container" -q | grep -q .; then
             docker rm -f hundredacress-frontend-container
           fi
 
-      - name: Install lsof if not available
-        run: |
-          if ! command -v lsof &> /dev/null; then
-            sudo apt-get update && sudo apt-get install -y lsof
+          # remove any container publishing host port 3001
+          conflict=$(docker ps -q --filter "publish=3001")
+          if [ -n "$conflict" ]; then
+            docker rm -f $conflict
           fi
 
-      - name: Free up port 3001 if already in use
-        run: |
-          PID=$(lsof -t -i:3001 || true)
-          if [ ! -z "$PID" ]; then
-            echo "Port 3001 in use by PID $PID, killing..."
-            kill -9 $PID || true
+          # kill any non-docker process using port 3001
+          if command -v lsof >/dev/null 2>&1; then
+            pids=$(lsof -t -i :3001 || true)
+            if [ -n "$pids" ]; then
+              echo "Killing processes on port 3001: $pids"
+              kill -9 $pids || true
+            fi
           else
-            echo "Port 3001 is free"
+            echo "lsof not available — skipping non-docker process check"
           fi
 
       - name: Run Docker Container on port 3001
