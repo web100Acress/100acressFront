@@ -44,6 +44,11 @@ export const projectTypeRoutes = {
     path: "/projects/industrial-projects/",
     title: "Industrial Projects",
     description: "Discover Premium Industrial Projects – Your Gateway to Industrial Investment and Business Expansion."
+  },
+  "senior-living": {
+    path: "/projects/senior-living/",
+    title: "Seniar living in Gurgaon",
+    description: "Explore seniar living communities in Gurgaon with tailored amenities, comfort, and care-focused living."
   }
 };
 

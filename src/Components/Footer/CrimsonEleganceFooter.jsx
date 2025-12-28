@@ -364,11 +364,11 @@ const CrimsonEleganceFooter = () => {
                 { name: "Flats For Sale under 20 Cr In Gurgaon", href: "/projects/10-20-cr" },
                 { name: "Affordable Homes in Gurgaon", href: "/projects/1-5-cr" },
                 { name: "Farmhouse in Gurgaon", href: "/projects/farmhouse/" },
-                { name: "Studio Apartments in Gurgaon", href: "" },
-                { name: "Service Apartments in Gurgaon", href: "" },
+                { name: "Studio Apartments in Gurgaon", href: "/projects/studio-apartments/" },
+                { name: "Service Apartments in Gurgaon", href: "/projects/service-apartments/" },
                 { name: "Resale Property in Gurgaon", href: "/buy-properties/best-resale-property-in-gurugram/" },
                 { name: "Rental Property in Gurgaon", href: "/rental-properties/best-rental-property-in-gurugram/" },
-                { name: "Senior living in Gurgaon", href: "" },
+                { name: "Senior living in Gurgaon", href: "/projects/senior-living/" },
                 
                 
               ].map((location, index) => (
