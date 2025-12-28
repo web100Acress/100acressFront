@@ -198,6 +198,48 @@ const InsertProject = () => {
 
   const [loading, setLoading] = useState(false); // State for loading indicator
   const [messageApi, contextHolder] = message.useMessage(); // Ant Design message hook
+  const defaultProjectTypes = [
+    "Commercial Property",
+    "Residential Flats",
+    "SCO Plots",
+    "Deen Dayal Plots",
+    "Residential Plots",
+    "Independent Floors",
+    "Builder Floors",
+    "Affordable Homes",
+    "Villas",
+    "Farm Houses",
+    "Industrial Plots",
+    "Senior Living in Gurgaon",
+  ];
+  const [projectTypes, setProjectTypes] = useState(defaultProjectTypes);
+  const [customProjectType, setCustomProjectType] = useState("");
+
+  // ensure existing type (when editing) is present in options
+  useEffect(() => {
+    if (editFromData?.type && !projectTypes.some((t) => t.toLowerCase() === editFromData.type.toLowerCase())) {
+      setProjectTypes((prev) => [...prev, editFromData.type]);
+    }
+  }, [editFromData?.type, projectTypes]);
+
+  const handleAddProjectType = () => {
+    const value = customProjectType.trim();
+    if (!value) {
+      messageApi.warning("Please enter a project type name");
+      return;
+    }
+    const exists = projectTypes.find((t) => t.toLowerCase() === value.toLowerCase());
+    if (exists) {
+      setCustomProjectType("");
+      setEditFromData((prev) => ({ ...prev, type: exists }));
+      messageApi.info("Type already exists and is selected.");
+      return;
+    }
+    setProjectTypes((prev) => [...prev, value]);
+    setEditFromData((prev) => ({ ...prev, type: value }));
+    setCustomProjectType("");
+    messageApi.success("Project type added");
+  };
 
 
   // Filter states based on search term
@@ -1013,29 +1055,28 @@ const InsertProject = () => {
                       <option value="" disabled hidden>
                         Select Project Type
                       </option>
-                      <option value="Commercial Property">
-                        Commercial Property
-                      </option>
-                      <option value="Residential Flats">
-                        Residential Flats
-                      </option>
-                      <option value="SCO Plots">SCO Plots</option>
-                      <option value="Deen Dayal Plots">Deen Dayal Plots</option>
-                      <option value="Residential Plots">
-                        Residential Plots
-                      </option>
-                      <option value="Independent Floors">
-                        Independent Floors
-                      </option>
-                      <option value="Builder Floors">Builder Floors</option>
-                      <option value="Affordable Homes">Affordable Homes</option>
-                      <option value="Villas">Villas</option>
-                      <option value="Farm Houses">Farm Houses</option>
-                      <option value="Industrial Plots">
-                        Industrial Plots
-                      </option>
-                      
+                      {projectTypes.map((type) => (
+                        <option key={type} value={type}>
+                          {type}
+                        </option>
+                      ))}
                     </select>
+                    <div className="flex items-center gap-2 mt-2">
+                      <input
+                        type="text"
+                        value={customProjectType}
+                        onChange={(e) => setCustomProjectType(e.target.value)}
+                        placeholder="Add custom type"
+                        className="flex-1 p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-900"
+                      />
+                      <button
+                        type="button"
+                        onClick={handleAddProjectType}
+                        className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors whitespace-nowrap font-semibold shadow-sm inline-flex items-center justify-center min-w-[90px]"
+                      >
+                        Add
+                      </button>
+                    </div>
                   </div>
 
                   <div>
