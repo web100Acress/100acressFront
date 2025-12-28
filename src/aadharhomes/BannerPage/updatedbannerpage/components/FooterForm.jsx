@@ -289,7 +289,7 @@ const FooterForm = ({ builderName = "Premium", projectViewDetails = {}, projectT
       <div className="border-t border-white/20">
         <div className="max-w-6xl mx-auto px-4 py-4">
           <p className="text-center text-gray-400 text-sm">
-            Copyright © 2025. {projectViewDetails.projectName || projectTitle || "100acress"}
+            Copyright © 2025. {projectViewDetails?.projectName || projectTitle || "100acress"}
           </p>
         </div>
       </div>

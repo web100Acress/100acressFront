@@ -1,6 +1,8 @@
 import React, { lazy, Suspense, useState, useEffect } from "react";
 import "./App.css";
 import { styled } from "styled-components";
+import { ToastContainer, Slide } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { Routes, Route, Navigate, Link, useLocation } from "react-router-dom";
 import { DataProvider } from "./MyContext";
 import { AuthProvider } from "./AuthContext";
@@ -21,6 +23,9 @@ import LoginForm from "./Resister/LoginForm";
 import AuthModal from "./Resister/AuthModal";
 
 // import ConfettiAllCorners from "./Components/ConfettiAllCorners"; 
+
+// ToastContainer for global toast notifications
+
 
 // Lazy load all main page components
 const Home = lazy(() => import("./Pages/Home"));
@@ -238,6 +243,9 @@ const ShopCumOfficePlotsGurgaon = lazy(() => import("./Pages/PropertyTypes/ShopC
 const queryClient = new QueryClient();
 
 function App() {
+  // Global ToastContainer for all toast notifications
+  // Best-practice: position top-center, Slide animation, autoClose 2200ms, etc
+
   const location = useLocation();
   const currentPath = location?.pathname || "/";
   // Consider dynamic project pages like '/experion-the-trillion/' etc. (single segment with trailing slash)
@@ -306,6 +314,16 @@ function App() {
                   <Toaster position="top-right" />
                   <Sonner position="top-right" richColors />
                   <HotToaster position="top-right" />
+                  <ToastContainer
+                    position="top-center"
+                    autoClose={2200}
+                    hideProgressBar={false}
+                    newestOnTop
+                    closeOnClick
+                    pauseOnHover={false}
+                    draggable
+                    transition={Slide}
+                  />
                   
 
                   {/* Your existing routes */}
@@ -314,16 +332,9 @@ function App() {
                       <Route index element={<Home />} />
                       <Route path="/verify-email/*" element={<VerifyEmailRedirect />} />
                       <Route path="/post-property/*" element={<PostPropertyRedirect />} />
-                      <Route
-                        path="/postproperty"
-                        element={
-                          token !== null ? (
-                            <NewSellProperty />
-                          ) : (
-                            <Navigate to="/" replace={true} />
-                          )
-                        }
-                      />
+                      <Route element={<PrivateRoute />}>
+  <Route path="/postproperty" element={<NewSellProperty />} />
+</Route>
                       <Route path="/auth/">
                         <Route path="signup/">
                           <Route index element={<SignupForm />} />
@@ -336,8 +347,7 @@ function App() {
                             element={<OTPVerification />}
                           />
                         </Route>
-                        <Route path="signin/" element={<div>Signin commented out</div>} />
-                      </Route>
+                                              </Route>
                       <Route path="/privacy-policy/" element={<Privacy />} />
                       <Route path="/disclaimer/" element={<Disclaimer />} />
                       <Route

@@ -224,13 +224,7 @@ api.interceptors.response.use(
       // Clear auth data
       localStorage.removeItem('myToken');
       localStorage.removeItem('token');
-      
-      // Only redirect if not already on login page
-      if (!window.location.pathname.includes('/login')) {
-        const returnUrl = encodeURIComponent(window.location.pathname + window.location.search);
-        window.location.href = `/login?returnUrl=${returnUrl}`;
-      }
-      
+      // Optionally, trigger your login modal here if needed (e.g., window.showAuthModal && window.showAuthModal();)
       return Promise.reject({
         ...error,
         message: 'Your session has expired. Please log in again.',

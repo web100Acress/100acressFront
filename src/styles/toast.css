@@ -1,0 +1,132 @@
+/* Toast Container */
+.toast-container {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 500px;
+  width: 90%;
+  pointer-events: none;
+}
+
+/* Individual Toast */
+.custom-toast {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background: #1f1f1f;
+  color: #eee;
+  padding: 14px 20px;
+  border-radius: 6px;
+  box-shadow: 0 0 10px rgba(0, 255, 213, 0.3);
+  opacity: 0;
+  transform: translateX(100%);
+  transition: all 0.4s ease;
+  pointer-events: none;
+  z-index: 999;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.custom-toast.show {
+  opacity: 1;
+  transform: translateX(0);
+  pointer-events: auto;
+}
+
+/* Toast Types */
+.custom-toast.success {
+  background: #10b981;
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+}
+
+.custom-toast.error {
+  background: #ef4444;
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.3);
+}
+
+.custom-toast.warning {
+  background: #f59e0b;
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.3);
+}
+
+.custom-toast.info {
+  background: #3b82f6;
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
+}
+
+/* Close Button */
+.custom-toast button {
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  padding: 0;
+  opacity: 0.8;
+  transition: opacity 0.2s;
+}
+
+.custom-toast button:hover {
+  opacity: 1;
+}
+
+/* Animation: Slide In */
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Animation: Fade Out */
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 640px) {
+  .toast-container {
+    bottom: 16px;
+    width: 92%;
+  }
+
+  .custom-toast {
+    right: 20px;
+    left: 20px;
+    transform: translateY(100%);
+  }
+  
+  .custom-toast.show {
+    transform: translateY(0);
+  }
+}
+
+/* Tailwind Animation Fallback */
+.animate-in {
+  animation: slideInUp 0.3s ease-out;
+}
+
+.fade-in {
+  opacity: 1;
+}
+
+.slide-in-from-bottom-4 {
+  transform: translateY(0);
+}
