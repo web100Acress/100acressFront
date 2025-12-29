@@ -4,6 +4,7 @@ import { MdFavoriteBorder, MdShare, MdCompare } from "react-icons/md";
 
 // Import modern real estate components
 import PageLayout from "../../Components/ModernRealEstate/PageLayout";
+import FAQAccordion from "../../Pages/ProjectStatusSearch/FAQAccordion";
 
 const ProjectTypeTemplate = ({
   title,
@@ -54,17 +55,26 @@ const ProjectTypeTemplate = ({
   keywords
 }) => {
   return (
-    <PageLayout
-      title={title}
-      description={description}
-      projects={projects}
-      isLoading={isLoading}
-      projectType={projectType}
-      metaTitle={metaTitle}
-      metaDescription={metaDescription}
-      canonical={canonical}
-      keywords={keywords}
-    />
+    <>
+      <PageLayout
+        title={title}
+        description={description}
+        projects={projects}
+        isLoading={isLoading}
+        projectType={projectType}
+        metaTitle={metaTitle}
+        metaDescription={metaDescription}
+        canonical={canonical}
+        keywords={keywords}
+      />
+      <div className="py-12 bg-white">
+        <div className="max-w-4xl mx-auto px-3 sm:px-4">
+          <div className="border border-gray-200 rounded-lg overflow-hidden">
+            <FAQAccordion projectStatus={projectType} />
+          </div>
+        </div>
+      </div>
+    </>
   );
 };
 
