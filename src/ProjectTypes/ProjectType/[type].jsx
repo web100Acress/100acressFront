@@ -3,8 +3,8 @@ import { useParams, useLocation } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import { useSelector } from "react-redux";
 import Api_Service from "../../Redux/utils/Api_Service";
-import ProjectTypeTemplate from "../../Components/ProjectTypeTemplate";
-import Footer from "../../Components/Actual_Components/Footer";
+import ProjectTypeTemplate from "./ProjectTypeTemplate";
+import Footer from "../../Components/Footer/CrimsonEleganceFooter";
 
 // Project type configurations - using original URLs
 const projectTypeConfigs = {

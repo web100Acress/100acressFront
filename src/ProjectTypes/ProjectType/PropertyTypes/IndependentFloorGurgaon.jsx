@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
-import Api_Service from "../../Redux/utils/Api_Service";
-import GlobalFilterTemplate from "../../Components/GlobalFilterTemplate/GlobalFilterTemplate";
-import { projectTypeConfigs } from "../../Components/GlobalFilterTemplate/config/pageConfigs";
+import Api_Service from "../../../Redux/utils/Api_Service";
+import GlobalFilterTemplate from "../../../Components/GlobalFilterTemplate/GlobalFilterTemplate";
+import { projectTypeConfigs } from "../../config/pageConfigs";
 
-const LuxuryVillasGurgaon = () => {
+const IndependentFloorGurgaon = () => {
   const { getAllProjects } = Api_Service();
   const location = useLocation();
   
-  const projectType = 'luxury-villas';
+  const projectType = 'independent-floors';
   const config = projectTypeConfigs[projectType];
   
   // Get projects from Redux store
@@ -48,12 +48,12 @@ const LuxuryVillasGurgaon = () => {
   // Custom configuration
   const customConfig = {
     ...config,
-    title: 'Luxury Villas in Gurgaon',
-    description: 'Discover Premium Luxury Villas in Gurgaon – Your Gateway to Ultra-Luxury Living and Prime Real Estate Investment.',
-    h1: 'Luxury Villas in Gurgaon',
+    title: 'Independent Floor for Sale in Gurgaon',
+    description: 'Discover Premium Independent Floors for Sale in Gurgaon – Your Gateway to Spacious Living and Prime Real Estate Investment.',
+    h1: 'Independent Floor for Sale in Gurgaon',
     breadcrumbs: [
       { label: 'Home', path: '/' },
-      { label: 'Luxury Villas in Gurgaon', path: location.pathname }
+      { label: 'Independent Floor for Sale in Gurgaon', path: location.pathname }
     ]
   };
   
@@ -67,4 +67,4 @@ const LuxuryVillasGurgaon = () => {
   );
 };
 
-export default LuxuryVillasGurgaon;
+export default IndependentFloorGurgaon;
