@@ -61,7 +61,7 @@ const ProjectStatusSearch = lazy(() => import("./Pages/ProjectStatusSearch"));
 // Global Template Components
 const ProjectStatusSearchGlobal = lazy(() => import("./Pages/ProjectStatusSearch/ProjectStatusSearchGlobal"));
 const CityProjectsGlobal = lazy(() => import("./Pages/ProjectCities/CityProjectsGlobal"));
-const ProjectTypeGlobal = lazy(() => import("./Pages/ProjectType/ProjectTypeGlobal"));
+const ProjectTypeGlobal = lazy(() => import("./ProjectTypes/ProjectType/ProjectTypeGlobal"));
 const DeenDayalPlots = lazy(() => import("./Components/HomePageComponents/DeenDayalPlots"));
 const NewsandArtical = lazy(() => import("./Pages/NewsandArtical"));
 const UserDashBoard = lazy(() => import("./Components/HomePageComponents/UserDashBoard"));
@@ -81,7 +81,7 @@ const QRGeneratorPage = lazy(() => import("./Pages/QRGeneratorPage"));
 const BudgetPrice = lazy(() => import("./Pages/BudgetPrice"));
 const PossessionAfter2028 = lazy(() => import("./Pages/PossessionAfter2028"));
 // New dynamic project type route
-const ProjectTypePage = lazy(() => import("./Pages/ProjectType/[type]"));
+const ProjectTypePage = lazy(() => import("./ProjectTypes/ProjectType/[type]"));
 const ProjectTypeDemo = lazy(() => import("./Components/ProjectTypeDemo"));
 const Bptp = lazy(() => import("./Pages/Bptp"));
 const Orris = lazy(() => import("./Pages/Orris"));

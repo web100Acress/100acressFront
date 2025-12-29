@@ -3,8 +3,8 @@ import { useParams, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import Api_Service from "../../Redux/utils/Api_Service";
 import GlobalFilterTemplate from "../../Components/GlobalFilterTemplate/GlobalFilterTemplate";
-import { projectTypeConfigs } from "../../Components/GlobalFilterTemplate/config/pageConfigs";
-import { getStaticData } from "../../Components/GlobalFilterTemplate/config/staticData";
+import { projectTypeConfigs } from "../config/pageConfigs";
+import { getStaticData } from "../config/staticData";
 
 
 const ProjectTypeGlobal = () => {
