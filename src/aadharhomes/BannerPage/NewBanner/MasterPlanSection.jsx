@@ -25,6 +25,7 @@ const MasterPlanSection = ({ projectName, imageUrl, isOpen, setIsOpen }) => {
                     src={imageUrl}
                     alt={projectName}
                     className="nb-master-image"
+                    fetchpriority="high"
                     onClick={() => setIsOpen && setIsOpen(true)}
                   />
                 )}
@@ -49,6 +50,7 @@ const MasterPlanSection = ({ projectName, imageUrl, isOpen, setIsOpen }) => {
                 src={imageUrl}
                 alt={`${projectName} Master Plan`}
                 className="nb-master-modal-img"
+                fetchpriority="high"
               />
             </div>
           </div>

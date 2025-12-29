@@ -601,6 +601,7 @@ const items =text.map((item, index) => ({
                 style={{ height: "40px", width: "200px" }}
                 alt={projectViewDetails.projectName}
                 loading="lazy"
+                fetchpriority="high"
               />
               <div className="flex items-center justify-end space-x-4 w-full">
                 <button
@@ -866,6 +867,7 @@ const items =text.map((item, index) => ({
                       className="max-w-full h-[80vh] sm:h-auto object-cover"
                       src={frontImage.url}
                       alt={projectViewDetails.projectName}
+                      fetchpriority="high"
                     />
                   )}
                 </div>
@@ -1035,6 +1037,7 @@ const items =text.map((item, index) => ({
                 <div className="w-full md:w-1/2 overflow-hidden flex items-center">
                   {projectViewDetails?.highlightImage?.url && (
                     <img
+                      fetchpriority="high"
                       src={projectViewDetails?.projectGallery[0]?.url}
                       alt={`${projectViewDetails.projectName}`}
                       className="w-full h-[50vh] sm:h-[60vh] md:h-full object-cover rounded-tr-[70px] rounded-bl-[50px]"
@@ -1105,6 +1108,7 @@ const items =text.map((item, index) => ({
                 <div className="w-full md:w-1/2 flex items-center overflow-hidden">
                   {projectViewDetails?.highlightImage?.url && (
                     <img
+                      fetchpriority="high"
                       src={projectViewDetails?.highlightImage?.url}
                       alt={`${projectViewDetails.projectName}`}
                       className="w-full h-[50vh] sm:h-[60vh] md:h-[60vh] object-cover rounded-tr-[40px] md:rounded-tr-[70px] rounded-bl-[30px] md:rounded-bl-[50px]"
@@ -1243,6 +1247,7 @@ const items =text.map((item, index) => ({
                       sliderImages.map((image, index) => (
                         <div key={index} className="p-2">
                           <img
+                            fetchpriority="high"
                             src={image.url}
                             alt={`${projectViewDetails.projectName} floorPlans ${index + 1}`}
                             className="w-full h-auto max-h-[450px] object-fit mt-6 cursor-pointer rounded-lg"
@@ -1270,6 +1275,7 @@ const items =text.map((item, index) => ({
                       &times;
                     </button>
                     <img
+                      fetchpriority="high"
                       src={selectedImagefloor}
                       alt={projectViewDetails.projectName}
                       className="max-w-[80vw] max-h-[80vh] object-contain"
@@ -1355,6 +1361,7 @@ const items =text.map((item, index) => ({
                               className="relative"
                             >
                               <img
+                                fetchpriority="high"
                                 src={image.url}
                                 alt={projectViewDetails.projectName}
                                 className="w-full h-auto rounded-lg object-cover transition-transform duration-200 hover:scale-105"
@@ -1375,6 +1382,7 @@ const items =text.map((item, index) => ({
                                 &times;
                               </button>
                               <img
+                                fetchpriority="high"
                                 src={modalImageGallery}
                                 alt={projectViewDetails.projectName}
                                 className="max-w-[80vw] max-h-[80vh] object-contain"
@@ -1492,6 +1500,7 @@ const items =text.map((item, index) => ({
                     <div className="text-justify text-gray-700 pl-6 m-0 md:m-8 lg:m-12 xl:m-20 text-sm sm:text-sm md:text-base lg:text-lg xl:text-lg pt-0">
                       {projectViewDetails?.project_locationImage?.url && (
                         <img
+                          fetchpriority="high"
                           src={projectViewDetails.project_locationImage.url}
                           alt={`${projectViewDetails.projectName}`}
                         />
@@ -1587,6 +1596,7 @@ const items =text.map((item, index) => ({
                         <div className="text-justify text-gray-700 m-0 md:m-8 lg:m-12 xl:m-20 text-sm sm:text-sm md:text-base lg:text-lg xl:text-lg pt-0">
                           {projectViewDetails?.projectMaster_plan?.url && (
                             <img
+                              fetchpriority="high"
                               src={projectViewDetails.projectMaster_plan.url}
                               alt={`${projectViewDetails.projectName}`}
                             />
@@ -1706,6 +1716,7 @@ const items =text.map((item, index) => ({
                                 <span className="relative flex h-40 overflow-hidden rounded-t-lg cursor-pointer">
                                   <Link to={`/${project.project_url}/`} target="blank">
                                     <img
+                                      fetchpriority="high"
                                       className="object-cover w-full h-full"
                                       src={project.frontImage && project.frontImage.url} alt={projectViewDetails.projectName}
                                     />
