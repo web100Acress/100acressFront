@@ -1,24 +1,34 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
-import Api_Service from "../../Redux/utils/Api_Service";
-import GlobalFilterTemplate from "../../Components/GlobalFilterTemplate/GlobalFilterTemplate";
-import { projectTypeConfigs } from "../../Components/GlobalFilterTemplate/config/pageConfigs";
+import Api_Service from "../../../Redux/utils/Api_Service";
+import GlobalFilterTemplate from "../../../Components/GlobalFilterTemplate/GlobalFilterTemplate";
+import { projectTypeConfigs } from "../../config/pageConfigs";
 
-const FarmhouseGurgaon = () => {
+const AffordableHomesGurgaon = () => {
   const { getAllProjects } = Api_Service();
   const location = useLocation();
   
-  const projectType = 'farmhouse';
+  const projectType = 'residential-projects';
   const config = projectTypeConfigs[projectType];
   
   // Get projects from Redux store
   const projects = useSelector(store => store?.allsectiondata?.[config?.reduxKey]);
   
   const [isLoading, setIsLoading] = useState(true);
+  const [filteredProjects, setFilteredProjects] = useState([]);
   
   useEffect(() => {
+    // Filter projects for affordable homes (under 1 Cr)
     if (projects && projects.length > 0) {
+      const filtered = projects.filter(project => {
+        if (project.price) {
+          const price = parseFloat(project.price);
+          return price <= 1;
+        }
+        return false;
+      });
+      setFilteredProjects(filtered);
       setIsLoading(false);
     } else {
       // Fetch projects if not in Redux
@@ -48,12 +58,12 @@ const FarmhouseGurgaon = () => {
   // Custom configuration
   const customConfig = {
     ...config,
-    title: 'Farmhouse in Gurgaon',
-    description: 'Discover Premium Farmhouses in Gurgaon – Your Gateway to Serene Living and Prime Real Estate Investment.',
-    h1: 'Farmhouse in Gurgaon',
+    title: 'Affordable Homes in Gurgaon',
+    description: 'Discover Premium Affordable Homes in Gurgaon – Your Gateway to Budget-Friendly Living and Prime Real Estate Investment.',
+    h1: 'Affordable Homes in Gurgaon',
     breadcrumbs: [
       { label: 'Home', path: '/' },
-      { label: 'Farmhouse in Gurgaon', path: location.pathname }
+      { label: 'Affordable Homes in Gurgaon', path: location.pathname }
     ]
   };
   
@@ -61,10 +71,10 @@ const FarmhouseGurgaon = () => {
     <GlobalFilterTemplate
       key={location.pathname}
       config={customConfig}
-      projects={projects}
+      projects={filteredProjects.length > 0 ? filteredProjects : projects}
       isLoading={isLoading}
     />
   );
 };
 
-export default FarmhouseGurgaon;
+export default AffordableHomesGurgaon;

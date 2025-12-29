@@ -3,8 +3,7 @@ import { Link } from "react-router-dom";
 import { MdFavoriteBorder, MdShare, MdCompare } from "react-icons/md";
 
 // Import modern real estate components
-import PageLayout from "./ModernRealEstate/PageLayout";
-import FAQAccordion from "../Pages/ProjectStatusSearch/FAQAccordion";
+import PageLayout from "../../Components/ModernRealEstate/PageLayout";
 
 const ProjectTypeTemplate = ({
   title,

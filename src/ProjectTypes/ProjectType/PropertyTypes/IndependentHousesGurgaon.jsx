@@ -1,34 +1,24 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
-import Api_Service from "../../Redux/utils/Api_Service";
-import GlobalFilterTemplate from "../../Components/GlobalFilterTemplate/GlobalFilterTemplate";
-import { projectTypeConfigs } from "../../Components/GlobalFilterTemplate/config/pageConfigs";
+import Api_Service from "../../../Redux/utils/Api_Service";
+import GlobalFilterTemplate from "../../../Components/GlobalFilterTemplate/GlobalFilterTemplate";
+import { projectTypeConfigs } from "../../config/pageConfigs";
 
-const FurnishedFlatsGurgaon = ({ furnishingType }) => {
+const IndependentHousesGurgaon = () => {
   const { getAllProjects } = Api_Service();
   const location = useLocation();
   
-  const projectType = 'residential-projects';
+  const projectType = 'luxury-villas';
   const config = projectTypeConfigs[projectType];
   
   // Get projects from Redux store
   const projects = useSelector(store => store?.allsectiondata?.[config?.reduxKey]);
   
   const [isLoading, setIsLoading] = useState(true);
-  const [filteredProjects, setFilteredProjects] = useState([]);
   
   useEffect(() => {
-    // Filter projects by furnishing type
     if (projects && projects.length > 0) {
-      const filtered = projects.filter(project => {
-        if (project.furnishing) {
-          const furnishing = project.furnishing.toLowerCase();
-          return furnishing.includes(furnishingType.toLowerCase());
-        }
-        return false;
-      });
-      setFilteredProjects(filtered);
       setIsLoading(false);
     } else {
       // Fetch projects if not in Redux
@@ -42,7 +32,7 @@ const FurnishedFlatsGurgaon = ({ furnishingType }) => {
           setIsLoading(false);
         });
     }
-  }, [projects, furnishingType, getAllProjects, config]);
+  }, [projects, getAllProjects, config]);
   
   if (!config) {
     return (
@@ -55,15 +45,15 @@ const FurnishedFlatsGurgaon = ({ furnishingType }) => {
     );
   }
   
-  // Custom title and description based on furnishing type
+  // Custom configuration
   const customConfig = {
     ...config,
-    title: `${furnishingType} Flats in Gurgaon`,
-    description: `Discover Premium ${furnishingType} Flats in Gurgaon – Your Gateway to Comfortable Living and Prime Real Estate Investment.`,
-    h1: `${furnishingType} Flats in Gurgaon`,
+    title: 'Independent Houses For Sale in Gurgaon',
+    description: 'Discover Premium Independent Houses For Sale in Gurgaon – Your Gateway to Exclusive Living and Prime Real Estate Investment.',
+    h1: 'Independent Houses For Sale in Gurgaon',
     breadcrumbs: [
       { label: 'Home', path: '/' },
-      { label: `${furnishingType} Flats in Gurgaon`, path: location.pathname }
+      { label: 'Independent Houses For Sale in Gurgaon', path: location.pathname }
     ]
   };
   
@@ -71,10 +61,10 @@ const FurnishedFlatsGurgaon = ({ furnishingType }) => {
     <GlobalFilterTemplate
       key={location.pathname}
       config={customConfig}
-      projects={filteredProjects.length > 0 ? filteredProjects : projects}
+      projects={projects}
       isLoading={isLoading}
     />
   );
 };
 
-export default FurnishedFlatsGurgaon;
+export default IndependentHousesGurgaon;

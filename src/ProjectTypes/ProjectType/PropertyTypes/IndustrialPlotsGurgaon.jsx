@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
-import Api_Service from "../../Redux/utils/Api_Service";
-import GlobalFilterTemplate from "../../Components/GlobalFilterTemplate/GlobalFilterTemplate";
-import { projectTypeConfigs } from "../../Components/GlobalFilterTemplate/config/pageConfigs";
+import Api_Service from "../../../Redux/utils/Api_Service";
+import GlobalFilterTemplate from "../../../Components/GlobalFilterTemplate/GlobalFilterTemplate";
+import { projectTypeConfigs } from "../../config/pageConfigs";
 
-const IndependentFloorGurgaon = () => {
+const IndustrialPlotsGurgaon = () => {
   const { getAllProjects } = Api_Service();
   const location = useLocation();
   
-  const projectType = 'independent-floors';
+  const projectType = 'industrial-plots';
   const config = projectTypeConfigs[projectType];
   
   // Get projects from Redux store
@@ -48,12 +48,12 @@ const IndependentFloorGurgaon = () => {
   // Custom configuration
   const customConfig = {
     ...config,
-    title: 'Independent Floor for Sale in Gurgaon',
-    description: 'Discover Premium Independent Floors for Sale in Gurgaon – Your Gateway to Spacious Living and Prime Real Estate Investment.',
-    h1: 'Independent Floor for Sale in Gurgaon',
+    title: 'Industrial Plots in Gurgaon',
+    description: 'Discover Premium Industrial Plots in Gurgaon – Your Gateway to Industrial Investment and Business Expansion.',
+    h1: 'Industrial Plots in Gurgaon',
     breadcrumbs: [
       { label: 'Home', path: '/' },
-      { label: 'Independent Floor for Sale in Gurgaon', path: location.pathname }
+      { label: 'Industrial Plots in Gurgaon', path: location.pathname }
     ]
   };
   
@@ -67,4 +67,4 @@ const IndependentFloorGurgaon = () => {
   );
 };
 
-export default IndependentFloorGurgaon;
+export default IndustrialPlotsGurgaon;
