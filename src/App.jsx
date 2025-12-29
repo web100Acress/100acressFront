@@ -61,7 +61,7 @@ const ProjectStatusSearch = lazy(() => import("./Pages/ProjectStatusSearch"));
 // Global Template Components
 const ProjectStatusSearchGlobal = lazy(() => import("./Pages/ProjectStatusSearch/ProjectStatusSearchGlobal"));
 const CityProjectsGlobal = lazy(() => import("./Pages/ProjectCities/CityProjectsGlobal"));
-const ProjectTypeGlobal = lazy(() => import("./Pages/ProjectType/ProjectTypeGlobal"));
+const ProjectTypeGlobal = lazy(() => import("./ProjectTypes/ProjectType/ProjectTypeGlobal"));
 const DeenDayalPlots = lazy(() => import("./Components/HomePageComponents/DeenDayalPlots"));
 const NewsandArtical = lazy(() => import("./Pages/NewsandArtical"));
 const UserDashBoard = lazy(() => import("./Components/HomePageComponents/UserDashBoard"));
@@ -81,8 +81,8 @@ const QRGeneratorPage = lazy(() => import("./Pages/QRGeneratorPage"));
 const BudgetPrice = lazy(() => import("./Pages/BudgetPrice"));
 const PossessionAfter2028 = lazy(() => import("./Pages/PossessionAfter2028"));
 // New dynamic project type route
-const ProjectTypePage = lazy(() => import("./Pages/ProjectType/[type]"));
-const ProjectTypeDemo = lazy(() => import("./Components/ProjectTypeDemo"));
+const ProjectTypePage = lazy(() => import("./ProjectTypes/ProjectType/[type]"));
+const ProjectTypeDemo = lazy(() => import("./ProjectTypes/ProjectType/ProjectTypeDemo"));
 const Bptp = lazy(() => import("./Pages/Bptp"));
 const Orris = lazy(() => import("./Pages/Orris"));
 const HrSidebar = lazy(() => import("./Hr/HrSidebar"));
@@ -222,22 +222,22 @@ import ProjectRouter from "./Pages/ProjectRouter";
 import DubaiPage from "./Pages/Dubai/DubaiPage";
 
 // Property Types Pages
-const BhkFlatsGurgaon = lazy(() => import("./Pages/PropertyTypes/BhkFlatsGurgaon"));
-const FurnishedFlatsGurgaon = lazy(() => import("./Pages/PropertyTypes/FurnishedFlatsGurgaon"));
-const PenthouseGurgaon = lazy(() => import("./Pages/PropertyTypes/PenthouseGurgaon"));
-const IndependentFloorGurgaon = lazy(() => import("./Pages/PropertyTypes/IndependentFloorGurgaon"));
-const IndependentHousesGurgaon = lazy(() => import("./Pages/PropertyTypes/IndependentHousesGurgaon"));
-const BudgetFlatsGurgaon = lazy(() => import("./Pages/PropertyTypes/BudgetFlatsGurgaon"));
-const AffordableHomesGurgaon = lazy(() => import("./Pages/PropertyTypes/AffordableHomesGurgaon"));
-const AffordableHomes = lazy(() => import("./Pages/PropertyTypes/AffordableHomes"));
-const FarmhouseGurgaon = lazy(() => import("./Pages/PropertyTypes/FarmhouseGurgaon"));
-const LuxuryVillasGurgaon = lazy(() => import("./Pages/PropertyTypes/LuxuryVillasGurgaon"));
-const ResidentialFlatsGurgaon = lazy(() => import("./Pages/PropertyTypes/ResidentialFlatsGurgaon"));
-const RetailShopsGurgaon = lazy(() => import("./Pages/PropertyTypes/RetailShopsGurgaon"));
-const BuilderFloorGurgaon = lazy(() => import("./Pages/PropertyTypes/BuilderFloorGurgaon"));
-const IndustrialPlotsGurgaon = lazy(() => import("./Pages/PropertyTypes/IndustrialPlotsGurgaon"));
-const SCOPlotsGurgaon = lazy(() => import("./Pages/PropertyTypes/SCOPlotsGurgaon"));
-const ShopCumOfficePlotsGurgaon = lazy(() => import("./Pages/PropertyTypes/ShopCumOfficePlotsGurgaon"));
+const BhkFlatsGurgaon = lazy(() => import("./ProjectTypes/ProjectType/PropertyTypes/BhkFlatsGurgaon"));
+const FurnishedFlatsGurgaon = lazy(() => import("./ProjectTypes/ProjectType/PropertyTypes/FurnishedFlatsGurgaon"));
+const PenthouseGurgaon = lazy(() => import("./ProjectTypes/ProjectType/PropertyTypes/PenthouseGurgaon"));
+const IndependentFloorGurgaon = lazy(() => import("./ProjectTypes/ProjectType/PropertyTypes/IndependentFloorGurgaon"));
+const IndependentHousesGurgaon = lazy(() => import("./ProjectTypes/ProjectType/PropertyTypes/IndependentHousesGurgaon"));
+const BudgetFlatsGurgaon = lazy(() => import("./ProjectTypes/ProjectType/PropertyTypes/BudgetFlatsGurgaon"));
+const AffordableHomesGurgaon = lazy(() => import("./ProjectTypes/ProjectType/PropertyTypes/AffordableHomesGurgaon"));
+const AffordableHomes = lazy(() => import("./ProjectTypes/ProjectType/PropertyTypes/AffordableHomes"));
+const FarmhouseGurgaon = lazy(() => import("./ProjectTypes/ProjectType/PropertyTypes/FarmhouseGurgaon"));
+const LuxuryVillasGurgaon = lazy(() => import("./ProjectTypes/ProjectType/PropertyTypes/LuxuryVillasGurgaon"));
+const ResidentialFlatsGurgaon = lazy(() => import("./ProjectTypes/ProjectType/PropertyTypes/ResidentialFlatsGurgaon"));
+const RetailShopsGurgaon = lazy(() => import("./ProjectTypes/ProjectType/PropertyTypes/RetailShopsGurgaon"));
+const BuilderFloorGurgaon = lazy(() => import("./ProjectTypes/ProjectType/PropertyTypes/BuilderFloorGurgaon"));
+const IndustrialPlotsGurgaon = lazy(() => import("./ProjectTypes/ProjectType/PropertyTypes/IndustrialPlotsGurgaon"));
+const SCOPlotsGurgaon = lazy(() => import("./ProjectTypes/ProjectType/PropertyTypes/SCOPlotsGurgaon"));
+const ShopCumOfficePlotsGurgaon = lazy(() => import("./ProjectTypes/ProjectType/PropertyTypes/ShopCumOfficePlotsGurgaon"));
 
 // Initialize QueryClient
 const queryClient = new QueryClient();

@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
-import Api_Service from "../../Redux/utils/Api_Service";
-import GlobalFilterTemplate from "../../Components/GlobalFilterTemplate/GlobalFilterTemplate";
-import { projectTypeConfigs } from "../../Components/GlobalFilterTemplate/config/pageConfigs";
+import Api_Service from "../../../Redux/utils/Api_Service";
+import GlobalFilterTemplate from "../../../Components/GlobalFilterTemplate/GlobalFilterTemplate";
+import { projectTypeConfigs } from "../../config/pageConfigs";
 
-const BudgetFlatsGurgaon = ({ budgetRange }) => {
+const FurnishedFlatsGurgaon = ({ furnishingType }) => {
   const { getAllProjects } = Api_Service();
   const location = useLocation();
   
@@ -18,22 +18,13 @@ const BudgetFlatsGurgaon = ({ budgetRange }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [filteredProjects, setFilteredProjects] = useState([]);
   
-  // Budget ranges in crores
-  const budgetRanges = {
-    '1': { min: 0, max: 1 },
-    '5': { min: 0, max: 5 },
-    '10': { min: 0, max: 10 },
-    '20': { min: 0, max: 20 }
-  };
-  
   useEffect(() => {
-    // Filter projects by budget range
+    // Filter projects by furnishing type
     if (projects && projects.length > 0) {
-      const range = budgetRanges[budgetRange];
       const filtered = projects.filter(project => {
-        if (project.price) {
-          const price = parseFloat(project.price);
-          return price >= range.min && price <= range.max;
+        if (project.furnishing) {
+          const furnishing = project.furnishing.toLowerCase();
+          return furnishing.includes(furnishingType.toLowerCase());
         }
         return false;
       });
@@ -51,7 +42,7 @@ const BudgetFlatsGurgaon = ({ budgetRange }) => {
           setIsLoading(false);
         });
     }
-  }, [projects, budgetRange, getAllProjects, config]);
+  }, [projects, furnishingType, getAllProjects, config]);
   
   if (!config) {
     return (
@@ -64,15 +55,15 @@ const BudgetFlatsGurgaon = ({ budgetRange }) => {
     );
   }
   
-  // Custom title and description based on budget range
+  // Custom title and description based on furnishing type
   const customConfig = {
     ...config,
-    title: `Flats For Sale under ${budgetRange} Cr in Gurgaon`,
-    description: `Discover Premium Flats For Sale under ${budgetRange} Cr in Gurgaon – Your Gateway to Affordable Luxury Living and Prime Real Estate Investment.`,
-    h1: `Flats For Sale under ${budgetRange} Cr in Gurgaon`,
+    title: `${furnishingType} Flats in Gurgaon`,
+    description: `Discover Premium ${furnishingType} Flats in Gurgaon – Your Gateway to Comfortable Living and Prime Real Estate Investment.`,
+    h1: `${furnishingType} Flats in Gurgaon`,
     breadcrumbs: [
       { label: 'Home', path: '/' },
-      { label: `Flats For Sale under ${budgetRange} Cr in Gurgaon`, path: location.pathname }
+      { label: `${furnishingType} Flats in Gurgaon`, path: location.pathname }
     ]
   };
   
@@ -86,4 +77,4 @@ const BudgetFlatsGurgaon = ({ budgetRange }) => {
   );
 };
 
-export default BudgetFlatsGurgaon;
+export default FurnishedFlatsGurgaon;

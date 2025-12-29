@@ -4,7 +4,7 @@ import { useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import Api_Service from "../../Redux/utils/Api_Service";
 import GlobalFilterTemplate from "../../Components/GlobalFilterTemplate/GlobalFilterTemplate";
-import { statusConfigs } from "../../Components/GlobalFilterTemplate/config/pageConfigs";
+import { statusConfigs } from "../../ProjectTypes/config/pageConfigs.js";
 
 const ProjectStatusSearchGlobal = () => {
   const { allProjectData } = useContext(DataContext);
