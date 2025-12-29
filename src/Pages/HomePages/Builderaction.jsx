@@ -30,7 +30,8 @@ const Builderaction = () => {
       backgroungURL: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/devlopers/m3mbuilderimage.webp",
       // subtitle: "Luxury Living",
       rating: 4.7,
-      projects: 28
+      projects: 28,
+      
     },
     {
       title: "Emaar India", 
