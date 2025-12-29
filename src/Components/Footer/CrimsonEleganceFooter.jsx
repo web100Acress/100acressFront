@@ -369,7 +369,7 @@ const CrimsonEleganceFooter = () => {
                 { name: "Resale Property in Gurgaon", href: "/buy-properties/best-resale-property-in-gurugram/" },
                 { name: "Rental Property in Gurgaon", href: "/rental-properties/best-rental-property-in-gurugram/" },
                 { name: "Senior living in Gurgaon", href: "/projects/senior-living/" },
-                 { name: "Deem Dyal Plots", href: "/projects/plots/" },
+                 { name: "Deen Dyal Plots", href: "/projects/plots/" },
 
                 
               ].map((location, index) => (
