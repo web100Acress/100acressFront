@@ -67,13 +67,13 @@ const ProjectTypeTemplate = ({
         canonical={canonical}
         keywords={keywords}
       />
-      <div className="py-12 bg-white">
+      {/* <div className="py-12 bg-white">
         <div className="max-w-4xl mx-auto px-3 sm:px-4">
           <div className="border border-gray-200 rounded-lg overflow-hidden">
             <FAQAccordion projectStatus={projectType} />
           </div>
         </div>
-      </div>
+      </div> */}
     </>
   );
 };
