@@ -29,7 +29,7 @@ const ProjectEdit = () => {
     "Villas",
     "Farm Houses",
     "Industrial Plots",
-    "Seniar living",
+    "Senior Living",
   ];
   const [projectTypes, setProjectTypes] = useState([]);
   const [statusOptions, setStatusOptions] = useState([]);
