@@ -14,7 +14,7 @@ import FilterBar from "../../Pages/ProjectStatusSearch/FilterBar";
 import ProjectCard from "../../Pages/ProjectStatusSearch/ProjectCard";
 import CompareBar from "../../Pages/ProjectStatusSearch/CompareBar";
 import FAQAccordion from "../../Pages/ProjectStatusSearch/FAQAccordion";
-import { getPageDataFromURL } from './config/staticDataExample';
+import { getPageDataFromURL } from "../../ProjectTypes/config/staticDataExample";
 
 const GlobalFilterTemplate = ({
   // Page Configuration
@@ -104,9 +104,6 @@ const GlobalFilterTemplate = ({
   // Get page data from static data based on URL
   const searchParams = new URLSearchParams(location.search);
   const searchParamsObj = Object.fromEntries(searchParams.entries());
-  
-  
-  
   const staticPageData = getPageDataFromURL(location.pathname, searchParamsObj);
   
   // Debug logging (can be removed in production)
