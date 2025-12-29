@@ -363,13 +363,13 @@ const CrimsonEleganceFooter = () => {
                 { name: "Flats For Sale under 10 Cr in Gurgaon", href: "/projects/5-10-cr" },
                 { name: "Flats For Sale under 20 Cr In Gurgaon", href: "/projects/10-20-cr" },
                 { name: "Affordable Homes in Gurgaon", href: "/projects/1-5-cr" },
-                { name: "Farmhouse in Gurgaon", href: "/projects/farmhouse/" },
+                { name: "Farmhouses in Gurgaon", href: "/projects/farmhouse/" },
                 { name: "Studio Apartments in Gurgaon", href: "/projects/studio-apartments/" },
                 { name: "Service Apartments in Gurgaon", href: "/projects/service-apartments/" },
                 { name: "Resale Property in Gurgaon", href: "/buy-properties/best-resale-property-in-gurugram/" },
                 { name: "Rental Property in Gurgaon", href: "/rental-properties/best-rental-property-in-gurugram/" },
-                { name: "Senior living in Gurgaon", href: "/projects/senior-living/" },
-                 { name: "Deen Dyal Plots", href: "/projects/plots/" },
+                { name: "Senior Living in Gurgaon", href: "/projects/senior-living/" },
+                 { name: "Deen Dayal (DDJAY) Plots in Gurgaon", href: "/projects/plots/" },
 
                 
               ].map((location, index) => (
@@ -403,6 +403,7 @@ const CrimsonEleganceFooter = () => {
           { name: "Luxury Villas in Gurgaon", href: "/projects/villas/" },
           { name: "Affordable Homes in Gurgaon", href: "/projects/affordable-homes/" },
           { name: "Plots in Gurgaon", href: "/projects/plots/" },
+          { name: "Deen Dayal (DDJAY) Plots in Gurgaon", href: "/projects/plots/" },
         ].map((location, index) => (
           <Link
             key={index}
