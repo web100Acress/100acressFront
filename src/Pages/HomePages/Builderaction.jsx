@@ -20,6 +20,7 @@ const Builderaction = () => {
       image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/adanireality.webp",
       backgroungURL: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/devlopers/Adani-Realty-bg.webp",
       // subtitle: "Premium",
+      fetchpriority:"high",
       rating: 4.8,
       projects: 15
     },
@@ -30,6 +31,7 @@ const Builderaction = () => {
       backgroungURL: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/devlopers/m3mbuilderimage.webp",
       // subtitle: "Luxury Living",
       rating: 4.7,
+      fetchpriority:"high",
       projects: 28
     },
     {
@@ -39,6 +41,7 @@ const Builderaction = () => {
       backgroungURL: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/devlopers/Emaar-India.webp",
       // subtitle: "Global Standards",
       rating: 4.9,
+      fetchpriority:"high",
       projects: 22
     },
     { 
@@ -48,7 +51,8 @@ const Builderaction = () => {
       backgroungURL: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/devlopers/Experion-Developers.webp",
       // subtitle: "Smart Homes",
       rating: 4.6,
-      projects: 12
+      fetchpriority:"high",
+      projects: 12,
     },
     { 
       title: "Signature Global", 
@@ -57,7 +61,8 @@ const Builderaction = () => {
       backgroungURL: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/devlopers/Signature-Global.webp",
       // subtitle: "Affordable Luxury",
       rating: 4.5,
-      projects: 18
+      fetchpriority:"high",
+      projects: 18,
     },
 
     {
@@ -67,7 +72,8 @@ const Builderaction = () => {
       backgroungURL: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/devlopers/Elan-Group.webp",
       // subtitle: "Affordable Luxury",
       rating: 4.5,
-      projects: 18
+      projects: 18,
+      fetchpriority:"high",
     }
   ];
   
@@ -135,6 +141,7 @@ const Builderaction = () => {
                 {/* Image Container with Overlay */}
                 <div className="relative h-44 sm:h-48 overflow-hidden rounded-t-3xl">
                   <img 
+                    fetchpriority="high"
                     src={project.backgroungURL} 
                     alt={project.title} 
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
