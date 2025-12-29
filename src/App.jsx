@@ -1,6 +1,8 @@
 import React, { lazy, Suspense, useState, useEffect } from "react";
 import "./App.css";
 import { styled } from "styled-components";
+import { ToastContainer, Slide } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { Routes, Route, Navigate, Link, useLocation } from "react-router-dom";
 import { DataProvider } from "./MyContext";
 import { AuthProvider } from "./AuthContext";
@@ -21,6 +23,9 @@ import LoginForm from "./Resister/LoginForm";
 import AuthModal from "./Resister/AuthModal";
 
 // import ConfettiAllCorners from "./Components/ConfettiAllCorners"; 
+
+// ToastContainer for global toast notifications
+
 
 // Lazy load all main page components
 const Home = lazy(() => import("./Pages/Home"));
@@ -56,7 +61,7 @@ const ProjectStatusSearch = lazy(() => import("./Pages/ProjectStatusSearch"));
 // Global Template Components
 const ProjectStatusSearchGlobal = lazy(() => import("./Pages/ProjectStatusSearch/ProjectStatusSearchGlobal"));
 const CityProjectsGlobal = lazy(() => import("./Pages/ProjectCities/CityProjectsGlobal"));
-const ProjectTypeGlobal = lazy(() => import("./Pages/ProjectType/ProjectTypeGlobal"));
+const ProjectTypeGlobal = lazy(() => import("./ProjectTypes/ProjectType/ProjectTypeGlobal"));
 const DeenDayalPlots = lazy(() => import("./Components/HomePageComponents/DeenDayalPlots"));
 const NewsandArtical = lazy(() => import("./Pages/NewsandArtical"));
 const UserDashBoard = lazy(() => import("./Components/HomePageComponents/UserDashBoard"));
@@ -76,8 +81,8 @@ const QRGeneratorPage = lazy(() => import("./Pages/QRGeneratorPage"));
 const BudgetPrice = lazy(() => import("./Pages/BudgetPrice"));
 const PossessionAfter2028 = lazy(() => import("./Pages/PossessionAfter2028"));
 // New dynamic project type route
-const ProjectTypePage = lazy(() => import("./Pages/ProjectType/[type]"));
-const ProjectTypeDemo = lazy(() => import("./Components/ProjectTypeDemo"));
+const ProjectTypePage = lazy(() => import("./ProjectTypes/ProjectType/[type]"));
+const ProjectTypeDemo = lazy(() => import("./ProjectTypes/ProjectType/ProjectTypeDemo"));
 const Bptp = lazy(() => import("./Pages/Bptp"));
 const Orris = lazy(() => import("./Pages/Orris"));
 const HrSidebar = lazy(() => import("./Hr/HrSidebar"));
@@ -217,27 +222,30 @@ import ProjectRouter from "./Pages/ProjectRouter";
 import DubaiPage from "./Pages/Dubai/DubaiPage";
 
 // Property Types Pages
-const BhkFlatsGurgaon = lazy(() => import("./Pages/PropertyTypes/BhkFlatsGurgaon"));
-const FurnishedFlatsGurgaon = lazy(() => import("./Pages/PropertyTypes/FurnishedFlatsGurgaon"));
-const PenthouseGurgaon = lazy(() => import("./Pages/PropertyTypes/PenthouseGurgaon"));
-const IndependentFloorGurgaon = lazy(() => import("./Pages/PropertyTypes/IndependentFloorGurgaon"));
-const IndependentHousesGurgaon = lazy(() => import("./Pages/PropertyTypes/IndependentHousesGurgaon"));
-const BudgetFlatsGurgaon = lazy(() => import("./Pages/PropertyTypes/BudgetFlatsGurgaon"));
-const AffordableHomesGurgaon = lazy(() => import("./Pages/PropertyTypes/AffordableHomesGurgaon"));
-const AffordableHomes = lazy(() => import("./Pages/PropertyTypes/AffordableHomes"));
-const FarmhouseGurgaon = lazy(() => import("./Pages/PropertyTypes/FarmhouseGurgaon"));
-const LuxuryVillasGurgaon = lazy(() => import("./Pages/PropertyTypes/LuxuryVillasGurgaon"));
-const ResidentialFlatsGurgaon = lazy(() => import("./Pages/PropertyTypes/ResidentialFlatsGurgaon"));
-const RetailShopsGurgaon = lazy(() => import("./Pages/PropertyTypes/RetailShopsGurgaon"));
-const BuilderFloorGurgaon = lazy(() => import("./Pages/PropertyTypes/BuilderFloorGurgaon"));
-const IndustrialPlotsGurgaon = lazy(() => import("./Pages/PropertyTypes/IndustrialPlotsGurgaon"));
-const SCOPlotsGurgaon = lazy(() => import("./Pages/PropertyTypes/SCOPlotsGurgaon"));
-const ShopCumOfficePlotsGurgaon = lazy(() => import("./Pages/PropertyTypes/ShopCumOfficePlotsGurgaon"));
+const BhkFlatsGurgaon = lazy(() => import("./ProjectTypes/ProjectType/PropertyTypes/BhkFlatsGurgaon"));
+const FurnishedFlatsGurgaon = lazy(() => import("./ProjectTypes/ProjectType/PropertyTypes/FurnishedFlatsGurgaon"));
+const PenthouseGurgaon = lazy(() => import("./ProjectTypes/ProjectType/PropertyTypes/PenthouseGurgaon"));
+const IndependentFloorGurgaon = lazy(() => import("./ProjectTypes/ProjectType/PropertyTypes/IndependentFloorGurgaon"));
+const IndependentHousesGurgaon = lazy(() => import("./ProjectTypes/ProjectType/PropertyTypes/IndependentHousesGurgaon"));
+const BudgetFlatsGurgaon = lazy(() => import("./ProjectTypes/ProjectType/PropertyTypes/BudgetFlatsGurgaon"));
+const AffordableHomesGurgaon = lazy(() => import("./ProjectTypes/ProjectType/PropertyTypes/AffordableHomesGurgaon"));
+const AffordableHomes = lazy(() => import("./ProjectTypes/ProjectType/PropertyTypes/AffordableHomes"));
+const FarmhouseGurgaon = lazy(() => import("./ProjectTypes/ProjectType/PropertyTypes/FarmhouseGurgaon"));
+const LuxuryVillasGurgaon = lazy(() => import("./ProjectTypes/ProjectType/PropertyTypes/LuxuryVillasGurgaon"));
+const ResidentialFlatsGurgaon = lazy(() => import("./ProjectTypes/ProjectType/PropertyTypes/ResidentialFlatsGurgaon"));
+const RetailShopsGurgaon = lazy(() => import("./ProjectTypes/ProjectType/PropertyTypes/RetailShopsGurgaon"));
+const BuilderFloorGurgaon = lazy(() => import("./ProjectTypes/ProjectType/PropertyTypes/BuilderFloorGurgaon"));
+const IndustrialPlotsGurgaon = lazy(() => import("./ProjectTypes/ProjectType/PropertyTypes/IndustrialPlotsGurgaon"));
+const SCOPlotsGurgaon = lazy(() => import("./ProjectTypes/ProjectType/PropertyTypes/SCOPlotsGurgaon"));
+const ShopCumOfficePlotsGurgaon = lazy(() => import("./ProjectTypes/ProjectType/PropertyTypes/ShopCumOfficePlotsGurgaon"));
 
 // Initialize QueryClient
 const queryClient = new QueryClient();
 
 function App() {
+  // Global ToastContainer for all toast notifications
+  // Best-practice: position top-center, Slide animation, autoClose 2200ms, etc
+
   const location = useLocation();
   const currentPath = location?.pathname || "/";
   // Consider dynamic project pages like '/experion-the-trillion/' etc. (single segment with trailing slash)
@@ -306,6 +314,16 @@ function App() {
                   <Toaster position="top-right" />
                   <Sonner position="top-right" richColors />
                   <HotToaster position="top-right" />
+                  <ToastContainer
+                    position="top-center"
+                    autoClose={2200}
+                    hideProgressBar={false}
+                    newestOnTop
+                    closeOnClick
+                    pauseOnHover={false}
+                    draggable
+                    transition={Slide}
+                  />
                   
 
                   {/* Your existing routes */}
@@ -314,16 +332,9 @@ function App() {
                       <Route index element={<Home />} />
                       <Route path="/verify-email/*" element={<VerifyEmailRedirect />} />
                       <Route path="/post-property/*" element={<PostPropertyRedirect />} />
-                      <Route
-                        path="/postproperty"
-                        element={
-                          token !== null ? (
-                            <NewSellProperty />
-                          ) : (
-                            <Navigate to="/" replace={true} />
-                          )
-                        }
-                      />
+                      <Route element={<PrivateRoute />}>
+  <Route path="/postproperty" element={<NewSellProperty />} />
+</Route>
                       <Route path="/auth/">
                         <Route path="signup/">
                           <Route index element={<SignupForm />} />
@@ -336,8 +347,7 @@ function App() {
                             element={<OTPVerification />}
                           />
                         </Route>
-                        <Route path="signin/" element={<div>Signin commented out</div>} />
-                      </Route>
+                                              </Route>
                       <Route path="/privacy-policy/" element={<Privacy />} />
                       <Route path="/disclaimer/" element={<Disclaimer />} />
                       <Route
@@ -504,6 +514,7 @@ function App() {
                       <Route path="/projects/affordable-homes/" element={<AffordableHomes />} />
                       <Route path="/projects/industrial-plots/" element={<ProjectTypeGlobal />} />
                       <Route path="/projects/industrial-projects/" element={<ProjectTypeGlobal />} />
+                      <Route path="/projects/senior-living/" element={<ProjectTypeGlobal />} />
                       <Route path="/news-and-articals/" element={<NewsandArtical />} />
                       {/* New dynamic project type routes */}
                       <Route path="/project-type/:type" element={<ProjectTypeGlobal />} />

@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
-import Api_Service from "../../Redux/utils/Api_Service";
-import GlobalFilterTemplate from "../../Components/GlobalFilterTemplate/GlobalFilterTemplate";
-import { projectTypeConfigs } from "../../Components/GlobalFilterTemplate/config/pageConfigs";
+import Api_Service from "../../../Redux/utils/Api_Service";
+import GlobalFilterTemplate from "../../../Components/GlobalFilterTemplate/GlobalFilterTemplate";
+import { projectTypeConfigs } from "../../config/pageConfigs";
 
-const SCOPlotsGurgaon = () => {
+const BuilderFloorGurgaon = () => {
   const { getAllProjects } = Api_Service();
   const location = useLocation();
   
-  const projectType = 'sco-plots';
+  const projectType = 'independent-floors';
   const config = projectTypeConfigs[projectType];
   
   // Get projects from Redux store
@@ -48,12 +48,12 @@ const SCOPlotsGurgaon = () => {
   // Custom configuration
   const customConfig = {
     ...config,
-    title: 'SCO Plots in Gurgaon',
-    description: 'Discover Premium SCO Plots in Gurgaon – Your Gateway to Shop-Cum-Office Investment and Business Growth.',
-    h1: 'SCO Plots in Gurgaon',
+    title: 'Builder Floor in Gurgaon',
+    description: 'Discover Premium Builder Floors in Gurgaon – Your Gateway to Spacious Living and Prime Real Estate Investment.',
+    h1: 'Builder Floor in Gurgaon',
     breadcrumbs: [
       { label: 'Home', path: '/' },
-      { label: 'SCO Plots in Gurgaon', path: location.pathname }
+      { label: 'Builder Floor in Gurgaon', path: location.pathname }
     ]
   };
   
@@ -67,4 +67,4 @@ const SCOPlotsGurgaon = () => {
   );
 };
 
-export default SCOPlotsGurgaon;
+export default BuilderFloorGurgaon;

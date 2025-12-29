@@ -253,8 +253,9 @@ export default function LeftSection({
                     <button type="button" className="mobile-menu-tile" onClick={() => handleNavigation("/projects/residential/", null, true)}>Residential Projects</button>
                     <button type="button" className="mobile-menu-tile" onClick={() => handleNavigation("/projects/independent-floors/", null, true)}>Independent Floors</button>
                     <button type="button" className="mobile-menu-tile" onClick={() => handleNavigation("/projects/commercial/", null, true)}>Commercial Projects</button>
-                    <button type="button" className="mobile-menu-tile" onClick={() => handleNavigation("/projects/farmhouse/", null, true)}>Farm Houses</button>
+                       <button type="button" className="mobile-menu-tile" onClick={() => handleNavigation("/projects/farmhouse/", null, true)}>Farm Houses</button>
                     <button type="button" className="mobile-menu-tile" onClick={() => handleNavigation("/projects/industrial-projects/", null, true)}>Industrial Projects</button>
+                    <button type="button" className="mobile-menu-tile" onClick={() => handleNavigation("/projects/senior-living/", null, true)}>Seniar living</button>
                   </div>
                   <div className="mobile-menu-sep" />
                 </>
@@ -278,6 +279,10 @@ export default function LeftSection({
                   </button>
                   <button type="button" className="mobile-menu-primary" onClick={() => { closeDrawer(); navigate('/united-arab-emirates'); }}>
                     Dubai
+                  </button>
+                
+                   <button type="button" className="mobile-menu-primary" onClick={() => { closeDrawer(); navigate('/property-market-trends'); }} style={{ background: '#3B82F6', borderColor: 'rgba(59, 130, 246, 0.25)', boxShadow: '0 12px 26px rgba(59, 130, 246, 0.25)', marginTop: '10px' }}>
+                    Insights
                   </button>
                 </>
               )}
@@ -530,6 +535,7 @@ export default function LeftSection({
           <MenuItem onClick={() => handleNavigation("/projects/farmhouse/")}>FarmHouses</MenuItem>
           <MenuItem onClick={() => handleNavigation("/projects/industrial-plots/")}>Industrial Plots</MenuItem>
           <MenuItem onClick={() => handleNavigation("/projects/affordable-homes/")}>Affordable Homes</MenuItem>
+          <MenuItem onClick={() => handleNavigation("/projects/senior-living/")}>Seniar living</MenuItem>
         </MenuList>
       </Menu>
             

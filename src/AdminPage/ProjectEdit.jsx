@@ -17,6 +17,20 @@ const customStyle = {
 const ProjectEdit = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [loading, setLoading] = useState(false);
+  const defaultProjectTypes = [
+    "Commercial Property",
+    "Residential Flats",
+    "SCO Plots",
+    "Deen Dayal Plots",
+    "Residential Plots",
+    "Independent Floors",
+    "Builder Floors",
+    "Affordable Homes",
+    "Villas",
+    "Farm Houses",
+    "Industrial Plots",
+    "Seniar living",
+  ];
   const [projectTypes, setProjectTypes] = useState([]);
   const [statusOptions, setStatusOptions] = useState([]);
   const [builderOptions, setBuilderOptions] = useState([]);
@@ -112,36 +126,27 @@ const ProjectEdit = () => {
     }
   }, [values.state]);
 
-  // Fetch all project types for dropdown
+  // Fetch all project types for dropdown (includes existing + defaults)
   useEffect(() => {
     const fetchProjectTypes = async () => {
       try {
         const res = await api.get('/project/viewAll/data?sort=-createdAt');
         if (res.data?.data) {
           // Extract unique project types and sort them
-          const uniqueTypes = [...new Set(
-            res.data.data
-              .map(project => project.type)
-              .filter(Boolean) // Remove any null/undefined values
-          )].sort();
-          // Add "Industrial Plots" if not already present
-          if (!uniqueTypes.includes('Industrial Plots')) {
-            uniqueTypes.push('Industrial Plots');
-          }
-
-          // Sort the final list
-          uniqueTypes.sort();
-
+          const dynamicTypes = res.data.data
+            .map(project => project.type)
+            .filter(Boolean);
+          const uniqueTypes = [...new Set([...dynamicTypes, ...defaultProjectTypes])].sort();
           setProjectTypes(uniqueTypes);
         }
       } catch (error) {
         console.error("Error fetching project types:", error);
-        // Fallback: set default project types including Industrial Plots
-        setProjectTypes(['Industrial Plots']);
+        // Fallback: set default project types
+        setProjectTypes(defaultProjectTypes);
       }
     };
     fetchProjectTypes();
-  }, []);
+  }, [defaultProjectTypes]);
 
   // Fetch all project statuses for dropdown
   useEffect(() => {

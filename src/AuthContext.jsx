@@ -165,46 +165,29 @@ export const AuthProvider = ({ children }) => {
       if (error.response) {
         const { status, data } = error.response;
 
-        if (status === 403) {
-          // Check if it's email verification required or wrong credentials
-          if (data && data.token && data.User) {
-            // Email verification required
-            const newToken = data.token;
-            const User = data.User;
-            localStorage.setItem("myToken", newToken);
-            setToken(newToken);
-            setAgentData(User);
-            localStorage.setItem(
-              "agentData",
-              JSON.stringify(User)
-            );
-            try {
-              const userName = User?.name || "";
-              const first = (userName || "").toString().trim().split(/\s+/)[0] || "";
-              if (first) {
-                localStorage.setItem("firstName", first);
-              } else {
-                localStorage.removeItem("firstName");
-              }
-            } catch (_) { }
-            history("/auth/signup/email-verification");
-            throw new Error("Please verify your email before logging in.");
-          } else {
-            // Wrong credentials or other 403 error
-            throw new Error("Invalid email or password.");
-          }
-        } else if (status === 401) {
+        // ✅ Email verification required (ONLY when backend explicitly says so)
+        if (
+          status === 403 &&
+          data?.reason === "EMAIL_NOT_VERIFIED"
+        ) {
+          history("/auth/signup/email-verification");
+          throw new Error("Please verify your email before logging in.");
+        }
+
+        // ❌ Wrong credentials (NO redirect)
+        if (status === 401 || status === 403) {
           throw new Error("Invalid email or password.");
-        } else {
-          throw new Error("An error occurred. Please try again later.");
         }
-      } else {
-        // If it's already an Error object from our throws above, re-throw it
-        if (error instanceof Error) {
-          throw error;
-        }
-        throw new Error("An error occurred. Please try again later.");
+
+        throw new Error("Something went wrong. Please try again.");
       }
+
+      // Already a thrown Error
+      if (error instanceof Error) {
+        throw error;
+      }
+
+      throw new Error("Network error. Please try again.");
     }
   };
 

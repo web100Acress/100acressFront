@@ -3,7 +3,9 @@ import { useParams, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import Api_Service from "../../Redux/utils/Api_Service";
 import GlobalFilterTemplate from "../../Components/GlobalFilterTemplate/GlobalFilterTemplate";
-import { projectTypeConfigs } from "../../Components/GlobalFilterTemplate/config/pageConfigs";
+import { projectTypeConfigs } from "../config/pageConfigs";
+import { getStaticData } from "../config/staticData";
+
 
 const ProjectTypeGlobal = () => {
   const { type } = useParams();
@@ -23,7 +25,7 @@ const ProjectTypeGlobal = () => {
     if (path === '/projects/commercial/') return 'commercial-projects';
     if (path === '/projects/farmhouse/') return 'farmhouse';
     if (path === '/projects/industrial-plots/') return 'industrial-plots';
-    if (path === '/projects/industrial-projects/') return 'industrial-projects';
+    if (path === '/projects/senior-living/') return 'senior-living';
     
     // Keep old patterns for backward compatibility
     if (path === '/sco/plots/') return 'sco-plots';
@@ -34,7 +36,6 @@ const ProjectTypeGlobal = () => {
     if (path === '/projects/commercial/') return 'commercial-projects';
     if (path === '/projects/farmhouses/') return 'farmhouse';
     if (path === '/projects/industrial-plots/') return 'industrial-plots';
-    if (path === '/projects/industrial-projects/') return 'industrial-projects';
     
     // Fallback to type parameter for /project-type/:type routes
     return type;
@@ -139,6 +140,13 @@ const ProjectTypeGlobal = () => {
     typeFilter: config.typeFilter
   };
 
+  // Get SEO meta data from staticData
+  const projectTypeMeta = getStaticData('projectTypes', projectType);
+  const metaTitle = projectTypeMeta?.metaTitle || config.title;
+  const metaDescription = projectTypeMeta?.metaDescription || config.description;
+  const canonical = projectTypeMeta?.canonical || config.canonical;
+  const keywords = projectTypeMeta?.keywords || '';
+
   // Generate structured data
   const generateStructuredData = () => {
     return {
@@ -182,6 +190,10 @@ const ProjectTypeGlobal = () => {
         projects={projects || []}
         isLoading={isLoading}
         pageConfig={pageConfig}
+        metaTitle={metaTitle}
+        metaDescription={metaDescription}
+        canonical={canonical}
+        keywords={keywords}
       />
     </>
   );

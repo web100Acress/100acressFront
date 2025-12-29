@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
-import Api_Service from "../../Redux/utils/Api_Service";
-import GlobalFilterTemplate from "../../Components/GlobalFilterTemplate/GlobalFilterTemplate";
-import { projectTypeConfigs } from "../../Components/GlobalFilterTemplate/config/pageConfigs";
+import Api_Service from "../../../Redux/utils/Api_Service";
+import GlobalFilterTemplate from "../../../Components/GlobalFilterTemplate/GlobalFilterTemplate";
+import { projectTypeConfigs } from "../../config/pageConfigs";
 
-const BuilderFloorGurgaon = () => {
+const LuxuryVillasGurgaon = () => {
   const { getAllProjects } = Api_Service();
   const location = useLocation();
   
-  const projectType = 'independent-floors';
+  const projectType = 'luxury-villas';
   const config = projectTypeConfigs[projectType];
   
   // Get projects from Redux store
@@ -48,12 +48,12 @@ const BuilderFloorGurgaon = () => {
   // Custom configuration
   const customConfig = {
     ...config,
-    title: 'Builder Floor in Gurgaon',
-    description: 'Discover Premium Builder Floors in Gurgaon – Your Gateway to Spacious Living and Prime Real Estate Investment.',
-    h1: 'Builder Floor in Gurgaon',
+    title: 'Luxury Villas in Gurgaon',
+    description: 'Discover Premium Luxury Villas in Gurgaon – Your Gateway to Ultra-Luxury Living and Prime Real Estate Investment.',
+    h1: 'Luxury Villas in Gurgaon',
     breadcrumbs: [
       { label: 'Home', path: '/' },
-      { label: 'Builder Floor in Gurgaon', path: location.pathname }
+      { label: 'Luxury Villas in Gurgaon', path: location.pathname }
     ]
   };
   
@@ -67,4 +67,4 @@ const BuilderFloorGurgaon = () => {
   );
 };
 
-export default BuilderFloorGurgaon;
+export default LuxuryVillasGurgaon;

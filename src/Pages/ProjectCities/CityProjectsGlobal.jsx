@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import Api_service from "../../Redux/utils/Api_Service";
 import GlobalFilterTemplate from "../../Components/GlobalFilterTemplate/GlobalFilterTemplate";
-import { cityConfigs } from "../../Components/GlobalFilterTemplate/config/pageConfigs";
+import { cityConfigs } from "../../ProjectTypes//config/pageConfigs";
 import Navbar from "../../aadharhomes/navbar/Navbar";
 
 // Utility: title case a slug or plain string

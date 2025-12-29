@@ -20,6 +20,7 @@ const AllSectionDataSlice = createSlice({
         farmhouse:[],
         industrialplots:[],
         industrialprojects:[],
+        seniorliving:[],
     },
     reducers: {
         allupcomingproject: (state, action) => {
@@ -72,11 +73,14 @@ const AllSectionDataSlice = createSlice({
         },
         industrialprojects:(state,action)=>{
             state.industrialprojects = action.payload;
+        },
+        seniorliving:(state,action)=>{
+            state.seniorliving = action.payload;
         }
 
     },
 });
 
-export const { allupcomingproject,newlaunch,underconstruction,readytomove,commercialProjectAll,scoplotsall,luxuryAll,deendayalplots,residential,builderindependentfloor,luxuryvillas,dlfsco,possessionafter2026,plotsingurugram,farmhouse,industrialplots,industrialprojects } = AllSectionDataSlice.actions; 
+export const { allupcomingproject,newlaunch,underconstruction,readytomove,commercialProjectAll,scoplotsall,luxuryAll,deendayalplots,residential,builderindependentfloor,luxuryvillas,dlfsco,possessionafter2026,plotsingurugram,farmhouse,industrialplots,industrialprojects,seniorliving } = AllSectionDataSlice.actions; 
 
 export default AllSectionDataSlice.reducer;

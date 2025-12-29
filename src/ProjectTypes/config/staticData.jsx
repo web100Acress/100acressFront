@@ -2052,10 +2052,74 @@ export const staticData = {
     twitter: "https://twitter.com/100acressdotcom",
     instagram: "https://instagram.com/100acress",
     linkedin: "https://linkedin.com/company/100acress"
+  },
+  
+  // Project Types Data
+  projectTypes: {
+  'sco-plots': {
+    metaTitle: "SCO Plots in Gurugram for Retail & Office Investment",
+    metaDescription: "Explore SCO plots in Gurugram for retail and office use. Located in high-growth sectors with strong visibility, steady rental demand, and long-term returns.",
+    canonical: "https://www.100acress.com/projects/sco-plots/",
+    keywords: "SCO plots gurgaon, shop cum office gurgaon, retail plots gurgaon, commercial plots gurgaon, office space gurgaon"
+  },
+  'luxury-villas': {
+    metaTitle: "India's Ultra Luxury Villas for Sale | Exclusive Private Homes",
+    metaDescription: "Find luxury villas for sale in India's top holiday destinations. Ideal for second homes with privacy, comfort, and leisure-focused living.",
+    canonical: "https://www.100acress.com/projects/villas/",
+    keywords: "luxury villas india, premium villas, private homes, holiday villas, exclusive villas"
+  },
+  'plots-in-gurugram': {
+    metaTitle: "Plots in Gurugram | Residential & Investment Land Options",
+    metaDescription: "Explore plots in Gurugram across well-connected sectors. Suitable for homebuyers and investors seeking flexibility, growth, and long-term value.",
+    canonical: "https://www.100acress.com/projects/plots/",
+    keywords: "plots gurgaon, residential plots gurgaon, investment plots gurgaon, land gurgaon, property plots"
+  },
+  'residential-projects': {
+    metaTitle: "Residential Property for Sale – Homes That Fit Your Needs",
+    metaDescription: "Explore residential property in gurgaon, offering steady demand and long-term value. Suitable for buyers seeking secure ownership in growing locations.",
+    canonical: "https://www.100acress.com/projects/residential/",
+    keywords: "residential property gurgaon, homes gurgaon, apartments gurgaon, flats gurgaon, residential projects"
+  },
+  'independent-floors': {
+    metaTitle: "Independent & Builder Floors for Sale in Gurgaon",
+    metaDescription: "Find independent and builder floors in Gurgaon, designed for privacy and everyday comfort. Suitable for families seeking low-rise residential options.",
+    canonical: "https://www.100acress.com/projects/independent-floors/",
+    keywords: "independent floors gurgaon, builder floors gurgaon, low-rise apartments gurgaon, independent houses"
+  },
+  'commercial-projects': {
+    metaTitle: "Commercial Projects In Gurgaon Office, Retail & Mixed-Use Spaces",
+    metaDescription: "Discover commercial projects in Gurgaon offering flexible office and retail spaces. Located in active business zones with long-term growth potential.",
+    canonical: "https://www.100acress.com/projects/commercial/",
+    keywords: "commercial projects gurgaon, office space gurgaon, retail space gurgaon, commercial property gurgaon"
+  },
+  'farmhouse': {
+    metaTitle: "Farmhouse for Sale | Spacious Green Living",
+    metaDescription: "Discover farmhouse in developing zones offering land ownership, low-density planning, and long-term appreciation potential.",
+    canonical: "https://www.100acress.com/projects/farmhouse/",
+    keywords: "farmhouse gurgaon, farm houses gurgaon, green living gurgaon, spacious homes gurgaon"
+  },
+  'industrial-plots': {
+    metaTitle: "Industrial Plots for Sale | Manufacturing & Warehouse Land",
+    metaDescription: "Explore industrial plots suitable for manufacturing, warehousing, and logistics. Located in planned zones with road connectivity and growth potential.",
+    canonical: "https://www.100acress.com/projects/industrial-plots/",
+    keywords: "industrial plots gurgaon, manufacturing land gurgaon, warehouse plots gurgaon, industrial property"
+  },
+  'senior-living': {
+    metaTitle: "Senior Living in Gurgaon | Safe & Comfortable Retirement Homes",
+    metaDescription: "Explore senior living in Gurgaon designed for safety, comfort, and independent lifestyles. Peaceful communities with healthcare access and daily support.",
+    canonical: "https://www.100acress.com/projects/senior-living/",
+    keywords: "senior living gurgaon, retirement homes gurgaon, elderly care gurgaon, senior communities"
+  },
+  'affordable-homes': {
+    metaTitle: "Affordable Homes in Gurgaon | Budget-Friendly Housing Options",
+    metaDescription: "Explore affordable homes in Gurgaon offering practical layouts, essential amenities, and good connectivity. Ideal for first-time buyers and families.",
+    canonical: "https://www.100acress.com/projects/affordable-homes/",
+    keywords: "affordable homes gurgaon, budget homes gurgaon, affordable housing gurgaon, low-cost apartments"
+  }
   }
 };
 
-// Helper function to get data by page type and specific key
+// Helper function to get static data for any page type
 export const getStaticData = (pageType, specificKey = null) => {
   // console.log('getStaticData called with pageType:', pageType, 'specificKey:', specificKey);
   if (specificKey) {

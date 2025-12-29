@@ -2,11 +2,11 @@ import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { Helmet } from "react-helmet";
-import Api_Service from "../../Redux/utils/Api_Service";
-import GlobalFilterTemplate from "../../Components/GlobalFilterTemplate/GlobalFilterTemplate";
-import { projectTypeConfigs } from "../../Components/GlobalFilterTemplate/config/pageConfigs";
-import { staticData } from "../../Components/GlobalFilterTemplate/config/staticData";
-import Navbar from "../../aadharhomes/navbar/Navbar";
+import Api_Service from "../../../Redux/utils/Api_Service";
+import GlobalFilterTemplate from "../../../Components/GlobalFilterTemplate/GlobalFilterTemplate";
+import { projectTypeConfigs } from "../../config/pageConfigs";
+import { staticData } from "../../config/staticData";
+import Navbar from "../../../aadharhomes/navbar/Navbar";
 
 const BhkFlatsGurgaon = ({ bhkType }) => {
   const { getAllProjects } = Api_Service();

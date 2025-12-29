@@ -1,7 +1,7 @@
 import { useDispatch } from "react-redux";
 import { spotlight, trending ,featured,upcoming,affordable,luxury,scoplots,commercial,budget,projectindelhi} from "../slice/projectSlice";
 import {gurugram,delhi,noida,goa,ayodhya,mumbai,panipat,panchkula,kasauli,karnal,jalandhar, sonipat, alwar, dubai, pushkar, pune} from "../slice/StateProject";  
-import {allupcomingproject,builderindependentfloor,commercialProjectAll,deendayalplots,dlfsco,luxuryAll,luxuryvillas,newlaunch, readytomove, residential, scoplotsall, underconstruction,possessionafter2026,plotsingurugram,farmhouse,industrialplots,industrialprojects} from "../slice/AllSectionData";
+import {allupcomingproject,builderindependentfloor,commercialProjectAll,deendayalplots,dlfsco,luxuryAll,luxuryvillas,newlaunch, readytomove, residential, scoplotsall, underconstruction,possessionafter2026,plotsingurugram,farmhouse,industrialplots,industrialprojects,seniorliving} from "../slice/AllSectionData";
 import { signatureglobal,m3m,dlf,experion,elan,bptp,adani,smartworld,trevoc,indiabulls,centralpark,emaarindia, godrej, whiteland, aipl, birla, sobha, trump, puri, aarize, maxestates, shapoorji, satya, danube } from "../slice/BuilderSlice";
 import {Possessionin2025,Possessionin2026} from "../slice/PossessionSlice";
 import {bptpplots,orrisplots} from "../slice/ProjectOverviewSlice";
@@ -334,6 +334,10 @@ const Api_service = () => {
         response = await api.get(`${API_ROUTES.projectsBase()}/projectsearch?type=Industrial Plots&limit=${limit}`);
       } else if (query === "industrialprojects") {
         response = await api.get(`${API_ROUTES.projectsBase()}/projectsearch?type=Industrial Projects&limit=${limit}`);
+      } else if (query === "seniorliving") {
+        console.log('Making senior living API call with type=Senior Living');
+        response = await api.get(`${API_ROUTES.projectsBase()}/projectsearch?type=Senior Living&limit=${limit}`);
+        console.log('Senior living API response:', response.data);
       } else {
         response = await api.get(`${API_ROUTES.projectsBase()}/projectsearch?${query}=1&limit=${limit}`);
       }
@@ -406,7 +410,7 @@ const Api_service = () => {
       }else
       if(query === "dlfsco"){
         dispatch(dlfsco(AllProjectbyQuery))
-      }else
+     }else
       if(query === "plotsingurugram"){
         dispatch(plotsingurugram(AllProjectbyQuery))
       }else
@@ -419,12 +423,15 @@ const Api_service = () => {
       if(query === "industrialprojects"){
         dispatch(industrialprojects(AllProjectbyQuery))
       }else
+      if(query === "seniorliving"){
+        dispatch(seniorliving(AllProjectbyQuery))
+      }else
       if(query === "affordable"){
         dispatch(affordable(AllProjectbyQuery))
       }
     }catch(error){
-      console.error("Error fetching ",error);
-    }
+      console.error("Error fetching ",error);}
+
   }
 
 

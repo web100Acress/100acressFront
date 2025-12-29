@@ -257,22 +257,19 @@ export const projectTypeConfigs = {
              project.type === 'Industrial Plots';
     }
   },
-  "industrial-projects": {
-    title: "Industrial Projects",
-    description: "Discover Premium Industrial Projects – Your Gateway to Industrial Investment and Business Expansion.",
-    query: "industrialprojects",
-    reduxKey: "industrialprojects",
-    canonical: "https://www.100acress.com/projects/industrial-projects/",
-    badgeColor: "bg-gray-600",
-    badgeText: "Industrial Project",
+  "senior-living": {
+    title: "Seniar living in Gurgaon",
+    description: "Explore seniar living communities in Gurgaon with tailored amenities, comfort, and care-focused living.",
+    query: "seniorliving",
+    reduxKey: "seniorliving",
+    canonical: "https://www.100acress.com/projects/senior-living/",
+    badgeColor: "bg-indigo-500",
+    badgeText: "Senior Living",
     typeFilter: (project) => {
-      return project.type?.toLowerCase().includes('industrial') ||
-             project.projectType?.toLowerCase().includes('industrial') ||
-             project.category?.toLowerCase().includes('industrial') ||
-             project.propertyType?.toLowerCase().includes('industrial') ||
-             project.projectName?.toLowerCase().includes('industrial') ||
-             project.description?.toLowerCase().includes('industrial') ||
-             project.type === 'Industrial Projects';
+      return project.type === 'Senior Living' ||
+             project.projectType === 'Senior Living' ||
+             project.category === 'Senior Living' ||
+             project.propertyType === 'Senior Living';
     }
   },
   "affordable homes": {

@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
-import Api_Service from "../../Redux/utils/Api_Service";
-import GlobalFilterTemplate from "../../Components/GlobalFilterTemplate/GlobalFilterTemplate";
-import { projectTypeConfigs } from "../../Components/GlobalFilterTemplate/config/pageConfigs";
+import Api_Service from "../../../Redux/utils/Api_Service";
+import GlobalFilterTemplate from "../../../Components/GlobalFilterTemplate/GlobalFilterTemplate";
+import { projectTypeConfigs } from "../../config/pageConfigs";
 
-const IndependentHousesGurgaon = () => {
+const SCOPlotsGurgaon = () => {
   const { getAllProjects } = Api_Service();
   const location = useLocation();
   
-  const projectType = 'luxury-villas';
+  const projectType = 'sco-plots';
   const config = projectTypeConfigs[projectType];
   
   // Get projects from Redux store
@@ -48,12 +48,12 @@ const IndependentHousesGurgaon = () => {
   // Custom configuration
   const customConfig = {
     ...config,
-    title: 'Independent Houses For Sale in Gurgaon',
-    description: 'Discover Premium Independent Houses For Sale in Gurgaon – Your Gateway to Exclusive Living and Prime Real Estate Investment.',
-    h1: 'Independent Houses For Sale in Gurgaon',
+    title: 'SCO Plots in Gurgaon',
+    description: 'Discover Premium SCO Plots in Gurgaon – Your Gateway to Shop-Cum-Office Investment and Business Growth.',
+    h1: 'SCO Plots in Gurgaon',
     breadcrumbs: [
       { label: 'Home', path: '/' },
-      { label: 'Independent Houses For Sale in Gurgaon', path: location.pathname }
+      { label: 'SCO Plots in Gurgaon', path: location.pathname }
     ]
   };
   
@@ -67,4 +67,4 @@ const IndependentHousesGurgaon = () => {
   );
 };
 
-export default IndependentHousesGurgaon;
+export default SCOPlotsGurgaon;
