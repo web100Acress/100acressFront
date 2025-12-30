@@ -555,7 +555,7 @@ function App() {
                       <Route path="/knowabouts" element={<PropertyKnow />} />
 
                       <Route path="/test-sales-head" element={<LazyLoad><TestSalesHead /></LazyLoad>} />
-                      <Route path="/:pUrl/" element={<ProjectLayout2 />} />
+                      {/* <Route path="/:pUrl/" element={<ProjectLayout2 />} /> */}
 
                       <Route
                         path="/userviewproperty/:id"

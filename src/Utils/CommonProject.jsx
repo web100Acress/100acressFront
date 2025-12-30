@@ -141,6 +141,7 @@ const CommonProject = ({
                 <img
                   src={item?.thumbnailImage?.url || item?.frontImage?.url || `https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/${item?.thumbnailImage?.public_id}`}
                   alt="Property"
+                  fetchpriority="high"
                   className={`w-full ${
                     compact ? "aspect-[4/3]" : "aspect-[16/9]"
                   } object-cover transform-gpu transition-transform duration-500 ease-out group-hover:scale-[1.04]`}
