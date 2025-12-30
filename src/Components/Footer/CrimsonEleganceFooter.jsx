@@ -369,7 +369,7 @@
                   { name: "Resale Property in Gurgaon", href: "/buy-properties/best-resale-property-in-gurugram/" },
                   { name: "Rental Property in Gurgaon", href: "/rental-properties/best-rental-property-in-gurugram/" },
                   { name: "Senior Living in Gurgaon", href: "/projects/senior-living/" },
-                  { name: "Deen Dayal (DDJAY) Plots in Gurgaon", href: "/projects/plots/" },
+                  { name: "Affordable Plots in Gurgaon", href: "/projects/plots/" },
 
                   
                 ].map((location, index) => (
