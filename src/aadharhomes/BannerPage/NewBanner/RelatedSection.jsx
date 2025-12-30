@@ -29,6 +29,7 @@ const RelatedSection = ({ builderName, projectsToShow, builderProjectLength, sho
                           <span className="nb-related-image-wrap">
                             <Link to={`/${project.project_url}/`} target="blank">
                               <img
+                                fetchpriority="high"
                                 className="nb-related-image"
                                 src={project.frontImage && project.frontImage.url}
                                 alt={projectName}

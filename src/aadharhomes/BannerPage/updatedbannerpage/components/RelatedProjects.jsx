@@ -132,6 +132,7 @@ const RelatedProjects = ({ builderName = "", currentProjectUrl = "", onShowCallb
                           <img
                             src={project.thumbnailImage.url}
                             alt={project.projectName}
+                            fetchpriority="high"
                             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                           />
                         ) : (

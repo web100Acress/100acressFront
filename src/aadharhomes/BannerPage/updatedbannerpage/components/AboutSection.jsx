@@ -101,6 +101,7 @@ const AboutSection = ({ projectName, description, imageUrl, onShowCallback = () 
             {/* Rounded container with golden ring and soft glow */}
             <div className="relative h-full w-full rounded-none md:rounded-[28px] overflow-hidden ring-1 ring-yellow-400/30 shadow-[0_10px_40px_rgba(250,204,21,0.10)]">
               <img 
+                fetchPriority='high'
                 src={imageUrl} 
                 alt={`${projectName || 'Project'} overview`} 
                 loading="lazy"

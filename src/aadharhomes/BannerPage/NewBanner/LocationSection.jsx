@@ -27,7 +27,7 @@ const LocationSection = ({
           <div className="nb-location-image-card">
             {locationImageUrl && (
               <>
-                <img src={locationImageUrl} alt={`${projectName} Location`} className="nb-location-image" />
+                <img src={locationImageUrl} alt={`${projectName} Location`} fetchpriority="high" className="nb-location-image" />
                 <div className="nb-location-overlay"></div>
               </>
             )}

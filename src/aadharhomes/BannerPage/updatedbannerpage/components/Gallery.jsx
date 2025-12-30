@@ -80,6 +80,7 @@ const Gallery = ({ galleryImages = [], projectName = '' }) => {
           <div className="col-span-2 row-span-2 h-full">
             {visibleImages[0] && (
               <img
+                fetchPriority='high'
                 src={visibleImages[0].url}
                 alt="Gallery image 1"
                 className="w-full h-full object-cover rounded-lg cursor-pointer transition-transform duration-300 hover:scale-105"
