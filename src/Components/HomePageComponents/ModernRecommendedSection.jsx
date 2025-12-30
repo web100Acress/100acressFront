@@ -348,6 +348,7 @@ const PropertyCard = ({
       <div className="image-container">
         <div className="image-overlay"></div>
         <img
+          fetchPriority="high"
           src={project?.thumbnailImage?.url || project?.frontImage?.url}
           alt={project?.projectName}
           className={`property-image ${imageLoaded ? 'loaded' : ''}`}

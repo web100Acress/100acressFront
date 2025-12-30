@@ -1371,6 +1371,7 @@ const BlogView = () => {
                       >
                         <div className="relative h-40 overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200">
                           <img
+                            firstpriority="high"
                             src={img}
                             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                             alt={name}
@@ -1477,6 +1478,7 @@ const BlogView = () => {
                             >
                               <div className="flex-shrink-0">
                                 <img
+                                  firstpriority="high" 
                                   src={img || FALLBACK_IMG}
                                   className="w-16 h-16 rounded-lg object-cover shadow-sm"
                                   alt={name}

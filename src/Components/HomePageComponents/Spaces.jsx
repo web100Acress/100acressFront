@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 import AOS from 'aos';
 import 'aos/dist/aos.css';
+import { FireExtinguisher } from "lucide-react";
 
 function SpacesAvailable() {
   useEffect(() => { AOS.init(); }, []);
@@ -11,49 +12,49 @@ function SpacesAvailable() {
     { 
       title: "Residential Projects", 
       link: "/projects/residential/", 
-      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/residential.webp",
+      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/residential.webp", 
       description: "Luxury apartments and homes in prime locations",
       badge: "Popular"
     },
     { 
       title: "Commercial Projects", 
       link: "/projects/commercial/", 
-      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/commercialproperty%2B(1).webp",
+      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/commercialproperty%2B(1).webp", 
       description: "Premium office spaces and retail properties",
       badge: "Hot"
     },
     { 
       title: "SCO Plots", 
       link: "/projects/sco-plots/", 
-      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/sco.webp",
+      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/sco.webp", 
       description: "Shop-cum-office plots for business growth",
       badge: "New"
     },
     { 
       title: "Builder & Independent Floor", 
       link: "/projects/independent-floors/", 
-      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/builderandindepedent.webp",
+      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/builderandindepedent.webp", 
       description: "Independent floors and builder floors",
       badge: "Featured"
     },
     { 
       title: "Plots In Gurugram", 
       link: "/projects/plots/", 
-      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/deendayal.webp",
+      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/deendayal.webp", 
       description: "Investment-ready plots in prime locations",
       badge: "Best Value"
     },
     { 
       title: "Luxury Villas", 
       link: "/projects/villas/", 
-      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/villas.webp",
+      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/villas.webp", 
       description: "Ultra-luxury villas with world-class amenities",
       badge: "Premium"
     },
     { 
       title: "Industrial Plots", 
       link: "/projects/industrial-plots/", 
-      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/residential.webp",
+      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/residential.webp", 
       description: "Industrial plots for manufacturing and warehousing",
       badge: "Investment"
     },
@@ -83,9 +84,10 @@ function SpacesAvailable() {
               >
                 <Link to={project.link} className="card">
                   <div className="card-image-container">
-                    <img 
+                    <img
                       src={project.image} 
                       alt={project.title} 
+                      fetchPriority="high" 
                       className="card-image" 
                       loading="lazy" 
                     />
@@ -116,6 +118,7 @@ function SpacesAvailable() {
                     <img 
                       src={project.image} 
                       alt={project.title} 
+                      fetchPriority="high"
                       className="card-image" 
                       loading="lazy" 
                     />
