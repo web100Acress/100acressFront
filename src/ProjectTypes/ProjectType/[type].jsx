@@ -126,11 +126,11 @@ const projectTypeConfigs = {
     }
   },
   "senior-living": {
-    title: "Seniar living in Gurgaon",
-    description: "Explore seniar living communities in Gurgaon with tailored amenities, comfort, and care-focused living.",
-    metaTitle: "Seniar living in Gurgaon | 100Acress",
-    metaDescription: "Discover premium seniar living communities in Gurgaon. Find your dream senior living home with detailed information, pricing, and location details. Your trusted partner for senior living investment.",
-    keywords: "seniar living gurgaon, senior living communities, retirement homes, care living, senior apartments, elderly care, assisted living",
+    title: "Senior living in Gurgaon",
+    description: "Explore senior living communities in Gurgaon with tailored amenities, comfort, and care-focused living.",
+    metaTitle: "Senior living in Gurgaon | 100Acress",
+    metaDescription: "Discover premium senior living communities in Gurgaon. Find your dream senior living home with detailed information, pricing, and location details. Your trusted partner for senior living investment.",
+    keywords: "senior living gurgaon, senior living communities, retirement homes, care living, senior apartments, elderly care, assisted living",
     canonical: "https://www.100acress.com/projects/senior-living/",
     query: "seniorliving",
     reduxKey: "seniorliving",
