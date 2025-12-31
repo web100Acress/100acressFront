@@ -255,7 +255,7 @@ export default function LeftSection({
                     <button type="button" className="mobile-menu-tile" onClick={() => handleNavigation("/projects/commercial/", null, true)}>Commercial Projects</button>
                        <button type="button" className="mobile-menu-tile" onClick={() => handleNavigation("/projects/farmhouse/", null, true)}>Farm Houses</button>
                     <button type="button" className="mobile-menu-tile" onClick={() => handleNavigation("/projects/industrial-projects/", null, true)}>Industrial Projects</button>
-                    <button type="button" className="mobile-menu-tile" onClick={() => handleNavigation("/projects/senior-living/", null, true)}>Seniar living</button>
+                    <button type="button" className="mobile-menu-tile" onClick={() => handleNavigation("/projects/senior-living/", null, true)}>Senior living</button>
                   </div>
                   <div className="mobile-menu-sep" />
                 </>
