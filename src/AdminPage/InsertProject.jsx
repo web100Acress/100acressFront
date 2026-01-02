@@ -210,7 +210,7 @@ const InsertProject = () => {
     "Villas",
     "Farm Houses",
     "Industrial Plots",
-    "Seniar living",
+    "Senior Living",
   ];
   const [projectTypes, setProjectTypes] = useState(defaultProjectTypes);
   const [customProjectType, setCustomProjectType] = useState("");

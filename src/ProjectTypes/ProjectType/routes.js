@@ -47,8 +47,8 @@ export const projectTypeRoutes = {
   },
   "senior-living": {
     path: "/projects/senior-living/",
-    title: "Seniar living in Gurgaon",
-    description: "Explore seniar living communities in Gurgaon with tailored amenities, comfort, and care-focused living."
+    title: "Senior Living in Gurgaon",
+    description: "Explore senior living communities in Gurgaon with tailored amenities, comfort, and care-focused living."
   }
 };
 

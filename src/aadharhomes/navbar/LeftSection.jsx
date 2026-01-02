@@ -255,7 +255,7 @@ export default function LeftSection({
                     <button type="button" className="mobile-menu-tile" onClick={() => handleNavigation("/projects/commercial/", null, true)}>Commercial Projects</button>
                        <button type="button" className="mobile-menu-tile" onClick={() => handleNavigation("/projects/farmhouse/", null, true)}>Farm Houses</button>
                     <button type="button" className="mobile-menu-tile" onClick={() => handleNavigation("/projects/industrial-projects/", null, true)}>Industrial Projects</button>
-                    <button type="button" className="mobile-menu-tile" onClick={() => handleNavigation("/projects/senior-living/", null, true)}>Seniar living</button>
+                    <button type="button" className="mobile-menu-tile" onClick={() => handleNavigation("/projects/senior-living/", null, true)}>Senior Living</button>
                   </div>
                   <div className="mobile-menu-sep" />
                 </>
@@ -535,7 +535,7 @@ export default function LeftSection({
           <MenuItem onClick={() => handleNavigation("/projects/farmhouse/")}>FarmHouses</MenuItem>
           <MenuItem onClick={() => handleNavigation("/projects/industrial-plots/")}>Industrial Plots</MenuItem>
           <MenuItem onClick={() => handleNavigation("/projects/affordable-homes/")}>Affordable Homes</MenuItem>
-          <MenuItem onClick={() => handleNavigation("/projects/senior-living/")}>Seniar living</MenuItem>
+          <MenuItem onClick={() => handleNavigation("/projects/senior-living/")}>Senior Living</MenuItem>
         </MenuList>
       </Menu>
             

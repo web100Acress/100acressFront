@@ -102,7 +102,7 @@ export default function MegaMenu({ isOpen, onClose, handlePriceClick }) {
                   <Link to="/projects/residential/">Residential Projects</Link>
                   <Link to="/projects/independent-floors/">Independent Floors</Link>
                   <Link to="/projects/commercial/">Commercial Projects</Link>
-                  <Link to="/projects/senior-living/">Seniar living</Link>
+                  <Link to="/projects/senior-living/">Senior Living</Link>
                 </Flex>
               </Box>
 
