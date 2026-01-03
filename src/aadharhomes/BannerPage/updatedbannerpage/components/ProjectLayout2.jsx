@@ -160,8 +160,11 @@ function ProjectLayout2() {
 
   // Safe summary for About section to avoid showing "undefined..."
   const getAboutSummary = () => {
+    console.log('Project Type:', projectViewDetails?.type);
+    console.log('Tower Number:', projectViewDetails?.towerNumber);
+    
     if (projectViewDetails?.totalUnit) {
-      const towerPrefix = projectViewDetails.type === "Residential Flats" && projectViewDetails.towerNumber
+      const towerPrefix = (projectViewDetails.type === "Residential Flats" || projectViewDetails.type === "Senior Living") && projectViewDetails.towerNumber
         ? `${projectViewDetails.towerNumber} Tower - `
         : "";
       return `${towerPrefix}${projectViewDetails.totalUnit} Unit`;

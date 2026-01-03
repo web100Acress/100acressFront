@@ -79,6 +79,7 @@ const AboutSection = ({
               <CalenderIcon className="nb-stats-icon" />
             </div>
             <span className="nb-stats-value">
+              {console.log('AboutSection - Project Type:', projectViewDetails?.type, 'Tower Number:', projectViewDetails?.towerNumber)}
               {(projectViewDetails.type === 'Residential Flats' || projectViewDetails.type === 'Senior Living') && projectViewDetails.towerNumber ? `${projectViewDetails.towerNumber} Tower` : ''}
               {projectViewDetails.totalUnit ? ` - ${projectViewDetails.totalUnit} Unit` : 'N/A'}
             </span>
