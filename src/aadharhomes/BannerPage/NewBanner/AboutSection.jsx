@@ -79,7 +79,8 @@ const AboutSection = ({
               <CalenderIcon className="nb-stats-icon" />
             </div>
             <span className="nb-stats-value">
-              {projectViewDetails.type === 'Residential Flats' && projectViewDetails.towerNumber ? `${projectViewDetails.towerNumber} Tower` : ''}
+              {console.log('AboutSection - Project Type:', projectViewDetails?.type, 'Tower Number:', projectViewDetails?.towerNumber)}
+              {(projectViewDetails.type === 'Residential Flats' || projectViewDetails.type === 'Senior Living') && projectViewDetails.towerNumber ? `${projectViewDetails.towerNumber} Tower` : ''}
               {projectViewDetails.totalUnit ? ` - ${projectViewDetails.totalUnit} Unit` : 'N/A'}
             </span>
             <span className="nb-stats-label">Units</span>
