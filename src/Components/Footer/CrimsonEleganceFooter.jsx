@@ -437,7 +437,7 @@
                 <div className="flex flex-col md:flex-row items-center justify-between gap-6 w-full">
                   {/* Copyright */}
                   <div className="text-footer-text-muted text-center md:text-left">
-                    © 2025{" "}
+                    © 2026{" "}
                     <a
                       href="https://www.100acress.com"
                       target="_blank"

@@ -381,7 +381,7 @@ const LuxuryFooter = () => {
             <div className="grid grid-cols-1 sm:grid-cols-3 items-center w-full text-xs sm:text-sm gap-3 sm:gap-0 text-center sm:text-left whitespace-normal overflow-visible">
               {/* Left: Copyright */}
               <div className="justify-self-center sm:justify-self-start text-white flex items-center">
-                <p className="drop-shadow-sm">© 2000 - 2025 100acress. All rights reserved.</p>
+                <p className="drop-shadow-sm">© 2000 - 2026 100acress. All rights reserved.</p>
               </div>
 
               {/* Center: Contact (single line) */}
