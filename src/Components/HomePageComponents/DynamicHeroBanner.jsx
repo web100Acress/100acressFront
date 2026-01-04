@@ -342,6 +342,11 @@ const DynamicHeroBanner = () => {
 export default DynamicHeroBanner;
 
 const HeroWrapper = styled.div`
+  /* Force all banner elements to have no border-radius */
+  * {
+    border-radius: 0 !important;
+  }
+  
   .hero-strip-99-loading {
     width: 100%;
     height: 450px;
@@ -374,8 +379,7 @@ const HeroWrapper = styled.div`
     position: relative;
     overflow: hidden;
     transition: none;
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
+    border-radius: 0;
   }
 
   /* Dark overlay only for navbar area */
@@ -424,6 +428,7 @@ const HeroWrapper = styled.div`
     height: 450px;
     backface-visibility: hidden;
     perspective: 1000px;
+    border-radius: 0;
   }
 
   .carousel-item.active {
@@ -441,22 +446,26 @@ const HeroWrapper = styled.div`
     width: 100%;
     height: 450px;
     transform: scale(0.98);
+    border-radius: 0;
   }
 
   .carousel-fade .carousel-item.active {
     opacity: 1;
     position: relative;
     transform: scale(1);
+    border-radius: 0;
   }
 
   .carousel-fade .carousel-item-next,
   .carousel-fade .carousel-item-prev {
     opacity: 0;
+    border-radius: 0;
   }
 
   .carousel-fade .carousel-item-next.active,
   .carousel-fade .carousel-item-prev.active {
     opacity: 1;
+    border-radius: 0;
   }
 
   .carousel-control-prev,
