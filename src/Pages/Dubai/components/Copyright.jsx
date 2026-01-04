@@ -5,7 +5,7 @@ export const Copyright = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
           {/* Left Column - Copyright */}
           <div className="text-center lg:text-left">
-            <p>© 2025 100acress Dubai. All rights reserved.</p>
+            <p>© 2026 100acress Dubai. All rights reserved.</p>
           </div>
           
           {/* Right Column - Policy Links */}
