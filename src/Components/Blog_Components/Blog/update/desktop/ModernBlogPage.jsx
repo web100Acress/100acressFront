@@ -4,7 +4,7 @@ import { Helmet } from "react-helmet";
 import api from "../../../../../config/apiClient";
 import HeroSection from "../../create/HeroSectionContainer";
 import BlogCard from "../../create/desktop/BlogCard";
-import CrimsonEleganceFooter from "../../create/desktop/Footer";
+import Footer from "../../../../Footer/CrimsonEleganceFooter";
 
 const ModernBlogPage = () => {
   const [allBlogs, setAllBlogs] = useState([]);
@@ -199,7 +199,7 @@ const ModernBlogPage = () => {
       </section>
 
       {/* Footer */}
-      <CrimsonEleganceFooter />
+      <Footer />
     </div>
   );
 };
