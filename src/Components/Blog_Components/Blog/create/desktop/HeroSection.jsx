@@ -35,7 +35,7 @@ const HeroSection = ({ blog = { blog_Title: "Luxury Waterfront Estate", blog_Cat
       </div>  
 
       {/* Content - Responsive for all screen ratios */}
-      <div className="relative z-10 w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16 xl:py-20 flex flex-col xl:flex-row items-center justify-center gap-6 lg:gap-8 xl:gap-12">
+      <div className="relative z-10 w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16 xl:py-20 flex flex-col xl:flex-row items-center justify-center gap-6 lg:gap-8 xl:gap-16">
         
         {/* Left Content - Responsive sizing */}
         <div className="w-full xl:w-1/2 max-w-2xl space-y-4 sm:space-y-6 text-center xl:text-left">
@@ -77,11 +77,11 @@ const HeroSection = ({ blog = { blog_Title: "Luxury Waterfront Estate", blog_Cat
         </div>
 
         {/* Right Image - Responsive and hidden on smaller screens */}
-        <div className="w-full xl:w-1/2 hidden lg:block max-w-2xl">
+        <div className="w-full xl:w-1/2 hidden lg:block max-w-2xl mt-16">
           <div className="relative group">
             <div className="absolute inset-0 bg-blue-500/20 rounded-2xl blur-2xl group-hover:blur-3xl transition-all"></div>
             <div className="relative bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl overflow-hidden shadow-2xl">
-              <img src={getImageUrl()} alt={blog.blog_Title} className="w-full h-64 sm:h-80 lg:h-96 object-cover transition-transform duration-500 group-hover:scale-105" onError={onImgError} />
+              <img src={getImageUrl()} alt={blog.blog_Title} className="w-full h-64 sm:h-80 lg:h-96 object-fill transition-transform duration-500 group-hover:scale-105" onError={onImgError} />
             </div>
           </div>
         </div>
