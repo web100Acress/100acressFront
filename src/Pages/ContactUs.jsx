@@ -380,7 +380,7 @@ const ContactUs = () => {
                     </div>
                     <div>
                       <h4 className="font-bold text-gray-900 mb-1" style={{fontFamily: "'Poppins', sans-serif"}}>Email Us</h4>
-                      <p className="text-gray-600 font-semibold" style={{fontFamily: "'Inter', sans-serif"}}>info@100acress.com</p>
+                      <p className="text-gray-600 font-semibold" style={{fontFamily: "'Inter', sans-serif"}}>support@100acress.com</p>
                     </div>
                   </a>
 

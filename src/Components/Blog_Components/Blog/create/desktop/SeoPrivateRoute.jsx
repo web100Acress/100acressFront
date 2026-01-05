@@ -1,6 +1,6 @@
 import { useContext, useEffect } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
-import { AuthContext } from "../../AuthContext";
+import { AuthContext } from "../../../../../AuthContext";
 import { flushSync } from "react-dom";
 
 const SeoPrivateRoute = () => {

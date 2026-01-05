@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
-import api from "../../config/apiClient";
-import BlogCard from "./BlogCard";
+import api from "../../../../../config/apiClient";
+import BlogCard from "../../create/desktop/BlogCard";
 
 const AuthorPage = () => {
   const { authorName } = useParams();
@@ -216,9 +216,9 @@ const AuthorPage = () => {
                   </Link>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start auto-rows-auto">
                   {authorBlogs.map((blog, index) => (
-                    <div key={blog._id} className="h-[400px]">
+                    <div key={blog._id}>
                       <BlogCard 
                         blog={blog} 
                         blogLink={blogLink(blog)}

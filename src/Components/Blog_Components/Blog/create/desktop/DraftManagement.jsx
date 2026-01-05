@@ -1,5 +1,5 @@
 import { useState,useEffect } from "react"
-import api from "../../config/apiClient"
+import api from "../../../../../config/apiClient";
 import { ArrowDown, ArrowUp, Edit, Eye, Plus, Trash2, Search, FileText, Calendar, User, Filter, BarChart3 } from "lucide-react";
 import { Switch, Modal, Card, Badge, Tooltip, Empty, Skeleton } from "antd";
 import { Link, useNavigate } from "react-router-dom";
@@ -285,7 +285,7 @@ const handleDeleteUser = async (id) => {
 
           {/* Enhanced Blog Cards */}
           {loading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-start auto-rows-auto">
               {[...Array(6)].map((_, index) => (
                 <Card key={index} className="shadow-lg rounded-xl">
                   <Skeleton active />
@@ -293,7 +293,7 @@ const handleDeleteUser = async (id) => {
               ))}
                     </div>
           ) : filteredBlogs.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-start auto-rows-auto">
               {filteredBlogs.map((blog) => (
                 <Card 
                   key={blog._id} 

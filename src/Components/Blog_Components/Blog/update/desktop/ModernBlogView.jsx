@@ -1,14 +1,14 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import api from "../../config/apiClient";
-import { DataContext } from "../../MyContext";
+import api from "../../../../../config/apiClient";
+import { DataContext } from "../../../../../MyContext";
 import { useSelector } from "react-redux";
 import { Helmet } from "react-helmet";
 import DOMPurify from 'dompurify';
 import { Calendar, Clock, Eye, User } from 'lucide-react';
-import { FALLBACK_IMG } from '../../Utils/imageUtils';
-import Footer from "../Actual_Components/Footer";
-import FAQSection from "../Actual_Components/FAQSection";
+import { FALLBACK_IMG } from '../../../../../Utils/imageUtils';
+import Footer from "../../../../Actual_Components/Footer";
+import FAQSection from "../../../../Actual_Components/FAQSection";
 
 const ModernBlogView = () => {
   const { allupcomingProject } = useContext(DataContext);
@@ -365,11 +365,11 @@ const ModernBlogView = () => {
           <div className="grid grid-cols-1 lg:grid-cols-10 gap-8">
             {/* Left Column - 60% (Image) */}
             <div className="lg:col-span-6">
-              <div className="relative w-full h-96 md:h-[500px] rounded-lg overflow-hidden shadow-2xl">
+              <div className="relative w-full rounded-lg overflow-hidden shadow-2xl">
                 <img
                   src={blogImage}
                   alt={data.blog_Title || 'Blog post'}
-                  className="w-full h-full object-cover transition-all duration-700 hover:scale-105"
+                  className="w-full h-auto object-contain transition-all duration-700 hover:scale-105"
                   onError={(e) => {
                     e.target.src = FALLBACK_IMG;
                   }}
@@ -380,8 +380,8 @@ const ModernBlogView = () => {
 
             {/* Right Column - 40% (Table of Contents) */}
             <div className="lg:col-span-4">
-              <div className="bg-gray-50 rounded-lg border border-gray-200 p-6 shadow-sm sticky top-24 flex flex-col h-96 md:h-[500px]">
-                <div className="flex items-center justify-between mb-4 flex-shrink-0">
+              <div className="bg-gray-50 rounded-lg border border-gray-200 p-6 shadow-sm sticky top-24">
+                <div className="flex items-center justify-between mb-4">
                   <h3 className="text-lg font-bold text-gray-900" style={{ fontFamily: "'Open Sans', sans-serif" }}>
                     Contents
                   </h3>
@@ -392,7 +392,7 @@ const ModernBlogView = () => {
                   </button>
                 </div>
                 
-                <div className="overflow-y-auto flex-1 pr-2">
+                <div className="overflow-y-auto max-h-96 pr-2">
                   {headings.length > 0 ? (
                     <nav className="space-y-1 text-sm">
                       {headings.map((heading) => (
