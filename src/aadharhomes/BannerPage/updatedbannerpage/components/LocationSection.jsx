@@ -117,6 +117,47 @@ const LocationSection = ({
     }
   };
 
+  const handleViewOnMap = () => {
+    // Get user's current location and show directions to project
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          
+          // Create destination query from project address
+          const destination = projectAddress && city 
+            ? `${projectAddress}, ${city}` 
+            : projectName || "Project Location";
+          
+          // Open Google Maps with directions from current location to destination
+          const mapsUrl = `https://www.google.com/maps/dir/${latitude},${longitude}/${encodeURIComponent(destination)}`;
+          window.open(mapsUrl, '_blank');
+        },
+        (error) => {
+          // If geolocation fails, just open maps with the destination
+          console.error('Error getting location:', error);
+          const destination = projectAddress && city 
+            ? `${projectAddress}, ${city}` 
+            : projectName || "Project Location";
+          const mapsUrl = `https://www.google.com/maps/search/${encodeURIComponent(destination)}`;
+          window.open(mapsUrl, '_blank');
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 60000 // Accept cached location up to 1 minute old
+        }
+      );
+    } else {
+      // If geolocation is not supported, just open maps with the destination
+      const destination = projectAddress && city 
+        ? `${projectAddress}, ${city}` 
+        : projectName || "Project Location";
+      const mapsUrl = `https://www.google.com/maps/search/${encodeURIComponent(destination)}`;
+      window.open(mapsUrl, '_blank');
+    }
+  };
+
   return (
     <section className="relative py-16 md:py-20 lg:py-24 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 text-white overflow-hidden">
       {/* Animated Background Elements */}
@@ -194,7 +235,10 @@ const LocationSection = ({
                   {/* Map Overlay Controls */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-4">
                     <div className="absolute bottom-0 left-0 right-0 p-6">
-                      <button className="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-black font-medium rounded-lg transition-all duration-300 transform hover:translate-y-[-2px] shadow-lg hover:shadow-amber-500/30">
+                      <button 
+                        onClick={handleViewOnMap}
+                        className="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-black font-medium rounded-lg transition-all duration-300 transform hover:translate-y-[-2px] shadow-lg hover:shadow-amber-500/30"
+                      >
                         View on Map
                       </button>
                     </div>
