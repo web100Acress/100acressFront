@@ -44,27 +44,28 @@ const HeroSection = ({ blog, blogLink, FALLBACK_IMG }) => {
 
       {/* Content Container */}
       <div className="max-w-7xl mx-auto px-6 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
           
           {/* Left Column - Text Content */}
           <div className="space-y-8 text-left">
-            {/* Featured Badge */}
-            <div className="inline-flex items-center space-x-2 px-4 py-2 bg-blue-50 border border-blue-200 rounded-full">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
-              </span>
-              <span className="text-blue-700 font-sans text-sm font-semibold">Featured Story</span>
-            </div>
-
-            {/* Category */}
-            {blog.blog_Category && (
-              <div className="flex items-center gap-2">
-                <span className="px-3 py-1 text-sm font-medium bg-gray-100 text-gray-700 rounded-lg border border-gray-300">
-                  {blog.blog_Category}
+            {/* Featured Badge & Category */}
+            <div className="flex flex-wrap items-center gap-4">
+              <div className="inline-flex items-center space-x-2 px-4 py-2 bg-blue-50 border border-blue-200 rounded-full">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
                 </span>
+                <span className="text-blue-700 font-sans text-sm font-semibold">Featured Story</span>
               </div>
-            )}
+              
+              {blog.blog_Category && (
+                <div className="flex items-center gap-2">
+                  <span className="px-3 py-1 text-sm font-medium bg-gray-100 text-gray-700 rounded-lg border border-gray-300">
+                    {blog.blog_Category}
+                  </span>
+                </div>
+              )}
+            </div>
 
             {/* Blog Title */}
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-serif font-bold text-gray-900 leading-tight" style={{ fontFamily: "'Open Sans', sans-serif" }}>
@@ -87,19 +88,29 @@ const HeroSection = ({ blog, blogLink, FALLBACK_IMG }) => {
               </div>
             </div>
 
+            {/* Featured Badge & CTA Button */}
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              <div className="inline-flex items-center space-x-2 px-4 py-2 bg-blue-50 border border-blue-200 rounded-full">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+                </span>
+                <span className="text-blue-700 font-sans text-sm font-semibold">Featured Story</span>
+              </div>
+              
+              <Link
+                to={blogLink}
+                className="inline-flex items-center space-x-3 px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-sans font-semibold rounded-full transition-all duration-300 hover:scale-105 hover:shadow-lg"
+              >
+                <span>Read Full Story</span>
+                <ArrowRight className="h-5 w-5" />
+              </Link>
+            </div>
+
             {/* Blog Excerpt */}
             <p className="text-lg text-gray-600 font-sans leading-relaxed max-w-lg">
               {blog.blog_Description?.replace(/<[^>]*>/g, "").slice(0, 150)}...
             </p>
-
-            {/* CTA Button */}
-            <Link
-              to={blogLink}
-              className="inline-flex items-center space-x-3 px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-sans font-semibold rounded-full transition-all duration-300 hover:scale-105 hover:shadow-lg"
-            >
-              <span>Read Full Story</span>
-              <ArrowRight className="h-5 w-5" />
-            </Link>
           </div>
 
           {/* Right Column - Image */}
@@ -108,7 +119,7 @@ const HeroSection = ({ blog, blogLink, FALLBACK_IMG }) => {
               <img
                 src={getImageUrl()}
                 alt={blog.blog_Title || 'Featured blog post'}
-                className="w-full h-full object-cover transition-all duration-700 hover:scale-110"
+                className="w-full h-full object-contain transition-all duration-700 hover:scale-110"
                 onError={(e) => {
                   e.target.src = FALLBACK_IMG;
                 }}
