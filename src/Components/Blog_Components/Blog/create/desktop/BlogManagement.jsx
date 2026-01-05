@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from "react";
-import api from "../../config/apiClient";
+import api from "../../../../../config/apiClient";
 import {
   ArrowDown,
   ArrowUp,
@@ -34,7 +34,7 @@ import {
   Tooltip,
 } from "antd";
 import { Link, useNavigate } from "react-router-dom";
-import { AuthContext } from "../../AuthContext";
+import { AuthContext } from "../../../../../AuthContext";
 
 export default function BlogManagement() {
   const token = localStorage.getItem("myToken");

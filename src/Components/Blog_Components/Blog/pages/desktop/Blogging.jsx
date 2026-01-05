@@ -4,7 +4,7 @@ import Footer from "../Components/Actual_Components/Footer";
 import { PaginationControls, BlogPaginationControls } from "../Components/Blog_Components/BlogManagement";
 import { Helmet } from "react-helmet";
 import Free from "./Free";
-import api from "../config/apiClient";
+import api from "../../../../../config/apiClient";
 
 // Brand colors and tagline
 const BRAND_RED = '#b8333a';

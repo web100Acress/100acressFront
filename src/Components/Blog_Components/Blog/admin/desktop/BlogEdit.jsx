@@ -2,12 +2,12 @@ import React, { useState, useEffect, useContext, useMemo } from "react";
 import { message, Modal, notification } from "antd";
 import Sidebar from "./Sidebar";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import api from "../config/apiClient";
+import api from "../../../../../config/apiClient";
 import { MdEdit, MdImage, MdTitle, MdDescription, MdCategory, MdPerson } from "react-icons/md";
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
 import 'tippy.js/animations/scale.css';
-import { AuthContext } from "../AuthContext";
+import { AuthContext } from "../../../../../AuthContext";
 
 const customStyle = {
   position: "absolute",

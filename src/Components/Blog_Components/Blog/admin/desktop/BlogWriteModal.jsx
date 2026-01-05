@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import Quill from 'quill';
-import api from '../config/apiClient';
+import api from '../../../../../config/apiClient';
   import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import ReactCrop from 'react-image-crop';

@@ -1,16 +1,16 @@
 import React, { useContext, useEffect, useState, useRef } from "react";
-import Footer from "../Components/Actual_Components/Footer";
+import Footer from "../../../../Components/Actual_Components/Footer";
 import { useParams, Link, useNavigate, useLocation } from "react-router-dom";
-import api from "../config/apiClient";
-import { API_ROUTES } from "../Redux/utils/Constant_Service";
+import api from "../../../../../config/apiClient";
+import { API_ROUTES } from "../../../../Redux/utils/Constant_Service";
 import { useSelector } from "react-redux";
-import Api_Service from "../Redux/utils/Api_Service";
+import Api_Service from "../../../../Redux/utils/Api_Service";
 
-import { DataContext } from "../MyContext";
+import { DataContext } from "../../../../MyContext";
 import { Helmet } from "react-helmet";
 import DOMPurify from 'dompurify';
 import "./BlogView.css";
-import useIsMobile from '../hooks/useIsMobile';
+import useIsMobile from "../../../../hooks/useIsMobile";
 import { ThumbsUp, Share2, MessageCircle, ChevronDown, ChevronUp, Menu, X } from 'lucide-react';
 import { 
   FALLBACK_IMG, 
@@ -18,7 +18,7 @@ import {
   createSafeImageProps, 
   convertS3ToProxyUrl,
   isS3Url 
-} from '../Utils/imageUtils';
+} from "../../../../Utils/imageUtils";
 
 const BlogView = () => {
   const { allupcomingProject } = useContext(DataContext);

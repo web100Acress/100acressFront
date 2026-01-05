@@ -1,10 +1,10 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
-import api from "../../config/apiClient";
-import HeroSection from "./HeroSection";
-import BlogCard from "./BlogCard";
-import CrimsonEleganceFooter from "../Footer/CrimsonEleganceFooter";
+import api from "../../../../../config/apiClient";
+import HeroSection from "../../create/desktop/HeroSection";
+import BlogCard from "../../create/desktop/BlogCard";
+import CrimsonEleganceFooter from "../../create/desktop/Footer";
 
 const ModernBlogPage = () => {
   const [allBlogs, setAllBlogs] = useState([]);

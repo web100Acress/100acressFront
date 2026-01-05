@@ -1,14 +1,14 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import api from "../../config/apiClient";
-import { DataContext } from "../../MyContext";
+import api from "../../../../../config/apiClient";
+import { DataContext } from "../../../../../MyContext";
 import { useSelector } from "react-redux";
 import { Helmet } from "react-helmet";
 import DOMPurify from 'dompurify';
 import { Calendar, Clock, Eye, User } from 'lucide-react';
-import { FALLBACK_IMG } from '../../Utils/imageUtils';
-import Footer from "../Actual_Components/Footer";
-import FAQSection from "../Actual_Components/FAQSection";
+import { FALLBACK_IMG } from '../../../../../Utils/imageUtils';
+import Footer from "../../../../Actual_Components/Footer";
+import FAQSection from "../../../../Actual_Components/FAQSection";
 
 const ModernBlogView = () => {
   const { allupcomingProject } = useContext(DataContext);
