@@ -2,7 +2,7 @@ import React, { useEffect, useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import api from "../../../../../config/apiClient";
-import HeroSection from "../../create/desktop/HeroSection";
+import HeroSection from "../../create/HeroSectionContainer";
 import BlogCard from "../../create/desktop/BlogCard";
 import CrimsonEleganceFooter from "../../create/desktop/Footer";
 
