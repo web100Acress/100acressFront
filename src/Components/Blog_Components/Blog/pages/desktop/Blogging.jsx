@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { Link } from "react-router-dom";
-import Footer from "../../../../Actual_Components/Footer";
+import Footer from "../../../../Footer/CrimsonEleganceFooter";
 import { PaginationControls, BlogPaginationControls } from "../../create/desktop/BlogManagement";
 import { Helmet } from "react-helmet";
 import Free from "../../../../../Pages/Free";

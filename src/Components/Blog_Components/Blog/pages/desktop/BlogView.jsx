@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState, useRef } from "react";
-import Footer from "../../../../Components/Actual_Components/Footer";
+import Footer from "../../../../Footer/CrimsonEleganceFooter";
 import { useParams, Link, useNavigate, useLocation } from "react-router-dom";
 import api from "../../../../../config/apiClient";
 import { API_ROUTES } from "../../../../Redux/utils/Constant_Service";
