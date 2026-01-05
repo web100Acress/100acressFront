@@ -21,11 +21,10 @@ const BlogCard = ({ blog, blogLink, FALLBACK_IMG }) => {
     });
   };
 
-  // Calculate reading time
+  // Calculate reading time (random 1-3 minutes)
   const getReadingTime = (description) => {
-    const words = description?.replace(/<[^>]*>/g, "").split(" ").length || 0;
-    const minutes = Math.ceil(words / 200);
-    return `${minutes} min read`;
+    const randomMinutes = Math.floor(Math.random() * 3) + 1;
+    return `${randomMinutes} min read`;
   };
 
   // Get blog image URL
@@ -92,12 +91,6 @@ const BlogCard = ({ blog, blogLink, FALLBACK_IMG }) => {
           <h3 className="text-xl font-serif font-bold text-gray-900 mb-3 line-clamp-2 group-hover:text-blue-600 transition-colors" style={{ fontFamily: "'Open Sans', sans-serif" }}>
             {blog.blog_Title}
           </h3>
-
-          {/* Excerpt */}
-          <p className="text-gray-600 text-sm line-clamp-3 mb-0.5 flex-grow">
-            {blog.blog_Description?.replace(/<[^>]*>/g, "").slice(0, 120)}...
-          </p>
-
           {/* Read More Indicator */}
           <div className="flex items-center justify-between pt-2">
             <span className="text-xs text-gray-500 font-sans">Read story</span>

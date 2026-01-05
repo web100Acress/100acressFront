@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import Navbar from "../../../../../../aadharhomes/navbar";
+import Navbar from "../../../../../aadharhomes/navbar/Navbar";
 import { Search, Clock, User, Flame, Bookmark, Share2, Eye, Home, TrendingUp, Calculator, Hammer, ArrowRight } from 'lucide-react';
 
 const BlogInsights = () => {

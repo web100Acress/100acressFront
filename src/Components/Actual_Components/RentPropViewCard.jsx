@@ -7,7 +7,7 @@ import { LOGIN } from "../../lib/route";
 import { Helmet } from "react-helmet";
 import CustomSkeleton from "../../Utils/CustomSkeleton";
 import { FilterIcon, PropertyIcon, RupeeIcon } from "../../Assets/icons";
-import { PaginationControls } from "../../Components/Blog_Components/BlogManagement";
+import { PaginationControls } from "../Blog_Components/Blog/create/desktop/BlogManagement";
 import AuthModal from "../../Resister/AuthModal";
 import { AuthContext } from "../../AuthContext";
 import { MdFavoriteBorder, MdFavorite } from "react-icons/md";

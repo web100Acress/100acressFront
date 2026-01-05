@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { Link } from "react-router-dom";
-import Footer from "../Components/Actual_Components/Footer";
-import { PaginationControls, BlogPaginationControls } from "../Components/Blog_Components/BlogManagement";
+import Footer from "../../../../Actual_Components/Footer";
+import { PaginationControls, BlogPaginationControls } from "../../create/desktop/BlogManagement";
 import { Helmet } from "react-helmet";
-import Free from "./Free";
+import Free from "../../../../../Pages/Free";
 import api from "../../../../../config/apiClient";
 
 // Brand colors and tagline

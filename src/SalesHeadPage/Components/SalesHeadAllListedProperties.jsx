@@ -6,7 +6,7 @@ import { getApiBase } from '../../config/apiBase';
 import { Eye, Edit, Trash2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Oval } from "react-loader-spinner";
-import { PaginationControls } from "../../Components/Blog_Components/BlogManagement";
+import { PaginationControls } from "../../Components/Blog_Components/Blog/create/desktop/BlogManagement";
 import { Modal, message } from "antd";
 
 // This is a copy of AllListedProperties content without the Sidebar
