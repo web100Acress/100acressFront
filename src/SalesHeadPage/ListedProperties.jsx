@@ -9,7 +9,7 @@ import { Search } from "lucide-react";
 import { Eye, Edit, Trash2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Oval } from "react-loader-spinner";
-import { PaginationControls } from "../Components/Blog_Components/BlogManagement";
+import { PaginationControls } from "../Components/Blog_Components/Blog/create/desktop/BlogManagement";
 import { Modal, message } from "antd";
 
 // Memoized Property Row Component

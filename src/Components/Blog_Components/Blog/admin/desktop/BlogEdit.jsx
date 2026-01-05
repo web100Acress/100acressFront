@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext, useMemo } from "react";
 import { message, Modal, notification } from "antd";
-import Sidebar from "./Sidebar";
+import Sidebar from "../../../../../AdminPage/Sidebar";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import api from "../../../../../config/apiClient";
 import { MdEdit, MdImage, MdTitle, MdDescription, MdCategory, MdPerson } from "react-icons/md";

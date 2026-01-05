@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import Sidebar from "./Sidebar";
+import Sidebar from "../../../../../AdminPage/Sidebar";
 import { useParams } from "react-router-dom";
 import api from "../../../../../config/apiClient";
 import { MdArticle, MdImage, MdTitle, MdDescription, MdCategory, MdPerson } from "react-icons/md";
