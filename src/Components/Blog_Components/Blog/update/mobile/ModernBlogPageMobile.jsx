@@ -212,7 +212,7 @@ export default function ModernBlogPageMobile() {
             image={Empty.PRESENTED_IMAGE_SIMPLE}
           />
         ) : (
-          <div className={viewMode === "grid" ? "grid grid-cols-1 gap-4" : "space-y-4"}>
+          <div className={viewMode === "grid" ? "grid grid-cols-1 gap-4 items-start auto-rows-auto" : "space-y-4"}>
             {filteredBlogs.map(blog => (
               <BlogCardMobile
                 key={blog._id}

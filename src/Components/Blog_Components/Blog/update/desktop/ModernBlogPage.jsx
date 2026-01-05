@@ -169,11 +169,10 @@ const ModernBlogPage = () => {
             <p className="text-gray-600 text-lg">No blogs found.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-start auto-rows-auto">
             {filteredBlogs.map((blog, index) => (
               <div
                 key={blog._id}
-                className="h-[400px]"
               >
                 <BlogCard 
                   blog={blog} 

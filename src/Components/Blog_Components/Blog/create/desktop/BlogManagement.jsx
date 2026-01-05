@@ -506,7 +506,7 @@ export default function BlogManagement() {
           )}
 
           {/* Blog Cards Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4 items-start auto-rows-auto">
             {filteredAndSortedBlogs?.length > 0 ? (
               (showAllBlogs ? filteredAndSortedBlogs : filteredAndSortedBlogs?.slice(0, INITIAL_BLOG_LIMIT))?.map((blog, index) => (
                 <div
@@ -514,11 +514,11 @@ export default function BlogManagement() {
                   className="group bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 ease-in-out transform hover:-translate-y-1 border border-gray-100 overflow-hidden"
                 >
                   {/* Blog Image */}
-                  <div className="relative h-20 overflow-hidden">
+                  <div className="relative overflow-hidden">
                     <img
                       src={blog?.blog_Image?.url || "/api/placeholder/400/200"}
                       alt={blog?.blog_Title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      className="w-full h-auto object-contain group-hover:scale-105 transition-transform duration-300"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
 

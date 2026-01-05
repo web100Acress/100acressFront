@@ -2,6 +2,7 @@ import React, { useState, Suspense, useContext, useMemo } from 'react';
 import { lazy } from 'react';
 const ReactQuill = lazy(() => import('react-quill'));
 import 'react-quill/dist/quill.snow.css';
+import { message } from 'antd';
 import api from "../../../../../config/apiClient";
 import { AuthContext } from "../../../../../AuthContext";
 
@@ -24,6 +25,7 @@ const BlogWrite = () => {
   const [fileData, setFileData] = useState({
     blog_Image: null,
   });
+  const [fileError, setFileError] = useState('');
 
   const [editForm, setEditForm] = useState({
     blog_Title: "",
@@ -108,9 +110,59 @@ const BlogWrite = () => {
   };
 
   const handleFileChange = (e, key) => {
-    const newFileData = { ...fileData };
-    newFileData[key] = e.target.files[0];
-    setFileData(newFileData);
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    // Clear any previous error
+    setFileError('');
+    
+    // Check image dimensions and aspect ratio (1200x628 = 300:157)
+    const img = new Image();
+    img.onload = function() {
+      const expectedWidth = 1200;
+      const expectedHeight = 628;
+      const tolerance = 5; // Allow 5px tolerance
+      
+      if (Math.abs(this.width - expectedWidth) > tolerance || Math.abs(this.height - expectedHeight) > tolerance) {
+        const errorMsg = `Image must be exactly ${expectedWidth} × ${expectedHeight} pixels (Current: ${this.width} × ${this.height})`;
+        message.error(errorMsg);
+        setFileError(errorMsg);
+        // Reset the file input
+        e.target.value = '';
+        return;
+      }
+      
+      // Calculate aspect ratio
+      const expectedRatio = expectedWidth / expectedHeight;
+      const actualRatio = this.width / this.height;
+      const ratioTolerance = 0.01; // 1% tolerance
+      
+      if (Math.abs(actualRatio - expectedRatio) > ratioTolerance) {
+        const errorMsg = `Image aspect ratio must be ${expectedWidth}:${expectedHeight} (300:157). Current ratio is ${this.width}:${this.height}`;
+        message.error(errorMsg);
+        setFileError(errorMsg);
+        // Reset the file input
+        e.target.value = '';
+        return;
+      }
+      
+      // If all validations pass, proceed with file processing
+      const newFileData = { ...fileData };
+      newFileData[key] = file;
+      setFileData(newFileData);
+      setFileError('');
+    };
+    
+    img.onerror = function() {
+      const errorMsg = 'Failed to load image. Please try a different file.';
+      message.error(errorMsg);
+      setFileError(errorMsg);
+      e.target.value = '';
+    };
+    
+    // Create object URL for validation
+    const objUrl = URL.createObjectURL(file);
+    img.src = objUrl;
   };
 
   const resetData = () => {
@@ -126,6 +178,7 @@ const BlogWrite = () => {
     setFileData({
       blog_Image: null
     });
+    setFileError('');
   };
 
   const LoadingEditor = () => <div className="p-4 border rounded">Loading editor...</div>;
@@ -191,6 +244,11 @@ const BlogWrite = () => {
                     {fileData.blog_Image && (
                       <p className="text-sm text-green-600 mt-1">
                         Selected: {fileData.blog_Image.name}
+                      </p>
+                    )}
+                    {fileError && (
+                      <p className="text-sm text-red-600 mt-1">
+                        {fileError}
                       </p>
                     )}
                   </div>

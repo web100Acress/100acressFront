@@ -358,7 +358,7 @@ const BlogEdit = () => {
             className={`flex items-center gap-2 text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-lg px-8 py-3 shadow-lg transition-all ${theme === 'dark' ? 'bg-gradient-to-r from-blue-700 via-blue-800 to-gray-900' : ''}`}
             disabled={!canEdit}
           >
-                  <MdEdit className="text-xl" /> Update
+                  <MdEdit className="text-xl" /> Upda
           </button>
               </div>
             </section>

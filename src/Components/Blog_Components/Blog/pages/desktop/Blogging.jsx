@@ -313,7 +313,7 @@ const Blogging = () => {
         </div>
       )}
       {/* Blog Grid */}
-      <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-center">
+      <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-center items-start auto-rows-auto">
         {loading ? (
           <div className="col-span-full text-center py-10 text-gray-400 text-lg">Loading...</div>
         ) : allBlogs.length === 0 ? (

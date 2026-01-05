@@ -61,7 +61,19 @@ const BlogWriteModal = () => {
   // Configure global message behavior: auto-dismiss and limit stacking
   useEffect(() => {
     try {
-      message.config({ duration: 3, maxCount: 1 });
+      message.config({ 
+        duration: 3, 
+        maxCount: 1,
+        top: 100,
+        style: {
+          fontSize: '16px',
+          padding: '16px 24px',
+          borderRadius: '8px',
+          minWidth: '300px',
+          textAlign: 'center',
+          fontWeight: '500'
+        }
+      });
     } catch {}
   }, []);
 
@@ -1109,7 +1121,13 @@ const BlogWriteModal = () => {
         new URL(url); // Will throw if invalid URL
         // STRICT: Check if URL ends with .webp
         if (!url.toLowerCase().endsWith('.webp')) {
-          messageApi.warning('Only WebP images are allowed. Please use a .webp image URL.');
+          messageApi.error({
+            content: 'Only WebP images are allowed. Please use a .webp image URL.',
+            style: {
+              marginTop: '10px',
+              marginBottom: '10px',
+            },
+          });
           setFrontImagePreview('');
           return;
         }
@@ -1138,16 +1156,74 @@ const BlogWriteModal = () => {
 
     // Check file type - STRICT: Only WebP images allowed
     if (file.type !== 'image/webp') {
-      messageApi.error('Jab bola hai WebP me karne ko to karona aalsii WebP me karke wapis dalo.');
+      messageApi.error('Only WebP images are allowed. Please upload a .webp file.');
+      e.target.value = '';
       return;
     }
 
     // Check file size (5MB limit)
     if (file.size > 5 * 1024 * 1024) {
       messageApi.error('Image size should be less than 5MB');
+      e.target.value = '';
       return;
     }
 
+    // Check image dimensions and aspect ratio (1200x628 = 300:157)
+    const img = new Image();
+    img.onload = function() {
+      const expectedWidth = 1200;
+      const expectedHeight = 628;
+      const tolerance = 5; // Allow 5px tolerance
+      
+      if (Math.abs(this.width - expectedWidth) > tolerance || Math.abs(this.height - expectedHeight) > tolerance) {
+        messageApi.error({
+          content: `Image must be exactly ${expectedWidth} × ${expectedHeight} pixels (Current: ${this.width} × ${this.height})`,
+          style: {
+            marginTop: '10px',
+            marginBottom: '10px',
+          },
+        });
+        e.target.value = '';
+        return;
+      }
+      
+      // Calculate aspect ratio
+      const expectedRatio = expectedWidth / expectedHeight;
+      const actualRatio = this.width / this.height;
+      const ratioTolerance = 0.01; // 1% tolerance
+      
+      if (Math.abs(actualRatio - expectedRatio) > ratioTolerance) {
+        messageApi.error({
+          content: `Image aspect ratio must be ${expectedWidth}:${expectedHeight} (300:157). Current ratio is ${this.width}:${this.height}`,
+          style: {
+            marginTop: '20px',
+            marginBottom: '20px',
+            backgroundColor: 'rgba(255, 0, 0, 0.1)',
+            color: '#ff0000',
+            border: '1px solid #ff0000',
+            borderRadius: '5px',
+            padding: '10px',
+          },
+        });
+        e.target.value = '';
+        return;
+      }
+      
+      // If all validations pass, proceed with file processing
+      processValidFile(file);
+    };
+    
+    img.onerror = function() {
+      messageApi.error('Failed to load image. Please try a different file.');
+      e.target.value = '';
+    };
+    
+    // Create object URL for validation
+    const objUrl = URL.createObjectURL(file);
+    img.src = objUrl;
+  };
+
+  const processValidFile = (file) => {
     // Revoke previous object URL if exists
     if (frontPreviewObjUrl) {
       URL.revokeObjectURL(frontPreviewObjUrl);
@@ -2262,7 +2338,7 @@ const BlogWriteModal = () => {
   <div className="space-y-2">
     <div className="flex items-center gap-2">
       <ImageIcon className="w-4 h-4 text-green-600" />
-      <label className="text-sm font-medium text-gray-900">Featured Image</label>
+      <label className="text-sm font-medium text-gray-900">Featured Image </label>
     </div>
 
     {/* Two-column layout */}

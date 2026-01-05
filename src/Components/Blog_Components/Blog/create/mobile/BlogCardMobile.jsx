@@ -103,7 +103,7 @@ const BlogCardMobile = ({
           <img
             src={blog.featuredImage}
             alt={blog.title}
-            className="w-full h-32 object-cover rounded-lg"
+            className="w-full h-auto object-contain rounded-lg"
           />
         </div>
       )}

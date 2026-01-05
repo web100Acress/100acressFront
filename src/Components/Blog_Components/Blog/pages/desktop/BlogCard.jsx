@@ -41,8 +41,7 @@ export const BlogCard = ({ blog, featured = false }) => {
       {/* Image */}
       <div
         className={cn(
-          "relative overflow-hidden",
-          featured ? "h-[400px] lg:h-[500px]" : "h-[250px]"
+          "relative overflow-hidden"
         )}
       >
         <img
@@ -52,7 +51,7 @@ export const BlogCard = ({ blog, featured = false }) => {
             "https://via.placeholder.com/800x600/1a1a1a/d4af37?text=Blog+Image"
           }
           alt={blog.blog_Title}
-          className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+          className="w-full h-auto object-contain transition-transform duration-700 group-hover:scale-110"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent" />
 
