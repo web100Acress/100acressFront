@@ -21,6 +21,11 @@ const HeroSection = ({ blog = { blog_Title: "Luxury Waterfront Estate", blog_Cat
     return blog.blog_Image?.cdn_url || blog.blog_Image?.url || blog.blog_Image?.Location || FALLBACK_IMG;
   };
 
+  const getReadingTime = () => {
+    const randomMinutes = Math.floor(Math.random() * 3) + 1;
+    return `${randomMinutes} min read`;
+  };
+
   return (
     <section className="relative w-full min-h-[500px] bg-gradient-to-br from-slate-900 to-blue-900 overflow-hidden">
       {/* Background Image - Fixed for all ratios */}
@@ -51,7 +56,7 @@ const HeroSection = ({ blog = { blog_Title: "Luxury Waterfront Estate", blog_Cat
             </div>
             <div className="flex items-center gap-1 sm:gap-2">
               <Clock className="h-3 w-3 sm:h-4 sm:w-4" />
-              <span>5 min read</span>
+              <span>{getReadingTime()}</span>
             </div>
             <div className="flex items-center gap-1 sm:gap-2">
               <Eye className="h-3 w-3 sm:h-4 sm:w-4" />
