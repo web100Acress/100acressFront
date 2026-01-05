@@ -41,17 +41,17 @@ const BlogCard = ({ blog, blogLink, FALLBACK_IMG }) => {
       <div className="relative h-full bg-white/90 backdrop-blur-md border border-gray-200 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] group cursor-pointer">
         
         {/* Image Container */}
-        <div className="relative h-1/2 overflow-hidden">
+        <div className="relative overflow-hidden">
           <img
             src={getImageUrl()}
             alt={blog.blog_Title || 'Blog post'}
-            className="absolute inset-0 w-full h-full object-cover transition-all duration-500 group-hover:scale-110 filter grayscale group-hover:grayscale-0"
+            className="w-full h-auto object-contain transition-all duration-500 group-hover:scale-110 filter grayscale group-hover:grayscale-0"
             onError={(e) => {
               e.target.src = FALLBACK_IMG;
             }}
           />  
           {/* Overlay Gradient */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
           
           {/* Category Badge */}
           {blog.blog_Category && (
