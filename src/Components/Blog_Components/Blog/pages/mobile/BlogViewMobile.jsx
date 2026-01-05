@@ -176,11 +176,11 @@ const BlogViewMobile = () => {
       <div className="pb-20">
         {/* Featured Image */}
         {blog.featuredImage && (
-          <div className="w-full h-48 bg-gray-200">
+          <div className="w-full">
             <img
               src={blog.featuredImage}
               alt={blog.title}
-              className="w-full h-full object-cover"
+              className="w-full h-auto object-contain"
             />
           </div>
         )}

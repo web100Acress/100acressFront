@@ -1226,7 +1226,7 @@ const BlogView = () => {
                   <div className="relative overflow-hidden rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300">
                     <img
                       {...createSafeImageProps(blog_Image?.display || FALLBACK_IMG, blog_Title || 'Blog post image', {
-                        className: "w-full h-64 md:h-96 object-cover",
+                        className: "w-full h-auto object-contain",
                         'data-alt-src': blog_Image?.cdn_url && blog_Image?.url && blog_Image.cdn_url !== blog_Image.url ? (blog_Image.display === blog_Image.cdn_url ? blog_Image.url : blog_Image.cdn_url) : ''
                       })}
                     />
