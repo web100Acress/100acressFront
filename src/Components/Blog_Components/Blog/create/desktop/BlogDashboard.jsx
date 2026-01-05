@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from "react";
-import api from "../../config/apiClient";
-import { getApiBase, setApiBase } from "../../config/apiBase";
+import api from "../../../../../config/apiClient";
+import { getApiBase, setApiBase } from "../../../../../config/apiBase";
 import { 
   Eye, 
   ThumbsUp, 
@@ -40,7 +40,7 @@ import {
 } from "lucide-react";
 // Removed all Ant Design imports - using simple JSX with Tailwind CSS
 import { Link, useNavigate } from "react-router-dom";
-import { AuthContext } from "../../AuthContext";
+import { AuthContext } from "../../../../../AuthContext";
 
 // Removed Ant Design destructured variables
 

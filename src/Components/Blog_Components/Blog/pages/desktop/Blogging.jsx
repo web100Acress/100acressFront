@@ -1,10 +1,10 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { Link } from "react-router-dom";
-import Footer from "../Components/Actual_Components/Footer";
-import { PaginationControls, BlogPaginationControls } from "../Components/Blog_Components/BlogManagement";
+import Footer from "../../../../Actual_Components/Footer";
+import { PaginationControls, BlogPaginationControls } from "../../create/desktop/BlogManagement";
 import { Helmet } from "react-helmet";
-import Free from "./Free";
-import api from "../config/apiClient";
+import Free from "../../../../../Pages/Free";
+import api from "../../../../../config/apiClient";
 
 // Brand colors and tagline
 const BRAND_RED = '#b8333a';
@@ -313,7 +313,7 @@ const Blogging = () => {
         </div>
       )}
       {/* Blog Grid */}
-      <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-center">
+      <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-center items-start auto-rows-auto">
         {loading ? (
           <div className="col-span-full text-center py-10 text-gray-400 text-lg">Loading...</div>
         ) : allBlogs.length === 0 ? (

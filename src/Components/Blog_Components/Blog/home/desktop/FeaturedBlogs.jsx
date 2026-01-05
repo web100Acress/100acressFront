@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Calendar, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
-import api from "../../config/apiClient";
+import api from "../../../../../config/apiClient";
 
 const FeaturedBlogs = () => {
   const [blogs, setBlogs] = useState([]);
