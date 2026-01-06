@@ -340,6 +340,13 @@ const Home = () => {
     }
   }, [NewLaunchProjects]);
 
+  // Fetch upcoming projects for the dedicated section
+  useEffect(() => {
+    if (!UpcomingProjects || UpcomingProjects.length === 0) {
+      getUpcoming();
+    }
+  }, [UpcomingProjects]);
+
   // Set the displayed projects based on the active filter
   useEffect(() => {
     switch (activeFilter) {
@@ -640,16 +647,9 @@ const Home = () => {
               </div>
             )}
             <div>
-              {NewLaunchProjects.length === 0 ? <CustomSkeleton /> : (
-                <CommonProject data={NewLaunchProjects.slice(0, 4)} title="New Launch Projects in Gurgaon" animation="fade-down" path={"/projects/newlaunch/"} compact />
-              )}
-            </div>
-
-            {/* Upcoming Projects */}
-            <div ref={setRef("upcoming")} data-section="upcoming" style={{ height: "10px" }}></div>
-            <div>
+              {console.log("Upcoming Projects Data:", UpcomingProjects)}
               {UpcomingProjects.length === 0 ? <CustomSkeleton /> : (
-                <CommonProject data={UpcomingProjects.slice(0, 4)} title="Upcoming Projects in Gurgaon" animation="fade-up" path={"/projects/upcoming-projects-in-gurgaon/"} compact />
+                <CommonProject data={UpcomingProjects.slice(0, 4)} title="New Launch Projects in Gurgaon" animation="fade-down" path={"/projects/newlaunch/"} compact />
               )}
             </div>
 
