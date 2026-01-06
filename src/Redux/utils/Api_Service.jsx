@@ -93,9 +93,9 @@ const Api_service = () => {
 
   const getUpcoming = async() =>{
     try{
-        const response = await api.get(`${API_ROUTES.projectsBase()}/upcoming`);
-        const Featuredprojects = response.data.data;
-        dispatch(upcoming(Featuredprojects));
+        const response = await api.get(`${API_ROUTES.projectsBase()}/projectsearch?projectOverview=upcoming`);
+        const upcomingProjects = response.data.data;
+        dispatch(upcoming(upcomingProjects));
     }catch(error){
         console.error("Error fetching Upcoming data:", error);
     }
