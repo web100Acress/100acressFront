@@ -645,6 +645,14 @@ const Home = () => {
               )}
             </div>
 
+            {/* Upcoming Projects */}
+            <div ref={setRef("upcoming")} data-section="upcoming" style={{ height: "10px" }}></div>
+            <div>
+              {UpcomingProjects.length === 0 ? <CustomSkeleton /> : (
+                <CommonProject data={UpcomingProjects.slice(0, 4)} title="Upcoming Projects in Gurgaon" animation="fade-up" path={"/projects/upcoming-projects-in-gurgaon/"} compact />
+              )}
+            </div>
+
               {/* Luxury Projects */}
               <div ref={setRef("luxury")} data-section="luxury" style={{ height: "10px" }}></div>
               <div>

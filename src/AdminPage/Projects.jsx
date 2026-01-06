@@ -232,13 +232,14 @@ const Projects = () => {
       return [];
     }
 
-    const overviewCounts = { trending: 0, featured: 0, none: 0 };
+    const overviewCounts = { trending: 0, featured: 0, upcoming: 0, none: 0 };
 
     viewAll.forEach(project => {
       try {
-        // Check if project has trending or featured field in the database
+        // Check if project has trending, featured, or upcoming field in the database
         const isTrendingInDB = project.projectOverview === "trending";
         const isFeaturedInDB = project.projectOverview === "featured";
+        const isUpcomingInDB = project.projectOverview === "upcoming";
 
         if (isTrendingInDB) {
           overviewCounts.trending++;
@@ -248,6 +249,11 @@ const Projects = () => {
         else if (isFeaturedInDB) {
           overviewCounts.featured++;
           console.log(`✅ Project ${project.projectName} is marked as featured in DB`);
+        }
+        // Define upcoming projects (ONLY database field - no fallback criteria)
+        else if (isUpcomingInDB) {
+          overviewCounts.upcoming++;
+          console.log(`✅ Project ${project.projectName} is marked as upcoming in DB`);
         } else {
           overviewCounts.none++;
         }
@@ -260,6 +266,7 @@ const Projects = () => {
     return [
       { value: 'trending', label: `Trending (${overviewCounts.trending})` },
       { value: 'featured', label: `Featured (${overviewCounts.featured})` },
+      { value: 'upcoming', label: `Upcoming (${overviewCounts.upcoming})` },
       { value: 'none', label: `none (${overviewCounts.none})` }
     ];
   }, [viewAll, isHighValueProject]);
@@ -388,16 +395,19 @@ const Projects = () => {
     let matchesOverview = true;
     if (filterProjectOverview) {
       try {
-        // Check if project has trending or featured field in the database
+        // Check if project has trending, featured, or upcoming field in the database
         const isTrendingInDB = item.projectOverview === "trending";
         const isFeaturedInDB = item.projectOverview === "featured";
+        const isUpcomingInDB = item.projectOverview === "upcoming";
 
         if (filterProjectOverview === 'trending') {
           matchesOverview = isTrendingInDB;
         } else if (filterProjectOverview === 'featured') {
           matchesOverview = isFeaturedInDB;
+        } else if (filterProjectOverview === 'upcoming') {
+          matchesOverview = isUpcomingInDB;
         } else if (filterProjectOverview === 'none') {
-          matchesOverview = !isTrendingInDB && !isFeaturedInDB;
+          matchesOverview = !isTrendingInDB && !isFeaturedInDB && !isUpcomingInDB;
         }
       } catch (error) {
         console.error(`Error filtering project ${item.projectName}:`, error);
