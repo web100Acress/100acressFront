@@ -232,7 +232,7 @@ const Projects = () => {
       return [];
     }
 
-    const overviewCounts = { trending: 0, featured: 0, upcoming: 0, none: 0 };
+    const overviewCounts = { trending: 0, featured: 0, upcoming: 0, delhi: 0, none: 0 };
 
     viewAll.forEach(project => {
       try {
@@ -240,6 +240,7 @@ const Projects = () => {
         const isTrendingInDB = project.projectOverview === "trending";
         const isFeaturedInDB = project.projectOverview === "featured";
         const isUpcomingInDB = project.projectOverview === "upcoming";
+        const isDelhiInDB = project.projectOverview === "delhi";
 
         if (isTrendingInDB) {
           overviewCounts.trending++;
@@ -254,6 +255,11 @@ const Projects = () => {
         else if (isUpcomingInDB) {
           overviewCounts.upcoming++;
           console.log(`✅ Project ${project.projectName} is marked as upcoming in DB`);
+        }
+        // Define Delhi projects (ONLY database field - no fallback criteria)
+        else if (isDelhiInDB) {
+          overviewCounts.delhi++;
+          console.log(`✅ Project ${project.projectName} is marked as delhi in DB`);
         } else {
           overviewCounts.none++;
         }
@@ -267,6 +273,7 @@ const Projects = () => {
       { value: 'trending', label: `Trending (${overviewCounts.trending})` },
       { value: 'featured', label: `Featured (${overviewCounts.featured})` },
       { value: 'upcoming', label: `Upcoming (${overviewCounts.upcoming})` },
+      { value: 'delhi', label: `Delhi (${overviewCounts.delhi})` },
       { value: 'none', label: `none (${overviewCounts.none})` }
     ];
   }, [viewAll, isHighValueProject]);
@@ -399,6 +406,7 @@ const Projects = () => {
         const isTrendingInDB = item.projectOverview === "trending";
         const isFeaturedInDB = item.projectOverview === "featured";
         const isUpcomingInDB = item.projectOverview === "upcoming";
+        const isDelhiInDB = item.projectOverview === "delhi";
 
         if (filterProjectOverview === 'trending') {
           matchesOverview = isTrendingInDB;
@@ -406,8 +414,10 @@ const Projects = () => {
           matchesOverview = isFeaturedInDB;
         } else if (filterProjectOverview === 'upcoming') {
           matchesOverview = isUpcomingInDB;
+        } else if (filterProjectOverview === 'delhi') {
+          matchesOverview = isDelhiInDB;
         } else if (filterProjectOverview === 'none') {
-          matchesOverview = !isTrendingInDB && !isFeaturedInDB && !isUpcomingInDB;
+          matchesOverview = !isTrendingInDB && !isFeaturedInDB && !isUpcomingInDB && !isDelhiInDB;
         }
       } catch (error) {
         console.error(`Error filtering project ${item.projectName}:`, error);
