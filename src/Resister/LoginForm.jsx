@@ -2,26 +2,26 @@
 import { Eye, EyeOff, X } from "lucide-react";
 import { AuthContext } from "../AuthContext";
 import axios from "axios";
-import { initializeApp } from "firebase/app";
-import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+// import { initializeApp } from "firebase/app";
+// import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import '../styles/toast-simple.css';
 
 function LoginForm({ inModal = false, onSwitchToRegister, preventRedirect = false }) {
   const { login } = useContext(AuthContext);
 
-  // Firebase configuration
-  const firebaseConfig = {
-    apiKey: "AIzaSyD YOUR_API_KEY", // You'll need to get this from Firebase console
-    authDomain: "your-project-id.firebaseapp.com",
-    projectId: "your-project-id",
-    storageBucket: "your-project-id.appspot.com",
-    messagingSenderId: "your-sender-id",
-    appId: "your-app-id"
-  };
+  // Firebase configuration - commented out for now
+// const firebaseConfig = {
+//   apiKey: "AIzaSyD YOUR_API_KEY", // You'll need to get this from Firebase console
+//   authDomain: "your-project-id.firebaseapp.com",
+//   projectId: "your-project-id",
+//   storageBucket: "your-project-id.appspot.com",
+//   messagingSenderId: "your-sender-id",
+//   appId: "your-app-id"
+// };
 
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
+// Initialize Firebase - commented out for now
+// const app = initializeApp(firebaseConfig);
+// const auth = getAuth(app);
 
   const [userLogin, setUserLogin] = useState({ email: "", password: "" });
   const [passwordHide, setPasswordHide] = useState(true);
@@ -64,70 +64,28 @@ function LoginForm({ inModal = false, onSwitchToRegister, preventRedirect = fals
     }
   };
 
+  // Google Sign-In handler - commented out for now
   const handleGoogleSignIn = async () => {
     try {
       setIsLoading(true);
+      showToast("Google sign-in is currently disabled", 'info');
       
+      // TODO: Enable Firebase Google Sign-In when needed
       // Initialize Google Sign-In
-      const provider = new GoogleAuthProvider();
-      provider.setCustomParameters({
-        client_id: '666295986601-f68ub4o5jo8f4vdhp2ad8nc5vn5c6q81.apps.googleusercontent.com'
-      });
+      // const provider = new GoogleAuthProvider();
+      // provider.setCustomParameters({
+      //   client_id: '666295986601-f68ub4o5jo8f4vdhp2ad8nc5vn5c6q81.apps.googleusercontent.com'
+      // });
       
       // Sign in with Google
-      const result = await signInWithPopup(auth, provider);
-      const user = result.user;
+      // const result = await signInWithPopup(auth, provider);
+      // const user = result.user;
       
-      console.log('🔍 Google Sign-In successful:', {
-        email: user.email,
-        name: user.displayName,
-        photoURL: user.photoURL,
-        uid: user.uid
-      });
-      
-      // Get ID token
-      const idToken = await user.getIdToken();
-      
-      // Send token to backend
-      const response = await axios.post('/api/auth/google-signin', {
-        idToken: idToken,
-        email: user.email,
-        name: user.displayName,
-        photoURL: user.photoURL,
-        uid: user.uid
-      });
-      
-      // Handle successful login
-      if (response.data.token) {
-        localStorage.setItem('token', response.data.token);
-        localStorage.setItem('user', JSON.stringify(response.data.user));
-        
-        // Update AuthContext if available
-        if (login) {
-          await login({ email: user.email, password: 'google-auth' });
-        }
-        
-        showToast("Google login successful!", 'success');
-        
-        // Redirect if not prevented
-        if (!preventRedirect && !inModal) {
-          window.location.href = '/dashboard';
-        }
-      }
+      // Get ID token and send to backend...
       
     } catch (error) {
       console.error("🚨 Google Sign-In error:", error);
-      
-      // Handle specific Google Sign-In errors
-      if (error.code === 'auth/popup-closed-by-user') {
-        showToast("Sign-in cancelled. Please try again.", 'error');
-      } else if (error.code === 'auth/popup-blocked') {
-        showToast("Popup blocked. Please allow popups and try again.", 'error');
-      } else if (error.code === 'auth/unauthorized-domain') {
-        showToast("Unauthorized domain. Please contact admin.", 'error');
-      } else {
-        showToast(error?.message || "Google sign-in failed. Please try again.", 'error');
-      }
+      showToast("Google sign-in is currently disabled", 'info');
     } finally {
       setIsLoading(false);
     }
