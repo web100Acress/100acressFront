@@ -223,13 +223,13 @@ const EnquireNow = () => {
           <div className="absolute inset-0">
             {/* Mobile Image */}
             <img 
-              src="https://d16gdc5rm7f21b.cloudfront.net/uploads/1766044910223-end-year-sale-mobile.webp" 
+              src="	https://d16gdc5rm7f21b.cloudfront.net/uploads/1767185033404-new-year-26-mobile.webp" 
               alt="End of Year Sale"
               className="w-full h-full object-cover lg:hidden"
             />
             {/* Desktop Image */}
             <img 
-              src="https://d16gdc5rm7f21b.cloudfront.net/uploads/1766044083906-end-year-sale.webp" 
+              src="	https://d16gdc5rm7f21b.cloudfront.net/uploads/1767185033319-new-year-26.webp" 
               alt="End of Year Sale"
               className="w-full h-full object-cover hidden lg:block"
             />
@@ -266,7 +266,7 @@ const EnquireNow = () => {
                   { icon: FaShieldAlt, title: "Assured Quality", desc: "Verified properties with clear documentation" },
                   { icon: FaRocket, title: "Quick Possession", desc: "Ready-to-move and near-completion projects" },
                   { icon: FaHeadset, title: "Expert Support", desc: "Dedicated relationship manager for each enquiry" },
-                  { icon: FaCalendarAlt, title: "Limited Period", desc: "Offers valid only until December 31, 2025" }
+                  { icon: FaCalendarAlt, title: "Limited Period", desc: "Offers valid only until January 15, 2026" }
                 ].map((benefit, index) => (
                   <motion.div
                     key={index}
