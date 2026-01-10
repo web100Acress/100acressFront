@@ -284,7 +284,7 @@ function ProjectLayout2() {
           <motion.button
             onClick={() => {
               const phoneNumber = projectViewDetails?.mobileNumber || "9811750130";
-              const message = `Hi, I'm interested in ${projectTitle} property. Can you provide more details?`;
+              const message = `Hi, I'm interested in ${projectTitle}, Can you provide more details?`;
               const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
               window.open(whatsappUrl, '_blank');
             }}
