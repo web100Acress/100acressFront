@@ -295,8 +295,8 @@ const NewSellProperty = () => {
           "Content-Type": "multipart/form-data",
         },
       });
-      if (response.status === 200) {
-        showToast('success', 'Submitted Successfully, Under Review');
+      if (response.status >= 200 && response.status < 300) {
+        showToast('success', 'Submitted Successfully, Under Review', 3500);
         resetData();
         resetImageData();
         setCurrent(0);
