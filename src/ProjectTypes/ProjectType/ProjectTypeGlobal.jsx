@@ -131,17 +131,20 @@ const ProjectTypeGlobal = () => {
   }, [projects]);
 
   // Page configuration for the global template
+  const projectTypeMeta = getStaticData('projectTypes', projectType);
   const pageConfig = {
     title: config.title,
     description: config.description,
     itemsPerPage: 18,
+    query: config.query,
+    reduxKey: config.reduxKey,
+    faqs: projectTypeMeta?.faqs || [],
     badgeColor: config.badgeColor,
     badgeText: config.badgeText,
     typeFilter: config.typeFilter
   };
 
   // Get SEO meta data from staticData
-  const projectTypeMeta = getStaticData('projectTypes', projectType);
   const metaTitle = projectTypeMeta?.metaTitle || config.title;
   const metaDescription = projectTypeMeta?.metaDescription || config.description;
   const canonical = projectTypeMeta?.canonical || config.canonical;
