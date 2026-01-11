@@ -127,7 +127,7 @@ export const projectTypeConfigs = {
   },
   "plots-in-gurugram": {
     title: "Plots in Gurugram",
-    description: "Discover Premium Plots in Gurugram – Your Gateway to Prime Real Estate Investment.",
+    description: "Explore residential, SCO, and industrial plots in Gurugram with flexible construction options, practical locations, and access to highways, metro routes, and everyday services for long-term use.",
     query: "plotsingurugram",
     reduxKey: "plotsingurugram",
     canonical: "https://www.100acress.com/projects/plots/",
