@@ -107,6 +107,18 @@ export const AuthProvider = ({ children }) => {
           JSON.stringify(roleResponse.data.User)
         );
 
+        const postPropertyResume = localStorage.getItem('postPropertyAfterLogin');
+        if (postPropertyResume) {
+          try {
+            if (typeof window !== 'undefined' && window.dispatchEvent) {
+              window.dispatchEvent(new CustomEvent('closeAuthModal'));
+            }
+          } catch (_) {}
+          setIsAuthenticated(true);
+          history('/postproperty');
+          return;
+        }
+
         try {
           const userName = roleResponse?.data?.User?.name || "";
           const first = (userName || "").toString().trim().split(/\s+/)[0] || "";

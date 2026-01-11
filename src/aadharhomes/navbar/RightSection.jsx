@@ -35,6 +35,27 @@ export default function RightSection({
   const lastScrollY = useRef(0);
 
   useEffect(() => {
+    const openAuth = () => {
+      if (typeof setShowAuth === 'function') setShowAuth(true);
+    };
+    const closeAuth = () => {
+      if (typeof setShowAuth === 'function') setShowAuth(false);
+    };
+
+    try {
+      window.addEventListener('showAuthModal', openAuth);
+      window.addEventListener('closeAuthModal', closeAuth);
+    } catch (_) {}
+
+    return () => {
+      try {
+        window.removeEventListener('showAuthModal', openAuth);
+        window.removeEventListener('closeAuthModal', closeAuth);
+      } catch (_) {}
+    };
+  }, [setShowAuth]);
+
+  useEffect(() => {
     setHideRight(false);
   }, [isMobile]);
 

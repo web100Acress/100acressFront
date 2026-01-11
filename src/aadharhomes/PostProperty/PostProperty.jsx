@@ -26,6 +26,9 @@ const steps = [
   { id: "4", title: "Gallery Section" },
 ];
 
+const POST_PROPERTY_DRAFT_KEY = 'postPropertyDraft';
+const POST_PROPERTY_AFTER_LOGIN_KEY = 'postPropertyAfterLogin';
+
 const NewSellProperty = () => {
   const agentData = localStorage.getItem("agentData");
   const [modal, modalContextHolder] = Modal.useModal();
@@ -75,6 +78,34 @@ const NewSellProperty = () => {
   const parsedAgentData = agentData ? JSON.parse(agentData) : null;
   const sellerId = parsedAgentData?._id;
   const propertyType = ["Commercial", "Residential"];
+
+  // Restore draft after login and jump to the requested step
+  useEffect(() => {
+    try {
+      const token = localStorage.getItem('myToken');
+      const pending = localStorage.getItem(POST_PROPERTY_AFTER_LOGIN_KEY);
+      const draftRaw = localStorage.getItem(POST_PROPERTY_DRAFT_KEY);
+      if (!token || !pending || !draftRaw) return;
+
+      const draft = JSON.parse(draftRaw);
+      const pendingData = JSON.parse(pending);
+      const targetStep = Number(pendingData?.targetStep);
+
+      if (draft?.sellProperty) setSellProperty(draft.sellProperty);
+      if (typeof draft?.selectedState === 'string') setSelectedState(draft.selectedState);
+      if (typeof draft?.selectedCity === 'string') setSelectedCity(draft.selectedCity);
+
+      if (!Number.isNaN(targetStep) && targetStep >= 0) {
+        setCurrent(targetStep);
+        setContentAnimKey((k) => k + 1);
+      }
+
+      localStorage.removeItem(POST_PROPERTY_AFTER_LOGIN_KEY);
+      localStorage.removeItem(POST_PROPERTY_DRAFT_KEY);
+    } catch (_) {
+      // ignore restore errors
+    }
+  }, []);
 
   const subTypes = {
     Commercial: [
@@ -378,6 +409,43 @@ const NewSellProperty = () => {
 
   const next = () => {
     if (validateStep(current)) {
+      // Login gate: after completing Location (step 2), require login before moving to step 3
+      if (current === 1) {
+        const token = localStorage.getItem('myToken');
+        if (!token) {
+          try {
+            localStorage.setItem(
+              POST_PROPERTY_DRAFT_KEY,
+              JSON.stringify({
+                sellProperty,
+                selectedState,
+                selectedCity,
+              })
+            );
+            localStorage.setItem(
+              POST_PROPERTY_AFTER_LOGIN_KEY,
+              JSON.stringify({ targetStep: 2 })
+            );
+          } catch (_) {}
+
+          showToast('info', 'Please login first to continue.');
+
+          // Open login modal (navbar) via global event; fallback to any global function; else redirect
+          try {
+            if (typeof window !== 'undefined' && typeof window.dispatchEvent === 'function') {
+              window.dispatchEvent(new CustomEvent('showAuthModal'));
+            } else if (typeof window !== 'undefined' && typeof window.showAuthModal === 'function') {
+              window.showAuthModal();
+            } else {
+              window.location.href = '/auth/';
+            }
+          } catch (_) {
+            window.location.href = '/auth/';
+          }
+          return;
+        }
+      }
+
       setCurrent(current + 1);
       setContentAnimKey((k) => k + 1);
     } else {
@@ -388,6 +456,35 @@ const NewSellProperty = () => {
   const prev = () => {
     setCurrent(current - 1);
     setContentAnimKey((k) => k + 1);
+  };
+
+  const renderStepIcon = (index) => {
+    const isCompleted = index < current;
+    const isActive = index === current;
+
+    if (isCompleted) {
+      return (
+        <span
+          className="flex items-center justify-center rounded-full w-7 h-7 text-xs font-bold bg-green-600 text-white"
+          style={{ lineHeight: 1 }}
+        >
+          ✓
+        </span>
+      );
+    }
+
+    return (
+      <span
+        className={`flex items-center justify-center rounded-full w-7 h-7 text-xs font-bold ${
+          isActive
+            ? 'bg-red-600 text-white shadow-sm shadow-red-600/30'
+            : 'bg-gray-200 text-gray-700'
+        }`}
+        style={{ lineHeight: 1 }}
+      >
+        {index + 1}
+      </span>
+    );
   };
 
   // Animate step content mount
@@ -523,8 +620,8 @@ const NewSellProperty = () => {
           </div>
         </div>
       )}
-      {/* Safe area for fixed navbar on small screens */}
-      <div className="block md:hidden" style={{ height: '64px' }} aria-hidden />
+      {/* Safe area for fixed navbar */}
+      <div className="h-16 md:h-20" aria-hidden />
       <Helmet>
         <meta
           name="description"
@@ -533,7 +630,7 @@ const NewSellProperty = () => {
         <title>Post Free Property Listing | Rent/Sell at 100acress.com</title>
       </Helmet>
 
-      <section className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-red-50/30 py-10 md:py-14 text-gray-800 relative overflow-hidden">
+      <section className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-red-50/30 pt-4 pb-3 md:pt-12 md:pb-5 text-gray-800 relative overflow-hidden">
         {/* Background decoration */}
         <div className="absolute inset-0 opacity-50" style={{
           backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23dc2626' fill-opacity='0.03'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
@@ -556,7 +653,7 @@ const NewSellProperty = () => {
                 </p>
 
                 {/* Enhanced illustration - Desktop only */}
-                <div className="mt-32 hidden lg:block relative">
+                <div className="mt-6 hidden lg:block relative">
                 <div className="absolute inset-0 bg-gradient-to-r from-red-500/10 to-rose-500/10 rounded-2xl transform rotate-1"></div>
                 <div className="relative bg-white rounded-2xl p-6 shadow-xl border border-gray-100">
                     <svg viewBox="0 0 400 180" className="w-full max-w-md text-red-500/30" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -652,30 +749,63 @@ const NewSellProperty = () => {
             <div className="flex-1 flex flex-col bg-white border border-gray-100 rounded-2xl p-5 md:p-7 shadow-lg shadow-gray-200/60 transition-all mt-3 md:mt-6">
                 {/* Mobile top stepper */}
                 <div className="lg:hidden mb-3">
-                <Steps size="small" current={current}>
-                    {steps.map((s, index) => (
-                    <Step
-                        key={s.id}
-                        title={s.title}
-                        icon={
-                        <span
-                            className={`flex items-center justify-center rounded-full w-6 h-6 text-xs font-medium ${index === current ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-700'}`}
-                            style={{ lineHeight: 1 }}
-                        >
-                            {index + 1}
-                        </span>
-                        }
-                    />
-                    ))}
-                </Steps>
+                  <ConfigProvider
+                    theme={{
+                      token: {
+                        colorPrimary: '#dc2626',
+                      },
+                      components: {
+                        Steps: {
+                          iconSize: 28,
+                          titleLineHeight: 16,
+                        },
+                      },
+                    }}
+                  >
+                    <Steps size="small" current={current}>
+                      {steps.map((s, index) => (
+                        <Step
+                          key={s.id}
+                          title={s.title}
+                          icon={renderStepIcon(index)}
+                        />
+                      ))}
+                    </Steps>
+                  </ConfigProvider>
+                </div>
+
+                {/* Desktop stepper */}
+                <div className="hidden lg:block mb-4">
+                  <ConfigProvider
+                    theme={{
+                      token: {
+                        colorPrimary: '#dc2626',
+                      },
+                      components: {
+                        Steps: {
+                          iconSize: 30,
+                        },
+                      },
+                    }}
+                  >
+                    <Steps current={current}>
+                      {steps.map((s, index) => (
+                        <Step
+                          key={s.id}
+                          title={s.title}
+                          icon={renderStepIcon(index)}
+                        />
+                      ))}
+                    </Steps>
+                  </ConfigProvider>
                 </div>
                 
                 {/* Top progress bar */}
-                <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden mb-4">
-                <div
-                    className="h-full bg-gradient-to-r from-red-600 to-orange-500 transition-all duration-500"
+                <div className="w-full h-2.5 bg-gray-100 rounded-full overflow-hidden mb-4">
+                  <div
+                    className="h-full bg-gradient-to-r from-red-600 via-rose-500 to-orange-500 transition-all duration-500"
                     style={{ width: `${((current + 1) / steps.length) * 100}%` }}
-                />
+                  />
                 </div>
 
                 {/* Animated step content wrapper */}
@@ -757,7 +887,7 @@ const NewSellProperty = () => {
       </section>
 
       {/* How it works cards - below page content */}
-      <section ref={stepsSectionRef} className="py-10 md:py-14 bg-white" style={{ scrollMarginTop: '96px' }}>
+      <section ref={stepsSectionRef} className="pt-3 pb-10 md:pt-5 md:pb-14 bg-white" style={{ scrollMarginTop: '96px' }}>
         <div className="mx-auto max-w-6xl px-4 md:px-6">
           <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6">Steps to <span className="text-red-600">Post Your Property for Free</span></h3>
 
