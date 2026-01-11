@@ -7,16 +7,14 @@ const PostPropertyButton = () => {
   const [showAuthModal, setShowAuthModal] = useState(false);
 
   const handleClick = (e) => {
-    if (!isAuthenticated) {
-      e.preventDefault();
-      setShowAuthModal(true);
-    }
+    // Allow access to post property without login
+    window.location.href = '/postproperty/';
   };
 
   return (
     <div className="relative">
       <Link
-        to={isAuthenticated ? "/postproperty" : "#"}
+        to="/postproperty"
         onClick={handleClick}
         className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
       >

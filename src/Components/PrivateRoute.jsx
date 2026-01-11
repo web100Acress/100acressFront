@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useNavigate, Navigate } from "react-router-dom";
 import { AuthContext } from "../AuthContext";
 import { flushSync } from "react-dom";
 import axios from "axios";
@@ -16,7 +16,8 @@ const PrivateRoute = () => {
     const verifyAccess = async () => {
       if (!rawToken) {
         setLoading(false);
-        return <Navigate to="/auth/signin" replace />;
+        navigate("/auth/signin", { replace: true });
+        return;
       }
       try {
         // Sanitize token from localStorage: remove quotes and any leading 'Bearer '
