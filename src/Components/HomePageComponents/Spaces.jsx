@@ -12,49 +12,49 @@ function SpacesAvailable() {
     { 
       title: "Residential Projects", 
       link: "/projects/residential/", 
-      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/residential.webp", 
+      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/7a536a4b-51f5-4785-97d4-749e9ac68470.webp", 
       description: "Luxury apartments and homes in prime locations",
       badge: "Popular"
     },
     { 
       title: "Commercial Projects", 
       link: "/projects/commercial/", 
-      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/commercialproperty%2B(1).webp", 
+      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/f54d86d9-45dc-437d-9fae-d0d01d65205e.webp", 
       description: "Premium office spaces and retail properties",
       badge: "Hot"
     },
     { 
       title: "SCO Plots", 
       link: "/projects/sco-plots/", 
-      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/sco.webp", 
+      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/2f7b73d1-379e-4db0-bc17-7ea668165e27.webp", 
       description: "Shop-cum-office plots for business growth",
       badge: "New"
     },
     { 
       title: "Builder & Independent Floor", 
       link: "/projects/independent-floors/", 
-      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/builderandindepedent.webp", 
+      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/28b918b3-0393-471a-b5ab-75af2633a501.webp", 
       description: "Independent floors and builder floors",
       badge: "Featured"
     },
     { 
       title: "Plots In Gurugram", 
       link: "/projects/plots/", 
-      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/deendayal.webp", 
+      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/93756186-da48-4385-95a9-63fdeaa831ec.webp", 
       description: "Investment-ready plots in prime locations",
       badge: "Best Value"
     },
     { 
       title: "Luxury Villas", 
       link: "/projects/villas/", 
-      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/villas.webp", 
+      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/59f64851-2928-4da6-b754-9f4dd39b14fa.webp", 
       description: "Ultra-luxury villas with world-class amenities",
       badge: "Premium"
     },
     { 
       title: "Industrial Plots", 
       link: "/projects/industrial-plots/", 
-      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/residential.webp", 
+      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/c69f77ee-92b2-4480-8cb4-b15135e7a161.webp", 
       description: "Industrial plots for manufacturing and warehousing",
       badge: "Investment"
     },

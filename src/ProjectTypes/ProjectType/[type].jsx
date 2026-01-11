@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import Api_Service from "../../Redux/utils/Api_Service";
 import ProjectTypeTemplate from "./ProjectTypeTemplate";
 import Footer from "../../Components/Footer/CrimsonEleganceFooter";
+import { getStaticData } from "../config/staticData";
 
 // Project type configurations - using original URLs
 const projectTypeConfigs = {
@@ -32,7 +33,7 @@ const projectTypeConfigs = {
              project.description?.toLowerCase().includes('shop cum office') ||
              project.projectName?.toLowerCase().includes('commercial') ||
              project.description?.toLowerCase().includes('commercial') ||
-             true; // Show all for debugging
+             true;
     }
   },
   "luxury-villas": {
@@ -458,6 +459,7 @@ const ProjectTypePage = () => {
       <ProjectTypeTemplate
         title={config.title}
         description={config.description}
+        faqs={getStaticData('projectTypes', projectType)?.faqs || []}
         projects={paginatedData}
         filteredData={filteredData}
         currentPage={currentPage}

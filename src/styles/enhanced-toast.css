@@ -1,0 +1,310 @@
+/* Enhanced Ant Design Message Toast Styling */
+
+/* Global Ant Design Message Override */
+.ant-message {
+  top: 20px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  z-index: 9999 !important;
+}
+
+.ant-message-notice {
+  margin: 0 !important;
+  padding: 0 !important;
+  border-radius: 12px !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12) !important;
+  backdrop-filter: blur(10px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  overflow: hidden !important;
+  min-width: 300px !important;
+  max-width: 500px !important;
+  animation: toastSlideIn 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55) !important;
+}
+
+/* Success Message */
+.ant-message-notice-success {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+  border-left: 4px solid #047857 !important;
+}
+
+.ant-message-notice-success .ant-message-notice-content {
+  color: white !important;
+  font-weight: 500 !important;
+  font-size: 14px !important;
+  padding: 16px 20px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+}
+
+.ant-message-notice-success .ant-message-custom-content {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+}
+
+/* Error Message */
+.ant-message-notice-error {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+  border-left: 4px solid #b91c1c !important;
+}
+
+.ant-message-notice-error .ant-message-notice-content {
+  color: white !important;
+  font-weight: 500 !important;
+  font-size: 14px !important;
+  padding: 16px 20px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+}
+
+.ant-message-notice-error .ant-message-custom-content {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+}
+
+/* Warning Message */
+.ant-message-notice-warning {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
+  border-left: 4px solid #b45309 !important;
+}
+
+.ant-message-notice-warning .ant-message-notice-content {
+  color: white !important;
+  font-weight: 500 !important;
+  font-size: 14px !important;
+  padding: 16px 20px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+}
+
+.ant-message-notice-warning .ant-message-custom-content {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+}
+
+/* Info Message */
+.ant-message-notice-info {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
+  border-left: 4px solid #1d4ed8 !important;
+}
+
+.ant-message-notice-info .ant-message-notice-content {
+  color: white !important;
+  font-weight: 500 !important;
+  font-size: 14px !important;
+  padding: 16px 20px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+}
+
+.ant-message-notice-info .ant-message-custom-content {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+}
+
+/* Icon Styling */
+.ant-message-notice .anticon {
+  font-size: 18px !important;
+  color: white !important;
+  opacity: 0.9 !important;
+}
+
+/* Close Button */
+.ant-message-notice-close {
+  color: white !important;
+  opacity: 0.8 !important;
+  transition: opacity 0.2s ease !important;
+}
+
+.ant-message-notice-close:hover {
+  opacity: 1 !important;
+}
+
+/* Custom Toast Classes */
+.custom-success-toast .ant-message-notice {
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%) !important;
+  border-left: 4px solid #15803d !important;
+  box-shadow: 0 8px 32px rgba(34, 197, 94, 0.25) !important;
+}
+
+.custom-error-toast .ant-message-notice {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+  border-left: 4px solid #b91c1c !important;
+  box-shadow: 0 8px 32px rgba(239, 68, 68, 0.25) !important;
+}
+
+.custom-warning-toast .ant-message-notice {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
+  border-left: 4px solid #b45309 !important;
+  box-shadow: 0 8px 32px rgba(245, 158, 11, 0.25) !important;
+}
+
+.custom-info-toast .ant-message-notice {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
+  border-left: 4px solid #1d4ed8 !important;
+  box-shadow: 0 8px 32px rgba(59, 130, 246, 0.25) !important;
+}
+
+/* Animations */
+@keyframes toastSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-20px) scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0) scale(1);
+  }
+}
+
+@keyframes toastSlideOut {
+  0% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-20px) scale(0.9);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+/* Enhanced hover effects */
+.ant-message-notice:hover {
+  transform: translateX(-50%) translateY(0) scale(1.02) !important;
+  transition: transform 0.2s ease !important;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .ant-message {
+    top: 10px !important;
+    left: 50% !important;
+    right: 20px !important;
+    transform: translateX(-50%) !important;
+  }
+  
+  .ant-message-notice {
+    min-width: 280px !important;
+    max-width: calc(100vw - 40px) !important;
+    margin: 0 auto !important;
+  }
+  
+  .ant-message-notice-content {
+    padding: 14px 16px !important;
+    font-size: 13px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .ant-message {
+    top: 10px !important;
+    left: 20px !important;
+    right: 20px !important;
+    transform: none !important;
+  }
+  
+  .ant-message-notice {
+    min-width: auto !important;
+    max-width: none !important;
+    width: 100% !important;
+  }
+}
+
+/* Loading State */
+.ant-message-notice-loading {
+  background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%) !important;
+  border-left: 4px solid #374151 !important;
+}
+
+.ant-message-notice-loading .ant-message-notice-content {
+  color: white !important;
+  font-weight: 500 !important;
+  font-size: 14px !important;
+  padding: 16px 20px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+}
+
+.ant-message-notice-loading .ant-message-custom-content {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+}
+
+/* Duration Control */
+.ant-message-notice {
+  animation-duration: 0.4s !important;
+}
+
+.ant-message-notice-leave {
+  animation: toastSlideOut 0.3s ease-in-out !important;
+}
+
+/* Multiple Messages Stack */
+.ant-message .ant-message-notice + .ant-message-notice {
+  margin-top: 10px !important;
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  .ant-message-notice {
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
+  }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  .ant-message-notice {
+    border: 2px solid !important;
+  }
+  
+  .ant-message-notice-success {
+    border-color: #047857 !important;
+  }
+  
+  .ant-message-notice-error {
+    border-color: #b91c1c !important;
+  }
+  
+  .ant-message-notice-warning {
+    border-color: #b45309 !important;
+  }
+  
+  .ant-message-notice-info {
+    border-color: #1d4ed8 !important;
+  }
+}
+
+/* Pulse animation for important messages */
+.ant-message-notice.important {
+  animation: toastSlideIn 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55), pulse 2s infinite !important;
+}
+
+/* Shake animation for errors */
+.ant-message-notice-error.shake {
+  animation: toastSlideIn 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55), shake 0.5s ease-in-out !important;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(-50%) translateY(0) scale(1); }
+  25% { transform: translateX(-52%) translateY(0) scale(1); }
+  75% { transform: translateX(-48%) translateY(0) scale(1); }
+}
