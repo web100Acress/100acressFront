@@ -259,8 +259,14 @@ const NewSellProperty = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const submitSellPropertyDetails = async (e) => {
-    e.preventDefault();
+    if (e && typeof e.preventDefault === 'function') e.preventDefault();
     if (isLoading) return;
+
+    // Safety: submit should only run on the final step (Gallery Section)
+    if (current !== 3) {
+      showToast('error', 'Please complete all steps before submitting.');
+      return;
+    }
 
     if (!validateStep(current)) {
       showToast('error', 'Please fill all required fields before proceeding.');
@@ -280,16 +286,9 @@ const NewSellProperty = () => {
 
     formDataAPI.append("frontImage", fileData.frontImage);
 
-    const modalInstance = Modal.confirm({
-      title: "Submitting Your Property",
-      content: "Hang tight! We're just sending your details...",
-      closable: false,
-      okButtonProps: { style: { display: 'none' } },
-      cancelButtonProps: { style: { display: 'none' } },
-    });
-
     try {
       setIsLoading(true);
+      showToast('info', "Submitting your property...", 2500);
       const base = getApiBase();
       const response = await axios.post(`${base}${apiEndpoint}`, formDataAPI, {
         headers: {
@@ -297,20 +296,17 @@ const NewSellProperty = () => {
         },
       });
       if (response.status === 200) {
-        modalInstance.destroy();
         showToast('success', 'Submitted Successfully, Under Review');
         resetData();
         resetImageData();
         setCurrent(0);
       } else {
-        modalInstance.destroy();
         showToast('error', 'Unexpected response from server.');
       }
     } catch (error) {
       const status = error?.response?.status;
       const data = error?.response?.data;
       console.error("Error submitting form:", { status, data, error });
-      modalInstance.destroy();
       showToast('error', data?.message || data?.error || `There was an error submitting the form (${status || "Network/Unknown"}).`, 4000);
     } finally {
       setIsLoading(false);
@@ -826,6 +822,7 @@ const NewSellProperty = () => {
                     paddingLeft: '18px',
                     paddingRight: '18px',
                 }}
+                    htmlType="button"
                     onMouseEnter={(e) => {
                     e.currentTarget.style.backgroundColor = '#450a0a';
                     e.currentTarget.style.borderColor = '#450a0a';
@@ -835,7 +832,7 @@ const NewSellProperty = () => {
                     e.currentTarget.style.borderColor = '#dc2626';
                     }} onClick={prev}>Previous</Button>}
                 {current < 3 ? (
-                    <Button className="group" type="primary" style={{
+                    <Button className="group" type="primary" htmlType="button" style={{
                     backgroundColor: '#dc2626',
                     borderColor: '#dc2626',
                     color: 'white',
@@ -858,7 +855,7 @@ const NewSellProperty = () => {
                     </span>
                     </Button>
                 ) : (
-                    <Button type="primary" style={{
+                    <Button type="primary" htmlType="button" style={{
                     backgroundColor: '#dc2626',
                     borderColor: '#dc2626',
                   color: 'white',
