@@ -471,13 +471,9 @@ export default function RightSection({
 
       {/* Desktop Post Property CTA with moving red border */}
       <Box display={{ base: 'none', md: 'inline-flex' }} ml={0.5}>
-        {/* <Link to="/postproperty/"> */}
         <div onClick={() => {
-  if (token) {
-    window.location.href = '/postproperty/';
-  } else {
-    setShowAuth(true);
-  }
+  // Allow access to post property without login
+  window.location.href = '/postproperty/';
 }}>
   <MovingBorderButton
     borderRadius="1.75rem"

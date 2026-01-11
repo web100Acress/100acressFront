@@ -1,5 +1,7 @@
 import React, { lazy, Suspense, useState, useEffect } from "react";
 import "./App.css";
+import "./styles/enhanced-toast.css";
+import "./styles/post-property-enhanced.css";
 import { styled } from "styled-components";
 import { ToastContainer, Slide } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -37,7 +39,7 @@ const PageNotFound = lazy(() => import("./Pages/PageNotFound"));
 // const SignUp = lazy(() => import("./aadharhomes/SignUp"));
 // const SignIn = lazy(() => import("./aadharhomes/SignIn"));
 const PropViewCardPro = lazy(() => import("./Components/Actual_Components/PropViewCardPro"));
-const NewSellProperty = lazy(() => import("./aadharhomes/NewSellProperty"));
+const NewSellProperty = lazy(() => import("./aadharhomes/PostProperty"));
 const BuyPropViewCard = lazy(() => import("./Components/Actual_Components/BuyPropViewCard"));
 const About = lazy(() => import("./Pages/About"));
 const AboutModern = lazy(() => import("./Pages/AboutModern"));
@@ -333,9 +335,7 @@ function App() {
                       <Route index element={<Home />} />
                       <Route path="/verify-email/*" element={<VerifyEmailRedirect />} />
                       <Route path="/post-property/*" element={<PostPropertyRedirect />} />
-                      <Route element={<PrivateRoute />}>
-  <Route path="/postproperty" element={<NewSellProperty />} />
-</Route>
+                      <Route path="/postproperty" element={<NewSellProperty />} />
                       <Route path="/auth/">
                         <Route path="signup/">
                           <Route index element={<SignupForm />} />

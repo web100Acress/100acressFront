@@ -21,12 +21,10 @@ import { useRef, useState, useEffect } from "react";
     }, []);
 
     const handleClick = (e) => {
-      if (!isAuthenticated) {
-        e.preventDefault();
-        setShowAuthModal(true);
-        setClickEffect(true);
-        setTimeout(() => setClickEffect(false), 600);
-      }
+      // Allow access to post property without login
+      window.location.href = '/postproperty/';
+      setClickEffect(true);
+      setTimeout(() => setClickEffect(false), 600);
     };
 
     const toggleAuth = () => setIsAuthenticated(!isAuthenticated);
