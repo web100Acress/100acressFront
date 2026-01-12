@@ -537,7 +537,7 @@ const Home = () => {
                   <div className="flex items-center gap-3">
                     <div className="w-1 h-12 bg-gradient-to-b from-red-500 to-red-600 rounded-full"></div>
                     <h2 className="text-2xl xl:text-4xl lg:text-3xl md:text-2xl text-[#111] font-bold">
-                      {`${activeFilter}`} Properties in Gurugram and Delhi NCR
+                      {`${activeFilter}`} Projects in Gurugram, Delhi and Noida
                     </h2>
                   </div>
                 </div>
