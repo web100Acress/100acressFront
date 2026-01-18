@@ -490,6 +490,10 @@ function App() {
                       
                       {/* Unified status routes with projects/{filter} pattern */}
                       <Route
+                        path="/projects/upcoming/"
+                        element={<ProjectStatusSearchGlobal />}
+                      />
+                      <Route
                         path="/projects/underconstruction/"
                         element={<ProjectStatusSearchGlobal />}
                       />
