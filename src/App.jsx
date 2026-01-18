@@ -86,7 +86,6 @@ const PossessionAfter2028 = lazy(() => import("./Pages/PossessionAfter2028"));
 const ProjectTypePage = lazy(() => import("./ProjectTypes/ProjectType/[type]"));
 const ProjectTypeDemo = lazy(() => import("./ProjectTypes/ProjectType/ProjectTypeDemo"));
 const Bptp = lazy(() => import("./Pages/Bptp"));
-const Orris = lazy(() => import("./Pages/Orris"));
 const HrSidebar = lazy(() => import("./Hr/HrSidebar"));
 const HrDashboard = lazy(() => import("./Hr/HrDashboard"));
 const Hr = lazy(() => import("./Hr/Hr"));
@@ -491,10 +490,6 @@ function App() {
                       
                       {/* Unified status routes with projects/{filter} pattern */}
                       <Route
-                        path="/projects/upcoming/"
-                        element={<ProjectStatusSearchGlobal />}
-                      />
-                      <Route
                         path="/projects/underconstruction/"
                         element={<ProjectStatusSearchGlobal />}
                       />
@@ -571,7 +566,7 @@ function App() {
                       <Route path="/contactmainpage" element={<ContactPage />} />
                       <Route path="/searchdata/:key" element={<SearchData />} />
                        <Route path="/bptp-plots-gurugram/" element={<Bptp />} />
-                       <Route path="/orris-plots-gurugram/" element={<Orris />} />
+                       {/* <Route path="/orris-plots-gurugram/" element={<Orris />} /> */}
                        <Route path="/top-luxury-projects/" element={<LuxuryProject />} />
                       <Route path="/onboarding/upload" element={<OnboardingUpload />} />
                       <Route path="/document-upload/:token" element={<DocumentUpload />} />
