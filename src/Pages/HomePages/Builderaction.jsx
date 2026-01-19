@@ -24,16 +24,17 @@ const Builderaction = () => {
       rating: 4.8,
       projects: 15
     },
-    {
-      title: "M3M India",
-      link: "/developers/m3m-india/",
-      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/7449f81f-7d27-4178-abe9-bc9a4fce8f87.webp",
-      backgroungURL: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/7449f81f-7d27-4178-abe9-bc9a4fce8f87.webp",
-      // subtitle: "Luxury Living",
-      rating: 4.7,
+        {
+      title: "Elan Group",
+      link: "/developers/elan-group/",
+      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/uploads/1757160649396-download.jpeg",
+      backgroungURL: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/c1d3f8e5-b322-4d0c-b753-1a8110fb731e.webp",
+      // subtitle: "Affordable Luxury",
+      rating: 4.5,
+      projects: 18,
       fetchpriority: "high",
-      projects: 28
     },
+   
     {
       title: "Emaar India",
       link: "/developers/emaar-india/",
@@ -64,17 +65,17 @@ const Builderaction = () => {
       fetchpriority: "high",
       projects: 18,
     },
-
-    {
-      title: "Elan Group",
-      link: "/developers/elan-group/",
-      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/uploads/1757160649396-download.jpeg",
-      backgroungURL: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/c1d3f8e5-b322-4d0c-b753-1a8110fb731e.webp",
-      // subtitle: "Affordable Luxury",
-      rating: 4.5,
-      projects: 18,
+     {
+      title: "M3M India",
+      link: "/developers/m3m-india/",
+      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/7449f81f-7d27-4178-abe9-bc9a4fce8f87.webp",
+      backgroungURL: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/7449f81f-7d27-4178-abe9-bc9a4fce8f87.webp",
+      // subtitle: "Luxury Living",
+      rating: 4.7,
       fetchpriority: "high",
+      projects: 28
     }
+
   ];
 
   return (
@@ -173,9 +174,9 @@ const Builderaction = () => {
                 <div className="p-2">
                   {/* Title and Subtitle */}
                   <div className="mb-1">
-                    <h3 className="text-xl font-bold text-gray-900 mb-0 group-hover:text-red-600 transition-colors duration-300 text-center">
+                    {/* <h3 className="text-xl font-bold text-gray-900 mb-0 group-hover:text-red-600 transition-colors duration-300 text-center">
                       {project.title}
-                    </h3>
+                    </h3> */}
                     <p className="text-sm text-gray-500 font-medium text-center">
                       {project.subtitle}
                     </p>
