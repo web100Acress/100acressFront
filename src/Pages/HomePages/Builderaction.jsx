@@ -14,6 +14,16 @@ const Builderaction = () => {
   }, []);
 
   const projects = [
+     {
+      title: "Emaar India",
+      link: "/developers/emaar-india/",
+      image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/signature.webp",
+      backgroungURL: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/1e42f7ec-f7a8-4026-80c2-e340265abe4d.webp",
+      // subtitle: "Global Standards",
+      rating: 4.9,
+      fetchpriority: "high",
+      projects: 22
+    },
     {
       title: "Adani Realty",
       link: "developers/adani-realty/",
@@ -35,16 +45,7 @@ const Builderaction = () => {
       fetchpriority: "high",
     },
    
-    {
-      title: "Emaar India",
-      link: "/developers/emaar-india/",
-      image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/signature.webp",
-      backgroungURL: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/1e42f7ec-f7a8-4026-80c2-e340265abe4d.webp",
-      // subtitle: "Global Standards",
-      rating: 4.9,
-      fetchpriority: "high",
-      projects: 22
-    },
+   
     {
       title: "Experion Developers",
       link: "/developers/experion-developers/",
@@ -174,9 +175,9 @@ const Builderaction = () => {
                 <div className="p-2">
                   {/* Title and Subtitle */}
                   <div className="mb-1">
-                    {/* <h3 className="text-xl font-bold text-gray-900 mb-0 group-hover:text-red-600 transition-colors duration-300 text-center">
+                    <h3 className="text-xl font-bold text-gray-900 mb-0 group-hover:text-red-600 transition-colors duration-300 text-center">
                       {project.title}
-                    </h3> */}
+                    </h3>
                     <p className="text-sm text-gray-500 font-medium text-center">
                       {project.subtitle}
                     </p>
