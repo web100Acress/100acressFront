@@ -14,41 +14,43 @@ const Builderaction = () => {
   }, []);
 
   const projects = [
-    {
-      title: "Adani Realty",
-      link: "developers/adani-realty/",
-      image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/adanireality.webp",
-      backgroungURL: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/devlopers/Adani-Realty-bg.webp",
-      // subtitle: "Premium",
-      fetchpriority: "high",
-      rating: 4.8,
-      projects: 15
-    },
-    {
-      title: "M3M India",
-      link: "/developers/m3m-india/",
-      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/7449f81f-7d27-4178-abe9-bc9a4fce8f87.webp",
-      backgroungURL: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/7449f81f-7d27-4178-abe9-bc9a4fce8f87.webp",
-      // subtitle: "Luxury Living",
-      rating: 4.7,
-      fetchpriority: "high",
-      projects: 28
-    },
-    {
+     {
       title: "Emaar India",
       link: "/developers/emaar-india/",
       image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/signature.webp",
-      backgroungURL: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/devlopers/Emaar-India.webp",
+      backgroungURL: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/1e42f7ec-f7a8-4026-80c2-e340265abe4d.webp",
       // subtitle: "Global Standards",
       rating: 4.9,
       fetchpriority: "high",
       projects: 22
     },
     {
+      title: "Adani Realty",
+      link: "developers/adani-realty/",
+      image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/adanireality.webp",
+      backgroungURL: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/adc797c8-6b67-475d-a585-4f27c00e113d.webp",
+      // subtitle: "Premium",
+      fetchpriority: "high",
+      rating: 4.8,
+      projects: 15
+    },
+        {
+      title: "Elan Group",
+      link: "/developers/elan-group/",
+      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/uploads/1757160649396-download.jpeg",
+      backgroungURL: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/c1d3f8e5-b322-4d0c-b753-1a8110fb731e.webp",
+      // subtitle: "Affordable Luxury",
+      rating: 4.5,
+      projects: 18,
+      fetchpriority: "high",
+    },
+   
+   
+    {
       title: "Experion Developers",
       link: "/developers/experion-developers/",
       image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/experion.webp",
-      backgroungURL: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/devlopers/Experion-Developers.webp",
+      backgroungURL: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/20d33f41-23e6-456e-b684-4efcb81d4ed7.webp",
       // subtitle: "Smart Homes",
       rating: 4.6,
       fetchpriority: "high",
@@ -58,23 +60,23 @@ const Builderaction = () => {
       title: "Signature Global",
       link: "/developers/signature-global/",
       image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/signature.webp",
-      backgroungURL: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/devlopers/Signature-Global.webp",
+      backgroungURL: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/2b60d387-e402-4a57-b61d-dd759200da77.webp",
       // subtitle: "Affordable Luxury",
       rating: 4.5,
       fetchpriority: "high",
       projects: 18,
     },
-
-    {
-      title: "Elan Group",
-      link: "/developers/elan-group/",
-      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/uploads/1757160649396-download.jpeg",
-      backgroungURL: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/devlopers/Elan-Group.webp",
-      // subtitle: "Affordable Luxury",
-      rating: 4.5,
-      projects: 18,
+     {
+      title: "M3M India",
+      link: "/developers/m3m-india/",
+      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/7449f81f-7d27-4178-abe9-bc9a4fce8f87.webp",
+      backgroungURL: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/7449f81f-7d27-4178-abe9-bc9a4fce8f87.webp",
+      // subtitle: "Luxury Living",
+      rating: 4.7,
       fetchpriority: "high",
+      projects: 28
     }
+
   ];
 
   return (
