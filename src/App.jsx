@@ -487,6 +487,7 @@ function App() {
                       <Route path="/analytics/location" element={<LocationIntelligence />} />
                       <Route path="/analytics/investment" element={<InvestmentInsights />} />
                       <Route path="/loan-eligibility" element={<LoanEligibility />} />
+                      <Route path="/projects/upcoming-projects-in-gurgaon/" element={<Navigate to="/" replace />} />
                       
                       {/* Unified status routes with projects/{filter} pattern */}
                       <Route
