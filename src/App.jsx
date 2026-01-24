@@ -513,7 +513,7 @@ function App() {
                       <Route path="/projects/farmhouses/" element={<ProjectTypeGlobal />} />
                       <Route path="/projects/affordable-homes/" element={<AffordableHomes />} />
                       <Route path="/projects/industrial-plots/" element={<ProjectTypeGlobal />} />
-                      <Route path="/projects/industrial-projects/" element={<ProjectTypeGlobal />} />
+                      <Route path="/projects/industrial-projects/" element={<Navigate to="/" replace />} />
                       <Route path="/projects/senior-living/" element={<ProjectTypeGlobal />} />
                       <Route path="/news-and-articals/" element={<NewsandArtical />} />
                       {/* New dynamic project type routes */}
