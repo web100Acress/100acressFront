@@ -487,6 +487,7 @@ function App() {
                       <Route path="/analytics/location" element={<LocationIntelligence />} />
                       <Route path="/analytics/investment" element={<InvestmentInsights />} />
                       <Route path="/loan-eligibility" element={<LoanEligibility />} />
+                      <Route path="/projects/upcoming-projects-in-gurgaon/" element={<Navigate to="/" replace />} />
                       
                       {/* Unified status routes with projects/{filter} pattern */}
                       <Route
@@ -513,7 +514,7 @@ function App() {
                       <Route path="/projects/farmhouses/" element={<ProjectTypeGlobal />} />
                       <Route path="/projects/affordable-homes/" element={<AffordableHomes />} />
                       <Route path="/projects/industrial-plots/" element={<ProjectTypeGlobal />} />
-                      <Route path="/projects/industrial-projects/" element={<ProjectTypeGlobal />} />
+                      <Route path="/projects/industrial-projects/" element={<Navigate to="/" replace />} />
                       <Route path="/projects/senior-living/" element={<ProjectTypeGlobal />} />
                       <Route path="/news-and-articals/" element={<NewsandArtical />} />
                       {/* New dynamic project type routes */}
