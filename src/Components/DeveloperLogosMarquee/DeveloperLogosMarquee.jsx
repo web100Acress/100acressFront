@@ -29,12 +29,12 @@ const Builder = [
   {
     title: "Godrej Properties",
     link: "/developers/godrej-properties/",
-    image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/godrej.jpg",
+    image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/616b00a6-e826-4130-a8f2-3166d94b0273.webp",
   },
   {
     title: "DLF Homes",
     link: "/developers/dlf-homes/",
-    image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/dlf.png",
+    image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/b8e4397a-126a-4f4e-8d39-f9332df8fc32.webp",
   },
   {
     title: "Emaar India",
@@ -45,7 +45,7 @@ const Builder = [
   {
     title: "Birla Estates",
     link: "/developers/birla-estate/",
-    image: "https://www.birlaestates.com/images/birla-estate-logo.webp",
+    image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/0bb9371c-9ccb-4474-aac3-45174cbfd041.webp",
   },
   {
     title: "Adani Realty",
@@ -56,13 +56,13 @@ const Builder = [
   {
     title: "Experion",
     link: "/developers/experion-developers/",
-    image: "https://www.experion.co/img/logo/experion-logo.png",
+    image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/40c69ffc-ba59-4759-876d-739a8a1a99e6.webp",
   },
   {
     title: "Signature Global",
     link: "/developers/signature-global/",
     image:
-      "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/signature.webp",
+      "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/ada94f6f-2e64-4e3e-a269-087e24a9086a.webp",
   },
   {
     title: "sobha",
@@ -74,7 +74,7 @@ const Builder = [
     title: "Central Park",
     link: "/developers/central-park/",
     image:
-      "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/centralpark.jpg",
+      "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/05bc4bc5-2343-4b9e-9a90-bcf777768f84.webp",
   },
   {
     title: "Trump Towers",
@@ -86,7 +86,7 @@ const Builder = [
     title: "ELAN Group",
     link: "/developers/elan-group/",
     image:
-      "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/elan-logo.webp",
+      "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/8e9dda2b-43ab-43be-b634-22fd566eed0f.webp",
   },
   {
     title: "Puri Constructions",
@@ -103,12 +103,12 @@ const Builder = [
     title: "SmartWorld Developers",
     link: "/developers/smartworld-developers/",
     image:
-      "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/smartworld.webp",
+      "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/50961a59-0895-4172-97eb-eda18cbd6374.webp",
   },
   {
     title: "BPTP Limited",
     link: "/developers/bptp-limited/",
-    image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/bptp.webp",
+    image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/eac630f0-7469-4221-8b99-46d62edc8dc9.webp",
   },
   {
     title: "Whiteland Corporation",
@@ -120,12 +120,12 @@ const Builder = [
     title: "Indiabulls Real Estate",
     link: "/developers/indiabulls-real-estate/",
     image:
-      "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/indiabulls.webp",
+      "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/168c5987-4bec-43dc-a7d7-5588b778b19e.webp",
   },
   {
     title: "AIPL",
     link: "/developers/aipl/",
-    image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/aipl.png",
+    image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/a23487c5-2561-4e66-a4c8-de562fa99d95.webp",
   },
   {
     title: "Shapoorji Pallonji",
@@ -143,7 +143,7 @@ const Builder = [
     title: "Trevoc Group",
     link: "/developers/trevoc-group/",
     image:
-      "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/trevoc.webp",
+      "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/4937d8d1-c9ee-486b-b96b-460074af842d.webp",
   },
   {
     title: "Aarize",

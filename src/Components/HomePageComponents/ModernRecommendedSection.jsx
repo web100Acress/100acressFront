@@ -675,11 +675,12 @@ const CardWrapper = styled.div`
       left: 0;
       width: 100%;
       height: 100%;
-      object-fit: cover;
+      object-fit: contain;
       object-position: center;
       transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
       opacity: 0;
       z-index: 1;
+      background-color: #f8fafc;
       
       &.loaded {
         opacity: 1;
@@ -933,6 +934,12 @@ const CardWrapper = styled.div`
           rgba(0, 0, 0, 0.25) 80%,
           rgba(0, 0, 0, 0) 100%
         );
+      }
+
+      .property-image {
+        object-fit: contain;
+        object-position: center;
+        background-color: #f8fafc;
       }
     }
 
