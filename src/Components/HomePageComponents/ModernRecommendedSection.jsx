@@ -646,6 +646,8 @@ const CardWrapper = styled.div`
     height: 100%;
     overflow: hidden;
     background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+    min-height: 240px; /* Ensure minimum height */
+    max-height: 380px; /* Limit maximum height */
 
     .image-overlay {
       position: absolute;
@@ -670,17 +672,19 @@ const CardWrapper = styled.div`
     }
 
     .property-image {
-      position: absolute;
+      position: relative;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      object-fit: contain;
+      min-height: 240px;
+      max-height: 380px;
+      object-fit: cover;
       object-position: center;
       transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
       opacity: 0;
       z-index: 1;
-      background-color: #f8fafc;
+      display: block;
       
       &.loaded {
         opacity: 1;
@@ -923,6 +927,9 @@ const CardWrapper = styled.div`
     }
 
     .image-container {
+      min-height: 200px;
+      max-height: 340px;
+
       .image-overlay {
         height: 200px;
         background: linear-gradient(
@@ -937,9 +944,8 @@ const CardWrapper = styled.div`
       }
 
       .property-image {
-        object-fit: contain;
-        object-position: center;
-        background-color: #f8fafc;
+        min-height: 200px;
+        max-height: 340px;
       }
     }
 
