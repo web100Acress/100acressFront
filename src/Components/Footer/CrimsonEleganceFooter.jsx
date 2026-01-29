@@ -184,7 +184,7 @@ import api from "../../config/apiClient";
                     </span>
                   </a>
                   <a
-                    href="https://wa.me/918500900100"
+                    href="https://wa.me/100acress"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center gap-4 text-footer-text hover:text-footer-accent transition-smooth"
@@ -475,7 +475,7 @@ import api from "../../config/apiClient";
                       },
                       {
                         isWhatsApp: true,
-                        href: "https://whatsapp.com/channel/0029Vb6HgfWF6sn0ruY4g51D",
+                        href: "https://wa.me/100acress",
                       },
                     ].map(({ Icon, href, isWhatsApp }, index) => (
                       <a
