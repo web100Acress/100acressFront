@@ -461,10 +461,10 @@ const Home = () => {
       <Helmet>
         <meta
           name="description"
-          content="100acress.com Gurgaon Fastest Growing Property Website, Buy Residential &amp; Commercial Property in Gurgaon. Flats in Gurgaon. Real Estate in Gurgaon"
+          content="100acress helps you buy residential & commercial property anywhere in India. Browse verified listings, expert support & best prices across major cities."
         />
         <title>
-        100acress | The Best Real Estate Portal in Gurgaon
+        100acress – India’s Trusted Real Estate Platform | Buy Sale Rent Portal
         </title>
         <link rel="canonical" href="https://www.100acress.com/" />
       </Helmet>
