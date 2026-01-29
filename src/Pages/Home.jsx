@@ -464,7 +464,7 @@ const Home = () => {
           content="100acress helps you buy residential & commercial property anywhere in India. Browse verified listings, expert support & best prices across major cities."
         />
         <title>
-        100acress – India’s Trusted Real Estate Platform | Buy Sale Rent Portal
+      100acress.com - Buy Property in India & Dubai | Trusted Real Estate Platform
         </title>
         <link rel="canonical" href="https://www.100acress.com/" />
       </Helmet>
