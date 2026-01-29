@@ -464,7 +464,7 @@ const Home = () => {
           content="100acress helps you buy residential & commercial property anywhere in India. Browse verified listings, expert support & best prices across major cities."
         />
         <title>
-        100acress – India’s Trusted Real Estate Platform | Buy Sale Rent Portal
+      100acress.com - Buy Property in India & Dubai | Trusted Real Estate Platform
         </title>
         <link rel="canonical" href="https://www.100acress.com/" />
       </Helmet>
@@ -472,13 +472,7 @@ const Home = () => {
       <h1 className="sr-only">100acress Real Estate in Gurgaon – Buy, Rent, Sell & New Launch Projects</h1>
       {/* Main landmark for primary content region */}
       <main id="main-content" role="main">
-      
-      {/* Confetti Animation */}
-      {/* {showConfetti && <ConfettiAllCorners /> */}
-      
-  {/* <PopupForm onPopupVisibilityChange={handlePopupVisibilityChange} />  */}
-
-   {/* Hero Banner Section with Search Bar Overlay */}
+   
     <HeroBannerWrapper>
       {/* This is the div whose background you want to blur more */}
       <div
