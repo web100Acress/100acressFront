@@ -585,18 +585,18 @@ function App() {
                       <Route path="/4-bhk-flats-in-gurgaon/" element={<BhkFlatsGurgaon bhkType="4" />} />
                       <Route path="/5-bhk-flats-in-gurgaon/" element={<BhkFlatsGurgaon bhkType="5" />} />
                       <Route path="/property-types/fully-furnished-flats-gurgaon/" element={<FurnishedFlatsGurgaon furnishingType="Fully Furnished" />} />
-                      <Route path="/property-types/semi-furnished-flats-gurgaon/" element={<FurnishedFlatsGurgaon furnishingType="Semi Furnished" />} />
+                      <Route path="/property-types/semi-furnished-flats-gurgaon/" element={<Navigate to="/" replace />} />
                       <Route path="/property-types/unfurnished-flats-gurgaon/" element={<FurnishedFlatsGurgaon furnishingType="Unfurnished" />} />
-                      <Route path="/property-types/penthouse-gurgaon/" element={<PenthouseGurgaon />} />
+                      <Route path="/property-types/penthouse-gurgaon/" element={<Navigate to="/" replace />} />
                       <Route path="/property-types/independent-floor-gurgaon/" element={<IndependentFloorGurgaon />} />
                       <Route path="/property-types/independent-houses-gurgaon/" element={<IndependentHousesGurgaon />} />
                       <Route path="/property-types/flats-under-1-cr-gurgaon/" element={<BudgetFlatsGurgaon budgetRange="1" />} />
                       <Route path="/property-types/flats-under-5-cr-gurgaon/" element={<BudgetFlatsGurgaon budgetRange="5" />} />
                       <Route path="/property-types/flats-under-10-cr-gurgaon/" element={<BudgetFlatsGurgaon budgetRange="10" />} />
                       <Route path="/property-types/flats-under-20-cr-gurgaon/" element={<BudgetFlatsGurgaon budgetRange="20" />} />
-                      <Route path="/property-types/affordable-homes-gurgaon/" element={<AffordableHomesGurgaon />} />
+                      <Route path="/property-types/affordable-homes-gurgaon/" element={<Navigate to="/" replace />} />
                       <Route path="/property-types/farmhouse-gurgaon/" element={<FarmhouseGurgaon />} />
-                      <Route path="/property-types/luxury-villas-gurgaon/" element={<LuxuryVillasGurgaon />} />
+                      <Route path="/property-types/luxury-villas-gurgaon/" element={<Navigate to="/" replace />} />
                       <Route path="/property-types/residential-flats-gurgaon/" element={<ResidentialFlatsGurgaon />} />
                       <Route path="/property-types/retail-shops-gurgaon/" element={<RetailShopsGurgaon />} />
                       <Route path="/property-types/builder-floor-gurgaon/" element={<BuilderFloorGurgaon />} />
