@@ -2,17 +2,14 @@ import { createContext, useContext, useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
 const DubaiContext = createContext();
-
-// Emirate-specific configuration
-// All emirates now use the same /united-arab-emirates route
 const emiratesConfig = {
   "Dubai": {
     route: "/united-arab-emirates",
-    headline: "Discover Luxury Living in Dubai",
+    headline: "Luxury Real Estate Projects in Dubai",
     subheadline: "Your Gateway to Premium Properties",
-    description: "Explore exclusive properties in the world's most dynamic city",
+    description: "Explore Premium Properties in Dubai",
     heroImage: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=1920&q=80", // Dubai skyline
-    tagline: "The City of Gold",
+    tagline: "The City of Gold"
   },
   "Abu Dhabi": {
     route: "/united-arab-emirates",
@@ -20,7 +17,7 @@ const emiratesConfig = {
     subheadline: "Capital of Elegance",
     description: "Find your dream home in UAE's sophisticated capital city",
     heroImage: "https://images.unsplash.com/photo-1518684079-3c830dcef090?w=1920&q=80", // Abu Dhabi
-    tagline: "Capital of the UAE",
+    tagline: "Capital of the UAE"
   },
   "Sharjah": {
     route: "/united-arab-emirates",
@@ -28,7 +25,7 @@ const emiratesConfig = {
     subheadline: "Cultural Heart of UAE",
     description: "Discover affordable luxury in the cultural capital",
     heroImage: "https://images.unsplash.com/photo-1582672060674-bc2bd808a8b5?w=1920&q=80", // Sharjah
-    tagline: "The Cultural Capital",
+    tagline: "The Cultural Capital"
   },
   "Ajman": {
     route: "/united-arab-emirates",
@@ -36,7 +33,7 @@ const emiratesConfig = {
     subheadline: "Hidden Gem of UAE",
     description: "Explore value-driven properties with modern amenities",
     heroImage: "https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=1920&q=80", // Ajman
-    tagline: "The Pearl of the Gulf",
+    tagline: "The Pearl of the Gulf"
   },
   "Ras Al Khaimah": {
     route: "/united-arab-emirates",
@@ -44,7 +41,7 @@ const emiratesConfig = {
     subheadline: "Nature Meets Luxury",
     description: "Mountain views and beachfront living combined",
     heroImage: "https://images.unsplash.com/photo-1580674285054-bed31e145f59?w=1920&q=80", // RAK
-    tagline: "Adventure & Serenity",
+    tagline: "Adventure & Serenity"
   },
   "Fujairah": {
     route: "/united-arab-emirates",
@@ -52,7 +49,7 @@ const emiratesConfig = {
     subheadline: "East Coast Paradise",
     description: "Beachfront properties with stunning mountain backdrops",
     heroImage: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=1920&q=80", // Fujairah
-    tagline: "The Hidden Treasure",
+    tagline: "The Hidden Treasure"
   },
   "Umm Al Quwain": {
     route: "/united-arab-emirates",
@@ -60,7 +57,7 @@ const emiratesConfig = {
     subheadline: "Peaceful Living",
     description: "Serene waterfront properties away from the hustle",
     heroImage: "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1920&q=80", // UAQ
-    tagline: "The Quiet Emirate",
+    tagline: "The Quiet Emirate"
   },
 };
 
