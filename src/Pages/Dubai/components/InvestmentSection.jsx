@@ -44,7 +44,7 @@ export const InvestmentSection = () => {
           <div className="h-full w-full bg-gradient-to-br from-gold/5 via-transparent to-gold/5 animate-pulse" />
         </div>
       </div>
-      
+
       <div className="container relative">
         {/* Section Header */}
         <div className="text-center mb-8 sm:mb-12 lg:mb-16 space-y-3 sm:space-y-4 px-4 animate-fade-in">
@@ -73,9 +73,15 @@ export const InvestmentSection = () => {
                   <Icon className="h-6 w-6 text-gold" />
                 </div>
                 <div>
-                  <p className="text-3xl font-bold text-gold mb-1">{insight.value}</p>
-                  <p className="text-lg font-semibold text-white mb-2">{insight.title}</p>
-                  <p className="text-sm text-muted-foreground">{insight.description}</p>
+                  <p className="text-3xl font-bold text-gold mb-1">
+                    {insight.value}
+                  </p>
+                  <p className="text-lg font-semibold text-white mb-2">
+                    {insight.title}
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    {insight.description}
+                  </p>
                 </div>
                 <div className="absolute inset-0 bg-gradient-gold opacity-0 group-hover:opacity-5 transition-opacity rounded-xl" />
               </div>
@@ -101,24 +107,37 @@ export const InvestmentSection = () => {
                 className="space-y-3 p-6 rounded-xl bg-black/30 border border-white/5 hover:border-gold/30 transition-all duration-300"
                 style={{ animationDelay: `${0.4 + index * 0.1}s` }}
               >
-                <h4 className="text-lg font-semibold text-white">{hotspot.name}</h4>
+                <h4 className="text-lg font-semibold text-white">
+                  {hotspot.name}
+                </h4>
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-muted-foreground">Growth</span>
-                  <span className="text-lg font-bold text-gold">{hotspot.growth}</span>
+                  <span className="text-lg font-bold text-gold">
+                    {hotspot.growth}
+                  </span>
                 </div>
                 <div className="flex items-center justify-between pt-3 border-t border-white/10">
-                  <span className="text-sm text-muted-foreground">Avg. Price</span>
-                  <span className="text-sm font-medium text-white">{hotspot.avgPrice}</span>
+                  <span className="text-sm text-muted-foreground">
+                    Avg. Price
+                  </span>
+                  <span className="text-sm font-medium text-white">
+                    {hotspot.avgPrice}
+                  </span>
                 </div>
               </div>
             ))}
           </div>
 
           <div className="text-center">
-            <Button 
-              size="lg" 
+            <Button
+              size="lg"
               className="gradient-gold text-black hover:shadow-gold"
-              onClick={() => window.open("https://wa.me/919811750740?text=Hi! I'm interested in getting the full Dubai market report. Can you send it to me?", "_blank")}
+              onClick={() =>
+                window.open(
+                  "https://wa.me/919811750740?text=Hi! I'm interested in getting the full Dubai market report. Can you send it to me?",
+                  "_blank",
+                )
+              }
             >
               Download Full Market Report
             </Button>
@@ -127,7 +146,10 @@ export const InvestmentSection = () => {
 
         {/* Why Invest */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">
-          <div className="text-center space-y-3 animate-fade-in-scale" style={{ animationDelay: "0.8s" }}>
+          <div
+            className="text-center space-y-3 animate-fade-in-scale"
+            style={{ animationDelay: "0.8s" }}
+          >
             <div className="w-16 h-16 rounded-full bg-gold/10 flex items-center justify-center mx-auto">
               <span className="text-3xl">🌍</span>
             </div>
@@ -136,24 +158,57 @@ export const InvestmentSection = () => {
               Strategic location connecting East and West
             </p>
           </div>
-          <div className="text-center space-y-3 animate-fade-in-scale" style={{ animationDelay: "0.9s" }}>
+          <div
+            className="text-center space-y-3 animate-fade-in-scale"
+            style={{ animationDelay: "0.9s" }}
+          >
             <div className="w-16 h-16 rounded-full bg-gold/10 flex items-center justify-center mx-auto">
               <span className="text-3xl">🏆</span>
             </div>
-            <h4 className="text-xl font-semibold text-white">World-Class Infrastructure</h4>
+            <h4 className="text-xl font-semibold text-white">
+              World-Class Infrastructure
+            </h4>
             <p className="text-sm text-muted-foreground">
               State-of-the-art facilities and transportation
             </p>
           </div>
-          <div className="text-center space-y-3 animate-fade-in-scale" style={{ animationDelay: "1s" }}>
+          <div
+            className="text-center space-y-3 animate-fade-in-scale"
+            style={{ animationDelay: "1s" }}
+          >
             <div className="w-16 h-16 rounded-full bg-gold/10 flex items-center justify-center mx-auto">
               <span className="text-3xl">💼</span>
             </div>
-            <h4 className="text-xl font-semibold text-white">Business Friendly</h4>
+            <h4 className="text-xl font-semibold text-white">
+              Business Friendly
+            </h4>
             <p className="text-sm text-muted-foreground">
               100% foreign ownership and easy regulations
             </p>
           </div>
+        </div>
+
+        <div className="mt-16">
+          {/* added new box for new content  */}
+          <div className="glass-effect rounded-2xl border border-white/10 p-8 md:p-12 animate-fade-in-scale">
+            <div className="mb-4 text-center">
+              <h2 className="text-2xl font-semibold text-white mb-2">
+                Explore Premium Properties in Dubai
+              </h2>
+              <p className="text-muted-foreground text-lg leading-relaxed max-w-4xl mx-auto">
+                Discover your dream home or ideal business address in the world's
+                most dynamic city. From waterfront apartments and luxury villas to
+                premium office spaces and commercial properties, explore Dubai's
+                finest residential and commercial opportunities with unmatched
+                investment potential and lifestyle benefits.
+              </p>
+            
+              <p className="text-muted-foreground text-base leading-relaxed max-w-3xl mx-auto">
+                Find thoughtfully selected premium properties that match both your living goals and investment plans in Dubai. From residences to business spaces, every option is chosen for quality and growth potential.
+              </p>
+            </div> 
+          </div>
+          {/* jdbd*/}
         </div>
       </div>
     </section>
