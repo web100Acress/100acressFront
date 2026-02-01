@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../config/apiClient";
-import { showToast } from "../utils/toastUtils"; // Import Ant Design message for modern notifications
+import { showToast } from "../Utils/toastUtils"; // Import Ant Design message for modern notifications
 import {
   MdInfo,
   MdLocationOn,

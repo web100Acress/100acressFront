@@ -5,7 +5,7 @@ import axios from "axios";
 import { getApiBase } from "../config/apiBase";
 import { Helmet } from "react-helmet";
 import { FaWhatsapp, FaMapMarkerAlt, FaShieldAlt, FaHeadset, FaCheckCircle, FaPhone, FaEnvelope, FaClock, FaGift, FaPercent, FaCalendarAlt, FaRocket } from "react-icons/fa";
-import showToast from "../utils/toastUtils";
+import showToast from "../Utils/toastUtils";
 import { motion } from "framer-motion";
 
 const EnquireNow = () => {

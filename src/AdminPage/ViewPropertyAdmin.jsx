@@ -4,7 +4,7 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import api from "../config/apiClient";
 import { Modal, notification } from "antd";
 import { Toaster } from 'react-hot-toast';
-import { showToast } from '../utils/toastUtils';
+import showToast from "../Utils/toastUtils";
 import { MdSearch, MdVisibility, MdEdit, MdDelete, MdExpandMore, MdExpandLess } from "react-icons/md";
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';

@@ -13,7 +13,7 @@ import { BiSolidGraduation } from "react-icons/bi";
 import { RiLogoutCircleRLine } from "react-icons/ri";
 import { Building } from "lucide-react";
 import axios from "axios";
-import showToast from "../utils/toastUtils";
+import showToast from "../Utils/toastUtils";
 import logoImage from "/Images/100logo.jpg";
 
 const Sidebar = () => {

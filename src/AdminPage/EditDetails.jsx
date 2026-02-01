@@ -7,7 +7,7 @@ import { Switch } from "antd";
 import { FaCheck, FaXmark, FaRegImage, FaRegBuilding, FaCouch } from "react-icons/fa6";
 import { FaRupeeSign, FaMapMarkerAlt, FaLayerGroup, FaRegDotCircle, FaRegCalendar, FaRegClock, FaEdit, FaListAlt } from "react-icons/fa";
 import { MdHome, MdImage, MdInfo, MdLocationOn, MdAttachMoney, MdApartment } from "react-icons/md";
-import showToast from "../utils/toastUtils";
+import showToast from "../Utils/toastUtils";
 
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';

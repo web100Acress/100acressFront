@@ -7,7 +7,7 @@ import axios from "axios";
 import { getApiBase } from "../../config/apiBase";
 import { State, City } from "country-state-city";
 import { Helmet } from "react-helmet";
-import toastUtils from "../../utils/toastUtils";
+import toastUtils from "../../Utils/toastUtils";
 
 // Import categories
 import BasicInfoCategory from './categories/BasicInfoCategory';

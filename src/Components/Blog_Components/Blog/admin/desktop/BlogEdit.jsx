@@ -8,7 +8,7 @@ import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
 import 'tippy.js/animations/scale.css';
 import { AuthContext } from "../../../../../AuthContext";
-import showToast from "../../../../../utils/toastUtils";
+import showToast from "../../../../../Utils/toastUtils";
 
 const customStyle = {
   position: "absolute",

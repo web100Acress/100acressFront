@@ -2,7 +2,7 @@
 import { Eye, EyeOff, X } from "lucide-react";
 import { AuthContext } from "../AuthContext";
 import axios from "axios";
-import showToast from "../utils/toastUtils";
+import showToast from "../Utils/toastUtils";
 // import { initializeApp } from "firebase/app";
 // import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 
@@ -13,7 +13,7 @@ function LoginForm({ inModal = false, onSwitchToRegister, preventRedirect = fals
   useEffect(() => {
     // No custom styling - use default toast positioning
     return () => {
-      // Cleanup if needed
+      
     };
   }, []);
 

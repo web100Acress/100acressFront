@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-import showToast from "../utils/toastUtils";
+import showToast from "../Utils/toastUtils";
 const ForgetPassword = () => {
   const history = useNavigate();
   const [newPassword, setNewPassword] = useState({

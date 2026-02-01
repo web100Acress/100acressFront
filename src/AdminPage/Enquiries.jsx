@@ -6,7 +6,7 @@ import Sidebar from "./Sidebar";
 import BackToTopButton from "../Pages/BackToTopButton";
 import { ClipLoader } from "react-spinners";
 import { useNavigate } from "react-router-dom";
-import showToast from "../utils/toastUtils";
+import showToast from "../Utils/toastUtils";
 
 const Enquiries = () => {
   const [search, setSearch] = useState("");
