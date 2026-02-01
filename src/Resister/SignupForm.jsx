@@ -1,6 +1,6 @@
 import { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import showToast from "../utils/toastUtils";
+import showToast from "../Utils/toastUtils";
 import "antd/dist/reset.css";
 import { AuthContext } from "../AuthContext";
 import { Eye, EyeOff, X } from "lucide-react";

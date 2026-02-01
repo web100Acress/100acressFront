@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Sidebar from "./Sidebar";
 import { useParams, useNavigate } from "react-router-dom"; // Import useNavigate
 import apiClient from "../config/apiClient";
-import showToast from "../utils/toastUtils";
+import showToast from "../Utils/toastUtils";
 import { MdEdit, MdHome } from "react-icons/md";
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';

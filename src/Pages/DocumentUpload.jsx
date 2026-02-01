@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../config/apiClient';
-import showToast from '../utils/toastUtils';
+import showToast from "../Utils/toastUtils";
 import { FileText, Upload, CheckCircle, AlertCircle } from 'lucide-react';
 
 const DocumentUpload = () => {

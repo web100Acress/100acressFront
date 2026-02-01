@@ -3,7 +3,7 @@ import apiClient from "../config/apiClient";
 import Modal from "react-modal";
 import Sidebar from "./Sidebar";
 import { Link, useParams } from "react-router-dom";
-import showToast from "../utils/toastUtils";
+import showToast from "../Utils/toastUtils";
 import { MdHome, MdAddCircle, MdTableRows, MdSearch, MdEdit, MdDelete, MdExpandMore, MdExpandLess } from "react-icons/md";
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';

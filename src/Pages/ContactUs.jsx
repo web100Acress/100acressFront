@@ -4,7 +4,7 @@ import axios from "axios";
 import { Helmet } from "react-helmet";
 import { HandShakeIcon, HeadPhoneIcon, PlayButtonIcon } from "../Assets/icons";
 import { FaWhatsapp, FaMapMarkerAlt, FaShieldAlt, FaHeadset, FaCheckCircle, FaPhone, FaEnvelope, FaClock } from "react-icons/fa";
-import showToast from "../utils/toastUtils";
+import showToast from "../Utils/toastUtils";
 const ContactUs = () => {
   const [formDataInquiry, setFormDataInquiry] = useState({
     name: "",

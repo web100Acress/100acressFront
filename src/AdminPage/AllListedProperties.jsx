@@ -10,7 +10,7 @@ import { Link } from "react-router-dom";
 import { Oval } from "react-loader-spinner";
 import { PaginationControls } from "../Components/Blog_Components/Blog/create/desktop/BlogManagement"; // Assuming this path is correct and the component is structured to receive classes
 import { Modal } from "antd";
-import showToast from "../utils/toastUtils";
+import showToast from "../Utils/toastUtils";
 
 // Memoized Property Row Component
 const PropertyRow = memo(({ property, onDelete }) => (
