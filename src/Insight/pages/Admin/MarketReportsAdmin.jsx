@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
-import api from "../../../../config/apiClient";
-import { showToast } from "../../../../utils/toastUtils";
+import api from "../../../config/apiClient";
+import { showToast } from "../../../utils/toastUtils";
 import { Link } from 'react-router-dom';
 import AdminInsightsSidebar from '../../components/AdminInsightsSidebar';
-// import React, { useState, useEffect } from 'react';
 import { 
   Form, 
   Input, 
@@ -36,7 +35,6 @@ import {
   EditOutlined,
   SaveOutlined
 } from '@ant-design/icons';
-import api from '../../../config/apiClient';
 
 const { Option } = Select;
 const { TextArea } = Input;
