@@ -13,7 +13,7 @@ function LoginForm({ inModal = false, onSwitchToRegister, preventRedirect = fals
   useEffect(() => {
     // No custom styling - use default toast positioning
     return () => {
-      // Cleanup if needed
+      
     };
   }, []);
 
