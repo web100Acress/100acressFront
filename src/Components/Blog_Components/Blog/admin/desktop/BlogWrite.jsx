@@ -4,7 +4,7 @@ const ReactQuill = lazy(() => import('react-quill'));
 import 'react-quill/dist/quill.snow.css';
 import api from "../../../../../config/apiClient";
 import { AuthContext } from "../../../../../AuthContext";
-import showToast from "../../../../../utils/toastUtils";
+import showToast from "../../../../../Utils/toastUtils";
 
 const BlogWrite = () => {
   const [content, setContent] = useState('');

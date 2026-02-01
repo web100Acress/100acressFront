@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import api from "../../../config/apiClient";
-import { showToast } from "../../../utils/toastUtils";
+import { showToast } from "../../../Utils/toastUtils";
 import { Link } from 'react-router-dom';
 import AdminInsightsSidebar from '../../components/AdminInsightsSidebar';
 import { 
