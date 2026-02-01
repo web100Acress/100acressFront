@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
 import api from "../../../../../config/apiClient";
-import showToast from "../../../../../utils/toastUtils";
+import showToast from "../../../../../Utils/toastUtils";
 
 const AuthorProfileUpdate = () => {
   const [loading, setLoading] = useState(false);
