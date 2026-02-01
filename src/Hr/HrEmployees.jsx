@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import api from "../config/apiClient";
+import { showToast } from "../Utils/toastUtils";
 import HrSidebar from './HrSidebar';
 import { MdSearch } from "react-icons/md";
 
@@ -120,7 +121,7 @@ const HrEmployees = () => {
     try {
       const myToken = localStorage.getItem("myToken");
       if (!myToken) {
-        message.error('You are not logged in');
+        showToast.error(showToast.errorMessages.authError);
         return;
       }
 
@@ -145,10 +146,10 @@ const HrEmployees = () => {
 
       // Update the local state
       setViewAll(prev => prev.map(user => user._id === userId ? { ...user, status: newStatus } : user));
-      message.success(`User ${newStatus} successfully`);
+      showToast.success(`User ${newStatus} successfully`);
     } catch (error) {
       console.log("❌ Failed to update user status:", error);
-      message.error(error.response?.data?.message || "Failed to update user status");
+      showToast.error(error.response?.data?.message || showToast.errorMessages.saveError);
     }
   };
 

@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Steps, Button, Modal, ConfigProvider } from "antd";
 import "antd/dist/reset.css";
-import './toast.css';
 const { Step } = Steps;
 import Footer from "../../Components/Actual_Components/Footer";
 import axios from "axios";
 import { getApiBase } from "../../config/apiBase";
 import { State, City } from "country-state-city";
 import { Helmet } from "react-helmet";
+import toastUtils from "../../Utils/toastUtils";
 
 // Import categories
 import BasicInfoCategory from './categories/BasicInfoCategory';
@@ -33,41 +33,8 @@ const NewSellProperty = () => {
   const agentData = localStorage.getItem("agentData");
   const [modal, modalContextHolder] = Modal.useModal();
 
-  const toastTimerRef = useRef(null);
-  const [toast, setToast] = useState({ open: false, type: "info", text: "" });
+  const toastCenterOptions = { style: { marginTop: '40vh' } };
 
-  const normalizeToastType = (type) => {
-    const t = String(type || "").toLowerCase();
-    if (t === "success" || t === "ok") return "success";
-    if (t === "error" || t === "fail" || t === "failed" || t === "danger") return "error";
-    if (t === "warning" || t === "warn") return "warning";
-    return "info";
-  };
-
-  const showToast = (type, text, duration = 3000) => {
-    const normalizedType = normalizeToastType(type);
-    if (toastTimerRef.current) {
-      clearTimeout(toastTimerRef.current);
-      toastTimerRef.current = null;
-    }
-
-    setToast({ open: true, type: normalizedType, text });
-
-    toastTimerRef.current = setTimeout(() => {
-      setToast((prev) => ({ ...prev, open: false }));
-      toastTimerRef.current = null;
-    }, Math.max(0, Number(duration) || 0));
-  };
-
-  useEffect(() => {
-    return () => {
-      if (toastTimerRef.current) {
-        clearTimeout(toastTimerRef.current);
-        toastTimerRef.current = null;
-      }
-    };
-  }, []);
-  
   const [current, setCurrent] = useState(0);
   const [showSteps, setShowSteps] = useState(false);
   const [contentAnimKey, setContentAnimKey] = useState(0);
@@ -264,12 +231,12 @@ const NewSellProperty = () => {
 
     // Safety: submit should only run on the final step (Gallery Section)
     if (current !== 3) {
-      showToast('error', 'Please complete all steps before submitting.');
+      toastUtils.error('Please complete all steps before submitting.', toastCenterOptions);
       return;
     }
 
     if (!validateStep(current)) {
-      showToast('error', 'Please fill all required fields before proceeding.');
+      toastUtils.error('Please fill all required fields before proceeding.', toastCenterOptions);
       return;
     }
 
@@ -288,7 +255,7 @@ const NewSellProperty = () => {
 
     try {
       setIsLoading(true);
-      showToast('info', "Submitting your property...", 2500);
+      toastUtils.info("Submitting your property...", toastCenterOptions);
       const base = getApiBase();
       const response = await axios.post(`${base}${apiEndpoint}`, formDataAPI, {
         headers: {
@@ -296,18 +263,18 @@ const NewSellProperty = () => {
         },
       });
       if (response.status >= 200 && response.status < 300) {
-        showToast('success', 'Submitted Successfully, Under Review', 3500);
+        toastUtils.success('Submitted Successfully, Under Review', toastCenterOptions);
         resetData();
         resetImageData();
         setCurrent(0);
       } else {
-        showToast('error', 'Unexpected response from server.');
+        toastUtils.error('Unexpected response from server.', toastCenterOptions);
       }
     } catch (error) {
       const status = error?.response?.status;
       const data = error?.response?.data;
       console.error("Error submitting form:", { status, data, error });
-      showToast('error', data?.message || data?.error || `There was an error submitting the form (${status || "Network/Unknown"}).`, 4000);
+      toastUtils.error(data?.message || data?.error || `There was an error submitting the form (${status || "Network/Unknown"}).`, toastCenterOptions);
     } finally {
       setIsLoading(false);
     }
@@ -424,7 +391,7 @@ const NewSellProperty = () => {
             );
           } catch (_) {}
 
-          showToast('info', 'Please login first to continue.');
+          toastUtils.info('Please login first to continue.', toastCenterOptions);
 
           // Open login modal (navbar) via global event; fallback to any global function; else redirect
           try {
@@ -445,7 +412,7 @@ const NewSellProperty = () => {
       setCurrent(current + 1);
       setContentAnimKey((k) => k + 1);
     } else {
-      showToast('error', 'Please fill all required fields before proceeding.');
+      toastUtils.error('Please fill all required fields before proceeding.', toastCenterOptions);
     }
   };
   
@@ -598,24 +565,6 @@ const NewSellProperty = () => {
   return (
     <div style={{ overflowX: "hidden" }}>
       {modalContextHolder}
-      {toast.open && (
-        <div className="custom-toast-overlay" role="status" aria-live="polite">
-          <div className={`custom-toast is-${toast.type}`}>
-            <div className="custom-toast-text">
-              <div className="custom-toast-title">{toast.type === "success" ? "Success" : toast.type === "error" ? "Error" : toast.type === "warning" ? "Warning" : "Info"}</div>
-              <div>{toast.text}</div>
-            </div>
-            <button
-              type="button"
-              className="custom-toast-close"
-              onClick={() => setToast((prev) => ({ ...prev, open: false }))}
-              aria-label="Close"
-            >
-              ×
-            </button>
-          </div>
-        </div>
-      )}
       {/* Safe area for fixed navbar */}
       <div className="h-16 md:h-20" aria-hidden />
       <Helmet>

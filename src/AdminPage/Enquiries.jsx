@@ -6,7 +6,7 @@ import Sidebar from "./Sidebar";
 import BackToTopButton from "../Pages/BackToTopButton";
 import { ClipLoader } from "react-spinners";
 import { useNavigate } from "react-router-dom";
-import { message } from "antd";
+import showToast from "../Utils/toastUtils";
 
 const Enquiries = () => {
   const [search, setSearch] = useState("");
@@ -24,7 +24,6 @@ const Enquiries = () => {
   const [filterProject, setFilterProject] = useState("");
   const [sortBy, setSortBy] = useState("date"); // date, name, project
   const [sortOrder, setSortOrder] = useState("desc"); // asc, desc
-  const [messageApi, contextHolder] = message.useMessage();
   const navigate = useNavigate();
   const tokenRaw = localStorage.getItem("myToken") || "";
   const token = tokenRaw.replace(/^"|"$/g, "").replace(/^Bearer\s+/i, "");
@@ -70,11 +69,7 @@ const Enquiries = () => {
       );
 
       if (response.status !== 200) {
-        messageApi.open({
-          type: "error",
-          content: "Error While Fetching Data",
-          duration: 2,
-        });
+        showToast.error("Error While Fetching Data");
         console.error("Failed to fetch data");
       }
 
@@ -90,11 +85,7 @@ const Enquiries = () => {
       setCurrentPage(page);
     } catch (error) {
       console.error("Error fetching data:", error);
-      messageApi.open({
-        type: "error",
-        content: "Error fetching data. Please try again.",
-        duration: 2,
-      });
+      showToast.error("Error fetching data. Please try again.");
     }
     setLoading(false);
   };
@@ -150,11 +141,11 @@ const Enquiries = () => {
           },
         }
       );
-      messageApi.success("Updated successfully");
+      showToast.success("Updated successfully");
       fetchData(currentPage);
     } catch (e) {
       console.error(e);
-      messageApi.error("Failed to update");
+      showToast.error("Failed to update");
       throw e;
     }
   };
@@ -173,11 +164,11 @@ const Enquiries = () => {
         }
       );
       const deletedAt = new Date().toLocaleString();
-      messageApi.success(`Deleted at ${deletedAt}`);
+      showToast.success(`Deleted at ${deletedAt}`);
       fetchData(currentPage);
     } catch (e) {
       console.error(e);
-      messageApi.error("Failed to delete");
+      showToast.error("Failed to delete");
     }
   };
 
@@ -187,9 +178,9 @@ const Enquiries = () => {
 
       // If specific items are selected, export only those
       if (selectedIds.length > 0) {
-        messageApi.info(`Exporting ${selectedIds.length} selected enquiries...`);
+        showToast.info(`Exporting ${selectedIds.length} selected enquiries...`);
       } else {
-        messageApi.info('Exporting all enquiries...');
+        showToast.info('Exporting all enquiries...');
         setSelectedIds([]); // Clear selection after export
         return;
       }
@@ -251,18 +242,14 @@ const Enquiries = () => {
       window.URL.revokeObjectURL(url);
 
       setDownloadProgress(0);
-      messageApi.success(`Successfully exported ${selectedIds.length} selected enquiries!`);
+      showToast.success(`Successfully exported ${selectedIds.length} selected enquiries!`);
 
       // Clear selection after successful download
       setSelectedIds([]);
 
     } catch (error) {
       console.error('Error downloading the file:', error);
-      messageApi.open({
-        type: "error",
-        content: "Error downloading selected enquiries. Please try again.",
-        duration: 3,
-      });
+      showToast.error("Error downloading selected enquiries. Please try again.");
       setDownloadProgress(0);
     }
   }
@@ -271,7 +258,6 @@ const Enquiries = () => {
     <div className="bg-gray-50 dark:bg-gray-900 dark:text-gray-100 min-h-screen flex">
       <Sidebar />
       <div className="flex-1 p-4 ml-[250px] transition-colors duration-300">
-        {contextHolder}
         <div className="enquiries-header" style={{ marginBottom: '1.5rem' }}>
           <div className="search-container">
             <input

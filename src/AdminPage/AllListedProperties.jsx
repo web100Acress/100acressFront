@@ -9,7 +9,8 @@ import { Eye, Edit, Trash2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Oval } from "react-loader-spinner";
 import { PaginationControls } from "../Components/Blog_Components/Blog/create/desktop/BlogManagement"; // Assuming this path is correct and the component is structured to receive classes
-import { Modal, message } from "antd"; // Import message from antd
+import { Modal } from "antd";
+import showToast from "../Utils/toastUtils";
 
 // Memoized Property Row Component
 const PropertyRow = memo(({ property, onDelete }) => (
@@ -113,9 +114,6 @@ const AllListedProperties = () => {
   const tokenRawMemo = useMemo(() => localStorage.getItem("myToken") || "", []);
   const tokenMemo = useMemo(() => tokenRawMemo.replace(/^"|"$/g, "").replace(/^Bearer\s+/i, ""), [tokenRawMemo]);
 
-  // Memoize the messageApi configuration
-  const [messageApi, contextHolder] = message.useMessage();
-
   // Effect to inject styles into the document head
   useEffect(() => {
     const styleSheet = document.createElement("style");
@@ -165,11 +163,11 @@ const AllListedProperties = () => {
     } catch (error) {
       console.error("Error fetching properties:", error);
       setError(error?.message || "An error occurred");
-      messageApi.error("Failed to fetch properties. Please try again.");
+      showToast.error("Failed to fetch properties. Please try again.");
     } finally {
       setIsLoading(false);
     }
-  }, [currentPage, pageLimit, isVerified, tokenMemo, messageApi]);
+  }, [currentPage, pageLimit, isVerified, tokenMemo]);
 
   useEffect(() => {
     fetchData();
@@ -181,7 +179,7 @@ const AllListedProperties = () => {
 
   const handleOk = useCallback(async () => {
     if (!propertyToDelete) {
-      messageApi.error('No property selected for deletion');
+      showToast.error('No property selected for deletion');
       return;
     }
 
@@ -191,23 +189,23 @@ const AllListedProperties = () => {
     try {
       const result = await handleDeleteProperty(propertyToDelete);
       if (result?.success) {
-        messageApi.success(result.message || 'Property deleted successfully');
+        showToast.success(result.message || 'Property deleted successfully');
         // The fetchData() inside handleDeleteProperty will update the list
       } else {
         const errorMessage = result?.message || 'Failed to delete property';
-        messageApi.error(`Error: ${errorMessage}`);
+        showToast.error(`Error: ${errorMessage}`);
       }
     } catch (error) {
       console.error('Error in handleOk:', error);
       const errorMessage = error.response?.data?.message || error.message || 'An error occurred while deleting the property';
-      messageApi.error(errorMessage);
+      showToast.error(errorMessage);
     } finally {
       setModalText('Do you want to delete this Property?');
       setConfirmLoading(false);
       setOpenModal(false);
       setPropertyToDelete(null);
     }
-  }, [propertyToDelete, messageApi]);
+  }, [propertyToDelete, handleDeleteProperty]);
 
   const handleCancel = useCallback(() => {
     setOpenModal(false);
@@ -367,7 +365,6 @@ const AllListedProperties = () => {
     <div className="bg-gray-50 dark:bg-gray-900 dark:text-gray-100 min-h-screen flex">
       <Sidebar />
       <div className="flex-1 p-8 ml-[250px] transition-colors duration-300">
-        {contextHolder}
         <div className="properties-header">
           <h1 className="properties-title">Properties Listed</h1>
           {FilterControls}

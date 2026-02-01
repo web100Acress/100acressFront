@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import api from "../config/apiClient";
-import Sidebar from "./Sidebar";
-import { message } from "antd"; // Import Ant Design message for modern notifications
+import { showToast } from "../Utils/toastUtils"; // Import Ant Design message for modern notifications
 import {
   MdInfo,
   MdLocationOn,
@@ -85,7 +85,7 @@ const InsertProject = () => {
       return [];
     } catch (error) {
       console.error("Error fetching states:", error);
-      message.error("Failed to load states list");
+      showToast.error(showToast.errorMessages.loadingError);
       return [];
     } finally {
       setLoadingStates(false);
@@ -108,7 +108,7 @@ const InsertProject = () => {
       return [];
     } catch (error) {
       console.error("Error fetching cities:", error);
-      message.error("Failed to load cities list");
+      showToast.error(showToast.errorMessages.loadingError);
       return [];
     } finally {
       setLoadingCities(false);
@@ -133,7 +133,7 @@ const InsertProject = () => {
       return [];
     } catch (error) {
       console.error("Error fetching builders:", error);
-      message.error("Failed to load builders list");
+      showToast.error(showToast.errorMessages.loadingError);
       return [];
     } finally {
       setLoadingBuilders(false);
@@ -197,7 +197,6 @@ const InsertProject = () => {
   });
 
   const [loading, setLoading] = useState(false); // State for loading indicator
-  const [messageApi, contextHolder] = message.useMessage(); // Ant Design message hook
   const defaultProjectTypes = [
     "Commercial Property",
     "Residential Flats",
@@ -225,20 +224,20 @@ const InsertProject = () => {
   const handleAddProjectType = () => {
     const value = customProjectType.trim();
     if (!value) {
-      messageApi.warning("Please enter a project type name");
+      showToast.warning('Please enter a project type name');
       return;
     }
     const exists = projectTypes.find((t) => t.toLowerCase() === value.toLowerCase());
     if (exists) {
       setCustomProjectType("");
       setEditFromData((prev) => ({ ...prev, type: exists }));
-      messageApi.info("Type already exists and is selected.");
+      showToast.info('Type already exists and is selected.');
       return;
     }
     setProjectTypes((prev) => [...prev, value]);
     setEditFromData((prev) => ({ ...prev, type: value }));
     setCustomProjectType("");
-    messageApi.success("Project type added");
+    showToast.success('Project type added');
   };
 
 
@@ -345,25 +344,14 @@ const InsertProject = () => {
     if (customBuilderName.trim()) {
       try {
         // Show loading message
-        messageApi.open({
-          key: "addBuilder",
-          type: "loading",
-          content: "Adding new builder...",
+        showToast.loading('Adding new builder...', { id: 'addBuilder' });
+        
+        // Add builder to backend
+        const response = await api.post('/api/builders', {
+          name: customBuilderName.trim()
         });
 
-        // API call to save new builder to backend
-        const builderApiEndpoint = "builder/Insert";
-        const builderData = {
-          builderName: customBuilderName.trim(),
-          createdAt: new Date().toISOString(),
-          status: "active",
-        };
-
-        const response = await api.post(builderApiEndpoint, builderData);
-
         if (response.status === 200) {
-          const result = response.data;
-
           // Success - update local state
           setEditFromData((prev) => ({
             ...prev,
@@ -385,12 +373,8 @@ const InsertProject = () => {
           setCustomBuilderName("");
 
           // Success message
-          messageApi.open({
-            key: "addBuilder",
-            type: "success",
-            content: "Builder added successfully and saved to database!",
-            duration: 3,
-          });
+          showToast.dismiss('addBuilder');
+          showToast.success('Builder added successfully and saved to database!');
         } else {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -416,65 +400,24 @@ const InsertProject = () => {
         setCustomBuilderName("");
 
         // Warning message
-        messageApi.open({
-          key: "addBuilder",
-          type: "warning",
-          content:
-            "Builder added locally, but failed to save to database. Please restart your backend server.",
-          duration: 5,
-        });
+        showToast.dismiss('addBuilder');
+        showToast.warning('Builder added locally. Backend builder management can be added later.');
       }
     }
   };
 
-  // Handle custom city name input
-  const handleCustomCitySubmit = async () => {
-    if (customCityName.trim()) {
-      try {
-        // Show loading message
-        messageApi.open({
-          key: "addCity",
-          type: "loading",
-          content: "Adding new city...",
-        });
+// Handle custom city name input
+const handleCustomCitySubmit = async () => {
+  if (customCityName.trim()) {
+    try {
+      // Show loading message
+      showToast.loading('Adding new city...', { id: 'addCity' });
+      // For now, just add locally since there's no city API endpoint
+      // In the future, you could add a city API endpoint similar to builder
+      const response = { status: 200 }; // Simulate success
 
-        // For now, just add locally since there's no city API endpoint
-        // In the future, you could add a city API endpoint similar to builder
-        const response = { status: 200 }; // Simulate success
-
-        if (response.status === 200) {
-          // Success - update local state
-          setEditFromData((prev) => ({
-            ...prev,
-            city: customCityName.trim(),
-          }));
-          setCitySearchTerm(customCityName.trim());
-          setShowCustomCityInput(false);
-
-          // Add to local cities list for immediate availability
-          if (!citiesList.includes(customCityName.trim())) {
-            const newCitiesList = [...citiesList, customCityName.trim()].sort();
-            setCitiesList(newCitiesList);
-            setFilteredCities(newCitiesList.filter(city =>
-              city.toLowerCase().includes(citySearchTerm.toLowerCase())
-            ));
-          }
-
-          // Clear input
-          setCustomCityName("");
-
-          // Success message
-          messageApi.open({
-            key: "addCity",
-            type: "success",
-            content: "City added successfully!",
-            duration: 3,
-          });
-        }
-      } catch (error) {
-        console.error("Error adding city:", error);
-
-        // Fallback: still update local state even if API fails
+      if (response.status === 200) {
+        // Success - update local state
         setEditFromData((prev) => ({
           ...prev,
           city: customCityName.trim(),
@@ -483,9 +426,8 @@ const InsertProject = () => {
         setShowCustomCityInput(false);
 
         // Add to local cities list for immediate availability
-        const newCity = customCityName.trim();
-        if (!citiesList.includes(newCity)) {
-          const newCitiesList = [...citiesList, newCity].sort();
+        if (!citiesList.includes(customCityName.trim())) {
+          const newCitiesList = [...citiesList, customCityName.trim()].sort();
           setCitiesList(newCitiesList);
           setFilteredCities(newCitiesList.filter(city =>
             city.toLowerCase().includes(citySearchTerm.toLowerCase())
@@ -495,65 +437,53 @@ const InsertProject = () => {
         // Clear input
         setCustomCityName("");
 
-        // Warning message
-        messageApi.open({
-          key: "addCity",
-          type: "warning",
-          content: "City added locally. Backend city management can be added later.",
-          duration: 5,
-        });
+        // Success message
+        showToast.dismiss('addCity');
+        showToast.success('City added successfully!');
       }
+    } catch (error) {
+      console.error("Error adding city:", error);
+
+      // Fallback: still update local state even if API fails
+      setEditFromData((prev) => ({
+        ...prev,
+        city: customCityName.trim(),
+      }));
+      setCitySearchTerm(customCityName.trim());
+      setShowCustomCityInput(false);
+
+      // Add to local cities list for immediate availability
+      const newCity = customCityName.trim();
+      if (!citiesList.includes(newCity)) {
+        const newCitiesList = [...citiesList, newCity].sort();
+        setCitiesList(newCitiesList);
+        setFilteredCities(newCitiesList.filter(city =>
+          city.toLowerCase().includes(citySearchTerm.toLowerCase())
+        ));
+      }
+
+      // Clear input
+      setCustomCityName("");
+
+      // Warning message
+      showToast.dismiss('addCity');
+      showToast.warning('City added locally. Backend city management can be added later.');
     }
-  };
+  }
+};
 
-  // Handle custom state name input
-  const handleCustomStateSubmit = async () => {
-    if (customStateName.trim()) {
-      try {
-        // Show loading message
-        messageApi.open({
-          key: "addState",
-          type: "loading",
-          content: "Adding new state...",
-        });
+// Handle custom state name input
+const handleCustomStateSubmit = async () => {
+  if (customStateName.trim()) {
+    try {
+      // Show loading message
+      showToast.loading('Adding new state...', { id: 'addState' });
+      // For now, just add locally since there's no state API endpoint
+      // In the future, you could add a state API endpoint similar to builder
+      const response = { status: 200 }; // Simulate success
 
-        // For now, just add locally since there's no state API endpoint
-        // In the future, you could add a state API endpoint similar to builder
-        const response = { status: 200 }; // Simulate success
-
-        if (response.status === 200) {
-          // Success - update local state
-          setEditFromData((prev) => ({
-            ...prev,
-            state: customStateName.trim(),
-          }));
-          setStateSearchTerm(customStateName.trim());
-          setShowCustomStateInput(false);
-
-          // Add to local states list for immediate availability
-          if (!statesList.includes(customStateName.trim())) {
-            const newStatesList = [...statesList, customStateName.trim()].sort();
-            setStatesList(newStatesList);
-            setFilteredStates(newStatesList.filter(state =>
-              state.toLowerCase().includes(stateSearchTerm.toLowerCase())
-            ));
-          }
-
-          // Clear input
-          setCustomStateName("");
-
-          // Success message
-          messageApi.open({
-            key: "addState",
-            type: "success",
-            content: "State added successfully!",
-            duration: 3,
-          });
-        }
-      } catch (error) {
-        console.error("Error adding state:", error);
-
-        // Fallback: still update local state even if API fails
+      if (response.status === 200) {
+        // Success - update local state
         setEditFromData((prev) => ({
           ...prev,
           state: customStateName.trim(),
@@ -562,9 +492,8 @@ const InsertProject = () => {
         setShowCustomStateInput(false);
 
         // Add to local states list for immediate availability
-        const newState = customStateName.trim();
-        if (!statesList.includes(newState)) {
-          const newStatesList = [...statesList, newState].sort();
+        if (!statesList.includes(customStateName.trim())) {
+          const newStatesList = [...statesList, customStateName.trim()].sort();
           setStatesList(newStatesList);
           setFilteredStates(newStatesList.filter(state =>
             state.toLowerCase().includes(stateSearchTerm.toLowerCase())
@@ -574,306 +503,176 @@ const InsertProject = () => {
         // Clear input
         setCustomStateName("");
 
-        // Warning message
-        messageApi.open({
-          key: "addState",
-          type: "warning",
-          content: "State added locally. Backend state management can be added later.",
-          duration: 5,
-        });
-      }
-    }
-  };
-
-  // Handle custom state cancel
-  const handleCustomStateCancel = () => {
-    setShowCustomStateInput(false);
-    setCustomStateName("");
-    setStateSearchTerm("");
-  };
-
-  // Handle click outside to close dropdown
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (isBuilderDropdownOpen && !event.target.closest(".builder-dropdown")) {
-        setIsBuilderDropdownOpen(false);
-      }
-      if (isStateDropdownOpen && !event.target.closest(".state-dropdown")) {
-        setIsStateDropdownOpen(false);
-      }
-      if (isCityDropdownOpen && !event.target.closest(".city-dropdown")) {
-        setIsCityDropdownOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [isBuilderDropdownOpen, isStateDropdownOpen, isCityDropdownOpen]);
-
-  const resetData = () => {
-    setEditFromData({
-      projectName: "",
-      state: "",
-      country: "India",
-      projectAddress: "",
-      project_discripation: "",
-      AboutDeveloper: "",
-      builderName: "",
-      projectRedefine_Connectivity: "",
-      projectRedefine_Education: "",
-      projectRedefine_Business: "",
-      projectRedefine_Entertainment: "",
-      Amenities: "",
-      luxury: "False",
-      spotlight: "False",
-      paymentPlan: "",
-      meta_title: "",
-      meta_description: "",
-      projectBgContent: "",
-      projectReraNo: "",
-      type: "",
-      city: "",
-      projectOverview: "",
-      project_url: "",
-      project_Status: "",
-      totalLandArea: "",
-      totalUnit: "",
-      towerNumber: "",
-      mobileNumber: "",
-      possessionDate: "",
-      minPrice: "",
-      maxPrice: "",
-      launchingDate: "",
-      youtubeVideoUrl: "",
-      youtubeVideoTitle: "",
-      youtubeVideoDescription: "",
-    });
-  };
-
-  const resetImageData = () => {
-    setFileData({
-      frontImage: null,
-      logo: null,
-      thumbnailImage: null,
-      project_locationImage: null,
-      project_floorplan_Image: [],
-      highlightImage: null,
-      project_Brochure: null,
-      projectGallery: [],
-      projectMaster_plan: null,
-    });
-  };
-
-  // Generic handler for all text and select inputs in editFromData
-  const handleChangeProjectData = (e) => {
-    setEditFromData({
-      ...editFromData,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  // Handler for multiple file inputs (project_floorplan_Image, projectGallery)
-  const handleMultipleFilesChange = (e, key) => {
-    const files = Array.from(e.target.files); // Convert FileList to Array
-    setFileData((prevFileData) => ({
-      ...prevFileData,
-      [key]: files,
-    }));
-  };
-
-  // Handler for single file inputs
-  const handleSingleFileChange = (e, key) => {
-    const file = e.target.files[0];
-    setFileData((prevFileData) => ({
-      ...prevFileData,
-      [key]: file,
-    }));
-  };
-
-  const handleSubmitProject = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    messageApi.open({
-      key: "insertProject",
-      type: "loading",
-      content: "Adding new project...",
-    });
-
-    const apiEndpoint = "project/Insert"; // Use direct backend path (no dev-only /api prefix)
-
-    const formDataAPI = new FormData();
-
-    // Get auth token from localStorage
-    const token =
-      localStorage.getItem("token") || localStorage.getItem("myToken");
-    if (!token) {
-      messageApi.destroy("insertProject");
-      messageApi.error("Please login first!");
-      setLoading(false);
-      return;
-    }
-
-    // Append all text/select data from editFromData
-    for (const key in editFromData) {
-      if (
-        key === "projectRedefine_Connectivity" ||
-        key === "projectRedefine_Education" ||
-        key === "projectRedefine_Business" ||
-        key === "projectRedefine_Entertainment" ||
-        key === "Amenities"
-      ) {
-        // For fields expected as arrays, split the string by comma and append each item
-        const items = editFromData[key]
-          .split(",")
-          .map((item) => item.trim())
-          .filter((item) => item !== "");
-        items.forEach((item) => formDataAPI.append(key, item));
-      } else {
-        formDataAPI.append(key, editFromData[key]);
-      }
-    }
-
-    // Append all single image files
-    if (fileData.logo) formDataAPI.append("logo", fileData.logo);
-    if (fileData.thumbnailImage)
-      formDataAPI.append("thumbnailImage", fileData.thumbnailImage);
-    if (fileData.project_locationImage)
-      formDataAPI.append(
-        "project_locationImage",
-        fileData.project_locationImage
-      );
-    if (fileData.frontImage)
-      formDataAPI.append("frontImage", fileData.frontImage);
-    if (fileData.project_Brochure)
-      formDataAPI.append("project_Brochure", fileData.project_Brochure);
-    if (fileData.highlightImage)
-      formDataAPI.append("highlightImage", fileData.highlightImage);
-    if (fileData.projectMaster_plan)
-      formDataAPI.append("projectMaster_plan", fileData.projectMaster_plan);
-
-    // Append multiple image files
-    fileData.project_floorplan_Image.forEach((file) => {
-      formDataAPI.append("project_floorplan_Image", file);
-    });
-    fileData.projectGallery.forEach((file) => {
-      formDataAPI.append("projectGallery", file);
-    });
-
-    // --- DEBUG LOGGING ---
-    console.log("Submitting Project FormData:");
-    for (let pair of formDataAPI.entries()) {
-      if (pair[1] instanceof File) {
-        console.log(
-          pair[0],
-          "(File):",
-          pair[1].name,
-          pair[1].type,
-          pair[1].size + " bytes"
-        );
-      } else {
-        console.log(pair[0], ":", pair[1]);
-      }
-    }
-    // --- END DEBUG LOGGING ---
-
-    try {
-      console.log("Sending request to:", apiEndpoint);
-      console.log("Request headers:", {
-        "Content-Type": "multipart/form-data",
-        Authorization: `Bearer ${token.replace(/^"/, "").replace(/"$/, "")}`,
-      });
-
-      const response = await api.post(apiEndpoint, formDataAPI, {
-        // Let axios/browser set multipart boundary automatically; auth handled by api client
-        withCredentials: true,
-      });
-
-      if (response.status === 200) {
-        messageApi.destroy("insertProject");
-        messageApi.open({
-          type: "success",
-          content: "Project added successfully!",
-          duration: 2,
-        });
-        resetData();
-        resetImageData();
-      } else {
-        messageApi.destroy("insertProject");
-        messageApi.open({
-          type: "error",
-          content:
-            "Failed to add project. Server returned an unexpected status.",
-          duration: 3,
-        });
-        console.error(
-          "Failed to add project. Server response:",
-          response.status,
-          response.data
-        );
+        // Success message
+        showToast.dismiss('addState');
+        showToast.success('State added successfully!');
       }
     } catch (error) {
-      messageApi.destroy("insertProject");
-      let errorMessage = "An unexpected error occurred";
+      console.error("Error adding state:", error);
 
-      if (error.response) {
-        // Server responded with a status code outside 2xx
-        const { status, data } = error.response;
-        console.error("Server Error:", status, data);
+      // Fallback: still update local state even if API fails
+      setEditFromData((prev) => ({
+        ...prev,
+        state: customStateName.trim(),
+      }));
+      setStateSearchTerm(customStateName.trim());
+      setShowCustomStateInput(false);
 
-        if (status === 401) {
-          errorMessage = "Session expired. Please login again.";
-        } else if (status === 403) {
-          errorMessage = "You do not have permission to perform this action";
-        } else if (status === 404) {
-          errorMessage = "API endpoint not found. Please check the URL.";
-        } else if (status === 413) {
-          errorMessage =
-            "File size too large. Please reduce file size and try again.";
-        } else if (status >= 500) {
-          errorMessage = "Server error. Please try again later.";
-        } else if (data && data.message) {
-          errorMessage = data.message;
-        } else {
-          errorMessage = `Server error (${status})`;
-        }
-
-        // Log detailed error for debugging
-        console.error("Error details:", {
-          status,
-          data,
-          headers: error.response.headers,
-          config: error.config,
-        });
-      } else if (error.request) {
-        // Request was made but no response received
-        console.error("Network Error:", error.request);
-        errorMessage =
-          "No response from server. Please check your network connection.";
-      } else {
-        // Error setting up the request
-        console.error("Request Error:", error.message);
-        errorMessage = `Request failed: ${error.message}`;
+      // Add to local states list for immediate availability
+      const newState = customStateName.trim();
+      if (!statesList.includes(newState)) {
+        const newStatesList = [...statesList, newState].sort();
+        setStatesList(newStatesList);
+        setFilteredStates(newStatesList.filter(state =>
+          state.toLowerCase().includes(stateSearchTerm.toLowerCase())
+        ));
       }
 
-      // Show error message to user
-      messageApi.open({
-        type: "error",
-        content: errorMessage,
-        duration: 5,
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
+      // Clear input
+      setCustomStateName("");
 
-  // Helper for file input display names
-  const getFileName = (file) => (file ? file.name : "No file chosen");
-  const getMultipleFileNames = (files) =>
-    files && files.length > 0
-      ? files.map((file) => file.name).join(", ")
-      : "No files chosen";
+      // Warning message
+      showToast.dismiss('addState');
+      showToast.warning('State added locally. Backend state management can be added later.');
+    }
+  }
+};
+
+const handleSubmitProject = async (e) => {
+  e.preventDefault();
+  setLoading(true);
+  showToast.loading('Adding new project...', { id: 'insertProject' });
+
+  const apiEndpoint = "project/Insert"; // Use direct backend path (no dev-only /api prefix)
+
+  const formDataAPI = new FormData();
+
+  // Get auth token from localStorage
+  const token =
+    localStorage.getItem("token") || localStorage.getItem("myToken");
+  if (!token) {
+    showToast.dismiss('insertProject');
+    showToast.error('Please login first!');
+    setLoading(false);
+    return;
+  }
+
+  // Append all text/select data from editFromData
+  for (const key in editFromData) {
+    if (
+      key === "projectRedefine_Connectivity" ||
+      key === "projectRedefine_Education" ||
+      key === "projectRedefine_Business" ||
+      key === "projectRedefine_Entertainment" ||
+      key === "Amenities"
+    ) {
+      // For fields expected as arrays, split the string by comma and append each item
+      const items = editFromData[key]
+        .split(",")
+        .map((item) => item.trim())
+        .filter((item) => item !== "");
+      items.forEach((item) => formDataAPI.append(key, item));
+    } else {
+      formDataAPI.append(key, editFromData[key]);
+    }
+  }
+
+  // Append all single image files
+  if (fileData.logo) formDataAPI.append("logo", fileData.logo);
+  if (fileData.thumbnailImage)
+    formDataAPI.append("thumbnailImage", fileData.thumbnailImage);
+  if (fileData.project_locationImage)
+    formDataAPI.append(
+      "project_locationImage",
+      fileData.project_locationImage
+    );
+  if (fileData.frontImage)
+    formDataAPI.append("frontImage", fileData.frontImage);
+  if (fileData.project_Brochure)
+    formDataAPI.append("project_Brochure", fileData.project_Brochure);
+  if (fileData.highlightImage)
+    formDataAPI.append("highlightImage", fileData.highlightImage);
+  if (fileData.projectMaster_plan)
+    formDataAPI.append("projectMaster_plan", fileData.projectMaster_plan);
+
+  // Append multiple image files
+  fileData.project_floorplan_Image.forEach((file) => {
+    formDataAPI.append("project_floorplan_Image", file);
+  });
+  fileData.projectGallery.forEach((file) => {
+    formDataAPI.append("projectGallery", file);
+  });
+
+  try {
+    const response = await api.post(apiEndpoint, formDataAPI, {
+      // Let axios/browser set multipart boundary automatically; auth handled by api client
+      withCredentials: true,
+    });
+
+    if (response.status === 200) {
+      showToast.dismiss('insertProject');
+      showToast.success('Project added successfully!');
+      resetData();
+      resetImageData();
+    } else {
+      showToast.dismiss('insertProject');
+      showToast.error('Failed to add project. Server returned an unexpected status.');
+      console.error(
+        "Failed to add project. Server response:",
+        response.status,
+        response.data
+      );
+    }
+  } catch (error) {
+    showToast.dismiss('insertProject');
+    let errorMessage = "An unexpected error occurred";
+
+    if (error.response) {
+      // Server responded with a status code outside 2xx
+      const { status, data } = error.response;
+      console.error("Server Error:", status, data);
+
+      if (status === 401) {
+        errorMessage = "Session expired. Please login again.";
+      } else if (status === 403) {
+        errorMessage = "You do not have permission to perform this action";
+      } else if (status === 404) {
+        errorMessage = "API endpoint not found. Please check the URL.";
+      } else if (status === 413) {
+        errorMessage =
+          "File size too large. Please reduce file size and try again.";
+      } else if (status >= 500) {
+        errorMessage = "Server error. Please try again later.";
+      } else if (data && data.message) {
+        errorMessage = data.message;
+      } else {
+        errorMessage = `Server error (${status})`;
+      }
+
+      // Log detailed error for debugging
+      console.error("Error details:", {
+        status,
+        data,
+        headers: error.response.headers,
+        config: error.config,
+      });
+    } else if (error.request) {
+      // Request was made but no response received
+      console.error("Network Error:", error.request);
+      errorMessage =
+        "No response from server. Please check your network connection.";
+    } else {
+      // Error setting up the request
+      console.error("Request Error:", error.message);
+      errorMessage = `Request failed: ${error.message}`;
+    }
+
+    // Show error message to user
+    showToast.error(errorMessage, { duration: 5000 });
+  } finally {
+    setLoading(false);
+  }
+};
 
   // Helper Dropzone component for single file
   function FileDropzone({ onDrop, label, currentFile }) {

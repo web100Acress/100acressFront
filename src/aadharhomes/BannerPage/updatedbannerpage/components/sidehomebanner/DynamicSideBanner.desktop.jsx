@@ -1,8 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchActiveSideBanners } from '../../Redux/slice/SideBannerSlice';
+import { fetchActiveSideBanners } from '../../../../../Redux/slice/SideBannerSlice';
 
-const DynamicSideBanner = () => {
+/*
+  DynamicSideBanner - Desktop Version
+  - Optimized for desktop devices with hover effects
+  - Full-height banner for desktop screens
+  - Auto-rotating banners with desktop-optimized timing
+*/
+const DynamicSideBannerDesktop = () => {
   const dispatch = useDispatch();
   const { activeSideBanners, loading } = useSelector(state => state.sideBanner);
   const [currentBannerIndex, setCurrentBannerIndex] = useState(0);
@@ -11,7 +17,7 @@ const DynamicSideBanner = () => {
     dispatch(fetchActiveSideBanners());
   }, [dispatch]);
 
-  // Rotate through banners every 5 seconds
+  // Rotate through banners every 5 seconds (standard for desktop)
   useEffect(() => {
     if (activeSideBanners.length <= 1) return;
 
@@ -25,7 +31,7 @@ const DynamicSideBanner = () => {
   }, [activeSideBanners]);
 
   if (loading || activeSideBanners.length === 0) {
-    // Fallback to default banner if loading or no banners
+    // Fallback to default banner for desktop
     return (
       <div className="rounded-2xl border border-gray-200 bg-white shadow-sm overflow-hidden" style={{ width: '100%', height: 'calc(100vh - 120px)' }}>
         <img 
@@ -68,4 +74,4 @@ const DynamicSideBanner = () => {
   );
 };
 
-export default DynamicSideBanner;
+export default DynamicSideBannerDesktop;

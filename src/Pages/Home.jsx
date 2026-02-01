@@ -29,9 +29,9 @@ import Api_Service from "../Redux/utils/Api_Service";
 import { useSelector } from "react-redux";
 // import Chatbot from "../Components/HomePageComponents/Chatbot";
 import { AuthContext } from "../AuthContext";
-import FloatingShorts from "../Components/FloatingShorts";
+import FloatingShorts from "../aadharhomes/BannerPage/updatedbannerpage/components/youtubeshorts";
 import DynamicHeroBanner from "../Components/HomePageComponents/DynamicHeroBanner";
-import DynamicSideBanner from "../Components/HomePageComponents/DynamicSideBanner";
+import DynamicSideBanner from "../aadharhomes/BannerPage/updatedbannerpage/components/sidehomebanner";
 
 const Home = () => {
   // const [showConfetti, setShowConfetti] = useState(true);
@@ -732,6 +732,8 @@ const Home = () => {
        {/* Auth Modal for login/register */}
         <AuthModal open={authOpen} onClose={() => setAuthOpen(false)} defaultView={authDefaultView} />
 
+        {/* Floating Shorts */}
+        <FloatingShorts />
 
         <Footer />
  

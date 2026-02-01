@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
 import api from "../../../../../config/apiClient";
-import { toast } from "react-hot-toast";
+import showToast from "../../../../../Utils/toastUtils";
 
 const AuthorProfileUpdate = () => {
   const [loading, setLoading] = useState(false);
@@ -36,7 +36,7 @@ const AuthorProfileUpdate = () => {
         const token = localStorage.getItem("myToken");
         const authToken = sanitizeToken(token);
         if (!authToken) {
-          toast.error("Please login to update profile");
+          showToast.error("Please login to update profile");
           return;
         }
 
@@ -51,7 +51,7 @@ const AuthorProfileUpdate = () => {
         })();
 
         if (!userIdForEdit) {
-          toast.error("User ID not found. Please login again.");
+          showToast.error("User ID not found. Please login again.");
           return;
         }
 
@@ -114,7 +114,7 @@ const AuthorProfileUpdate = () => {
           currentProfilePicture: userData.profilePicture || ""
         });
         
-        toast.error("Failed to load profile from database");
+        showToast.error("Failed to load profile from database");
       } finally {
         setLoading(false);
       }
@@ -136,13 +136,13 @@ const AuthorProfileUpdate = () => {
     if (file) {
       // Validate file type
       if (!file.type.startsWith('image/')) {
-        toast.error("Please upload an image file");
+        showToast.error("Please upload an image file");
         return;
       }
       
       // Validate file size (max 5MB)
       if (file.size > 5 * 1024 * 1024) {
-        toast.error("Image size should be less than 5MB");
+        showToast.error("Image size should be less than 5MB");
         return;
       }
 
@@ -157,7 +157,7 @@ const AuthorProfileUpdate = () => {
     e.preventDefault();
     
     if (!profile.name.trim()) {
-      toast.error("Name is required");
+      showToast.error("Name is required");
       return;
     }
 
@@ -175,7 +175,7 @@ const AuthorProfileUpdate = () => {
       })();
 
       if (!userIdForEdit) {
-        toast.error("User ID not found. Please login again.");
+        showToast.error("User ID not found. Please login again.");
         setSaving(false);
         return;
       }
@@ -243,7 +243,7 @@ const AuthorProfileUpdate = () => {
           }));
         }
         
-        toast.success("Profile updated successfully!");
+        showToast.success("Profile updated successfully!");
       }
       
     } catch (error) {
@@ -251,7 +251,7 @@ const AuthorProfileUpdate = () => {
       const errorMessage = error?.response?.data?.message || 
                         error?.message || 
                         "Failed to update profile. Please try again.";
-      toast.error(errorMessage);
+      showToast.error(errorMessage);
     } finally {
       setSaving(false);
     }

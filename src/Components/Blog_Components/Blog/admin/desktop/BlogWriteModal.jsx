@@ -3,17 +3,17 @@ import Quill from 'quill';
 import api from '../../../../../config/apiClient';
   import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import ReactCrop from 'react-image-crop';
-import 'react-image-crop/dist/ReactCrop.css';
-import 'quill-emoji/dist/quill-emoji.css';
-import 'quill-emoji';
-import { useParams, useNavigate } from 'react-router-dom';
-import { message } from 'antd';
+ import ReactCrop from 'react-image-crop';
+ import 'react-image-crop/dist/ReactCrop.css';
+ import 'quill-emoji/dist/quill-emoji.css';
+ import 'quill-emoji';
+ import { useParams, useNavigate } from 'react-router-dom';
+ import showToast from "../../../../../Utils/toastUtils";
  
-import {
-  FileText,
-  Image as ImageIcon,
-  Edit3,
+ import {
+   FileText,
+   Image as ImageIcon,
+   Edit3,
   Save,
   Upload,
   UploadCloud,
@@ -29,9 +29,9 @@ import {
   History,
   Maximize2,
   Minimize2
-} from 'lucide-react';
+ } from 'lucide-react';
 
-const initialCategories = [
+ const initialCategories = [
   'Commercial Property',
   'Residential Flats',
   'SCO Plots',
@@ -40,10 +40,10 @@ const initialCategories = [
   'Independent Floors',
   'Builder Floors',
   'Affordable Homes',
-];
+ ];
 
-/** slugify helper */
-const slugify = (text = '') =>
+ /** slugify helper */
+ const slugify = (text = '') =>
   text
     .toString()
     .toLowerCase()
@@ -53,28 +53,13 @@ const slugify = (text = '') =>
     .replace(/^-+|-+$/g, '')
     .slice(0, 100);
 
-const BlogWriteModal = () => {
+ const BlogWriteModal = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   // Auth is handled by the shared axios client interceptor
-  const [messageApi, contextHolder] = message.useMessage();
   // Configure global message behavior: auto-dismiss and limit stacking
   useEffect(() => {
-    try {
-      message.config({ 
-        duration: 3, 
-        maxCount: 1,
-        top: 100,
-        style: {
-          fontSize: '16px',
-          padding: '16px 24px',
-          borderRadius: '8px',
-          minWidth: '300px',
-          textAlign: 'center',
-          fontWeight: '500'
-        }
-      });
-    } catch {}
+    // Intentionally left blank (migrated away from antd message)
   }, []);
 
   // Core fields
@@ -187,7 +172,7 @@ const BlogWriteModal = () => {
     if (file) {
       // STRICT: Check if dropped file is WebP
       if (file.type !== 'image/webp') {
-        messageApi.error('Jab bola hai WebP me karne ko to karona aalsii WebP me karke wapis dalo.');
+        showToast.error('Jab bola hai WebP me karne ko to karona aalsii WebP me karke wapis dalo.');
         return;
       }
       handleFileChange({ target: { files: [file] } });
@@ -706,7 +691,7 @@ const BlogWriteModal = () => {
       if (imgs.length === 4) break;
     }
     if (imgs.length < 2) {
-      messageApi.info('Need at least 2 images after the cursor to convert to a grid');
+      showToast.info('Need at least 2 images after the cursor to convert to a grid');
       return;
     }
 
@@ -743,7 +728,7 @@ const BlogWriteModal = () => {
       }
     });
 
-    messageApi.success('Converted 4 images into a grid');
+    showToast.success('Converted 4 images into a grid');
   };
 
   // Helper: insert image URL into Quill with trailing newline
@@ -803,9 +788,9 @@ const BlogWriteModal = () => {
   const confirmCropAndInsert = async () => {
     try {
       if (!completedCrop?.width || !completedCrop?.height) {
-        return messageApi.warning('Please select a crop area');
+        return showToast.warning('Please select a crop area');
       }
-      messageApi.open({ key: 'cropUpload', type: 'loading', content: 'Uploading cropped image...', duration: 0 });
+      showToast.loading('Uploading cropped image...', { id: 'cropUpload' });
       
       // Get the cropped blob
       const blob = await getCroppedBlob();
@@ -840,8 +825,8 @@ const BlogWriteModal = () => {
         }
 
         insertImageIntoQuill(imageUrl);
-        messageApi.destroy('cropUpload');
-        messageApi.success('Image uploaded and inserted');
+        showToast.dismiss('cropUpload');
+        showToast.success('Image uploaded and inserted');
         closeCropper();
       } catch (uploadError) {
         console.error('Upload error:', uploadError);
@@ -854,7 +839,7 @@ const BlogWriteModal = () => {
           throw new Error(uploadError.response.data?.message || 'Server error during upload');
         } else if (uploadError.request) {
           // The request was made but no response was received
-          console.error('No response received:', uploadError.request);
+          console.error('No response from server:', uploadError.request);
           throw new Error('No response from server. Please check your connection.');
         } else {
           // Something happened in setting up the request that triggered an Error
@@ -864,8 +849,8 @@ const BlogWriteModal = () => {
       }
     } catch (err) {
       console.error('Crop upload failed:', err);
-      messageApi.destroy('cropUpload');
-      messageApi.error(err.message || 'Failed to upload cropped image');
+      showToast.dismiss('cropUpload');
+      showToast.error(err.message || 'Failed to upload cropped image');
     }
   };
 
@@ -936,7 +921,7 @@ const BlogWriteModal = () => {
         setAllProjects(all);
       } catch (error) {
         console.error('Error fetching projects:', error);
-        message.error('Failed to load projects');
+        showToast.error('Failed to load projects');
       } finally {
         setIsLoadingProjects(false);
       }
@@ -1097,17 +1082,17 @@ const BlogWriteModal = () => {
         projectName: project.projectName,
         thumbnail: project.thumbnail
       }]);
-      messageApi.success(`Added "${project.projectName}" to related projects`);
+      showToast.success(`Added "${project.projectName}" to related projects`);
     } else if (exists) {
-      messageApi.warning('Project already added');
+      showToast.warning('Project already added');
     } else {
-      messageApi.warning('Maximum 5 related projects allowed');
+      showToast.warning('Maximum 5 related projects allowed');
     }
   };
 
   const removeRelatedProject = (projectUrl) => {
     setRelatedProjects(prev => prev.filter(p => p.project_url !== projectUrl));
-    messageApi.success('Project removed from related projects');
+    showToast.success('Project removed from related projects');
   };
 
   /** Handle image URL input */
@@ -1121,14 +1106,7 @@ const BlogWriteModal = () => {
         new URL(url); // Will throw if invalid URL
         // STRICT: Check if URL ends with .webp
         if (!url.toLowerCase().endsWith('.webp')) {
-          messageApi.error({
-            content: 'Only WebP images are allowed. Please use a .webp image URL.',
-            style: {
-              marginTop: '10px',
-              marginBottom: '10px',
-            },
-          });
-          setFrontImagePreview('');
+          showToast.error('Only WebP images are allowed. Please use a .webp image URL.');
           return;
         }
         setFrontImagePreview(url);
@@ -1156,14 +1134,14 @@ const BlogWriteModal = () => {
 
     // Check file type - STRICT: Only WebP images allowed
     if (file.type !== 'image/webp') {
-      messageApi.error('Only WebP images are allowed. Please upload a .webp file.');
+      showToast.error('Only WebP images are allowed. Please upload a .webp file.');
       e.target.value = '';
       return;
     }
 
     // Check file size (5MB limit)
     if (file.size > 5 * 1024 * 1024) {
-      messageApi.error('Image size should be less than 5MB');
+      showToast.error('Image size should be less than 5MB');
       e.target.value = '';
       return;
     }
@@ -1176,13 +1154,7 @@ const BlogWriteModal = () => {
       const tolerance = 5; // Allow 5px tolerance
       
       if (Math.abs(this.width - expectedWidth) > tolerance || Math.abs(this.height - expectedHeight) > tolerance) {
-        messageApi.error({
-          content: `Image must be exactly ${expectedWidth} × ${expectedHeight} pixels (Current: ${this.width} × ${this.height})`,
-          style: {
-            marginTop: '10px',
-            marginBottom: '10px',
-          },
-        });
+        showToast.error(`Image must be exactly ${expectedWidth} × ${expectedHeight} pixels (Current: ${this.width} × ${this.height})`);
         e.target.value = '';
         return;
       }
@@ -1193,18 +1165,7 @@ const BlogWriteModal = () => {
       const ratioTolerance = 0.01; // 1% tolerance
       
       if (Math.abs(actualRatio - expectedRatio) > ratioTolerance) {
-        messageApi.error({
-          content: `Image aspect ratio must be ${expectedWidth}:${expectedHeight} (300:157). Current ratio is ${this.width}:${this.height}`,
-          style: {
-            marginTop: '20px',
-            marginBottom: '20px',
-            backgroundColor: 'rgba(255, 0, 0, 0.1)',
-            color: '#ff0000',
-            border: '1px solid #ff0000',
-            borderRadius: '5px',
-            padding: '10px',
-          },
-        });
+        showToast.error(`Image aspect ratio must be ${expectedWidth}:${expectedHeight} (300:157). Current ratio is ${this.width}:${this.height}`);
         e.target.value = '';
         return;
       }
@@ -1214,7 +1175,7 @@ const BlogWriteModal = () => {
     };
     
     img.onerror = function() {
-      messageApi.error('Failed to load image. Please try a different file.');
+      showToast.error('Failed to load image. Please try a different file.');
       e.target.value = '';
     };
     
@@ -1274,27 +1235,27 @@ const BlogWriteModal = () => {
       
       // STRICT: Only WebP images allowed
       if (file.type !== 'image/webp') {
-        messageApi.error('Jab bola hai WebP me karne ko to karona aalsii WebP me karke wapis dalo.');
+        showToast.error('Jab bola hai WebP me karne ko to karona aalsii WebP me karke wapis dalo.');
         return;
       }
       
       // If SVG, bypass cropper to preserve vector quality
       if (file.type === 'image/svg+xml') {
         try {
-          messageApi.open({ key: 'svgUpload', type: 'loading', content: 'Uploading SVG...', duration: 0 });
+          showToast.loading('Uploading SVG...', { id: 'svgUpload' });
           const fd = new FormData();
           fd.append('image', file);
           const res = await api.post(`/blog/upload-image`, fd);
           const imageUrl = res?.data?.url || res?.data?.data?.url || res?.data?.imageUrl || '';
           if (!imageUrl) throw new Error('Upload succeeded but no URL returned');
           insertImageIntoQuill(imageUrl);
-          messageApi.destroy('svgUpload');
-          messageApi.success('SVG inserted');
+          showToast.dismiss('svgUpload');
+          showToast.success('SVG inserted');
           return;
         } catch (err) {
           console.error('SVG upload failed', err);
-          messageApi.destroy('svgUpload');
-          messageApi.error('SVG upload failed');
+          showToast.dismiss('svgUpload');
+          showToast.error('SVG upload failed');
           return;
         }
       }
@@ -1307,7 +1268,7 @@ const BlogWriteModal = () => {
         setShowCropper(true);
       } catch (err) {
         console.error('Failed to open cropper', err);
-        messageApi.error('Failed to open image cropper');
+        showToast.error('Failed to open image cropper');
       }
     };
     input.click();
@@ -1339,7 +1300,7 @@ const BlogWriteModal = () => {
       }
       setCategories(createdName);
       setAddedCategory('');
-      messageApi.success('Category added');
+      showToast.success('Category added');
     } catch (e) {
       // If already exists, still select it
       if (!categoryList.includes(name)) {
@@ -1347,7 +1308,7 @@ const BlogWriteModal = () => {
       }
       setCategories(name);
       setAddedCategory('');
-      messageApi.info('Category already exists or saved');
+      showToast.info('Category already exists or saved');
     }
   };
 
@@ -1360,31 +1321,31 @@ const BlogWriteModal = () => {
 
     // Validation
     if (!title.trim()) {
-      return messageApi.error('Please enter a blog title');
+      return showToast.error('Please enter a blog title');
     }
     if (!description || !description.trim()) {
-      return messageApi.error('Please enter blog content');
+      return showToast.error('Please enter blog content');
     }
     if (!categories || categories === '__other__') {
-      return messageApi.error('Please select or create a category');
+      return showToast.error('Please select or create a category');
     }
     if (!slug || !slug.trim()) {
-      return messageApi.error('Please enter a slug');
+      return showToast.error('Please enter a slug');
     }
     if (slugChecking) {
-      return messageApi.warning('Please wait, checking slug...');
+      return showToast.warning('Please wait, checking slug...');
     }
     if (slugAvailable === false) {
-      return messageApi.error('Slug is already taken. Choose another.');
+      return showToast.error('Slug is already taken. Choose another.');
     }
     if (!frontImage && !frontImagePreview && !blogToEdit) {
-      return messageApi.error('Please select a featured image');
+      return showToast.error('Please select a featured image');
     }
 
     // File size validation (10MB limit)
     const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
     if (frontImage && frontImage.size > MAX_FILE_SIZE) {
-      return messageApi.error('Featured image exceeds maximum size of 10MB');
+      return showToast.error('Featured image exceeds maximum size of 10MB');
     }
 
     // Authorization is handled by the axios interceptor and enforced by the backend.
@@ -1447,51 +1408,41 @@ const BlogWriteModal = () => {
           formDataAPI.append('blog_Image', processedFile);
         } catch (fileError) {
           console.error('File processing error:', fileError);
-          return messageApi.error(fileError.message || 'Error processing image');
+          return showToast.error(fileError.message || 'Error processing image');
         }
       }
 
       if (blogToEdit) {
-        messageApi.open({
-          key: 'updateloading',
-          type: 'loading',
-          content: 'Updating the blog...',
-          duration: 0,
-        });
+        showToast.loading('Updating the blog...', { id: 'updateloading' });
 
         const res = await api.put(`/blog/update/${blogId}`, formDataAPI);
 
-        messageApi.destroy('updateloading');
+        showToast.dismiss('updateloading');
         if (res.status === 200) {
-          messageApi.success('Blog updated successfully');
+          showToast.success('Blog updated successfully');
           resetForm();
           navigate('/seo/blogs');
         } else {
-          messageApi.error('Error updating blog');
+          showToast.error('Error updating blog');
         }
       } else {
-        messageApi.open({
-          key: 'loadingNewBlog',
-          type: 'loading',
-          content: 'Adding New Blog...',
-          duration: 0,
-        });
+        showToast.loading('Adding New Blog...', { id: 'loadingNewBlog' });
 
         const res = await api.post(`/blog/insert`, formDataAPI);
 
-        messageApi.destroy('loadingNewBlog');
+        showToast.dismiss('loadingNewBlog');
         if (res.status === 200) {
-          messageApi.success('Blog added successfully');
+          showToast.success('Blog added successfully');
           resetForm();
           navigate('/seo/blogs');
         } else {
-          messageApi.error('Error adding blog');
+          showToast.error('Error adding blog');
         }
       }
     } catch (error) {
       console.error('Blog submit error:', error);
-      messageApi.destroy('updateloading');
-      messageApi.destroy('loadingNewBlog');
+      showToast.dismiss('updateloading');
+      showToast.dismiss('loadingNewBlog');
 
       let errorMessage = 'Error saving blog';
       
@@ -1519,7 +1470,7 @@ const BlogWriteModal = () => {
         errorMessage = error.message;
       }
       
-      messageApi.error(errorMessage);
+      showToast.error(errorMessage);
     } finally {
       setIsSubmitting(false);
     }
@@ -1604,7 +1555,7 @@ const BlogWriteModal = () => {
             setShowCropper(true);
           } catch (err) {
             console.error('Failed to open cropper from paste', err);
-            messageApi.error('Failed to open image cropper');
+            showToast.error('Failed to open image cropper');
           }
         }
       }
@@ -1798,7 +1749,7 @@ const BlogWriteModal = () => {
       node = node.querySelector('.img-grid-4') || node;
     }
     if (!node || node === quill.root || !node.classList.contains('img-grid-4')) {
-      messageApi.info('Place the cursor inside a 4-image grid to apply settings');
+      showToast.info('Place the cursor inside a 4-image grid to apply settings');
       return;
     }
     // Update height and layout
@@ -1871,12 +1822,11 @@ const BlogWriteModal = () => {
         cap.remove();
       }
     });
-    messageApi.success('Applied grid settings');
+    showToast.success('Applied grid settings');
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-2 sm:p-4 lg:p-6">
-      {contextHolder}
       <div className="w-full">
         {/* Inline styles to improve image UX */}
         <style>{`
@@ -2057,7 +2007,7 @@ const BlogWriteModal = () => {
                   setEnableFAQ(!!s.enableFAQ);
                   setFaqs(Array.isArray(s.faqs) && s.faqs.length ? s.faqs : [{question:'',answer:''}]);
                   setAuthor(s.author || author);
-                  messageApi.success('Draft restored');
+                  showToast.success('Draft restored');
                 } catch {}
               }} className="px-3 py-2 rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50 flex items-center gap-2">
                 <History className="w-4 h-4" /> Restore Draft
@@ -2252,7 +2202,9 @@ const BlogWriteModal = () => {
         </button>
       </div>
     </div>
-    <p className="text-[11px] text-gray-500">Auto-generates from title</p>
+    <p className="text-[11px] text-gray-500">
+      Auto-generates from title
+    </p>
     {slug && (
       <div className="text-[11px] mt-0.5">
         {slugChecking ? (
@@ -2478,178 +2430,164 @@ const BlogWriteModal = () => {
 
             {/* Related Projects Section */}
             <div className="space-y-3">
-  <div className="flex items-center gap-2">
-    <LinkIcon className="w-4 h-4 text-indigo-600" />
-    <span className="text-sm font-medium text-gray-900">Related Projects</span>
-    <span className="text-xs text-gray-500">({relatedProjects.length}/5)</span>
+  <div className="flex items-center justify-between">
+    <div className="flex items-center gap-2">
+      <LinkIcon className="w-4 h-4 text-indigo-600" />
+      <span className="text-sm font-medium text-gray-900">Related Projects</span>
+      <span className="text-xs text-gray-500">({relatedProjects.length}/5)</span>
+    </div>
+    {autoSuggestEnabled && suggestedProjects.length > 0 && (
+      <button
+        type="button"
+        className="px-2 py-1 text-xs rounded-lg bg-emerald-600 text-white hover:bg-emerald-700"
+        onClick={() => {
+          const toAdd = suggestedProjects.slice(0, Math.max(0, 5 - relatedProjects.length));
+          toAdd.forEach(addRelatedProject);
+        }}
+        disabled={relatedProjects.length >= 5}
+      >
+        Add Top {Math.min(3, suggestedProjects.length)} Suggested
+      </button>
+    )}
   </div>
 
-  <div className="bg-gray-50 rounded-lg p-3 space-y-2">
-    {/* Auto-suggest toggle */}
-    <div className="flex items-center justify-between flex-wrap gap-2">
-      <label className="inline-flex items-center gap-1.5 text-xs text-gray-700">
-        <input 
-          type="checkbox" 
-          checked={autoSuggestEnabled} 
-          onChange={(e) => setAutoSuggestEnabled(e.target.checked)}
-          className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-        />
-        Auto-suggest from content
-      </label>
-      
-      {autoSuggestEnabled && suggestedProjects.length > 0 && (
-        <button
-          type="button"
-          className="px-2 py-1 text-xs rounded-lg bg-emerald-600 text-white hover:bg-emerald-700"
-          onClick={() => {
-            const toAdd = suggestedProjects.slice(0, Math.max(0, 5 - relatedProjects.length));
-            toAdd.forEach(addRelatedProject);
-          }}
-          disabled={relatedProjects.length >= 5}
-        >
-          Add Top {Math.min(3, suggestedProjects.length)} Suggested
-        </button>
-      )}
-    </div>
-
-    {/* Suggestions grid */}
-    {autoSuggestEnabled && suggestedProjects.length > 0 && (
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-        {suggestedProjects.slice(0, 4).map((p, idx) => (
-          <div key={`${p.project_url}-${idx}`} className="flex items-center justify-between p-2 bg-white border border-gray-100 rounded-lg">
-            <div className="flex items-center gap-2 min-w-0">
-              {p.thumbnail && (
-                <img 
-                  src={p.thumbnail} 
-                  alt="" 
-                  className="w-8 h-8 rounded object-cover" 
-                  onError={(e) => e.target.style.display='none'} 
-                />
-              )}
-              <div className="min-w-0">
-                <div className="text-xs font-medium text-gray-900 truncate">{p.projectName || 'Project'}</div>
-                <div className="text-[10px] text-gray-500 truncate">{p.builderName || p.city || ''}</div>
-              </div>
+  {/* Suggestions grid */}
+  {autoSuggestEnabled && suggestedProjects.length > 0 && (
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+      {suggestedProjects.slice(0, 4).map((p, idx) => (
+        <div key={`${p.project_url}-${idx}`} className="flex items-center justify-between p-2 bg-white border border-gray-100 rounded-lg">
+          <div className="flex items-center gap-2 min-w-0">
+            {p.thumbnail && (
+              <img 
+                src={p.thumbnail} 
+                alt="" 
+                className="w-8 h-8 rounded object-cover" 
+                onError={(e) => e.target.style.display='none'} 
+              />
+            )}
+            <div className="min-w-0">
+              <div className="text-xs font-medium text-gray-900 truncate">{p.projectName || 'Project'}</div>
+              <div className="text-[10px] text-gray-500 truncate">{p.builderName || p.city || ''}</div>
             </div>
-            <button 
-              type="button" 
-              className="px-2 py-0.5 text-xs rounded bg-indigo-600 text-white hover:bg-indigo-700"
-              onClick={() => addRelatedProject(p)} 
-              disabled={relatedProjects.length >= 5}
-            >
-              Add
-            </button>
           </div>
-        ))}
-      </div>
-    )}
-
-    {/* Project search */}
-    <div className="relative">
-      <input
-        type="text"
-        value={projectSearchTerm}
-        onChange={(e) => setProjectSearchTerm(e.target.value)}
-        placeholder="Search projects..."
-        className="w-full px-3 py-1.5 text-sm border border-gray-200 rounded-lg focus:ring-1 focus:ring-indigo-500"
-      />
-      {projectSearchTerm && (
-        <button
-          type="button"
-          onClick={() => setProjectSearchTerm('')}
-          className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-          title="Clear"
-        >
-          ×
-        </button>
-      )}
+          <button 
+            type="button" 
+            className="px-2 py-0.5 text-xs rounded bg-indigo-600 text-white hover:bg-indigo-700"
+            onClick={() => addRelatedProject(p)} 
+            disabled={relatedProjects.length >= 5}
+          >
+            Add
+          </button>
+        </div>
+      ))}
     </div>
+  )}
 
-    {/* Project dropdown */}
-    <div className="relative">
-      <select
-        className="w-full px-3 py-1.5 text-sm border border-gray-200 rounded-lg focus:ring-1 focus:ring-indigo-500"
-        onChange={(e) => {
-          const idx = Number(e.target.value);
-          const source = projectSearchTerm.trim().length >= 2 ? projectSearchResults : allProjects;
-          const list = source
-            .filter(project => !relatedProjects.find(rp => rp.project_url === project.project_url))
-            .filter(p => {
-              const q = (projectSearchTerm || '').trim().toLowerCase();
-              if (!q) return true;
-              const hay = `${p.projectName || ''} ${p.builderName || ''} ${p.location || ''} ${p.city || ''}`.toLowerCase();
-              return hay.includes(q);
-            });
-          if (!Number.isNaN(idx) && list[idx]) addRelatedProject(list[idx]);
-          e.target.value = '';
-        }}
-        defaultValue=""
+  {/* Project search */}
+  <div className="relative">
+    <input
+      type="text"
+      value={projectSearchTerm}
+      onChange={(e) => setProjectSearchTerm(e.target.value)}
+      placeholder="Search projects..."
+      className="w-full px-3 py-1.5 text-sm border border-gray-200 rounded-lg focus:ring-1 focus:ring-indigo-500"
+    />
+    {projectSearchTerm && (
+      <button
+        type="button"
+        onClick={() => setProjectSearchTerm('')}
+        className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+        title="Clear"
       >
-        <option value="" disabled>{isLoadingProjects ? 'Loading...' : 'Select a project to add'}</option>
-        {(projectSearchTerm.trim().length >= 2 ? projectSearchResults : allProjects)
+        ×
+      </button>
+    )}
+  </div>
+
+  {/* Project dropdown */}
+  <div className="relative">
+    <select
+      className="w-full px-3 py-1.5 text-sm border border-gray-200 rounded-lg focus:ring-1 focus:ring-indigo-500"
+      onChange={(e) => {
+        const idx = Number(e.target.value);
+        const source = projectSearchTerm.trim().length >= 2 ? projectSearchResults : allProjects;
+        const list = source
           .filter(project => !relatedProjects.find(rp => rp.project_url === project.project_url))
           .filter(p => {
             const q = (projectSearchTerm || '').trim().toLowerCase();
             if (!q) return true;
             const hay = `${p.projectName || ''} ${p.builderName || ''} ${p.location || ''} ${p.city || ''}`.toLowerCase();
             return hay.includes(q);
-          })
-          .map((p, idx) => (
-            <option key={p.project_url || `${p.projectName}-${idx}`} value={idx}>
-              {p.projectName || `Project ${idx+1}`}
-              {p.builderName ? ` — ${p.builderName}` : ''}
-            </option>
-          ))}
-      </select>
-      {isLoadingProjects && (
-        <div className="absolute right-2 top-1/2 -translate-y-1/2">
-          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-indigo-600"></div>
-        </div>
-      )}
-    </div>
-
-    {/* Selected projects */}
-    {relatedProjects.length > 0 && (
-      <div className="space-y-1.5 mt-2">
-        <div className="text-xs font-medium text-gray-700">Selected Projects ({relatedProjects.length}/5):</div>
-        <div className="space-y-1.5">
-          {relatedProjects.map((project, index) => (
-            <div
-              key={index}
-              className="flex items-center justify-between p-2 bg-white border border-gray-100 rounded-lg"
-            >
-              <div className="flex items-center gap-2 min-w-0">
-                {project.thumbnail && (
-                  <img
-                    src={project.thumbnail}
-                    alt=""
-                    className="w-6 h-6 object-cover rounded"
-                    onError={(e) => e.target.style.display = 'none'}
-                  />
-                )}
-                <div className="min-w-0">
-                  <p className="text-xs font-medium text-gray-900 truncate">
-                    {project.projectName || 'Project'}
-                  </p>
-                  <p className="text-[10px] text-indigo-600 truncate">
-                    {project.project_url?.replace(/^https?:\/\//, '')}
-                  </p>
-                </div>
-              </div>
-              <button
-                type="button"
-                onClick={() => removeRelatedProject(project.project_url)}
-                className="p-0.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded"
-                title="Remove"
-              >
-                <X className="w-3.5 h-3.5" />
-              </button>
-            </div>
-          ))}
-        </div>
+          });
+        if (!Number.isNaN(idx) && list[idx]) addRelatedProject(list[idx]);
+        e.target.value = '';
+      }}
+      defaultValue=""
+    >
+      <option value="" disabled>{isLoadingProjects ? 'Loading...' : 'Select a project to add'}</option>
+      {(projectSearchTerm.trim().length >= 2 ? projectSearchResults : allProjects)
+        .filter(project => !relatedProjects.find(rp => rp.project_url === project.project_url))
+        .filter(p => {
+          const q = (projectSearchTerm || '').trim().toLowerCase();
+          if (!q) return true;
+          const hay = `${p.projectName || ''} ${p.builderName || ''} ${p.location || ''} ${p.city || ''}`.toLowerCase();
+          return hay.includes(q);
+        })
+        .map((p, idx) => (
+          <option key={p.project_url || `${p.projectName}-${idx}`} value={idx}>
+            {p.projectName || `Project ${idx+1}`}
+            {p.builderName ? ` — ${p.builderName}` : ''}
+          </option>
+        ))}
+    </select>
+    {isLoadingProjects && (
+      <div className="absolute right-2 top-1/2 -translate-y-1/2">
+        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-indigo-600"></div>
       </div>
     )}
   </div>
+
+  {/* Selected projects */}
+  {relatedProjects.length > 0 && (
+    <div className="space-y-1.5 mt-2">
+      <div className="text-xs font-medium text-gray-700">Selected Projects ({relatedProjects.length}/5):</div>
+      <div className="space-y-1.5">
+        {relatedProjects.map((project, index) => (
+          <div
+            key={index}
+            className="flex items-center justify-between p-2 bg-white border border-gray-100 rounded-lg"
+          >
+            <div className="flex items-center gap-2 min-w-0">
+              {project.thumbnail && (
+                <img
+                  src={project.thumbnail}
+                  alt=""
+                  className="w-6 h-6 object-cover rounded"
+                  onError={(e) => e.target.style.display = 'none'}
+                />
+              )}
+              <div className="min-w-0">
+                <p className="text-xs font-medium text-gray-900 truncate">
+                  {project.projectName || 'Project'}
+                </p>
+                <p className="text-[10px] text-indigo-600 truncate">
+                  {project.project_url?.replace(/^https?:\/\//, '')}
+                </p>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => removeRelatedProject(project.project_url)}
+              className="p-0.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded"
+              title="Remove"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        ))}
+      </div>
+    </div>
+  )}
 </div>
 
             {/* Editor Controls */}
@@ -2688,11 +2626,11 @@ const BlogWriteModal = () => {
         // STRICT: Check all files are WebP
         const nonWebpFiles = files.filter(file => file.type !== 'image/webp');
         if (nonWebpFiles.length > 0) {
-          messageApi.error('Only WebP images are allowed');
+          showToast.error('Only WebP images are allowed');
           return;
         }
         
-        messageApi.open({ key: 'gridUpload', type: 'loading', content: 'Uploading...', duration: 0 });
+        showToast.loading('Uploading...', { id: 'gridUpload' });
         try {
           const urls = [];
           for (const f of files) {
@@ -2724,12 +2662,12 @@ const BlogWriteModal = () => {
             quill.clipboard.dangerouslyPasteHTML(sel.index, html, 'user');
             quill.setSelection(sel.index + 1, 0);
           }
-          messageApi.success('Inserted image grid');
+          showToast.success('Inserted image grid');
         } catch (err) {
           console.error(err);
-          messageApi.error('Failed to insert grid');
+          showToast.error('Failed to insert grid');
         } finally {
-          messageApi.destroy('gridUpload');
+          showToast.dismiss('gridUpload');
         }
       };
       input.click();
@@ -3049,7 +2987,7 @@ const BlogWriteModal = () => {
                           setEnableFAQ(!!s.enableFAQ);
                           setFaqs(Array.isArray(s.faqs) && s.faqs.length ? s.faqs : [{question:'',answer:''}]);
                           setAuthor(s.author || author);
-                          messageApi.success('Draft restored');
+                          showToast.success('Draft restored');
                           setShowHistory(false);
                         } catch {}
                       }}>Restore</button>

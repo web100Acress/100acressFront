@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
+import api from "../../../config/apiClient";
+import { showToast } from "../../../Utils/toastUtils";
 import { Link } from 'react-router-dom';
 import AdminInsightsSidebar from '../../components/AdminInsightsSidebar';
-// import React, { useState, useEffect } from 'react';
 import { 
   Form, 
   Input, 
@@ -34,7 +35,6 @@ import {
   EditOutlined,
   SaveOutlined
 } from '@ant-design/icons';
-import api from '../../../config/apiClient';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -204,7 +204,7 @@ const MarketReportsAdmin = () => {
         }
         
         console.log('Server response:', response.data);
-        message.success(`Report ${editingReport ? 'updated' : 'added'} successfully!`);
+        showToast.success(`Report ${editingReport ? 'updated' : 'added'} successfully!`);
         form.resetFields();
         setEditingReport(null);
         fetchReports();
@@ -247,7 +247,7 @@ const MarketReportsAdmin = () => {
       await api.delete(`/api/market-reports/${id}`, {
         headers: token ? { Authorization: `Bearer ${token}` } : {}
       });
-      message.success('Report deleted successfully');
+      showToast.success(showToast.successMessages.deleteSuccess);
       await fetchReports();
     } catch (error) {
       console.error('Error deleting report:', {
@@ -255,7 +255,7 @@ const MarketReportsAdmin = () => {
         response: error.response?.data,
         status: error.response?.status
       });
-      message.error(error.response?.data?.message || 'Failed to delete report');
+      showToast.error(error.response?.data?.message || showToast.errorMessages.deleteError);
     }
   };
 

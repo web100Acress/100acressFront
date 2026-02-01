@@ -13,8 +13,7 @@ import { BiSolidGraduation } from "react-icons/bi";
 import { RiLogoutCircleRLine } from "react-icons/ri";
 import { Building } from "lucide-react";
 import axios from "axios";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import showToast from "../Utils/toastUtils";
 import logoImage from "/Images/100logo.jpg";
 
 const Sidebar = () => {
@@ -58,15 +57,7 @@ const Sidebar = () => {
   };
 
   const showLogoutToast = () => {
-    toast.success("Logging out!", {
-      position: toast.POSITION.TOP_RIGHT,
-      autoClose: 1500,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-    });
+    showToast.success("Logging out!");
   };
 
   const HandleUserLogout = async () => {
@@ -81,15 +72,7 @@ const Sidebar = () => {
       }, 1500);
     } catch (error) {
       console.error("Logout failed:", error);
-      toast.error("Logout failed. Please try again.", {
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      showToast.error("Logout failed. Please try again.");
     }
   };
 

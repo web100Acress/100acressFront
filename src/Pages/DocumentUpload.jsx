@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../config/apiClient';
-import { toast } from 'react-hot-toast';
+import showToast from "../Utils/toastUtils";
 import { FileText, Upload, CheckCircle, AlertCircle } from 'lucide-react';
 
 const DocumentUpload = () => {
@@ -69,10 +69,10 @@ const DocumentUpload = () => {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
 
-      toast.success('Documents uploaded successfully! They are now under verification.');
+      showToast.success('Documents uploaded successfully! They are now under verification.');
       navigate('/upload-success');
     } catch (e) {
-      toast.error(e?.response?.data?.message || 'Upload failed');
+      showToast.error(e?.response?.data?.message || 'Upload failed');
     } finally {
       setUploading(false);
     }
