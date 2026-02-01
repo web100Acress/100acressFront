@@ -12,7 +12,7 @@ import { Toaster as HotToaster } from "react-hot-toast";
 import { TooltipProvider } from "./Components/ui/Tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import PrivateRoute from "./Components/PrivateRoute";
-import showToast from "./utils/toastUtils";
+// import showToast from "./utils/toastUtils";
 import HrPrivateRoute from "./Components/HrPrivateRoute";
 import SalesHeadPrivateRoute from "./Components/SalesHeadPrivateRoute";
 import PublicRoute from "./Components/PublicRoute";
