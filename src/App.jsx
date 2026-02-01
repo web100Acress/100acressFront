@@ -3,8 +3,6 @@ import "./App.css";
 import "./styles/enhanced-toast.css";
 import "./styles/post-property-enhanced.css";
 import { styled } from "styled-components";
-import { ToastContainer, Slide } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { Routes, Route, Navigate, Link, useLocation } from "react-router-dom";
 import { DataProvider } from "./MyContext";
 import { AuthProvider } from "./AuthContext";
@@ -14,6 +12,7 @@ import { Toaster as HotToaster } from "react-hot-toast";
 import { TooltipProvider } from "./Components/ui/Tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import PrivateRoute from "./Components/PrivateRoute";
+import showToast from "./utils/toastUtils";
 import HrPrivateRoute from "./Components/HrPrivateRoute";
 import SalesHeadPrivateRoute from "./Components/SalesHeadPrivateRoute";
 import PublicRoute from "./Components/PublicRoute";
@@ -25,9 +24,6 @@ import LoginForm from "./Resister/LoginForm";
 import AuthModal from "./Resister/AuthModal";
 
 // import ConfettiAllCorners from "./Components/ConfettiAllCorners"; 
-
-// ToastContainer for global toast notifications
-
 
 // Lazy load all main page components
 const Home = lazy(() => import("./Pages/Home"));
@@ -98,7 +94,7 @@ const Possessionin2025 = lazy(() => import("./Pages/Possessionin2025"));
 const NewLaunch = lazy(() => import("./Pages/NewLaunch"));
 // const Ayodhya = lazy(() => import("./Pages/ProjectCities/Ayodhya"));
 // const DlfSco = lazy(() => import("./Pages/DlfSco"));
-const ProjectLayout2 = lazy(() => import("./aadharhomes/BannerPage/updatedbannerpage/components/ProjectLayout2"));
+const ProjectLayout2 = lazy(() => import("./aadharhomes/BannerPage/updatedbannerpage/components/Project/ProjectLayout2"));
 const Possessionin2026 = lazy(() => import("./Pages/Possessionin2026"));
 const BuilderPage = lazy(() => import("./Pages/BuilderPages/BuilderPage"));
 const OTPVerification = lazy(() => import("./Components/OTPVerification"));
@@ -220,7 +216,7 @@ const ViewProperty = lazy(() => import("./SalesHeadPage/ViewProperty"));
 const EditProperty = lazy(() => import("./SalesHeadPage/EditProperty"));
 // Test Component
 const TestSalesHead = lazy(() => import("./Components/TestSalesHead"));
-import ProjectRouter from "./Pages/ProjectRouter";
+import ProjectRouter from "./aadharhomes/BannerPage/updatedbannerpage/components/Project/ProjectRouter";
 import DubaiPage from "./Pages/Dubai/DubaiPage";
 
 // Property Types Pages
@@ -245,9 +241,6 @@ const ShopCumOfficePlotsGurgaon = lazy(() => import("./ProjectTypes/ProjectType/
 const queryClient = new QueryClient();
 
 function App() {
-  // Global ToastContainer for all toast notifications
-  // Best-practice: position top-center, Slide animation, autoClose 2200ms, etc
-
   const location = useLocation();
   const currentPath = location?.pathname || "/";
   // Consider dynamic project pages like '/experion-the-trillion/' etc. (single segment with trailing slash)
@@ -265,23 +258,10 @@ function App() {
   useEffect(() => {
     // Make showAuthModal available globally
     window.showAuthModal = () => setShowLoginModal(true);
-    
-    // Set up toast function if not already available
-    if (!window.toast) {
-      window.toast = {
-        success: (message) => toast.success(message),
-        error: (message) => toast.error(message),
-        info: (message) => toast.info(message),
-        warning: (message) => toast.warning(message),
-      };
-    }
 
     // Clean up on unmount
     return () => {
       delete window.showAuthModal;
-      if (window.toast) {
-        delete window.toast;
-      }
     };
   }, []);
 
@@ -313,20 +293,9 @@ function App() {
             <QueryClientProvider client={queryClient}>
               <ErrorBoundary>
                 <Suspense fallback={<LoadingSpinner />}>
-                  <Toaster position="top-right" />
+                  <Toaster position="top-center" />
                   <Sonner position="top-right" richColors />
-                  <HotToaster position="top-right" />
-                  <ToastContainer
-                    position="top-center"
-                    autoClose={2200}
-                    hideProgressBar={false}
-                    newestOnTop
-                    closeOnClick
-                    pauseOnHover={false}
-                    draggable
-                    transition={Slide}
-                  />
-                  
+                  <HotToaster position="top-center" />
 
                   {/* Your existing routes */}
                   <Routes>

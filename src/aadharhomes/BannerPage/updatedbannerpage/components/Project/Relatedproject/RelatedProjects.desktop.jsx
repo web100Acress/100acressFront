@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Api_Service from '../../../../Redux/utils/Api_Service';
- 
+import Api_Service from '../../../../../../Redux/utils/Api_Service';
+import { motion } from 'framer-motion';
 
-
-const RelatedProjects = ({ builderName = "", currentProjectUrl = "", onShowCallback = () => {} }) => {
+const RelatedProjectsDesktop = ({ builderName = "", currentProjectUrl = "", onShowCallback = () => {} }) => {
   const [builderProjects, setBuilderProjects] = useState([]);
   const [showAllProjects, setShowAllProjects] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -74,60 +73,85 @@ const RelatedProjects = ({ builderName = "", currentProjectUrl = "", onShowCallb
     return expandedNames.has(projectIndex);
   };
 
-  // Always render the section; fetch will be skipped if builderName is missing
-
   return (
-    <section className="py-12 md:py-16 bg-gradient-to-b from-black via-gray-900 to-black text-white relative overflow-hidden">
-      {/* Sophisticated Background Pattern */}
-      <div className="absolute inset-0">
-        <div className="absolute top-0 left-0 w-full h-full opacity-10">
-          <div className="absolute top-1/3 left-1/4 w-96 h-96 bg-gradient-to-br from-amber-500 to-amber-600 rounded-full blur-3xl"></div>
-          <div className="absolute bottom-1/3 right-1/4 w-80 h-80 bg-gradient-to-tl from-amber-400 to-amber-500 rounded-full blur-3xl"></div>
+    <section className="py-8 md:py-10 lg:py-12  text-white relative overflow-hidden">
+      {/* Animated Background Elements */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-full opacity-5">
+          <div className="absolute top-1/3 left-1/4 w-96 h-96 bg-gradient-to-br from-amber-500 to-amber-600 rounded-full blur-3xl animate-float"></div>
+          <div className="absolute bottom-1/3 right-1/4 w-80 h-80 bg-gradient-to-tl from-amber-400 to-amber-500 rounded-full blur-3xl animate-float animation-delay-2000"></div>
         </div>
-        <div className="absolute inset-0 bg-gradient-to-l from-transparent via-amber-500/5 to-transparent"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-amber-500/3 to-transparent"></div>
       </div>
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Premium Section Header */}
-        <div className="text-center mb-2 mt-24 md:mt-0">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-amber-500 to-amber-600 rounded-full mb-4">
-            <svg className="w-8 h-8 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-4 md:mb-12"
+        >
+          {/* <motion.div 
+            className="inline-flex items-center justify-center w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-amber-500 to-amber-600 rounded-full mb-4"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <svg className="w-8 h-8 md:w-10 md:h-10 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
             </svg>
-          </div>
-          <h2 className="text-amber-400 text-sm font-semibold uppercase tracking-[0.2em] mb-2">
+          </motion.div> */}
+          {/* <h2 className="text-amber-400 text-sm md:text-base font-semibold uppercase tracking-[0.2em] mb-2">
             RELATED PROJECTS
-          </h2>
-          <h3 className="text-white text-3xl md:text-4xl font-bold leading-tight mb-4 max-w-3xl mx-auto">
-            Properties by {builderName}
+          </h2> */}
+          <h3 className="text-white text-xl md:text-2xl lg:text-3xl font-bold leading-tight mb-4 max-w-4xl mx-auto">
+           Other Properties by {builderName}
           </h3>
           <div className="w-24 h-1 bg-gradient-to-r from-amber-600 via-amber-500 to-amber-400 rounded-full mx-auto"></div>
-        </div>
+        </motion.div>
 
         {loading ? (
-          <div className="flex justify-center items-center py-12">
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="flex justify-center items-center py-12"
+          >
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-500"></div>
-          </div>
+          </motion.div>
         ) : error ? (
-          <div className="text-center py-12">
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="text-center py-12"
+          >
             <p className="text-gray-400">Unable to load related projects</p>
-          </div>
+          </motion.div>
         ) : (
           <>
-            {/* Projects Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
+            {/* Desktop Projects Grid */}
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-8"
+            >
               {projectsToShow.map((project, index) => (
-                <div 
+                <motion.div 
                   key={index}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.1 * index }}
                   className="group cursor-pointer"
                   onClick={() => handleProjectClick(project)}
                 >
                   <div className="relative">
-                    <div className="absolute -inset-0.5 bg-gradient-to-r from-amber-600 to-amber-400 rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-500"></div>
-                    <div className="relative bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 rounded-2xl border border-gray-700/50 backdrop-blur-sm overflow-hidden">
+                    {/* Glow Effect */}
+                    <div className="absolute -inset-1 bg-gradient-to-r from-amber-600 to-amber-400 rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-500"></div>
+                    
+                    <div className="relative bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 rounded-2xl border border-gray-700/50 backdrop-blur-sm overflow-hidden hover:border-amber-500/30 transition-all duration-300">
                       
                       {/* Project Image */}
-                      <div className="aspect-[4/3] bg-gradient-to-br from-gray-800 to-gray-900 overflow-hidden">
+                      <div className="aspect-[5/4] bg-gradient-to-br from-gray-800 to-gray-900 overflow-hidden">
                         {project.thumbnailImage?.url ? (
                           <img
                             src={project.thumbnailImage.url}
@@ -150,9 +174,9 @@ const RelatedProjects = ({ builderName = "", currentProjectUrl = "", onShowCallb
                       </div>
 
                       {/* Project Details */}
-                      <div className="p-6">
+                      <div className="p-3">
                         <h4 
-                          className={`text-white font-bold text-lg mb-2 group-hover:text-amber-400 transition-colors duration-300 cursor-pointer ${
+                          className={`text-white font-bold text-sm mb-1 group-hover:text-amber-400 transition-colors duration-300 cursor-pointer ${
                             isProjectNameExpanded(index) ? '' : 'truncate'
                           }`}
                           onClick={(e) => toggleProjectName(index, e)}
@@ -161,23 +185,22 @@ const RelatedProjects = ({ builderName = "", currentProjectUrl = "", onShowCallb
                           {project.projectName}
                         </h4>
                         
-                        <div className="flex items-start space-x-2 mb-1">
-                          <svg className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div className="flex items-start space-x-1 mb-0">
+                          <svg className="w-3 h-3 text-amber-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                           </svg>
-                          <p className="text-gray-400 text-sm truncate">
+                          <p className="text-gray-400 text-xs truncate">
                             {project.projectAddress}, {project.city}
                           </p>
                         </div>
 
                         {/* Price Range */}
-                        <div className="flex items-center space-x-2 mb-2">
-                          
+                        <div className="flex items-center space-x-1 mb-1">
                           {!project?.minPrice && !project?.maxPrice ? (
-                            <p className="text-yellow-400 font-bold text-lg">₹ Reveal Soon</p>
+                            <p className="text-yellow-400 font-bold text-sm">₹ Reveal Soon</p>
                           ) : (
-                            <p className="text-yellow-400 font-bold text-lg">
+                            <p className="text-yellow-400 font-bold text-sm">
                               <span className="mr-1">₹</span>
                               {project.minPrice < 1 ? (
                                 <span>{(project.minPrice * 100).toFixed(2)} L</span>
@@ -192,30 +215,39 @@ const RelatedProjects = ({ builderName = "", currentProjectUrl = "", onShowCallb
                         {/* View Details Button */}
                         <button 
                           onClick={() => handleProjectClick(project)}
-                          className="w-full bg-gradient-to-r from-amber-600 to-amber-500 text-black font-semibold py-2 px-4 rounded-lg hover:from-amber-500 hover:to-amber-400 transition-all duration-300 transform group-hover:scale-105"
+                          className="w-full bg-gradient-to-r from-amber-600 to-amber-500 text-black font-semibold py-1.5 px-3 rounded-lg hover:from-amber-500 hover:to-amber-400 transition-all duration-300 transform group-hover:scale-105 shadow-lg hover:shadow-amber-500/30 text-xs"
                         >
                           View Details
                         </button>
                       </div>
                     </div>
                   </div>
-                </div>
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
 
             {/* Empty state when no projects found */}
             {builderProjects.length === 0 && (
-              <div className="text-center text-gray-400 mt-6">
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="text-center text-gray-400 mt-8"
+              >
                 No related projects found for {builderName}.
-              </div>
+              </motion.div>
             )}
 
-            {/* View All Button - Moved Below Properties */}
+            {/* Desktop View All Button */}
             {builderProjects.length > 4 && (
-              <div className="text-center mt-8">
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.4 }}
+                className="text-center mt-8"
+              >
                 <button
                   onClick={() => setShowAllProjects(!showAllProjects)}
-                  className="inline-flex items-center space-x-2 bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 text-black font-bold px-8 py-3 rounded-lg border-2 border-yellow-400 shadow-[0_4px_15px_rgba(212,175,55,0.35)] hover:shadow-[0_6px_20px_rgba(212,175,55,0.5)] hover:-translate-y-1 hover:shadow-xl transition-all duration-300 transform"
+                  className="inline-flex items-center space-x-2 bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 text-black font-bold px-8 py-3 rounded-lg border-2 border-yellow-400 shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 transform"
                 >
                   <span>{showAllProjects ? 'Show Less' : 'View All Projects'}</span>
                   <svg 
@@ -227,33 +259,27 @@ const RelatedProjects = ({ builderName = "", currentProjectUrl = "", onShowCallb
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                   </svg>
                 </button>
-              </div>
+              </motion.div>
             )}
           </>
         )}
-
-        {/* Additional Info */}
-        {/* <div className="max-w-3xl mx-auto mt-12">
-          <div className="bg-gradient-to-r from-amber-600/10 to-amber-500/5 rounded-xl p-6 border border-amber-600/20">
-            <div className="flex items-start space-x-4">
-              <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-amber-500 to-amber-600 rounded-full flex items-center justify-center">
-                <svg className="w-5 h-5 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-              <div>
-                <h5 className="text-amber-400 font-semibold mb-2">Explore More Projects</h5>
-                <p className="text-gray-300 text-sm leading-relaxed">
-                  Discover other premium projects by {builderName}, each designed with the same commitment 
-                  to quality, innovation, and customer satisfaction.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div> */}
       </div>
+
+      {/* Scoped styles for this component */}
+      <style>{`
+        @keyframes float {
+          0%, 100% { transform: translateY(0) translateX(0); }
+          50% { transform: translateY(-10px) translateX(5px); }
+        }
+        .animate-float {
+          animation: float 15s ease-in-out infinite;
+        }
+        .animation-delay-2000 {
+          animation-delay: 2s;
+        }
+      `}</style>
     </section>
   );
 };
 
-export default RelatedProjects;
+export default RelatedProjectsDesktop;

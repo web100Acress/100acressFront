@@ -68,6 +68,7 @@
     "react-phone-number-input": "^3.4.12",
     "react-quill": "2.0.0",
     "react-redux": "^9.2.0",
+    "react-responsive": "^10.0.1",
     "react-responsive-carousel": "^3.2.23",
     "react-router-dom": "^6.30.1",
     "react-simple-maps": "^3.0.0",

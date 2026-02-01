@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { toast, ToastContainer } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
-import 'react-toastify/dist/ReactToastify.css';
 import { getApiBase } from '../config/apiBase';
 import Sidebar from './Sidebar';
 import { parseYouTubeVideoId, getEmbedUrl } from '../utils/youtubeUtils';
+import showToast from '../utils/toastUtils';
 
 const ShortsSettings = () => {
   const navigate = useNavigate();
@@ -25,7 +24,7 @@ const ShortsSettings = () => {
       
       if (!token) {
         console.warn('No authentication token found, redirecting to login');
-        toast.error('Please log in to access this page');
+        showToast.error('Please log in to access this page');
         navigate('/login');
         return;
       }
@@ -56,7 +55,7 @@ const ShortsSettings = () => {
         }
       } catch (error) {
         console.error('Error:', error);
-        toast.error(error.message || 'An error occurred');
+        showToast.error(error.message || 'An error occurred');
         if (error.message.includes('expired') || error.message.includes('token')) {
           navigate('/login');
         }
@@ -78,7 +77,7 @@ const ShortsSettings = () => {
     try {
       const token = localStorage.getItem('token');
       if (!token) {
-        toast.error('Your session has expired. Please log in again.');
+        showToast.error('Your session has expired. Please log in again.');
         navigate('/login');
         return false;
       }
@@ -115,12 +114,12 @@ const ShortsSettings = () => {
         setVideo(null);
       }
 
-      toast.success(videoId ? 'Video saved successfully' : 'Video removed');
+      showToast.success(videoId ? 'Video saved successfully' : 'Video removed');
       setPreviewKey(prev => prev + 1);
       return true;
     } catch (error) {
       console.error('Save error:', error);
-      toast.error(error.message || 'Failed to save video');
+      showToast.error(error.message || 'Failed to save video');
       if (error.message.includes('expired') || error.message.includes('token')) {
         navigate('/login');
       }
@@ -151,19 +150,6 @@ const ShortsSettings = () => {
           )}
         </div>
       </div>
-      
-      <ToastContainer
-        position="top-right"
-        autoClose={4000}
-        hideProgressBar={false}
-        newestOnTop
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="colored"
-      />
     </div>
   );
 };

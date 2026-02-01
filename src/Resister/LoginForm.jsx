@@ -2,12 +2,20 @@
 import { Eye, EyeOff, X } from "lucide-react";
 import { AuthContext } from "../AuthContext";
 import axios from "axios";
+import showToast from "../utils/toastUtils";
 // import { initializeApp } from "firebase/app";
 // import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
-import '../aadharhomes/PostProperty/toast.css';
 
 function LoginForm({ inModal = false, onSwitchToRegister, preventRedirect = false }) {
   const { login } = useContext(AuthContext);
+
+  // Remove custom toast positioning to use default appearance
+  useEffect(() => {
+    // No custom styling - use default toast positioning
+    return () => {
+      // Cleanup if needed
+    };
+  }, []);
 
   // Firebase configuration - commented out for now
 // const firebaseConfig = {
@@ -29,39 +37,7 @@ function LoginForm({ inModal = false, onSwitchToRegister, preventRedirect = fals
   const [showForgot, setShowForgot] = useState(false);
   const [forgotEmail, setForgotEmail] = useState("");
   const [forgotLoading, setForgotLoading] = useState(false);
-  const toastTimerRef = useRef(null);
-  const [toast, setToast] = useState({ open: false, type: "info", text: "" });
 
-  useEffect(() => {
-    return () => {
-      if (toastTimerRef.current) {
-        clearTimeout(toastTimerRef.current);
-        toastTimerRef.current = null;
-      }
-    };
-  }, []);
-
-  const normalizeToastType = (type) => {
-    const t = String(type || "").toLowerCase();
-    if (t === "success" || t === "ok") return "success";
-    if (t === "error" || t === "fail" || t === "failed" || t === "danger") return "error";
-    if (t === "warning" || t === "warn") return "warning";
-    return "info";
-  };
-
-  const showToast = (type, text, duration = 3000) => {
-    const normalizedType = normalizeToastType(type);
-    if (toastTimerRef.current) {
-      clearTimeout(toastTimerRef.current);
-      toastTimerRef.current = null;
-    }
-
-    setToast({ open: true, type: normalizedType, text });
-
-    toastTimerRef.current = setTimeout(() => {
-      setToast((prev) => ({ ...prev, open: false }));
-    }, duration);
-  };
 
   const handleLoginChange = (e) => {
     const { name, value } = e.target;
@@ -74,18 +50,18 @@ function LoginForm({ inModal = false, onSwitchToRegister, preventRedirect = fals
 
     const email = String(forgotEmail || '').trim();
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      showToast('error', 'Please enter a valid email address.');
+      showToast.error('Please enter a valid email address.');
       return;
     }
 
     setForgotLoading(true);
     try {
       await axios.post('/postPerson/postProperty_forget', { email });
-      showToast('success', 'Password reset link sent. Please check your email.');
+      showToast.success('Password reset link sent. Please check your email.');
       setShowForgot(false);
       setForgotEmail('');
     } catch (err) {
-      showToast('error', err?.response?.data?.message || 'Failed to send reset link. Try again.');
+      showToast.error(err?.response?.data?.message || 'Failed to send reset link. Try again.');
     } finally {
       setForgotLoading(false);
     }
@@ -95,7 +71,7 @@ function LoginForm({ inModal = false, onSwitchToRegister, preventRedirect = fals
   const handleGoogleSignIn = async () => {
     try {
       setIsLoading(true);
-      showToast('info', "Google sign-in is currently disabled");
+      showToast.info("Google sign-in is currently disabled");
       
       // TODO: Enable Firebase Google Sign-In when needed
       // Initialize Google Sign-In
@@ -112,7 +88,7 @@ function LoginForm({ inModal = false, onSwitchToRegister, preventRedirect = fals
       
     } catch (error) {
       console.error("🚨 Google Sign-In error:", error);
-      showToast('info', "Google sign-in is currently disabled");
+      showToast.info("Google sign-in is currently disabled");
     } finally {
       setIsLoading(false);
     }
@@ -123,7 +99,7 @@ function LoginForm({ inModal = false, onSwitchToRegister, preventRedirect = fals
 
     // Basic validation
     if (!userLogin.email || !userLogin.password) {
-      showToast('error', 'Please enter both email and password');
+      showToast.error('Please enter both email and password');
       return;
     }
 
@@ -134,7 +110,7 @@ function LoginForm({ inModal = false, onSwitchToRegister, preventRedirect = fals
       
       // Only show success toast if we're preventing redirect (modal mode)
       if (preventRedirect || inModal) {
-        showToast('success', "Login successful!");
+        showToast.success("Login successful!");
       }
       // If not preventing redirect, the AuthContext will handle navigation
     } catch (error) {
@@ -145,7 +121,7 @@ function LoginForm({ inModal = false, onSwitchToRegister, preventRedirect = fals
       // Extract error message from the error object
       const errorMessage = error?.message || "Invalid email or password. Please try again.";
       
-      showToast('error', errorMessage);
+      showToast.error(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -153,19 +129,6 @@ function LoginForm({ inModal = false, onSwitchToRegister, preventRedirect = fals
 
     return (
       <>
-        {toast.open && (
-          <div className="custom-toast-overlay" role="status" aria-live="polite">
-            <div className={`custom-toast is-${toast.type}`}>
-              <div className="custom-toast-text">
-                <div className="custom-toast-title">{toast.type === "success" ? "Success" : toast.type === "error" ? "Error" : toast.type === "warning" ? "Warning" : "Info"}</div>
-                <div>{toast.text}</div>
-              </div>
-              <button className="custom-toast-close" onClick={() => setToast((prev) => ({ ...prev, open: false }))} aria-label="Close">
-                <X size={16} />
-              </button>
-            </div>
-          </div>
-        )}
         <div className={`relative p-4 md:p-6 ${inModal ? "w-full" : "max-sm:w-[85vw]"}`}>
           {/* Heading */}
           <div className="text-center mb-3">
@@ -298,6 +261,6 @@ function LoginForm({ inModal = false, onSwitchToRegister, preventRedirect = fals
         </div>
       </>
     );
-  }
+}
 
-  export default LoginForm;
+export default LoginForm;

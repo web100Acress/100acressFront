@@ -2,7 +2,9 @@ import React, { useEffect, useState } from "react";
 import Sidebar from "./Sidebar";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import api from "../config/apiClient";
-import { message, Modal, notification } from "antd";
+import { Modal, notification } from "antd";
+import { Toaster } from 'react-hot-toast';
+import { showToast } from '../utils/toastUtils';
 import { MdSearch, MdVisibility, MdEdit, MdDelete, MdExpandMore, MdExpandLess } from "react-icons/md";
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
@@ -14,7 +16,6 @@ const ViewPropertyAdmin = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
-  const [messageApi, contextHolder] = message.useMessage();
   const [tableOpen, setTableOpen] = useState(true);
   const [deletingUser, setDeletingUser] = useState(false);
   const navigate = useNavigate();
@@ -45,7 +46,7 @@ const ViewPropertyAdmin = () => {
         console.log('🔑 Token available:', token ? 'Yes' : 'No');
 
         if (!token) {
-          messageApi.error('Authentication token not found. Please login again.');
+          showToast.error('Authentication token not found. Please login again.');
           return;
         }
         // api client will inject Authorization header automatically
@@ -75,7 +76,9 @@ const ViewPropertyAdmin = () => {
                 mobile: data.mobile || "N/A",
               });
               setViewAllProperty(data.postProperty || data.properties || []);
-              messageApi.success('Data loaded successfully!');
+              console.log('🔥 Showing success toast with centralized toast utility...');
+              showToast.success(showToast.successMessages.dataLoaded);
+              console.log('✅ Toast will disappear after 2 seconds');
               success = true;
               break;
             }
@@ -94,36 +97,36 @@ const ViewPropertyAdmin = () => {
             mobile: "N/A"
           });
           setViewAllProperty([]);
-          messageApi.warning('Unable to load user data. Backend may be unavailable.');
+          showToast.warning(showToast.warningMessages.backendUnavailable);
         }
         
       } catch (error) {
         console.error("❌ Critical error fetching data:", error);
-        messageApi.error('Critical error loading data. Please refresh the page.');
+        showToast.error(showToast.errorMessages.loadingError);
       }
     };
     
     if (id) {
       fetchData();
     } else {
-      messageApi.error('User ID is missing from URL');
+      showToast.error('User ID is missing from URL');
     }
-  }, [id, messageApi]);
+  }, [id]);
 
   const handleDeleteProperty = async (propertyId) => {
-    messageApi.open({ key: 'deleteProp', type: 'loading', content: 'Deleting property...' });
+    showToast.loading('Deleting property...', { id: 'deleteProp' });
     try {
       const res = await api.delete(`/postPerson/propertyDelete/${propertyId}`);
       if (res.status >= 200 && res.status < 300) {
-        messageApi.destroy('deleteProp');
-        messageApi.success('Property deleted');
+        showToast.dismiss('deleteProp');
+        showToast.success(showToast.successMessages.deleteSuccess);
         setViewAllProperty(prev => prev.filter(p => p._id !== propertyId));
       } else {
         throw new Error("Delete failed");
       }
     } catch (err) {
-      messageApi.destroy('deleteProp');
-      messageApi.error('Error deleting property');
+      showToast.dismiss('deleteProp');
+      showToast.error(showToast.errorMessages.deleteError);
     }
   };
 
@@ -136,16 +139,16 @@ const ViewPropertyAdmin = () => {
     );
 
     if (!confirmed) {
-      messageApi.info('Deletion cancelled.', 2);
+      showToast.info('Deletion cancelled.');
       return;
     }
 
     setDeletingUser(true);
-    messageApi.open({ key: 'deleteUser', type: 'loading', content: 'Deleting user...', duration: 0 });
+    showToast.loading('Deleting user...', { id: 'deleteUser' });
     try {
       const token = localStorage.getItem('myToken');
       if (!token) {
-        messageApi.destroy('deleteUser');
+        showToast.dismiss('deleteUser');
         notification.error({ message: 'Auth error', description: 'Authentication token not found. Please login again.', placement: 'topRight' });
         setDeletingUser(false);
         return;
@@ -161,23 +164,23 @@ const ViewPropertyAdmin = () => {
         deleteSuccess = res.status >= 200 && res.status < 300;
       } catch (endpointError) {
         console.log('❌ Delete failed:', endpointError.response?.status || endpointError.message);
-        messageApi.error(endpointError?.response?.data?.message || 'Delete request failed', 2);
+        showToast.error(endpointError?.response?.data?.message || showToast.errorMessages.deleteError);
       }
 
-      messageApi.destroy('deleteUser');
+      showToast.dismiss('deleteUser');
       if (deleteSuccess) {
         notification.success({ message: 'User deleted', description: 'The user was deleted successfully.', placement: 'topRight' });
-        messageApi.success('User deleted successfully.', 2);
+        showToast.success(showToast.successMessages.deleteSuccess);
         navigate('/Admin/user');
       } else {
         notification.error({ message: 'Delete failed', description: 'Backend did not confirm deletion. Please try again or check server logs.', placement: 'topRight' });
-        messageApi.error('Delete failed. Please try again.', 2);
+        showToast.error(showToast.errorMessages.deleteError);
       }
     } catch (err) {
       console.error('❌ Critical delete error:', err);
-      messageApi.destroy('deleteUser');
+      showToast.dismiss('deleteUser');
       notification.error({ message: 'Delete failed', description: 'Critical error during deletion. Please try again.', placement: 'topRight' });
-      messageApi.error('Critical error during deletion.', 2);
+      showToast.error(showToast.errorMessages.deleteError);
     } finally {
       setDeletingUser(false);
     }
@@ -185,7 +188,7 @@ const ViewPropertyAdmin = () => {
 
   return (
     <>
-      {contextHolder}
+      <Toaster />
       <Sidebar />
       <div className="flex bg-gray-50 min-h-screen">
         <div className="flex-1 p-8 ml-64 overflow-auto">

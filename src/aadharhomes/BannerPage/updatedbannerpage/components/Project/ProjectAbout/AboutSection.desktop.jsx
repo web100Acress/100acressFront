@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 
-const AboutSection = ({ projectName, description, imageUrl, onShowCallback = () => {} }) => {
+const AboutSectionDesktop = ({ projectName, description, imageUrl, onShowCallback = () => {} }) => {
   const sectionRef = useRef(null);
   const titleRef = useRef(null);
 
@@ -119,4 +119,4 @@ const AboutSection = ({ projectName, description, imageUrl, onShowCallback = () 
   );
 };
 
-export default AboutSection;
+export default AboutSectionDesktop;

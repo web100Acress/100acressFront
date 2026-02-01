@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext, useMemo } from "react";
-import { message, Modal, notification } from "antd";
+import { Modal } from "antd";
 import Sidebar from "../../../../../AdminPage/Sidebar";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import api from "../../../../../config/apiClient";
@@ -8,6 +8,7 @@ import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
 import 'tippy.js/animations/scale.css';
 import { AuthContext } from "../../../../../AuthContext";
+import showToast from "../../../../../utils/toastUtils";
 
 const customStyle = {
   position: "absolute",
@@ -46,7 +47,7 @@ const BlogEdit = () => {
   const handleUpdateUser = async () => {
     try {
       const toastKey = 'blogUpdate';
-      message.loading({ content: 'Updating blog...', key: toastKey, duration: 0 });
+      showToast.loading('Updating blog...', { id: toastKey });
       const formData = new FormData();
       // Append only scalar fields (avoid sending objects like blog_Image)
       formData.append("blog_Title", viewDetails.blog_Title || "");
@@ -68,12 +69,8 @@ const BlogEdit = () => {
       );
       console.debug('[BlogEdit] Update response:', response?.data);
       if (response.status === 200) {
-        message.destroy(toastKey);
-        notification.success({
-          message: 'Blog updated',
-          description: 'Your changes have been saved successfully.',
-          placement: 'topRight',
-        });
+        showToast.dismiss(toastKey);
+        showToast.success('Blog updated');
         // Re-fetch latest blog data to reflect updates in real-time
         try {
           const refreshed = await api.get(
@@ -97,21 +94,13 @@ const BlogEdit = () => {
         navigate('/Admin/blog');
       } else {
         console.error("Failed to update user");
-        message.destroy(toastKey);
-        notification.error({
-          message: 'Update failed',
-          description: 'Could not update the blog. Please try again.',
-          placement: 'topRight',
-        });
+        showToast.dismiss(toastKey);
+        showToast.error('Update failed');
       }
     } catch (error) {
       console.error("Error updating user:", error);
-      message.destroy('blogUpdate');
-      notification.error({
-        message: 'Error',
-        description: 'An unexpected error occurred while updating the blog.',
-        placement: 'topRight',
-      });
+      showToast.dismiss('blogUpdate');
+      showToast.error('An unexpected error occurred while updating the blog.');
     }
   };
 
@@ -215,11 +204,7 @@ const BlogEdit = () => {
         const idMatch = currentUserId && authorId && authorId === currentUserId;
         const allowed = isAdmin || nameMatch || emailMatch || idMatch;
         if (!allowed) {
-          notification.error({
-            message: 'Unauthorized',
-            description: 'You are not allowed to edit this blog.',
-            placement: 'topRight',
-          });
+          showToast.error('You are not allowed to edit this blog.');
           navigate('/seo/blogs');
           return;
         }
@@ -233,7 +218,7 @@ const BlogEdit = () => {
           errorMessage = 'Network error. Please check your connection.';
         }
         
-        alert(errorMessage);
+        showToast.error(errorMessage);
       }
     };
     fetchData();

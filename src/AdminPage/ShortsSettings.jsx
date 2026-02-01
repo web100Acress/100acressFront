@@ -2,8 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { parseYouTubeVideoId } from "../config/siteSettings";
 import { getApiBase } from "../config/apiBase";
 import Sidebar from "./Sidebar";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import showToast from "../utils/toastUtils";
 
 const ShortsSettings = () => {
   const [input, setInput] = useState("");
@@ -31,7 +30,7 @@ const ShortsSettings = () => {
           setInput(list.join("\n") || value);
         }
       } catch (e) {
-        toast.error("Failed to load current settings");
+        showToast.error("Failed to load current settings");
       } finally {
         setIsLoading(false);
       }
@@ -89,7 +88,7 @@ const ShortsSettings = () => {
     const token = localStorage.getItem("myToken");
 
     if (!parsedList.length) {
-      toast.error("Please enter at least one valid YouTube URL or ID", {
+      showToast.error("Please enter at least one valid YouTube URL or ID", {
         icon: "⚠️"
       });
       setIsSaving(false);
@@ -117,7 +116,7 @@ const ShortsSettings = () => {
       setSavedList(list);
       setInput(list.join("\n"));
 
-      toast.success("🎉 Shorts videos updated successfully! (Will rotate every 3 hours)", {
+      showToast.success("🎉 Shorts videos updated successfully! (Will rotate every 3 hours)", {
         icon: "✅"
       });
       
@@ -126,7 +125,7 @@ const ShortsSettings = () => {
         try { channel.postMessage({ type: 'shorts-update', value: current }); } catch (_) {}
       }
     } catch (_) {
-      toast.error("❌ Failed to save to server", {
+      showToast.error("❌ Failed to save to server", {
         icon: "🚫"
       });
     } finally {
@@ -150,11 +149,11 @@ const ShortsSettings = () => {
         body: JSON.stringify({ value: "" }),
       });
       
-      toast.success("🧹 Shorts videos cleared successfully!", {
+      showToast.success("🧹 Shorts videos cleared successfully!", {
         icon: "✅"
       });
     } catch (_) {
-      toast.error("❌ Failed to clear setting", {
+      showToast.error("❌ Failed to clear setting", {
         icon: "🚫"
       });
     } finally {

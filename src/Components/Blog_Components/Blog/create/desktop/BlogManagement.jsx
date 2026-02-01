@@ -1,5 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import api from "../../../../../config/apiClient";
+import { showToast } from "../../../../../utils/toastUtils";
 import {
   ArrowDown,
   ArrowUp,
@@ -122,12 +123,12 @@ export default function BlogManagement() {
       setBlogs((prev) => prev.filter((blog) => blog._id !== id));
       setConfirmLoading(false);
       setOpenModal(false);
-      message.success("Blog deleted successfully.");
+      showToast.success(showToast.successMessages.deleteSuccess);
     } else {
       setModalText("Error deleting blog.");
       setConfirmLoading(false);
       setOpenModal(false);
-      message.error("Failed to delete blog. Please try again.");
+      showToast.error(showToast.errorMessages.deleteError);
     }
   };
 

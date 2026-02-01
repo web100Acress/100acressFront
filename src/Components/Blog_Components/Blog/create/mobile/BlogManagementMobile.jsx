@@ -1,5 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import api from "../../../../../config/apiClient";
+import { showToast } from "../../../../../utils/toastUtils";
 import {
   ArrowDown,
   ArrowUp,
@@ -99,7 +100,7 @@ export default function BlogManagementMobile() {
       setStats(stats);
     } catch (error) {
       console.error("Error fetching blogs:", error);
-      message.error("Failed to fetch blogs");
+      showToast.error(showToast.errorMessages.loadingError);
     } finally {
       setLoading(false);
     }
@@ -144,11 +145,11 @@ export default function BlogManagementMobile() {
       await api.delete(`/post/blogs/${blogId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      message.success("Blog deleted successfully");
+      showToast.success(showToast.successMessages.deleteSuccess);
       fetchBlogs();
     } catch (error) {
       console.error("Error deleting blog:", error);
-      message.error("Failed to delete blog");
+      showToast.error(showToast.errorMessages.deleteError);
     }
   };
 
@@ -159,11 +160,11 @@ export default function BlogManagementMobile() {
         { status: newStatus },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      message.success(`Blog ${newStatus === 'published' ? 'published' : 'saved as draft'} successfully`);
+      showToast.success(`Blog ${newStatus === 'published' ? 'published' : 'saved as draft'} successfully`);
       fetchBlogs();
     } catch (error) {
       console.error("Error updating blog status:", error);
-      message.error("Failed to update blog status");
+      showToast.error(showToast.errorMessages.saveError);
     }
   };
 

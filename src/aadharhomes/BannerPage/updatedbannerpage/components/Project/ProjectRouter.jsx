@@ -1,6 +1,6 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import ProjectLayout2 from '../aadharhomes/BannerPage/updatedbannerpage/components/ProjectLayout2';
+import ProjectLayout2 from "./ProjectLayout2";
 
 /**
  * ProjectRouter - Routes all projects to ProjectLayout2
