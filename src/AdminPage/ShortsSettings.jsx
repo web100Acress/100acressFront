@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { parseYouTubeVideoId } from "../config/siteSettings";
 import { getApiBase } from "../config/apiBase";
 import Sidebar from "./Sidebar";
-import showToast from "../utils/toastUtils";
+import showToast from "../Utils/toastUtils";
 
 const ShortsSettings = () => {
   const [input, setInput] = useState("");

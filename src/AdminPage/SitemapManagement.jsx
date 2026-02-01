@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import showToast from '../utils/toastUtils';
+import showToast from "../Utils/toastUtils";
 import { API_BASE } from '../config/apiBase';
 import Sidebar from './Sidebar';
 import { MdEdit, MdDelete, MdAdd, MdSearch } from 'react-icons/md';
