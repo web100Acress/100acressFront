@@ -4,7 +4,7 @@ import axios from "axios";
 import { Helmet } from "react-helmet";
 import { HandShakeIcon, HeadPhoneIcon, PlayButtonIcon } from "../Assets/icons";
 import { FaWhatsapp, FaMapMarkerAlt, FaShieldAlt, FaHeadset, FaCheckCircle, FaPhone, FaEnvelope, FaClock } from "react-icons/fa";
-import { toast } from "react-hot-toast";
+import showToast from "../utils/toastUtils";
 const ContactUs = () => {
   const [formDataInquiry, setFormDataInquiry] = useState({
     name: "",
@@ -93,7 +93,7 @@ const ContactUs = () => {
     const { name, mobile, message } = formDataInquiry;
     
     if (!name || !mobile) {
-      toast.error("Please fill out all required fields.");
+      showToast.error("Please fill out all required fields.");
       return;
     }
     setIsSubmitting(true);
@@ -103,18 +103,18 @@ const ContactUs = () => {
         formDataInquiry
       );
       setShowSuccess(true);
-      toast.success("Message sent successfully! We'll get back to you soon.");
+      showToast.success("Message sent successfully! We'll get back to you soon.");
       resetData();
     } catch (error) {
       if (error.response) {
         console.error("Server error:", error.response.data);
-        toast.error("Server error. Please try again.");
+        showToast.error("Server error. Please try again.");
       } else if (error.request) {
         console.error("Request error:", error.request);
-        toast.error("Network error. Please check your connection.");
+        showToast.error("Network error. Please check your connection.");
       } else {
         console.error("Error:", error.message);
-        toast.error("An unexpected error occurred. Please try again.");
+        showToast.error("An unexpected error occurred. Please try again.");
       }
     } finally {
       setIsSubmitting(false);

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 
-const Gallery = ({ galleryImages = [], projectName = '' }) => {
+const GalleryDesktop = ({ galleryImages = [], projectName = '' }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -160,4 +160,4 @@ const Gallery = ({ galleryImages = [], projectName = '' }) => {
   );
 };
 
-export default Gallery;
+export default GalleryDesktop;

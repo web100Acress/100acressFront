@@ -3,15 +3,15 @@ import Sidebar from "./Sidebar";
 import { useParams } from "react-router-dom";
 import api from "../config/apiClient";
 
-import { Switch,message } from "antd";
+import { Switch } from "antd";
 import { FaCheck, FaXmark, FaRegImage, FaRegBuilding, FaCouch } from "react-icons/fa6";
 import { FaRupeeSign, FaMapMarkerAlt, FaLayerGroup, FaRegDotCircle, FaRegCalendar, FaRegClock, FaEdit, FaListAlt } from "react-icons/fa";
 import { MdHome, MdImage, MdInfo, MdLocationOn, MdAttachMoney, MdApartment } from "react-icons/md";
+import showToast from "../utils/toastUtils";
 
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
 import 'tippy.js/animations/scale.css';
-
 
 const EditDetails = () => {
   
@@ -37,7 +37,6 @@ const EditDetails = () => {
     verify: "unverified",
   });
 
-  const [messageApi, contextHolder] = message.useMessage();
   const [infoOpen, setInfoOpen] = useState(true);
 
   const { id } = useParams();
@@ -111,11 +110,7 @@ const EditDetails = () => {
 
   const handleUpdateUser = async () => {
     try {
-      messageApi.open({
-        key: "loadingUpdateProperty",
-        type: "loading",
-        content: "Updating Data...",
-      })
+      showToast.loading("Updating Data...", { id: "loadingUpdateProperty" });
       const formData = new FormData();
 
       // Append all key-value pairs from values
@@ -148,30 +143,18 @@ const EditDetails = () => {
         }
       );
       if (response.status === 200) {
-          messageApi.destroy("loadingUpdateProperty");
+          showToast.dismiss("loadingUpdateProperty");
 
           console.log("Response Data: ",response.data)
 
-          messageApi.open({
-            key: "successUpdateProperty",
-            type: "success",
-            content: "Data Updated Successfully",
-          });
+          showToast.success("Data Updated Successfully");
       } else {
-        messageApi.destroy("loadingUpdateProperty");
-        messageApi.open({
-          key: "errorUpdateProperty",
-          type: "error",
-          content: "Failed to update user",
-        });
+        showToast.dismiss("loadingUpdateProperty");
+        showToast.error("Failed to update user");
       }
     } catch (error) {
-      messageApi.destroy("loadingUpdateProperty");
-      messageApi.open({
-        key: "errorUpdateProperty",
-        type: "error",
-        content: "Failed to update user",
-      });
+      showToast.dismiss("loadingUpdateProperty");
+      showToast.error("Failed to update user");
       console.error("Error updating user:", error);
     }
   };
@@ -187,7 +170,6 @@ const EditDetails = () => {
   return (
     <>
       <Sidebar />
-      {contextHolder}
       <div className="flex bg-gray-50 min-h-screen">
         <div className="flex-1 p-4 ml-64 overflow-auto font-sans">
           <div className="w-full space-y-6">

@@ -5,7 +5,7 @@ import axios from "axios";
 import { getApiBase } from "../config/apiBase";
 import { Helmet } from "react-helmet";
 import { FaWhatsapp, FaMapMarkerAlt, FaShieldAlt, FaHeadset, FaCheckCircle, FaPhone, FaEnvelope, FaClock, FaGift, FaPercent, FaCalendarAlt, FaRocket } from "react-icons/fa";
-import { toast } from "react-hot-toast";
+import showToast from "../utils/toastUtils";
 import { motion } from "framer-motion";
 
 const EnquireNow = () => {
@@ -137,7 +137,7 @@ const EnquireNow = () => {
     
     if (Object.keys(errors).length > 0) {
       setFormValidationErrors(errors);
-      toast.error("Please fix all validation errors");
+      showToast.error("Please fix all validation errors");
       return;
     }
 
@@ -153,7 +153,7 @@ const EnquireNow = () => {
 
       if (response.data.success) {
         setShowSuccess(true);
-        toast.success("Enquiry submitted successfully!");
+        showToast.success("Enquiry submitted successfully!");
         
         // Reset form
         setFormData({
@@ -169,11 +169,11 @@ const EnquireNow = () => {
           message: ""
         });
       } else {
-        toast.error(response.data.message || "Failed to submit enquiry");
+        showToast.error(response.data.message || "Failed to submit enquiry");
       }
     } catch (error) {
       console.error("Enquiry submission error:", error);
-      toast.error("Failed to submit enquiry. Please try again.");
+      showToast.error("Failed to submit enquiry. Please try again.");
     } finally {
       setIsSubmitting(false);
     }

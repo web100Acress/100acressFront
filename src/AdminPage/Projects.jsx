@@ -24,8 +24,11 @@ const Projects = () => {
   const [filterYoutubeVideo, setFilterYoutubeVideo] = useState("");
   const [filterBrochure, setFilterBrochure] = useState("");
   const [filterSpecificNumber, setFilterSpecificNumber] = useState("");
+  const [filterThumbnail, setFilterThumbnail] = useState("");
+  const [filterThumbnailRatio, setFilterThumbnailRatio] = useState("");
 
   const [refreshTrigger, setRefreshTrigger] = useState(0);
+  const [imageAnalysisResults, setImageAnalysisResults] = useState({});
 
   const [messageApi, contextHolder] = message.useMessage(); // For Ant Design messages
 
@@ -91,6 +94,204 @@ const Projects = () => {
     };
     fetchData();
   }, [refreshTrigger]);
+
+  // Effect to analyze thumbnail images for ratio and size
+  useEffect(() => {
+    if (!viewAll || viewAll.length === 0) {
+      setImageAnalysisResults({});
+      return;
+    }
+
+    const analyzeImages = async () => {
+      console.log('🔍 Starting thumbnail image analysis...');
+      const results = {};
+      const targetRatio = 16 / 9; // 16:9 aspect ratio
+      const tolerance = 0.02; // ±2% tolerance for ratio
+
+      for (const project of viewAll) {
+        const projectId = project._id;
+        
+        const desktopThumbnailUrl = project?.thumbnailImage?.cdn_url || project?.thumbnailImage?.url;
+        
+        // Try multiple possible locations for mobile thumbnail
+        let mobileThumbnailUrl = project?.mobileThumbnailImage?.cdn_url || 
+                                project?.mobileThumbnailImage?.url ||
+                                project?.thumbImage?.cdn_url || 
+                                project?.thumbImage?.url ||
+                                project?.mobileThumb?.cdn_url || 
+                                project?.mobileThumb?.url;
+        
+        // If no mobile thumbnail found, try to construct it from desktop URL
+        if (!mobileThumbnailUrl && desktopThumbnailUrl) {
+          // Pattern: if desktop ends with -b1.webp, thumbnail might be -1.webp
+          // Example: ...1767004330233-b1.webp -> ...1767003740656-1.webp
+          const desktopUrl = desktopThumbnailUrl;
+          
+          // Try to find thumbnail by looking for similar patterns or different extensions
+          // This is a heuristic - we'll need to adjust based on actual URL patterns
+          console.log(`🔍 Trying to find mobile thumbnail for desktop URL: ${desktopUrl}`);
+        }
+        
+        console.log(`🔍 Found URLs for ${project.projectName}:`, {
+          desktop: desktopThumbnailUrl,
+          mobile: mobileThumbnailUrl || 'Not found',
+          // Show all possible thumbnail fields
+          allFields: {
+            mobileThumbnailImage: project?.mobileThumbnailImage,
+            thumbImage: project?.thumbImage,
+            mobileThumb: project?.mobileThumb,
+            thumbnail: project?.thumbnail
+          }
+        });
+
+        if (!desktopThumbnailUrl && !mobileThumbnailUrl) {
+          results[projectId] = {
+            hasThumbnail: false,
+            desktop: null,
+            mobile: null,
+            ratio: null,
+            width: null,
+            height: null,
+            isCorrectRatio: false,
+            error: 'No thumbnail URL'
+          };
+          continue;
+        }
+
+        // Check if we already analyzed this project
+        if (imageAnalysisResults[projectId]) {
+          results[projectId] = imageAnalysisResults[projectId];
+          continue;
+        }
+
+        const analysisResult = {
+          hasThumbnail: true,
+          desktop: null,
+          mobile: null,
+          ratio: null,
+          width: null,
+          height: null,
+          isCorrectRatio: false
+        };
+
+        // Analyze desktop thumbnail
+        if (desktopThumbnailUrl) {
+          try {
+            const img = new Image();
+            await new Promise((resolve, reject) => {
+              img.onload = () => {
+                const { naturalWidth, naturalHeight } = img;
+                const ratio = naturalWidth / naturalHeight;
+                const isCorrectRatio = Math.abs(ratio - targetRatio) <= tolerance;
+
+                analysisResult.desktop = {
+                  url: desktopThumbnailUrl,
+                  naturalWidth,
+                  naturalHeight,
+                  ratio: Math.round(ratio * 100) / 100,
+                  isCorrectRatio,
+                  aspectRatio: `${naturalWidth}:${naturalHeight}`,
+                  fileSize: 'Unknown' // Would need fetch to get actual file size
+                };
+
+                // Use desktop as primary if mobile not available
+                if (!mobileThumbnailUrl) {
+                  analysisResult.ratio = analysisResult.desktop.ratio;
+                  analysisResult.width = naturalWidth;
+                  analysisResult.height = naturalHeight;
+                  analysisResult.isCorrectRatio = isCorrectRatio;
+                }
+
+                console.log(`✅ Desktop ${project.projectName}: ${naturalWidth}x${naturalHeight}, ratio: ${ratio.toFixed(2)}, correct: ${isCorrectRatio}`);
+                resolve();
+              };
+
+              img.onerror = () => {
+                analysisResult.desktop = {
+                  url: desktopThumbnailUrl,
+                  error: 'Failed to load desktop thumbnail'
+                };
+                console.log(`❌ Desktop ${project.projectName}: Failed to load thumbnail`);
+                resolve();
+              };
+
+              img.src = desktopThumbnailUrl;
+            });
+          } catch (error) {
+            analysisResult.desktop = {
+              url: desktopThumbnailUrl,
+              error: error.message
+            };
+            console.log(`🚨 Desktop ${project.projectName}: Error analyzing thumbnail - ${error.message}`);
+          }
+        }
+
+        // Analyze mobile thumbnail
+        if (mobileThumbnailUrl) {
+          try {
+            const img = new Image();
+            await new Promise((resolve, reject) => {
+              img.onload = () => {
+                const { naturalWidth, naturalHeight } = img;
+                const ratio = naturalWidth / naturalHeight;
+                const isCorrectRatio = Math.abs(ratio - targetRatio) <= tolerance;
+
+                analysisResult.mobile = {
+                  url: mobileThumbnailUrl,
+                  naturalWidth,
+                  naturalHeight,
+                  ratio: Math.round(ratio * 100) / 100,
+                  isCorrectRatio,
+                  aspectRatio: `${naturalWidth}:${naturalHeight}`,
+                  fileSize: 'Unknown'
+                };
+
+                // Use mobile as primary if desktop not correct or available
+                if (!analysisResult.isCorrectRatio || !desktopThumbnailUrl) {
+                  analysisResult.ratio = analysisResult.mobile.ratio;
+                  analysisResult.width = naturalWidth;
+                  analysisResult.height = naturalHeight;
+                  analysisResult.isCorrectRatio = isCorrectRatio;
+                }
+
+                console.log(`✅ Mobile ${project.projectName}: ${naturalWidth}x${naturalHeight}, ratio: ${ratio.toFixed(2)}, correct: ${isCorrectRatio}`);
+                resolve();
+              };
+
+              img.onerror = () => {
+                analysisResult.mobile = {
+                  url: mobileThumbnailUrl,
+                  error: 'Failed to load mobile thumbnail'
+                };
+                console.log(`❌ Mobile ${project.projectName}: Failed to load thumbnail`);
+                resolve();
+              };
+
+              img.src = mobileThumbnailUrl;
+            });
+          } catch (error) {
+            analysisResult.mobile = {
+              url: mobileThumbnailUrl,
+              error: error.message
+            };
+            console.log(`🚨 Mobile ${project.projectName}: Error analyzing thumbnail - ${error.message}`);
+          }
+        }
+
+        results[projectId] = analysisResult;
+      }
+
+      setImageAnalysisResults(results);
+      console.log('🎯 Thumbnail analysis complete:', {
+        total: Object.keys(results).length,
+        correctRatio: Object.values(results).filter(r => r.isCorrectRatio).length,
+        incorrectRatio: Object.values(results).filter(r => r.hasThumbnail && !r.isCorrectRatio).length,
+        noThumbnail: Object.values(results).filter(r => !r.hasThumbnail).length
+      });
+    };
+
+    analyzeImages();
+  }, [viewAll]);
 
   const handleDeleteUser = async (id) => {
     try {
@@ -361,6 +562,51 @@ const Projects = () => {
     }));
   }, [viewAll]);
 
+  // Thumbnail counts computation
+  const thumbnailCounts = useMemo(() => {
+    const total = viewAll.length;
+    const withThumbnail = viewAll.filter(project => 
+      project?.thumbnailImage?.cdn_url || project?.thumbnailImage?.url
+    ).length;
+    const withoutThumbnail = total - withThumbnail;
+
+    return {
+      total,
+      withThumbnail,
+      withoutThumbnail
+    };
+  }, [viewAll]);
+
+  // Thumbnail ratio counts computation
+  const thumbnailRatioCounts = useMemo(() => {
+    const total = viewAll.length;
+    let correctRatio = 0;
+    let incorrectRatio = 0;
+    let noThumbnail = 0;
+
+    viewAll.forEach(project => {
+      const analysis = imageAnalysisResults[project._id];
+      
+      if (!analysis) {
+        // Not analyzed yet, count as no thumbnail for now
+        noThumbnail++;
+      } else if (!analysis.hasThumbnail) {
+        noThumbnail++;
+      } else if (analysis.isCorrectRatio) {
+        correctRatio++;
+      } else {
+        incorrectRatio++;
+      }
+    });
+
+    return {
+      total,
+      correctRatio,
+      incorrectRatio,
+      noThumbnail
+    };
+  }, [viewAll, imageAnalysisResults]);
+
   // Apply combined filters
   const filteredProjects = viewAll.filter((item) => {
     const searchTermLower = (searchTerm || "").toLowerCase();
@@ -448,7 +694,27 @@ const Projects = () => {
     const itemMobileNumber = (item?.mobileNumber ?? "").toString().trim();
     const matchesSpecificNumber = !filterSpecificNumber || itemMobileNumber === filterSpecificNumber;
 
-    return matchesSearch && matchesType && matchesCity && matchesAddress && matchesBuilder && matchesStatus && matchesState && matchesMobile && matchesPayment && matchesOverview && matchesYoutubeVideo && matchesBrochure && matchesSpecificNumber;
+    // Thumbnail filtering logic
+    const hasThumbnail = Boolean(item?.thumbnailImage?.cdn_url || item?.thumbnailImage?.url);
+    const matchesThumbnail = !filterThumbnail || (filterThumbnail === "with" ? hasThumbnail : !hasThumbnail);
+
+    // Thumbnail ratio filtering logic
+    const analysis = imageAnalysisResults[item._id];
+    let matchesThumbnailRatio = true;
+    if (filterThumbnailRatio) {
+      if (!analysis) {
+        // Not analyzed yet, don't match any specific ratio filter
+        matchesThumbnailRatio = false;
+      } else if (filterThumbnailRatio === "correct") {
+        matchesThumbnailRatio = analysis.isCorrectRatio;
+      } else if (filterThumbnailRatio === "incorrect") {
+        matchesThumbnailRatio = analysis.hasThumbnail && !analysis.isCorrectRatio;
+      } else if (filterThumbnailRatio === "none") {
+        matchesThumbnailRatio = !analysis.hasThumbnail;
+      }
+    }
+
+    return matchesSearch && matchesType && matchesCity && matchesAddress && matchesBuilder && matchesStatus && matchesState && matchesMobile && matchesPayment && matchesOverview && matchesYoutubeVideo && matchesBrochure && matchesSpecificNumber && matchesThumbnail && matchesThumbnailRatio;
   });
   const indexOfLastRow = currentPage * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
@@ -517,6 +783,8 @@ const Projects = () => {
     setFilterYoutubeVideo("");
     setFilterBrochure("");
     setFilterSpecificNumber("");
+    setFilterThumbnail("");
+    setFilterThumbnailRatio("");
     setCurrentPage(1);
   };
 
@@ -654,6 +922,27 @@ const Projects = () => {
                 <option key={opt.value} value={opt.value}>{opt.label}</option>
               ))}
             </select>
+
+            <select
+              className="filter-select"
+              value={filterThumbnail}
+              onChange={(e) => { setFilterThumbnail(e.target.value); setCurrentPage(1); }}
+            >
+              <option value="">Thumbnail: All</option>
+              <option value="with">Thumbnail: With ({thumbnailCounts.withThumbnail})</option>
+              <option value="without">Thumbnail: Without ({thumbnailCounts.withoutThumbnail})</option>
+            </select>
+
+            <select
+              className="filter-select"
+              value={filterThumbnailRatio}
+              onChange={(e) => { setFilterThumbnailRatio(e.target.value); setCurrentPage(1); }}
+            >
+              <option value="">Ratio: All</option>
+              <option value="correct">Ratio: Correct (16:9) ({thumbnailRatioCounts.correctRatio})</option>
+              <option value="incorrect">Ratio: Incorrect ({thumbnailRatioCounts.incorrectRatio})</option>
+              <option value="none">Ratio: No Thumbnail ({thumbnailRatioCounts.noThumbnail})</option>
+            </select>
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
             <Link to={"/admin/project-insert"}>
@@ -685,6 +974,12 @@ const Projects = () => {
                 <th scope="col" className="table-header">
                   Address
                 </th>
+                <th scope="col" className="table-header">
+                  Desktop & Thumbnail Sizes
+                </th>
+                <th scope="col" className="table-header">
+                  Thumbnail Info
+                </th>
                 <th scope="col" className="table-header action-header">
                   Action
                 </th>
@@ -715,6 +1010,103 @@ const Projects = () => {
                       </td>
                       <td className="table-cell project-address">
                         {item.projectAddress}
+                      </td>
+
+                      <td className="table-cell">
+                        {(() => {
+                          const analysis = imageAnalysisResults[item._id];
+                          
+                          if (!analysis || !analysis.desktop) {
+                            return (
+                              <div className="size-info">
+                                <div className="size-row">
+                                  <span className="size-label">Desktop:</span>
+                                  <span className="size-value">Not available</span>
+                                </div>
+                                <div className="size-row">
+                                  <span className="size-label">Thumbnail:</span>
+                                  <span className="size-value">Not available</span>
+                                </div>
+                              </div>
+                            );
+                          }
+
+                          const desktop = analysis.desktop;
+                          const mobile = analysis.mobile;
+                          
+                          return (
+                            <div className="size-info">
+                              <div className="size-row">
+                                <span className="size-label">Desktop:</span>
+                                <span className="size-value desktop-size">
+                                  {desktop ? `${desktop.naturalWidth}×${desktop.naturalHeight}` : 'Not available'}
+                                </span>
+                              </div>
+                              <div className="size-row">
+                                <span className="size-label">Thumbnail:</span>
+                                <span className="size-value thumbnail-size">
+                                  {mobile && !mobile.error ? `${mobile.naturalWidth}×${mobile.naturalHeight}` : 
+                                   desktop ? `${desktop.naturalWidth}×${desktop.naturalHeight}` : 'Not available'}
+                                </span>
+                              </div>
+                            </div>
+                          );
+                        })()}
+                      </td>
+
+                      <td className="table-cell thumbnail-info-cell">
+                        {(() => {
+                          const analysis = imageAnalysisResults[item._id];
+                          
+                          if (!analysis) {
+                            return (
+                              <div className="thumbnail-status analyzing">
+                                <span className="status-indicator loading">⏳</span>
+                                <span className="status-text">Analyzing...</span>
+                              </div>
+                            );
+                          }
+
+                          if (!analysis.hasThumbnail) {
+                            return (
+                              <div className="thumbnail-status no-thumbnail">
+                                <span className="status-indicator">❌</span>
+                                <span className="status-text">No Thumbnail</span>
+                              </div>
+                            );
+                          }
+
+                          // Get the best available thumbnail (prefer mobile if available and correct ratio)
+                          const bestThumbnail = analysis.mobile || analysis.desktop;
+                          
+                          if (!bestThumbnail || bestThumbnail.error) {
+                            return (
+                              <div className="thumbnail-status error">
+                                <span className="status-indicator">⚠️</span>
+                                <span className="status-text">Error</span>
+                              </div>
+                            );
+                          }
+
+                          return (
+                            <div className="thumbnail-details">
+                              <div className="thumbnail-status">
+                                <span className={`status-indicator ${bestThumbnail.isCorrectRatio ? 'correct' : 'incorrect'}`}>
+                                  {bestThumbnail.isCorrectRatio ? '✅' : '⚠️'}
+                                </span>
+                                <span className="status-text">
+                                  {bestThumbnail.isCorrectRatio ? '16:9' : `${bestThumbnail.ratio}`}
+                                </span>
+                              </div>
+                              <div className="thumbnail-size">
+                                <span className="size-text">{bestThumbnail.naturalWidth}×{bestThumbnail.naturalHeight}</span>
+                              </div>
+                              <div className="thumbnail-aspect">
+                                <span className="aspect-text">{bestThumbnail.aspectRatio}</span>
+                              </div>
+                            </div>
+                          );
+                        })()}
                       </td>
 
                       <td className="table-cell action-buttons-cell">
@@ -767,7 +1159,7 @@ const Projects = () => {
                 })
               ) : (
                 <tr>
-                  <td colSpan="6" className="no-data-message">
+                  <td colSpan="8" className="no-data-message">
                     No projects found.
                   </td>
                 </tr>
@@ -1270,5 +1662,209 @@ const projectStyles = `
   opacity: 0.8;
   border-color: #e0e0e0;
   box-shadow: none;
+}
+
+/* Thumbnail Info Styles */
+.thumbnail-info-cell {
+  min-width: 180px;
+  max-width: 220px;
+  padding: 8px 12px;
+}
+
+.thumbnail-details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.85rem;
+  line-height: 1.3;
+}
+
+.thumbnail-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 2px;
+}
+
+.status-indicator {
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+.status-indicator.correct {
+  color: #4CAF50;
+}
+
+.status-indicator.incorrect {
+  color: #FF9800;
+}
+
+.status-indicator.loading {
+  color: #2196F3;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.status-text {
+  font-weight: 500;
+  color: #333;
+  font-size: 0.8rem;
+}
+
+.thumbnail-size {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #666;
+  font-size: 0.75rem;
+}
+
+.size-text {
+  font-family: 'Courier New', monospace;
+  background: #f5f5f5;
+  padding: 2px 4px;
+  border-radius: 3px;
+  font-weight: 600;
+}
+
+.thumbnail-aspect {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #888;
+  font-size: 0.7rem;
+}
+
+.aspect-text {
+  font-family: 'Courier New', monospace;
+  background: #f0f0f0;
+  padding: 1px 3px;
+  border-radius: 2px;
+  font-weight: 500;
+}
+
+.thumbnail-status.analyzing .status-text {
+  color: #2196F3;
+}
+
+.thumbnail-status.no-thumbnail .status-text {
+  color: #f44336;
+}
+
+.thumbnail-status.error .status-text {
+  color: #FF5722;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Responsive adjustments for thumbnail info */
+@media (max-width: 1200px) {
+  .thumbnail-info-cell {
+    min-width: 160px;
+    max-width: 200px;
+  }
+  .thumbnail-details {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .thumbnail-info-cell {
+    min-width: 140px;
+    max-width: 160px;
+  }
+  .thumbnail-details {
+    font-size: 0.75rem;
+    gap: 2px;
+  }
+  .status-text {
+    font-size: 0.7rem;
+  }
+  .size-text {
+    font-size: 0.65rem;
+  }
+  .aspect-text {
+    font-size: 0.6rem;
+  }
+}
+
+/* Size Info Styles */
+.size-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.8rem;
+}
+
+.size-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.size-label {
+  font-weight: 600;
+  color: #666;
+  min-width: 70px;
+  font-size: 0.75rem;
+}
+
+.size-value {
+  font-family: 'Courier New', monospace;
+  background: #f8f9fa;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-weight: 500;
+  font-size: 0.75rem;
+}
+
+.desktop-size {
+  color: #2196F3;
+  background: #e3f2fd;
+}
+
+.thumbnail-size {
+  color: #4CAF50;
+  background: #e8f5e8;
+}
+
+/* Responsive adjustments for size info */
+@media (max-width: 1200px) {
+  .size-info {
+    font-size: 0.75rem;
+  }
+  
+  .size-label {
+    font-size: 0.7rem;
+    min-width: 60px;
+  }
+  
+  .size-value {
+    font-size: 0.7rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .size-info {
+    font-size: 0.7rem;
+    gap: 2px;
+  }
+  
+  .size-label {
+    font-size: 0.65rem;
+    min-width: 50px;
+  }
+  
+  .size-value {
+    font-size: 0.65rem;
+    padding: 1px 4px;
+  }
 }
 `;

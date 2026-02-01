@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import showToast from '../utils/toastUtils';
 import { API_BASE } from '../config/apiBase';
 import Sidebar from './Sidebar';
 import { MdEdit, MdDelete, MdAdd, MdSearch } from 'react-icons/md';
@@ -40,13 +39,13 @@ const SitemapManagement = () => {
       
       if (response.data.success) {
         setUrls(response.data.data);
-        toast.success(`Loaded ${response.data.data.length} URLs from sitemap`);
+        showToast.success(`Loaded ${response.data.data.length} URLs from sitemap`);
       } else {
-        toast.error('Failed to load sitemap URLs');
+        showToast.error('Failed to load sitemap URLs');
       }
     } catch (error) {
       console.error('Error fetching URLs:', error);
-      toast.error(error.response?.data?.message || 'Failed to fetch sitemap URLs');
+      showToast.error(error.response?.data?.message || 'Failed to fetch sitemap URLs');
     } finally {
       setLoading(false);
     }
@@ -87,12 +86,12 @@ const SitemapManagement = () => {
       });
 
       if (response.data.success) {
-        toast.success('URL deleted successfully');
+        showToast.success('URL deleted successfully');
         fetchUrls();
       }
     } catch (error) {
       console.error('Error deleting URL:', error);
-      toast.error('Failed to delete URL');
+      showToast.error('Failed to delete URL');
     }
   };
 
@@ -100,7 +99,7 @@ const SitemapManagement = () => {
     e.preventDefault();
 
     if (!currentUrl.loc) {
-      toast.error('URL is required');
+      showToast.error('URL is required');
       return;
     }
 
@@ -137,13 +136,13 @@ const SitemapManagement = () => {
       }
 
       if (response.data.success) {
-        toast.success(editMode ? 'URL updated successfully' : 'URL added successfully');
+        showToast.success(editMode ? 'URL updated successfully' : 'URL added successfully');
         setShowModal(false);
         fetchUrls();
       }
     } catch (error) {
       console.error('Error saving URL:', error);
-      toast.error('Failed to save URL');
+      showToast.error('Failed to save URL');
     }
   };
 

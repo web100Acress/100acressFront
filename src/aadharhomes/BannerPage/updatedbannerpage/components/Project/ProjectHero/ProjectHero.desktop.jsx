@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 
-const ProjectHero = ({
+const ProjectHeroDesktop = ({
   projectExists = true,
   backgroundImage = null,
   projectTitle = "",
@@ -170,7 +170,7 @@ const ProjectHero = ({
             {/* Possession */}
             <div className="px-4 py-6 text-center relative group cursor-pointer transition-all duration-300 hover:bg-yellow-400/10 hover:scale-105 hover:shadow-lg">
               <div className="text-xs font-medium text-white/80 uppercase tracking-widest mb-2 group-hover:text-yellow-400 transition-colors duration-300">
-                {bottomInfo.possessionLabel || 'POSSESSION'}
+                {bottomInfo.possessionLabel}
               </div>
               <div className="text-xl font-bold text-white group-hover:text-yellow-300 transition-colors duration-300">
                 {bottomInfo.possession}
@@ -180,11 +180,11 @@ const ProjectHero = ({
             </div>
             
             {/* About Project */}
-            <div className="px-4 py-6 text-center relative group cursor-pointer transition-all duration-300 hover:bg-yellow-400/10 hover:scale-105 hover:shadow-lg flex-1 min-w-[200px]">
+            <div className="px-4 py-6 text-center relative group cursor-pointer transition-all duration-300 hover:bg-yellow-400/10 hover:scale-105 hover:shadow-lg">
               <div className="text-xs font-medium text-white/80 uppercase tracking-widest mb-2 group-hover:text-yellow-400 transition-colors duration-300">
                 ABOUT PROJECT
               </div>
-              <div className="text-xl font-bold text-white group-hover:text-yellow-300 transition-colors duration-300">
+              <div className="text-lg font-semibold text-white group-hover:text-yellow-300 transition-colors duration-300 leading-tight">
                 {bottomInfo.aboutProject}
               </div>
               {/* Gradient divider */}
@@ -192,24 +192,22 @@ const ProjectHero = ({
             </div>
             
             {/* Price */}
-            <div className="px-4 py-6 text-center group cursor-pointer transition-all duration-300 hover:bg-yellow-400/10 hover:scale-105 hover:shadow-lg rounded-r-lg">
-              <div className="text-xs font-medium text-white/80 uppercase tracking-widest mb-2 group-hover:text-yellow-400 transition-colors duration-300">
-                PRICE
+            <div className="px-4 py-6 text-center relative group cursor-pointer transition-all duration-300 hover:bg-yellow-400/10 hover:scale-105 hover:shadow-lg rounded-r-lg">
+              <div className="text-xs font-medium text-yellow-400 uppercase tracking-widest mb-2 group-hover:text-yellow-300 transition-colors duration-300">
+                STARTING FROM
               </div>
-              <div className="text-xl font-bold text-white group-hover:text-yellow-300 transition-colors duration-300">
+              <div className="text-2xl font-bold text-yellow-400 group-hover:text-yellow-300 transition-colors duration-300">
                 {bottomInfo.price}
               </div>
             </div>
           </div>
         </div>
-
       </div>
     </header>
   );
 };
 
-
-ProjectHero.propTypes = {
+ProjectHeroDesktop.propTypes = {
   projectExists: PropTypes.bool,
   backgroundImage: PropTypes.string,
   projectTitle: PropTypes.string,
@@ -226,22 +224,4 @@ ProjectHero.propTypes = {
   onShowCallback: PropTypes.func
 };
 
-ProjectHero.defaultProps = {
-  projectExists: true,
-  backgroundImage: null,
-  projectTitle: '',
-  location: '',
-  phoneNumber: '',
-  companyLogo: null,
-  bottomInfo: {
-    landArea: '',
-    possession: '',
-    possessionLabel: 'POSSESSION',
-    aboutProject: '',
-    price: ''
-  },
-  onShowCallback: () => {}
-};
- 
-
-export default ProjectHero
+export default ProjectHeroDesktop;

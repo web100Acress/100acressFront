@@ -159,7 +159,7 @@ const LocationSection = ({
   };
 
   return (
-    <section className="relative py-16 md:py-20 lg:py-24 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 text-white overflow-hidden">
+    <section className="relative py-6 md:py-8 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 text-white overflow-hidden">
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-full opacity-5">
@@ -248,16 +248,16 @@ const LocationSection = ({
                 {/* Location Info */}
                 <div className="p-5 md:p-6">
                   <div className="flex flex-col sm:flex-row sm:items-start space-y-4 sm:space-y-0 sm:space-x-5">
-                    <div className="flex-shrink-0">
+                    {/* <div className="flex-shrink-0">
                       <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-amber-600 rounded-lg flex items-center justify-center">
                         <svg className="w-6 h-6 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                         </svg>
                       </div>
-                    </div>
+                    </div> */}
                     <div>
-                      <h4 className="text-white text-xl md:text-2xl font-bold mb-2">
+                      <h4 className="text-white text-2xl md:text-3xl font-bold mb-3 max-w-3xl mx-auto">
                         {projectName || "Prime Location"}
                       </h4>
                       <p className="text-gray-300 text-sm md:text-base">

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Sidebar from "./Sidebar";
 import { useParams, useNavigate } from "react-router-dom"; // Import useNavigate
 import apiClient from "../config/apiClient";
-import { message } from "antd"; // Import Ant Design message
+import showToast from "../utils/toastUtils";
 import { MdEdit, MdHome } from "react-icons/md";
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
@@ -17,7 +17,6 @@ const ProjectEditBHK = () => {
     price: "",
     bhk_Area: ""
   });
-  const [messageApi, contextHolder] = message.useMessage(); // Ant Design message hook
   const [formOpen, setFormOpen] = useState(true);
 
   useEffect(() => {
@@ -28,21 +27,13 @@ const ProjectEditBHK = () => {
         if (res.data?.data?.BhK_Details && res.data.data.BhK_Details.length > 0) {
           setViewBHK(res.data.data.BhK_Details[0]);
         } else {
-          messageApi.open({
-            type: 'warning',
-            content: 'BHK details not found.',
-            duration: 2,
-          });
+          showToast.warning('BHK details not found.');
           // Optionally navigate back or to an error page if details are not found
           // navigate('/admin/projectsaddbhk');
         }
       } catch (error) {
         console.error("Error fetching BHK details:", error);
-        messageApi.open({
-          type: 'error',
-          content: 'Failed to load BHK details.',
-          duration: 2,
-        });
+        showToast.error('Failed to load BHK details.');
       }
     };
     fetchData();
@@ -57,11 +48,7 @@ const ProjectEditBHK = () => {
   const submitBHKFromData = async (e) => {
     e.preventDefault(); // Prevent default form submission behavior
     
-    messageApi.open({
-      key: "updatingBHK",
-      type: 'loading',
-      content: 'Updating BHK...',
-    });
+    showToast.loading('Updating BHK...', { id: 'updatingBHK' });
 
     try {
       const res = await apiClient.post(
@@ -70,29 +57,17 @@ const ProjectEditBHK = () => {
       );
 
       if (res.status >= 200 && res.status < 300) {
-        messageApi.destroy('updatingBHK');
-        messageApi.open({
-          type: 'success',
-          content: 'BHK updated successfully!',
-          duration: 2,
-        });
+        showToast.dismiss('updatingBHK');
+        showToast.success('BHK updated successfully!');
         // Optionally, navigate back to the BHK list or project view after successful update
         navigate(`/admin/projectsaddbhk/${viewBHK.project_id}`); // Assuming project_id is available in viewBHK
       } else {
-        messageApi.destroy('updatingBHK');
-        messageApi.open({
-          type: 'error',
-          content: 'Failed to update BHK. Server returned an error.',
-          duration: 2,
-        });
+        showToast.dismiss('updatingBHK');
+        showToast.error('Failed to update BHK. Server returned an error.');
       }
     } catch (error) {
-      messageApi.destroy('updatingBHK');
-      messageApi.open({
-        type: 'error',
-        content: 'An error occurred while updating BHK.',
-        duration: 2,
-      });
+      showToast.dismiss('updatingBHK');
+      showToast.error('An error occurred while updating BHK.');
       console.error('Error updating BHK data:', error.message);
     }
   };
@@ -102,8 +77,6 @@ const ProjectEditBHK = () => {
       <Sidebar />
       {/* Main content area */}
       <div className="flex-1 p-8 ml-64 bg-gray-50 min-h-screen font-sans">
-        {contextHolder} {/* Ant Design message context holder */}
-
         <div className="max-w-xl mx-auto my-10 bg-white rounded-xl shadow-2xl border-l-4 border-gradient-to-r from-blue-400 to-purple-400 overflow-hidden">
           {/* Form Header (Collapsible) */}
           <button

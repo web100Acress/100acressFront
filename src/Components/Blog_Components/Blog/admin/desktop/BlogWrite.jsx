@@ -2,9 +2,9 @@ import React, { useState, Suspense, useContext, useMemo } from 'react';
 import { lazy } from 'react';
 const ReactQuill = lazy(() => import('react-quill'));
 import 'react-quill/dist/quill.snow.css';
-import { message } from 'antd';
 import api from "../../../../../config/apiClient";
 import { AuthContext } from "../../../../../AuthContext";
+import showToast from "../../../../../utils/toastUtils";
 
 const BlogWrite = () => {
   const [content, setContent] = useState('');
@@ -63,12 +63,12 @@ const BlogWrite = () => {
   const handleSubmitForm = async (e) => {
     e.preventDefault();
     if (!fileData || !fileData.blog_Image) {
-      alert("Please select a blog image.");
+      showToast.error("Please select a blog image.");
       return;
     }
 
     if (!editForm.blog_Title || !content || !editForm.blog_Category) {
-      alert("Please fill in all required fields.");
+      showToast.error("Please fill in all required fields.");
       return;
     }
 
@@ -92,19 +92,19 @@ const BlogWrite = () => {
       const response = await api.post(apiEndpoint, formDataAPI);
       if (response.status === 200) {
         console.log(response.data, "response");
-        alert("Blog post submitted successfully");
+        showToast.success("Blog post submitted successfully");
         resetData();
       } else {
         console.error("Failed to submit data:", response.data);
-        alert("Failed to submit blog post. Please try again.");
+        showToast.error("Failed to submit blog post. Please try again.");
       }
     } catch (error) {
       console.error("Error:", error);
       if (error.response) {
         console.error("Server error:", error.response.data);
-        alert(`Error: ${error.response.data.message || "Failed to submit blog post"}`);
+        showToast.error(`Error: ${error.response.data.message || "Failed to submit blog post"}`);
       } else {
-        alert("Network error. Please check your connection and try again.");
+        showToast.error("Network error. Please check your connection and try again.");
       }
     }
   };
@@ -125,7 +125,7 @@ const BlogWrite = () => {
       
       if (Math.abs(this.width - expectedWidth) > tolerance || Math.abs(this.height - expectedHeight) > tolerance) {
         const errorMsg = `Image must be exactly ${expectedWidth} × ${expectedHeight} pixels (Current: ${this.width} × ${this.height})`;
-        message.error(errorMsg);
+        showToast.error(errorMsg);
         setFileError(errorMsg);
         // Reset the file input
         e.target.value = '';
@@ -139,7 +139,7 @@ const BlogWrite = () => {
       
       if (Math.abs(actualRatio - expectedRatio) > ratioTolerance) {
         const errorMsg = `Image aspect ratio must be ${expectedWidth}:${expectedHeight} (300:157). Current ratio is ${this.width}:${this.height}`;
-        message.error(errorMsg);
+        showToast.error(errorMsg);
         setFileError(errorMsg);
         // Reset the file input
         e.target.value = '';
@@ -155,7 +155,7 @@ const BlogWrite = () => {
     
     img.onerror = function() {
       const errorMsg = 'Failed to load image. Please try a different file.';
-      message.error(errorMsg);
+      showToast.error(errorMsg);
       setFileError(errorMsg);
       e.target.value = '';
     };

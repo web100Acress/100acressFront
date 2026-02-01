@@ -1,6 +1,6 @@
 import React from 'react';
 
-const HighlightsSection = ({ projectName, highlights, highlightImage, onShowCallback = () => {} }) => {
+const HighlightsSectionDesktop = ({ projectName, highlights, highlightImage, onShowCallback = () => {} }) => {
   const hasHighlights = highlights && Array.isArray(highlights) && highlights.length > 0;
 
   return (
@@ -97,4 +97,4 @@ const HighlightsSection = ({ projectName, highlights, highlightImage, onShowCall
   );
 };
 
-export default HighlightsSection;
+export default HighlightsSectionDesktop;

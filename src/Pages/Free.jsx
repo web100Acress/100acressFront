@@ -1,4 +1,4 @@
-import React from "react";
+
 import { Link } from "react-router-dom";
 import { ScaleLoader } from "react-spinners";
 import AOS from "aos";

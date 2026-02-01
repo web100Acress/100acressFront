@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Sidebar from "../../../../../AdminPage/Sidebar";
 import { Link } from "react-router-dom";
 import api from "../../../../../config/apiClient";
-import { message } from "antd"; // Import Ant Design message
+import showToast from "../../../../../utils/toastUtils";
 import { MdArticle, MdSearch, MdAddCircle, MdEdit, MdDelete, MdVisibility } from "react-icons/md";
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
@@ -15,7 +15,6 @@ const Blog = () => {
   const [authorFilter, setAuthorFilter] = useState("ALL"); // dropdown filter
   const [authors, setAuthors] = useState([]); // unique authors for filter
   const [authorStats, setAuthorStats] = useState({}); // author -> { streakDays }
-  const [messageApi, contextHolder] = message.useMessage(); // Ant Design message hook
 
   // Token is injected by api client interceptors; no local handling needed here
 
@@ -95,11 +94,7 @@ const Blog = () => {
       setAuthorStats(buildAuthorStats(allBlogsRaw));
     } catch (error) {
       console.error("Error fetching blog data:", error);
-      messageApi.open({
-        type: 'error',
-        content: 'Failed to load blog posts. Please try again.',
-        duration: 3,
-      });
+      showToast.error('Failed to load blog posts. Please try again.');
     }
   };
 
@@ -124,38 +119,22 @@ const Blog = () => {
   });
 
   const handleDeleteUser = async (id) => {
-    messageApi.open({
-      key: "deletingBlog",
-      type: 'loading',
-      content: 'Deleting blog post...',
-    });
+    showToast.loading('Deleting blog post...', { id: 'deletingBlog' });
 
     try {
       const response = await api.delete(`blog/delete/${id}`);
       if (response.status >= 200 && response.status < 300) {
-        messageApi.destroy('deletingBlog');
-        messageApi.open({
-          type: 'success',
-          content: 'Blog post deleted successfully!',
-          duration: 2,
-        });
+        showToast.dismiss('deletingBlog');
+        showToast.success('Blog post deleted successfully!');
         fetchBlogData(); // Re-fetch data to update the list
       } else {
-        messageApi.destroy('deletingBlog');
-        messageApi.open({
-          type: 'error',
-          content: 'Failed to delete blog post. Server returned an error.',
-          duration: 2,
-        });
+        showToast.dismiss('deletingBlog');
+        showToast.error('Failed to delete blog post. Server returned an error.');
         console.error("Failed to delete blog post. Server returned an error.");
       }
     } catch (error) {
-      messageApi.destroy('deletingBlog');
-      messageApi.open({
-        type: 'error',
-        content: 'An error occurred while deleting blog post.',
-        duration: 2,
-      });
+      showToast.dismiss('deletingBlog');
+      showToast.error('An error occurred while deleting blog post.');
       console.error("An error occurred while deleting blog post:", error.message);
     }
   };
@@ -173,8 +152,6 @@ const Blog = () => {
     <div className="bg-gray-50 dark:bg-gray-900 dark:text-gray-100 min-h-screen flex font-sans">
       <Sidebar />
       <div className="flex-1 p-8 ml-[250px] transition-colors duration-300">
-        {contextHolder} {/* Ant Design message context holder */}
-
         {/* Header and Controls */}
         <div className="flex flex-col sm:flex-row items-center justify-between mb-8">
           <div className="flex items-center gap-2 mb-4 sm:mb-0">

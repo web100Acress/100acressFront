@@ -1,6 +1,6 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { message } from "antd";
+import showToast from "../utils/toastUtils";
 import "antd/dist/reset.css";
 import { AuthContext } from "../AuthContext";
 import { Eye, EyeOff, X } from "lucide-react";
@@ -21,6 +21,14 @@ function SignupForm({ inModal = false, onSwitchToLogin }) {
     email: "",
     role: "propertyOwner",
   });
+
+  // Remove custom toast positioning to use default appearance (same as LoginForm)
+  useEffect(() => {
+    // No custom styling - use default toast positioning
+    return () => {
+      // Cleanup if needed
+    };
+  }, []);
   const resetData = () => {
     setUserSignUp({
       name: "",
@@ -32,8 +40,6 @@ function SignupForm({ inModal = false, onSwitchToLogin }) {
   };
 
   const { signup } = useContext(AuthContext);
-
-  const [messageApi, contextHolder] = message.useMessage();
 
   const handleHideUnHide = () => {
     setpasswordHide(!passwordHide);
@@ -81,10 +87,7 @@ function SignupForm({ inModal = false, onSwitchToLogin }) {
     try {
       await signup(userSignUp, resetData, setResponseMessage);
     } catch (error) {
-      messageApi.error({
-        content: error.message || "Registration failed. Please try again.",
-        duration: 3,
-      });
+      showToast.error(error.message || "Registration failed. Please try again.");
     }
   };
 
@@ -102,17 +105,11 @@ function SignupForm({ inModal = false, onSwitchToLogin }) {
     validateMobile(userSignUp.mobile);
 
     if(emailError){
-      messageApi.error({
-        content:emailError,
-        duration:3,
-      })
+      showToast.error(emailError);
       return;
     }
     else if(mobileError){
-      messageApi.error({
-        content:mobileError,
-        duration:3,
-      })
+      showToast.error(mobileError);
       return;
     }
     await handleUserRegister();
@@ -127,7 +124,6 @@ function SignupForm({ inModal = false, onSwitchToLogin }) {
 
   return (
     <>
-      {contextHolder}
       <div className={`relative p-4 md:p-6 ${inModal ? "w-full" : "max-sm:w-[90vw]"}`}>
         
         {/* Heading */}

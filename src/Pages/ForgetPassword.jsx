@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import showToast from "../utils/toastUtils";
 const ForgetPassword = () => {
   const history = useNavigate();
   const [newPassword, setNewPassword] = useState({
@@ -28,17 +27,17 @@ const ForgetPassword = () => {
     const { password, cpassword } = newPassword; 
     try {
       if (!token?.token) {
-        toast.error('Reset link is invalid or expired.', { position: 'top-center', autoClose: 3500 });
+        showToast.error('Reset link is invalid or expired.');
         return;
       }
 
       if (!password || !cpassword) {
-        toast.error('Please enter and confirm your new password.', { position: 'top-center', autoClose: 3500 });
+        showToast.error('Please enter and confirm your new password.');
         return;
       }
 
       if (password !== cpassword) {
-        toast.error('Passwords do not match.', { position: 'top-center', autoClose: 3500 });
+        showToast.error('Passwords do not match.');
         return;
       }
 
@@ -48,25 +47,18 @@ const ForgetPassword = () => {
         cpassword: cpassword,
       });
 
-      toast.success(response?.data?.message || 'Password reset successful', {
-        position: 'top-center',
-        autoClose: 2500,
-      });
+      showToast.success(response?.data?.message || 'Password reset successful');
 
       setTimeout(() => {
         history('/auth/signin');
       }, 800);
     } catch (error) {
-      toast.error(error?.response?.data?.message || 'Failed to reset password. Try again.', {
-        position: 'top-center',
-        autoClose: 4000,
-      });
+      showToast.error(error?.response?.data?.message || 'Failed to reset password. Try again.');
     }
   };
 
   return (
     <div className="min-h-screen w-full bg-gradient-to-b from-red-600 via-red-600 to-white">
-      <ToastContainer />
 
       <div className="mx-auto flex min-h-screen w-full max-w-6xl items-center justify-center px-4 py-10">
         <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-[0_12px_36px_rgba(15,23,42,0.18)] md:p-8">

@@ -3,7 +3,7 @@ import apiClient from "../config/apiClient";
 import Modal from "react-modal";
 import Sidebar from "./Sidebar";
 import { Link, useParams } from "react-router-dom";
-import { message } from "antd";
+import showToast from "../utils/toastUtils";
 import { MdHome, MdAddCircle, MdTableRows, MdSearch, MdEdit, MdDelete, MdExpandMore, MdExpandLess } from "react-icons/md";
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
@@ -50,7 +50,6 @@ const ProjectsAddBhk = () => {
 
   const [viewAll, setViewAll] = useState([]);
   const [modalIsOpen, setIsOpen] = React.useState(false);
-  const [messageApi, contextHolder] = message.useMessage();
   const [searchTerm, setSearchTerm] = useState(""); // State for search term
   const [bhkListOpen, setBhkListOpen] = useState(true);
   const [modalSectionOpen, setModalSectionOpen] = useState(true);
@@ -60,11 +59,7 @@ const ProjectsAddBhk = () => {
   // Function to fetch BHK data (can be called on initial load and after mutations)
   const fetchBhkData = async () => {
     if (!id || id === 'undefined') {
-      messageApi.open({
-        type: 'error',
-        content: 'Project ID is missing or invalid.',
-        duration: 2,
-      });
+      showToast.error('Project ID is missing or invalid.');
       return;
     }
     try {
@@ -72,11 +67,7 @@ const ProjectsAddBhk = () => {
       setViewAll(res.data.data || []);
     } catch (error) {
       console.error("Error fetching BHK details:", error);
-      messageApi.open({
-        type: 'error',
-        content: 'Failed to fetch BHK details.',
-        duration: 2,
-      });
+      showToast.error('Failed to fetch BHK details.');
     }
   };
 
@@ -91,38 +82,22 @@ const ProjectsAddBhk = () => {
 
   const submitBHKFromData = async (e) => {
     e.preventDefault();
-    messageApi.open({
-      key: "insertingBHK",
-      type: 'loading',
-      content: 'Inserting...',
-    });
+    showToast.loading('Inserting...', { id: 'insertingBHK' });
     try {
       const response = await apiClient.post(`bhk_insert/${id}`, editFromData);
       if (response.status >= 200 && response.status < 300) {
-        messageApi.destroy('insertingBHK');
-        messageApi.open({
-          type: 'success',
-          content: 'BHK has been inserted successfully.',
-          duration: 2,
-        });
+        showToast.dismiss('insertingBHK');
+        showToast.success('BHK has been inserted successfully.');
         fetchBhkData(); // Re-fetch data to get the latest list including the new item
         resetData();
         closeModal(); // Close modal after successful submission
       } else {
-        messageApi.destroy('insertingBHK');
-        messageApi.open({
-          type: 'error',
-          content: 'Something went wrong while inserting the BHK.',
-          duration: 2,
-        });
+        showToast.dismiss('insertingBHK');
+        showToast.error('Something went wrong while inserting the BHK.');
       }
     } catch (error) {
-      messageApi.destroy('insertingBHK');
-      messageApi.open({
-        type: 'error',
-        content: 'Something went wrong while inserting the BHK.',
-        duration: 2,
-      });
+      showToast.dismiss('insertingBHK');
+      showToast.error('Something went wrong while inserting the BHK.');
       console.error('Error inserting user data:', error.message);
     }
   };
@@ -138,35 +113,19 @@ const ProjectsAddBhk = () => {
 
   const handleDeleteUser = async (_id) => {
     try {
-      messageApi.open({
-        key: "deletingBHK",
-        type: 'loading',
-        content: 'Deleting...',
-      });
+      showToast.loading('Deleting...', { id: 'deletingBHK' });
       const response = await apiClient.delete(`bhk_delete/${_id}`);
       if (response.status >= 200 && response.status < 300) {
-        messageApi.destroy('deletingBHK');
-        messageApi.open({
-          type: 'success',
-          content: 'BHK has been deleted successfully.',
-          duration: 2,
-        });
+        showToast.dismiss('deletingBHK');
+        showToast.success('BHK has been deleted successfully.');
         fetchBhkData(); // Re-fetch data to update the list
       } else {
-        messageApi.destroy('deletingBHK');
-        messageApi.open({
-          type: 'error',
-          content: 'Failed to delete BHK. Server returned an error.',
-          duration: 2,
-        });
+        showToast.dismiss('deletingBHK');
+        showToast.error('Failed to delete BHK. Server returned an error.');
       }
     } catch (error) {
-      messageApi.destroy('deletingBHK');
-      messageApi.open({
-        type: 'error',
-        content: 'An error occurred while deleting BHK.',
-        duration: 2,
-      });
+      showToast.dismiss('deletingBHK');
+      showToast.error('An error occurred while deleting BHK.');
       console.error('An error occurred while deleting BHK:', error.message);
     }
   };
@@ -189,8 +148,6 @@ const ProjectsAddBhk = () => {
     <>
       <Sidebar />
       <div className="flex-1 p-8 ml-64 bg-gray-50 dark:bg-gray-900 dark:text-white min-h-screen">
-        {contextHolder} {/* Ant Design message context holder */}
-
         {/* Header and Controls */}
         <div className="flex flex-col sm:flex-row items-center justify-between mb-8">
           <div className="flex items-center gap-2 mb-4 sm:mb-0">
