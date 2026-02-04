@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Sidebar from "./Sidebar";
 import { useParams } from "react-router-dom";
 import api from "../config/apiClient";
+import { showToast } from "../Utils/toastUtils";
 import { MdInfo, MdAttachMoney, MdDateRange, MdBarChart, MdDescription, MdStar, MdCheckCircle } from "react-icons/md";
 
 const ProjectView = () => {
@@ -54,11 +55,22 @@ const ProjectView = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        showToast.loading('Loading project details...', { id: 'loadProject' });
         const res = await api.get(`/project/View/${pUrl}`);
         const dv = res?.data?.dataview;
-        setViewDetails(Array.isArray(dv) && dv.length > 0 ? dv[0] : {});
+        
+        if (res.status === 200) {
+          setViewDetails(Array.isArray(dv) && dv.length > 0 ? dv[0] : {});
+          showToast.dismiss('loadProject');
+          showToast.success('Project loaded successfully!');
+        } else {
+          showToast.dismiss('loadProject');
+          showToast.error('Failed to load project details');
+        }
       } catch (error) {
         console.error("Error fetching project details:", error);
+        showToast.dismiss('loadProject');
+        showToast.error('Failed to load project details. Please try again.');
       }
     };
     fetchData();
