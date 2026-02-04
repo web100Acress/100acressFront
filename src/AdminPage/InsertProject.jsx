@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../config/apiClient";
 import { showToast } from "../Utils/toastUtils"; // Import Ant Design message for modern notifications
+import Sidebar from "./Sidebar";
 import {
   MdInfo,
   MdLocationOn,
@@ -538,6 +539,15 @@ const handleCustomStateSubmit = async () => {
   }
 };
 
+// Generic handler for all form inputs
+const handleChangeProjectData = (e) => {
+  const { name, value } = e.target;
+  setEditFromData((prev) => ({
+    ...prev,
+    [name]: value,
+  }));
+};
+
 const handleSubmitProject = async (e) => {
   e.preventDefault();
   setLoading(true);
@@ -764,7 +774,6 @@ const handleSubmitProject = async (e) => {
   return (
     <div className="flex bg-gray-50 min-h-screen">
       <Sidebar />
-      {contextHolder} {/* Ant Design message context holder */}
       {/* Main content area */}
       <div className="flex-1 p-8 ml-64">
         {/* Page Header */}
