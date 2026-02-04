@@ -41,6 +41,7 @@ function extractYoutubeId(url) {
 }
 
 const InsertProject = () => {
+  const navigate = useNavigate();
     // State for builders list and dropdown
   const [buildersList, setBuildersList] = useState([]);
   const [filteredBuilders, setFilteredBuilders] = useState([]);
@@ -232,13 +233,13 @@ const InsertProject = () => {
     if (exists) {
       setCustomProjectType("");
       setEditFromData((prev) => ({ ...prev, type: exists }));
-      showToast.info('Type already exists and is selected.');
+      showToast.info(`Type "${exists}" already exists and is selected.`);
       return;
     }
     setProjectTypes((prev) => [...prev, value]);
     setEditFromData((prev) => ({ ...prev, type: value }));
     setCustomProjectType("");
-    showToast.success('Project type added');
+    showToast.success(`Project type "${value}" added successfully!`);
   };
 
 
@@ -542,10 +543,154 @@ const handleCustomStateSubmit = async () => {
 // Generic handler for all form inputs
 const handleChangeProjectData = (e) => {
   const { name, value } = e.target;
+  const fieldLabels = {
+    projectOverview: 'Project Overview',
+    type: 'Project Type',
+    project_Status: 'Project Status',
+    country: 'Country',
+    luxury: 'Luxury',
+    spotlight: 'Spotlight',
+    totalLandArea: 'Total Land Area',
+    totalUnit: 'Total Unit',
+    towerNumber: 'Tower Number',
+    launchingDate: 'Launching Date',
+    mobileNumber: 'Mobile Number',
+    possessionDate: 'Possession Date',
+    minPrice: 'Minimum Price',
+    maxPrice: 'Maximum Price',
+    paymentPlan: 'Payment Plan',
+    youtubeVideoUrl: 'YouTube Video URL',
+    youtubeVideoTitle: 'YouTube Video Title',
+    youtubeVideoDescription: 'YouTube Video Description',
+    project_url: 'Project URL',
+    meta_title: 'Meta Title',
+    meta_description: 'Meta Description',
+    projectReraNo: 'Project RERA No',
+    project_discripation: 'Project Description',
+    AboutDeveloper: 'About Developer',
+    projectAddress: 'Project Address',
+    projectName: 'Project Name',
+    builderName: 'Builder Name',
+    city: 'City',
+    state: 'State'
+  };
+  
+  const label = fieldLabels[name] || name;
+  
+  // Show toast for dropdown selections (select elements)
+  if (e.target.tagName === 'SELECT') {
+    if (value) {
+      showToast.info(`${label} selected: ${value}`);
+    } else {
+      showToast.info(`${label} cleared`);
+    }
+  }
+  
   setEditFromData((prev) => ({
     ...prev,
     [name]: value,
   }));
+};
+
+// Handler for single file changes
+const handleSingleFileChange = (e, fieldName) => {
+  const file = e.target.files[0];
+  if (file) {
+    const fieldLabels = {
+      frontImage: 'Front Image',
+      logo: 'Logo',
+      thumbnailImage: 'Thumbnail Image',
+      project_locationImage: 'Project Location Image',
+      highlightImage: 'Highlight Image',
+      projectMaster_plan: 'Master Plan',
+      project_Brochure: 'Project Brochure'
+    };
+    
+    const label = fieldLabels[fieldName] || fieldName;
+    showToast.success(`${label} selected: ${file.name}`);
+    
+    setFileData((prev) => ({
+      ...prev,
+      [fieldName]: file,
+    }));
+  }
+};
+
+// Handler for multiple file changes
+const handleMultipleFilesChange = (e, fieldName) => {
+  const files = Array.from(e.target.files);
+  if (files.length > 0) {
+    const fieldLabels = {
+      project_floorplan_Image: 'Floor Plan Images',
+      projectGallery: 'Gallery Images'
+    };
+    
+    const label = fieldLabels[fieldName] || fieldName;
+    showToast.success(`${label} selected: ${files.length} file(s)`);
+    
+    setFileData((prev) => ({
+      ...prev,
+      [fieldName]: files,
+    }));
+  }
+};
+
+// Reset form data function
+const resetData = () => {
+  setEditFromData({
+    projectName: "",
+    state: "",
+    country: "India",
+    projectAddress: "",
+    project_discripation: "",
+    AboutDeveloper: "",
+    builderName: "",
+    projectRedefine_Connectivity: "",
+    projectRedefine_Education: "",
+    projectRedefine_Business: "",
+    projectRedefine_Entertainment: "",
+    Amenities: "",
+    luxury: "False",
+    spotlight: "False",
+    paymentPlan: "",
+    meta_title: "",
+    meta_description: "",
+    projectBgContent: "",
+    projectReraNo: "",
+    type: "",
+    city: "",
+    projectOverview: "",
+    project_url: "",
+    totalLandArea: "",
+    totalUnit: "",
+    towerNumber: "",
+    mobileNumber: "",
+    possessionDate: "",
+    minPrice: "",
+    maxPrice: "",
+    launchingDate: "",
+    youtubeVideoUrl: "",
+    youtubeVideoTitle: "",
+    youtubeVideoDescription: "",
+  });
+  
+  // Reset custom project type
+  setCustomProjectType("");
+};
+
+// Reset image data function
+const resetImageData = () => {
+  setFileData({
+    frontImage: null,
+    logo: null,
+    thumbnailImage: null,
+    project_locationImage: null,
+    project_floorplan_Image: [],
+    highlightImage: null,
+    project_Brochure: null,
+    projectGallery: [],
+    projectMaster_plan: null,
+  });
 };
 
 const handleSubmitProject = async (e) => {
@@ -624,6 +769,10 @@ const handleSubmitProject = async (e) => {
       showToast.success('Project added successfully!');
       resetData();
       resetImageData();
+      // Redirect to projects page after successful insertion
+      setTimeout(() => {
+        navigate('/Admin/Projects/property');
+      }, 1500);
     } else {
       showToast.dismiss('insertProject');
       showToast.error('Failed to add project. Server returned an unexpected status.');

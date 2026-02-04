@@ -51,6 +51,7 @@ const Enquiries = () => {
 
   const fetchData = async (page = 1) => {
     setLoading(true);
+    showToast.loading('Loading enquiries...', { id: 'loadEnquiries' });
 
     if (!token) {
       navigate("/");
@@ -83,8 +84,12 @@ const Enquiries = () => {
       setData(filteredRows);
       setTotal(payload?.total || payload?.data?.[0]?.totalCount || 0);
       setCurrentPage(page);
+      
+      showToast.dismiss('loadEnquiries');
+      showToast.success(`Loaded ${filteredRows.length} enquiries successfully!`);
     } catch (error) {
       console.error("Error fetching data:", error);
+      showToast.dismiss('loadEnquiries');
       showToast.error("Error fetching data. Please try again.");
     }
     setLoading(false);

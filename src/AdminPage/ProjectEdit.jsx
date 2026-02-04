@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import Sidebar from "./Sidebar";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import api from "../config/apiClient";
+import { showToast } from "../Utils/toastUtils";
 import { MdOutlineDeleteOutline, MdInfo, MdAttachMoney, MdDateRange, MdBarChart, MdDescription, MdStar, MdCheckCircle, MdUpdate, MdMovie, MdTitle } from "react-icons/md";
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
@@ -15,6 +16,7 @@ const customStyle = {
 };
 
 const ProjectEdit = () => {
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
   const [loading, setLoading] = useState(false);
   const defaultProjectTypes = [
@@ -576,6 +578,8 @@ const ProjectEdit = () => {
 
   const handleUpdateUser = async () => {
     try {
+      setLoading(true);
+      showToast.loading('Updating project...', { id: 'updateProject' });
       const formData = new FormData();
 
       // Append scalar/text fields explicitly to avoid sending objects where files are expected
@@ -650,7 +654,9 @@ const ProjectEdit = () => {
       });
 
       if (response.status === 200) {
-        alert("Data updated successfully");
+        showToast.success('Project updated successfully!');
+        showToast.dismiss('updateProject');
+        setLoading(false);
 
         // Trigger refresh in Projects component if it's open
         if (window.location.pathname === '/admin/projects' || window.location.pathname.startsWith('/admin/Projects')) {
@@ -658,7 +664,15 @@ const ProjectEdit = () => {
           window.postMessage({ type: 'PROJECT_UPDATED', projectId: id }, '*');
         }
 
+        // Redirect to projects page after successful update
+        setTimeout(() => {
+          navigate('/Admin/Projects/property');
+        }, 1500);
+
       } else {
+        showToast.error('Failed to update project');
+        showToast.dismiss('updateProject');
+        setLoading(false);
         console.error("Failed to update user");
       }
     } catch (error) {
@@ -667,7 +681,7 @@ const ProjectEdit = () => {
         // that falls out of the range of 2xx
         if (error.response.status === 401) {
           console.log("Unauthorized: You don't have permission to delete this user.");
-          alert("You are not authorized to delete this user.");
+          showToast.error("You are not authorized to update this project.");
         } else {
           console.error("An error occurred while deleting user:", error.response.status);
         }
@@ -677,7 +691,10 @@ const ProjectEdit = () => {
       } else {
         // Something happened in setting up the request that triggered an error
         console.error("Error in request setup:", error.message);
+        showToast.error('Failed to update project. Please try again.');
       }
+      showToast.dismiss('updateProject');
+      setLoading(false);
      }
   };
 

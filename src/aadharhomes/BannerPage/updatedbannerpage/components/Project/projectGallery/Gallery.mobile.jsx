@@ -106,10 +106,10 @@ const GalleryMobile = ({ galleryImages = [], projectName = '' }) => {
 
         {/* Mobile Show All Button */}
         {remainingImagesCount > 0 && (
-          <div className="mt-4 px-2 sm:px-0 text-right">
+          <div className="-mb-8 px-0 sm:px-0 text-right">
             <button
               onClick={() => openModal(galleryImages[4]?.url, 4)}
-              className="bg-amber-600 text-white font-semibold px-3 py-2.5 rounded-lg hover:bg-amber-700 transition-colors text-sm inline-block"
+              className="bg-amber-600 text-white font-semibold px-3 mb-2 py-2.5 rounded-lg hover:bg-amber-700 transition-colors text-sm inline-block"
             >
               Show All Photos ({remainingImagesCount}+)
             </button>
