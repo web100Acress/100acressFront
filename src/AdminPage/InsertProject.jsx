@@ -635,6 +635,64 @@ const handleMultipleFilesChange = (e, fieldName) => {
   }
 };
 
+// Reset form data function
+const resetData = () => {
+  setEditFromData({
+    projectName: "",
+    state: "",
+    country: "India",
+    projectAddress: "",
+    project_discripation: "",
+    AboutDeveloper: "",
+    builderName: "",
+    projectRedefine_Connectivity: "",
+    projectRedefine_Education: "",
+    projectRedefine_Business: "",
+    projectRedefine_Entertainment: "",
+    Amenities: "",
+    luxury: "False",
+    spotlight: "False",
+    paymentPlan: "",
+    meta_title: "",
+    meta_description: "",
+    projectBgContent: "",
+    projectReraNo: "",
+    type: "",
+    city: "",
+    projectOverview: "",
+    project_url: "",
+    totalLandArea: "",
+    totalUnit: "",
+    towerNumber: "",
+    mobileNumber: "",
+    possessionDate: "",
+    minPrice: "",
+    maxPrice: "",
+    launchingDate: "",
+    youtubeVideoUrl: "",
+    youtubeVideoTitle: "",
+    youtubeVideoDescription: "",
+  });
+  
+  // Reset custom project type
+  setCustomProjectType("");
+};
+
+// Reset image data function
+const resetImageData = () => {
+  setFileData({
+    frontImage: null,
+    logo: null,
+    thumbnailImage: null,
+    project_locationImage: null,
+    project_floorplan_Image: [],
+    highlightImage: null,
+    project_Brochure: null,
+    projectGallery: [],
+    projectMaster_plan: null,
+  });
+};
+
 const handleSubmitProject = async (e) => {
   e.preventDefault();
   setLoading(true);
