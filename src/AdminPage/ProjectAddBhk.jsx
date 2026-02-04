@@ -105,10 +105,12 @@ const ProjectsAddBhk = () => {
   function openModal() {
     resetData(); // Reset form data when opening the modal for a fresh entry
     setIsOpen(true);
+    showToast.info('Add Floor Plan modal opened');
   }
 
   function closeModal() {
     setIsOpen(false);
+    showToast.info('Add Floor Plan modal closed');
   }
 
   const handleDeleteUser = async (_id) => {
@@ -261,7 +263,10 @@ const ProjectsAddBhk = () => {
           <div className="bg-white dark:bg-gray-800 rounded-xl">
             <button
               className="w-full flex items-center gap-2 bg-red-600 rounded-t-xl px-6 py-4 text-center text-white focus:outline-none focus:ring-2 focus:ring-red-400 transition"
-              onClick={() => setModalSectionOpen((open) => !open)}
+              onClick={() => {
+                setModalSectionOpen((open) => !open);
+                showToast.info(modalSectionOpen ? 'Add Floor Plan form collapsed' : 'Add Floor Plan form expanded');
+              }}
               aria-expanded={modalSectionOpen}
               aria-controls="modal-form-section"
               type="button"

@@ -3,7 +3,7 @@ import axios from "axios";
 import { getApiBase } from '../config/apiBase';
 import Sidebar from "./Sidebar";
 import { Link } from "react-router-dom";
-import { message } from "antd"; 
+import { showToast } from "../Utils/toastUtils"; 
 
 const Projects = () => {
   const [viewAll, setViewAll] = useState([]);
@@ -30,7 +30,6 @@ const Projects = () => {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const [imageAnalysisResults, setImageAnalysisResults] = useState({});
 
-  const [messageApi, contextHolder] = message.useMessage(); // For Ant Design messages
 
   // Effect to inject styles into the document head
   useEffect(() => {
@@ -51,21 +50,18 @@ const Projects = () => {
       if (event.data && event.data.type === 'PROJECT_UPDATED') {
         // Refresh the data when a project is updated
         setRefreshTrigger(prev => prev + 1);
-        messageApi.open({
-          type: "success",
-          content: "Project updated successfully. Data refreshed.",
-          duration: 2,
-        });
+        showToast.success('Project updated successfully. Data refreshed.');
       }
     };
 
     window.addEventListener('message', handleMessage);
     return () => window.removeEventListener('message', handleMessage);
-  }, [messageApi]);
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+        showToast.loading('Loading projects...', { id: 'loadProjects' });
         const base = getApiBase();
         const tokenRaw = localStorage.getItem("myToken") || "";
         const token = tokenRaw.replace(/^"|"$/g, "").replace(/^Bearer\s+/i, "");
@@ -83,13 +79,13 @@ const Projects = () => {
         // Sort by creation date in descending order (newest first)
         const sortedRows = [...rows].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
         setViewAll(sortedRows);
+        
+        showToast.dismiss('loadProjects');
+        showToast.success(`Loaded ${sortedRows.length} projects successfully!`);
       } catch (error) {
         console.error("Error fetching projects:", error);
-        messageApi.open({
-          type: "error",
-          content: "Failed to fetch projects. Please try again.",
-          duration: 2,
-        });
+        showToast.dismiss('loadProjects');
+        showToast.error('Failed to fetch projects. Please try again.');
       }
     };
     fetchData();
@@ -792,7 +788,6 @@ const Projects = () => {
     <div className="bg-gray-50 dark:bg-gray-900 dark:text-gray-100 min-h-screen flex">
       <Sidebar />
       <div className="flex-1 p-8 ml-[250px] transition-colors duration-300">
-        {contextHolder} {/* Ant Design message context holder */}
         <div className="projects-header">
           <div className="search-container">
             <input
@@ -812,7 +807,15 @@ const Projects = () => {
             <select
               className="filter-select"
               value={filterType}
-              onChange={(e) => { setFilterType(e.target.value); setCurrentPage(1); }}
+              onChange={(e) => { 
+                setFilterType(e.target.value); 
+                setCurrentPage(1);
+                if (e.target.value) {
+                  showToast.info(`Filter applied: ${e.target.value}`);
+                } else {
+                  showToast.info('Type filter cleared');
+                }
+              }}
             >
               <option value="">All Types</option>
               {typeOptions.map(opt => (
@@ -822,7 +825,15 @@ const Projects = () => {
             <select
               className="filter-select"
               value={filterCity}
-              onChange={(e) => { setFilterCity(e.target.value); setCurrentPage(1); }}
+              onChange={(e) => { 
+                setFilterCity(e.target.value); 
+                setCurrentPage(1);
+                if (e.target.value) {
+                  showToast.info(`City filter applied: ${e.target.value}`);
+                } else {
+                  showToast.info('City filter cleared');
+                }
+              }}
             >
               <option value="">All Cities</option>
               {cityOptions.map(opt => (
@@ -832,7 +843,15 @@ const Projects = () => {
             <select
               className="filter-select"
               value={filterBuilder}
-              onChange={(e) => { setFilterBuilder(e.target.value); setCurrentPage(1); }}
+              onChange={(e) => { 
+                setFilterBuilder(e.target.value); 
+                setCurrentPage(1);
+                if (e.target.value) {
+                  showToast.info(`Builder filter applied: ${e.target.value}`);
+                } else {
+                  showToast.info('Builder filter cleared');
+                }
+              }}
             >
               <option value="">All Builders</option>
               {builderOptions.map(opt => (
@@ -842,7 +861,15 @@ const Projects = () => {
             <select
               className="filter-select"
               value={filterStatus}
-              onChange={(e) => { setFilterStatus(e.target.value); setCurrentPage(1); }}
+              onChange={(e) => { 
+                setFilterStatus(e.target.value); 
+                setCurrentPage(1);
+                if (e.target.value) {
+                  showToast.info(`Status filter applied: ${e.target.value}`);
+                } else {
+                  showToast.info('Status filter cleared');
+                }
+              }}
             >
               <option value="">All Statuses</option>
               <option value="__missing__">No status</option>
@@ -853,7 +880,15 @@ const Projects = () => {
             <select
               className="filter-select"
               value={filterState}
-              onChange={(e) => { setFilterState(e.target.value); setCurrentPage(1); }}
+              onChange={(e) => { 
+                setFilterState(e.target.value); 
+                setCurrentPage(1);
+                if (e.target.value) {
+                  showToast.info(`State filter applied: ${e.target.value}`);
+                } else {
+                  showToast.info('State filter cleared');
+                }
+              }}
             >
               <option value="">All States</option>
               {stateOptions.map(opt => (
