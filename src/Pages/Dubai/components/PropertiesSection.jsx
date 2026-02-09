@@ -38,35 +38,35 @@ export const PropertiesSection = () => {
       ?.toLowerCase()
       .replace(/\s+/g, '-')
       .replace(/[^a-z0-9-]/g, '');
-    
-    const slug = project.slugURL || project.pUrl || project.slug || nameSlug || project._id;
-    
+
+    const slug = project.project_url || project.slugURL || project.pUrl || project.slug || nameSlug || project._id;
+
     // Extract price - try multiple fields and nested objects
     let priceValue = null;
-    
+
     // Try direct price fields
     if (project.minPrice) priceValue = project.minPrice;
     else if (project.price) priceValue = project.price;
     else if (project.startingPrice) priceValue = project.startingPrice;
     else if (project.basePrice) priceValue = project.basePrice;
-    
+
     // Try priceRange object
     else if (project.priceRange?.min) priceValue = project.priceRange.min;
     else if (project.priceRange?.start) priceValue = project.priceRange.start;
-    
+
     // Try BhK_Details array
     else if (project.BhK_Details && project.BhK_Details.length > 0) {
-      const bhkPrice = project.BhK_Details[0]?.price || 
-                      project.BhK_Details[0]?.minPrice ||
-                      project.BhK_Details[0]?.startingPrice;
+      const bhkPrice = project.BhK_Details[0]?.price ||
+        project.BhK_Details[0]?.minPrice ||
+        project.BhK_Details[0]?.startingPrice;
       if (bhkPrice) priceValue = bhkPrice;
     }
-    
+
     // Convert string to number if needed
     if (priceValue && typeof priceValue === 'string') {
       priceValue = parseFloat(priceValue.replace(/[^0-9.]/g, ''));
     }
-    
+
     console.log('Project Image Data:', {
       name: project.projectName,
       thumbnailImage: project.thumbnailImage,
@@ -81,7 +81,7 @@ export const PropertiesSection = () => {
         images: project.images
       }
     });
-    
+
     console.log('Project Price Data:', {
       name: project.projectName,
       minPrice: project.minPrice,
@@ -91,13 +91,13 @@ export const PropertiesSection = () => {
       finalPrice: priceValue,
       allFields: Object.keys(project)
     });
-    
+
     // Determine the best image URL using the correct field names
     let imageUrl = project.thumbnailImage?.url || project.thumbnailImage?.cdn_url || project.frontImage?.url || project.frontImage?.cdn_url || project.thumbnail?.url || project.thumbnail?.cdn_url;
-    
+
     // Log the determined image URL for debugging
     console.log('Final image URL for', project.projectName, ':', imageUrl);
-    
+
     // Validate URL format
     if (imageUrl && (imageUrl.startsWith('http') || imageUrl.startsWith('/'))) {
       // URL looks valid
@@ -108,7 +108,7 @@ export const PropertiesSection = () => {
       console.log('No image found for project:', project.projectName, 'using fallback');
       imageUrl = "/Images/100acresslogo.png";
     }
-    
+
     return {
       id: project._id,
       image: imageUrl,
@@ -139,14 +139,13 @@ export const PropertiesSection = () => {
             Featured Listings
           </span>
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-display font-bold text-white leading-tight">
-            Premium Properties In
+            Best Real Estate Projects in
             <span className="block text-gold">{selectedEmirate}</span>
           </h2>
           <p className="text-sm sm:text-base lg:text-xl text-muted-foreground max-w-lg sm:max-w-2xl mx-auto">
-            Discover luxury living in {selectedEmirate} with our exclusive collection of premium properties
+            The finest projects in {selectedEmirate} offer a perfect blend of prime locations and an extraordinary lifestyle. These premium projects in {selectedEmirate} are curated for high rental yields and long-term investment growth.
           </p>
         </div>
-
 
         {/* Loading State */}
         {isLoading ? (

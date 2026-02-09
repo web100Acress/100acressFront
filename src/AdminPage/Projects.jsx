@@ -290,7 +290,16 @@ const Projects = () => {
   }, [viewAll]);
 
   const handleDeleteUser = async (id) => {
+    // Show confirmation dialog
+    const confirmed = window.confirm("Are you sure you want to delete this project? This action cannot be undone.");
+    
+    if (!confirmed) {
+      return; // User cancelled the deletion
+    }
+
     try {
+      showToast.loading('Deleting project...', { id: 'deleteProject' });
+      
       const base = getApiBase();
       const raw = localStorage.getItem("myToken") || "";
       const myToken = raw.replace(/^"|"$/g, "").replace(/^Bearer\s+/i, "");
@@ -306,54 +315,34 @@ const Projects = () => {
 
       console.log(response, "response");
       if (response.status >= 200 && response.status < 300) {
-        messageApi.open({
-          type: "success",
-          content: "Property deleted successfully.",
-          duration: 2,
-        });
+        showToast.dismiss('deleteProject');
+        showToast.success("Project deleted successfully!");
+        
         // Filter out the deleted item from the state to update UI
         setViewAll(prevViewAll => (Array.isArray(prevViewAll) ? prevViewAll.filter(item => item._id !== id) : []));
         // Refresh data to ensure consistency
         setRefreshTrigger(prev => prev + 1);
       } else {
-
-        messageApi.open({
-          type: "error",
-          content: "Failed to delete project. Server returned an error.",
-          duration: 2,
-        });
+        showToast.dismiss('deleteProject');
+        showToast.error("Failed to delete project. Server returned an error.");
       }
     } catch (error) {
+      showToast.dismiss('deleteProject');
+      
       if (error.response) {
         if (error.response.status === 401) {
           console.log("Unauthorized: You don't have permission to delete this project.");
-          messageApi.open({
-            type: "error",
-            content: "You are not authorized to delete this project.",
-            duration: 2,
-          });
+          showToast.error("You are not authorized to delete this project.");
         } else {
           console.error("An error occurred while deleting project:", error.response.status);
-          messageApi.open({
-            type: "error",
-            content: `Error deleting project: ${error.response.status}.`,
-            duration: 2,
-          });
+          showToast.error(`Error deleting project: ${error.response.status}.`);
         }
       } else if (error.request) {
         console.error("No response received from the server.");
-        messageApi.open({
-          type: "error",
-          content: "No response from server. Please check your network.",
-          duration: 2,
-        });
+        showToast.error("No response from server. Please check your network.");
       } else {
         console.error("Error in request setup:", error.message);
-        messageApi.open({
-          type: "error",
-          content: "An unexpected error occurred. Please try again.",
-          duration: 2,
-        });
+        showToast.error("An unexpected error occurred. Please try again.");
       }
     }
   };
@@ -1181,13 +1170,13 @@ const Projects = () => {
                           </button>
                         </Link>
 
-                        {/* <button
+                        <button
                           onClick={() => handleDeleteUser(id)}
                           type="button"
                           className="action-button delete-button"
                         >
                           Delete
-                        </button> */}
+                        </button>
                       </td>
                     </tr>
                   );

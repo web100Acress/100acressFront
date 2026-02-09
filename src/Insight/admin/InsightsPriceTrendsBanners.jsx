@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import AdminInsightsSidebar from "../components/AdminInsightsSidebar";
+import AdminInsightsSidebar from "../components/insightsidebar/AdminInsightsSidebar";
 import { Link } from "react-router-dom";
 import CityManagement from "./components/CityManagement";
 // import PriceTrendsManagement from "./components/PriceTrendsManagement";
@@ -703,7 +703,7 @@ export default function InsightsPriceTrendsBanners() {
   const fetchAll = async () => {
     setLoading(true);
     try {
-     
+
       const token = localStorage.getItem("myToken");
       const base = import.meta.env.VITE_API_BASE;
 
@@ -944,11 +944,10 @@ export default function InsightsPriceTrendsBanners() {
             <div className="flex space-x-4">
               <button
                 onClick={() => setViewMode('city-list')}
-                className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
-                  viewMode === 'city-list' || viewMode === 'add-city' || viewMode === 'edit-city'
+                className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${viewMode === 'city-list' || viewMode === 'add-city' || viewMode === 'edit-city'
                     ? 'bg-indigo-100 text-indigo-700'
                     : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
-                }`}
+                  }`}
               >
                 🏙️ City Management
               </button>
@@ -1046,23 +1045,23 @@ export default function InsightsPriceTrendsBanners() {
         )}
       </div>
     </div>
-  );}
+  );
+}
 
-  function notifyBannersUpdated(){
-    try {
-      const k = 'banners:updated';
-      localStorage.setItem(k, String(Date.now()));
-      window.dispatchEvent(new Event(k));
-    } catch {}
-  }
+function notifyBannersUpdated() {
+  try {
+    const k = 'banners:updated';
+    localStorage.setItem(k, String(Date.now()));
+    window.dispatchEvent(new Event(k));
+  } catch { }
+}
 
-  function Spinner({ light }){
-    return (
-      <svg className={`animate-spin ${light? 'text-white':'text-gray-400'} w-4 h-4`} viewBox="0 0 24 24" fill="none">
-        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
-      </svg>
-    );
-  }
+function Spinner({ light }) {
+  return (
+    <svg className={`animate-spin ${light ? 'text-white' : 'text-gray-400'} w-4 h-4`} viewBox="0 0 24 24" fill="none">
+      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+    </svg>
+  );
+}
 
- 

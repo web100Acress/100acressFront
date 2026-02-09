@@ -20,18 +20,18 @@ const GlobalFilterTemplate = ({
   // Page Configuration
   pageType, // 'city', 'budget', 'status', 'type'
   pageConfig,
-  
+
   // Data
   projects = [],
   isLoading = false,
-  
+
   // SEO Data (preserved exactly as provided)
   metaTitle,
   metaDescription,
   canonical,
   keywords,
   structuredData,
-  
+
   // Additional Props
   children,
   ...additionalProps
@@ -40,7 +40,7 @@ const GlobalFilterTemplate = ({
   const location = useLocation();
   const [filteredProjects, setFilteredProjects] = useState([]);
   const [datafromsearch, setDatafromsearch] = useState({});
-  
+
   // Modern UI state
   const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'list'
   const [savedProjects, setSavedProjects] = useState(new Set());
@@ -53,65 +53,65 @@ const GlobalFilterTemplate = ({
     projectType: '',
     price: ''
   });
-  
-  
+
+
   // Displayed projects state (no pagination)
   const [displayedProjects, setDisplayedProjects] = useState([]);
-  
+
   // Request throttling
   const requestThrottle = useRef(new Map());
   const isRequestInProgress = useRef(false);
   const lastRequestTime = useRef(0);
-  
+
   // Project order state
   const [projectOrders, setProjectOrders] = useState(null);
   const [projectOrdersLoading, setProjectOrdersLoading] = useState(true);
-  
+
   // Get project status from URL or props
   const getProjectStatus = () => {
     const path = location.pathname;
     console.log('Current path:', path);
-    
+
     // Check for new unified status URLs: projects/{status}
     if (path.includes('/projects/') && !path.includes('/projects-in-')) {
       const filter = path.split('/projects/')[1]?.replace('/', '');
       console.log('Detected unified projects filter:', filter);
-      
+
       const statusMap = {
         'upcoming': 'upcoming',
         'newlaunch': 'newlaunch',
         'underconstruction': 'underconstruction',
         'ready-to-move': 'readytomove'
       };
-      
+
       if (statusMap[filter]) {
         console.log('Detected status from unified URL:', statusMap[filter]);
         return statusMap[filter];
       }
     }
-    
+
     // For project type, city, and budget pages, return null
     if (pageType === 'type' || pageType === 'city' || pageType === 'budget') {
       return null;
     }
-    
+
     return 'upcoming'; // default for status pages only
   };
 
   const projectStatus = getProjectStatus();
   console.log('Detected project status:', projectStatus);
-  
+
   // Get page data from static data based on URL
   const searchParams = new URLSearchParams(location.search);
   const searchParamsObj = Object.fromEntries(searchParams.entries());
   const staticPageData = getPageDataFromURL(location.pathname, searchParamsObj);
-  
+
   // Debug logging (can be removed in production)
   console.log('Current pathname:', location.pathname);
   console.log('Static page data:', staticPageData);
   console.log('Page config:', pageConfig);
   console.log('Budget page loaded successfully - no custom filtering needed');
-  
+
   // Use pageConfig first, then static data, then fallback to default config
   const currentConfig = pageConfig || staticPageData || {
     title: "Discover Projects",
@@ -129,44 +129,44 @@ const GlobalFilterTemplate = ({
       "areaServed": "India"
     }
   };
-  
+
   console.log('Final currentConfig:', currentConfig);
 
   const { getAllProjects } = Api_Service();
-  
+
   // Debounce timer ref
   const debounceTimer = useRef(null);
-  
+
   // Throttled API call function
   const throttledGetAllProjects = useCallback(async (query, limit) => {
     const now = Date.now();
     const throttleKey = `${query}-${limit}`;
     const lastCall = requestThrottle.current.get(throttleKey) || 0;
-    
+
     // Throttle requests - minimum 3 seconds between calls for same query
     if (now - lastCall < 3000) {
       console.log(`Request throttled for ${query}, skipping...`);
       return;
     }
-    
+
     // Prevent concurrent requests
     if (isRequestInProgress.current) {
       console.log('Request already in progress, skipping...');
       return;
     }
-    
+
     // Clear existing debounce timer
     if (debounceTimer.current) {
       clearTimeout(debounceTimer.current);
     }
-    
+
     // Debounce the API call by 500ms
     debounceTimer.current = setTimeout(async () => {
       try {
         isRequestInProgress.current = true;
         lastRequestTime.current = now;
         requestThrottle.current.set(throttleKey, now);
-        
+
         console.log(`Making API call for ${query} with limit ${limit}`);
         await getAllProjects(query, limit);
       } catch (error) {
@@ -176,7 +176,7 @@ const GlobalFilterTemplate = ({
       }
     }, 500);
   }, [getAllProjects]);
-  
+
   // Redux selectors for different project types
   const allSectionData = useSelector(store => store?.allsectiondata);
   const upcomingProjects = allSectionData?.allupcomingproject || [];
@@ -186,7 +186,7 @@ const GlobalFilterTemplate = ({
 
   // Selector for project type pages - also responds to filter changes
   const [activeQuery, setActiveQuery] = useState(currentConfig.query || '');
-  
+
   // Update activeQuery when currentConfig.query changes (e.g., when URL changes)
   useEffect(() => {
     if (currentConfig.query && currentConfig.query !== activeQuery) {
@@ -194,7 +194,7 @@ const GlobalFilterTemplate = ({
       setActiveQuery(currentConfig.query);
     }
   }, [currentConfig.query]);
-  
+
   const typeProjects = useSelector(store => {
     // Use activeQuery which can be updated by filter changes
     if (activeQuery) {
@@ -216,17 +216,17 @@ const GlobalFilterTemplate = ({
       readytomove: readyToMoveProjects?.length || 0,
       newlaunch: newLaunchProjects?.length || 0
     });
-    
+
     // For budget pages, always use the projects prop (pre-filtered by GlobalBudgetPrice)
     if (pageType === 'budget') {
       console.log('Budget page - using projects from props:', projects?.length || 0);
       return projects || [];
     }
-    
+
     // If projects are passed as props, use them first
     if (projects && projects.length > 0) {
       console.log('Using projects from props:', projects.length);
-      
+
       // Apply project type filtering if we have a typeFilter function
       if (pageType === 'type' && pageConfig?.typeFilter) {
         console.log('Applying project type filtering');
@@ -243,16 +243,16 @@ const GlobalFilterTemplate = ({
         console.log('Sample filtered projects:', filteredProjects.slice(0, 3).map(p => p.projectName));
         return filteredProjects;
       }
-      
+
       return projects;
     }
-    
+
     // If activeQuery is set (from filter change), use typeProjects
     if (activeQuery && typeProjects && typeProjects.length > 0) {
       console.log('Using typeProjects from activeQuery:', activeQuery, 'count:', typeProjects.length);
       return typeProjects;
     }
-    
+
     // If no project status (for type/city/budget pages), use typeProjects if available
     if (!projectStatus) {
       if (typeProjects && typeProjects.length > 0) {
@@ -262,7 +262,7 @@ const GlobalFilterTemplate = ({
       console.log('No project status detected, returning empty array');
       return [];
     }
-    
+
     switch (projectStatus) {
       case 'upcoming':
         console.log('Returning upcoming projects:', upcomingProjects?.length || 0);
@@ -283,7 +283,7 @@ const GlobalFilterTemplate = ({
   };
 
   const projectData = getProjectData();
-  
+
   // Memoize project data to prevent unnecessary re-renders
   const memoizedProjectData = React.useMemo(() => {
     return projectData;
@@ -306,9 +306,9 @@ const GlobalFilterTemplate = ({
         setProjectOrdersLoading(false);
       }
     };
-    
+
     loadProjectOrders();
-    
+
     // Removed auto-refresh interval to prevent unnecessary API calls
     // Project orders will only be loaded once when component mounts
     // Users can manually refresh if needed
@@ -438,19 +438,19 @@ const GlobalFilterTemplate = ({
     // Handle both search query string and resetPagination boolean
     let searchQuery = '';
     let resetPagination = true;
-    
+
     if (typeof searchQueryOrResetPagination === 'string') {
       searchQuery = searchQueryOrResetPagination.trim();
       resetPagination = true; // Always reset pagination when searching
     } else if (typeof searchQueryOrResetPagination === 'boolean') {
       resetPagination = searchQueryOrResetPagination;
     }
-    
+
     const dataToFilter = memoizedProjectData || [];
     console.log('handleSearch - dataToFilter length:', dataToFilter.length);
     console.log('handleSearch - current filters:', filters);
     console.log('handleSearch - search query:', searchQuery);
-    
+
     let filtered = dataToFilter.filter((item) => {
       // Text search filter - searches across multiple fields
       const matchesSearchQuery = searchQuery === '' || (
@@ -461,7 +461,7 @@ const GlobalFilterTemplate = ({
         (item.builder_name && item.builder_name.toLowerCase().includes(searchQuery.toLowerCase())) ||
         (item.project_discripation && item.project_discripation.toLowerCase().includes(searchQuery.toLowerCase()))
       );
-      
+
       return matchesSearchQuery && (
         (filters.city === "" || (item.city && item.city.toLowerCase().includes(filters.city.toLowerCase()))) &&
         (filters.location === "" || (item.projectAddress && item.projectAddress.toLowerCase().includes(filters.location.toLowerCase()))) &&
@@ -480,7 +480,7 @@ const GlobalFilterTemplate = ({
     if (sort === 'newest' && projectOrders && !projectOrdersLoading) {
       // Determine which city to use based on filters or page type
       let orderCity = null;
-      
+
       // Check if city filter is applied
       if (filters.city) {
         orderCity = filters.city;
@@ -498,46 +498,46 @@ const GlobalFilterTemplate = ({
           }
         }
       }
-      
+
       console.log('Final orderCity:', orderCity);
       console.log('Available project orders:', Object.keys(projectOrders || {}));
       console.log('Full projectOrders structure:', projectOrders);
-      
+
       // Apply custom ordering if city is found
       if (orderCity && projectOrders && projectOrders[orderCity]) {
         const cityOrders = projectOrders[orderCity];
         console.log(`City orders for ${orderCity}:`, cityOrders);
-        
-        const desiredOrder = Array.isArray(cityOrders) 
+
+        const desiredOrder = Array.isArray(cityOrders)
           ? cityOrders.filter(item => item.isActive).map(item => item.name.toLowerCase())
           : [];
-        
+
         console.log(`Applying custom order for city: ${orderCity}`, desiredOrder);
         console.log('Projects to sort:', filtered.slice(0, 3).map(p => p.projectName));
-        
+
         if (desiredOrder.length > 0) {
           filtered = filtered.sort((a, b) => {
             const aName = (a.projectName || '').toLowerCase();
             const bName = (b.projectName || '').toLowerCase();
-            
+
             const aIndex = desiredOrder.indexOf(aName);
             const bIndex = desiredOrder.indexOf(bName);
-            
+
             console.log(`Comparing: "${aName}" (index: ${aIndex}) vs "${bName}" (index: ${bIndex})`);
-            
+
             // If both projects are in the desired order, sort by that order
             if (aIndex !== -1 && bIndex !== -1) {
               return aIndex - bIndex;
             }
-            
+
             // If only one project is in the desired order, prioritize it
             if (aIndex !== -1) return -1;
             if (bIndex !== -1) return 1;
-            
+
             // If neither is in the desired order, maintain original order
             return 0;
           });
-          
+
           console.log('Applied custom order, first 5 projects:', filtered.slice(0, 5).map(p => p.projectName));
         }
       } else {
@@ -545,13 +545,13 @@ const GlobalFilterTemplate = ({
         console.log('orderCity:', orderCity);
         console.log('projectOrders[orderCity]:', projectOrders ? projectOrders[orderCity] : 'projectOrders is null');
       }
-      
+
       // Apply status-based ordering for status pages
       let orderStatus = null;
       if (typeof window !== 'undefined') {
         const path = window.location.pathname;
         console.log('Checking path for status:', path);
-        
+
         if (path.includes('/projects/upcoming')) {
           orderStatus = 'upcoming';
         } else if (path.includes('/projects/newlaunch')) {
@@ -564,39 +564,39 @@ const GlobalFilterTemplate = ({
           orderStatus = 'readytomove';
         }
       }
-      
+
       console.log('Final orderStatus:', orderStatus);
-      
+
       // Apply custom ordering if status is found
       if (orderStatus && projectOrders && projectOrders[orderStatus]) {
         const statusOrders = projectOrders[orderStatus];
         console.log(`Status orders for ${orderStatus}:`, statusOrders);
-        
-        const desiredOrder = Array.isArray(statusOrders) 
+
+        const desiredOrder = Array.isArray(statusOrders)
           ? statusOrders.filter(item => item.isActive).map(item => item.name.toLowerCase())
           : [];
-        
+
         console.log(`Applying custom order for status: ${orderStatus}`, desiredOrder);
-        
+
         if (desiredOrder.length > 0) {
           // First, separate projects into ordered and unordered
           const orderedProjects = [];
           const unorderedProjects = [];
-          
+
           filtered.forEach(project => {
             const projectName = (project.projectName || '').toLowerCase();
             const orderIndex = desiredOrder.indexOf(projectName);
-            
+
             if (orderIndex !== -1) {
               orderedProjects[orderIndex] = project;
             } else {
               unorderedProjects.push(project);
             }
           });
-          
+
           // Combine: ordered projects first (in exact order), then unordered
           filtered = [...orderedProjects.filter(Boolean), ...unorderedProjects];
-          
+
           console.log('Applied status custom order, first 5 projects:', filtered.slice(0, 5).map(p => p.projectName));
         }
       }
@@ -771,7 +771,7 @@ const GlobalFilterTemplate = ({
         <meta name="description" content={metaDescription || currentConfig.description} />
         <meta name="keywords" content={keywords || currentConfig.keywords} />
         <link rel="canonical" href={canonical || currentConfig.canonical} />
-        
+
         {/* Open Graph Tags */}
         <meta property="og:title" content={metaTitle || currentConfig.metaTitle} />
         <meta property="og:description" content={metaDescription || currentConfig.description} />
@@ -780,14 +780,14 @@ const GlobalFilterTemplate = ({
         <meta property="og:image" content="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/logo.webp" />
         <meta property="og:site_name" content="100acress" />
         <meta property="og:locale" content="en_IN" />
-        
+
         {/* Twitter Card Tags */}
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={metaTitle || currentConfig.metaTitle} />
         <meta name="twitter:description" content={metaDescription || currentConfig.description} />
         <meta name="twitter:image" content="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/logo.webp" />
         <meta name="twitter:site" content="@100acressdotcom" />
-        
+
         {/* Additional SEO Meta Tags */}
         <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
         <meta name="googlebot" content="index, follow" />
@@ -800,12 +800,12 @@ const GlobalFilterTemplate = ({
         <meta name="geo.placename" content="Gurgaon" />
         <meta name="geo.position" content="28.4595;77.0266" />
         <meta name="ICBM" content="28.4595, 77.0266" />
-        
+
         {/* Mobile Optimization */}
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta name="theme-color" content="#D32F2F" />
         <meta name="msapplication-TileColor" content="#D32F2F" />
-        
+
         {/* Structured Data */}
         <script type="application/ld+json">
           {JSON.stringify(structuredData || currentConfig.structuredData)}
@@ -813,7 +813,7 @@ const GlobalFilterTemplate = ({
         <script type="application/ld+json">
           {JSON.stringify(generateProjectStructuredData())}
         </script>
-        
+
         {/* FAQ Schema */}
         {projectStatus && (
           <script type="application/ld+json">
@@ -828,42 +828,42 @@ const GlobalFilterTemplate = ({
                     "@type": "Answer",
                     "text": "Some of the most sought-after upcoming projects in Gurgaon include Trident Realty 104, Satya Group 104, Central Park 104, AIPL Lake City, ArtTech The Story House, Max Estate 361, and Elan Sohna Road."
                   }
-                },{
+                }, {
                   "@type": "Question",
                   "name": "Which locations in Gurgaon are best for upcoming residential projects?",
                   "acceptedAnswer": {
                     "@type": "Answer",
                     "text": "Prime locations for upcoming projects include Dwarka Expressway, Southern Peripheral Road (SPR), Golf Course Extension Road, Sohna Road, and New Gurgaon, all offering strong connectivity and growth potential."
                   }
-                },{
+                }, {
                   "@type": "Question",
                   "name": "Are there affordable options among Gurgaon's upcoming projects?",
                   "acceptedAnswer": {
                     "@type": "Answer",
                     "text": "Yes, projects like Satya Group 104, ArtTech The Story House, and Wal Pravah Senior Living provide budget-friendly housing options while maintaining modern amenities."
                   }
-                },{
+                }, {
                   "@type": "Question",
                   "name": "What amenities do upcoming projects in Gurgaon usually offer?",
                   "acceptedAnswer": {
                     "@type": "Answer",
                     "text": "Most new launches come with swimming pools, clubhouses, gyms, landscaped gardens, sports courts, children's play areas, 24x7 security, and parking facilities, ensuring a premium lifestyle."
                   }
-                },{
+                }, {
                   "@type": "Question",
                   "name": "Which upcoming projects in Gurgaon offer luxury living?",
                   "acceptedAnswer": {
                     "@type": "Answer",
                     "text": "Luxury options include Trident Realty 104, Central Park 104, Elan Sohna Road, and Oberoi Realty Gurgaon, featuring spacious layouts, high-end amenities, and premium architecture."
                   }
-                },{
+                }, {
                   "@type": "Question",
                   "name": "What is the typical possession timeline for upcoming projects in Gurgaon?",
                   "acceptedAnswer": {
                     "@type": "Answer",
                     "text": "Most projects aim for possession within 3–4 years of launch. Buyers should always check the RERA-approved completion date before investing."
                   }
-                },{
+                }, {
                   "@type": "Question",
                   "name": "Why invest in upcoming projects in Gurgaon?",
                   "acceptedAnswer": {
@@ -881,42 +881,42 @@ const GlobalFilterTemplate = ({
                     "@type": "Answer",
                     "text": "They offer lower prices, modern features, and great value growth thanks to Gurgaon's rapid development and strong business presence."
                   }
-                },{
+                }, {
                   "@type": "Question",
                   "name": "Which are the best areas to buy new launch projects in Gurgaon?",
                   "acceptedAnswer": {
                     "@type": "Answer",
                     "text": "Top localities include Dwarka Expressway, Golf Course Extension Road, Sohna Road, and New Gurgaon, known for premium developments and excellent connectivity."
                   }
-                },{
+                }, {
                   "@type": "Question",
                   "name": "How can I find RERA-approved new launch projects in Gurgaon?",
                   "acceptedAnswer": {
                     "@type": "Answer",
                     "text": "You can visit trusted real estate platforms like 100acress.com to explore verified, RERA-registered new launch projects with complete details."
                   }
-                },{
+                }, {
                   "@type": "Question",
                   "name": "What are the typical payment plans for new launch projects in Gurgaon?",
                   "acceptedAnswer": {
                     "@type": "Answer",
                     "text": "Most developers offer construction-linked plans or flexible installment options, letting you pay in stages as the project progresses, making it easier to manage finances."
                   }
-                },{
+                }, {
                   "@type": "Question",
                   "name": "Are new launch projects in Gurgaon suitable for end-users or investors?",
                   "acceptedAnswer": {
                     "@type": "Answer",
                     "text": "Both! End-users get modern, comfortable homes, while investors benefit from high ROI and rental demand in Gurgaon's fast-developing areas."
                   }
-                },{
+                }, {
                   "@type": "Question",
                   "name": "What amenities can I expect in Gurgaon's new launch projects?",
                   "acceptedAnswer": {
                     "@type": "Answer",
                     "text": "Most projects offer clubhouses, swimming pools, gyms, landscaped gardens, and smart home features, ensuring a premium living experience."
                   }
-                },{
+                }, {
                   "@type": "Question",
                   "name": "How do I choose the right new launch project in Gurgaon?",
                   "acceptedAnswer": {
@@ -934,42 +934,42 @@ const GlobalFilterTemplate = ({
                     "@type": "Answer",
                     "text": "Leading projects include DLF Privana South, Godrej Miraya, Elan The Presidential, M3M Mansion, Krisumi Waterfall, Signature Global Twin Tower, and Keystone Seasons."
                   }
-                },{
+                }, {
                   "@type": "Question",
                   "name": "What are the top luxury under-construction properties?",
                   "acceptedAnswer": {
                     "@type": "Answer",
                     "text": "Luxury projects feature smart layouts, wellness amenities, and include developments on Golf Course Road, Southern Peripheral Road, and Dwarka Expressway."
                   }
-                },{
+                }, {
                   "@type": "Question",
                   "name": "Is it cheaper to buy an under-construction property in Gurgaon?",
                   "acceptedAnswer": {
                     "@type": "Answer",
                     "text": "Yes, early-phase properties are more economical with lower prices, flexible payment plans, and potential capital appreciation."
                   }
-                },{
+                }, {
                   "@type": "Question",
                   "name": "What legal checks should I do before booking?",
                   "acceptedAnswer": {
                     "@type": "Answer",
                     "text": "Verify RERA registration, clear land titles, approved plans, commencement certificate, and the developer's track record."
                   }
-                },{
+                }, {
                   "@type": "Question",
                   "name": "Why is RERA registration important?",
                   "acceptedAnswer": {
                     "@type": "Answer",
                     "text": "RERA ensures legal transparency, protects buyer investments, and enforces builder commitments on delivery and amenities."
                   }
-                },{
+                }, {
                   "@type": "Question",
                   "name": "How do under-construction projects offer high ROI?",
                   "acceptedAnswer": {
                     "@type": "Answer",
                     "text": "Projects on key corridors like Dwarka Expressway and Golf Course Road have strong appreciation potential due to infrastructure growth."
                   }
-                },{
+                }, {
                   "@type": "Question",
                   "name": "Can buyers customize units in under-construction projects?",
                   "acceptedAnswer": {
@@ -987,42 +987,42 @@ const GlobalFilterTemplate = ({
                     "@type": "Answer",
                     "text": "Top projects include M3M St Andrews, Greenopolis, AMB Selfie Street, and Raheja Sampada offering premium amenities and immediate possession."
                   }
-                },{
+                }, {
                   "@type": "Question",
                   "name": "Where can I find affordable ready-to-move flats in Gurugram?",
                   "acceptedAnswer": {
                     "@type": "Answer",
                     "text": "Affordable options are available in sectors like Dwarka Expressway, New Gurgaon, and Sohna Road with good amenities and prices under ₹2 Cr."
                   }
-                },{
+                }, {
                   "@type": "Question",
                   "name": "What benefits come with buying ready-to-move properties?",
                   "acceptedAnswer": {
                     "@type": "Answer",
                     "text": "Immediate possession, no construction delays, GST savings on property price, and potential for instant rental income."
                   }
-                },{
+                }, {
                   "@type": "Question",
                   "name": "Are ready-to-move commercial properties available in Gurugram?",
                   "acceptedAnswer": {
                     "@type": "Answer",
                     "text": "Yes, projects like AIPL Joy Street and Trehan IRIS Broadway provide ready shops and office spaces for business use."
                   }
-                },{
+                }, {
                   "@type": "Question",
                   "name": "How do I verify the legal status of ready-to-move projects?",
                   "acceptedAnswer": {
                     "@type": "Answer",
                     "text": "Check the project's RERA registration and possession certificate on official state RERA websites for secure purchases."
                   }
-                },{
+                }, {
                   "@type": "Question",
                   "name": "Can I get home loans on ready-to-move properties?",
                   "acceptedAnswer": {
                     "@type": "Answer",
                     "text": "Yes, legally clear ready-to-move properties are eligible for home loans from banks and financial institutions."
                   }
-                },{
+                }, {
                   "@type": "Question",
                   "name": "What amenities are commonly included in ready-to-move projects?",
                   "acceptedAnswer": {
@@ -1034,7 +1034,7 @@ const GlobalFilterTemplate = ({
             )}
           </script>
         )}
-        
+
         {/* Breadcrumb Structured Data */}
         <script type="application/ld+json">
           {JSON.stringify({
@@ -1056,10 +1056,10 @@ const GlobalFilterTemplate = ({
               {
                 "@type": "ListItem",
                 "position": 3,
-                "name": projectStatus === 'upcoming' ? 'Upcoming Projects' : 
-                       projectStatus === 'newlaunch' ? 'New Launch Projects' : 
-                       projectStatus === 'underconstruction' ? 'Under Construction Projects' : 
-                       projectStatus === 'readytomove' ? 'Ready To Move Projects' : currentConfig.title,
+                "name": projectStatus === 'upcoming' ? 'Upcoming Projects' :
+                  projectStatus === 'newlaunch' ? 'New Launch Projects' :
+                    projectStatus === 'underconstruction' ? 'Under Construction Projects' :
+                      projectStatus === 'readytomove' ? 'Ready To Move Projects' : currentConfig.title,
                 "item": canonical || currentConfig.canonical
               }
             ]
@@ -1068,7 +1068,7 @@ const GlobalFilterTemplate = ({
       </Helmet>
 
       {/* Hero Section */}
-      <Hero 
+      <Hero
         title={currentConfig.title}
         subtitle={currentConfig.subtitle || currentConfig.description}
         onSearch={handleSearch}
@@ -1082,12 +1082,11 @@ const GlobalFilterTemplate = ({
       <div className="bg-gradient-to-r from-gray-50 to-gray-100 h-1"></div>
 
       {/* Filter Bar - Show only after scrolling past hero (Desktop only) */}
-      <div className={`hidden lg:block fixed top-16 left-0 right-0 z-40 transition-all duration-500 ease-in-out ${
-        showFilterBar 
-          ? 'transform translate-y-0 opacity-100 scale-100 animate-in slide-in-from-top-4' 
+      <div className={`hidden lg:block fixed top-16 left-0 right-0 z-40 transition-all duration-500 ease-in-out ${showFilterBar
+          ? 'transform translate-y-0 opacity-100 scale-100 animate-in slide-in-from-top-4'
           : 'transform -translate-y-full opacity-0 scale-95 pointer-events-none'
-      }`}>
-        <FilterBar 
+        }`}>
+        <FilterBar
           view={viewMode}
           setView={setViewMode}
           sort={sort}
@@ -1107,7 +1106,7 @@ const GlobalFilterTemplate = ({
         {/* Main Content with Sidebar */}
         <div className="max-w-screen-xl mx-auto px-2 sm:px-4 md:px-6 py-4 sm:py-8 lg:pt-0">
           <div className="flex flex-col lg:flex-row gap-4 sm:gap-8">
-            
+
             {/* Sidebar - Enhanced SEO Content */}
             <div className="lg:w-1/3 xl:w-1/4 hidden">
               <div className="sticky top-32 max-h-[calc(100vh-8rem)] overflow-y-auto pb-6 pt-4">
@@ -1121,16 +1120,16 @@ const GlobalFilterTemplate = ({
                     </h2>
                     <div className="w-12 h-1 bg-gradient-to-r from-red-500 to-red-700 mx-auto rounded-full"></div>
                   </div>
-                  
+
                   <div className="text-gray-700">
                     <p className="text-sm leading-relaxed mb-4 text-gray-600">
                       {currentConfig.description}
                     </p>
                     <p className="text-sm leading-relaxed mb-6 text-gray-600">
-                      Browse through our curated collection of {projectStatus === 'upcoming' ? 'upcoming' : projectStatus === 'underconstruction' ? 'under construction' : projectStatus === 'readytomove' ? 'ready to move' : 'new launch'} properties in Gurgaon. 
+                      Browse through our curated collection of {projectStatus === 'upcoming' ? 'upcoming' : projectStatus === 'underconstruction' ? 'under construction' : projectStatus === 'readytomove' ? 'ready to move' : 'new launch'} properties in Gurgaon.
                       Each project is carefully selected to meet modern living standards.
                     </p>
-                    
+
                     {/* Enhanced Feature Cards */}
                     <div className="space-y-4 mb-6">
                       <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-xl border border-blue-100 hover:shadow-md transition-all duration-300">
@@ -1142,7 +1141,7 @@ const GlobalFilterTemplate = ({
                         </div>
                         <p className="text-xs text-gray-600">✅ Gym, ✅ Swimming Pool, ✅ Clubhouse, ✅ 24/7 Security</p>
                       </div>
-                      
+
                       <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-4 rounded-xl border border-green-100 hover:shadow-md transition-all duration-300">
                         <div className="flex items-center gap-3 mb-2">
                           <div className="w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center">
@@ -1152,7 +1151,7 @@ const GlobalFilterTemplate = ({
                         </div>
                         <p className="text-xs text-gray-600">✅ Business Hubs, ✅ Schools, ✅ Hospitals, ✅ Entertainment Zones</p>
                       </div>
-                      
+
                       <div className="bg-gradient-to-r from-orange-50 to-amber-50 p-4 rounded-xl border border-orange-100 hover:shadow-md transition-all duration-300">
                         <div className="flex items-center gap-3 mb-2">
                           <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center">
@@ -1172,18 +1171,18 @@ const GlobalFilterTemplate = ({
                         rel="noopener noreferrer"
                         className="block w-full hover:scale-105 transition-all duration-300 hover:-translate-y-1"
                       >
-                        <img 
-                          src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/icons/Untitled+design+(1).png" 
-                          alt="Talk to an Expert" 
+                        <img
+                          src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/icons/Untitled+design+(1).png"
+                          alt="Talk to an Expert"
                           className="w-full h-auto rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
                         />
                       </a>
-                      
+
                       <p className="text-xs text-gray-500 mt-2">
                         Get personalized recommendations from our real estate experts
                       </p>
                     </div>
-                    
+
                     {/* Trust Indicators */}
                     <div className="mt-6 pt-4 border-t border-gray-200">
                       <div className="flex items-center justify-center gap-4 text-xs text-gray-500">
@@ -1208,7 +1207,7 @@ const GlobalFilterTemplate = ({
 
             {/* Main Content - Project Cards */}
             <div className="w-full">
-              
+
               {/* Loading State */}
               {isLoading && (
                 <div className="flex flex-col items-center justify-center py-12">
@@ -1216,45 +1215,44 @@ const GlobalFilterTemplate = ({
                   <p className="text-gray-600">Loading properties...</p>
                 </div>
               )}
-              
+
               {/* No Projects State */}
               {!isLoading && displayedProjects.length === 0 && (
                 <div className="flex flex-col items-center justify-center py-12">
                   <div className="text-6xl mb-4">🏠</div>
                   <h3 className="text-xl font-semibold text-gray-800 mb-2">Finding a Perfect Match for you</h3>
                   <p className="text-gray-600 text-center max-w-md">
-                  Homes that get you - because perfect matches aren’t just for people.
+                    Homes that get you - because perfect matches aren’t just for people.
                   </p>
                 </div>
               )}
-              
+
               {/* Project Cards Grid */}
               {!isLoading && displayedProjects.length > 0 && (
-                <div className={`grid gap-3 sm:gap-6 ${
-                  viewMode === 'grid' 
-                    ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4' 
+                <div className={`grid gap-3 sm:gap-6 ${viewMode === 'grid'
+                    ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'
                     : 'grid-cols-1'
-                }`}>
+                  }`}>
                   {displayedProjects.map((item, index) => {
-                  const projectId = item._id || index;
-                  const isSaved = savedProjects.has(projectId);
-                  const isComparing = compareProjects.has(projectId);
+                    const projectId = item._id || index;
+                    const isSaved = savedProjects.has(projectId);
+                    const isComparing = compareProjects.has(projectId);
 
-                  return (
-                    <ProjectCard
-                      key={index}
-                      project={item}
-                      view={viewMode}
-                      onExplore={handleExplore}
-                      onFavorite={toggleSaveProject}
-                      onShare={handleShare}
-                      isFav={isSaved}
-                      onCompareToggle={toggleCompareProject}
-                      compared={isComparing}
-                      projectStatus={projectStatus}
-                    />
-                  );
-                })}
+                    return (
+                      <ProjectCard
+                        key={index}
+                        project={item}
+                        view={viewMode}
+                        onExplore={handleExplore}
+                        onFavorite={toggleSaveProject}
+                        onShare={handleShare}
+                        isFav={isSaved}
+                        onCompareToggle={toggleCompareProject}
+                        compared={isComparing}
+                        projectStatus={projectStatus}
+                      />
+                    );
+                  })}
                 </div>
               )}
 
@@ -1289,34 +1287,34 @@ const GlobalFilterTemplate = ({
           {/* Section Separator */}
           <div className="mt-16 bg-gradient-to-r from-gray-50 to-gray-100 h-1"></div>
           {/* Knowledge Center - Only for Pune */}
-      {currentConfig.hiddenContent && (
-        <div className="bg-gradient-to-br from-gray-50 to-gray-100 py-16 px-4 sm:px-6 lg:px-8">
-          <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-4">
-              <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-                Discover <span className="text-red-600 text-4xl sm:text-5xl">{currentConfig.title?.split(' in ')?.[1] || 'PUNE'}</span>'s Real Estate
-              </h2>
-              <div className="w-24 h-1 bg-red-600 mx-auto mb-6"></div>
-              <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-                {currentConfig.hiddenContent.description}
-              </p>
-            </div>
-            
-            <div className="grid md:grid-cols-2 gap-8">
-              {currentConfig.hiddenContent.sections.map((section, index) => (
-                <div key={index} className="bg-white rounded-xl shadow-lg p-6 sm:p-8 hover:shadow-xl transition-shadow duration-300">
-                  <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4">
-                    {section.title}
-                  </h3>
-                  <div className="text-gray-600 leading-relaxed whitespace-pre-line">
-                    {section.content}
-                  </div>
+          {currentConfig.hiddenContent && (
+            <div className="bg-gradient-to-br from-gray-50 to-gray-100 py-16 px-4 sm:px-6 lg:px-8">
+              <div className="max-w-6xl mx-auto">
+                <div className="text-center mb-4">
+                  <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+                    Discover <span className="text-red-600 text-4xl sm:text-5xl">{currentConfig.title?.split(' in ')?.[1] || 'PUNE'}</span>'s Real Estate
+                  </h2>
+                  <div className="w-24 h-1 bg-red-600 mx-auto mb-6"></div>
+                  <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+                    {currentConfig.hiddenContent.description}
+                  </p>
                 </div>
-              ))}
+
+                <div className="grid md:grid-cols-2 gap-8">
+                  {currentConfig.hiddenContent.sections.map((section, index) => (
+                    <div key={index} className="bg-white rounded-xl shadow-lg p-6 sm:p-8 hover:shadow-xl transition-shadow duration-300">
+                      <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4">
+                        {section.title}
+                      </h3>
+                      <div className="text-gray-600 leading-relaxed whitespace-pre-line">
+                        {section.content}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-      )}
+          )}
           {/* Know More About Upcoming Projects Section */}
           {projectStatus === 'upcoming' && (
             <div className="mt-12 sm:mt-16 bg-gradient-to-br from-blue-50 to-indigo-50 py-12 sm:py-16 px-4 sm:px-6 lg:px-8">
@@ -1330,7 +1328,7 @@ const GlobalFilterTemplate = ({
                     <a href="https://www.100acress.com/projects/upcoming/" className="text-blue-600 hover:underline font-medium">Upcoming projects in Gurgaon</a>: Explore verified upcoming projects in Gurgaon featuring luxury apartments, modern residences, and affordable housing options across Dwarka Expressway and New Gurgaon. These upcoming residential projects in Gurgaon 2025 are designed with world-class amenities, excellent road and metro connectivity, and strong future appreciation potential. Filter projects by location, price, and property type to find your ideal home.
                   </p>
                 </div>
-                
+
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mb-8 sm:mb-12">
                   <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8 hover:shadow-xl transition-shadow duration-300">
                     <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 text-blue-600">
@@ -1345,7 +1343,7 @@ const GlobalFilterTemplate = ({
                       </p>
                     </div>
                   </div>
-                  
+
                   <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8 hover:shadow-xl transition-shadow duration-300">
                     <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 text-blue-600">
                       Why Invest in Upcoming Projects in Gurgaon?
@@ -1362,7 +1360,7 @@ const GlobalFilterTemplate = ({
                       </ul>
                     </div>
                   </div>
-                  
+
                   <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8 hover:shadow-xl transition-shadow duration-300">
                     <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 text-blue-600">
                       Top Locations for Upcoming Projects in Gurgaon
@@ -1411,7 +1409,7 @@ const GlobalFilterTemplate = ({
                       </p>
                     </div>
                   </div>
-                  
+
                   <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8 hover:shadow-xl transition-shadow duration-300">
                     <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 text-blue-600">
                       Investment Tips for Upcoming Projects in Gurgaon
@@ -1461,7 +1459,7 @@ const GlobalFilterTemplate = ({
                     With ongoing infrastructure upgrades, improved metro access, and a strong corporate ecosystem, Gurgaon continues to witness consistent demand for new residential developments. Investing in new launch projects allows buyers to enjoy flexible payment plans, wider unit selection, and promising long-term appreciation.
                   </p>
                 </div>
-                
+
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mb-8 sm:mb-12">
                   <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8 hover:shadow-xl transition-shadow duration-300">
                     <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 text-green-600">
@@ -1479,7 +1477,7 @@ const GlobalFilterTemplate = ({
                       </ul>
                     </div>
                   </div>
-                  
+
                   <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8 hover:shadow-xl transition-shadow duration-300">
                     <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 text-green-600">
                       Prime Locations for New Launch Projects in Gurgaon
@@ -1505,7 +1503,7 @@ const GlobalFilterTemplate = ({
                       </div>
                     </div>
                   </div>
-                  
+
                   <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8 hover:shadow-xl transition-shadow duration-300">
                     <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 text-green-600">
                       Lifestyle Amenities in New Launch Projects 2025
@@ -1542,7 +1540,7 @@ const GlobalFilterTemplate = ({
                       </ul>
                     </div>
                   </div>
-                  
+
                   <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8 hover:shadow-xl transition-shadow duration-300">
                     <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 text-green-600">
                       Why Choose 100acress for New Launch Projects?
@@ -1592,7 +1590,7 @@ const GlobalFilterTemplate = ({
                     With strong infrastructure growth and expanding commercial hubs, under construction projects in Gurgaon 2025 continue to attract both end-users and investors. Buyers can choose from a wide range of apartments and residential developments that align with different budgets and lifestyle requirements.
                   </p>
                 </div>
-                
+
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mb-8 sm:mb-12">
                   <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8 hover:shadow-xl transition-shadow duration-300">
                     <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 text-orange-600">
@@ -1611,7 +1609,7 @@ const GlobalFilterTemplate = ({
                       </ul>
                     </div>
                   </div>
-                  
+
                   <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8 hover:shadow-xl transition-shadow duration-300">
                     <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 text-orange-600">
                       Top Locations for Under Construction Projects in Gurgaon
@@ -1637,7 +1635,7 @@ const GlobalFilterTemplate = ({
                       </div>
                     </div>
                   </div>
-                  
+
                   <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8 hover:shadow-xl transition-shadow duration-300">
                     <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 text-orange-600">
                       Amenities Offered in Under Construction Projects 2025
@@ -1676,7 +1674,7 @@ const GlobalFilterTemplate = ({
                       </ul>
                     </div>
                   </div>
-                  
+
                   <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8 hover:shadow-xl transition-shadow duration-300">
                     <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 text-orange-600">
                       Why Choose 100acress for Under Construction Projects?
@@ -1726,7 +1724,7 @@ const GlobalFilterTemplate = ({
                     Whether you want to buy a home for your family or invest your money safely, ready to move properties are a smart choice. These homes are already completed, so there is no waiting time. In this page, we will explain why ready to move projects in Gurugram are popular and how you can choose the best one.
                   </p>
                 </div>
-                
+
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mb-8 sm:mb-12">
                   <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8 hover:shadow-xl transition-shadow duration-300">
                     <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 text-purple-600">
@@ -1744,7 +1742,7 @@ const GlobalFilterTemplate = ({
                       </p>
                     </div>
                   </div>
-                  
+
                   <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8 hover:shadow-xl transition-shadow duration-300">
                     <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 text-purple-600">
                       Why Invest in Ready to Move Projects in Gurugram?
@@ -1764,7 +1762,7 @@ const GlobalFilterTemplate = ({
                       </p>
                     </div>
                   </div>
-                  
+
                   <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8 hover:shadow-xl transition-shadow duration-300">
                     <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 text-purple-600">
                       Types of Ready to Move Properties Available in Gurgaon
@@ -1819,7 +1817,7 @@ const GlobalFilterTemplate = ({
                       </p>
                     </div>
                   </div>
-                  
+
                   <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8 hover:shadow-xl transition-shadow duration-300">
                     <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 text-purple-600">
                       Important Tips Before Buying Ready to Move Projects in Gurgaon
@@ -1862,7 +1860,7 @@ const GlobalFilterTemplate = ({
                       </p>
                     </div>
                   </div>
-                  
+
                   <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8 hover:shadow-xl transition-shadow duration-300">
                     <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 text-purple-600">
                       Why Choose 100acress for Ready to Move Projects?
@@ -1910,7 +1908,7 @@ const GlobalFilterTemplate = ({
                   <h3 className="text-lg font-semibold text-gray-900 mb-2">RERA Approved</h3>
                   <p className="text-gray-600 text-sm">All our projects are RERA registered ensuring legal compliance and transparency</p>
                 </div>
-                
+
                 <div className="text-center group hover:scale-105 transition-all duration-300">
                   <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:rotate-12 transition-transform duration-300">
                     <span className="text-2xl">🏆</span>
@@ -1918,7 +1916,7 @@ const GlobalFilterTemplate = ({
                   <h3 className="text-lg font-semibold text-gray-900 mb-2">Trusted Partners</h3>
                   <p className="text-gray-600 text-sm">Working with top developers like DLF, M3M, Sobha, and Signature Global</p>
                 </div>
-                
+
                 <div className="text-center group hover:scale-105 transition-all duration-300">
                   <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-orange-600 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:rotate-12 transition-transform duration-300">
                     <span className="text-2xl">🏠</span>
@@ -1937,7 +1935,7 @@ const GlobalFilterTemplate = ({
             </h2>
             <div className="max-w-4xl mx-auto px-3 sm:px-4">
               <div className="border border-gray-200 rounded-lg overflow-hidden">
-                <FAQAccordion 
+                <FAQAccordion
                   projectStatus={projectStatus}
                   customFAQs={currentConfig.faqs}
                 />
@@ -1948,15 +1946,15 @@ const GlobalFilterTemplate = ({
       </div>
 
       {/* Compare Bar */}
-      <CompareBar 
-        items={Array.from(compareProjects).map(id => 
+      <CompareBar
+        items={Array.from(compareProjects).map(id =>
           displayedProjects.find(p => (p._id || p.id) === id)
         ).filter(Boolean)}
         onOpen={() => console.log('Open comparison')}
         onRemove={(project) => toggleCompareProject(project)}
       />
 
-      
+
 
       {/* Footer */}
       <Footer />

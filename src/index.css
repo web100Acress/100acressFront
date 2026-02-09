@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300..900&family=Jost:ital,wght@0,100..900;1,100..900&family=Outfit:wght@100..900&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -44,23 +44,23 @@
     --wine: 350 75% 32%;
     --rose-gold: 15 65% 60%;
     --champagne: 45 55% 85%;
-    
+
     /* Footer specific colors */
     --footer-primary: 0 65% 35%;
     --footer-secondary: 345 85% 25%;
     --footer-accent: 15 65% 60%;
     --footer-text: 0 0% 95%;
     --footer-text-muted: 0 0% 75%;
-    
+
     /* Gradients */
     --gradient-crimson: linear-gradient(135deg, hsl(var(--crimson)), hsl(var(--burgundy)));
     --gradient-elegant: linear-gradient(180deg, hsl(var(--footer-primary)), hsl(var(--footer-secondary)));
     --gradient-accent: linear-gradient(45deg, hsl(var(--rose-gold)), hsl(var(--champagne)));
-    
+
     /* Shadows */
     --shadow-elegant: 0 20px 40px -10px hsl(var(--burgundy) / 0.3);
     --shadow-soft: 0 4px 20px hsl(var(--crimson) / 0.15);
-    
+
     /* Transitions */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-bounce: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -83,7 +83,7 @@
 
     --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;
-    
+
     /* Dark mode footer adjustments */
     --footer-primary: 0 70% 40%;
     --footer-secondary: 345 80% 30%;
@@ -118,7 +118,9 @@
 }
 
 /* Ensure full-viewport sizing and remove default margins to prevent gaps */
-html, body, #root {
+html,
+body,
+#root {
   margin: 0;
   padding: 0;
   width: 100%;
@@ -184,8 +186,15 @@ html {
 }
 
 @keyframes mobileDrawerIn {
-  from { transform: translateX(-12px); opacity: 0; }
-  to { transform: translateX(0); opacity: 1; }
+  from {
+    transform: translateX(-12px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
 }
 
 .mobile-menu-overlay {
@@ -288,7 +297,7 @@ html {
 }
 
 /* If item count is odd, center the last item (e.g. Pushkar) */
-.mobile-menu-grid > :last-child:nth-child(odd) {
+.mobile-menu-grid> :last-child:nth-child(odd) {
   grid-column: 1 / -1;
   justify-self: center;
   width: min(72%, 200px);
@@ -331,7 +340,7 @@ html {
   box-shadow: 0 12px 26px rgba(229, 62, 62, 0.25);
 }
 
-.mobile-menu-tile + .mobile-menu-primary {
+.mobile-menu-tile+.mobile-menu-primary {
   margin-top: 10px;
 }
 
@@ -358,94 +367,108 @@ body.mobile-menu-open {
   overflow: hidden;
 }
 
-.font-Jost{
+.font-Jost {
   font-family: "Jost", sans-serif !important;
 }
 
 
-.font-AbrialFatFace{
+.font-AbrialFatFace {
   font-family: "Jost", sans-serif !important;
 }
 
 .custom-ok-button {
-  background-color: #C13B44; 
+  background-color: #C13B44;
   color: white;
   transition: background-color 0.3s, color 0.3s;
 }
 
 .custom-ok-button:hover {
-  background-color: #c0555c !important; 
+  background-color: #c0555c !important;
   color: white;
 }
+
 .custom-cancel-button {
   display: none;
-  border:1px solid grey;
+  border: 1px solid grey;
 }
 
 .custom-cancel-button:hover {
   border: 1px solid #C13B44 !important;
   color: #C13B44 !important;
 }
+
 ::-webkit-scrollbar {
-    width: 10px;
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: #fff;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #b6b1b1;
+  border: 2px solid transparent;
+  border-radius: 4px;
+  background-clip: content-box;
+}
+
+.contactImage {
+  height: 500px;
+  width: 100%;
+}
+
+@media (max-width: 639px) {
+  .contactImage {
+    height: 250px;
+    /* Adjust height for extra small screens */
   }
-  
-  ::-webkit-scrollbar-track {
-    background-color: #fff;
+}
+
+.abril-fatface-regular {
+  font-family: "Jost", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+/* For small screens (sm) */
+@media (min-width: 640px) and (max-width: 767px) {
+  .contactImage {
+    height: 400px;
+    /* Adjust height for small screens */
   }
-  
-  ::-webkit-scrollbar-thumb {
-    background: #b6b1b1;
-    border: 2px solid transparent;
-    border-radius: 4px;
-    background-clip: content-box;
+}
+
+/* For medium screens (md) */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .contactImage {
+    height: 500px;
+    /* Adjust height for medium screens */
   }
-  .contactImage{
-    height:500px;
-    width: 100%;
+}
+
+/* For large screens (lg) */
+@media (min-width: 1024px) {
+  .contactImage {
+    height: 500px;
+    /* Adjust height for large screens */
   }
-  @media (max-width: 639px) {
-    .contactImage {
-      height: 250px; /* Adjust height for extra small screens */
-    }
+}
+
+@layer utilities {
+
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  .no-scrollbar::-webkit-scrollbar,
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
   }
 
-  .abril-fatface-regular {
-    font-family: "Jost", sans-serif;
-    font-weight: 400;
-    font-style: normal;
-  }
-  
-  /* For small screens (sm) */
-  @media (min-width: 640px) and (max-width: 767px) {
-    .contactImage {
-      height: 400px; /* Adjust height for small screens */
-    }
-  }
-  
-  /* For medium screens (md) */
-  @media (min-width: 768px) and (max-width: 1023px) {
-    .contactImage {
-      height: 500px; /* Adjust height for medium screens */
-    }
-  }
-  
-  /* For large screens (lg) */
-  @media (min-width: 1024px) {
-    .contactImage {
-      height: 500px; /* Adjust height for large screens */
-    }
-  }
-
-  @layer utilities {
-    /* Hide scrollbar for Chrome, Safari and Opera */
-    .no-scrollbar::-webkit-scrollbar {
-        display: none;
-    }
-   /* Hide scrollbar for IE, Edge and Firefox */
-    .no-scrollbar {
-        -ms-overflow-style: none;  /* IE and Edge */
-        scrollbar-width: none;  /* Firefox */
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .no-scrollbar,
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
   }
 }
 
@@ -454,7 +477,9 @@ body.mobile-menu-open {
   background-color: #ef4444 !important;
 }
 
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   transition: none !important;
   animation: none !important;
 }
@@ -464,39 +489,73 @@ html {
 }
 
 /* Common libraries/components */
-.slick-slider *, .ant-modal *, .ant-drawer *, .ant-message *, .ant-notification * {
+.slick-slider *,
+.ant-modal *,
+.ant-drawer *,
+.ant-message *,
+.ant-notification * {
   transition: none !important;
   animation: none !important;
 }
 
 /* Disable CSS View Transitions API if present */
-::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) {
+::view-transition-group(*),
+::view-transition-old(*),
+::view-transition-new(*) {
   animation-duration: 0s !important;
 }
 
 /* LuxuryFooter animation keyframes and utilities */
 @keyframes shimmer {
-  0% { background-position: -200% center; }
-  100% { background-position: 200% center; }
+  0% {
+    background-position: -200% center;
+  }
+
+  100% {
+    background-position: 200% center;
+  }
 }
 
 @keyframes float {
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-5px) rotate(3deg); }
+
+  0%,
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+
+  50% {
+    transform: translateY(-5px) rotate(3deg);
+  }
 }
 
 @keyframes glow {
-  0%, 100% { box-shadow: 0 0 15px rgba(220, 38, 38, 0.2); }
-  50% { box-shadow: 0 0 25px rgba(220, 38, 38, 0.4); }
+
+  0%,
+  100% {
+    box-shadow: 0 0 15px rgba(220, 38, 38, 0.2);
+  }
+
+  50% {
+    box-shadow: 0 0 25px rgba(220, 38, 38, 0.4);
+  }
 }
 
 @keyframes pulse-slow {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.85; transform: scale(1.02); }
+
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.85;
+    transform: scale(1.02);
+  }
 }
 
 .animate-shimmer {
-  background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%);
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.3) 50%, rgba(255, 255, 255, 0) 100%);
   background-size: 200% 100%;
   animation: shimmer 2s infinite linear !important;
 }
@@ -511,4 +570,20 @@ html {
 
 .animate-pulse-slow {
   animation: pulse-slow 4s ease-in-out infinite !important;
+}
+
+@keyframes slideDown {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-down {
+  animation: slideDown 0.3s ease-out forwards !important;
 }

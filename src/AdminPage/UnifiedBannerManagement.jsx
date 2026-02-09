@@ -3,8 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchAllBanners } from '../Redux/slice/BannerSlice.jsx';
 import { fetchAllSmallBanners } from '../Redux/slice/SmallBannerSlice.jsx';
 import { fetchAllSideBanners } from '../Redux/slice/SideBannerSlice.jsx';
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import showToast from '../Utils/toastUtils';
 import Sidebar from './Sidebar';
 import { 
   MdAdd, 
@@ -81,31 +80,39 @@ const UnifiedBannerManagement = () => {
   };
 
   const handleUpload = async () => {
-    if (activeTab === 'hero') {
-      await uploadHeroBanner();
-    } else if (activeTab === 'small') {
-      await uploadSmallBanner();
-    } else {
-      await uploadSideBanner();
+    // Show loading toast
+    showToast.loading('Uploading banner...', { id: 'uploadBanner' });
+    
+    try {
+      if (activeTab === 'hero') {
+        await uploadHeroBanner();
+      } else if (activeTab === 'small') {
+        await uploadSmallBanner();
+      } else {
+        await uploadSideBanner();
+      }
+    } finally {
+      // Dismiss loading toast
+      showToast.dismiss('uploadBanner');
     }
   };
 
   const uploadSideBanner = async () => {
     try {
       if (!bannerData.title) {
-        toast.error('Title is required');
+        showToast.error('Title is required');
         return;
       }
       if (bannerData.linkType === 'slug' && !bannerData.slug) {
-        toast.error('Slug is required when using slug-based link');
+        showToast.error('Slug is required when using slug-based link');
         return;
       }
       if (bannerData.linkType === 'link' && !bannerData.link) {
-        toast.error('Link is required when using custom link');
+        showToast.error('Link is required when using custom link');
         return;
       }
       if (!editingBanner && !selectedDesktopFile) {
-        toast.error('Image is required');
+        showToast.error('Image is required');
         return;
       }
 
@@ -145,7 +152,7 @@ const UnifiedBannerManagement = () => {
       if (response.ok) {
         const responseData = await response.json();
         console.log('Side banner upload response:', responseData);
-        toast.success(editingBanner ? 'Side banner updated successfully!' : 'Side banner uploaded successfully!');
+        showToast.success(editingBanner ? 'Side banner updated successfully!' : 'Side banner uploaded successfully!');
         console.log('Dispatching fetchAllSideBanners...');
         dispatch(fetchAllSideBanners());
         resetForm();
@@ -157,11 +164,11 @@ const UnifiedBannerManagement = () => {
         } catch (e) {
           errorData = { message: errorText };
         }
-        toast.error(errorData.message || `Failed to ${editingBanner ? 'update' : 'upload'} side banner`);
+        showToast.error(errorData.message || `Failed to ${editingBanner ? 'update' : 'upload'} side banner`);
       }
     } catch (error) {
       console.error(`Error ${editingBanner ? 'updating' : 'uploading'} side banner:`, error);
-      toast.error(`Error ${editingBanner ? 'updating' : 'uploading'} side banner`);
+      showToast.error(`Error ${editingBanner ? 'updating' : 'uploading'} side banner`);
     }
   };
 
@@ -223,7 +230,7 @@ const UnifiedBannerManagement = () => {
       console.log('Hero banner update response status:', response.status);
 
       if (response.ok) {
-        toast.success(editingBanner ? 'Hero banner updated successfully!' : 'Hero banner uploaded successfully!');
+        showToast.success(editingBanner ? 'Hero banner updated successfully!' : 'Hero banner uploaded successfully!');
         dispatch(fetchAllBanners());
         resetForm();
       } else {
@@ -235,11 +242,11 @@ const UnifiedBannerManagement = () => {
         } catch (e) {
           errorData = { message: errorText };
         }
-        toast.error(errorData.message || `Failed to ${editingBanner ? 'update' : 'upload'} hero banner`);
+        showToast.error(errorData.message || `Failed to ${editingBanner ? 'update' : 'upload'} hero banner`);
       }
     } catch (error) {
       console.error(`Error ${editingBanner ? 'updating' : 'uploading'} hero banner:`, error);
-      toast.error(`Error ${editingBanner ? 'updating' : 'uploading'} hero banner`);
+      showToast.error(`Error ${editingBanner ? 'updating' : 'uploading'} hero banner`);
     }
   };
 
@@ -247,19 +254,19 @@ const UnifiedBannerManagement = () => {
     try {
       // Validate required fields
       if (!bannerData.title) {
-        toast.error('Title is required');
+        showToast.error('Title is required');
         return;
       }
       if (bannerData.linkType === 'slug' && !bannerData.slug) {
-        toast.error('Slug is required when using slug-based link');
+        showToast.error('Slug is required when using slug-based link');
         return;
       }
       if (bannerData.linkType === 'link' && !bannerData.link) {
-        toast.error('Link is required when using custom link');
+        showToast.error('Link is required when using custom link');
         return;
       }
       if (!selectedDesktopFile && !bannerData.desktopImage) {
-        toast.error('Desktop image is required');
+        showToast.error('Desktop image is required');
         return;
       }
 
@@ -321,7 +328,7 @@ const UnifiedBannerManagement = () => {
       console.log('Small banner upload response status:', response.status);
 
       if (response.ok) {
-        toast.success(editingBanner ? 'Small banner updated successfully!' : 'Small banner uploaded successfully!');
+        showToast.success(editingBanner ? 'Small banner updated successfully!' : 'Small banner uploaded successfully!');
         dispatch(fetchAllSmallBanners());
         resetForm();
       } else {
@@ -333,11 +340,11 @@ const UnifiedBannerManagement = () => {
         } catch (e) {
           errorData = { message: errorText };
         }
-        toast.error(errorData.message || `Failed to ${editingBanner ? 'update' : 'upload'} small banner`);
+        showToast.error(errorData.message || `Failed to ${editingBanner ? 'update' : 'upload'} small banner`);
       }
     } catch (error) {
       console.error(`Error ${editingBanner ? 'updating' : 'uploading'} small banner:`, error);
-      toast.error(`Error ${editingBanner ? 'updating' : 'uploading'} small banner`);
+      showToast.error(`Error ${editingBanner ? 'updating' : 'uploading'} small banner`);
     }
   };
 
@@ -364,41 +371,51 @@ const UnifiedBannerManagement = () => {
   };
 
   const handleDelete = async (bannerId) => {
-    if (window.confirm('Are you sure you want to delete this banner?')) {
-      try {
-        const endpoint = activeTab === 'hero' 
-          ? `${import.meta.env.VITE_API_BASE}/api/admin/banners/${bannerId}`
-          : activeTab === 'small'
-            ? `${import.meta.env.VITE_API_BASE}/api/admin/small-banners/${bannerId}`
-            : `${import.meta.env.VITE_API_BASE}/api/admin/side-banners/${bannerId}`;
-          
-        const response = await fetch(endpoint, {
-          method: 'DELETE',
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('myToken')}`
-          }
-        });
+    const confirmed = window.confirm('Are you sure you want to delete this banner? This action cannot be undone.');
+    if (!confirmed) return;
 
-        if (response.ok) {
-          toast.success('Banner deleted successfully!');
-          if (activeTab === 'hero') {
-            dispatch(fetchAllBanners());
-          } else if (activeTab === 'small') {
-            dispatch(fetchAllSmallBanners());
-          } else {
-            dispatch(fetchAllSideBanners());
-          }
-        } else {
-          toast.error('Failed to delete banner');
+    // Show loading toast
+    showToast.loading('Deleting banner...', { id: 'deleteBanner' });
+
+    try {
+      const endpoint = activeTab === 'hero' 
+        ? `${import.meta.env.VITE_API_BASE}/api/admin/banners/${bannerId}`
+        : activeTab === 'small'
+          ? `${import.meta.env.VITE_API_BASE}/api/admin/small-banners/${bannerId}`
+          : `${import.meta.env.VITE_API_BASE}/api/admin/side-banners/${bannerId}`;
+          
+      const response = await fetch(endpoint, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('myToken')}`
         }
-      } catch (error) {
-        console.error('Error deleting banner:', error);
-        toast.error('Error deleting banner');
+      });
+
+      if (response.ok) {
+        showToast.success('Banner deleted successfully!');
+        if (activeTab === 'hero') {
+          dispatch(fetchAllBanners());
+        } else if (activeTab === 'small') {
+          dispatch(fetchAllSmallBanners());
+        } else {
+          dispatch(fetchAllSideBanners());
+        }
+      } else {
+        showToast.error('Failed to delete banner');
       }
+    } catch (error) {
+      console.error('Error deleting banner:', error);
+      showToast.error('Error deleting banner');
+    } finally {
+      // Dismiss loading toast
+      showToast.dismiss('deleteBanner');
     }
   };
 
   const handleToggleStatus = async (bannerId, currentStatus) => {
+    // Show loading toast
+    showToast.loading('Updating banner status...', { id: 'toggleStatus' });
+    
     try {
       const endpoint = activeTab === 'hero' 
         ? `${import.meta.env.VITE_API_BASE}/api/admin/banners/${bannerId}/toggle`
@@ -416,7 +433,7 @@ const UnifiedBannerManagement = () => {
       });
 
       if (response.ok) {
-        toast.success(`Banner ${!currentStatus ? 'activated' : 'deactivated'} successfully!`);
+        showToast.success(`Banner ${!currentStatus ? 'activated' : 'deactivated'} successfully!`);
         if (activeTab === 'hero') {
           dispatch(fetchAllBanners());
         } else if (activeTab === 'small') {
@@ -425,11 +442,14 @@ const UnifiedBannerManagement = () => {
           dispatch(fetchAllSideBanners());
         }
       } else {
-        toast.error('Failed to update banner status');
+        showToast.error('Failed to update banner status');
       }
     } catch (error) {
       console.error('Error updating banner status:', error);
-      toast.error('Error updating banner status');
+      showToast.error('Error updating banner status');
+    } finally {
+      // Dismiss loading toast
+      showToast.dismiss('toggleStatus');
     }
   };
 

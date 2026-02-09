@@ -39,15 +39,15 @@ export const PropertyCard = ({
   // Format price based on currency
   const formatPrice = (priceInCr) => {
     console.log('formatPrice called with:', { priceInCr, type: typeof priceInCr, isZero: priceInCr === 0 });
-    
+
     // Check if price is null, undefined, or not a number (but allow 0)
     if (priceInCr === null || priceInCr === undefined || (typeof priceInCr !== 'number' && isNaN(Number(priceInCr)))) {
       return 'Contact for Price';
     }
-    
+
     // Convert to number if it's a string
     const numericPrice = typeof priceInCr === 'string' ? parseFloat(priceInCr) : priceInCr;
-    
+
     // If price is 0 or negative, show contact message
     if (numericPrice <= 0) {
       console.log('Price is 0 or negative, showing contact message');
@@ -59,12 +59,12 @@ export const PropertyCard = ({
   };
 
   return (
-    <div 
+    <div
       onClick={handleCardClick}
       className="group relative overflow-hidden rounded-xl glass-effect border border-white/10 hover:border-gold/50 transition-all duration-500 hover:shadow-gold cursor-pointer"
     >
-        {/* Image */}
-        <div className="relative h-48 sm:h-56 md:h-64 overflow-hidden">
+      {/* Image */}
+      <div className="relative h-48 sm:h-56 md:h-64 overflow-hidden">
         <img
           src={image || "/Images/100acresslogo.png"}
           alt={title}
@@ -78,14 +78,14 @@ export const PropertyCard = ({
           }}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-        
+
         {/* Tag */}
         {tag && (
           <span className="absolute top-4 left-4 bg-gold text-black text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
             {tag}
           </span>
         )}
-        
+
         {/* Like Button */}
         <button
           onClick={handleLikeClick}
@@ -119,25 +119,28 @@ export const PropertyCard = ({
           </p>
         </div>
 
-        
+
 
         {/* Price */}
         <div className="flex items-center justify-between">
           <div className="flex-1">
-            
+
             <div className="flex items-center gap-2">
               <p className="text-xs text-muted-foreground">Starting Price</p>
-              
+
             </div>
             <p className="text-lg sm:text-xl md:text-2xl font-bold text-gold mb-1">
               {formatPrice(price)}
             </p>
           </div>
-          <Button 
-            variant="outline" 
-            size="sm" 
+          <Button
+            variant="outline"
+            size="sm"
             className="border-gold text-gold hover:text-black text-xs sm:text-sm"
-            onClick={(e) => e.handleCardClick()}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleCardClick();
+            }}
           >
             View Details
           </Button>

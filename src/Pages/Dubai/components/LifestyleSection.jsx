@@ -20,11 +20,12 @@ export const LifestyleSection = () => {
             The Dubai Experience
           </span>
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-display font-bold text-white leading-tight">
-            Luxury Living
-            <span className="block text-gold">Redefined</span>
+            Prime Real Estate Locations in
+            <span className="block text-gold">Dubai</span>
           </h2>
           <p className="text-sm sm:text-base lg:text-xl text-muted-foreground max-w-lg sm:max-w-2xl mx-auto">
-            Experience world-class amenities, stunning architecture, and an unparalleled lifestyle
+            Secure high rental yields projects in Dubai
+
           </p>
         </div>
 

@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { getApiBase } from "../config/apiBase";
-import Footer from "../Components/Footer/CrimsonEleganceFooter";
+import Footer from "../Home/Footer/CrimsonEleganceFooter";
 import Navbar from "../aadharhomes/navbar/Navbar";
+import showToast from "../Utils/toastUtils";
 
 const UserEditProperty = () => {
   const propertyTypes = ["Select Property Type", "Commercial", "Residential"];
@@ -103,10 +104,12 @@ const UserEditProperty = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!selected || !selected._id) {
+      showToast.error('No property selected for editing');
       navigate(-1);
       return;
     }
     try {
+      showToast.loading('Updating property...', { id: 'updateProperty' });
       const base = getApiBase();
       const form = new FormData();
       // Text fields
@@ -154,6 +157,8 @@ const UserEditProperty = () => {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
 
+      showToast.success('Property updated successfully!', { id: 'updateProperty' });
+
       // Notify other tabs
       try {
         const channel = new BroadcastChannel('property-updates');
@@ -165,8 +170,7 @@ const UserEditProperty = () => {
       navigate(-1);
     } catch (err) {
       console.error('Update failed', err?.response || err);
-      // Still navigate back to keep flow, or stay?
-      navigate(-1);
+      showToast.error('Failed to update property', { id: 'updateProperty' });
     }
   };
 

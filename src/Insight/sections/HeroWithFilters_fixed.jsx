@@ -22,7 +22,7 @@ export default function HeroWithFilters() {
   const [advancedOpen, setAdvancedOpen] = useState(false);
   const dialogRef = React.useRef(null);
   const dialogCloseBtnRef = React.useRef(null);
-  
+
   // Categories & Filters State
   const [categoriesOpt, setCategoriesOpt] = useState([{ value: "", label: "All Types" }]);
   const [ptByCatOpt, setPtByCatOpt] = useState(PROPERTY_TYPES_BY_CATEGORY);
@@ -43,14 +43,14 @@ export default function HeroWithFilters() {
   const [areaMax, setAreaMax] = useState("");
   const [furnishing, setFurnishing] = useState("");
   const [rera, setRera] = useState("");
-  
+
   // Banner State
   const [heroLoaded, setHeroLoaded] = useState(false);
   const [bannerLoading, setBannerLoading] = useState(true);
   const [heroSrc, setHeroSrc] = useState(null);
   const HERO_BANNER_SLUG = import.meta.env.VITE_HERO_BANNER_SLUG || 'home-hero';
   const [bannerRefreshKey, setBannerRefreshKey] = useState(0);
-  
+
   // Poster Management State
   const [showPosterForm, setShowPosterForm] = useState(false);
   const [posterFile, setPosterFile] = useState(null);
@@ -60,7 +60,7 @@ export default function HeroWithFilters() {
   const [uploadingPoster, setUploadingPoster] = useState(false);
   const [posters, setPosters] = useState([]);
   const [loadingPosters, setLoadingPosters] = useState(false);
-  
+
   // Fetch project types for categories dropdown
   useEffect(() => {
     const fetchProjectTypes = async () => {
@@ -77,41 +77,41 @@ export default function HeroWithFilters() {
             }
           }
         );
-        
+
         const payload = res.data;
         const rows = Array.isArray(payload?.data) ? payload.data : (Array.isArray(payload) ? payload : []);
-        
+
         // Get unique project types
         const uniqueTypes = [...new Set(rows.map(project => project.type).filter(Boolean))];
-        
+
         // Update categories with unique project types
         const typeOptions = uniqueTypes.map(type => ({
           value: type,
           label: type
         }));
-        
+
         setCategoriesOpt([{ value: "", label: "All Types" }, ...typeOptions]);
-        
+
         // Get unique cities
         const uniqueCities = [...new Set(rows.map(project => project.city).filter(Boolean))];
-        
+
         // Update cities with unique cities
         const cityOptions = uniqueCities.map(city => ({
           value: city,
           label: city
         }));
-        
+
         setCitiesOpt([{ value: "", label: "All Locations" }, ...cityOptions]);
-        
+
         // Get unique builders
         const uniqueBuilders = [...new Set(rows.map(project => project.builder).filter(Boolean))];
-        
+
         // Update builders with unique builders
         const builderOptions = uniqueBuilders.map(builder => ({
           value: builder,
           label: builder
         }));
-        
+
         setBuildersOpt([{ value: "", label: "All Builders" }, ...builderOptions]);
       } catch (error) {
         console.error("Error fetching project types:", error);
@@ -119,7 +119,7 @@ export default function HeroWithFilters() {
         setCategoriesOpt([{ value: "", label: "All Types" }]);
       }
     };
-    
+
     fetchProjectTypes();
   }, []);
 
@@ -155,58 +155,58 @@ export default function HeroWithFilters() {
     }
   }, []);
 
-// â€¦ later â€¦
+  // â€¦ later â€¦
 
-// Listen for cross-tab or in-app uploads to refresh banner
-useEffect(() => {
-  const onStorage = (e) => {
-    if (e.key === 'banners:updated') {
+  // Listen for cross-tab or in-app uploads to refresh banner
+  useEffect(() => {
+    const onStorage = (e) => {
+      if (e.key === 'banners:updated') {
+        setTimeout(() => {
+          setBannerLoading(true);
+          setBannerRefreshKey((k) => k + 1);
+        }, 1000);
+      }
+    };
+    const onCustom = () => {
       setTimeout(() => {
         setBannerLoading(true);
         setBannerRefreshKey((k) => k + 1);
       }, 1000);
-    }
-  };
-  const onCustom = () => {
-    setTimeout(() => {
-      setBannerLoading(true);
-      setBannerRefreshKey((k) => k + 1);
-    }, 1000);
-  };
-  window.addEventListener('storage', onStorage);
-  window.addEventListener('banners:updated', onCustom);
-  return () => {
-    window.removeEventListener('storage', onStorage);
-    window.removeEventListener('banners:updated', onCustom);
-  };
-}, []); // âœ… this was missing earlier
+    };
+    window.addEventListener('storage', onStorage);
+    window.addEventListener('banners:updated', onCustom);
+    return () => {
+      window.removeEventListener('storage', onStorage);
+      window.removeEventListener('banners:updated', onCustom);
+    };
+  }, []); // âœ… this was missing earlier
 
-// Fetch posters from backend
-useEffect(() => {
-  const fetchPosters = async () => {
-    try {
-      setLoadingPosters(true);
-      const base = import.meta.env.VITE_API_BASE || '';
-      const token = localStorage.getItem('myToken');
-      const url = base ? `${base}/api/admin/posters` : '/api/admin/posters';
-      const headers = token ? { Authorization: `Bearer ${token}` } : {};
+  // Fetch posters from backend
+  useEffect(() => {
+    const fetchPosters = async () => {
+      try {
+        setLoadingPosters(true);
+        const base = import.meta.env.VITE_API_BASE || '';
+        const token = localStorage.getItem('myToken');
+        const url = base ? `${base}/api/admin/posters` : '/api/admin/posters';
+        const headers = token ? { Authorization: `Bearer ${token}` } : {};
 
-      const res = await fetch(url, { headers });
-      if (res.ok) {
-        const data = await res.json();
-        setPosters(data.posters || []);
+        const res = await fetch(url, { headers });
+        if (res.ok) {
+          const data = await res.json();
+          setPosters(data.posters || []);
+        }
+      } catch (error) {
+        console.error('Error fetching posters:', error);
+      } finally {
+        setLoadingPosters(false);
       }
-    } catch (error) {
-      console.error('Error fetching posters:', error);
-    } finally {
-      setLoadingPosters(false);
-    }
-  };
+    };
 
-  if (isAdmin) {
-    fetchPosters();
-  }
-}, [isAdmin]); // âœ… properly closed
+    if (isAdmin) {
+      fetchPosters();
+    }
+  }, [isAdmin]); // âœ… properly closed
 
 
   // Handle poster file selection
@@ -366,7 +366,7 @@ useEffect(() => {
       apply();
       mq.addEventListener ? mq.addEventListener('change', apply) : mq.addListener(apply);
       return () => { mq.removeEventListener ? mq.removeEventListener('change', apply) : mq.removeListener(apply); };
-    } catch {}
+    } catch { }
   }, []);
 
   // Modal: lock scroll + ESC close + focus trap
@@ -417,7 +417,7 @@ useEffect(() => {
   }, [advancedOpen]);
 
   return (
-    <section className="max-w-screen-xl mx-auto px-3 sm:px-4 md:px-6 md:pl-[260px] mb-4 md:mb-8" style={{ marginTop: 'calc(var(--nav-h, 64px) + 12px)' }}>
+    <section className="max-w-screen-xl mx-auto px-3 sm:px-4 md:px-6 mb-4 md:mb-8">
       <div className="relative rounded-2xl sm:rounded-[22px] overflow-hidden shadow-xl min-h-[50svh] sm:min-h-[56svh] lg:min-h-[60svh]">
         {/* Static Hero Banner */}
         <img
@@ -450,24 +450,24 @@ useEffect(() => {
         <div className={`relative z-10 px-4 sm:px-5 md:px-10 pt-14 md:pt-20 pb-24 md:pb-32 flex flex-col items-center justify-center text-center text-slate-50 ${reducedMotion ? '' : 'transition-[padding] duration-300'} transform translate-y-[8rem] md:translate-y-[11rem]`}>
           <h1 className="text-[clamp(1.75rem,6vw,2.5rem)] md:text-5xl lg:text-6xl font-extrabold tracking-tight mb-3 drop-shadow-[0_2px_8px_rgba(0,0,0,0.35)]">Finding homes made easy for you</h1>
           <p className="max-w-2xl text-sm md:text-base text-slate-50/90">Discover your dream property with our expert real estate guidance. Find luxury apartments and spacious villas that match your lifestyle and budget.</p>
-        </div>  
+        </div>
         {/* Floating filter bar */}
         <div className="relative z-20 -mb-10 sm:-mb-12 md:-mb-16 mx-auto max-w-5xl">
-        <div className={`mx-3 sm:mx-4 md:mx-12 mt-10 sm:mt-14 md:mt-20 bg-gray-50/90 supports-[backdrop-filter]:bg-white/80 ${reducedMotion ? '' : 'backdrop-blur-[10px]'} border border-gray-200 rounded-xl sm:rounded-2xl shadow-[0_12px_36px_rgba(0,0,0,0.18)] p-3 md:p-4 flex flex-wrap gap-3 items-center justify-between ${reducedMotion ? '' : 'transition-transform duration-300'}`}>
+          <div className={`mx-3 sm:mx-4 md:mx-12 mt-10 sm:mt-14 md:mt-20 bg-gray-50/90 supports-[backdrop-filter]:bg-white/80 ${reducedMotion ? '' : 'backdrop-blur-[10px]'} border border-gray-200 rounded-xl sm:rounded-2xl shadow-[0_12px_36px_rgba(0,0,0,0.18)] p-3 md:p-4 flex flex-wrap gap-3 items-center justify-between ${reducedMotion ? '' : 'transition-transform duration-300'}`}>
             <div className="w-full grid grid-cols-1 sm:flex sm:flex-1 gap-3 items-center">
-              <select aria-label="Category" value={category} onChange={(e)=>setCategory(e.target.value)} className="border border-gray-300 bg-white rounded-lg px-3 py-2 text-sm text-gray-800 w-full sm:w-[160px] shadow-sm focus:ring-2 focus:ring-amber-500 focus:outline-none">
+              <select aria-label="Category" value={category} onChange={(e) => setCategory(e.target.value)} className="border border-gray-300 bg-white rounded-lg px-3 py-2 text-sm text-gray-800 w-full sm:w-[160px] shadow-sm focus:ring-2 focus:ring-amber-500 focus:outline-none">
                 <option value="">Property Types </option>
                 {categoriesOpt.map(opt => (
                   <option key={opt.value} value={opt.value}>{opt.label}</option>
                 ))}
               </select>
-              <select aria-label="Property Type" value={builder} onChange={(e)=>setBuilder(e.target.value)} className="border border-gray-300 bg-white rounded-lg px-3 py-2 text-sm text-gray-800 w-full sm:w-[180px] shadow-sm focus:ring-2 focus:ring-amber-500 focus:outline-none">
+              <select aria-label="Property Type" value={builder} onChange={(e) => setBuilder(e.target.value)} className="border border-gray-300 bg-white rounded-lg px-3 py-2 text-sm text-gray-800 w-full sm:w-[180px] shadow-sm focus:ring-2 focus:ring-amber-500 focus:outline-none">
                 <option value="">All Builders</option>
                 {buildersOpt.map(opt => (
                   <option key={opt.value} value={opt.value}>{opt.label}</option>
                 ))}
               </select>
-              <select aria-label="City" value={city} onChange={(e)=>setCity(e.target.value)} className="border border-gray-300 bg-white rounded-lg px-3 py-2 text-sm text-gray-800 w-full sm:w-[200px] shadow-sm focus:ring-2 focus:ring-amber-500 focus:outline-none">
+              <select aria-label="City" value={city} onChange={(e) => setCity(e.target.value)} className="border border-gray-300 bg-white rounded-lg px-3 py-2 text-sm text-gray-800 w-full sm:w-[200px] shadow-sm focus:ring-2 focus:ring-amber-500 focus:outline-none">
                 <option value="">All Cities</option>
                 {citiesOpt.map(opt => (
                   <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -480,16 +480,16 @@ useEffect(() => {
                 onClick={() => setAdvancedOpen(true)}
                 title="Open advanced filters"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5"><path d="M3.75 6.75a.75.75 0 0 1 .75-.75h15a.75.75 0 0 1 .75.75v1.5a.75.75 0 0 1-.75.75h-4.5v8.69a.75.75 0 0 1-1.147.636l-3.706-2.224a.75.75 0 0 1-.364-.636V9H4.5a.75.75 0 0 1-.75-.75v-1.5Z"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5"><path d="M3.75 6.75a.75.75 0 0 1 .75-.75h15a.75.75 0 0 1 .75.75v1.5a.75.75 0 0 1-.75.75h-4.5v8.69a.75.75 0 0 1-1.147.636l-3.706-2.224a.75.75 0 0 1-.364-.636V9H4.5a.75.75 0 0 1-.75-.75v-1.5Z" /></svg>
               </button>
             </div>
             {/* Advanced filters */}
             <button type="button" onClick={() => setAdvancedOpen(true)} className="hidden md:inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-300 bg-gray-100 text-gray-800 hover:bg-gray-200 shadow-sm">
-              <svg viewBox="0 0 24 24" className="w-4 h-4" fill="currentColor"><path d="M4 7h10a1 1 0 0 0 2 0h4v2h-4a1 1 0 0 0-2 0H4V7Zm0 8h6a1 1 0 0 0 2 0h8v2h-8a1 1 0 0 0-2 0H4v-2Z"/></svg>
+              <svg viewBox="0 0 24 24" className="w-4 h-4" fill="currentColor"><path d="M4 7h10a1 1 0 0 0 2 0h4v2h-4a1 1 0 0 0-2 0H4V7Zm0 8h6a1 1 0 0 0 2 0h8v2h-8a1 1 0 0 0-2 0H4v-2Z" /></svg>
               Advanced
             </button>
-            <Link to={searchHref} onClick={(e)=>{ if (searchHref === '#') { e.preventDefault(); } }} title={areaInvalid ? 'Min area cannot be greater than max area' : undefined} className={`inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white font-bold px-5 py-2.5 rounded-lg shadow-md ${reducedMotion ? '' : 'transition-transform hover:-translate-y-[1px]'} ${areaInvalid ? 'opacity-60 cursor-not-allowed' : ''}`} aria-disabled={areaInvalid}>
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5"><path fillRule="evenodd" d="M10.5 3.75a6.75 6.75 0 1 0 5.38 10.84l3.265 3.265a.75.75 0 1 0 1.06-1.06l-3.265-3.266A6.75 6.75 0 0 0 10.5 3.75Zm-5.25 6.75a5.25 5.25 0 1 1 10.5 0 5.25 5.25 0 0 1-10.5 0Z" clipRule="evenodd"/></svg>
+            <Link to={searchHref} onClick={(e) => { if (searchHref === '#') { e.preventDefault(); } }} title={areaInvalid ? 'Min area cannot be greater than max area' : undefined} className={`inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white font-bold px-5 py-2.5 rounded-lg shadow-md ${reducedMotion ? '' : 'transition-transform hover:-translate-y-[1px]'} ${areaInvalid ? 'opacity-60 cursor-not-allowed' : ''}`} aria-disabled={areaInvalid}>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5"><path fillRule="evenodd" d="M10.5 3.75a6.75 6.75 0 1 0 5.38 10.84l3.265 3.265a.75.75 0 1 0 1.06-1.06l-3.265-3.266A6.75 6.75 0 0 0 10.5 3.75Zm-5.25 6.75a5.25 5.25 0 1 1 10.5 0 5.25 5.25 0 0 1-10.5 0Z" clipRule="evenodd" /></svg>
               SEARCH
             </Link>
             {/* Reset filters */}
@@ -538,7 +538,7 @@ useEffect(() => {
         </div>
 
         {/* Advanced Filters Modal */}
-      
+
       </div>
 
       {/* Admin Poster Management */}

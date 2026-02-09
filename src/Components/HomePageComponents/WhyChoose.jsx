@@ -72,16 +72,16 @@ function WhyChoose() {
   };
 
   return (
-    <section className="font-sans px-4 sm:px-6 lg:px-12 py-16 max-w-[1250px] mx-auto">
+    <section className="font-sans px-4 sm:px-6 lg:px-12 py-12 max-w-[1250px] mx-auto">
       <div className="flex flex-col md:flex-row items-center bg-white rounded-3xl shadow-2xl overflow-hidden">
         {/* Left Section */}
         <div className="w-full md:w-1/2 p-6 md:p-12 flex flex-col justify-center bg-gradient-to-r  to-white">
-          <p
-            className="text-2xl sm:text-3xl lg:text-4xl font-extrabold mb-5 leading-tight text-black"
-            data-aos="fade-right"
-          >
-            Why 100acress.com?
-          </p>
+          <div className="flex flex-col items-center mb-4 mx-auto" data-aos="fade-up">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold mb-3 leading-tight text-black text-center">
+              Why 100acress.com?
+            </h2>
+            <div className="h-1.5 w-32 bg-gradient-to-r from-red-500 to-red-600 rounded-full"></div>
+          </div>
 
           <div className="text-justify text-gray-700 leading-relaxed text-base">
             <p className="mb-6">

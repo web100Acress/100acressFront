@@ -8,16 +8,16 @@ import { projectTypeConfigs } from "../../config/pageConfigs";
 const BudgetFlatsGurgaon = ({ budgetRange }) => {
   const { getAllProjects } = Api_Service();
   const location = useLocation();
-  
+
   const projectType = 'residential-projects';
   const config = projectTypeConfigs[projectType];
-  
+
   // Get projects from Redux store
   const projects = useSelector(store => store?.allsectiondata?.[config?.reduxKey]);
-  
+
   const [isLoading, setIsLoading] = useState(true);
   const [filteredProjects, setFilteredProjects] = useState([]);
-  
+
   // Budget ranges in crores
   const budgetRanges = {
     '1': { min: 0, max: 1 },
@@ -25,7 +25,7 @@ const BudgetFlatsGurgaon = ({ budgetRange }) => {
     '10': { min: 0, max: 10 },
     '20': { min: 0, max: 20 }
   };
-  
+
   useEffect(() => {
     // Filter projects by budget range
     if (projects && projects.length > 0) {
@@ -52,7 +52,7 @@ const BudgetFlatsGurgaon = ({ budgetRange }) => {
         });
     }
   }, [projects, budgetRange, getAllProjects, config]);
-  
+
   if (!config) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -63,7 +63,7 @@ const BudgetFlatsGurgaon = ({ budgetRange }) => {
       </div>
     );
   }
-  
+
   // Custom title and description based on budget range
   const customConfig = {
     ...config,
@@ -75,7 +75,7 @@ const BudgetFlatsGurgaon = ({ budgetRange }) => {
       { label: `Flats For Sale under ${budgetRange} Cr in Gurgaon`, path: location.pathname }
     ]
   };
-  
+
   return (
     <GlobalFilterTemplate
       key={location.pathname}

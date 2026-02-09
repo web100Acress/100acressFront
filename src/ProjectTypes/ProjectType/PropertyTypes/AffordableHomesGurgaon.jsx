@@ -8,16 +8,16 @@ import { projectTypeConfigs } from "../../config/pageConfigs";
 const AffordableHomesGurgaon = () => {
   const { getAllProjects } = Api_Service();
   const location = useLocation();
-  
+
   const projectType = 'residential-projects';
   const config = projectTypeConfigs[projectType];
-  
+
   // Get projects from Redux store
   const projects = useSelector(store => store?.allsectiondata?.[config?.reduxKey]);
-  
+
   const [isLoading, setIsLoading] = useState(true);
   const [filteredProjects, setFilteredProjects] = useState([]);
-  
+
   useEffect(() => {
     // Filter projects for affordable homes (under 1 Cr)
     if (projects && projects.length > 0) {
@@ -43,7 +43,7 @@ const AffordableHomesGurgaon = () => {
         });
     }
   }, [projects, getAllProjects, config]);
-  
+
   if (!config) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -54,7 +54,7 @@ const AffordableHomesGurgaon = () => {
       </div>
     );
   }
-  
+
   // Custom configuration
   const customConfig = {
     ...config,
@@ -66,7 +66,7 @@ const AffordableHomesGurgaon = () => {
       { label: 'Affordable Homes in Gurgaon', path: location.pathname }
     ]
   };
-  
+
   return (
     <GlobalFilterTemplate
       key={location.pathname}

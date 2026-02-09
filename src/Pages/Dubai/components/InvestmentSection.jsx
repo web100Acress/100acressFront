@@ -52,10 +52,10 @@ export const InvestmentSection = () => {
             Market Intelligence
           </span>
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-display font-bold text-white leading-tight">
-            Investment Insights
+            Best Investment Projects in Dubai
           </h2>
           <p className="text-sm sm:text-base lg:text-xl text-muted-foreground max-w-lg sm:max-w-2xl mx-auto">
-            Dubai offers exceptional returns and investment opportunities
+            Discover high-growth projects in Dubai offering tax benefits and superior capital growth.
           </p>
         </div>
 
@@ -193,19 +193,16 @@ export const InvestmentSection = () => {
           <div className="glass-effect rounded-2xl border border-white/10 p-8 md:p-12 animate-fade-in-scale">
             <div className="mb-4 text-center">
               <h2 className="text-2xl font-semibold text-white mb-2">
-                Explore Premium Properties in Dubai
+                Explore Premium Projects in Dubai
               </h2>
               <p className="text-muted-foreground text-lg leading-relaxed max-w-4xl mx-auto">
-                Discover your dream home or ideal business address in the world's
-                most dynamic city. From waterfront apartments and luxury villas to
-                premium office spaces and commercial properties, explore Dubai's
-                finest residential and commercial opportunities with unmatched
-                investment potential and lifestyle benefits.
+                The future of urban living with our curated selection of the best real estate projects in Dubai, designed to offer an unmatched blend of luxury and strategic growth. Whether you are looking for the latest off-plan developments in prime locations like Dubai Marina and Downtown or seeking affordable new housing projects in Dubai with high rental yields, we provide expert insights into the most promising opportunities. Our portfolio features the best projects, including exclusive waterfront villas, branded residences, and smart-home apartments that guarantee a 100% tax-free environment and long-term capital appreciation. Stay ahead of the market by exploring the latest luxury projects in Dubai that redefine world-class infrastructure and offer a secure gateway to high-ROI investments and 
+                Golden Visa benefits
               </p>
             
-              <p className="text-muted-foreground text-base leading-relaxed max-w-3xl mx-auto">
+              {/* <p className="text-muted-foreground text-base leading-relaxed max-w-3xl mx-auto">
                 Find thoughtfully selected premium properties that match both your living goals and investment plans in Dubai. From residences to business spaces, every option is chosen for quality and growth potential.
-              </p>
+              </p> */}
             </div> 
           </div>
           {/* jdbd*/}

@@ -14,7 +14,7 @@ const Builderaction = () => {
   }, []);
 
   const projects = [
-     {
+    {
       title: "Emaar India",
       link: "/developers/emaar-india/",
       image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/signature.webp",
@@ -34,7 +34,7 @@ const Builderaction = () => {
       rating: 4.8,
       projects: 15
     },
-        {
+    {
       title: "Elan Group",
       link: "/developers/elan-group/",
       image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/uploads/1757160649396-download.jpeg",
@@ -44,8 +44,8 @@ const Builderaction = () => {
       projects: 18,
       fetchpriority: "high",
     },
-   
-   
+
+
     {
       title: "Experion Developers",
       link: "/developers/experion-developers/",
@@ -66,7 +66,7 @@ const Builderaction = () => {
       fetchpriority: "high",
       projects: 18,
     },
-     {
+    {
       title: "M3M India",
       link: "/developers/m3m-india/",
       image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/7449f81f-7d27-4178-abe9-bc9a4fce8f87.webp",
@@ -94,11 +94,14 @@ const Builderaction = () => {
             </svg>
           </div> */}
 
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-1">
-            <span className="bg-gradient-to-r from-red-600 to-red-700 bg-clip-text text-transparent">
-              Best Residential and Commercial Properties for You
-            </span>
-          </h2>
+          <div className="flex flex-col items-center mb-4 sm:mb-6">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
+              <span className="bg-gradient-to-r from-red-600 to-red-700 bg-clip-text text-transparent">
+                Best Residential and Commercial Properties for You
+              </span>
+            </h2>
+            <div className="h-1.5 w-32 bg-gradient-to-r from-red-500 to-red-600 rounded-full"></div>
+          </div>
 
           <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-1">
             Explore verified properties, affordable homes, ready-to-move flats, under-construction apartments, and new residential projects from leading builders in India.

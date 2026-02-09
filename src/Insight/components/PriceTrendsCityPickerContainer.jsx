@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import PriceTrendsCityPicker from './PriceTrendsCityPicker';
+import PriceTrendsCityPicker from './Citypeaker/PriceTrendsCityPicker';
 
 export default function PriceTrendsCityPickerContainer() {
   const [cities, setCities] = useState([]);

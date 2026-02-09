@@ -7,7 +7,7 @@ import { Helmet } from "react-helmet";
 import DOMPurify from 'dompurify';
 import { Calendar, Clock, Eye, User } from 'lucide-react';
 import { FALLBACK_IMG } from '../../../../../Utils/imageUtils';
-import Footer from "../../../../Footer/CrimsonEleganceFooter";
+import Footer from "../../../../../Home/Footer/CrimsonEleganceFooter";
 import FAQSection from "../../../../Actual_Components/FAQSection";
 
 const ModernBlogView = () => {

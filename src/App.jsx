@@ -25,7 +25,7 @@ import AuthModal from "./Resister/AuthModal";
 // import ConfettiAllCorners from "./Components/ConfettiAllCorners"; 
 
 // Lazy load all main page components
-const Home = lazy(() => import("./Pages/Home"));
+const Home = lazy(() => import("./Home/Home"));
 const EMICalculatorPage = lazy(() => import("./Pages/EMICalculatorPage"));
 // Deprecated: Properties page has been replaced by dynamic CityProjects template
 // const Properties = lazy(() => import("./Pages/ProjectCities/Properties"));
@@ -106,10 +106,10 @@ const ViewAllProperty = lazy(() => import("./Pages/ViewAllProperty"));
 const BlogWriteModal = lazy(() => import("./Components/Blog_Components/Blog/admin/desktop/BlogWriteModal"));
 // const Dubai = lazy(() => import("./Pages/ProjectCities/Dubai"));
 const GlobalBudgetPrice = lazy(() => import("./Pages/GlobalBudgetPrice"));
-const PriceTrends = lazy(() => import("./Insight/pages/PriceTrends"));
+const PriceTrends = lazy(() => import("./Insight/components/Pricetrend/PriceTrends"));
 const CityProjects = lazy(() => import("./Pages/ProjectCities/CityProjects"));
 // Analytics pages (MVP scaffold)
-const MarketReports = lazy(() => import("./Insight/pages/MarketReports"));
+const MarketReports = lazy(() => import("./Insight/components/Marketreport/MarketReports"));
 const AreaAnalytics = lazy(() => import("./Insight/pages/AreaAnalytics"));
 const AnalyticsHome = lazy(() => import("./Insight/pages/AnalyticsHome"));
 const MarketAnalytics = lazy(() => import("./Insight/pages/MarketAnalytics"));
@@ -138,6 +138,7 @@ const Rent = lazy(() => import("./AdminPage/ResaleEnquiries"));
 const Sidebar = lazy(() => import("./AdminPage/Sidebar"));
 const UserProfile = lazy(() => import("./AdminPage/UserProfile"));
 const Buy = lazy(() => import("./AdminPage/Buy"));
+const InsightsLayout = lazy(() => import("./Insight/components/InsightsLayout"));
 const ContactPage = lazy(() => import("./AdminPage/ContactPage"));
 const AdminContact = lazy(() => import("./AdminPage/AdminContact"));
 const UserAdmin = lazy(() => import("./AdminPage/UserAdmin"));
@@ -182,7 +183,8 @@ const BlogManagementSidebar = lazy(() => import("./Components/Blog_Components/Bl
 const ShortsSettings = lazy(() => import("./AdminPage/ShortsSettings"));
 const BannerManagement = lazy(() => import("./AdminPage/BannerManagement"));
 const UnifiedBannerManagement = lazy(() => import("./AdminPage/UnifiedBannerManagement"));
-const InsightsNews = lazy(() => import("./Insight/pages/InsightsNews"));
+const InsightsNews = lazy(() => import("./Insight/components/News/InsightsNews"));
+const InsightsBlog = lazy(() => import("./Insight/components/InsightBlog/InsightsBlog"));
 const InsightsGuides = lazy(() => import("./Insight/pages/InsightsGuides"));
 const InsightsManagement = lazy(() => import("./Insight/admin/InsightsManagement"));
 const InsightsPriceTrendsBanners = lazy(() => import("./Insight/admin/InsightsPriceTrendsBanners"));
@@ -215,8 +217,10 @@ const ViewProperty = lazy(() => import("./SalesHeadPage/ViewProperty"));
 const EditProperty = lazy(() => import("./SalesHeadPage/EditProperty"));
 // Test Component
 const TestSalesHead = lazy(() => import("./Components/TestSalesHead"));
-import ProjectRouter from "./aadharhomes/BannerPage/updatedbannerpage/components/Project/ProjectRouter";
+const ProjectRouter = lazy(() => import("./aadharhomes/BannerPage/updatedbannerpage/components/Project/ProjectRouter"));
+const Testimonial = lazy(() => import("./Home/Testimonial"));
 import DubaiPage from "./Pages/Dubai/DubaiPage";
+import BlogView from "./Insight/components/InsightBlog/BlogView";
 
 // Property Types Pages
 const BhkFlatsGurgaon = lazy(() => import("./ProjectTypes/ProjectType/PropertyTypes/BhkFlatsGurgaon"));
@@ -315,7 +319,7 @@ function App() {
                             element={<OTPVerification />}
                           />
                         </Route>
-                                              </Route>
+                      </Route>
                       <Route path="/privacy-policy/" element={<Privacy />} />
                       <Route path="/disclaimer/" element={<Disclaimer />} />
                       <Route
@@ -327,7 +331,7 @@ function App() {
                         path="/projects-in-gurugram/budget"
                         element={<BudgetPrice />}
                       />
-                      
+
                       {/* Unified projects/{filter} routes */}
                       <Route
                         path="/projects/under-1-cr/"
@@ -394,6 +398,7 @@ function App() {
                         element={<BuyPropViewCard />}
                       />
                       <Route path="/about-us/" element={<AboutModern />} />
+                      <Route path="/testimonials/" element={<Testimonial />} />
                       <Route
                         path="/rental-properties/:pUrl/:id/"
                         element={<RentViewDetails />}
@@ -424,7 +429,7 @@ function App() {
                       <Route path="/dubai/insights" element={<Navigate to="/" replace />} />
                       <Route path="/dubai/developers" element={<Navigate to="/" replace />} />
                       <Route path="/dubai/contact" element={<Navigate to="/" replace />} />
-                       <Route path="/projects-in-goa/" element={<CityProjectsGlobal />} />
+                      <Route path="/projects-in-goa/" element={<CityProjectsGlobal />} />
                       <Route path="/projects-in-noida/" element={<CityProjectsGlobal />} />
                       <Route path="/projects-in-panipat/" element={<CityProjectsGlobal />} />
                       <Route path="/projects-in-panchkula/" element={<CityProjectsGlobal />} />
@@ -448,15 +453,36 @@ function App() {
                           <UnifiedContactCard />
                         </LazyLoad>
                       } />
-                      {/* Analytics (public) */}
-                      <Route path="/property-market-trends/" element={<AnalyticsHome />} />
-                      <Route path="/analytics/price-trends" element={<PriceTrends />} />
-                      <Route path="/analytics/market" element={<MarketAnalytics />} />
-                      <Route path="/analytics/location" element={<LocationIntelligence />} />
-                      <Route path="/analytics/investment" element={<InvestmentInsights />} />
-                      <Route path="/loan-eligibility" element={<LoanEligibility />} />
+
+                      {/* Shared Layout for Analytics/Insights */}
+                      <Route element={<InsightsLayout />}>
+                        <Route path="/property-market-trends/" element={<AnalyticsHome />} />
+                        <Route path="/analytics/" element={<AnalyticsHome />} />
+                        <Route path="/insights/" element={<AnalyticsHome />} />
+                        <Route path="/insights/property-insights" element={<AnalyticsHome />} />
+
+                        <Route path="/insights/price-trends" element={<PriceTrends />} />
+                        <Route path="/analytics/price-trends" element={<PriceTrends />} />
+
+                        <Route path="/insights/market-reports" element={<MarketReports />} />
+                        <Route path="/insights/area-analytics" element={<AreaAnalytics />} />
+                        <Route path="/insights/market-analytics" element={<MarketAnalytics />} />
+                        <Route path="/insights/location" element={<LocationIntelligence />} />
+                        <Route path="/insights/investment" element={<InvestmentInsights />} />
+                        <Route path="/insights/news" element={<InsightsNews />} />
+                        <Route path="/insights/blog" element={<InsightsBlog />} />
+                        <Route path="/insights/blog/:id" element={<BlogView />} />
+                        <Route path="/insights/guides" element={<InsightsGuides />} />
+                        <Route path="/loan-eligibility" element={<LoanEligibility />} />
+
+                        {/* Backwards compatibility aliases */}
+                        <Route path="/analytics/market" element={<MarketAnalytics />} />
+                        <Route path="/analytics/location" element={<LocationIntelligence />} />
+                        <Route path="/analytics/investment" element={<InvestmentInsights />} />
+                      </Route>
+
                       <Route path="/projects/upcoming-projects-in-gurgaon/" element={<Navigate to="/" replace />} />
-                      
+
                       {/* Unified status routes with projects/{filter} pattern */}
                       <Route
                         path="/projects/upcoming/"
@@ -474,8 +500,8 @@ function App() {
                         path="/projects/newlaunch/"
                         element={<ProjectStatusSearchGlobal />}
                       />
-                      
-                      
+
+
                       <Route path="/projects/plots/" element={<ProjectTypeGlobal />} />
                       <Route path="/projects/villas/" element={<ProjectTypeGlobal />} />
                       <Route path="/projects/farmhouse/" element={<ProjectTypeGlobal />} />
@@ -515,6 +541,7 @@ function App() {
                       <Route path="/insights/price-trends" element={<PriceTrends />} />
                       <Route path="/insights/property-insights" element={<AnalyticsHome />} />
                       <Route path="/insights/news" element={<InsightsNews />} />
+                      <Route path="/insights/blog" element={<InsightsBlog />} />
                       <Route path="/insights/guides" element={<InsightsGuides />} />
                       <Route
                         path="/resetpassword/:token"
@@ -538,13 +565,13 @@ function App() {
                       <Route path="*" element={<PageNotFound />} />
                       <Route path="/contactmainpage" element={<ContactPage />} />
                       <Route path="/searchdata/:key" element={<SearchData />} />
-                       <Route path="/bptp-plots-gurugram/" element={<Bptp />} />
-                       {/* <Route path="/orris-plots-gurugram/" element={<Orris />} /> */}
-                       <Route path="/top-luxury-projects/" element={<LuxuryProject />} />
+                      <Route path="/bptp-plots-gurugram/" element={<Bptp />} />
+                      {/* <Route path="/orris-plots-gurugram/" element={<Orris />} /> */}
+                      <Route path="/top-luxury-projects/" element={<LuxuryProject />} />
                       <Route path="/onboarding/upload" element={<OnboardingUpload />} />
                       <Route path="/document-upload/:token" element={<DocumentUpload />} />
                       <Route path="/upload-success" element={<UploadSuccess />} />
-                      
+
 
                       {/* Property Types Routes */}
                       <Route path="/1-bhk-flats-in-gurgaon/" element={<BhkFlatsGurgaon bhkType="1" />} />
@@ -680,10 +707,6 @@ function App() {
                         element={<LazyLoad><Contacts /></LazyLoad>}
                       />
                       <Route
-                        path="insights/market-reports"
-                        element={<LazyLoad><MarketReports /></LazyLoad>}
-                      />
-                      <Route
                         path="insights/investment"
                         element={<LazyLoad><InvestmentInsights /></LazyLoad>}
                       />
@@ -692,7 +715,7 @@ function App() {
                       <Route path="jobposting/edit/:id" element={<LazyLoad><AdminJobPostingEdit /></LazyLoad>} />
                       <Route path="contact-cards" element={<LazyLoad><ContactCardManagement /></LazyLoad>} />
                       <Route path="sitemap-management" element={<LazyLoad><SitemapManagement /></LazyLoad>} />
-                      </Route>
+                    </Route>
 
                     {/* Sales Head Routing */}
                     <Route path="/sales-head" element={<SalesHeadPrivateRoute />}>
@@ -743,7 +766,7 @@ function App() {
                     {/* Admin route for Project Filter Order Management */}
                     <Route path="/Admin/project-filter-order" element={<LazyLoad><ProjectFilterOrderManagement /></LazyLoad>} />
 
-                    
+
                     {/* Blog route only user with role Blog will be able to login */}
                     <Route path="/seo/" element={<SeoPrivateRoute />}>
                       <Route path="blogs" element={<BlogManagementSidebar />} >
@@ -757,8 +780,8 @@ function App() {
                         <Route path="drafts" element={<DraftManagement />} />
                       </Route>
                     </Route>
-                  <Route path="/:pUrl/" element={<ProjectLayout2 />} />
-                </Routes>
+                    <Route path="/:pUrl/" element={<ProjectLayout2 />} />
+                  </Routes>
                 </Suspense>
               </ErrorBoundary>
             </QueryClientProvider>
@@ -830,7 +853,7 @@ function MobileBottomNav() {
             <Link to="/" className="flex flex-col items-center gap-1 py-2">
               <span className={`text-xl ${isActive(["/", "/projects", "/property"]) ? "text-red-600" : "text-gray-500"}`}>
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+                  <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
                 </svg>
               </span>
               <span className={`${isActive(["/", "/projects", "/property"]) ? "text-gray-900 font-semibold" : ""}`}>Home</span>
@@ -853,7 +876,7 @@ function MobileBottomNav() {
                 title="Call 8500900100"
               >
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
+                  <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" />
                 </svg>
               </a>
               <span className="mt-1 text-[11px]">Contact</span>
@@ -863,7 +886,7 @@ function MobileBottomNav() {
             <Link to="/blog/" className="flex flex-col items-center gap-1 py-2">
               <span className={`text-xl ${isActive("/blog") ? "text-red-600" : "text-gray-500"}`}>
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+                  <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
                 </svg>
               </span>
               <span className={`${isActive("/blog") ? "text-gray-900 font-semibold" : ""}`}>Blogs</span>
@@ -874,8 +897,8 @@ function MobileBottomNav() {
               <Link to={profileTarget} className="flex flex-col items-center gap-1 py-2">
                 <span className={`text-xl ${isActive("/userdashboard") ? "text-red-600" : "text-gray-500"}`}>
                   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-                </svg>
+                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                  </svg>
                 </span>
                 <span className={`${isActive("/userdashboard") ? "text-gray-900 font-semibold" : ""}`}>Profile</span>
               </Link>
@@ -883,8 +906,8 @@ function MobileBottomNav() {
               <button onClick={handleProfileClick} className="flex flex-col items-center gap-1 py-2">
                 <span className="text-xl text-gray-500">
                   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-                </svg>
+                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                  </svg>
                 </span>
                 <span>Profile</span>
               </button>

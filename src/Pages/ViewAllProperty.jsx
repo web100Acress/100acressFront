@@ -1,6 +1,21 @@
 import React from "react";
+import showToast from "../Utils/toastUtils";
 
 const ViewAllProperty = ({ category, title, imageSrc, tags }) => {
+  const [searchTerm, setSearchTerm] = React.useState("");
+  
+  const handleSearch = () => {
+    if (!searchTerm.trim()) {
+      showToast.error('Please enter a search term');
+      return;
+    }
+    showToast.loading('Searching properties...', { id: 'searchProperties' });
+    // Simulate search - replace with actual search logic
+    setTimeout(() => {
+      showToast.success('Search completed!', { id: 'searchProperties' });
+    }, 1000);
+  };
+
   return (
     <div>
       <p className="text-center font-semibold lg:text-3xl sm:text-xl pt-4 text-black ">
@@ -10,11 +25,14 @@ const ViewAllProperty = ({ category, title, imageSrc, tags }) => {
         <div className="border-b-red-600 focus-within:border-none focus-within:ring focus-within:ring-offset-2 my-10 flex h-10 items-center justify-start border-b-2 bg-gray-100 leading-4 ring-red-600 sm:w-96">
           <input
             placeholder="Search For Your Property"
-            value=""
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
             className="peer ml-2 flex-grow bg-transparent text-gray-500 outline-none"
           />
           <button
             type="button"
+            onClick={handleSearch}
             className="peer-focus:mr-2 z-20 cursor-pointer text-red-600 outline-none duration-150 hover:scale-125"
           >
             <svg className="h-6 w-6 stroke-2" viewBox="0 0 32 32" fill="none">

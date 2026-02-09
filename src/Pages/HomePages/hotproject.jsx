@@ -2,7 +2,7 @@ import React, { useContext, useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Skeleton } from 'antd';
 import AOS from 'aos';
-import { ForwardIcon, BackwardIcon,SpotlightPriceIcon, SpotlightHomeIcon } from "../../Assets/icons";
+import { ForwardIcon, BackwardIcon, SpotlightPriceIcon, SpotlightHomeIcon } from "../../Assets/icons";
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { sortByDesiredOrder } from '../../Utils/ProjectSorting';
@@ -116,7 +116,7 @@ const InfoContainer = styled.div`
 
 const ImageGallery = React.memo(() => {
 
-  const {getSpotlight} = Api_service();
+  const { getSpotlight } = Api_service();
   const [visibleIndex, setVisibleIndex] = useState(0);
   const [columnsPerPage, setColumnsPerPage] = useState(4);
   const [recommendedOrder, setRecommendedOrder] = useState([]);
@@ -125,7 +125,7 @@ const ImageGallery = React.memo(() => {
 
   useEffect(() => {
     getSpotlight();
-    
+
     // Load recommended order data
     const loadRecommendedOrder = async () => {
       try {
@@ -136,17 +136,17 @@ const ImageGallery = React.memo(() => {
         setRecommendedOrder([]);
       }
     };
-    
+
     loadRecommendedOrder();
   }, []);
 
   const spotlight = sortByDesiredOrder(
-    hotproject.filter((project) => project != null), 
+    hotproject.filter((project) => project != null),
     recommendedOrder,
     "projectName"
   );
-  
-  
+
+
 
   useEffect(() => {
     AOS.init();
@@ -169,7 +169,7 @@ const ImageGallery = React.memo(() => {
     return <Skeleton />;
   }
 
- 
+
   const handleNext = () => {
     if (visibleIndex + columnsPerPage < spotlight.length) {
       setVisibleIndex(visibleIndex + columnsPerPage);
@@ -190,21 +190,22 @@ const ImageGallery = React.memo(() => {
     return text;
   };
 
-  
+
 
   const visibleImages = spotlight.slice(visibleIndex, visibleIndex + columnsPerPage);
 
   return (
     <div className="rounded-tl-3xl rounded-tr-3xl bg-white">
-      <div className="flex items-center justify-between mx-6 lg:mx-6 xl:mx-14 md:mx-6 pt-3">
-        <h2 className="text-lg  xl:text-4xl lg:text-3xl md:text-3xl sm:text-xl text-black ">
-          morden 100acress - Recommended
+      <div className="relative flex flex-col items-center justify-center text-center mb-4 mt-6 px-4">
+        <h2 className="text-2xl xl:text-4xl lg:text-3xl md:text-3xl sm:text-2xl text-black font-bold">
+          modern 100acress - Recommended
         </h2>
-        <div>
-          <span className="mr-4" onClick={handlePrev} disabled={visibleIndex === 0}>
+        <div className="h-1.5 w-32 bg-gradient-to-r from-red-500 to-red-600 rounded-full mt-3"></div>
+        <div className="absolute right-3 lg:right-6 xl:right-14 flex items-center gap-2">
+          <span className="cursor-pointer hover:scale-110 transition-transform" onClick={handlePrev} disabled={visibleIndex === 0}>
             <BackwardIcon />
           </span>
-          <span onClick={handleNext} disabled={visibleIndex + columnsPerPage >= spotlight.length}>
+          <span className="cursor-pointer hover:scale-110 transition-transform" onClick={handleNext} disabled={visibleIndex + columnsPerPage >= spotlight.length}>
             <ForwardIcon />
           </span>
         </div>
@@ -238,7 +239,7 @@ const ImageGallery = React.memo(() => {
                   </p>
 
                   <p className="font-semibold mt-2 mb-0 text-gray-800"></p>
-                                     <button className="text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-500 font-medium rounded-lg text-xs px-4 py-1.5 drip-effect w-full md:w-auto   flex justify-center items-center shadow-lg" >View Details</button>
+                  <button className="text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-500 font-medium rounded-lg text-xs px-4 py-1.5 drip-effect w-full md:w-auto   flex justify-center items-center shadow-lg" >View Details</button>
                 </InfoContainer>
                 <CityText className="py-2 px-auto text-xl visible font-Sans text-center">{image.projectName}</CityText>
                 <CityText className="">{truncateText(image.projectAddress, 4)}</CityText>
