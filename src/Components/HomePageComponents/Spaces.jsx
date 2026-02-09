@@ -9,52 +9,52 @@ function SpacesAvailable() {
   useEffect(() => { AOS.init(); }, []);
 
   const projects = [
-    { 
-      title: "Residential Projects", 
-      link: "/projects/residential/", 
-      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/7a536a4b-51f5-4785-97d4-749e9ac68470.webp", 
+    {
+      title: "Residential Projects",
+      link: "/projects/residential/",
+      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/7a536a4b-51f5-4785-97d4-749e9ac68470.webp",
       description: "Luxury apartments and homes in prime locations",
       badge: "Popular"
     },
-    { 
-      title: "Commercial Projects", 
-      link: "/projects/commercial/", 
-      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/f54d86d9-45dc-437d-9fae-d0d01d65205e.webp", 
+    {
+      title: "Commercial Projects",
+      link: "/projects/commercial/",
+      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/f54d86d9-45dc-437d-9fae-d0d01d65205e.webp",
       description: "Premium office spaces and retail properties",
       badge: "Hot"
     },
-    { 
-      title: "SCO Plots", 
-      link: "/projects/sco-plots/", 
-      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/2f7b73d1-379e-4db0-bc17-7ea668165e27.webp", 
+    {
+      title: "SCO Plots",
+      link: "/projects/sco-plots/",
+      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/2f7b73d1-379e-4db0-bc17-7ea668165e27.webp",
       description: "Shop-cum-office plots for business growth",
       badge: "New"
     },
-    { 
-      title: "Builder & Independent Floor", 
-      link: "/projects/independent-floors/", 
-      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/28b918b3-0393-471a-b5ab-75af2633a501.webp", 
+    {
+      title: "Builder & Independent Floor",
+      link: "/projects/independent-floors/",
+      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/28b918b3-0393-471a-b5ab-75af2633a501.webp",
       description: "Independent floors and builder floors",
       badge: "Featured"
     },
-    { 
-      title: "Plots In Gurugram", 
-      link: "/projects/plots/", 
-      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/93756186-da48-4385-95a9-63fdeaa831ec.webp", 
+    {
+      title: "Plots In Gurugram",
+      link: "/projects/plots/",
+      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/93756186-da48-4385-95a9-63fdeaa831ec.webp",
       description: "Investment-ready plots in prime locations",
       badge: "Best Value"
     },
-    { 
-      title: "Luxury Villas", 
-      link: "/projects/villas/", 
-      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/59f64851-2928-4da6-b754-9f4dd39b14fa.webp", 
+    {
+      title: "Luxury Villas",
+      link: "/projects/villas/",
+      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/59f64851-2928-4da6-b754-9f4dd39b14fa.webp",
       description: "Ultra-luxury villas with world-class amenities",
       badge: "Premium"
     },
-    { 
-      title: "Industrial Plots", 
-      link: "/projects/industrial-plots/", 
-      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/c69f77ee-92b2-4480-8cb4-b15135e7a161.webp", 
+    {
+      title: "Industrial Plots",
+      link: "/projects/industrial-plots/",
+      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/spaces/c69f77ee-92b2-4480-8cb4-b15135e7a161.webp",
       description: "Industrial plots for manufacturing and warehousing",
       badge: "Investment"
     },
@@ -64,11 +64,12 @@ function SpacesAvailable() {
     <Wrapper className="section">
       <div className="container">
         {/* Header Section */}
-        <div className="header-section" data-aos="fade-up">
-          <h1 className="main-heading">
-            <span className="dream-text">Dream</span> Properties In The Heart of{" "}
-            <span className="gurugram-text">Gurugram</span>
+        <div className="flex flex-col items-center justify-center text-center mb-4 px-4" data-aos="fade-up">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-[#111] mb-3 leading-tight">
+            <span className="text-red-600">Dream</span> Properties In The Heart of{" "}
+            <span className="text-red-600">Gurugram</span>
           </h1>
+          <div className="h-1.5 w-32 bg-gradient-to-r from-red-500 to-red-600 rounded-full"></div>
         </div>
 
         {/* Cards Grid */}
@@ -76,8 +77,8 @@ function SpacesAvailable() {
           {/* First Row - 3 Cards */}
           <div className="first-row">
             {projects.slice(0, 3).map((project, index) => (
-              <div 
-                key={index} 
+              <div
+                key={index}
                 className="card-wrapper"
                 data-aos="fade-up"
                 data-aos-delay={index * 100}
@@ -85,11 +86,11 @@ function SpacesAvailable() {
                 <Link to={project.link} className="card">
                   <div className="card-image-container">
                     <img
-                      src={project.image} 
-                      alt={project.title} 
-                      fetchPriority="high" 
-                      className="card-image" 
-                      loading="lazy" 
+                      src={project.image}
+                      alt={project.title}
+                      fetchPriority="high"
+                      className="card-image"
+                      loading="lazy"
                     />
                     <div className="badge">{project.badge}</div>
                     <div className="title-overlay">
@@ -107,20 +108,20 @@ function SpacesAvailable() {
           {/* Second Row - 4 Cards */}
           <div className="second-row">
             {projects.slice(3).map((project, index) => (
-              <div 
-                key={index + 3} 
+              <div
+                key={index + 3}
                 className="card-wrapper"
                 data-aos="fade-up"
                 data-aos-delay={(index + 3) * 100}
               >
                 <Link to={project.link} className="card">
                   <div className="card-image-container">
-                    <img 
-                      src={project.image} 
-                      alt={project.title} 
+                    <img
+                      src={project.image}
+                      alt={project.title}
                       fetchPriority="high"
-                      className="card-image" 
-                      loading="lazy" 
+                      className="card-image"
+                      loading="lazy"
                     />
                     <div className="badge">{project.badge}</div>
                     <div className="title-overlay">

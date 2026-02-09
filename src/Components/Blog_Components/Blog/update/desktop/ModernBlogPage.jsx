@@ -4,7 +4,7 @@ import { Helmet } from "react-helmet";
 import api from "../../../../../config/apiClient";
 import HeroSection from "../../create/HeroSectionContainer";
 import BlogCard from "../../create/desktop/BlogCard";
-import Footer from "../../../../Footer/CrimsonEleganceFooter";
+import Footer from "../../../../../Home/Footer/CrimsonEleganceFooter";
 
 const ModernBlogPage = () => {
   const [allBlogs, setAllBlogs] = useState([]);

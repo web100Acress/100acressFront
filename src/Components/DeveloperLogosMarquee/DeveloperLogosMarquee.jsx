@@ -249,9 +249,9 @@ const DeveloperLogosMarquee = () => {
       <MarqueeRow developers={row2Developers} direction="right" />
       <MarqueeRow developers={row3Developers} direction="left" />
       <MarqueeRow developers={row4Developers} direction="right" />
-      <div className="marquee-footer-text">
+      {/* <div className="marquee-footer-text">
         And 500+ more developers across India
-      </div>
+      </div> */}
     </div>
   );
 };

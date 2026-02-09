@@ -82,10 +82,10 @@ export const DevelopersSection = () => {
             Trusted Partners
           </span>
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-display font-bold text-white leading-tight">
-            Top Developers
+            Top Developers Projects in Dubai
           </h2>
           <p className="text-sm sm:text-base lg:text-xl text-muted-foreground max-w-lg sm:max-w-2xl mx-auto">
-            Partnering with Dubai's most prestigious property developers
+            Invest in the finest projects in Dubai featuring luxury apartments and high-ROI properties from the city's most trusted developers.
           </p>
         </div>
 

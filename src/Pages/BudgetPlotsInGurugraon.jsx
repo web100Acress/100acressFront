@@ -26,7 +26,7 @@ const BudgetPlotsInGurugraon = () => {
         setBudgetPlots([]);
       }
     };
-    
+
     loadBudgetPlots();
   }, []);
 
@@ -34,51 +34,49 @@ const BudgetPlotsInGurugraon = () => {
 
   return (
     <Wrapper className="section">
-    <div data-aos="zoom-in-up" className="container" style={{ boxShadow: "0px 0px 0px 0px #0000001a" }}>
-      <div className="flex items-center justify-between mx-3 sm:mx-4 lg:mx-4 xl:mx-14 md:mx-4 py-3 sm:py-5 lg:py-6 mb-3 sm:mb-4">
-        <div className="flex items-center gap-3">
-          <div className="w-1 h-12 bg-gradient-to-b from-red-500 to-red-600 rounded-full"></div>
-          <h2 className="text-3xl xl:text-4xl lg:text-3xl md:text-2xl sm:text-left font-extrabold mb-1 text-neutral-900">
+      <div data-aos="zoom-in-up" className="container" style={{ boxShadow: "0px 0px 0px 0px #0000001a" }}>
+        <div className="relative flex flex-col items-center justify-center text-center mb-4 mt-6 px-4">
+          <h2 className="text-3xl xl:text-4xl lg:text-3xl md:text-2xl font-extrabold mb-3 text-neutral-900">
             <span className="bg-gradient-to-r from-[#f43f5e] to-[#dc2626] bg-clip-text text-transparent">Best Budget</span>
             <span> Plots in Gurugram</span>
           </h2>
-        </div>
-        <div className=" ml-2 hidden sm:block">
-        <Link to="/projects/plots/" target="_top">
-        <span className="flex items-center text-white text-sm px-3 py-1 rounded-full bg-red-600 hover:bg-red-700 shadow-md transition-all duration-300">
-          <EyeIcon />
-          <span className="ml-2">View All</span>
-        </span>
-        </Link>
-      </div>
-      </div>
-      <div className="grid  lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-1 grid-cols-1 mx-0 gap-3 lg:gap-4 pb-2 pt-3">
-        {budgetPlots.length === 0 ? (
-          <div className="col-span-full text-center py-8">
-            <div className="text-gray-500">Loading budget plots...</div>
-          </div>
-        ) : (
-          budgetPlots.map((project, index) => (
-            <Link to={project.link} key={index} className="card group" aria-label={project.title}>
-              <div className="card-image-wrapper">
-                <img 
-                  src={project.image} 
-                  alt={project.title} 
-                  loading="lazy" 
-                  className="card-image transition-transform duration-300 group-hover:scale-105"
-                  onError={(e) => {
-                    e.target.onerror = null;
-                    e.target.src = '../../Images/logo.png';
-                  }}
-                />
-              </div>
-              <button className="card-button bg-red-600 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-500/30 transition-all duration-300">{project.title}</button>
+          <div className="h-1.5 w-32 bg-gradient-to-r from-red-500 to-red-600 rounded-full"></div>
+          {/* <div className="absolute right-3 lg:right-6 xl:right-14 hidden sm:block">
+            <Link to="/projects/plots/" target="_top">
+              <span className="flex items-center text-white text-sm px-3 py-1.5 rounded-full bg-red-600 shadow-lg hover:shadow-xl transition-all duration-300">
+                <EyeIcon size={16} />
+                <span className="ml-2">View All</span>
+              </span>
             </Link>
-          ))
-        )}
+          </div> */}
+        </div>
+        <div className="grid  lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-1 grid-cols-1 mx-0 gap-3 lg:gap-4 pb-2 pt-3">
+          {budgetPlots.length === 0 ? (
+            <div className="col-span-full text-center py-8">
+              <div className="text-gray-500">Loading budget plots...</div>
+            </div>
+          ) : (
+            budgetPlots.map((project, index) => (
+              <Link to={project.link} key={index} className="card group" aria-label={project.title}>
+                <div className="card-image-wrapper">
+                  <img
+                    src={project.image}
+                    alt={project.title}
+                    loading="lazy"
+                    className="card-image transition-transform duration-300 group-hover:scale-105"
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = '../../Images/logo.png';
+                    }}
+                  />
+                </div>
+                <button className="card-button bg-red-600 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-500/30 transition-all duration-300">{project.title}</button>
+              </Link>
+            ))
+          )}
+        </div>
       </div>
-    </div>
-  </Wrapper>
+    </Wrapper>
   );
 };
 

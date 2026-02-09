@@ -8,15 +8,15 @@ import { projectTypeConfigs } from "../../config/pageConfigs";
 const IndependentHousesGurgaon = () => {
   const { getAllProjects } = Api_Service();
   const location = useLocation();
-  
+
   const projectType = 'luxury-villas';
   const config = projectTypeConfigs[projectType];
-  
+
   // Get projects from Redux store
   const projects = useSelector(store => store?.allsectiondata?.[config?.reduxKey]);
-  
+
   const [isLoading, setIsLoading] = useState(true);
-  
+
   useEffect(() => {
     if (projects && projects.length > 0) {
       setIsLoading(false);
@@ -33,7 +33,7 @@ const IndependentHousesGurgaon = () => {
         });
     }
   }, [projects, getAllProjects, config]);
-  
+
   if (!config) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -44,7 +44,7 @@ const IndependentHousesGurgaon = () => {
       </div>
     );
   }
-  
+
   // Custom configuration
   const customConfig = {
     ...config,
@@ -56,11 +56,12 @@ const IndependentHousesGurgaon = () => {
       { label: 'Independent Houses For Sale in Gurgaon', path: location.pathname }
     ]
   };
-  
+
   return (
     <GlobalFilterTemplate
       key={location.pathname}
-      config={customConfig}
+      pageType="type"
+      pageConfig={customConfig}
       projects={projects}
       isLoading={isLoading}
     />

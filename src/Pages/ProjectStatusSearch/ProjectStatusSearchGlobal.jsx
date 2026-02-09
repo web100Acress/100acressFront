@@ -9,49 +9,49 @@ import { statusConfigs } from "../../ProjectTypes/config/pageConfigs.js";
 const ProjectStatusSearchGlobal = () => {
   const { allProjectData } = useContext(DataContext);
   const location = useLocation();
-  
+
   // Request throttling
   const requestThrottle = useRef(new Map());
   const isRequestInProgress = useRef(false);
   const lastRequestTime = useRef(0);
-  
+
   // Force component re-render when URL changes by updating key
   const [componentKey, setComponentKey] = useState(0);
-  
+
   useEffect(() => {
     // Force component re-render when URL changes
     setComponentKey(prev => prev + 1);
   }, [location.pathname]);
-  
+
   // Get project status from URL or props
   const getProjectStatus = () => {
     const path = location.pathname;
     console.log('Current path:', path);
-    
+
     // Check for new unified status URLs: projects/{status}
     if (path.includes('/projects/') && !path.includes('/projects-in-')) {
       const filter = path.split('/projects/')[1]?.replace('/', '');
       console.log('Detected unified projects filter:', filter);
-      
+
       const statusMap = {
         'upcoming': 'upcoming',
         'newlaunch': 'newlaunch',
         'underconstruction': 'underconstruction',
         'ready-to-move': 'readytomove'
       };
-      
+
       if (statusMap[filter]) {
         console.log('Detected status from unified URL:', statusMap[filter]);
         return statusMap[filter];
       }
     }
-    
-`    return 'upcoming'; // default fallback`
+
+    `    return 'upcoming'; // default fallback`
   };
 
   const projectStatus = getProjectStatus();
   console.log('Detected project status:', projectStatus);
-  
+
   // Project status configurations with enhanced SEO
   const statusConfig = {
     upcoming: {
@@ -122,50 +122,61 @@ const ProjectStatusSearchGlobal = () => {
 
   const currentConfig = statusConfig[projectStatus];
   const { getAllProjects } = Api_Service();
-  
+
   // Debounce timer ref
   const debounceTimer = useRef(null);
-  
+
+  // Loading state
+  const [isLoading, setIsLoading] = useState(true);
+
   // Throttled API call function
   const throttledGetAllProjects = useCallback(async (query, limit) => {
     const now = Date.now();
     const throttleKey = `${query}-${limit}`;
     const lastCall = requestThrottle.current.get(throttleKey) || 0;
-    
+
     // Throttle requests - minimum 3 seconds between calls for same query
     if (now - lastCall < 3000) {
       console.log(`Request throttled for ${query}, skipping...`);
+      // If we have data, stop loading
+      if (memoizedProjectData && memoizedProjectData.length > 0) {
+        setIsLoading(false);
+      }
       return;
     }
-    
+
     // Prevent concurrent requests
     if (isRequestInProgress.current) {
       console.log('Request already in progress, skipping...');
       return;
     }
-    
+
     // Clear existing debounce timer
     if (debounceTimer.current) {
       clearTimeout(debounceTimer.current);
     }
-    
+
+    // Set loading true when we plan to fetch
+    setIsLoading(true);
+
     // Debounce the API call by 500ms
     debounceTimer.current = setTimeout(async () => {
       try {
         isRequestInProgress.current = true;
         lastRequestTime.current = now;
         requestThrottle.current.set(throttleKey, now);
-        
+
         console.log(`Making API call for ${query} with limit ${limit}`);
         await getAllProjects(query, limit);
       } catch (error) {
         console.error(`Error in throttled API call for ${query}:`, error);
       } finally {
         isRequestInProgress.current = false;
+        setIsLoading(false);
       }
     }, 500);
-  }, [getAllProjects]);
-  
+  }, [getAllProjects, memoizedProjectData]);
+
   // Redux selectors for different project types
   const upcomingProjects = useSelector(store => store?.allsectiondata?.allupcomingproject);
   const underConstructionProjects = useSelector(store => store?.allsectiondata?.underconstruction);
@@ -181,7 +192,7 @@ const ProjectStatusSearchGlobal = () => {
       readytomove: readyToMoveProjects?.length || 0,
       newlaunch: newLaunchProjects?.length || 0
     });
-    
+
     switch (projectStatus) {
       case 'upcoming':
         console.log('Returning upcoming projects:', upcomingProjects?.length || 0);
@@ -202,7 +213,7 @@ const ProjectStatusSearchGlobal = () => {
   };
 
   const projectData = getProjectData();
-  
+
   // Memoize project data to prevent unnecessary re-renders
   const memoizedProjectData = React.useMemo(() => {
     return projectData;
@@ -211,8 +222,18 @@ const ProjectStatusSearchGlobal = () => {
   useEffect(() => {
     console.log('ProjectStatusSearchGlobal - location changed:', location.pathname);
     console.log('Loading projects for status:', projectStatus, 'with query:', currentConfig.query);
+
+    // Set loading to true initially when status/query changes
+    setIsLoading(true);
     throttledGetAllProjects(currentConfig.query, 0);
   }, [projectStatus, currentConfig.query, throttledGetAllProjects, location.pathname, componentKey]);
+
+  // Update loading state when data is received
+  useEffect(() => {
+    if (memoizedProjectData && memoizedProjectData.length > 0) {
+      setIsLoading(false);
+    }
+  }, [memoizedProjectData]);
 
   // Cleanup on unmount
   useEffect(() => {
@@ -277,7 +298,7 @@ const ProjectStatusSearchGlobal = () => {
         key={`${location.pathname}-${componentKey}`} // Force re-render when route changes
         pageType="status"
         projects={memoizedProjectData || []}
-        isLoading={false}
+        isLoading={isLoading}
       />
     </>
   );

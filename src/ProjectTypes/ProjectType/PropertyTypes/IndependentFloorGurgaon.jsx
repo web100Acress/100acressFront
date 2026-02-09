@@ -8,15 +8,15 @@ import { projectTypeConfigs } from "../../config/pageConfigs";
 const IndependentFloorGurgaon = () => {
   const { getAllProjects } = Api_Service();
   const location = useLocation();
-  
+
   const projectType = 'independent-floors';
   const config = projectTypeConfigs[projectType];
-  
+
   // Get projects from Redux store
   const projects = useSelector(store => store?.allsectiondata?.[config?.reduxKey]);
-  
+
   const [isLoading, setIsLoading] = useState(true);
-  
+
   useEffect(() => {
     if (projects && projects.length > 0) {
       setIsLoading(false);
@@ -33,7 +33,7 @@ const IndependentFloorGurgaon = () => {
         });
     }
   }, [projects, getAllProjects, config]);
-  
+
   if (!config) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -44,7 +44,7 @@ const IndependentFloorGurgaon = () => {
       </div>
     );
   }
-  
+
   // Custom configuration
   const customConfig = {
     ...config,
@@ -56,7 +56,7 @@ const IndependentFloorGurgaon = () => {
       { label: 'Independent Floor for Sale in Gurgaon', path: location.pathname }
     ]
   };
-  
+
   return (
     <GlobalFilterTemplate
       key={location.pathname}

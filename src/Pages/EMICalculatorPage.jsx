@@ -8,7 +8,7 @@ export default function EMICalculatorPage() {
   return (
     <div style={{ background: "#fff" }}>
       <Navbar />
-      <main style={{ paddingTop: 88, paddingBottom: 40 }}> {/* space for fixed navbar */}
+      <main className="pt-24 md:pt-[72px] pb-10"> {/* space for fixed navbar */}
         <div style={containerStyle}>
           <h1 style={titleStyle}>EMI Calculator</h1>
           <Suspense fallback={<div style={{ padding: 24 }}>Loading...</div>}>

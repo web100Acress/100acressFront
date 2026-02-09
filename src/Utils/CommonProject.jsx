@@ -27,6 +27,7 @@ const CommonProject = ({
   compact = false,
   showGrid = true,
   hideHeader = false,
+  slideView = false,
 }) => {
   const handleShare = (project) => {
     if (navigator.share) {
@@ -95,7 +96,7 @@ const CommonProject = ({
       // Notify sidebar to refresh count
       window.dispatchEvent(new Event("viewed-projects-changed"));
       // TODO: If API available and user is authenticated, send this event to backend as well.
-    } catch (_) {}
+    } catch (_) { }
   }, []);
 
   useEffect(() => {
@@ -106,7 +107,7 @@ const CommonProject = ({
   useEffect(() => {
     try {
       hydrateFavoritesFromServer();
-    } catch (_) {}
+    } catch (_) { }
     const unsub = subscribe(() => setFavTick((v) => v + 1));
     return () => {
       if (typeof unsub === "function") unsub();
@@ -125,9 +126,8 @@ const CommonProject = ({
       <span key={index} className="mb-2 md:mb-0">
         <article
           key={index}
-          className={`group overflow-hidden rounded-2xl border border-gray-200 text-black shadow-[0_8px_32px_rgba(0,0,0,0.08)] hover:shadow-[0_16px_40px_rgba(0,0,0,0.12)] transition-all duration-300 ease-out h-full flex flex-col bg-white ${
-            compact ? "text-[13px]" : ""
-          }`}
+          className={`group overflow-hidden rounded-2xl border border-gray-200 text-black shadow-[0_8px_32px_rgba(0,0,0,0.08)] hover:shadow-[0_16px_40px_rgba(0,0,0,0.12)] transition-all duration-300 ease-out h-full flex flex-col bg-white ${compact ? "text-[13px]" : ""
+            }`}
         >
           {/* Image */}
           <div className="relative">
@@ -142,9 +142,8 @@ const CommonProject = ({
                   src={item?.thumbnailImage?.url || item?.frontImage?.url || `https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/${item?.thumbnailImage?.public_id}`}
                   alt="Property"
                   fetchpriority="high"
-                  className={`w-full ${
-                    compact ? "aspect-[4/3]" : "aspect-[16/9]"
-                  } object-cover transform-gpu transition-transform duration-500 ease-out group-hover:scale-[1.04]`}
+                  className={`w-full ${compact ? "aspect-[4/3]" : "aspect-[16/9]"
+                    } object-cover transform-gpu transition-transform duration-500 ease-out group-hover:scale-[1.04]`}
                   loading="lazy"
                   onError={(e) => {
                     e.target.src =
@@ -158,7 +157,7 @@ const CommonProject = ({
             <div className="absolute top-3 left-3 z-[3]">
               <div className="bg-white/95 backdrop-blur-sm rounded-full px-2 py-1 shadow-md border border-gray-200 flex items-center gap-1">
                 <svg width="10" height="10" viewBox="0 0 24 24" fill="#dc2626" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                  <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" />
                 </svg>
                 <span className="text-[9px] font-bold text-red-600 tracking-wide">RERA</span>
               </div>
@@ -172,19 +171,18 @@ const CommonProject = ({
                   favCheck(id)
                     ? "Remove from wishlist"
                     : isAuthenticated
-                    ? "Add to wishlist"
-                    : "Login to add to wishlist"
+                      ? "Add to wishlist"
+                      : "Login to add to wishlist"
                 }
                 title={
                   favCheck(id)
                     ? "Remove from wishlist"
                     : isAuthenticated
-                    ? "Add to wishlist"
-                    : "Login to add to wishlist"
+                      ? "Add to wishlist"
+                      : "Login to add to wishlist"
                 }
-                className={`inline-flex items-center justify-center w-6 h-6 rounded-full transition-all duration-200 ${
-                  favCheck(id) ? "" : "bg-transparent"
-                }border-white transition`}
+                className={`inline-flex items-center justify-center w-6 h-6 rounded-full transition-all duration-200 ${favCheck(id) ? "" : "bg-transparent"
+                  }border-white transition`}
                 onClick={(e) => handleFavoriteClick(e, id, item)}
               >
                 {favCheck(id) ? (
@@ -219,36 +217,33 @@ const CommonProject = ({
 
           {/* Body */}
           <div
-            className={`flex flex-col flex-1 justify-between ${
-              compact ? "p-2 gap-2" : "p-2 gap-3"
-            } font-['Rubik',sans-serif]`}
+            className={`flex flex-col flex-1 justify-between ${compact ? "p-2 gap-2" : "p-2 gap-3"
+              } font-['Rubik',sans-serif]`}
           >
             <div>
               {item?.projectName && (
                 <HeadingTag
-                  className={`${
-                    compact ? "text-[16px]" : "text-lg md:text-[19px]"
-                  } font-bold tracking-[-0.3px] text-gray-900 mb-2 pt-1 group-hover:text-red-600 transition-colors whitespace-nowrap overflow-hidden text-ellipsis font-['Rubik',sans-serif]`}
+                  className={`${compact ? "text-[16px]" : "text-lg md:text-[19px]"
+                    } font-bold tracking-[-0.3px] text-gray-900 mb-2 pt-1 group-hover:text-red-600 transition-colors whitespace-nowrap overflow-hidden text-ellipsis font-['Rubik',sans-serif]`}
                   title={item.projectName}
                 >
                   {item.projectName}
                 </HeadingTag>
               )}
-              
+
               {/* Price Display - Moved up */}
               <div className="mb-1">
                 <span
-                  className={`inline-flex items-center gap-1 ${
-                    compact ? "text-[16px]" : "text-[18px]"
-                  } font-bold text-red-600 whitespace-nowrap font-['Rubik',sans-serif]`}
+                  className={`inline-flex items-center gap-1 ${compact ? "text-[16px]" : "text-[18px]"
+                    } font-bold text-red-600 whitespace-nowrap font-['Rubik',sans-serif]`}
                 >
                   <RupeeIcon className="w-4 h-4" />
                   {item.minPrice && item.maxPrice
                     ? (item.minPrice < 1
-                        ? `${(item.minPrice * 100).toFixed(0)} L`
-                        : `${item.minPrice} `) +
-                      " - " +
-                      `${item.maxPrice} Cr`
+                      ? `${(item.minPrice * 100).toFixed(0)} L`
+                      : `${item.minPrice} `) +
+                    " - " +
+                    `${item.maxPrice} Cr`
                     : "Price on Request"}
                 </span>
               </div>
@@ -256,18 +251,16 @@ const CommonProject = ({
               {/* Location */}
               <div className="space-y-1">
                 <div
-                  className={`${
-                    compact ? "text-[13px]" : "text-[14px]"
-                  } text-gray-600 line-clamp-2`}
+                  className={`${compact ? "text-[13px]" : "text-[14px]"
+                    } text-gray-600 line-clamp-2`}
                 >
                   <span title={item.projectAddress}>
                     {item.projectAddress || `${item.city}, ${item.state}`}
                   </span>
                 </div>
                 <p
-                  className={`${
-                    compact ? "text-[12px]" : "text-[13px]"
-                  } text-gray-500 font-medium`}
+                  className={`${compact ? "text-[12px]" : "text-[13px]"
+                    } text-gray-500 font-medium`}
                 >
                   {item.city}, {item.state}
                 </p>
@@ -280,9 +273,8 @@ const CommonProject = ({
               <Link
                 to={`/${pUrl}/`}
                 target="_top"
-                className={`flex-1 flex items-center justify-center text-white bg-[#ee1c25] hover:bg-[#d11922] focus:ring-2 focus:ring-[#ee1c25] focus:outline-none font-semibold rounded-lg ${
-                  compact ? "text-[12px] px-3 py-2" : "text-[13px] px-4 py-2.5"
-                } shadow-lg hover:shadow-xl transition-all duration-200`}
+                className={`flex-1 flex items-center justify-center text-white bg-[#ee1c25] hover:bg-[#d11922] focus:ring-2 focus:ring-[#ee1c25] focus:outline-none font-semibold rounded-lg ${compact ? "text-[12px] px-3 py-2" : "text-[13px] px-4 py-2.5"
+                  } shadow-lg hover:shadow-xl transition-all duration-200`}
                 onClick={() => addViewedProject(item)}
               >
                 Explore
@@ -293,9 +285,8 @@ const CommonProject = ({
                 href={`tel:${(
                   (item.mobileNumber || "").toString()
                 ).replace(/\s+/g, "")}`}
-                className={`flex items-center justify-center text-gray-700 bg-gray-100 hover:bg-gray-200 border border-gray-200 rounded-lg ${
-                  compact ? "w-8 h-8" : "w-10 h-10"
-                } shadow-sm hover:shadow-md transition-all duration-200`}
+                className={`flex items-center justify-center text-gray-700 bg-gray-100 hover:bg-gray-200 border border-gray-200 rounded-lg ${compact ? "w-8 h-8" : "w-10 h-10"
+                  } shadow-sm hover:shadow-md transition-all duration-200`}
                 title="Call Now"
               >
                 <Phone className={compact ? "w-3.5 h-3.5" : "w-4 h-4"} />
@@ -313,13 +304,12 @@ const CommonProject = ({
                     /^\+/,
                     ""
                   )}?text=Hi, I'm interested in ${encodeURIComponent(
-                  item.projectName
-                )} project`}
+                    item.projectName
+                  )} project`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`flex items-center justify-center text-green-700 bg-green-50 hover:bg-green-100 border border-green-200 rounded-lg ${
-                  compact ? "w-8 h-8 p-1" : "w-10 h-10 p-1.5"
-                } shadow-sm hover:shadow-md transition-all duration-200`}
+                className={`flex items-center justify-center text-green-700 bg-green-50 hover:bg-green-100 border border-green-200 rounded-lg ${compact ? "w-8 h-8 p-1" : "w-10 h-10 p-1.5"
+                  } shadow-sm hover:shadow-md transition-all duration-200`}
                 title="Chat on WhatsApp"
               >
                 <svg
@@ -329,7 +319,7 @@ const CommonProject = ({
                   xmlns="http://www.w3.org/2000/svg"
                   style={{ flexShrink: 0, overflow: 'visible' }}
                 >
-                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.149-.67.149-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414-.074-.123-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 9.885-5.335 9.89-11.893A11.821 11.821 0 0020.465 3.488"/>
+                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.149-.67.149-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414-.074-.123-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 9.885-5.335 9.89-11.893A11.821 11.821 0 0020.465 3.488" />
                 </svg>
               </a>
             </div>
@@ -385,23 +375,23 @@ const CommonProject = ({
             data-aos={animation}
             className="py-0 w-full mx-0 font-['Rubik',sans-serif]"
           >
-            {!hideHeader && (
-              <div className="flex items-center justify-between mx-3 lg:mx-6 xl:mx-14 md:mx-6 py-2">
+            {(!hideHeader && (title || path)) && (
+              <div className="relative flex flex-col items-center justify-center text-center mb-4 mt-6 px-4">
                 {title && (
-                  <div className="flex items-center gap-3">
-                    <div className="w-1 h-12 bg-gradient-to-b from-red-500 to-red-600 rounded-full"></div>
-                    <h2 className="text-2xl xl:text-4xl lg:text-3xl md:text-2xl text-center sm:text-left text-[#111] font-bold font-['Rubik',sans-serif]">
+                  <>
+                    <h2 className="text-2xl xl:text-4xl lg:text-3xl md:text-2xl text-[#111] font-bold font-['Rubik',sans-serif] mb-3">
                       {title}
                     </h2>
-                  </div>
+                    <div className="h-1.5 w-32 bg-gradient-to-r from-red-500 to-red-600 rounded-full"></div>
+                  </>
                 )}
                 {path && (
-                  <div className="ml-2 hidden sm:block">
+                  <div className="absolute right-3 lg:right-6 xl:right-14 hidden sm:block">
                     <Link to={path} target="_top">
-                      <span className="flex items-center text-white text-sm px-3 py-0 rounded-full bg-red-600 shadow-lg hover:shadow-xl transition-all duration-300">
-                        <EyeIcon />
+                      {/* <span className="flex items-center text-white text-sm px-3 py-1.5 rounded-full bg-red-600 shadow-lg hover:shadow-xl transition-all duration-300">
+                        <EyeIcon size={16} />
                         <span className="ml-2">View All</span>
-                      </span>
+                      </span> */}
                     </Link>
                   </div>
                 )}
@@ -409,14 +399,13 @@ const CommonProject = ({
             )}
 
             {response && (
-              <section className="font-['Rubik',sans-serif]">
-                {showGrid ? (
+              <section className={`font-['Rubik',sans-serif] ${slideView ? "flex flex-nowrap gap-4 [&>span]:min-w-[260px] [&>span]:w-[260px] [&>span]:flex-shrink-0" : ""}`}>
+                {showGrid && !slideView ? (
                   <div
-                    className={`${
-                      compact
-                        ? "grid grid-cols-1 w-full px-2 md:px-3 md:grid-cols-2 lg:grid-cols-4 mb-4 gap-3 lg:gap-4"
-                        : "grid grid-cols-1 w-full px-4 md:px-4 md:grid-cols-2 lg:grid-cols-4 mb-6 gap-4 lg:gap-6"
-                    }`}
+                    className={`${compact
+                      ? "grid grid-cols-1 w-full px-2 md:px-3 md:grid-cols-2 lg:grid-cols-4 mb-4 gap-3 lg:gap-4"
+                      : "grid grid-cols-1 w-full px-4 md:px-4 md:grid-cols-2 lg:grid-cols-4 mb-6 gap-4 lg:gap-6"
+                      }`}
                   >
                     {response?.map((item, index) =>
                       renderProjectItem(item, index)

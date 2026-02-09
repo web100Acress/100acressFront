@@ -14,24 +14,23 @@ const TestimonialCard = ({ testimonial }) => {
           <p className="text-sm text-gray-600">{testimonial.location}</p>
         </div>
       </div>
-      
+
       <div className="flex items-center mb-3">
         {[...Array(5)].map((_, i) => (
           <Star
             key={i}
-            className={`w-4 h-4 ${
-              i < testimonial.rating
+            className={`w-4 h-4 ${i < testimonial.rating
                 ? 'text-yellow-400 fill-current'
                 : 'text-gray-300'
-            }`}
+              }`}
           />
         ))}
       </div>
-      
+
       <p className="text-gray-700 leading-relaxed mb-4">
         "{testimonial.review}"
       </p>
-      
+
       <div className="text-sm text-gray-500">
         <span className="font-medium">Property Type:</span> {testimonial.propertyType}
       </div>
@@ -45,7 +44,7 @@ const RealEstateTestimonials = () => {
       id: 1,
       name: "Rajesh Kumar",
       location: "Gurugram",
-      image: <FaBuilding />, 
+      image: <FaBuilding />,
       rating: 5,
       review: "Working with this real estate team was exceptional. They helped us find our dream home in just 3 weeks. Their market knowledge and negotiation skills saved us thousands. Highly recommend!",
       propertyType: "Affordable Property" // Updated from "3BR Condo"
@@ -100,7 +99,7 @@ const RealEstateTestimonials = () => {
   return (
     <div className="bg-gray-50 py-12 px-4">
       {/* Desktop Layout with Sidebar Space */}
-      <div className="md:ml-[260px] flex justify-center">
+      <div className="flex justify-center">
         <div className="w-full max-w-screen-xl px-3 sm:px-4 md:px-6">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">
@@ -110,13 +109,13 @@ const RealEstateTestimonials = () => {
               Don't just take our word for it. Here's what our satisfied clients have to say about their real estate experience with us.
             </p>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {testimonials.map((testimonial) => (
               <TestimonialCard key={testimonial.id} testimonial={testimonial} />
             ))}
           </div>
-          
+
           <div className="text-center mt-12">
             <div className="inline-flex items-center bg-white rounded-full px-6 py-3 shadow-sm">
               <div className="flex items-center mr-4">

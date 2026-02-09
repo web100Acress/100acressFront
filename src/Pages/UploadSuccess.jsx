@@ -1,9 +1,14 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CheckCircle, Home } from 'lucide-react';
+import showToast from '../Utils/toastUtils';
 
 const UploadSuccess = () => {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    showToast.success('Documents uploaded successfully!');
+  }, []);
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -15,7 +20,10 @@ const UploadSuccess = () => {
           You will be notified once the verification process is complete.
         </p>
         <button
-          onClick={() => navigate('/')}
+          onClick={() => {
+            showToast.success('Navigating to home...');
+            navigate('/');
+          }}
           className="inline-flex items-center px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
         >
           <Home className="w-4 h-4 mr-2" />

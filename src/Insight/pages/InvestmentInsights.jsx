@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import InsightsSidebar from '../components/InsightsSidebar';
-import Navbar from "../../aadharhomes/navbar/Navbar";
 
 export default function InvestmentInsights() {
   const [activeTab, setActiveTab] = useState('calculator');
@@ -39,7 +37,7 @@ export default function InvestmentInsights() {
       const numPayments = loanTenure * 12;
 
       const monthlyEMI = loanAmount * monthlyRate * Math.pow(1 + monthlyRate, numPayments) /
-                        (Math.pow(1 + monthlyRate, numPayments) - 1);
+        (Math.pow(1 + monthlyRate, numPayments) - 1);
 
       const totalPayment = monthlyEMI * numPayments;
       const totalInterest = totalPayment - loanAmount;
@@ -79,16 +77,13 @@ export default function InvestmentInsights() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50">
-      <Navbar />
-      <InsightsSidebar />
-
-      <div className="max-w-7xl mx-auto md:pl-[300px] px-4 sm:px-6 lg:px-8 pt-6 pb-6 mt-12">
+    <div className="min-h-screen bg-transparent">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
         {/* Luxury Banner */}
         <div className="relative mb-4 mt-4 rounded-3xl overflow-hidden shadow-2xl">
           <div className="absolute inset-0 bg-gradient-to-r from-indigo-900 via-purple-900 to-pink-900 opacity-95"></div>
           <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0zNiAxOGMzLjMxNCAwIDYgMi42ODYgNiA2cy0yLjY4NiA2LTYgNi02LTIuNjg2LTYtNiAyLjY4Ni02IDYtNnoiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLW9wYWNpdHk9Ii4xIiBzdHJva2Utd2lkdGg9IjIiLz48L2c+PC9zdmc+')] opacity-10"></div>
-          
+
           <div className="relative px-8 py-12 md:py-16">
             <div className="max-w-4xl mx-auto text-center">
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 leading-tight">
@@ -97,7 +92,7 @@ export default function InvestmentInsights() {
                   Investment Insights
                 </span>
               </h1>
-              
+
               <p className="text-white/80 text-lg md:text-xl mb-8 max-w-2xl mx-auto">
                 Discover exclusive investment opportunities in premium properties with data-driven insights and expert analysis
               </p>
@@ -152,11 +147,10 @@ export default function InvestmentInsights() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold transition-all duration-300 ${
-                  activeTab === tab.id
-                    ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg scale-105'
-                    : 'text-gray-700 hover:bg-gray-100 hover:scale-105'
-                }`}
+                className={`flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold transition-all duration-300 ${activeTab === tab.id
+                  ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg scale-105'
+                  : 'text-gray-700 hover:bg-gray-100 hover:scale-105'
+                  }`}
               >
                 <span className="text-lg">{tab.icon}</span>
                 {tab.label}

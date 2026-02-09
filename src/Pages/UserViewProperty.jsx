@@ -3,7 +3,8 @@ import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { Link, useNavigate, useParams, useLocation } from "react-router-dom";
 import { getApiBase } from "../config/apiBase";
-import CrimsonEleganceFooter from "../Components/Footer/CrimsonEleganceFooter";
+import CrimsonEleganceFooter from "../Home/Footer/CrimsonEleganceFooter";
+import showToast from "../Utils/toastUtils";
 // import Nav from "../aadharhomes/Nav";
 
 const UserViewProperty = () => {
@@ -15,18 +16,21 @@ const UserViewProperty = () => {
   const navigate = useNavigate();
   const userId = routeUserId || localStorage.getItem("mySellerId");
   const pollRef = useRef(null);
-  
+
   const fetchData = async () => {
     try {
       setLoading(true);
       setError("");
+      showToast.loading('Loading properties...', { id: 'loadProperties' });
       const base = getApiBase();
       const res = await axios.get(`${base}/postPerson/propertyView/${userId}`);
       const list = res?.data?.data?.postProperty || [];
       setUserViewProperty(list);
+      showToast.success('Properties loaded successfully!', { id: 'loadProperties' });
     } catch (error) {
       console.log(error?.response || error);
       setError("Failed to load your properties. Please try again.");
+      showToast.error('Failed to load properties', { id: 'loadProperties' });
     }
     finally {
       setLoading(false);
@@ -64,10 +68,10 @@ const UserViewProperty = () => {
           fetchData();
         }
       };
-    } catch {}
+    } catch { }
     window.addEventListener('storage', onStorage);
     return () => {
-      try { if (channel) channel.close(); } catch {}
+      try { if (channel) channel.close(); } catch { }
       window.removeEventListener('storage', onStorage);
     };
   }, []);
@@ -97,20 +101,23 @@ const UserViewProperty = () => {
       es = new EventSource(`${base}?userId=${encodeURIComponent(userId)}`);
       es.onmessage = () => fetchData();
       es.onerror = () => { /* silently ignore and let polling/focus handle */ };
-    } catch {}
-    return () => { try { if (es) es.close(); } catch {} };
+    } catch { }
+    return () => { try { if (es) es.close(); } catch { } };
   }, [userId]);
 
   return (
     <div style={{ overflowX: "hidden" }}>
       <section className="flex flex-col bg-white ">
         {/* Page heading */}
-        <div className="w-full max-w-screen-xl mx-auto px-4 md:px-10 pt-20 md:pt-28 text-center">
+        <div className="w-full max-w-screen-xl mx-auto px-4 md:px-10 pt-20 md:pt-16 text-center">
           <div className="flex items-center justify-center gap-3">
             <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-900">My Properties</h1>
             <button
               type="button"
-              onClick={fetchData}
+              onClick={() => {
+                showToast.loading('Refreshing...', { id: 'refreshProperties' });
+                fetchData();
+              }}
               title="Refresh"
               className="hidden sm:inline-flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-200 w-9 h-9"
             >

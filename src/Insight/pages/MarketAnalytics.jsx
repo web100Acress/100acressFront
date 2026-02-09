@@ -1,7 +1,6 @@
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { getApiBase } from "../../config/apiBase";
-import InsightsSidebar from "../components/InsightsSidebar";
 import LocationPrompt from "../components/LocationPrompt";
 import { mapCoordsToCity } from "../components/LocationContext";
 
@@ -50,10 +49,10 @@ export default function MarketAnalytics() {
       const base = getApiBase();
       const qs = new URLSearchParams({ city, locality, projectId: project, period }).toString();
       const [pt, ry, la, ds] = await Promise.all([
-        fetch(`${base}/analytics/price-trends?${qs}`).then(r=>r.json()).catch(()=>null),
-        fetch(`${base}/analytics/rental-yield?${new URLSearchParams({ city, locality }).toString()}`).then(r=>r.json()).catch(()=>null),
-        fetch(`${base}/analytics/launches?${new URLSearchParams({ city }).toString()}`).then(r=>r.json()).catch(()=>null),
-        fetch(`${base}/analytics/demand-supply?${new URLSearchParams({ city }).toString()}`).then(r=>r.json()).catch(()=>null),
+        fetch(`${base}/analytics/price-trends?${qs}`).then(r => r.json()).catch(() => null),
+        fetch(`${base}/analytics/rental-yield?${new URLSearchParams({ city, locality }).toString()}`).then(r => r.json()).catch(() => null),
+        fetch(`${base}/analytics/launches?${new URLSearchParams({ city }).toString()}`).then(r => r.json()).catch(() => null),
+        fetch(`${base}/analytics/demand-supply?${new URLSearchParams({ city }).toString()}`).then(r => r.json()).catch(() => null),
       ]);
       setLive({
         priceTrends: pt && pt.success ? pt.data : null,
@@ -91,7 +90,7 @@ export default function MarketAnalytics() {
           }
         }
       }
-    } catch {}
+    } catch { }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -111,9 +110,7 @@ export default function MarketAnalytics() {
 
   return (
     <React.Fragment>
-      <InsightsSidebar />
-      <LocationPrompt />
-      <div className="max-w-screen-xl mx-auto px-4 md:px-6 md:pl-[260px]" style={{ marginTop: 'calc(var(--nav-h, 64px) + 16px)' }}>
+      <div className="max-w-screen-xl mx-auto px-4 md:px-6 pt-6 mb-12">
         {!showCityPicker ? (
           <header className="mb-6">
             <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Market Analytics</h1>
@@ -129,8 +126,8 @@ export default function MarketAnalytics() {
         {showCityPicker ? (
           <section className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 md:gap-5 mb-8">
             {[
-              "Bangalore","Mumbai","Delhi","Pune","Chennai",
-              "Hyderabad","Kolkata","Navi Mumbai","Gurgaon","Noida",
+              "Bangalore", "Mumbai", "Delhi", "Pune", "Chennai",
+              "Hyderabad", "Kolkata", "Navi Mumbai", "Gurgaon", "Noida",
             ].map((cname) => (
               <button
                 key={cname}
@@ -153,114 +150,114 @@ export default function MarketAnalytics() {
         ) : null}
 
         {!showCityPicker && (
-        <section className="flex flex-wrap gap-3 items-center bg-white border rounded-xl p-4 shadow-sm mb-6">
-          <select value={city} onChange={(e)=>setCity(e.target.value)} className="border rounded-lg px-3 py-2">
-            <option>Gurgaon</option>
-            <option>Noida</option>
-            <option>Dwarka Expressway</option>
-          </select>
-          <input value={locality} onChange={(e)=>setLocality(e.target.value)} placeholder="Locality" className="border rounded-lg px-3 py-2" />
-          <input value={project} onChange={(e)=>setProject(e.target.value)} placeholder="Project" className="border rounded-lg px-3 py-2" />
-          <select value={period} onChange={(e)=>setPeriod(e.target.value)} className="border rounded-lg px-3 py-2">
-            <option value="6m">Last 6 months</option>
-            <option value="12m">Last 12 months</option>
-            <option value="24m">Last 24 months</option>
-          </select>
-          <button className="ml-auto bg-red-600 text-white px-4 py-2 rounded-lg" onClick={fetchAll} disabled={loading}>
-            {loading ? 'Loading...' : 'Apply'}
-          </button>
-        </section>
+          <section className="flex flex-wrap gap-3 items-center bg-white border rounded-xl p-4 shadow-sm mb-6">
+            <select value={city} onChange={(e) => setCity(e.target.value)} className="border rounded-lg px-3 py-2">
+              <option>Gurgaon</option>
+              <option>Noida</option>
+              <option>Dwarka Expressway</option>
+            </select>
+            <input value={locality} onChange={(e) => setLocality(e.target.value)} placeholder="Locality" className="border rounded-lg px-3 py-2" />
+            <input value={project} onChange={(e) => setProject(e.target.value)} placeholder="Project" className="border rounded-lg px-3 py-2" />
+            <select value={period} onChange={(e) => setPeriod(e.target.value)} className="border rounded-lg px-3 py-2">
+              <option value="6m">Last 6 months</option>
+              <option value="12m">Last 12 months</option>
+              <option value="24m">Last 24 months</option>
+            </select>
+            <button className="ml-auto bg-red-600 text-white px-4 py-2 rounded-lg" onClick={fetchAll} disabled={loading}>
+              {loading ? 'Loading...' : 'Apply'}
+            </button>
+          </section>
         )}
 
         {!showCityPicker && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="bg-white border rounded-xl p-4 shadow-sm">
-            <h2 className="font-semibold mb-2">Price Trends (₹/sqft)</h2>
-            {Charts ? (
-              <div style={{ width: '100%', height: 260 }}>
-                <Charts.ResponsiveContainer>
-                  <Charts.LineChart data={(live.priceTrends || mock.priceTrends)} margin={{ top: 10, right: 20, left: -10, bottom: 0 }}>
-                    <Charts.CartesianGrid strokeDasharray="3 3" />
-                    <Charts.XAxis dataKey="month" tick={{ fontSize: 12 }} />
-                    <Charts.YAxis tick={{ fontSize: 12 }} />
-                    <Charts.Tooltip formatter={(v)=>`₹${Number(v).toLocaleString()}`} />
-                    <Charts.Line type="monotone" dataKey="ppsf" stroke="#dc2626" strokeWidth={2} dot={false} />
-                  </Charts.LineChart>
-                </Charts.ResponsiveContainer>
-              </div>
-            ) : (
-              <>
-                <ul className="text-sm text-gray-700 space-y-1">
-                  {(live.priceTrends || mock.priceTrends).map((r)=> (
-                    <li key={r.month} className="flex justify-between"><span>{r.month}</span><span>₹{r.ppsf.toLocaleString()}</span></li>
-                  ))}
-                </ul>
-                <div className="text-xs text-gray-500 mt-2">Charts will render automatically once Recharts is installed.</div>
-              </>
-            )}
-          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="bg-white border rounded-xl p-4 shadow-sm">
+              <h2 className="font-semibold mb-2">Price Trends (₹/sqft)</h2>
+              {Charts ? (
+                <div style={{ width: '100%', height: 260 }}>
+                  <Charts.ResponsiveContainer>
+                    <Charts.LineChart data={(live.priceTrends || mock.priceTrends)} margin={{ top: 10, right: 20, left: -10, bottom: 0 }}>
+                      <Charts.CartesianGrid strokeDasharray="3 3" />
+                      <Charts.XAxis dataKey="month" tick={{ fontSize: 12 }} />
+                      <Charts.YAxis tick={{ fontSize: 12 }} />
+                      <Charts.Tooltip formatter={(v) => `₹${Number(v).toLocaleString()}`} />
+                      <Charts.Line type="monotone" dataKey="ppsf" stroke="#dc2626" strokeWidth={2} dot={false} />
+                    </Charts.LineChart>
+                  </Charts.ResponsiveContainer>
+                </div>
+              ) : (
+                <>
+                  <ul className="text-sm text-gray-700 space-y-1">
+                    {(live.priceTrends || mock.priceTrends).map((r) => (
+                      <li key={r.month} className="flex justify-between"><span>{r.month}</span><span>₹{r.ppsf.toLocaleString()}</span></li>
+                    ))}
+                  </ul>
+                  <div className="text-xs text-gray-500 mt-2">Charts will render automatically once Recharts is installed.</div>
+                </>
+              )}
+            </div>
 
-          <div className="bg-white border rounded-xl p-4 shadow-sm">
-            <h2 className="font-semibold mb-2">Rental Yield</h2>
-            {Charts ? (
-              <div style={{ width: '100%', height: 260 }}>
-                <Charts.ResponsiveContainer>
-                  <Charts.BarChart data={(live.rentalYield || mock.rentalYield).slice(0,10)} margin={{ top: 10, right: 20, left: -10, bottom: 40 }}>
-                    <Charts.CartesianGrid strokeDasharray="3 3" />
-                    <Charts.XAxis dataKey="locality" angle={-35} textAnchor="end" height={60} tick={{ fontSize: 11 }} />
-                    <Charts.YAxis tickFormatter={(v)=>`${v}%`} tick={{ fontSize: 12 }} />
-                    <Charts.Tooltip formatter={(v)=>`${Number(v).toFixed(2)}%`} />
-                    <Charts.Bar dataKey="yield" fill="#0ea5e9" radius={[4,4,0,0]} />
-                  </Charts.BarChart>
-                </Charts.ResponsiveContainer>
-              </div>
-            ) : (
-              <>
-                <ul className="text-sm text-gray-700 space-y-1">
-                  {(live.rentalYield || mock.rentalYield).map((r)=> (
-                    <li key={r.locality} className="flex justify-between"><span>{r.locality}</span><span>{Number(r.yield).toFixed(2)}%</span></li>
-                  ))}
-                </ul>
-              </>
-            )}
-          </div>
+            <div className="bg-white border rounded-xl p-4 shadow-sm">
+              <h2 className="font-semibold mb-2">Rental Yield</h2>
+              {Charts ? (
+                <div style={{ width: '100%', height: 260 }}>
+                  <Charts.ResponsiveContainer>
+                    <Charts.BarChart data={(live.rentalYield || mock.rentalYield).slice(0, 10)} margin={{ top: 10, right: 20, left: -10, bottom: 40 }}>
+                      <Charts.CartesianGrid strokeDasharray="3 3" />
+                      <Charts.XAxis dataKey="locality" angle={-35} textAnchor="end" height={60} tick={{ fontSize: 11 }} />
+                      <Charts.YAxis tickFormatter={(v) => `${v}%`} tick={{ fontSize: 12 }} />
+                      <Charts.Tooltip formatter={(v) => `${Number(v).toFixed(2)}%`} />
+                      <Charts.Bar dataKey="yield" fill="#0ea5e9" radius={[4, 4, 0, 0]} />
+                    </Charts.BarChart>
+                  </Charts.ResponsiveContainer>
+                </div>
+              ) : (
+                <>
+                  <ul className="text-sm text-gray-700 space-y-1">
+                    {(live.rentalYield || mock.rentalYield).map((r) => (
+                      <li key={r.locality} className="flex justify-between"><span>{r.locality}</span><span>{Number(r.yield).toFixed(2)}%</span></li>
+                    ))}
+                  </ul>
+                </>
+              )}
+            </div>
 
-          <div className="bg-white border rounded-xl p-4 shadow-sm">
-            <h2 className="font-semibold mb-2">Demand vs Supply</h2>
-            {Charts ? (
-              <div style={{ width: '100%', height: 260 }}>
-                <Charts.ResponsiveContainer>
-                  <Charts.BarChart data={(live.demandSupply || mock.demandSupply).slice(0,12)} margin={{ top: 10, right: 20, left: -10, bottom: 40 }}>
-                    <Charts.CartesianGrid strokeDasharray="3 3" />
-                    <Charts.XAxis dataKey="locality" angle={-35} textAnchor="end" height={60} tick={{ fontSize: 11 }} />
-                    <Charts.YAxis tick={{ fontSize: 12 }} />
-                    <Charts.Tooltip />
-                    <Charts.Bar dataKey="demandIdx" fill="#ef4444" name="Demand" radius={[4,4,0,0]} />
-                    <Charts.Bar dataKey="supplyIdx" fill="#22c55e" name="Supply" radius={[4,4,0,0]} />
-                  </Charts.BarChart>
-                </Charts.ResponsiveContainer>
-              </div>
-            ) : (
-              <table className="w-full text-sm">
-                <thead><tr className="text-left"><th>Locality</th><th>Demand</th><th>Supply</th></tr></thead>
-                <tbody>
-                  {(live.demandSupply || mock.demandSupply).map((r)=> (
-                    <tr key={r.locality}><td>{r.locality}</td><td>{r.demandIdx}</td><td>{r.supplyIdx}</td></tr>
-                  ))}
-                </tbody>
-              </table>
-            )}
-          </div>
+            <div className="bg-white border rounded-xl p-4 shadow-sm">
+              <h2 className="font-semibold mb-2">Demand vs Supply</h2>
+              {Charts ? (
+                <div style={{ width: '100%', height: 260 }}>
+                  <Charts.ResponsiveContainer>
+                    <Charts.BarChart data={(live.demandSupply || mock.demandSupply).slice(0, 12)} margin={{ top: 10, right: 20, left: -10, bottom: 40 }}>
+                      <Charts.CartesianGrid strokeDasharray="3 3" />
+                      <Charts.XAxis dataKey="locality" angle={-35} textAnchor="end" height={60} tick={{ fontSize: 11 }} />
+                      <Charts.YAxis tick={{ fontSize: 12 }} />
+                      <Charts.Tooltip />
+                      <Charts.Bar dataKey="demandIdx" fill="#ef4444" name="Demand" radius={[4, 4, 0, 0]} />
+                      <Charts.Bar dataKey="supplyIdx" fill="#22c55e" name="Supply" radius={[4, 4, 0, 0]} />
+                    </Charts.BarChart>
+                  </Charts.ResponsiveContainer>
+                </div>
+              ) : (
+                <table className="w-full text-sm">
+                  <thead><tr className="text-left"><th>Locality</th><th>Demand</th><th>Supply</th></tr></thead>
+                  <tbody>
+                    {(live.demandSupply || mock.demandSupply).map((r) => (
+                      <tr key={r.locality}><td>{r.locality}</td><td>{r.demandIdx}</td><td>{r.supplyIdx}</td></tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </div>
 
-          <div className="bg-white border rounded-xl p-4 shadow-sm">
-            <h2 className="font-semibold mb-2">New Launches</h2>
-            <ul className="text-sm text-gray-700 space-y-1">
-              {(live.launches || mock.launches).map((l, i)=> (
-                <li key={i} className="flex justify-between"><span>{l.date}</span><span>{l.name} – {l.area}</span></li>
-              ))}
-            </ul>
+            <div className="bg-white border rounded-xl p-4 shadow-sm">
+              <h2 className="font-semibold mb-2">New Launches</h2>
+              <ul className="text-sm text-gray-700 space-y-1">
+                {(live.launches || mock.launches).map((l, i) => (
+                  <li key={i} className="flex justify-between"><span>{l.date}</span><span>{l.name} – {l.area}</span></li>
+                ))}
+              </ul>
+            </div>
           </div>
-        </div>
         )}
       </div>
     </React.Fragment>

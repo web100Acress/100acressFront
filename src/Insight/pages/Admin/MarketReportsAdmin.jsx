@@ -2,35 +2,35 @@ import React, { useState, useEffect } from "react";
 import api from "../../../config/apiClient";
 import { showToast } from "../../../Utils/toastUtils";
 import { Link } from 'react-router-dom';
-import AdminInsightsSidebar from '../../components/AdminInsightsSidebar';
-import { 
-  Form, 
-  Input, 
-  Select, 
-  Upload, 
-  Button, 
-  Table, 
-  Tabs, 
-  Card, 
-  message, 
-  Badge, 
-  Tag, 
-  Space, 
-  Tooltip, 
+import AdminInsightsSidebar from '../../components/insightsidebar/AdminInsightsSidebar';
+import {
+  Form,
+  Input,
+  Select,
+  Upload,
+  Button,
+  Table,
+  Tabs,
+  Card,
+  message,
+  Badge,
+  Tag,
+  Space,
+  Tooltip,
   Empty,
   Modal
 } from 'antd';
-import { 
-  UploadOutlined, 
-  PlusOutlined, 
-  DeleteOutlined, 
-  DownloadOutlined, 
-  FileTextOutlined, 
-  BarChartOutlined, 
-  CalendarOutlined, 
-  EnvironmentOutlined, 
-  FileExcelOutlined, 
-  FilePdfOutlined, 
+import {
+  UploadOutlined,
+  PlusOutlined,
+  DeleteOutlined,
+  DownloadOutlined,
+  FileTextOutlined,
+  BarChartOutlined,
+  CalendarOutlined,
+  EnvironmentOutlined,
+  FileExcelOutlined,
+  FilePdfOutlined,
   FileImageOutlined,
   EditOutlined,
   SaveOutlined
@@ -46,21 +46,21 @@ const MarketReportsAdmin = () => {
   const [activeTab, setActiveTab] = useState('1');
   const [cities, setCities] = useState([]);
   const [editingReport, setEditingReport] = useState(null);
-  
+
   // Get current date for dynamic period options
   const currentDate = new Date();
   const currentYear = currentDate.getFullYear();
   const currentMonth = currentDate.getMonth() + 1; // 1-12
-  
+
   // Determine current quarter (1-4)
   const currentQuarter = Math.ceil(currentMonth / 3);
-  
+
   // Generate period options for current and next 2 quarters
   const generatePeriodOptions = () => {
     const options = [];
     let year = currentYear;
     let quarter = currentQuarter;
-    
+
     // Add current and next 2 quarters
     for (let i = 0; i < 4; i++) {
       options.push({
@@ -68,7 +68,7 @@ const MarketReportsAdmin = () => {
         label: `Q${quarter} ${year}`,
         sortOrder: year * 10 + quarter
       });
-      
+
       // Move to next quarter
       quarter++;
       if (quarter > 4) {
@@ -76,17 +76,17 @@ const MarketReportsAdmin = () => {
         year++;
       }
     }
-    
+
     // Add annual report options for current and next year
     options.push(
       { value: `Annual ${currentYear}`, label: `Annual ${currentYear}`, sortOrder: currentYear * 10 + 5 },
       { value: `Annual ${currentYear + 1}`, label: `Annual ${currentYear + 1}`, sortOrder: (currentYear + 1) * 10 + 5 }
     );
-    
+
     // Sort by year and quarter
     return options.sort((a, b) => a.sortOrder - b.sortOrder);
   };
-  
+
   const periodOptions = generatePeriodOptions();
 
   useEffect(() => {
@@ -151,9 +151,9 @@ const MarketReportsAdmin = () => {
     try {
       setLoading(true);
       const formData = new FormData();
-      
+
       console.log('Form values:', values);
-      
+
       // Add all form values to FormData
       Object.entries(values).forEach(([key, value]) => {
         if (value !== undefined && value !== null) {
@@ -167,7 +167,7 @@ const MarketReportsAdmin = () => {
           }
         }
       });
-      
+
       // If editing, include the report ID
       if (editingReport) {
         formData.append('_id', editingReport._id);
@@ -181,10 +181,10 @@ const MarketReportsAdmin = () => {
       // Get auth token
       const token = localStorage.getItem('myToken')?.replace(/^"/, '').replace(/"$/, '').replace(/^Bearer\s+/i, '') || '';
       console.log('Using token:', token ? 'Token exists' : 'No token found');
-      
+
       try {
         let response;
-        
+
         if (editingReport) {
           // Update existing report
           response = await api.put(`/api/market-reports/${editingReport._id}`, formData, {
@@ -202,7 +202,7 @@ const MarketReportsAdmin = () => {
             },
           });
         }
-        
+
         console.log('Server response:', response.data);
         showToast.success(`Report ${editingReport ? 'updated' : 'added'} successfully!`);
         form.resetFields();
@@ -260,7 +260,7 @@ const MarketReportsAdmin = () => {
   };
 
   const getTypeIcon = (type) => {
-    switch(type) {
+    switch (type) {
       case 'PDF': return <FilePdfOutlined className="text-red-500" />;
       case 'Excel': return <FileExcelOutlined className="text-green-600" />;
       case 'Infographic': return <FileImageOutlined className="text-blue-500" />;
@@ -269,7 +269,7 @@ const MarketReportsAdmin = () => {
   };
 
   const getTypeColor = (type) => {
-    switch(type) {
+    switch (type) {
       case 'PDF': return 'red';
       case 'Excel': return 'green';
       case 'Infographic': return 'blue';
@@ -329,10 +329,10 @@ const MarketReportsAdmin = () => {
       render: (_, record) => (
         <Space size="small">
           <Tooltip title="Download Report">
-            <Button 
+            <Button
               type="primary"
               size="small"
-              icon={<DownloadOutlined />} 
+              icon={<DownloadOutlined />}
               onClick={() => window.open(record.fileUrl, '_blank')}
               className="bg-indigo-600 hover:bg-indigo-700"
             >
@@ -340,10 +340,10 @@ const MarketReportsAdmin = () => {
             </Button>
           </Tooltip>
           <Tooltip title="Delete Report">
-            <Button 
-              danger 
+            <Button
+              danger
               size="small"
-              icon={<DeleteOutlined />} 
+              icon={<DeleteOutlined />}
               onClick={() => handleDelete(record._id)}
             />
           </Tooltip>
@@ -434,7 +434,7 @@ const MarketReportsAdmin = () => {
                   ),
                   children: (
                     <div className="mt-4">
-                      <Table 
+                      <Table
                         columns={[
                           {
                             title: 'Title',
@@ -457,7 +457,7 @@ const MarketReportsAdmin = () => {
                                 Excel: { icon: <FileExcelOutlined className="text-green-600" />, color: 'green' },
                                 Infographic: { icon: <FileImageOutlined className="text-blue-500" />, color: 'blue' },
                               }[type] || { icon: <FileTextOutlined />, color: 'gray' };
-                              
+
                               return (
                                 <Tag color={iconProps.color} className="flex items-center gap-1">
                                   {iconProps.icon} {type}
@@ -477,16 +477,16 @@ const MarketReportsAdmin = () => {
                             key: 'actions',
                             render: (_, record) => (
                               <Space size="middle">
-                                <Button 
-                                  type="link" 
-                                  icon={<EditOutlined />} 
+                                <Button
+                                  type="link"
+                                  icon={<EditOutlined />}
                                   onClick={() => handleEdit(record)}
                                   className="text-blue-500"
                                 />
-                                <Button 
-                                  type="link" 
-                                  danger 
-                                  icon={<DeleteOutlined />} 
+                                <Button
+                                  type="link"
+                                  danger
+                                  icon={<DeleteOutlined />}
                                   onClick={() => {
                                     Modal.confirm({
                                       title: 'Delete Report',
@@ -504,10 +504,10 @@ const MarketReportsAdmin = () => {
                             ),
                           },
                         ]}
-                        dataSource={reports} 
+                        dataSource={reports}
                         rowKey="_id"
                         loading={loading}
-                        pagination={{ 
+                        pagination={{
                           pageSize: 10,
                           showSizeChanger: true,
                           showTotal: (total) => `Total ${total} reports`,
@@ -556,8 +556,8 @@ const MarketReportsAdmin = () => {
                             label={<span className="font-semibold text-gray-700">Report Title</span>}
                             rules={[{ required: true, message: 'Please enter a title' }]}
                           >
-                            <Input 
-                              placeholder="e.g., Q2 2023 Market Report" 
+                            <Input
+                              placeholder="e.g., Q2 2023 Market Report"
                               size="large"
                               className="rounded-lg"
                               prefix={<FileTextOutlined className="text-gray-400" />}
@@ -570,8 +570,8 @@ const MarketReportsAdmin = () => {
                               label={<span className="font-semibold text-gray-700">City</span>}
                               rules={[{ required: true, message: 'Please select a city' }]}
                             >
-                              <Select 
-                                placeholder="Select city" 
+                              <Select
+                                placeholder="Select city"
                                 size="large"
                                 className="rounded-lg"
                                 suffixIcon={<EnvironmentOutlined />}
@@ -597,8 +597,8 @@ const MarketReportsAdmin = () => {
                               label={<span className="font-semibold text-gray-700">Report Period</span>}
                               rules={[{ required: true, message: 'Please select a period' }]}
                             >
-                              <Select 
-                                placeholder="Select period" 
+                              <Select
+                                placeholder="Select period"
                                 size="large"
                                 suffixIcon={<CalendarOutlined />}
                                 autoFocus={false}
@@ -626,8 +626,8 @@ const MarketReportsAdmin = () => {
                             label={<span className="font-semibold text-gray-700">Report Type</span>}
                             rules={[{ required: true, message: 'Please select a report type' }]}
                           >
-                            <Select 
-                              placeholder="Select report type" 
+                            <Select
+                              placeholder="Select report type"
                               size="large"
                               autoFocus={false}
                               onSelect={() => {
@@ -666,8 +666,8 @@ const MarketReportsAdmin = () => {
                             label={<span className="font-semibold text-gray-700">Description</span>}
                             rules={[{ required: true, message: 'Please enter a description' }]}
                           >
-                            <TextArea 
-                              rows={4} 
+                            <TextArea
+                              rows={4}
                               placeholder="Provide a detailed description of the market report..."
                               className="rounded-lg"
                             />
@@ -687,7 +687,7 @@ const MarketReportsAdmin = () => {
                                 // Check file extension
                                 const fileExt = file.name.split('.').pop().toLowerCase();
                                 const allowedExtensions = ['pdf', 'xls', 'xlsx', 'xlsm', 'csv', 'jpeg', 'jpg', 'png'];
-                                
+
                                 // More permissive MIME type check
                                 const allowedTypes = [
                                   'application/pdf',
@@ -700,29 +700,29 @@ const MarketReportsAdmin = () => {
                                   'image/png',
                                   'image/jpg'
                                 ];
-                                
-                                const isAllowed = allowedTypes.includes(file.type) || 
-                                                allowedExtensions.includes(fileExt);
-                                
+
+                                const isAllowed = allowedTypes.includes(file.type) ||
+                                  allowedExtensions.includes(fileExt);
+
                                 if (!isAllowed) {
                                   message.error('You can only upload PDF, Excel, or Image files!');
                                   return Upload.LIST_IGNORE;
                                 }
-                                
+
                                 // Check file size (50MB)
                                 const isLt50M = file.size / 1024 / 1024 < 50;
                                 if (!isLt50M) {
                                   message.error('File must be smaller than 50MB!');
                                   return Upload.LIST_IGNORE;
                                 }
-                                
+
                                 console.log('Uploading file:', file.name, 'Type:', file.type, 'Size:', file.size);
                                 return false; // Don't upload, we'll handle it in onFinish
                               }}
                               className="upload-container"
                             >
-                              <Button 
-                                icon={<UploadOutlined />} 
+                              <Button
+                                icon={<UploadOutlined />}
                                 size="large"
                                 className="w-full rounded-lg border-dashed border-2 hover:border-indigo-500 hover:text-indigo-600"
                               >
@@ -733,9 +733,9 @@ const MarketReportsAdmin = () => {
 
                           <Form.Item className="mb-0 pt-4">
                             <div className="flex flex-col sm:flex-row gap-4">
-                              <Button 
-                                type="primary" 
-                                htmlType="submit" 
+                              <Button
+                                type="primary"
+                                htmlType="submit"
                                 loading={loading}
                                 icon={editingReport ? <SaveOutlined /> : <PlusOutlined />}
                                 size="large"
@@ -744,7 +744,7 @@ const MarketReportsAdmin = () => {
                                 {editingReport ? 'Update Report' : 'Add Report'}
                               </Button>
                               {editingReport && (
-                                <Button 
+                                <Button
                                   onClick={handleCancelEdit}
                                   size="large"
                                   className="w-full md:w-auto"
