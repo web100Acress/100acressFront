@@ -238,8 +238,14 @@ const Home = () => {
   const DubaiProjects = useSelector(store => store?.stateproject?.dubai) || [];
   const LuxuryAllProject = useSelector(store => store?.allsectiondata?.luxuryAll) || [];
   const NewLaunchProjects = useSelector(store => store?.allsectiondata?.newlaunch) || [];
+  const FarmhouseProjects = useSelector(store => {
+    const data = store?.allsectiondata?.farmhouse || [];
+    console.log('🏡 Redux Store State - All Section Data:', store?.allsectiondata);
+    console.log('🏡 Redux Store State - Farmhouse:', data);
+    return data;
+  });
 
-  const { getTrending, getFeatured, getUpcoming, getCommercial, getAffordable, getLuxury, getScoplots, getBudgetHomes, getProjectIndelhi, getAllProjects, getProjectbyState } = Api_Service();
+  const { getTrending, getFeatured, getUpcoming, getCommercial, getAffordable, getLuxury, getScoplots, getBudgetHomes, getProjectIndelhi, getAllProjects, getProjectbyState, getFarmhouse } = Api_Service();
   const [dataLoaded, setDataLoaded] = useState({
     trending: false,
     featured: false,
@@ -456,6 +462,10 @@ const Home = () => {
               if (section === "dubai" && DubaiProjects.length === 0) {
                 getProjectbyState("Dubai");
               }
+              if (section === "Farmhouses" && FarmhouseProjects.length === 0) {
+                console.log("🏡 Fetching Farmhouse Projects...");
+                getAllProjects("farmhouse", 8);
+              }
               if (section === "resale") {
                 SetResaleSectionVisible(true);
               }
@@ -471,7 +481,7 @@ const Home = () => {
     return () => {
       Object.values(sectionsRef.current).forEach((el) => observer.unobserve(el));
     };
-  }, [UpcomingProjects, LuxuryProjects, BudgetHomesProjects, SCOProjects, ProjectinDelhi, DubaiProjects]);
+  }, [UpcomingProjects, LuxuryProjects, BudgetHomesProjects, SCOProjects, ProjectinDelhi, DubaiProjects, FarmhouseProjects]);
 
   // console.log(resalesectionvisible,"section")
 
@@ -762,6 +772,15 @@ const Home = () => {
               <div>
                 {SCOProjects.length === 0 ? <CustomSkeleton /> : (
                   <CommonProject data={SCOProjects.slice(0, 4)} title="SCO Projects in Gurugram" animation="flip-left" path="/projects/sco-plots/" compact />
+                )}
+              </div>
+              {/* farmhouses */}
+
+              <div ref={setRef("Farmhouses")} data-section="Farmhouses" style={{ height: "10px" }}></div>
+              <div>
+                {console.log("🏡 Farmhouse Projects Data:", FarmhouseProjects, "Length:", FarmhouseProjects.length)}
+                {FarmhouseProjects.length === 0 ? <CustomSkeleton /> : (
+                  <CommonProject data={FarmhouseProjects.slice(0, 4)} title="Naugaon Farm Houses" animation="flip-left" path="/projects/farmhouses/" compact />
                 )}
               </div>
 

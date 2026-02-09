@@ -1,20 +1,20 @@
 import { useDispatch } from "react-redux";
-import { spotlight, trending ,featured,upcoming,affordable,luxury,scoplots,commercial,budget,projectindelhi} from "../slice/projectSlice";
-import {gurugram,delhi,noida,goa,ayodhya,mumbai,panipat,panchkula,kasauli,karnal,jalandhar, sonipat, alwar, dubai, pushkar, pune} from "../slice/StateProject";  
-import {allupcomingproject,builderindependentfloor,commercialProjectAll,deendayalplots,dlfsco,luxuryAll,luxuryvillas,newlaunch, readytomove, residential, scoplotsall, underconstruction,possessionafter2026,plotsingurugram,farmhouse,industrialplots,industrialprojects,seniorliving} from "../slice/AllSectionData";
-import { signatureglobal,m3m,dlf,experion,elan,bptp,adani,smartworld,trevoc,indiabulls,centralpark,emaarindia, godrej, whiteland, aipl, birla, sobha, trump, puri, aarize, maxestates, shapoorji, satya, danube } from "../slice/BuilderSlice";
-import {Possessionin2025,Possessionin2026} from "../slice/PossessionSlice";
-import {bptpplots,orrisplots} from "../slice/ProjectOverviewSlice";
+import { spotlight, trending, featured, upcoming, affordable, luxury, scoplots, commercial, budget, projectindelhi } from "../slice/projectSlice";
+import { gurugram, delhi, noida, goa, ayodhya, mumbai, panipat, panchkula, kasauli, karnal, jalandhar, sonipat, alwar, dubai, pushkar, pune } from "../slice/StateProject";
+import { allupcomingproject, builderindependentfloor, commercialProjectAll, deendayalplots, dlfsco, luxuryAll, luxuryvillas, newlaunch, readytomove, residential, scoplotsall, underconstruction, possessionafter2026, plotsingurugram, farmhouse, industrialplots, industrialprojects, seniorliving } from "../slice/AllSectionData";
+import { signatureglobal, m3m, dlf, experion, elan, bptp, adani, smartworld, trevoc, indiabulls, centralpark, emaarindia, godrej, whiteland, aipl, birla, sobha, trump, puri, aarize, maxestates, shapoorji, satya, danube } from "../slice/BuilderSlice";
+import { Possessionin2025, Possessionin2026 } from "../slice/PossessionSlice";
+import { bptpplots, orrisplots } from "../slice/ProjectOverviewSlice";
 
-import {sohnaroad,golfcourseextensionroad,golfcourseroad,mgroad,nprroad,dwarkaexpressway,newgurgaon,sohna,sprroad,nh48} from "../slice/PrimeLocation"
-import {resale} from "../slice/ResaleSlice";
+import { sohnaroad, golfcourseextensionroad, golfcourseroad, mgroad, nprroad, dwarkaexpressway, newgurgaon, sohna, sprroad, nh48 } from "../slice/PrimeLocation"
+import { resale } from "../slice/ResaleSlice";
 import api from "../../config/apiClient";
 import { API_ROUTES, API_ROUTES_PROJECTS } from "./Constant_Service";
 import { sortByDesiredOrder } from "../../Utils/ProjectSorting";
 import { getAffordableDesiredOrder, getBudgetDesiredOrder, getCommercialDesiredOrder, getLuxuryDesiredOrder, getRecommendedDesiredOrder, getSCODesiredOrder, getTrendingDesiredOrder } from "../../Utils/ProjectOrderData";
 import { emaar } from "../slice/ProjectstatusSlice";
 import { useCallback } from "react";
-import { maxpriceproject,minpriceproject } from "../slice/PriceBasedSlice";
+import { maxpriceproject, minpriceproject } from "../slice/PriceBasedSlice";
 
 // Maintain per-builder abort controllers to prevent overlapping requests
 const propertyOrderControllers = new Map();
@@ -36,7 +36,7 @@ const Api_service = () => {
         return;
       }
       requestThrottle.set('trending', now);
-      
+
       let trendingOrder = [];
       try {
         trendingOrder = await getTrendingDesiredOrder() || [];
@@ -44,7 +44,7 @@ const Api_service = () => {
       } catch (orderError) {
         console.warn('Could not get trending order, will use default order:', orderError);
       }
-      
+
       await getProjectsByCategory('trending', trendingOrder, trending);
     } catch (error) {
       console.error("❌ Error in getTrending:", error);
@@ -62,7 +62,7 @@ const Api_service = () => {
         return;
       }
       requestThrottle.set('spotlight', now);
-      
+
       // Try to get recommended order, but don't fail if it doesn't exist
       let recommendedOrder = [];
       try {
@@ -71,7 +71,7 @@ const Api_service = () => {
       } catch (orderError) {
         console.warn('Could not get recommended order, will use default order:', orderError);
       }
-      
+
       await getProjectsByCategory('spotlight', recommendedOrder, spotlight);
       console.log('✅ getSpotlight completed');
     } catch (error) {
@@ -79,30 +79,30 @@ const Api_service = () => {
     }
   }, [dispatch]);
 
-  const getFeatured = async() =>{
+  const getFeatured = async () => {
     try {
-        const response = await api.get(`${API_ROUTES.projectsBase()}/featured`);
-        const Featuredprojects = response.data.data;
-        dispatch(featured(Featuredprojects));
+      const response = await api.get(`${API_ROUTES.projectsBase()}/featured`);
+      const Featuredprojects = response.data.data;
+      dispatch(featured(Featuredprojects));
 
-    }catch(error){
-        console.error("Error fetching Featured data:", error);
+    } catch (error) {
+      console.error("Error fetching Featured data:", error);
 
     }
   }
 
-  const getUpcoming = async() =>{
-    try{
-        const response = await api.get(`${API_ROUTES.projectsBase()}/upcoming`);
-        const Featuredprojects = response.data.data;
-        dispatch(upcoming(Featuredprojects));
-    }catch(error){
-        console.error("Error fetching Upcoming data:", error);
+  const getUpcoming = async () => {
+    try {
+      const response = await api.get(`${API_ROUTES.projectsBase()}/upcoming`);
+      const Featuredprojects = response.data.data;
+      dispatch(upcoming(Featuredprojects));
+    } catch (error) {
+      console.error("Error fetching Upcoming data:", error);
     }
   }
 
-  const getAffordable = async() =>{
-    try{
+  const getAffordable = async () => {
+    try {
       // Throttle requests to prevent 429 errors
       const now = Date.now();
       const lastCall = requestThrottle.get('affordable') || 0;
@@ -111,65 +111,65 @@ const Api_service = () => {
         return;
       }
       requestThrottle.set('affordable', now);
-      
+
       // Use dynamic project ordering
       const affordableOrder = await getAffordableDesiredOrder();
       await getProjectsByCategory('affordable', affordableOrder, affordable);
-    }catch(error){
-        console.error("Error fetching Affordable data:", error);
+    } catch (error) {
+      console.error("Error fetching Affordable data:", error);
     }
   }
 
-  const getLuxury = async() =>{
-    try{
-        // Use dynamic project ordering
-        const luxuryOrder = await getLuxuryDesiredOrder();
-        await getProjectsByCategory('luxury', luxuryOrder, luxury);
-    }catch(error){
-        console.error("Error fetching Luxury data:", error);
-    }
-  }
-
-  const getScoplots = async() =>{
-    try{
-        // Use dynamic project ordering
-        const scoOrder = await getSCODesiredOrder();
-        await getProjectsByCategory('sco', scoOrder, scoplots);
-    }catch(error){
-        console.error("Error fetching Sco data:", error);
-    }
-  }
-
-  const getCommercial = async() =>{
-    try{
-        // Use dynamic project ordering
-        const commercialOrder = await getCommercialDesiredOrder();
-        await getProjectsByCategory('commercial', commercialOrder, commercial);
-    }catch(error){
-        console.error("Error fetching Commercial data:", error);
-    }
-  }
-// weeeeeeeeeeeeeeeeeehfeiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii
-  const getBudgetHomes = async() => {
+  const getLuxury = async () => {
     try {
-        // Get dynamic budget project names from ProjectOrderData
-        const budgetOrder = await getBudgetDesiredOrder();
-        const budgetProjectNames = budgetOrder.join(',');
-        
-        const response = await api.get(`${API_ROUTES.projectsBase()}/budgethomes?projects=${budgetProjectNames}`);
-        const Featuredprojects = response.data.data;
-        console.log('Budget Projects:', Featuredprojects.map(p => p.projectName));
-        
-        // Sort projects according to the desired order
-        const sortedProjects = sortByDesiredOrder(
-            Featuredprojects,
-            budgetOrder,
-            "projectName"
-        );
-        
-        dispatch(budget(sortedProjects));
-    } catch(error) {
-        console.error("Error fetching BudgetHomes data:", error);
+      // Use dynamic project ordering
+      const luxuryOrder = await getLuxuryDesiredOrder();
+      await getProjectsByCategory('luxury', luxuryOrder, luxury);
+    } catch (error) {
+      console.error("Error fetching Luxury data:", error);
+    }
+  }
+
+  const getScoplots = async () => {
+    try {
+      // Use dynamic project ordering
+      const scoOrder = await getSCODesiredOrder();
+      await getProjectsByCategory('sco', scoOrder, scoplots);
+    } catch (error) {
+      console.error("Error fetching Sco data:", error);
+    }
+  }
+
+  const getCommercial = async () => {
+    try {
+      // Use dynamic project ordering
+      const commercialOrder = await getCommercialDesiredOrder();
+      await getProjectsByCategory('commercial', commercialOrder, commercial);
+    } catch (error) {
+      console.error("Error fetching Commercial data:", error);
+    }
+  }
+  // weeeeeeeeeeeeeeeeeehfeiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii
+  const getBudgetHomes = async () => {
+    try {
+      // Get dynamic budget project names from ProjectOrderData
+      const budgetOrder = await getBudgetDesiredOrder();
+      const budgetProjectNames = budgetOrder.join(',');
+
+      const response = await api.get(`${API_ROUTES.projectsBase()}/budgethomes?projects=${budgetProjectNames}`);
+      const Featuredprojects = response.data.data;
+      console.log('Budget Projects:', Featuredprojects.map(p => p.projectName));
+
+      // Sort projects according to the desired order
+      const sortedProjects = sortByDesiredOrder(
+        Featuredprojects,
+        budgetOrder,
+        "projectName"
+      );
+
+      dispatch(budget(sortedProjects));
+    } catch (error) {
+      console.error("Error fetching BudgetHomes data:", error);
     }
   }
 
@@ -195,18 +195,18 @@ const Api_service = () => {
         const projectNamesString = projectNames.join(',');
         const apiUrl = `${API_ROUTES.projectsBase()}/category?category=${category}&projects=${projectNamesString}`;
         console.log('🌐 API URL:', apiUrl);
-        
+
         const response = await api.get(apiUrl);
         console.log('📡 API Response:', response.data);
         const projects = response.data.data || [];
-        
+
         // Sort projects according to the desired order if we have projects to sort
         let sortedProjects = projects;
         if (projects.length > 0 && projectNames.length > 0) {
           sortedProjects = sortByDesiredOrder(projects, projectNames, "projectName") || projects;
           console.log('📊 Sorted projects:', sortedProjects);
         }
-        
+
         dispatch(dispatchAction(sortedProjects));
         console.log(`✅ Dispatched ${category} projects to Redux store`);
       } catch (categoryError) {
@@ -223,100 +223,100 @@ const Api_service = () => {
       dispatch(dispatchAction([]));
     }
   }
-// //////////////////////////////////////////////////////////////////////////////////////////
-  const getProjectIndelhi = async()=>{
-    try{
+  // //////////////////////////////////////////////////////////////////////////////////////////
+  const getProjectIndelhi = async () => {
+    try {
       const response = await api.get(`${API_ROUTES.projectsBase()}/city`);
       const Delhiprojects = response.data.data;
       dispatch(projectindelhi(Delhiprojects));
-  }catch(error){
+    } catch (error) {
       console.error("Error fetching ProjectinDelhi data:", error);
-  }
+    }
   }
 
-  const getProjectfind = async(query ,page ,limit )=>{
-    try{
+  const getProjectfind = async (query, page, limit) => {
+    try {
       const response = await api.get(`${API_ROUTES.projectsBase()}/projectsearch?${query}=1&page=${page}&limit=${limit}`);
       const ProjectFind = response.data.data;
-    }catch(error){
+    } catch (error) {
       console.error("Error fetching ")
     }
   }
 
-  const getResaleProperties = async()=>{
+  const getResaleProperties = async () => {
     try {
-            const res = await api.get(`property/buy/ViewAll`);
-            const responsedata = res.data.ResaleData;
-            dispatch(resale(responsedata));
-          } catch (error) {
-            console.error("Error fetching resale property data:", error);
-          }
-  }
-
-
- const getProjectbyState = async (query, limit) => {
-  try {
-    const response = await api.get(`${API_ROUTES.projectsBase()}/projectsearch?city=${query}&limit=${limit}`);
-    const ProjectbyState = response.data.data;
-
-    if (query === 'Gurugram') {
-      dispatch(gurugram(ProjectbyState));
-    } else if (query === 'Delhi') {
-      dispatch(delhi(ProjectbyState));
-    } else if (query === 'Noida') {
-      dispatch(noida(ProjectbyState));
-    } else if (query === 'Goa') {
-      dispatch(goa(ProjectbyState));
-    } else if (query === 'Ayodhya') {
-      dispatch(ayodhya(ProjectbyState));
-    } else if (query === 'Mumbai') {
-      dispatch(mumbai(ProjectbyState));
-    } else if (query === 'Panipat') {
-      dispatch(panipat(ProjectbyState));
-    } else if (query === 'Panchkula') {
-      dispatch(panchkula(ProjectbyState));
-    } else if (query === 'Kasauli') {
-      dispatch(kasauli(ProjectbyState));
-    } else if (query === 'Karnal') {
-      dispatch(karnal(ProjectbyState));
-    } else if (query === 'Jalandhar') {
-      dispatch(jalandhar(ProjectbyState));
-    } else if (query === 'Sonipat') {
-      dispatch(sonipat(ProjectbyState));
-    } else if (query === 'Dubai') {
-      dispatch(dubai(ProjectbyState)); 
-    } else if (query === 'Pushkar') {
-      dispatch(pushkar(ProjectbyState));
-    } else if (query === 'Alwar') {
-      dispatch(alwar(ProjectbyState));
-    } else if (query === 'Pune') {
-      dispatch(pune(ProjectbyState));
-    } else if (query.includes(',') || query.includes(';')) {
-      // Handle multiple emirates separated by comma or semicolon
-      const emirates = query.split(/[,;]/).map(e => e.trim()).filter(e => e);
-      dispatch(dubai(ProjectbyState)); // Dispatch combined results to dubai store
-    } else {
-      // Fallback for empty query or unrecognized cities - dispatch to dubai store
-      dispatch(dubai(ProjectbyState));
+      const res = await api.get(`property/buy/ViewAll`);
+      const responsedata = res.data.ResaleData;
+      dispatch(resale(responsedata));
+    } catch (error) {
+      console.error("Error fetching resale property data:", error);
     }
-
-  } catch (error) {
-    console.error("Error fetching project data based on state:", error);
   }
-};
+
+
+  const getProjectbyState = async (query, limit) => {
+    try {
+      const response = await api.get(`${API_ROUTES.projectsBase()}/projectsearch?city=${query}&limit=${limit}`);
+      const ProjectbyState = response.data.data;
+
+      if (query === 'Gurugram') {
+        dispatch(gurugram(ProjectbyState));
+      } else if (query === 'Delhi') {
+        dispatch(delhi(ProjectbyState));
+      } else if (query === 'Noida') {
+        dispatch(noida(ProjectbyState));
+      } else if (query === 'Goa') {
+        dispatch(goa(ProjectbyState));
+      } else if (query === 'Ayodhya') {
+        dispatch(ayodhya(ProjectbyState));
+      } else if (query === 'Mumbai') {
+        dispatch(mumbai(ProjectbyState));
+      } else if (query === 'Panipat') {
+        dispatch(panipat(ProjectbyState));
+      } else if (query === 'Panchkula') {
+        dispatch(panchkula(ProjectbyState));
+      } else if (query === 'Kasauli') {
+        dispatch(kasauli(ProjectbyState));
+      } else if (query === 'Karnal') {
+        dispatch(karnal(ProjectbyState));
+      } else if (query === 'Jalandhar') {
+        dispatch(jalandhar(ProjectbyState));
+      } else if (query === 'Sonipat') {
+        dispatch(sonipat(ProjectbyState));
+      } else if (query === 'Dubai') {
+        dispatch(dubai(ProjectbyState));
+      } else if (query === 'Pushkar') {
+        dispatch(pushkar(ProjectbyState));
+      } else if (query === 'Alwar') {
+        dispatch(alwar(ProjectbyState));
+      } else if (query === 'Pune') {
+        dispatch(pune(ProjectbyState));
+      } else if (query.includes(',') || query.includes(';')) {
+        // Handle multiple emirates separated by comma or semicolon
+        const emirates = query.split(/[,;]/).map(e => e.trim()).filter(e => e);
+        dispatch(dubai(ProjectbyState)); // Dispatch combined results to dubai store
+      } else {
+        // Fallback for empty query or unrecognized cities - dispatch to dubai store
+        dispatch(dubai(ProjectbyState));
+      }
+
+    } catch (error) {
+      console.error("Error fetching project data based on state:", error);
+    }
+  };
 
   const getAllUAEProjects = async () => {
     try {
       const response = await api.get(`${API_ROUTES.projectsBase()}/projectsearch?limit=100`);
       const allProjects = response.data.data;
-      
+
       // Filter projects that are from UAE emirates
       const uaeEmirates = ["Dubai", "Abu Dhabi", "Sharjah", "Ajman", "Ras Al Khaimah", "Fujairah", "Umm Al Quwain"];
       const uaeProjects = allProjects.filter(project => {
         const city = (project.city || "").toLowerCase();
         return uaeEmirates.some(emirate => city.includes(emirate.toLowerCase()));
       });
-      
+
       dispatch(dubai(uaeProjects));
       console.log(`Fetched ${uaeProjects.length} UAE projects out of ${allProjects.length} total projects`);
     } catch (error) {
@@ -324,196 +324,206 @@ const Api_service = () => {
     }
   };
 
-  const getAllProjects= async(query ,limit )=>{
+  const getAllProjects = async (query, limit) => {
 
-    try{
+    try {
       let response;
       if (query === "farmhouse") {
-        response = await api.get(`${API_ROUTES.projectsBase()}/projectsearch?type=Farm Houses&limit=${limit}`);
+        console.log('🏡 Making farmhouse API call with type=Farm Houses');
+        response = await api.get(`${API_ROUTES.projectsBase()}/projectsearch?type=${encodeURIComponent("Farm Houses")}&limit=${limit}&_t=${Date.now()}`);
+        console.log('🏡 Farmhouse API Response:', response.data);
       } else if (query === "industrialplots") {
-        response = await api.get(`${API_ROUTES.projectsBase()}/projectsearch?type=Industrial Plots&limit=${limit}`);
+        response = await api.get(`${API_ROUTES.projectsBase()}/projectsearch?type=${encodeURIComponent("Industrial Plots")}&limit=${limit}`);
       } else if (query === "industrialprojects") {
-        response = await api.get(`${API_ROUTES.projectsBase()}/projectsearch?type=Industrial Projects&limit=${limit}`);
+        response = await api.get(`${API_ROUTES.projectsBase()}/projectsearch?type=${encodeURIComponent("Industrial Projects")}&limit=${limit}`);
       } else if (query === "seniorliving") {
         console.log('Making senior living API call with type=Senior Living');
-        response = await api.get(`${API_ROUTES.projectsBase()}/projectsearch?type=Senior Living&limit=${limit}`);
+        response = await api.get(`${API_ROUTES.projectsBase()}/projectsearch?type=${encodeURIComponent("Senior Living")}&limit=${limit}`);
         console.log('Senior living API response:', response.data);
       } else {
         response = await api.get(`${API_ROUTES.projectsBase()}/projectsearch?${query}=1&limit=${limit}`);
       }
       const AllProjectbyQuery = response.data.data;
+      console.log('🏡 Extracted farmhouse data:', AllProjectbyQuery);
+      console.log('🏡 Full API Response Structure:', response.data);
+      console.log('🏡 Response Data Type:', typeof response.data);
+      console.log('🏡 Has Data Property:', 'data' in response.data);
       if (query === 'allupcomingproject') {
         dispatch(allupcomingproject(AllProjectbyQuery));
-      }else
-      if(query === "newlaunch"){
-        dispatch(newlaunch(AllProjectbyQuery));
-      }else
-      if(query === "underconstruction"){
-        dispatch(underconstruction(AllProjectbyQuery));
-      }else
-      if(query === "readytomove"){
-        dispatch(readytomove(AllProjectbyQuery));
-      }else
-      if(query === "possesionafter2026"){
-        dispatch(possessionafter2026(AllProjectbyQuery));
-      }else
-      if(query === "commercial"){
-        // First try the dedicated commercial endpoint
-        console.log('Trying dedicated commercial endpoint...');
-        try {
-          const response = await api.get(`${API_ROUTES.projectsBase()}/commercial`);
-          const commercialData = response.data.data;
-          if (commercialData && commercialData.length > 0) {
-            console.log('Dedicated commercial endpoint successful, found', commercialData.length, 'projects');
-            dispatch(commercialProjectAll(commercialData));
-            return;
-          }
-        } catch (endpointError) {
-          console.log('Dedicated commercial endpoint failed, trying general search...');
-        }
+      } else
+        if (query === "newlaunch") {
+          dispatch(newlaunch(AllProjectbyQuery));
+        } else
+          if (query === "underconstruction") {
+            dispatch(underconstruction(AllProjectbyQuery));
+          } else
+            if (query === "readytomove") {
+              dispatch(readytomove(AllProjectbyQuery));
+            } else
+              if (query === "possesionafter2026") {
+                dispatch(possessionafter2026(AllProjectbyQuery));
+              } else
+                if (query === "commercial") {
+                  // First try the dedicated commercial endpoint
+                  console.log('Trying dedicated commercial endpoint...');
+                  try {
+                    const response = await api.get(`${API_ROUTES.projectsBase()}/commercial`);
+                    const commercialData = response.data.data;
+                    if (commercialData && commercialData.length > 0) {
+                      console.log('Dedicated commercial endpoint successful, found', commercialData.length, 'projects');
+                      dispatch(commercialProjectAll(commercialData));
+                      return;
+                    }
+                  } catch (endpointError) {
+                    console.log('Dedicated commercial endpoint failed, trying general search...');
+                  }
 
-        // Fallback to general search with comprehensive query
-        if (!AllProjectbyQuery || AllProjectbyQuery.length === 0) {
-          console.log('Commercial query returned no results, trying allcommercialprojects fallback...');
-          try {
-            const fallbackResponse = await api.get(`${API_ROUTES.projectsBase()}/projectsearch?allcommercialprojects=1&limit=${limit}`);
-            const fallbackData = fallbackResponse.data.data;
-            if (fallbackData && fallbackData.length > 0) {
-              console.log('Fallback query successful, found', fallbackData.length, 'commercial projects');
-              dispatch(commercialProjectAll(fallbackData));
-              return;
-            }
-          } catch (fallbackError) {
-            console.error('Fallback query also failed:', fallbackError);
-          }
-        }
-        dispatch(commercialProjectAll(AllProjectbyQuery));
-      }else
-      if(query === "scoplots"){
-        dispatch(scoplotsall(AllProjectbyQuery));
-      }else
-      if(query === "luxury"){
-        const luxuryOrder = await getLuxuryDesiredOrder();
-        dispatch(luxuryAll(sortByDesiredOrder((AllProjectbyQuery),luxuryOrder,"projectName")));
-      }else
-      if(query === "deendayalplots"){
-        dispatch(deendayalplots(AllProjectbyQuery));
-      }else 
-      if(query === "residentiaProject"){
-        dispatch(residential(AllProjectbyQuery));
-      }else
-      if(query === "villas"){
-        dispatch(luxuryvillas(AllProjectbyQuery));
-      }else
-      if(query === "builderindepedentfloor"){
-        dispatch(builderindependentfloor(AllProjectbyQuery));
-      }else
-      if(query === "dlfsco"){
-        dispatch(dlfsco(AllProjectbyQuery))
-     }else
-      if(query === "plotsingurugram"){
-        dispatch(plotsingurugram(AllProjectbyQuery))
-      }else
-      if(query === "farmhouse"){
-        dispatch(farmhouse(AllProjectbyQuery))
-      }else
-      if(query === "industrialplots"){
-        dispatch(industrialplots(AllProjectbyQuery))
-      }else
-      if(query === "industrialprojects"){
-        dispatch(industrialprojects(AllProjectbyQuery))
-      }else
-      if(query === "seniorliving"){
-        dispatch(seniorliving(AllProjectbyQuery))
-      }else
-      if(query === "affordable"){
-        dispatch(affordable(AllProjectbyQuery))
-      }
-    }catch(error){
-      console.error("Error fetching ",error);}
+                  // Fallback to general search with comprehensive query
+                  if (!AllProjectbyQuery || AllProjectbyQuery.length === 0) {
+                    console.log('Commercial query returned no results, trying allcommercialprojects fallback...');
+                    try {
+                      const fallbackResponse = await api.get(`${API_ROUTES.projectsBase()}/projectsearch?allcommercialprojects=1&limit=${limit}`);
+                      const fallbackData = fallbackResponse.data.data;
+                      if (fallbackData && fallbackData.length > 0) {
+                        console.log('Fallback query successful, found', fallbackData.length, 'commercial projects');
+                        dispatch(commercialProjectAll(fallbackData));
+                        return;
+                      }
+                    } catch (fallbackError) {
+                      console.error('Fallback query also failed:', fallbackError);
+                    }
+                  }
+                  dispatch(commercialProjectAll(AllProjectbyQuery));
+                } else
+                  if (query === "scoplots") {
+                    dispatch(scoplotsall(AllProjectbyQuery));
+                  } else
+                    if (query === "luxury") {
+                      const luxuryOrder = await getLuxuryDesiredOrder();
+                      dispatch(luxuryAll(sortByDesiredOrder((AllProjectbyQuery), luxuryOrder, "projectName")));
+                    } else
+                      if (query === "deendayalplots") {
+                        dispatch(deendayalplots(AllProjectbyQuery));
+                      } else
+                        if (query === "residentiaProject") {
+                          dispatch(residential(AllProjectbyQuery));
+                        } else
+                          if (query === "villas") {
+                            dispatch(luxuryvillas(AllProjectbyQuery));
+                          } else
+                            if (query === "builderindepedentfloor") {
+                              dispatch(builderindependentfloor(AllProjectbyQuery));
+                            } else
+                              if (query === "dlfsco") {
+                                dispatch(dlfsco(AllProjectbyQuery))
+                              } else
+                                if (query === "plotsingurugram") {
+                                  dispatch(plotsingurugram(AllProjectbyQuery))
+                                } else
+                                  if (query === "farmhouse") {
+                                    console.log('🏡 Dispatching farmhouse data to Redux:', AllProjectbyQuery);
+                                    dispatch(farmhouse(AllProjectbyQuery));
+                                  } else
+                                    if (query === "industrialplots") {
+                                      dispatch(industrialplots(AllProjectbyQuery))
+                                    } else
+                                      if (query === "industrialprojects") {
+                                        dispatch(industrialprojects(AllProjectbyQuery))
+                                      } else
+                                        if (query === "seniorliving") {
+                                          dispatch(seniorliving(AllProjectbyQuery))
+                                        } else
+                                          if (query === "affordable") {
+                                            dispatch(affordable(AllProjectbyQuery))
+                                          }
+    } catch (error) {
+      console.error('🏡 Farmhouse API Error:', error);
+      console.error('🏡 Error details:', error.response?.data || error.message);
+      console.error("Error fetching ", error);
+    }
 
   }
 
 
-  const getPrimeLocation = useCallback(async(query ,limit ) => {
+  const getPrimeLocation = useCallback(async (query, limit) => {
 
-    try{
+    try {
       const response = await api.get(`${API_ROUTES.projectsBase()}/projectsearch?${query}=1&limit=${limit}`);
       const PrimeLocation = response.data.data;
       if (query === "sohnaroad") {
         dispatch(sohnaroad(PrimeLocation))
-      }else
-      if(query === "golfcourseroad"){
-        dispatch(golfcourseroad(PrimeLocation))
-      }else
-      if(query === "nprroad"){
-        dispatch(nprroad(PrimeLocation))
-      }else
-      if(query === "mgroad"){
-        dispatch(mgroad(PrimeLocation))
-      }else
-      if(query === "dwarkaexpressway"){
-        dispatch(dwarkaexpressway(PrimeLocation))
-      }else
-      if(query === "newgurgaon"){
-        dispatch(newgurgaon(PrimeLocation))
-      }else
-      if(query === "sohna"){
-        dispatch(sohna(PrimeLocation))
-      }else
-      if(query === "sprroad"){
-        dispatch(sprroad(PrimeLocation));
-      }else
-      if(query === "nh48"){
-        dispatch(nh48(PrimeLocation))
-      }else
-      if(query === "golfcourseextensionroad"){
-        dispatch(golfcourseextensionroad(PrimeLocation))
-      }
-    }catch(error){
-      console.error("error in fetching prime location",error)
+      } else
+        if (query === "golfcourseroad") {
+          dispatch(golfcourseroad(PrimeLocation))
+        } else
+          if (query === "nprroad") {
+            dispatch(nprroad(PrimeLocation))
+          } else
+            if (query === "mgroad") {
+              dispatch(mgroad(PrimeLocation))
+            } else
+              if (query === "dwarkaexpressway") {
+                dispatch(dwarkaexpressway(PrimeLocation))
+              } else
+                if (query === "newgurgaon") {
+                  dispatch(newgurgaon(PrimeLocation))
+                } else
+                  if (query === "sohna") {
+                    dispatch(sohna(PrimeLocation))
+                  } else
+                    if (query === "sprroad") {
+                      dispatch(sprroad(PrimeLocation));
+                    } else
+                      if (query === "nh48") {
+                        dispatch(nh48(PrimeLocation))
+                      } else
+                        if (query === "golfcourseextensionroad") {
+                          dispatch(golfcourseextensionroad(PrimeLocation))
+                        }
+    } catch (error) {
+      console.error("error in fetching prime location", error)
     }
-  },[dispatch]);
+  }, [dispatch]);
 
 
-  const getProjectOnStatus = async(query )=>{
+  const getProjectOnStatus = async (query) => {
 
-    try{
+    try {
       const response = await api.get(`${API_ROUTES.projectsBase()}/projectsearch?projectStatus=${query}`);
       const ProjectbyStatus = response.data.data;
-      if(query === "emaar"){
+      if (query === "emaar") {
         dispatch(emaar(ProjectbyStatus));
       }
-    }catch(error){
+    } catch (error) {
       console.error("Error fetching project data based on status:", error);
     }
   }
 
 
-  const getProjectOnOverview = async(query )=>{
+  const getProjectOnOverview = async (query) => {
 
-    try{
+    try {
       const response = await api.get(`${API_ROUTES.projectsBase()}/projectsearch?projectOverview=${query}`);
-      const ProjectByOverview =  response.data.data;
-      if(query === "bptp"){
+      const ProjectByOverview = response.data.data;
+      if (query === "bptp") {
         dispatch(bptpplots(ProjectByOverview))
-      }else
-      if(query === "orris"){
-        dispatch(orrisplots(ProjectByOverview));
-      }
-    }catch(error){
+      } else
+        if (query === "orris") {
+          dispatch(orrisplots(ProjectByOverview));
+        }
+    } catch (error) {
       console.error("Error fetching project data based on overview:", error);
     }
   }
 
-  const getProjectbyBuilder = useCallback(async (query ,limit ) => {
+  const getProjectbyBuilder = useCallback(async (query, limit) => {
     try {
       if (!query || (typeof query === 'string' && query.trim() === '')) {
         console.warn('getProjectbyBuilder: missing builder name');
         return [];
       }
       console.log('🟦 getProjectbyBuilder: start', { query, limit });
-      const response = await api.get(`${API_ROUTES.projectsBase()}/projectsearch?builderName=${query}&limit=${limit}` , { timeout: 15000 });
+      const response = await api.get(`${API_ROUTES.projectsBase()}/projectsearch?builderName=${query}&limit=${limit}`, { timeout: 15000 });
       console.log('🟦 getProjectbyBuilder: success', { count: Array.isArray(response?.data?.data) ? response.data.data.length : 'n/a' });
       const BuilderbyQuery = response.data.data;
 
@@ -573,17 +583,17 @@ const Api_service = () => {
           dispatch(centralpark(BuilderbyQuery));
           break;
         case 'Emaar India':
-        dispatch(emaarindia(BuilderbyQuery));
-        break;
+          dispatch(emaarindia(BuilderbyQuery));
+          break;
         case 'Godrej Properties':
-        dispatch(godrej(BuilderbyQuery));
-        break;
+          dispatch(godrej(BuilderbyQuery));
+          break;
         case 'Whiteland Corporation':
-        dispatch(whiteland(BuilderbyQuery));
-        break;
+          dispatch(whiteland(BuilderbyQuery));
+          break;
         case 'AIPL':
-        dispatch(aipl(BuilderbyQuery));
-        break;
+          dispatch(aipl(BuilderbyQuery));
+          break;
         case 'Birla Estate':
         case 'Birla Estates':
           dispatch(birla(BuilderbyQuery));
@@ -599,7 +609,7 @@ const Api_service = () => {
           break;
         case 'Puri Constructions':
         case 'Puri':
-        case 'Puri Developers': 
+        case 'Puri Developers':
           console.log('🔍 Dispatching puri action with data:', BuilderbyQuery);
           dispatch(puri(BuilderbyQuery));
           break;
@@ -629,47 +639,47 @@ const Api_service = () => {
   }, [dispatch]);
 
 
-  const getPossessionByYear = useCallback(async(query ) =>{
-    try{
+  const getPossessionByYear = useCallback(async (query) => {
+    try {
       const response = await api.get(`${API_ROUTES.projectsBase()}/projectsearch?possessiondate=${query}`);
       const Possessionbyyear = response?.data?.data;
-      if(query === "2025"){
+      if (query === "2025") {
         dispatch(Possessionin2025(Possessionbyyear))
-      }else 
-      if(query === "2026"){
-        dispatch(Possessionin2026(Possessionbyyear))
-      }
+      } else
+        if (query === "2026") {
+          dispatch(Possessionin2026(Possessionbyyear))
+        }
 
-    }catch(error){
-      console.error("Error fetching possession by year ",error);
+    } catch (error) {
+      console.error("Error fetching possession by year ", error);
     }
-  },[dispatch])
+  }, [dispatch])
 
 
-  const getProjectBasedOnminPrice = useCallback(async(query ,limit ) =>{
+  const getProjectBasedOnminPrice = useCallback(async (query, limit) => {
 
-    try{
+    try {
       const response = await api.get(`${API_ROUTES.projectsBase()}/projectsearch?minPrice=${query}&limit=${limit}`);
       const minpriceprojectresponse = response.data.data;
       dispatch(minpriceproject(minpriceprojectresponse));
 
-    }catch(error){
+    } catch (error) {
       console.error("Error fetching project data based on price:", error);
 
     }
-  },[dispatch]);
+  }, [dispatch]);
 
-  const getProjectBasedOnmaxPrice = useCallback(async(query ,limit ) =>{
+  const getProjectBasedOnmaxPrice = useCallback(async (query, limit) => {
 
-    try{
+    try {
       const response = await api.get(`${API_ROUTES.projectsBase()}/projectsearch?maxPrice=${query}&limit=${limit}`);
       const maxpriceprojectresponse = response.data.data;
       dispatch(maxpriceproject(maxpriceprojectresponse));
-    }catch(error){
+    } catch (error) {
       console.error("Error fetching project data based on price:", error);
 
     }
-  },[dispatch]);
+  }, [dispatch]);
 
   const getPropertyOrder = async (builderName) => {
     const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
@@ -695,7 +705,7 @@ const Api_service = () => {
       // Abort any previous (stuck) controller for the same builder to avoid overlaps
       const prev = propertyOrderControllers.get(key);
       if (prev) {
-        try { prev.abort(); console.log('🟨 getPropertyOrder: aborted previous request for', builderName); } catch {}
+        try { prev.abort(); console.log('🟨 getPropertyOrder: aborted previous request for', builderName); } catch { }
       }
 
       const controller = new AbortController();
@@ -778,7 +788,7 @@ const Api_service = () => {
     try {
       console.log('🔄 Fetching Shapoorji Pallonji projects...');
       localStorage.setItem('lastApiRequestTime', Date.now().toString());
-      
+
       // Try to get projects from local storage first
       const cachedProjects = localStorage.getItem('shapoorjiProjects');
       if (cachedProjects) {
@@ -793,11 +803,11 @@ const Api_service = () => {
           console.log('Failed to parse cached projects', e);
         }
       }
-      
+
       // If no cache, try to fetch from API with retry logic
       const maxRetries = 2;
       let lastError = null;
-      
+
       for (let attempt = 0; attempt <= maxRetries; attempt++) {
         try {
           // Add a small delay between retries
@@ -806,18 +816,18 @@ const Api_service = () => {
             console.log(`⏳ Retry attempt ${attempt} in ${delay}ms...`);
             await new Promise(resolve => setTimeout(resolve, delay));
           }
-          
+
           const response = await api.get(
-            `${API_ROUTES.projectsBase()}/projectsearch?builderName=Shapoorji Pallonji&limit=${limit}`, 
-            { 
+            `${API_ROUTES.projectsBase()}/projectsearch?builderName=Shapoorji Pallonji&limit=${limit}`,
+            {
               timeout: 10000 // 10 second timeout
             }
           );
-          
+
           if (response?.data?.data) {
             const projects = Array.isArray(response.data.data) ? response.data.data : [];
             console.log(`✅ Fetched ${projects.length} Shapoorji Pallonji projects`);
-            
+
             // Cache the response
             try {
               localStorage.setItem('shapoorjiProjects', JSON.stringify(projects));
@@ -825,7 +835,7 @@ const Api_service = () => {
             } catch (e) {
               console.warn('Failed to cache projects', e);
             }
-            
+
             dispatch(shapoorji(projects));
             return projects;
           }
@@ -835,10 +845,10 @@ const Api_service = () => {
           if (attempt === maxRetries) break;
         }
       }
-      
+
       // If we get here, all retries failed
       throw lastError || new Error('Failed to fetch projects after multiple attempts');
-      
+
     } catch (error) {
       console.error('❌ Error in fetchShapoorjiProjects:', {
         message: error.message,
@@ -850,7 +860,7 @@ const Api_service = () => {
           method: error.config?.method,
         }
       });
-      
+
       // Return cached data if available, even if stale
       try {
         const cached = localStorage.getItem('shapoorjiProjects');
@@ -865,8 +875,18 @@ const Api_service = () => {
       } catch (e) {
         console.warn('Could not use cached data', e);
       }
-      
+
       return [];
+    }
+  };
+
+  const getFarmhouse = async (limit) => {
+    try {
+      const response = await api.get(`${API_ROUTES.projectsBase()}/projectsearch?type=Farm Houses&limit=${limit}`);
+      const FarmhouseProjects = response.data.data;
+      dispatch(farmhouse(FarmhouseProjects));
+    } catch (error) {
+      console.error("Error fetching Farmhouse data:", error);
     }
   };
 
@@ -894,6 +914,7 @@ const Api_service = () => {
     getProjectBasedOnminPrice,
     getProjectBasedOnmaxPrice,
     fetchShapoorjiProjects,
+    getFarmhouse,
     // Property order & fetch helpers
     getPropertyOrder,
     savePropertyOrder,

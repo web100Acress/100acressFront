@@ -60,7 +60,8 @@ const ResidentialFlatsGurgaon = () => {
   return (
     <GlobalFilterTemplate
       key={location.pathname}
-      config={customConfig}
+      pageType="type"
+      pageConfig={customConfig}
       projects={projects}
       isLoading={isLoading}
     />
