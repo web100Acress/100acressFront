@@ -6,26 +6,26 @@ const Desktoptestimonial = () => {
     const testimonials = [
         {
             id: 1,
-            name: "Anshuman Saini",
+            name: "Soumya",
             role: "Verified Buyer",
             image: "https://lh3.googleusercontent.com/a-/ALV-w1zYyv...", // Placeholder or generated
-            text: "I had a wonderful experience working with MoneyTree Realty for my real estate investment needs. They are truly experts i...",
+            text: "Honestly, had a really smooth experience with 100acress. The team was friendly and actually listened to what I needed. They didn’t waste my time with random options and only showed me properties that made sense.",
             rating: 5,
         },
         {
             id: 2,
-            name: "Vansh Tadon",
+            name: "Purvi Rathee",
             role: "Verified Buyer",
             image: "https://lh3.googleusercontent.com/a-/ALV-w1z...",
-            text: "MoneyTree Realty is for sure a best option if anyone is thinking for investment in Real Estate. Everything happens here...",
+            text: "100acress is really the best real estate office in Gurgaon. It helps customers find a perfect property according to their taste and demand at the best cost than the market rate! Although its staff is very cooperative and helpful in suggesting the best option for their clients. The office environment is very positive!",
             rating: 5,
         },
         {
             id: 3,
-            name: "Paritosh varakya",
+            name: "Krishti",
             role: "Verified Buyer",
             image: "https://lh3.googleusercontent.com/a-/ALV-w1z...",
-            text: "I highly recommend Money Tree Realty, a bestseller in the real estate sector. I recently purchased a property in M3M, an...",
+            text: "Had a great experience working with 100acress.com! The entire team process was smooth, transparent and extremely professional. They showed me properties that matched my needs and didn't pressure me at all.",
             rating: 5,
         }
     ];
