@@ -46,11 +46,36 @@ const ProjectStatusSearchGlobal = () => {
       }
     }
 
-    `    return 'upcoming'; // default fallback`
+    return 'upcoming'; // default fallback
   };
 
   const projectStatus = getProjectStatus();
   console.log('Detected project status:', projectStatus);
+
+  // Redux selectors for different project types
+  const upcomingProjects = useSelector(store => store?.allsectiondata?.allupcomingproject);
+  const underConstructionProjects = useSelector(store => store?.allsectiondata?.underconstruction);
+  const readyToMoveProjects = useSelector(store => store?.allsectiondata?.readytomove);
+  const newLaunchProjects = useSelector(store => store?.allsectiondata?.newlaunch);
+
+  // Get the appropriate project data based on status
+  const getProjectData = () => {
+    console.log('Getting project data for status:', projectStatus);
+    switch (projectStatus) {
+      case 'upcoming': return upcomingProjects;
+      case 'underconstruction': return underConstructionProjects;
+      case 'readytomove': return readyToMoveProjects;
+      case 'newlaunch': return newLaunchProjects;
+      default: return [];
+    }
+  };
+
+  const projectData = getProjectData();
+
+  // Memoize project data to prevent unnecessary re-renders
+  const memoizedProjectData = React.useMemo(() => {
+    return projectData;
+  }, [projectData]);
 
   // Project status configurations with enhanced SEO
   const statusConfig = {
@@ -177,56 +202,16 @@ const ProjectStatusSearchGlobal = () => {
     }, 500);
   }, [getAllProjects, memoizedProjectData]);
 
-  // Redux selectors for different project types
-  const upcomingProjects = useSelector(store => store?.allsectiondata?.allupcomingproject);
-  const underConstructionProjects = useSelector(store => store?.allsectiondata?.underconstruction);
-  const readyToMoveProjects = useSelector(store => store?.allsectiondata?.readytomove);
-  const newLaunchProjects = useSelector(store => store?.allsectiondata?.newlaunch);
-
-  // Get the appropriate project data based on status
-  const getProjectData = () => {
-    console.log('Getting project data for status:', projectStatus);
-    console.log('Available data:', {
-      upcoming: upcomingProjects?.length || 0,
-      underconstruction: underConstructionProjects?.length || 0,
-      readytomove: readyToMoveProjects?.length || 0,
-      newlaunch: newLaunchProjects?.length || 0
-    });
-
-    switch (projectStatus) {
-      case 'upcoming':
-        console.log('Returning upcoming projects:', upcomingProjects?.length || 0);
-        return upcomingProjects;
-      case 'underconstruction':
-        console.log('Returning underconstruction projects:', underConstructionProjects?.length || 0);
-        return underConstructionProjects;
-      case 'readytomove':
-        console.log('Returning readytomove projects:', readyToMoveProjects?.length || 0);
-        return readyToMoveProjects;
-      case 'newlaunch':
-        console.log('Returning newlaunch projects:', newLaunchProjects?.length || 0);
-        return newLaunchProjects;
-      default:
-        console.log('No matching status, returning empty array');
-        return [];
-    }
-  };
-
-  const projectData = getProjectData();
-
-  // Memoize project data to prevent unnecessary re-renders
-  const memoizedProjectData = React.useMemo(() => {
-    return projectData;
-  }, [projectData]);
-
   useEffect(() => {
     console.log('ProjectStatusSearchGlobal - location changed:', location.pathname);
-    console.log('Loading projects for status:', projectStatus, 'with query:', currentConfig.query);
+    console.log('Loading projects for status:', projectStatus, 'with query:', currentConfig?.query);
 
     // Set loading to true initially when status/query changes
     setIsLoading(true);
-    throttledGetAllProjects(currentConfig.query, 0);
-  }, [projectStatus, currentConfig.query, throttledGetAllProjects, location.pathname, componentKey]);
+    if (currentConfig?.query) {
+      throttledGetAllProjects(currentConfig.query, 0);
+    }
+  }, [projectStatus, currentConfig?.query, throttledGetAllProjects, location.pathname, componentKey]);
 
   // Update loading state when data is received
   useEffect(() => {
