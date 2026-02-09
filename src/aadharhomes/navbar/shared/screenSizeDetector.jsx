@@ -13,7 +13,7 @@ export const SCREEN_SIZES = {
 
 export const DEVICE_NAMES = {
   XS: 'Extra Small Mobile',
-  SM: 'Small Mobile', 
+  SM: 'Small Mobile',
   MD: 'Tablet',
   LG: 'iPad/Large Tablet',
   XL: 'Small Desktop',
@@ -159,7 +159,7 @@ export const CITY_SELECTION_BY_SIZE = {
     { name: "Gurugram", path: "/projects-in-gurugram/" },
     { name: "Delhi", path: "/projects-in-delhi/" },
     { name: "Noida", path: "/projects-in-noida/" },
-    { name: "Dubai", path: "/united-arab-emirates/" }
+    // { name: "Dubai", path: "/united-arab-emirates/" }
   ],
   MD: [
     { name: "Gurugram", path: "/projects-in-gurugram/" },
@@ -167,7 +167,7 @@ export const CITY_SELECTION_BY_SIZE = {
     { name: "Noida", path: "/projects-in-noida/" },
     { name: "Goa", path: "/projects-in-goa/" },
     { name: "Mumbai", path: "/projects-in-mumbai/" },
-    { name: "Dubai", path: "/united-arab-emirates/" }
+    // { name: "Dubai", path: "/united-arab-emirates/" }
   ],
   LG: [
     { name: "Gurugram", path: "/projects-in-gurugram/" },
@@ -178,7 +178,7 @@ export const CITY_SELECTION_BY_SIZE = {
     { name: "Mumbai", path: "/projects-in-mumbai/" },
     { name: "Panipat", path: "/projects-in-panipat/" },
     { name: "Pune", path: "/projects-in-pune/" },
-    { name: "Dubai", path: "/united-arab-emirates/" }
+    // { name: "Dubai", path: "/united-arab-emirates/" }
   ],
   XL: [
     { name: "Gurugram", path: "/projects-in-gurugram/" },
@@ -192,7 +192,7 @@ export const CITY_SELECTION_BY_SIZE = {
     { name: "Kasauli", path: "/projects-in-kasauli/" },
     { name: "Sonipat", path: "/projects-in-sonipat/" },
     { name: "Pune", path: "/projects-in-pune/" },
-    { name: "Dubai", path: "/united-arab-emirates/" }
+    // { name: "Dubai", path: "/united-arab-emirates/" }
   ],
   XXL: [
     { name: "Gurugram", path: "/projects-in-gurugram/" },
@@ -205,10 +205,10 @@ export const CITY_SELECTION_BY_SIZE = {
     { name: "Panchkula", path: "/projects-in-panchkula/" },
     { name: "Kasauli", path: "/projects-in-kasauli/" },
     { name: "Sonipat", path: "/projects-in-sonipat/" },
-    { name: "Alwar", path: "/projects-in-alwar/" },
+    // { name: "Alwar", path: "/projects-in-alwar/" },
     { name: "Karnal", path: "/projects-in-karnal/" },
     { name: "Pune", path: "/projects-in-pune/" },
-    { name: "Dubai", path: "/united-arab-emirates/" }
+    // { name: "Dubai", path: "/united-arab-emirates/" }
   ],
   XXXL: [
     { name: "Gurugram", path: "/projects-in-gurugram/" },
@@ -221,10 +221,10 @@ export const CITY_SELECTION_BY_SIZE = {
     { name: "Panchkula", path: "/projects-in-panchkula/" },
     { name: "Kasauli", path: "/projects-in-kasauli/" },
     { name: "Sonipat", path: "/projects-in-sonipat/" },
-    { name: "Alwar", path: "/projects-in-alwar/" },
+    // { name: "Alwar", path: "/projects-in-alwar/" },
     { name: "Karnal", path: "/projects-in-karnal/" },
     { name: "Pune", path: "/projects-in-pune/" },
-    { name: "Dubai", path: "/united-arab-emirates/" }
+    // { name: "Dubai", path: "/united-arab-emirates/" }
   ],
   ULTRA: [
     { name: "Gurugram", path: "/projects-in-gurugram/" },
@@ -237,10 +237,10 @@ export const CITY_SELECTION_BY_SIZE = {
     { name: "Panchkula", path: "/projects-in-panchkula/" },
     { name: "Kasauli", path: "/projects-in-kasauli/" },
     { name: "Sonipat", path: "/projects-in-sonipat/" },
-    { name: "Alwar", path: "/projects-in-alwar/" },
+    // { name: "Alwar", path: "/projects-in-alwar/" },
     { name: "Karnal", path: "/projects-in-karnal/" },
     { name: "Pune", path: "/projects-in-pune/" },
-    { name: "Dubai", path: "/united-arab-emirates/" }
+    // { name: "Dubai", path: "/united-arab-emirates/" }
   ],
   // NEW: Compact desktop cities for 800-1300px range
   COMPACT_DESKTOP: [
@@ -250,7 +250,7 @@ export const CITY_SELECTION_BY_SIZE = {
     { name: "Goa", path: "/projects-in-goa/" },
     { name: "Mumbai", path: "/projects-in-mumbai/" },
     { name: "Ayodhya", path: "/projects-in-ayodhya/" },
-    { name: "Dubai", path: "/united-arab-emirates/" },
+    // { name: "Dubai", path: "/united-arab-emirates/" },
     { name: "Pune", path: "/projects-in-pune/" }
   ]
 };
@@ -263,11 +263,11 @@ export const useScreenSize = () => {
 
   useEffect(() => {
     setIsClient(true); // We're now on client side
-    
+
     const handleResize = () => {
       const width = window.innerWidth;
       setWindowWidth(width);
-      
+
       // Progressive hiding system - items move to hamburger as screen gets smaller
       if (width < 768) setScreenSize('SM'); // Mobile - hamburger only
       else if (width >= 768 && width < 1024) setScreenSize('MD'); // Tablet - hamburger only
@@ -306,7 +306,7 @@ export const useScreenSize = () => {
 // Utility function to get screen size without hook
 export const getCurrentScreenSize = () => {
   const width = window.innerWidth;
-  
+
   if (width < 375) return 'XS';
   else if (width >= 375 && width < 768) return 'SM';
   else if (width >= 768 && width < 800) return 'MD';

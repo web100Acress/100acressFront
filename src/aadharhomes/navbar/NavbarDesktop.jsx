@@ -357,7 +357,7 @@ export default function NavbarDesktop({
                         }}>
                           Property Type
                         </div>
-                        <div style={{ display: 'flex', gap: '0.375rem', flexWrap: 'wrap', maxWidth: '600px' }}>
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.375rem' }}>
                           {PROJECT_TYPE_OPTIONS.map((option) => (
                             <div
                               key={option.path}
@@ -371,8 +371,7 @@ export default function NavbarDesktop({
                                 fontWeight: '500',
                                 whiteSpace: 'nowrap',
                                 border: '1px solid #e5e7eb',
-                                transition: 'all 0.15s ease',
-                                flex: '0 0 calc(33.333% - 0.25rem)' // 3 items per row with gap
+                                transition: 'all 0.15s ease'
                               }}
                               onMouseEnter={(e) => {
                                 e.target.style.backgroundColor = '#f1f5f9';
@@ -760,30 +759,39 @@ export default function NavbarDesktop({
                 backgroundColor: 'white',
                 border: '1px solid #e2e8f0',
                 boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
-                padding: '0.5rem',
-                minWidth: '220px',
+                padding: '0.625rem',
+                minWidth: '400px',
                 zIndex: 1000,
-                borderRadius: '0.375rem'
+                borderRadius: '0.5rem'
               }}
               onMouseEnter={() => { clearTimer(typeTimer); setIsTypeOpen(true); }}
               onMouseLeave={() => closeWithDelay(typeTimer, setIsTypeOpen)}
             >
-              {PROJECT_TYPE_OPTIONS.map((option) => (
-                <div
-                  key={option.path}
-                  onClick={() => { handleNavigation(option.path); setIsTypeOpen(false); }}
-                  style={{
-                    backgroundColor: 'transparent',
-                    padding: '0.5rem',
-                    borderRadius: '0.375rem',
-                    cursor: 'pointer'
-                  }}
-                  onMouseEnter={(e) => e.target.style.backgroundColor = '#f7fafc'}
-                  onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
-                >
-                  <span style={{ fontSize: '14px', fontWeight: '500' }}>{option.label}</span>
-                </div>
-              ))}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.375rem' }}>
+                {PROJECT_TYPE_OPTIONS.map((option) => (
+                  <div
+                    key={option.path}
+                    onClick={() => { handleNavigation(option.path); setIsTypeOpen(false); }}
+                    style={{
+                      backgroundColor: 'transparent',
+                      padding: '0.5rem 0.75rem',
+                      borderRadius: '0.375rem',
+                      cursor: 'pointer',
+                      transition: 'all 0.15s ease'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = '#f7fafc';
+                      e.currentTarget.style.transform = 'translateX(2px)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = 'transparent';
+                      e.currentTarget.style.transform = 'translateX(0px)';
+                    }}
+                  >
+                    <span style={{ fontSize: '14px', fontWeight: '500' }}>{option.label}</span>
+                  </div>
+                ))}
+              </div>
             </motion.div>
           )}
         </div>
@@ -796,8 +804,8 @@ export default function NavbarDesktop({
           style={{
             background: 'none',
             border: 'none',
-            padding: '0.5rem 0.25rem',
-            fontSize: '16px',
+            padding: '0.625rem 0.25rem 0.375rem 0.25rem',
+            fontSize: '15px',
             fontWeight: '600',
             color: isHome ? "white" : (colorChange ? "white" : "#e53e3e"),
             cursor: 'pointer',
@@ -817,8 +825,8 @@ export default function NavbarDesktop({
           style={{
             background: 'none',
             border: 'none',
-            padding: '0.5rem 0.25rem',
-            fontSize: '16px',
+            padding: '0.625rem 0.25rem 0.375rem 0.25rem',
+            fontSize: '15px',
             fontWeight: '600',
             color: isHome ? "white" : (colorChange ? "white" : "#e53e3e"),
             cursor: 'pointer',

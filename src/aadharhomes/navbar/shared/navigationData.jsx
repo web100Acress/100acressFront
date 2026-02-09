@@ -9,7 +9,7 @@ export const CITY_OPTIONS = [
   { name: "Panchkula", path: "/projects-in-panchkula/" },
   { name: "Kasauli", path: "/projects-in-kasauli/" },
   { name: "Sonipat", path: "/projects-in-sonipat/" },
-  { name: "Alwar", path: "/projects-in-alwar/" },
+  // { name: "Alwar", path: "/projects-in-alwar/" },
   { name: "Karnal", path: "/projects-in-karnal/" },
   { name: "Pune", path: "/projects-in-pune/" },
   { name: "Jalandhar", path: "/projects-in-jalandhar/" },
@@ -93,12 +93,12 @@ export const CityIcons = {
       <path d="M5 20c1.5-3 4.5-4.5 7-4.5S17.5 17 19 20" />
     </svg>
   ),
-  Alwar: (
-    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="5" y="9" width="14" height="10" rx="1" />
-      <path d="M9 9V6h6v3" />
-    </svg>
-  ),
+  // Alwar: (
+  //   <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+  //     <rect x="5" y="9" width="14" height="10" rx="1" />
+  //     <path d="M9 9V6h6v3" />
+  //   </svg>
+  // ),
   Karnal: (
     <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
       <rect x="5" y="9" width="14" height="10" rx="1" />
@@ -119,12 +119,12 @@ export const CityIcons = {
       <path d="M2 20h20" />
     </svg>
   ),
-  Dubai: (
-    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M8 20V4l4-2 4 2v16" />
-      <path d="M2 20h20" />
-    </svg>
-  ),
+  // Dubai: (
+  //   <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+  //     <path d="M8 20V4l4-2 4 2v16" />
+  //     <path d="M2 20h20" />
+  //   </svg>
+  // ),
 };
 
 export const BUDGET_OPTIONS = [
@@ -167,11 +167,11 @@ export const POPULAR_CITIES_LINKS = [
   { label: "Projects in Panchkula", path: "/project-in-panchkula/" },
   { label: "Projects in Kasauli", path: "/project-in-kasauli/" },
   { label: "Projects in Sonipat", path: "/projects-in-sonipat/" },
-  { label: "Projects in Alwar", path: "/projects-in-alwar/" },
+  // { label: "Projects in Alwar", path: "/projects-in-alwar/" },
   { label: "Projects in Karnal", path: "/projects-in-karnal/" },
   { label: "Projects in Jalandhar", path: "/projects-in-jalandhar/" },
   { label: "Projects in Pushkar", path: "/projects-in-pushkar/" },
-  { label: "Projects in Dubai *", path: "/united-arab-emirates/", special: true },
+  // { label: "Projects in Dubai *", path: "/united-arab-emirates/", special: true },
 ];
 
 export const QUICK_LINKS = {
