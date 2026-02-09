@@ -11,7 +11,7 @@ import { resale } from "../slice/ResaleSlice";
 import api from "../../config/apiClient";
 import { API_ROUTES, API_ROUTES_PROJECTS } from "./Constant_Service";
 import { sortByDesiredOrder } from "../../Utils/ProjectSorting";
-import { getAffordableDesiredOrder, getBudgetDesiredOrder, getCommercialDesiredOrder, getLuxuryDesiredOrder, getRecommendedDesiredOrder, getSCODesiredOrder, getTrendingDesiredOrder } from "../../Utils/ProjectOrderData";
+import { getAffordableDesiredOrder, getBudgetDesiredOrder, getCommercialDesiredOrder, getLuxuryDesiredOrder, getRecommendedDesiredOrder, getSCODesiredOrder, getTrendingDesiredOrder, getFarmDesiredOrder } from "../../Utils/ProjectOrderData";
 import { emaar } from "../slice/ProjectstatusSlice";
 import { useCallback } from "react";
 import { maxpriceproject, minpriceproject } from "../slice/PriceBasedSlice";
@@ -328,120 +328,140 @@ const Api_service = () => {
 
     try {
       let response;
-      if (query === "farmhouse") {
-        console.log('🏡 Making farmhouse API call with type=Farm Houses');
-        response = await api.get(`${API_ROUTES.projectsBase()}/projectsearch?type=${encodeURIComponent("Farm Houses")}&limit=${limit}&_t=${Date.now()}`);
-        console.log('🏡 Farmhouse API Response:', response.data);
-      } else if (query === "industrialplots") {
-        response = await api.get(`${API_ROUTES.projectsBase()}/projectsearch?type=${encodeURIComponent("Industrial Plots")}&limit=${limit}`);
-      } else if (query === "industrialprojects") {
-        response = await api.get(`${API_ROUTES.projectsBase()}/projectsearch?type=${encodeURIComponent("Industrial Projects")}&limit=${limit}`);
-      } else if (query === "seniorliving") {
-        console.log('Making senior living API call with type=Senior Living');
-        response = await api.get(`${API_ROUTES.projectsBase()}/projectsearch?type=${encodeURIComponent("Senior Living")}&limit=${limit}`);
-        console.log('Senior living API response:', response.data);
+      // Mirroring Admin Panel Logic: Fetch all and filter client-side for strict type matching
+      if (query === "farmhouse" || query === "industrialplots" || query === "industrialprojects" || query === "seniorliving") {
+        console.log(`🏡 Fetching ALL projects to filter for ${query}...`);
+        // We use the viewAll endpoint just like the Admin panel to ensure consistency
+        response = await api.get(`${API_ROUTES.projectsBase()}/viewAll/data`);
       } else {
+        // Original logic for other queries
         response = await api.get(`${API_ROUTES.projectsBase()}/projectsearch?${query}=1&limit=${limit}`);
       }
-      const AllProjectbyQuery = response.data.data;
-      console.log('🏡 Extracted farmhouse data:', AllProjectbyQuery);
-      console.log('🏡 Full API Response Structure:', response.data);
-      console.log('🏡 Response Data Type:', typeof response.data);
-      console.log('🏡 Has Data Property:', 'data' in response.data);
+
+      const allData = response.data.data || response.data;
+      let filteredData = [];
+
+      if (query === "farmhouse") {
+        let farmOrder = [];
+        try {
+          farmOrder = await getFarmDesiredOrder() || [];
+          console.log('📋 Farmhouse custom order:', farmOrder);
+        } catch (orderError) {
+          console.warn('Could not get farmhouse order, will use default:', orderError);
+        }
+
+        filteredData = allData.filter(item => item?.type === "Farm Houses");
+
+        // Apply sorting with robust matching
+        if (farmOrder.length > 0) {
+          console.log('🏡 Sorting projects based on custom order...');
+          filteredData = filteredData.sort((a, b) => {
+            const nameA = a.projectName?.toLowerCase().trim();
+            const nameB = b.projectName?.toLowerCase().trim();
+
+            const indexA = farmOrder.findIndex(name => name.toLowerCase().trim() === nameA);
+            const indexB = farmOrder.findIndex(name => name.toLowerCase().trim() === nameB);
+
+            if (indexA !== -1 && indexB !== -1) return indexA - indexB;
+            if (indexA !== -1) return -1;
+            if (indexB !== -1) return 1;
+            return 0;
+          });
+        }
+
+        console.log(`🏡 Sorted Farmhouses result:`, filteredData.map(p => p.projectName));
+        console.log(`🏡 Filtered and SORTED ${filteredData.length} Farm Houses from ${allData.length} total projects`);
+        dispatch(farmhouse(filteredData.slice(0, limit > 0 ? limit : undefined)));
+        return;
+      } else if (query === "industrialplots") {
+        filteredData = allData.filter(item => item?.type === "Industrial Plots");
+        console.log(`🏭 Filtered ${filteredData.length} Industrial Plots`);
+        dispatch(industrialplots(filteredData.slice(0, limit > 0 ? limit : undefined)));
+        return;
+      } else if (query === "industrialprojects") {
+        filteredData = allData.filter(item => item?.type === "Industrial Projects");
+        console.log(`🏭 Filtered ${filteredData.length} Industrial Projects`);
+        dispatch(industrialprojects(filteredData.slice(0, limit > 0 ? limit : undefined)));
+        return;
+      } else if (query === "seniorliving") {
+        filteredData = allData.filter(item => item?.type === "Senior Living");
+        console.log(`👴 Filtered ${filteredData.length} Senior Living projects`);
+        dispatch(seniorliving(filteredData.slice(0, limit > 0 ? limit : undefined)));
+        return;
+      } else {
+        // For other queries, use the direct API response
+        filteredData = allData;
+      }
+
+      const AllProjectbyQuery = filteredData;
+      console.log(`✅ Final data for ${query}:`, AllProjectbyQuery.length);
+
       if (query === 'allupcomingproject') {
         dispatch(allupcomingproject(AllProjectbyQuery));
-      } else
-        if (query === "newlaunch") {
-          dispatch(newlaunch(AllProjectbyQuery));
-        } else
-          if (query === "underconstruction") {
-            dispatch(underconstruction(AllProjectbyQuery));
-          } else
-            if (query === "readytomove") {
-              dispatch(readytomove(AllProjectbyQuery));
-            } else
-              if (query === "possesionafter2026") {
-                dispatch(possessionafter2026(AllProjectbyQuery));
-              } else
-                if (query === "commercial") {
-                  // First try the dedicated commercial endpoint
-                  console.log('Trying dedicated commercial endpoint...');
-                  try {
-                    const response = await api.get(`${API_ROUTES.projectsBase()}/commercial`);
-                    const commercialData = response.data.data;
-                    if (commercialData && commercialData.length > 0) {
-                      console.log('Dedicated commercial endpoint successful, found', commercialData.length, 'projects');
-                      dispatch(commercialProjectAll(commercialData));
-                      return;
-                    }
-                  } catch (endpointError) {
-                    console.log('Dedicated commercial endpoint failed, trying general search...');
-                  }
+      } else if (query === "newlaunch") {
+        dispatch(newlaunch(AllProjectbyQuery));
+      } else if (query === "underconstruction") {
+        dispatch(underconstruction(AllProjectbyQuery));
+      } else if (query === "readytomove") {
+        dispatch(readytomove(AllProjectbyQuery));
+      } else if (query === "possesionafter2026") {
+        dispatch(possessionafter2026(AllProjectbyQuery));
+      } else if (query === "commercial") {
+        // First try the dedicated commercial endpoint
+        console.log('Trying dedicated commercial endpoint...');
+        try {
+          const response = await api.get(`${API_ROUTES.projectsBase()}/commercial`);
+          const commercialData = response.data.data;
+          if (commercialData && commercialData.length > 0) {
+            console.log('Dedicated commercial endpoint successful, found', commercialData.length, 'projects');
+            dispatch(commercialProjectAll(commercialData));
+            return;
+          }
+        } catch (endpointError) {
+          console.log('Dedicated commercial endpoint failed, trying general search...');
+        }
 
-                  // Fallback to general search with comprehensive query
-                  if (!AllProjectbyQuery || AllProjectbyQuery.length === 0) {
-                    console.log('Commercial query returned no results, trying allcommercialprojects fallback...');
-                    try {
-                      const fallbackResponse = await api.get(`${API_ROUTES.projectsBase()}/projectsearch?allcommercialprojects=1&limit=${limit}`);
-                      const fallbackData = fallbackResponse.data.data;
-                      if (fallbackData && fallbackData.length > 0) {
-                        console.log('Fallback query successful, found', fallbackData.length, 'commercial projects');
-                        dispatch(commercialProjectAll(fallbackData));
-                        return;
-                      }
-                    } catch (fallbackError) {
-                      console.error('Fallback query also failed:', fallbackError);
-                    }
-                  }
-                  dispatch(commercialProjectAll(AllProjectbyQuery));
-                } else
-                  if (query === "scoplots") {
-                    dispatch(scoplotsall(AllProjectbyQuery));
-                  } else
-                    if (query === "luxury") {
-                      const luxuryOrder = await getLuxuryDesiredOrder();
-                      dispatch(luxuryAll(sortByDesiredOrder((AllProjectbyQuery), luxuryOrder, "projectName")));
-                    } else
-                      if (query === "deendayalplots") {
-                        dispatch(deendayalplots(AllProjectbyQuery));
-                      } else
-                        if (query === "residentiaProject") {
-                          dispatch(residential(AllProjectbyQuery));
-                        } else
-                          if (query === "villas") {
-                            dispatch(luxuryvillas(AllProjectbyQuery));
-                          } else
-                            if (query === "builderindepedentfloor") {
-                              dispatch(builderindependentfloor(AllProjectbyQuery));
-                            } else
-                              if (query === "dlfsco") {
-                                dispatch(dlfsco(AllProjectbyQuery))
-                              } else
-                                if (query === "plotsingurugram") {
-                                  dispatch(plotsingurugram(AllProjectbyQuery))
-                                } else
-                                  if (query === "farmhouse") {
-                                    console.log('🏡 Dispatching farmhouse data to Redux:', AllProjectbyQuery);
-                                    dispatch(farmhouse(AllProjectbyQuery));
-                                  } else
-                                    if (query === "industrialplots") {
-                                      dispatch(industrialplots(AllProjectbyQuery))
-                                    } else
-                                      if (query === "industrialprojects") {
-                                        dispatch(industrialprojects(AllProjectbyQuery))
-                                      } else
-                                        if (query === "seniorliving") {
-                                          dispatch(seniorliving(AllProjectbyQuery))
-                                        } else
-                                          if (query === "affordable") {
-                                            dispatch(affordable(AllProjectbyQuery))
-                                          }
+        // Fallback to general search with comprehensive query
+        if (!AllProjectbyQuery || AllProjectbyQuery.length === 0) {
+          console.log('Commercial query returned no results, trying allcommercialprojects fallback...');
+          try {
+            const fallbackResponse = await api.get(`${API_ROUTES.projectsBase()}/projectsearch?allcommercialprojects=1&limit=${limit}`);
+            const fallbackData = fallbackResponse.data.data;
+            if (fallbackData && fallbackData.length > 0) {
+              console.log('Fallback query successful, found', fallbackData.length, 'commercial projects');
+              dispatch(commercialProjectAll(fallbackData));
+              return;
+            }
+          } catch (fallbackError) {
+            console.error('Fallback query also failed:', fallbackError);
+          }
+        }
+        dispatch(commercialProjectAll(AllProjectbyQuery));
+      } else if (query === "scoplots") {
+        dispatch(scoplotsall(AllProjectbyQuery));
+      } else if (query === "luxury") {
+        const luxuryOrder = await getLuxuryDesiredOrder();
+        dispatch(luxuryAll(sortByDesiredOrder((AllProjectbyQuery), luxuryOrder, "projectName")));
+      } else if (query === "deendayalplots") {
+        dispatch(deendayalplots(AllProjectbyQuery));
+      } else if (query === "residentiaProject") {
+        dispatch(residential(AllProjectbyQuery));
+      } else if (query === "villas") {
+        dispatch(luxuryvillas(AllProjectbyQuery));
+      } else if (query === "builderindepedentfloor") {
+        dispatch(builderindependentfloor(AllProjectbyQuery));
+      } else if (query === "dlfsco") {
+        dispatch(dlfsco(AllProjectbyQuery))
+      } else if (query === "plotsingurugram") {
+        dispatch(plotsingurugram(AllProjectbyQuery))
+      } else if (query === "affordable") {
+        dispatch(affordable(AllProjectbyQuery))
+      }
     } catch (error) {
       console.error('🏡 Farmhouse API Error:', error);
       console.error('🏡 Error details:', error.response?.data || error.message);
       console.error("Error fetching ", error);
     }
-
   }
 
 

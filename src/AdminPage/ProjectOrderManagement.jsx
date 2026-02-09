@@ -2,13 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { showToast } from '../Utils/toastUtils';
 import Sidebar from './Sidebar';
 import api from '../config/apiClient';
-import { 
-  MdAdd, 
-  MdEdit, 
-  MdDelete, 
-  MdVisibility, 
+import {
+  MdAdd,
+  MdEdit,
+  MdDelete,
+  MdVisibility,
   MdVisibilityOff,
   MdSave,
   MdClose,
@@ -20,12 +21,13 @@ import {
   MdBusiness,
   MdAttachMoney,
   MdStar,
-  MdImage
+  MdImage,
+  MdLandscape
 } from 'react-icons/md';
 
 const ProjectOrderManagement = () => {
   const dispatch = useDispatch();
-  
+
   // State for different project categories
   const [projectOrders, setProjectOrders] = useState({
     luxury: [],
@@ -36,9 +38,10 @@ const ProjectOrderManagement = () => {
     budget: [],
     recommended: [],
     desiredLuxury: [],
-    budgetPlots: []
+    budgetPlots: [],
+    farm: []
   });
-  
+
   const [activeTab, setActiveTab] = useState('luxury');
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
@@ -49,7 +52,7 @@ const ProjectOrderManagement = () => {
     order: 0,
     isActive: true
   });
-  
+
   const [loading, setLoading] = useState(false);
 
   // Tab configuration
@@ -62,7 +65,8 @@ const ProjectOrderManagement = () => {
     { key: 'budget', label: 'Budget Projects', icon: MdAttachMoney, color: 'text-orange-600' },
     { key: 'recommended', label: 'Recommended Projects', icon: MdStar, color: 'text-pink-600' },
     { key: 'desiredLuxury', label: 'Desired Luxury', icon: MdStar, color: 'text-red-600' },
-    { key: 'budgetPlots', label: 'Budget Plots', icon: MdHome, color: 'text-teal-600' }
+    { key: 'budgetPlots', label: 'Budget Plots', icon: MdHome, color: 'text-teal-600' },
+    { key: 'farm', label: 'Farm Management', icon: MdLandscape, color: 'text-green-700' }
   ];
 
   // Load data from localStorage or API
@@ -74,7 +78,7 @@ const ProjectOrderManagement = () => {
     try {
       // First try to fetch from backend API
       const response = await api.get('/api/admin/project-orders');
-      
+
       if (response.data && response.data.success) {
         setProjectOrders(response.data.data);
         // Also save to localStorage as backup
@@ -151,6 +155,9 @@ const ProjectOrderManagement = () => {
         { id: 34, name: "Signature Sidhrawali", link: "/signature-global-plots/", image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/budgetplots/colors.jpg", order: 2, isActive: true },
         { id: 35, name: "BPTP Limited", link: "/bptp-plots-gurugram/", image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/budgetplots/bptp.webp", order: 3, isActive: true },
         { id: 36, name: "ORRIS Group", link: "/orris-plots-gurugram/", image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/budgetplots/Orris.jpg", order: 4, isActive: true }
+      ],
+      farm: [
+        { id: 37, name: "Naugaon Farm Houses", order: 1, isActive: true }
       ]
     });
   };
@@ -159,18 +166,18 @@ const ProjectOrderManagement = () => {
     try {
       // Save to backend API
       const response = await api.put('/api/admin/project-orders', { data: newOrders });
-      
+
       if (response.data && response.data.success) {
         setProjectOrders(newOrders);
         // Also save to localStorage as backup
         localStorage.setItem('projectOrders', JSON.stringify(newOrders));
-        toast.success('Project orders saved successfully!');
+        showToast.success('Project orders saved successfully!');
       } else {
         throw new Error('Failed to save project orders');
       }
     } catch (error) {
       console.error('Error saving project orders:', error);
-      toast.error('Error saving project orders');
+      showToast.error('Error saving project orders');
     }
   };
 
@@ -194,7 +201,7 @@ const ProjectOrderManagement = () => {
 
   const handleSave = () => {
     if (!formData.name.trim()) {
-      toast.error('Project name is required');
+      showToast.error('Project name is required');
       return;
     }
 
@@ -206,11 +213,13 @@ const ProjectOrderManagement = () => {
       const index = currentTabData.findIndex(item => item.id === editingItem.id);
       if (index !== -1) {
         currentTabData[index] = { ...formData, id: editingItem.id };
+        showToast.success('Project updated successfully!');
       }
     } else {
       // Add new item
       const newId = Math.max(...currentTabData.map(item => item.id), 0) + 1;
       currentTabData.push({ ...formData, id: newId });
+      showToast.success('Project added successfully!');
     }
 
     // Sort by order
@@ -227,6 +236,7 @@ const ProjectOrderManagement = () => {
       const newOrders = { ...projectOrders };
       newOrders[activeTab] = (newOrders[activeTab] || []).filter(item => item.id !== itemId);
       saveProjectOrders(newOrders);
+      showToast.success('Project deleted successfully!');
     }
   };
 
@@ -234,24 +244,32 @@ const ProjectOrderManagement = () => {
     const newOrders = { ...projectOrders };
     const item = (newOrders[activeTab] || []).find(item => item.id === itemId);
     if (item) {
+      const previousStatus = item.isActive;
       item.isActive = !item.isActive;
       saveProjectOrders(newOrders);
+      
+      // Show appropriate toast message
+      if (item.isActive) {
+        showToast.success('Project activated successfully!');
+      } else {
+        showToast.warning('Project deactivated successfully!');
+      }
     }
   };
 
   const handleReorder = (dragIndex, dropIndex) => {
     const newOrders = { ...projectOrders };
     const currentTabData = [...(newOrders[activeTab] || [])];
-    
+
     const draggedItem = currentTabData[dragIndex];
     currentTabData.splice(dragIndex, 1);
     currentTabData.splice(dropIndex, 0, draggedItem);
-    
+
     // Update order values
     currentTabData.forEach((item, index) => {
       item.order = index + 1;
     });
-    
+
     newOrders[activeTab] = currentTabData;
     saveProjectOrders(newOrders);
   };
@@ -265,7 +283,7 @@ const ProjectOrderManagement = () => {
     link.download = 'project-orders.json';
     link.click();
     URL.revokeObjectURL(url);
-    toast.success('Data exported successfully!');
+    showToast.success('Data exported successfully!');
   };
 
   const importData = (event) => {
@@ -277,9 +295,9 @@ const ProjectOrderManagement = () => {
           const data = JSON.parse(e.target.result);
           setProjectOrders(data);
           localStorage.setItem('projectOrders', JSON.stringify(data));
-          toast.success('Data imported successfully!');
+          showToast.success('Data imported successfully!');
         } catch (error) {
-          toast.error('Invalid file format');
+          showToast.error('Invalid file format');
         }
       };
       reader.readAsText(file);
@@ -339,11 +357,10 @@ const ProjectOrderManagement = () => {
                   <button
                     key={tab.key}
                     onClick={() => setActiveTab(tab.key)}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                      activeTab === tab.key
+                    className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${activeTab === tab.key
                         ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300'
                         : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600'
-                    }`}
+                      }`}
                   >
                     <Icon className={`text-lg ${tab.color}`} />
                     {tab.label}
@@ -438,11 +455,10 @@ const ProjectOrderManagement = () => {
                         </>
                       )}
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                          item.isActive 
-                            ? 'bg-green-100 text-green-800' 
+                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${item.isActive
+                            ? 'bg-green-100 text-green-800'
                             : 'bg-red-100 text-red-800'
-                        }`}>
+                          }`}>
                           {item.isActive ? 'Active' : 'Inactive'}
                         </span>
                       </td>
@@ -450,11 +466,10 @@ const ProjectOrderManagement = () => {
                         <div className="flex items-center gap-2">
                           <button
                             onClick={() => handleToggleStatus(item.id)}
-                            className={`p-2 rounded-lg transition-colors ${
-                              item.isActive 
-                                ? 'text-red-600 hover:bg-red-100' 
+                            className={`p-2 rounded-lg transition-colors ${item.isActive
+                                ? 'text-red-600 hover:bg-red-100'
                                 : 'text-green-600 hover:bg-green-100'
-                            }`}
+                              }`}
                             title={item.isActive ? 'Deactivate' : 'Activate'}
                           >
                             {item.isActive ? <MdVisibilityOff /> : <MdVisibility />}

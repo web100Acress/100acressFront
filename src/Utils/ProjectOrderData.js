@@ -5,12 +5,12 @@ export const getProjectOrderData = async () => {
   try {
     console.log('🌐 Fetching project orders from API...');
     // Use the configured api client which has proper CORS and auth setup
-    const response = await api.get('/api/project-orders');
+    const response = await api.get(`/api/project-orders?_t=${Date.now()}`);
     console.log('📡 API Response:', response.data);
-    
+
     // Handle different response formats
     let orderData = null;
-    
+
     if (response.data && response.data.data) {
       // Format: { data: { customOrders: { ... } } }
       if (response.data.data.customOrders) {
@@ -22,8 +22,8 @@ export const getProjectOrderData = async () => {
       // Format: { luxury: [...], trending: [...], ... }
       orderData = response.data;
     }
-    
-    if (orderData) {
+
+    if (orderData && (orderData.luxury || orderData.farm)) {
       // Cache the data in localStorage for offline use
       localStorage.setItem('projectOrders', JSON.stringify(orderData));
       console.log('✅ Project orders fetched from API and cached');
@@ -32,7 +32,7 @@ export const getProjectOrderData = async () => {
   } catch (error) {
     console.error('❌ Error fetching project orders from API:', error);
   }
-  
+
   // Fallback to localStorage if API fails
   try {
     console.log('📦 Trying localStorage fallback...');
@@ -44,7 +44,7 @@ export const getProjectOrderData = async () => {
   } catch (error) {
     console.error('❌ Error loading project orders from localStorage:', error);
   }
-  
+
   // Return default data if both API and localStorage fail
   console.log('📋 Using default project order data');
   return {
@@ -97,22 +97,37 @@ export const getProjectOrderData = async () => {
       { id: 32, name: "Experion Windchants Nova", order: 7, isActive: true }
     ],
     budgetPlots: [
-      { id: 33, name: "Reliance Met City", link: "/reliance-met-city/", 
+      {
+        id: 33, name: "Reliance Met City", link: "/reliance-met-city/",
         frontImage: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/reliance-met-city.webp",
         thumbnailImage: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/thumbnails/reliance-met-city-thumb.webp",
-        order: 1, isActive: true },
-      { id: 34, name: "Signature City Of Colours", link: "/signature-global-plots/", 
+        order: 1, isActive: true
+      },
+      {
+        id: 34, name: "Signature City Of Colours", link: "/signature-global-plots/",
         frontImage: "https://d16gdc5rm7f21b.cloudfront.net/100acre/budgetplots/colors.jpg",
         thumbnailImage: "https://d16gdc5rm7f21b.cloudfront.net/100acre/thumbnails/signature-colors-thumb.jpg",
-        order: 2, isActive: true },
-      { id: 35, name: "Trevoc Plots Sonipat", link: "/bptp-plots-gurugram/", 
+        order: 2, isActive: true
+      },
+      {
+        id: 35, name: "Trevoc Plots Sonipat", link: "/bptp-plots-gurugram/",
         frontImage: "https://d16gdc5rm7f21b.cloudfront.net/100acre/budgetplots/bptp.webp",
         thumbnailImage: "https://d16gdc5rm7f21b.cloudfront.net/100acre/thumbnails/trevoc-sonipat-thumb.webp",
-        order: 3, isActive: true },
-      { id: 36, name: "JMS The Pearl", link: "/jms-the-pearl/", 
+        order: 3, isActive: true
+      },
+      {
+        id: 36, name: "JMS The Pearl", link: "/jms-the-pearl/",
         frontImage: "https://d16gdc5rm7f21b.cloudfront.net/100acre/budgetplots/Orris.jpg",
         thumbnailImage: "https://d16gdc5rm7f21b.cloudfront.net/100acre/thumbnails/jms-pearl-thumb.jpg",
-        order: 4, isActive: true }
+        order: 4, isActive: true
+      }
+    ],
+    farm: [
+      { id: 37, name: "Raheja Riyasat Hills", order: 1, isActive: true },
+      { id: 38, name: "Central Park Farmhouse", order: 2, isActive: true },
+      { id: 39, name: "Ram Rattan Aravali Retreat", order: 3, isActive: true },
+      { id: 40, name: "Ram Rattan Green Step Farms", order: 4, isActive: true },
+      { id: 41, name: "Naugaon Farm Houses", order: 5, isActive: true }
     ]
   };
 };
@@ -156,18 +171,18 @@ export const getRecommendedDesiredOrder = async () => {
   const data = await getProjectOrderData();
   console.log('📋 Project order data:', data);
   let recommended = data.recommended.filter(item => item.isActive).map(item => item.name);
-  
+
   // If we get generic names from the API, use the correct project names
   if (recommended.includes("Recommended Project 1") || recommended.includes("Recommended Project 2")) {
     console.log('🔄 Using fallback project names for recommended');
     recommended = [
       "ROF Pravasa",
-      "Signature Global Cloverdale SPR", 
+      "Signature Global Cloverdale SPR",
       "Experion One 42",
       "Experion The Trillion"
     ];
   }
-  
+
   console.log('📋 Recommended order result:', recommended);
   return recommended;
 };
@@ -177,38 +192,43 @@ export const getDesiredLuxuryOrder = async () => {
   return data.desiredLuxury.filter(item => item.isActive).map(item => item.name);
 };
 
+export const getFarmDesiredOrder = async () => {
+  const data = await getProjectOrderData();
+  return data.farm.filter(item => item.isActive).map(item => item.name);
+};
+
 export const getBudgetPlots = async () => {
   try {
     // Try to fetch actual project data from API
     const api = (await import('../config/apiClient')).default;
     const response = await api.get('/project/viewAll/data');
-    
+
     if (response.data && response.data.data) {
       const allProjects = response.data.data;
-      
+
       // Get the desired order from project orders
       const orderData = await getProjectOrderData();
       const budgetPlotsOrder = orderData.budgetPlots.filter(item => item.isActive);
-      
+
       // Map the projects to their order
       const orderedProjects = [];
       budgetPlotsOrder.forEach(orderItem => {
         // Find project by name (case-insensitive match)
-        const project = allProjects.find(p => 
-          p.projectName && 
+        const project = allProjects.find(p =>
+          p.projectName &&
           p.projectName.toLowerCase().replace(/\s+/g, '') === orderItem.name.toLowerCase().replace(/\s+/g, '')
         );
-        
+
         if (project) {
           // Build the thumbnail URL from the database structure
-          const thumbnailUrl = project.thumbnailImage?.public_id 
+          const thumbnailUrl = project.thumbnailImage?.public_id
             ? `https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/${project.thumbnailImage.public_id}`
             : (project.thumbnailImage?.url || project.thumbnailImage?.cdn_url);
-            
+
           const frontImageUrl = project.frontImage?.public_id
             ? `https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/${project.frontImage.public_id}`
             : (project.frontImage?.url || project.frontImage?.cdn_url);
-          
+
           orderedProjects.push({
             title: project.projectName,
             link: orderItem.link || `/${project.project_url}/`,
@@ -227,13 +247,13 @@ export const getBudgetPlots = async () => {
           });
         }
       });
-      
+
       return orderedProjects;
     }
   } catch (error) {
     console.error('Error fetching budget plots from API:', error);
   }
-  
+
   // Fallback to static data
   const data = await getProjectOrderData();
   return data.budgetPlots.filter(item => item.isActive).map(item => ({
