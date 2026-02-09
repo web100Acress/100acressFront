@@ -8,20 +8,24 @@ import { useDispatch } from "react-redux";
 import { maxprice, minprice } from "../../Redux/slice/PriceBasedSlice";
 // import { Modal } from "antd"; // removed old user menu modal
 import { useJwt } from "react-jwt";
-import LeftSection from "./LeftSection";
-import CenterLogo from "./CenterLogo";
-import RightSection from "./RightSection";
-import SearchBarOverlay from "./SearchBarOverlay";
-import MegaMenu from "./MegaMenu";
-import InsightsMega from "../../Insight/pages/InsightsMega";
-// import { SpacerComponent } from "./SpacerComponent"; // unused spacer
+import NavbarDesktop from "./NavbarDesktop";
+import NavbarMobile from "./NavbarMobile";
+import CenterLogo from "./centerLogo/CenterLogo";
+import RightSection from "./rightsection/RightSection";
+import SearchBarOverlay from "./searchoverlay/SearchBarOverlay";
 import { getApiBase } from "../../config/apiBase";
+import { CITY_OPTIONS, CityIcons } from "./shared/navigationData.jsx";
+import { useScreenSize } from "./shared/screenSizeDetector";
 
 export default function Navbar() {
   const history = useNavigate();
   const location = useLocation();
   const isHome = location.pathname === "/";
   const isBlogPage = location.pathname.startsWith("/blog");
+  
+  // Screen size detection for responsive navigation
+  const { screenSize, config, isMobile, isTablet, isDesktop } = useScreenSize();
+  
   // Safely read JWT from localStorage (may be raw string or JSON-quoted)
   let usertoken = (typeof window !== 'undefined' && localStorage.getItem("myToken")) || "";
   if (usertoken && usertoken.startsWith('"') && usertoken.endsWith('"')) {
@@ -140,113 +144,6 @@ export default function Navbar() {
     return () => window.removeEventListener('resize', compute);
   }, []);
 
-  // City filter state
-  // Minimal inline SVG icon set (monochrome outline) for cities
-  const CityIcons = {
-    Pune: (
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <rect x="3" y="9" width="4" height="11"/>
-        <rect x="9" y="5" width="6" height="15"/>
-        <path d="M2 20h20"/>
-      </svg>
-    ),
-    Gurugram: (
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <rect x="3" y="10" width="6" height="10" rx="1"/>
-        <rect x="11" y="6" width="6" height="14" rx="1"/>
-        <path d="M2 20h20"/>
-      </svg>
-    ),
-    Delhi: (
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M12 3l5 5H7l5-5Z"/>
-        <path d="M6 20V10h12v10"/>
-        <path d="M2 20h20"/>
-      </svg>
-    ),
-    Noida: (
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <rect x="4" y="8" width="4" height="12"/>
-        <rect x="10" y="4" width="4" height="16"/>
-        <rect x="16" y="10" width="4" height="10"/>
-        <path d="M2 20h20"/>
-      </svg>
-    ),
-    Goa: (
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M4 14c2 0 3-2 5-2s3 2 5 2 3-2 5-2"/>
-        <path d="M2 20h20"/>
-        <path d="M6 10l2-3 2 3"/>
-      </svg>
-    ),
-    Ayodhya: (
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M4 12l4-4 4 4 4-4 4 4"/>
-        <path d="M4 12v8h16v-8"/>
-        <path d="M2 20h20"/>
-      </svg>
-    ),
-    Mumbai: (
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <rect x="3" y="8" width="5" height="12"/>
-        <rect x="9" y="4" width="6" height="16"/>
-        <rect x="16" y="10" width="5" height="10"/>
-        <path d="M2 20h20"/>
-      </svg>
-    ),
-    Panipat: (
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M6 20V8l6-3 6 3v12"/>
-        <path d="M2 20h20"/>
-      </svg>
-    ),
-    Panchkula: (
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M4 20V9l4-2 4 2v11"/>
-        <path d="M12 20V9l4-2 4 2v11"/>
-        <path d="M2 20h20"/>
-      </svg>
-    ),
-    Kasauli: (
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M3 17l5-7 4 5 3-4 6 8"/>
-        <path d="M2 20h20"/>
-      </svg>
-    ),
-    Sonipat: (
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="12" cy="8" r="3"/>
-        <path d="M5 20c1.5-3 4.5-4.5 7-4.5S17.5 17 19 20"/>
-      </svg>
-    ),
-    Karnal: (
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <rect x="5" y="9" width="14" height="10" rx="1"/>
-        <path d="M9 9V6h6v3"/>
-      </svg>
-    ),
-    Jalandhar: (
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M4 12h16"/>
-        <path d="M6 20V8h12v12"/>
-        <path d="M2 20h20"/>
-      </svg>
-    ),
-    Pushkar: (
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M12 5l3 3-3 3-3-3 3-3Z"/>
-        <path d="M4 20v-6h16v6"/>
-        <path d="M2 20h20"/>
-      </svg>
-    ),
-    Dubai: (
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M8 20V4l4-2 4 2v16"/>
-        <path d="M2 20h20"/>
-      </svg>
-    ),
-  };
-
   // Fast navigate helper for menu clicks
   const go = (path) => {
     try {
@@ -328,24 +225,6 @@ export default function Navbar() {
   useEffect(() => {
     fetchAndSetAvatar();
   }, [token, userIdForEdit]);
-  const CITY_OPTIONS = [
-    { name: "Gurugram", path: "/projects-in-gurugram/" },
-    { name: "Delhi", path: "/projects-in-delhi/" },
-    { name: "Noida", path: "/projects-in-noida/" },
-    { name: "Goa", path: "/projects-in-goa/" },
-    { name: "Ayodhya", path: "/projects-in-ayodhya/" },
-    { name: "Mumbai", path: "/projects-in-mumbai/" },
-    { name: "Panipat", path: "/projects-in-panipat/" },
-    { name: "Panchkula", path: "/projects-in-panchkula/" },
-    { name: "Kasauli", path: "/projects-in-kasauli/" },
-    { name: "Sonipat", path: "/projects-in-sonipat/" },
-    { name: "Alwar", path: "/projects-in-alwar/" },
-    { name: "Karnal", path: "/projects-in-karnal/" },
-    { name: "Pune", path: "/projects-in-pune/" },
-    { name: "Jalandhar", path: "/projects-in-jalandhar/" },
-    { name: "Pushkar", path: "/projects-in-pushkar/" },
-    // { name: "Dubai", path: "/projects-in-dubai/" },
-  ];
   const [selectedCity, setSelectedCity] = useState(
     (typeof window !== 'undefined' && localStorage.getItem("selectedCity")) || ""
   );
@@ -612,39 +491,47 @@ export default function Navbar() {
             gridColumn={{ base: 1, md: 'auto' }}
             alignSelf={{ base: 'center', md: 'center' }}
           >
-          <LeftSection
-            colorChange={isHome ? colorChange : colorChange}
-            isSearchOpen={isSearchOpen}
-            isHome={isHome}
-            onToggle={onOpen}
-            CITY_OPTIONS={CITY_OPTIONS}
-            CityIcons={CityIcons}
-            handleCitySelect={handleCitySelect}
-            handlePriceClick={handlePriceClick}
-            hideResale={hideResale}
-            hideRental={hideRental}
-            hideProjectType={hideProjectType}
-            hideProjectStatus={hideProjectStatus}
-            hideBudget={hideBudget}
-            hideCity={hideCity}
-            showHamburgerOnDesktop={showHamburger}
-            forceHamburger={isCompactTablet}
-            onOpenInsights={insightsDisclosure.onOpen}
-            onCloseInsights={insightsDisclosure.onClose}
-            isInsightsOpen={insightsDisclosure.isOpen}
-            onOpenCityMega={cityDisclosure.onOpen}
-            onCloseCityMega={cityDisclosure.onClose}
-            isCityMegaOpen={cityDisclosure.isOpen}
-            onOpenBudgetMega={budgetDisclosure.onOpen}
-            onCloseBudgetMega={budgetDisclosure.onClose}
-            isBudgetMegaOpen={budgetDisclosure.isOpen}
-            onOpenStatusMega={statusDisclosure.onOpen}
-            onCloseStatusMega={statusDisclosure.onClose}
-            isStatusMegaOpen={statusDisclosure.isOpen}
-            onOpenTypeMega={typeDisclosure.onOpen}
-            onCloseTypeMega={typeDisclosure.onClose}
-            isTypeMegaOpen={typeDisclosure.isOpen}
-          />
+            {/* Mobile Navigation - Only show on actual mobile devices */}
+            {isMobile ? (
+              <NavbarMobile
+                colorChange={colorChange}
+                isSearchOpen={isSearchOpen}
+                isHome={isHome}
+                CITY_OPTIONS={CITY_OPTIONS}
+                CityIcons={CityIcons}
+                handleCitySelect={handleCitySelect}
+                handlePriceClick={handlePriceClick}
+                // Show items in hamburger when they're hidden from desktop
+                hideResale={config && config.showResale ? false : true}
+                hideRental={config && config.showRental ? false : true}
+                hideProjectType={config && config.showProjectType ? false : true}
+                hideProjectStatus={config && config.showProjectStatus ? false : true}
+                hideBudget={config && config.showBudgetDropdown ? false : true}
+                hideCity={config && config.showCityDropdown ? false : true}
+                showHamburgerOnDesktop={showHamburger}
+                forceHamburger={config && config.showHamburger}
+              />
+            ) : (
+              /* Desktop Navigation - Show on desktop with compact hamburger for hidden items */
+              <NavbarDesktop
+                colorChange={colorChange}
+                isSearchOpen={isSearchOpen}
+                isHome={isHome}
+                CITY_OPTIONS={CITY_OPTIONS}
+                CityIcons={CityIcons}
+                handleCitySelect={handleCitySelect}
+                handlePriceClick={handlePriceClick}
+                // Hide items from desktop when config says so
+                hideResale={!(config && config.showResale)}
+                hideRental={!(config && config.showRental)}
+                hideProjectType={!(config && config.showProjectType)}
+                hideProjectStatus={!(config && config.showProjectStatus)}
+                hideBudget={!(config && config.showBudgetDropdown)}
+                hideCity={!(config && config.showCityDropdown)}
+                showHamburgerOnDesktop={showHamburger}
+                forceHamburger={config && config.showHamburger}
+              />
+            )}
           </Box>
 
           {/* Right: Search, Profile & List Property */}
@@ -692,9 +579,6 @@ export default function Navbar() {
             handleSearchKeyDown={handleSearchKeyDown}
             submitSearch={submitSearch}
           />
-          {/* Desktop Mega Menu for SEARCH PROJECTS */}
-          <MegaMenu isOpen={isOpen} onClose={onClose} handlePriceClick={handlePriceClick} />
-          <InsightsMega isOpen={insightsDisclosure.isOpen} onClose={insightsDisclosure.onClose} />
         </Box>
       </Wrapper>
     );

@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import Navbar from "../../aadharhomes/navbar/Navbar";
-import InsightsSidebar from "../components/InsightsSidebar";
 import {
   Search, BookOpen, Clock, User, ArrowRight, Bookmark, Share2, Flame,
   Home, TrendingUp, Calculator, Hammer, Star, Download, Printer, Moon, Sun,
@@ -155,7 +153,7 @@ const InsightsGuides = () => {
       .filter(g =>
         g.id !== currentGuide.id &&
         (g.category === currentGuide.category ||
-         g.tags.some(tag => currentGuide.tags.includes(tag)))
+          g.tags.some(tag => currentGuide.tags.includes(tag)))
       )
       .slice(0, 3);
   };
@@ -215,9 +213,8 @@ const InsightsGuides = () => {
     return (
       <motion.div
         onClick={() => onClick(guide.id)}
-        className={`group relative bg-white rounded-xl border border-gray-100 overflow-hidden transition-all duration-200 hover:shadow-md ${
-          isSelected ? 'ring-2 ring-blue-500' : 'hover:border-blue-200'
-        }`}
+        className={`group relative bg-white rounded-xl border border-gray-100 overflow-hidden transition-all duration-200 hover:shadow-md ${isSelected ? 'ring-2 ring-blue-500' : 'hover:border-blue-200'
+          }`}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
@@ -389,292 +386,283 @@ const InsightsGuides = () => {
   }, [darkMode]);
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col transition-colors duration-200">
-      <Navbar />
-      <div className="flex flex-1 overflow-hidden pt-16">
-        <InsightsSidebar />
-        <main className="flex-1 overflow-y-auto bg-gray-50 p-4 md:p-6">
-          <div className="max-w-7xl mx-auto w-full">
-            {/* Hero Section */}
-            <div className="bg-gradient-to-r from-blue-600 to-blue-800 dark:from-blue-800 dark:to-blue-900 rounded-2xl p-8 text-white mb-4 overflow-hidden relative">
-              <div className="relative z-10 max-w-2xl">
-                <h1 className="text-3xl md:text-4xl font-bold mb-3">Expert Guides & Resources</h1>
-                <p className="text-blue-100 text-lg mb-6">Everything you need to know about real estate, from buying your first home to advanced investment strategies.</p>
-                <div className="relative max-w-xl">
-                  <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-blue-400" />
-                  <input
-                    type="text"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Search guides by topic, keyword, or category..."
-                    className="w-full pl-12 pr-4 py-3 text-gray-800 rounded-lg focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-blue-600 transition-all"
-                  />
-                </div>
+    <div className="min-h-screen bg-transparent dark:bg-gray-900 transition-colors duration-200">
+      <main className="flex-1 bg-transparent p-4 md:p-6">
+        <div className="max-w-7xl mx-auto w-full">
+          {/* Hero Section */}
+          <div className="bg-gradient-to-r from-blue-600 to-blue-800 dark:from-blue-800 dark:to-blue-900 rounded-2xl p-8 text-white mb-4 overflow-hidden relative">
+            <div className="relative z-10 max-w-2xl">
+              <h1 className="text-3xl md:text-4xl font-bold mb-3">Expert Guides & Resources</h1>
+              <p className="text-blue-100 text-lg mb-6">Everything you need to know about real estate, from buying your first home to advanced investment strategies.</p>
+              <div className="relative max-w-xl">
+                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-blue-400" />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search guides by topic, keyword, or category..."
+                  className="w-full pl-12 pr-4 py-3 text-gray-800 rounded-lg focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-blue-600 transition-all"
+                />
               </div>
-              <div className="absolute right-0 top-0 h-full w-1/3 bg-gradient-to-l from-blue-700 to-transparent opacity-50"></div>
             </div>
+            <div className="absolute right-0 top-0 h-full w-1/3 bg-gradient-to-l from-blue-700 to-transparent opacity-50"></div>
+          </div>
 
-            {/* Featured Guides */}
-            {filteredGuides.some(g => g.isFeatured) && (
-              <div className="mb-8">
-                <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-xl font-bold text-gray-900">Featured Guides</h2>
-                  <button className="text-sm font-medium text-blue-600 hover:text-blue-800 flex items-center">
-                    View all
-                    <ArrowRight className="ml-1 h-4 w-4" />
-                  </button>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
-                  <AnimatePresence>
-                    {filteredGuides
-                      .filter(guide => guide.isFeatured)
-                      .map((guide) => (
-                        <GuideCard
-                          key={guide.id}
-                          guide={guide}
-                          isSelected={selectedGuide === guide.id}
-                          onClick={setSelectedGuide}
-                        />
-                      ))}
-                  </AnimatePresence>
-                </div>
-              </div>
-            )}
-
-            {/* Categories Filter */}
-            <div className="mb-4">
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">Filter by Category</h3>
-                <button
-                  onClick={() => setShowFilters(!showFilters)}
-                  className="text-sm text-blue-600 dark:text-blue-400 hover:underline flex items-center"
-                >
-                  <Filter className="h-3.5 w-3.5 mr-1" />
-                  {showFilters ? 'Hide Filters' : 'More Filters'}
+          {/* Featured Guides */}
+          {filteredGuides.some(g => g.isFeatured) && (
+            <div className="mb-8">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-xl font-bold text-gray-900">Featured Guides</h2>
+                <button className="text-sm font-medium text-blue-600 hover:text-blue-800 flex items-center">
+                  View all
+                  <ArrowRight className="ml-1 h-4 w-4" />
                 </button>
               </div>
-
-              <div className="relative">
-                <div className="flex space-x-2 pb-2 overflow-x-auto scrollbar-hide">
-                  {categories.map(category => (
-                    <button
-                      key={category}
-                      onClick={() => setActiveCategory(category)}
-                      className={`px-4 py-2 text-sm font-medium rounded-full whitespace-nowrap transition-colors ${
-                        activeCategory === category
-                          ? 'bg-blue-600 text-white'
-                          : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
-                      }`}
-                    >
-                      {category}
-                    </button>
-                  ))}
-                </div>
-
-                {/* Scroll indicators */}
-                <div className="absolute left-0 top-0 bottom-0 w-6 bg-gradient-to-r from-gray-50 dark:from-gray-900 to-transparent pointer-events-none"></div>
-                <div className="absolute right-0 top-0 bottom-0 w-6 bg-gradient-to-l from-gray-50 dark:from-gray-900 to-transparent pointer-events-none"></div>
-              </div>
-
-              {/* Advanced Filters */}
-              {showFilters && (
-                <div className="mt-4 p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Level</label>
-                      <div className="space-y-2">
-                        {['Beginner', 'Intermediate', 'Advanced'].map(level => (
-                          <label key={level} className="flex items-center">
-                            <input
-                              type="checkbox"
-                              checked={filters.level.includes(level)}
-                              onChange={(e) => {
-                                setFilters(prev => ({
-                                  ...prev,
-                                  level: e.target.checked
-                                    ? [...prev.level, level]
-                                    : prev.level.filter(l => l !== level)
-                                }));
-                              }}
-                              className="h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
-                            />
-                            <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">{level}</span>
-                          </label>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Read Time</label>
-                      <select
-                        value={filters.readTime}
-                        onChange={(e) => setFilters(prev => ({ ...prev, readTime: e.target.value }))}
-                        className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
-                      >
-                        <option value="any">Any Length</option>
-                        <option value="short">Quick Read (Under 5 min)</option>
-                        <option value="medium">Medium (5-15 min)</option>
-                        <option value="long">Long Read (15+ min)</option>
-                      </select>
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Sort By</label>
-                      <select
-                        value={filters.sortBy}
-                        onChange={(e) => setFilters(prev => ({ ...prev, sortBy: e.target.value }))}
-                        className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
-                      >
-                        <option value="newest">Newest First</option>
-                        <option value="popular">Most Popular</option>
-                        <option value="title">Title (A-Z)</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  <div className="mt-4 flex justify-end">
-                    <button
-                      onClick={() => {
-                        setFilters({
-                          level: [],
-                          readTime: 'any',
-                          sortBy: 'newest'
-                        });
-                        setActiveCategory('all');
-                      }}
-                      className="text-sm text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white mr-4"
-                    >
-                      Reset Filters
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* All Guides */}
-            <div className="mt-12">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-gray-900">All Guides</h2>
-                <div className="flex items-center gap-3">
-                  <span className="text-sm text-gray-600">Sort by:</span>
-                  <select
-                    className="text-sm border border-gray-300 rounded-md px-3 py-1.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-                    value={filters.sortBy}
-                    onChange={(e) => setFilters({...filters, sortBy: e.target.value})}
-                  >
-                    <option value="newest">Newest First</option>
-                    <option value="popular">Most Popular</option>
-                    <option value="title">Title (A-Z)</option>
-                  </select>
-                </div>
-              </div>
-
-              {filteredGuides.length > 0 ? (
-                <>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {currentGuides.map((guide) => (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+                <AnimatePresence>
+                  {filteredGuides
+                    .filter(guide => guide.isFeatured)
+                    .map((guide) => (
                       <GuideCard
                         key={guide.id}
                         guide={guide}
-                        isSelected={selectedGuide?.id === guide.id}
+                        isSelected={selectedGuide === guide.id}
                         onClick={setSelectedGuide}
                       />
                     ))}
+                </AnimatePresence>
+              </div>
+            </div>
+          )}
+
+          {/* Categories Filter */}
+          <div className="mb-4">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">Filter by Category</h3>
+              <button
+                onClick={() => setShowFilters(!showFilters)}
+                className="text-sm text-blue-600 dark:text-blue-400 hover:underline flex items-center"
+              >
+                <Filter className="h-3.5 w-3.5 mr-1" />
+                {showFilters ? 'Hide Filters' : 'More Filters'}
+              </button>
+            </div>
+
+            <div className="relative">
+              <div className="flex space-x-2 pb-2 overflow-x-auto scrollbar-hide">
+                {categories.map(category => (
+                  <button
+                    key={category}
+                    onClick={() => setActiveCategory(category)}
+                    className={`px-4 py-2 text-sm font-medium rounded-full whitespace-nowrap transition-colors ${activeCategory === category
+                      ? 'bg-blue-600 text-white'
+                      : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                      }`}
+                  >
+                    {category}
+                  </button>
+                ))}
+              </div>
+
+              {/* Scroll indicators */}
+              <div className="absolute left-0 top-0 bottom-0 w-6 bg-gradient-to-r from-gray-50 dark:from-gray-900 to-transparent pointer-events-none"></div>
+              <div className="absolute right-0 top-0 bottom-0 w-6 bg-gradient-to-l from-gray-50 dark:from-gray-900 to-transparent pointer-events-none"></div>
+            </div>
+
+            {/* Advanced Filters */}
+            {showFilters && (
+              <div className="mt-4 p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Level</label>
+                    <div className="space-y-2">
+                      {['Beginner', 'Intermediate', 'Advanced'].map(level => (
+                        <label key={level} className="flex items-center">
+                          <input
+                            type="checkbox"
+                            checked={filters.level.includes(level)}
+                            onChange={(e) => {
+                              setFilters(prev => ({
+                                ...prev,
+                                level: e.target.checked
+                                  ? [...prev.level, level]
+                                  : prev.level.filter(l => l !== level)
+                              }));
+                            }}
+                            className="h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                          />
+                          <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">{level}</span>
+                        </label>
+                      ))}
+                    </div>
                   </div>
 
-                  {/* Pagination */}
-                  {totalPages > 1 && (
-                    <div className="mt-10 flex justify-center">
-                      <nav className="flex items-center gap-1" aria-label="Pagination">
-                        <button
-                          onClick={() => paginate(Math.max(1, currentPage - 1))}
-                          disabled={currentPage === 1}
-                          className={`px-3 py-1.5 rounded-md ${
-                            currentPage === 1
-                              ? 'text-gray-400 cursor-not-allowed'
-                              : 'text-gray-700 hover:bg-gray-100'
-                          }`}
-                        >
-                          <ChevronLeft className="h-5 w-5" />
-                        </button>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Read Time</label>
+                    <select
+                      value={filters.readTime}
+                      onChange={(e) => setFilters(prev => ({ ...prev, readTime: e.target.value }))}
+                      className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
+                    >
+                      <option value="any">Any Length</option>
+                      <option value="short">Quick Read (Under 5 min)</option>
+                      <option value="medium">Medium (5-15 min)</option>
+                      <option value="long">Long Read (15+ min)</option>
+                    </select>
+                  </div>
 
-                        {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                          // Show first 2 pages, current page with neighbors, and last 2 pages
-                          let pageNum;
-                          if (totalPages <= 5) {
-                            pageNum = i + 1;
-                          } else if (currentPage <= 3) {
-                            pageNum = i + 1;
-                          } else if (currentPage >= totalPages - 2) {
-                            pageNum = totalPages - 4 + i;
-                          } else {
-                            pageNum = currentPage - 2 + i;
-                          }
-
-                          return (
-                            <button
-                              key={pageNum}
-                              onClick={() => paginate(pageNum)}
-                              className={`px-3 py-1.5 rounded-md text-sm font-medium ${
-                                currentPage === pageNum
-                                  ? 'bg-blue-600 text-white'
-                                  : 'text-gray-700 hover:bg-gray-100'
-                              }`}
-                            >
-                              {pageNum}
-                            </button>
-                          );
-                        })}
-
-                        {totalPages > 5 && currentPage < totalPages - 2 && (
-                          <span className="px-2 py-1.5 text-gray-500">...</span>
-                        )}
-
-                        {totalPages > 5 && currentPage < totalPages - 2 && (
-                          <button
-                            onClick={() => paginate(totalPages)}
-                            className={`px-3 py-1.5 rounded-md text-sm font-medium ${
-                              currentPage === totalPages
-                                ? 'bg-blue-600 text-white'
-                                : 'text-gray-700 hover:bg-gray-100'
-                            }`}
-                          >
-                            {totalPages}
-                          </button>
-                        )}
-
-                        <button
-                          onClick={() => paginate(Math.min(totalPages, currentPage + 1))}
-                          disabled={currentPage === totalPages}
-                          className={`px-3 py-1.5 rounded-md ${
-                            currentPage === totalPages
-                              ? 'text-gray-400 cursor-not-allowed'
-                              : 'text-gray-700 hover:bg-gray-100'
-                          }`}
-                        >
-                          <ChevronRight className="h-5 w-5" />
-                        </button>
-                      </nav>
-
-                      <div className="mt-4 text-center text-sm text-gray-500">
-                        Showing {indexOfFirstGuide + 1}-{Math.min(indexOfLastGuide, filteredGuides.length)} of {filteredGuides.length} guides
-                      </div>
-                    </div>
-                  )}
-                </>
-              ) : (
-                <div className="text-center py-12">
-                  <div className="mx-auto h-16 w-16 text-gray-400 mb-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Sort By</label>
+                    <select
+                      value={filters.sortBy}
+                      onChange={(e) => setFilters(prev => ({ ...prev, sortBy: e.target.value }))}
+                      className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
+                    >
+                      <option value="newest">Newest First</option>
+                      <option value="popular">Most Popular</option>
+                      <option value="title">Title (A-Z)</option>
+                    </select>
                   </div>
                 </div>
-              )}
-            </div>
+
+                <div className="mt-4 flex justify-end">
+                  <button
+                    onClick={() => {
+                      setFilters({
+                        level: [],
+                        readTime: 'any',
+                        sortBy: 'newest'
+                      });
+                      setActiveCategory('all');
+                    }}
+                    className="text-sm text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white mr-4"
+                  >
+                    Reset Filters
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
-        </main>
-      </div>
+
+          {/* All Guides */}
+          <div className="mt-12">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-bold text-gray-900">All Guides</h2>
+              <div className="flex items-center gap-3">
+                <span className="text-sm text-gray-600">Sort by:</span>
+                <select
+                  className="text-sm border border-gray-300 rounded-md px-3 py-1.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                  value={filters.sortBy}
+                  onChange={(e) => setFilters({ ...filters, sortBy: e.target.value })}
+                >
+                  <option value="newest">Newest First</option>
+                  <option value="popular">Most Popular</option>
+                  <option value="title">Title (A-Z)</option>
+                </select>
+              </div>
+            </div>
+
+            {filteredGuides.length > 0 ? (
+              <>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {currentGuides.map((guide) => (
+                    <GuideCard
+                      key={guide.id}
+                      guide={guide}
+                      isSelected={selectedGuide?.id === guide.id}
+                      onClick={setSelectedGuide}
+                    />
+                  ))}
+                </div>
+
+                {/* Pagination */}
+                {totalPages > 1 && (
+                  <div className="mt-10 flex justify-center">
+                    <nav className="flex items-center gap-1" aria-label="Pagination">
+                      <button
+                        onClick={() => paginate(Math.max(1, currentPage - 1))}
+                        disabled={currentPage === 1}
+                        className={`px-3 py-1.5 rounded-md ${currentPage === 1
+                          ? 'text-gray-400 cursor-not-allowed'
+                          : 'text-gray-700 hover:bg-gray-100'
+                          }`}
+                      >
+                        <ChevronLeft className="h-5 w-5" />
+                      </button>
+
+                      {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                        // Show first 2 pages, current page with neighbors, and last 2 pages
+                        let pageNum;
+                        if (totalPages <= 5) {
+                          pageNum = i + 1;
+                        } else if (currentPage <= 3) {
+                          pageNum = i + 1;
+                        } else if (currentPage >= totalPages - 2) {
+                          pageNum = totalPages - 4 + i;
+                        } else {
+                          pageNum = currentPage - 2 + i;
+                        }
+
+                        return (
+                          <button
+                            key={pageNum}
+                            onClick={() => paginate(pageNum)}
+                            className={`px-3 py-1.5 rounded-md text-sm font-medium ${currentPage === pageNum
+                              ? 'bg-blue-600 text-white'
+                              : 'text-gray-700 hover:bg-gray-100'
+                              }`}
+                          >
+                            {pageNum}
+                          </button>
+                        );
+                      })}
+
+                      {totalPages > 5 && currentPage < totalPages - 2 && (
+                        <span className="px-2 py-1.5 text-gray-500">...</span>
+                      )}
+
+                      {totalPages > 5 && currentPage < totalPages - 2 && (
+                        <button
+                          onClick={() => paginate(totalPages)}
+                          className={`px-3 py-1.5 rounded-md text-sm font-medium ${currentPage === totalPages
+                            ? 'bg-blue-600 text-white'
+                            : 'text-gray-700 hover:bg-gray-100'
+                            }`}
+                        >
+                          {totalPages}
+                        </button>
+                      )}
+
+                      <button
+                        onClick={() => paginate(Math.min(totalPages, currentPage + 1))}
+                        disabled={currentPage === totalPages}
+                        className={`px-3 py-1.5 rounded-md ${currentPage === totalPages
+                          ? 'text-gray-400 cursor-not-allowed'
+                          : 'text-gray-700 hover:bg-gray-100'
+                          }`}
+                      >
+                        <ChevronRight className="h-5 w-5" />
+                      </button>
+                    </nav>
+
+                    <div className="mt-4 text-center text-sm text-gray-500">
+                      Showing {indexOfFirstGuide + 1}-{Math.min(indexOfLastGuide, filteredGuides.length)} of {filteredGuides.length} guides
+                    </div>
+                  </div>
+                )}
+              </>
+            ) : (
+              <div className="text-center py-12">
+                <div className="mx-auto h-16 w-16 text-gray-400 mb-4">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </main>
     </div>
   );
 };

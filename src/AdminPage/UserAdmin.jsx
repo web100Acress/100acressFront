@@ -4,6 +4,7 @@ import Sidebar from "./Sidebar";
 import Tippy from "@tippyjs/react";
 import { Link } from "react-router-dom";
 import { MdPeople, MdSearch, MdVisibility } from "react-icons/md";
+import showToast from "../Utils/toastUtils";
 import "tippy.js/dist/tippy.css";
 import "tippy.js/animations/scale.css";
 // import { API_ROUTES } from "../Redux/utils/Constant_Service";
@@ -77,6 +78,7 @@ const UserAdmin = () => {
 
   useEffect(() => {
     const fetchData = async () => {
+      showToast.loading('Loading users...', { id: 'loadUsers' });
       try {
         const myToken = localStorage.getItem("myToken");
         const res = await api.get("/postPerson/view/allusers", {
@@ -91,8 +93,12 @@ const UserAdmin = () => {
           role: canonicalizeRole(u.role),
         }));
         setViewAll(normalized);
+        showToast.dismiss('loadUsers');
+        showToast.success(`Loaded ${normalized.length} users successfully!`);
       } catch (error) {
         console.log("❌ Failed to fetch users:", error);
+        showToast.dismiss('loadUsers');
+        showToast.error("Failed to load users. Please try again.");
       }
     };
     fetchData();
@@ -131,12 +137,21 @@ const UserAdmin = () => {
 
   // Verify email (optimistic UI)
   const handleVerifyEmail = async (userId) => {
+    const user = viewAll.find(u => u._id === userId);
+    const userName = user?.name || user?.email || 'this user';
+    
+    // Show confirmation dialog
+    const confirmed = window.confirm(`Are you sure you want to verify email for ${userName}?`);
+    if (!confirmed) return;
+
     // optimistic: set emailVerified true locally
     const prev = viewAll;
     setViewAll((list) =>
       list.map((u) => (u._id === userId ? { ...u, emailVerified: true } : u))
     );
     setVerifyingEmail((m) => ({ ...m, [userId]: true }));
+
+    showToast.loading('Verifying email...', { id: 'verifyEmail' });
 
     try {
       const myToken = localStorage.getItem("myToken");
@@ -150,13 +165,54 @@ const UserAdmin = () => {
           },
         }
       );
+      
+      showToast.dismiss('verifyEmail');
+      showToast.success(`Email verified for ${userName}!`);
     } catch (err) {
       console.error("❌ Failed to verify email", err);
       // revert on error
       setViewAll(prev);
-      alert("Failed to verify email. Please try again.");
+      showToast.dismiss('verifyEmail');
+      showToast.error("Failed to verify email. Please try again.");
     } finally {
       setVerifyingEmail((m) => ({ ...m, [userId]: false }));
+    }
+  };
+
+  // Delete user function
+  const handleDeleteUser = async (userId) => {
+    const user = viewAll.find(u => u._id === userId);
+    const userName = user?.name || user?.email || 'this user';
+    
+    // Show confirmation dialog
+    const confirmed = window.confirm(`Are you sure you want to delete ${userName}? This action cannot be undone.`);
+    if (!confirmed) return;
+
+    showToast.loading('Deleting user...', { id: 'deleteUser' });
+
+    try {
+      const myToken = localStorage.getItem("myToken");
+      await api.delete(`/postPerson/users/${userId}`, {
+        headers: {
+          Authorization: `Bearer ${myToken}`,
+          "Content-Type": "application/json",
+        },
+      });
+      
+      // Remove user from local state
+      setViewAll(prev => prev.filter(u => u._id !== userId));
+      
+      // Store deleted user ID in localStorage for persistence
+      const deletedUsers = JSON.parse(localStorage.getItem("deletedUsers") || "[]");
+      deletedUsers.push(userId);
+      localStorage.setItem("deletedUsers", JSON.stringify(deletedUsers));
+      
+      showToast.dismiss('deleteUser');
+      showToast.success(`User ${userName} deleted successfully!`);
+    } catch (err) {
+      console.error("❌ Failed to delete user", err);
+      showToast.dismiss('deleteUser');
+      showToast.error("Failed to delete user. Please try again.");
     }
   };
 
@@ -305,16 +361,47 @@ const UserAdmin = () => {
 
   // Update role (optimistic UI)
   const handleRoleChange = async (userId, nextRole) => {
+    const user = viewAll.find(u => u._id === userId);
+    const userName = user?.name || user?.email || 'this user';
+    const currentRoleLabel = ROLE_OPTIONS.find(r => r.value === canonicalizeRole(user?.role))?.label || user?.role || 'User';
+    const roleLabel = ROLE_OPTIONS.find(r => r.value === nextRole)?.label || nextRole;
+    
+    // Enhanced confirmation dialog with more details
+    const confirmed = window.confirm(
+      `🔄 Role Change Confirmation\n\n` +
+      `User: ${userName}\n` +
+      `Current Role: ${currentRoleLabel}\n` +
+      `New Role: ${roleLabel}\n\n` +
+      `Are you sure you want to change this role?\n\n` +
+      `This will update the user's permissions and access level.`
+    );
+    if (!confirmed) return;
+
     const prev = viewAll;
+    const previousRole = user?.role;
+    
     // optimistic update
     setViewAll((list) =>
-      list.map((u) => (u._id === userId ? { ...u, role: nextRole } : u))
+      list.map((u) => (u._id === userId ? { ...u, role: canonicalizeRole(nextRole) } : u))
     );
     setUpdatingRole((m) => ({ ...m, [userId]: true }));
 
+    // Show detailed loading toast
+    showToast.loading(`Updating role for ${userName}...`, { id: 'updateRole' });
+
     try {
       const myToken = localStorage.getItem("myToken");
-      await api.patch(
+      
+      // Log the role change attempt
+      console.log(`🔄 Role Change Attempt:`, {
+        userId,
+        userName,
+        currentRole: previousRole,
+        newRole: nextRole,
+        timestamp: new Date().toISOString()
+      });
+
+      const response = await api.patch(
         `/postPerson/users/${userId}/role`,
         { role: nextRole },
         {
@@ -324,11 +411,80 @@ const UserAdmin = () => {
           },
         }
       );
+      
+      showToast.dismiss('updateRole');
+      
+      // Success notification with details
+      showToast.success(
+        `✅ Role Successfully Updated!\n` +
+        `User: ${userName}\n` +
+        `Role: ${currentRoleLabel} → ${roleLabel}`,
+        { 
+          id: 'roleUpdateSuccess',
+          duration: 5000 
+        }
+      );
+
+      // Log successful role change
+      console.log(`✅ Role Change Success:`, {
+        userId,
+        userName,
+        previousRole,
+        newRole: nextRole,
+        response: response.data,
+        timestamp: new Date().toISOString()
+      });
+
     } catch (err) {
       console.error("❌ Failed to update role", err);
-      // revert on error
+      
+      // Revert on error
       setViewAll(prev);
-      alert("Failed to update role. Please try again.");
+      
+      showToast.dismiss('updateRole');
+      
+      // Enhanced error notification
+      const errorMessage = err?.response?.data?.message || err?.message || 'Unknown error occurred';
+      const statusCode = err?.response?.status || 'Network';
+      
+      showToast.error(
+        `❌ Role Update Failed!\n` +
+        `User: ${userName}\n` +
+        `Attempted Role: ${roleLabel}\n` +
+        `Error: ${errorMessage}\n` +
+        `Status: ${statusCode}`,
+        { 
+          id: 'roleUpdateError',
+          duration: 8000 
+        }
+      );
+
+      // Show detailed error alert
+      alert(
+        `⚠️ Role Change Failed\n\n` +
+        `User: ${userName}\n` +
+        `Attempted Change: ${currentRoleLabel} → ${roleLabel}\n\n` +
+        `Error Details:\n` +
+        `${errorMessage}\n\n` +
+        `Please check:\n` +
+        `• Your internet connection\n` +
+        `• Your admin permissions\n` +
+        `• Whether the user exists\n\n` +
+        `Try again or contact support if the issue persists.`
+      );
+
+      // Log detailed error
+      console.error(`❌ Role Change Error Details:`, {
+        userId,
+        userName,
+        attemptedRole: nextRole,
+        previousRole,
+        error: err,
+        errorMessage,
+        statusCode,
+        timestamp: new Date().toISOString()
+      });
+
     } finally {
       setUpdatingRole((m) => ({ ...m, [userId]: false }));
     }
@@ -549,18 +705,32 @@ const UserAdmin = () => {
                           </div>
                         </td>
                         <td className="px-3 py-3 whitespace-nowrap text-center text-sm font-medium">
-                          <Tippy
-                            content={<span>View Property</span>}
-                            animation="scale"
-                            theme="light-border"
-                          >
-                            <Link to={`/Admin/viewproperty/${userId}`}>
-                              <button className="inline-flex items-center gap-1 px-4 py-2 bg-gradient-to-r from-red-400 to-red-600 text-white rounded-full shadow-md hover:from-red-500 hover:to-red-700 transition duration-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
-                                <MdVisibility className="text-lg" /> View
-                                Property
+                          <div className="flex items-center justify-center gap-2">
+                            <Tippy
+                              content={<span>View Property</span>}
+                              animation="scale"
+                              theme="light-border"
+                            >
+                              <Link to={`/Admin/viewproperty/${userId}`}>
+                                <button className="inline-flex items-center gap-1 px-3 py-2 bg-gradient-to-r from-red-400 to-red-600 text-white rounded-full shadow-md hover:from-red-500 hover:to-red-700 transition duration-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 text-xs">
+                                  <MdVisibility className="text-sm" /> View
+                                </button>
+                              </Link>
+                            </Tippy>
+                            
+                            <Tippy
+                              content={<span>Delete User</span>}
+                              animation="scale"
+                              theme="light-border"
+                            >
+                              <button
+                                onClick={() => handleDeleteUser(userId)}
+                                className="inline-flex items-center gap-1 px-3 py-2 bg-gradient-to-r from-red-500 to-red-700 text-white rounded-full shadow-md hover:from-red-600 hover:to-red-800 transition duration-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 text-xs"
+                              >
+                                Delete
                               </button>
-                            </Link>
-                          </Tippy>
+                            </Tippy>
+                          </div>
                         </td>
                       </tr>
                     );

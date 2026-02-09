@@ -4,7 +4,7 @@ import { Helmet } from "react-helmet";
 import { useSelector } from "react-redux";
 import Api_Service from "../../Redux/utils/Api_Service";
 import ProjectTypeTemplate from "./ProjectTypeTemplate";
-import Footer from "../../Components/Footer/CrimsonEleganceFooter";
+import Footer from "../../Home/Footer/CrimsonEleganceFooter";
 import { getStaticData } from "../config/staticData";
 
 // Project type configurations - using original URLs

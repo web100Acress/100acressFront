@@ -88,8 +88,8 @@ export default function HeroWithFilters() {
         const rows = Array.isArray(payload?.data)
           ? payload.data
           : Array.isArray(payload)
-          ? payload
-          : [];
+            ? payload
+            : [];
 
         // Get unique project types
         const uniqueTypes = [
@@ -351,8 +351,8 @@ export default function HeroWithFilters() {
           Object.entries(data.propertyTypesByCategory).forEach(([k, arr]) => {
             mapped[k] = Array.isArray(arr)
               ? arr.map((v) =>
-                  typeof v === "string" ? { value: v, label: v } : v
-                )
+                typeof v === "string" ? { value: v, label: v } : v
+              )
               : [];
           });
           setPtByCatOpt(mapped);
@@ -444,7 +444,7 @@ export default function HeroWithFilters() {
           ? mq.removeEventListener("change", apply)
           : mq.removeListener(apply);
       };
-    } catch {}
+    } catch { }
   }, []);
 
   // Modal: lock scroll + ESC close + focus trap
@@ -501,12 +501,9 @@ export default function HeroWithFilters() {
   }, [advancedOpen]);
 
   return (
-    <section
-      className="mb-4 md:mb-8"
-      style={{ marginTop: "calc(var(--nav-h, 64px) + 12px)" }}
-    >
+    <section className="mb-4 md:mb-8">
       {/* Desktop Layout with Sidebar Space */}
-      <div className="md:ml-[260px] flex justify-center">
+      <div className="flex justify-center">
         <div className="w-full max-w-screen-xl px-3 sm:px-4 md:px-6">
           <div className="relative rounded-2xl sm:rounded-[22px] overflow-hidden shadow-xl min-h-[50svh] sm:min-h-[56svh] lg:min-h-[60svh]">
             {/* Static Hero Banner */}
@@ -530,9 +527,8 @@ export default function HeroWithFilters() {
                 decoding="async"
                 fetchPriority="high"
                 loading="eager"
-                className={`absolute inset-0 w-full h-full object-cover ${
-                  heroLoaded ? "opacity-100" : "opacity-0"
-                } ${reducedMotion ? "" : "transition-opacity duration-500"}`}
+                className={`absolute inset-0 w-full h-full object-cover ${heroLoaded ? "opacity-100" : "opacity-0"
+                  } ${reducedMotion ? "" : "transition-opacity duration-500"}`}
                 onLoad={() => setHeroLoaded(true)}
               />
             )}
@@ -546,9 +542,8 @@ export default function HeroWithFilters() {
               aria-hidden="true"
             />
             <div
-              className={`relative z-10 px-4 sm:px-5 md:px-10 pt-14 md:pt-20 pb-24 md:pb-32 flex flex-col items-center justify-center text-center text-slate-50 ${
-                reducedMotion ? "" : "transition-[padding] duration-300"
-              } transform translate-y-[8rem] md:translate-y-[11rem]`}
+              className={`relative z-10 px-4 sm:px-5 md:px-10 pt-14 md:pt-20 pb-24 md:pb-32 flex flex-col items-center justify-center text-center text-slate-50 ${reducedMotion ? "" : "transition-[padding] duration-300"
+                } transform translate-y-[8rem] md:translate-y-[11rem]`}
             >
               <h1 className="text-[clamp(1.75rem,6vw,2.5rem)] md:text-5xl lg:text-6xl font-extrabold tracking-tight mb-3 drop-shadow-[0_2px_8px_rgba(0,0,0,0.35)]">
                 Finding homes made easy for you
@@ -562,11 +557,9 @@ export default function HeroWithFilters() {
             {/* Floating filter bar */}
             <div className="relative z-20 -mb-10 sm:-mb-12 md:-mb-16 mx-auto max-w-5xl">
               <div
-                className={`mx-3 sm:mx-4 md:mx-12 mt-10 sm:mt-14 md:mt-20 bg-gray-50/90 supports-[backdrop-filter]:bg-white/80 ${
-                  reducedMotion ? "" : "backdrop-blur-[10px]"
-                } border border-gray-200 rounded-xl sm:rounded-2xl shadow-[0_12px_36px_rgba(0,0,0,0.18)] p-3 md:p-4 flex flex-wrap gap-3 items-center justify-between ${
-                  reducedMotion ? "" : "transition-transform duration-300"
-                }`}
+                className={`mx-3 sm:mx-4 md:mx-12 mt-10 sm:mt-14 md:mt-20 bg-gray-50/90 supports-[backdrop-filter]:bg-white/80 ${reducedMotion ? "" : "backdrop-blur-[10px]"
+                  } border border-gray-200 rounded-xl sm:rounded-2xl shadow-[0_12px_36px_rgba(0,0,0,0.18)] p-3 md:p-4 flex flex-wrap gap-3 items-center justify-between ${reducedMotion ? "" : "transition-transform duration-300"
+                  }`}
               >
                 <div className="w-full grid grid-cols-1 sm:flex sm:flex-1 gap-3 items-center">
                   <select
@@ -645,11 +638,10 @@ export default function HeroWithFilters() {
                       ? "Min area cannot be greater than max area"
                       : undefined
                   }
-                  className={`inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white font-bold px-5 py-2.5 rounded-lg shadow-md ${
-                    reducedMotion
-                      ? ""
-                      : "transition-transform hover:-translate-y-[1px]"
-                  } ${areaInvalid ? "opacity-60 cursor-not-allowed" : ""}`}
+                  className={`inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white font-bold px-5 py-2.5 rounded-lg shadow-md ${reducedMotion
+                    ? ""
+                    : "transition-transform hover:-translate-y-[1px]"
+                    } ${areaInvalid ? "opacity-60 cursor-not-allowed" : ""}`}
                   aria-disabled={areaInvalid}
                 >
                   <svg
@@ -709,11 +701,10 @@ export default function HeroWithFilters() {
               />
               <div
                 ref={dialogRef}
-                className={`absolute left-1/2 top-1/2 -translate-x-1/2 w-[92vw] sm:w-[90vw] max-w-xl bg-gray-50 rounded-2xl shadow-2xl border border-gray-200 ${
-                  reducedMotion
-                    ? "-translate-y-1/2"
-                    : "-translate-y-[55%] transition-all duration-300"
-                } p-4 md:p-6`}
+                className={`absolute left-1/2 top-1/2 -translate-x-1/2 w-[92vw] sm:w-[90vw] max-w-xl bg-gray-50 rounded-2xl shadow-2xl border border-gray-200 ${reducedMotion
+                  ? "-translate-y-1/2"
+                  : "-translate-y-[55%] transition-all duration-300"
+                  } p-4 md:p-6`}
                 style={{ transform: "translate(-50%, -50%)" }}
               >
                 <div className="flex items-center justify-between mb-3">

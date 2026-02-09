@@ -8,7 +8,7 @@ import { BLOG, REGISTER, ROOT } from "../../lib/route";
 import api from "../../config/apiClient";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
-import Home from "../../Pages/Home";
+import Home from "../../Home/Home";
 
 function LoginMain() {
   const [show, setShow] = useState(false);

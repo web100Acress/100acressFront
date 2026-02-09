@@ -3,9 +3,10 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import api from "../../config/apiClient";
-import { message, Modal, Alert } from "antd";
+import { Modal, Alert } from "antd";
 import Footer from "../Actual_Components/Footer";
 import { getApiBase as sharedGetApiBase } from "../../config/apiBase";
+import showToast from "../../Utils/toastUtils";
 
 
 
@@ -97,11 +98,11 @@ const UserEdit = () => {
       const token = localStorage.getItem('token') || localStorage.getItem('myToken');
       const userId = getUserId();
       if (!token) {
-        message.error('You are not logged in');
+        showToast.error('You are not logged in');
         return;
       }
       if (!userId) {
-        message.error('Invalid user id. Please re-login.');
+        showToast.error('Invalid user id. Please re-login.');
         return;
       }
       const headers = { Authorization: `Bearer ${token}` };
@@ -117,21 +118,25 @@ const UserEdit = () => {
         res = await tryEndpoints('post', putEndpoints, { headers }, body);
       }
       if (res && res.status >= 200 && res.status < 300) {
-        message.success('Profile saved');
+        showToast.success('Profile saved');
         await fetchProfile();
         // Broadcast profile update for navbar and other tabs
         try {
+          localStorage.setItem('agentData', JSON.stringify({ ...profile, _id: userId }));
+        } catch {}
+        // Cross-tab event so other tabs can refetch navbar data
+        try { 
           const bc = new BroadcastChannel('profile-updates');
-          bc.postMessage({ type: 'profile-updated', at: Date.now() });
+          bc.postMessage({ type: 'profile-updated', data: { ...profile, _id: userId } });
           bc.close();
         } catch {}
         // Same-tab event so Navbar listener can refetch avatar immediately
         try { window.dispatchEvent(new CustomEvent('profile-updated')); } catch {}
       } else {
-        message.error('Failed to save profile');
+        showToast.error('Failed to save profile');
       }
     } catch (e) {
-      message.error(e?.response?.data?.message || 'Failed to save profile');
+      showToast.error(e?.response?.data?.message || 'Failed to save profile');
     }
   };
 
@@ -152,7 +157,7 @@ const UserEdit = () => {
       const token = localStorage.getItem('myToken') || localStorage.getItem('token');
       const userId = getUserId();
       if (!token || !userId) {
-        message.error('Please login again');
+        showToast.error('Please login again');
         return;
       }
       const form = new FormData();
@@ -169,13 +174,13 @@ const UserEdit = () => {
           bc.close();
         } catch {}
         try { window.dispatchEvent(new CustomEvent('avatar-updated', { detail: { url } })); } catch {}
-        message.success('Profile photo updated');
+        showToast.success('Profile photo updated');
       } else {
-        message.error('Upload failed: no URL returned');
+        showToast.error('Upload failed: no URL returned');
       }
     } catch (err) {
       const msg = err?.response?.data?.message || err?.message || 'Upload failed';
-      message.error(msg);
+      showToast.error(msg);
     }
   };
 
@@ -218,13 +223,13 @@ const UserEdit = () => {
       console.log('[ChangePwd] handler invoked', { haveCurrent: !!pwd.current, haveNext: !!pwd.next, haveConfirm: !!pwd.confirm });
       if (!pwd.current || !pwd.next || !pwd.confirm) {
         console.warn('[ChangePwd] missing fields', { current: !!pwd.current, next: !!pwd.next, confirm: !!pwd.confirm });
-        message.warning("Please fill all password fields");
+        showToast.error("Please fill all password fields");
         setPwdAlert({ show: true, type: "warning", msg: "Please fill all password fields" });
         return;
       }
       if (pwd.next !== pwd.confirm) {
         console.warn('[ChangePwd] mismatch next vs confirm');
-        message.error("New and confirm password do not match");
+        showToast.error("New and confirm password do not match");
         setPwdAlert({ show: true, type: "error", msg: "New and confirm password do not match" });
         return;
       }
@@ -233,7 +238,7 @@ const UserEdit = () => {
       const ok = true;
       console.log('[ChangePwd] user choice (forced)', ok);
       if (!ok) return; // user cancelled
-      message.loading({ content: 'Updating password...', key: 'pwd', duration: 0 });
+      showToast.loading('Updating password...', { id: 'pwd' });
       // Backend expects { email, password }
       console.log('[ChangePwd] profile email', profile?.email);
       const payload = { email: profile.email, password: pwd.next, currentPassword: pwd.current };
@@ -242,12 +247,12 @@ const UserEdit = () => {
       const res = await axios.post(url, payload);
       console.log('[ChangePwd] response', res?.status, res?.data);
       if (res && res.status >= 200 && res.status < 300) {
-        message.success({ content: 'Password updated successfully', key: 'pwd', duration: 2 });
+        showToast.success('Password updated successfully', { id: 'pwd' });
         setPwdAlert({ show: true, type: "success", msg: "Password updated successfully" });
         setPwd({ current: "", next: "", confirm: "" });
       } else {
         const msg = res?.data?.message || 'Failed to update password';
-        message.error({ content: msg, key: 'pwd', duration: 2 });
+        showToast.error(msg, { id: 'pwd' });
         setPwdAlert({ show: true, type: "error", msg });
       }
     } catch (e) {
@@ -255,10 +260,10 @@ const UserEdit = () => {
       const msg = e?.response?.data?.message || 'Failed to update password';
       console.error('[ChangePwd] error', status, e?.response?.data || e);
       if (status === 400 && /Current password is incorrect/i.test(msg)) {
-        message.error({ content: 'Current password is incorrect', key: 'pwd', duration: 3 });
+        showToast.error('Current password is incorrect', { id: 'pwd' });
         setPwdAlert({ show: true, type: "error", msg: "Current password is incorrect" });
       } else {
-        message.error({ content: msg, key: 'pwd', duration: 3 });
+        showToast.error(msg, { id: 'pwd' });
         setPwdAlert({ show: true, type: "error", msg });
       }
     }
@@ -285,7 +290,6 @@ const UserEdit = () => {
   });
   const { otherImage } = values;
   const { id } = useParams();
-  const [messageApi, contextHolder] = message.useMessage();
   
   useEffect(() => {
     // Load profile details from backend at mount
@@ -303,21 +307,11 @@ const UserEdit = () => {
         if (item && typeof item === 'object') {
           setValues((prev) => ({ ...prev, ...item }));
         } else {
-          messageApi?.open?.({
-            key: "warnNoPropertyData",
-            type: "warning",
-            content: "No property data found for this ID",
-            duration: 2,
-          });
+          showToast.warning("No property data found for this ID");
         }
       } catch (error) {
         console.error("Failed to fetch property for edit: ", error);
-        messageApi?.open?.({
-          key: "errorFetchProperty",
-          type: "error",
-          content: "Unable to load property details",
-          duration: 2,
-        });
+        showToast.error("Unable to load property details");
       }
     };
     fetchData();
@@ -325,12 +319,7 @@ const UserEdit = () => {
 
   const handleUpdateUser = async () => {
     try {
-      messageApi.open({
-        key:"loadingUpdatePropertyByUser",
-        type:"loading",
-        content:"Updating Data...",
-        duration:0
-      })
+      showToast.loading('Updating Data...', { id: 'updateProperty' });
       const formData = new FormData();
 
       // Append all key-value pairs from values
@@ -367,30 +356,15 @@ const UserEdit = () => {
       );
 
       if (response.status === 200) {
-        messageApi.destroy("loadingUpdatePropertyByUser");
-        messageApi.open({
-          key:"successUpdatePropertyByUser",
-          type:"success",
-          content:"Property Updated Successfully",
-          duration:2
-        });
+        showToast.dismiss('updateProperty');
+        showToast.success("Property Updated Successfully");
       } else {
-        messageApi.destroy("loadingUpdatePropertyByUser");
-        messageApi.open({
-          key:"errorUpdatePropertyByUser",
-          type:"error",
-          content:"Failed to Update the property. Please try again.",
-          duration:2
-        });
+        showToast.dismiss('updateProperty');
+        showToast.error("Failed to Update the property. Please try again.");
       }
     } catch (error) {
-      messageApi.destroy("loadingUpdatePropertyByUser");
-      messageApi.open({
-        key:"errorUpdatePropertyByUser",
-        type:"error",
-        content:"Failed to Update the property. Please try again.",
-        duration:2
-      })
+      showToast.dismiss('updateProperty');
+      showToast.error("Failed to Update the property. Please try again.");
       console.error("Error updating user:", error);
     }
   };
@@ -433,7 +407,6 @@ const UserEdit = () => {
   return (
     <>
       <div className="pt-20 md:pt-24 pb-6 bg-gray-50">
-        {contextHolder}
         <div className="mx-auto max-w-4xl px-3 sm:px-6 lg:px-8">
           {/* User Profile Section */}
           <div className="card-body mb-6 bg-white border rounded-2xl p-5 sm:p-6 shadow-sm">

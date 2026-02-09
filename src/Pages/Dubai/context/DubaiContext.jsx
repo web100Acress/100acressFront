@@ -5,9 +5,9 @@ const DubaiContext = createContext();
 const emiratesConfig = {
   "Dubai": {
     route: "/united-arab-emirates",
-    headline: "Luxury Real Estate Projects in Dubai",
+    headline: "New & Upcoming Projects in Dubai",
     subheadline: "Your Gateway to Premium Properties",
-    description: "Explore Premium Properties in Dubai",
+    description: "Explore Premium Projects in Dubai",
     heroImage: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=1920&q=80", // Dubai skyline
     tagline: "The City of Gold"
   },

@@ -5,7 +5,7 @@ export const showToast = {
   success: (message, options = {}) => {
     return toast.success(message, {
       duration: 2000,
-      position: 'top-center',
+      position: 'center',
       ...options
     });
   },
@@ -13,7 +13,7 @@ export const showToast = {
   error: (message, options = {}) => {
     return toast.error(message, {
       duration: 2000,
-      position: 'top-center',
+      position: 'center',
       ...options
     });
   },
@@ -21,7 +21,7 @@ export const showToast = {
   warning: (message, options = {}) => {
     return toast(message, {
       duration: 2000,
-      position: 'top-center',
+      position: 'center',
       ...options
     });
   },
@@ -29,14 +29,14 @@ export const showToast = {
   info: (message, options = {}) => {
     return toast(message, {
       duration: 2000,
-      position: 'top-center',
+      position: 'center',
       ...options
     });
   },
   
   loading: (message, options = {}) => {
     return toast.loading(message, {
-      position: 'top-center',
+      position: 'center',
       ...options
     });
   },

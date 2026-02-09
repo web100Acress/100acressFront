@@ -1,0 +1,84 @@
+import React, { useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchActiveSideBanners } from '../../Redux/slice/SideBannerSlice';
+
+/*
+  DynamicSideBanner - Mobile Version
+  - Optimized for mobile devices with touch-friendly interactions
+  - Compact design for mobile screens
+  - Auto-rotating banners with mobile-optimized timing
+*/
+const DynamicSideBannerMobile = () => {
+  const dispatch = useDispatch();
+  const { activeSideBanners, loading } = useSelector(state => state.sideBanner);
+  const [currentBannerIndex, setCurrentBannerIndex] = useState(0);
+
+  useEffect(() => {
+    dispatch(fetchActiveSideBanners());
+  }, [dispatch]);
+
+  // Rotate through banners every 4 seconds (faster for mobile)
+  useEffect(() => {
+    if (activeSideBanners.length <= 1) return;
+
+    const interval = setInterval(() => {
+      setCurrentBannerIndex((prevIndex) => 
+        prevIndex === activeSideBanners.length - 1 ? 0 : prevIndex + 1
+      );
+    }, 4000);
+
+    return () => clearInterval(interval);
+  }, [activeSideBanners]);
+
+  if (loading || activeSideBanners.length === 0) {
+    // Fallback to default banner for mobile
+    return (
+      <div className="rounded-xl border border-gray-200 bg-white shadow-sm overflow-hidden" style={{ width: '100%', height: '200px' }}>
+        <img 
+          src="Images/M3M Elie Saab Banner Vertical Resized copy3 (1).webp" 
+          alt="Premium Real Estate Banner" 
+          className="w-full h-full object-cover"
+        />
+      </div>
+    );
+  }
+
+  const currentBanner = activeSideBanners[currentBannerIndex];
+
+  const handleBannerClick = () => {
+    if (currentBanner.link) {
+      window.open(currentBanner.link, '_blank');
+    } else if (currentBanner.slug) {
+      window.open(`https://www.100acress.com/${currentBanner.slug}`, '_blank');
+    }
+  };
+
+  // Check if banner should be displayed on mobile
+  const shouldDisplay = currentBanner.visibilitySettings?.mobile !== false;
+
+  if (!shouldDisplay) {
+    return null; // Don't render if mobile display is disabled
+  }
+
+  return (
+    <div 
+      className="rounded-xl border border-gray-200 bg-white shadow-sm overflow-hidden cursor-pointer hover:shadow-md transition-shadow duration-300" 
+      style={{ width: '100%', height: currentBanner.visibilitySettings?.mobileHeight || currentBanner.visibilitySettings?.height || '200px' }}
+      onClick={handleBannerClick}
+    >
+      {currentBanner.image?.cdn_url || currentBanner.image?.url ? (
+        <img 
+          src={currentBanner.image.cdn_url || currentBanner.image.url}
+          alt={currentBanner.title || 'Side Banner'}
+          className="w-full h-full object-cover"
+        />
+      ) : (
+        <div className="w-full h-full flex items-center justify-center bg-gray-100">
+          <p className="text-gray-500 text-sm">No image available</p>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default DynamicSideBannerMobile;

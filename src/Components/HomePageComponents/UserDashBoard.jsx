@@ -3,13 +3,14 @@ import React, { useContext, useEffect, useState } from "react";
 // import Footer from "../Actual_Components/Footer";
 import { AuthContext } from "../../AuthContext";
 import { Link, useNavigate } from "react-router-dom";
-import  CrimsonEleganceFooter  from "../Footer/CrimsonEleganceFooter";
+import  CrimsonEleganceFooter  from "../../Home/Footer/CrimsonEleganceFooter";
 // import LikedProjectsSection from "./LikedProjectsSection";
 import SuggestedProjects from "./SuggestedProjects";
 import { hydrateFavoritesFromServer, subscribe, getFavorites, getFavoritesData } from "../../Utils/favorites";
 import api from "../../config/apiClient";
 // import axios from 'axios';
 import LeaveForm from '../LeaveForm';
+import showToast from "../../Utils/toastUtils";
 
 const UserDashBoard = () => {
   const navigate = useNavigate();
@@ -45,6 +46,7 @@ const UserDashBoard = () => {
         }
       } catch (error) {
         console.error("Error fetching user data:", error);
+        showToast.error("Failed to fetch user data");
       } finally {
         setIsLoading(false);
       }
@@ -70,6 +72,7 @@ const UserDashBoard = () => {
           status: error.response?.status,
           url: error.config?.url,
         });
+        showToast.error("API connection test failed");
       }
     };
 

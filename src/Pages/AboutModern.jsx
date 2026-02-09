@@ -295,7 +295,7 @@ const AboutModern = () => {
         {/* Content */}
         <div className="relative z-10 container mx-auto px-4 text-center">
           {/* Main Headline */}
-          <div className="mb-32 sm:mb-12 mt-16 sm:mt-40">
+          <div className="mb-32 sm:mb-12 mt-28 sm:mt-24">
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black mb-3 sm:mb-4 text-white leading-tight">
               Trusted Real Estate Experts
             </h1>

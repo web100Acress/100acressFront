@@ -139,14 +139,13 @@ export const PropertiesSection = () => {
             Featured Listings
           </span>
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-display font-bold text-white leading-tight">
-            Premium Properties In
+            Best Real Estate Projects in
             <span className="block text-gold">{selectedEmirate}</span>
           </h2>
           <p className="text-sm sm:text-base lg:text-xl text-muted-foreground max-w-lg sm:max-w-2xl mx-auto">
-            Discover luxury living in {selectedEmirate} with our exclusive collection of premium properties
+            The finest projects in {selectedEmirate} offer a perfect blend of prime locations and an extraordinary lifestyle. These premium projects in {selectedEmirate} are curated for high rental yields and long-term investment growth.
           </p>
         </div>
-
 
         {/* Loading State */}
         {isLoading ? (

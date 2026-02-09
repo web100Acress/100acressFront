@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 // import { addToViewed } from '../Redux/slice/ViewedSlice';
 import { Link } from 'react-router-dom';
 import Navbar from '../aadharhomes/navbar/Navbar';
-import CrimsonEleganceFooter from "../Components/Footer/CrimsonEleganceFooter";
+import CrimsonEleganceFooter from "../Home/Footer/CrimsonEleganceFooter";
 import Api_Service from '../Redux/utils/Api_Service';
 
 function readJSON(key, fallback) {

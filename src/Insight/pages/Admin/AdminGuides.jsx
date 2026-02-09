@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import AdminInsightsSidebar from '../../components/AdminInsightsSidebar';
+import AdminInsightsSidebar from '../../components/insightsidebar/AdminInsightsSidebar';
 import { Plus, Edit, Trash2, Upload, Download, Search, Filter, X, BookOpen, Clock, BarChart3, Star, FileText, AlertCircle } from 'lucide-react';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -39,7 +39,7 @@ const guidesApi = {
     });
   },
   deleteGuide: (id) => api.delete(`/guides/${id}`),
-  
+
   // File operations
   uploadFile: (file) => {
     const formData = new FormData();
@@ -50,7 +50,7 @@ const guidesApi = {
       }
     });
   },
-  
+
 };
 
 // Constants for UI labels and messages
@@ -106,9 +106,9 @@ const AdminGuides = () => {
   // Initialize WebSocket connection using the same base URL as the API client
   useEffect(() => {
     // Get base URL from API client or fallback to environment variable
-    const baseURL = api.defaults.baseURL?.replace('/api', '') || 
-                   (import.meta.env.VITE_API_URL || 'http://localhost:3500').replace('/api', '');
-    
+    const baseURL = api.defaults.baseURL?.replace('/api', '') ||
+      (import.meta.env.VITE_API_URL || 'http://localhost:3500').replace('/api', '');
+
     console.log('Connecting to WebSocket at:', baseURL);
     const newSocket = io(baseURL, {
       transports: ['websocket'],
@@ -136,7 +136,7 @@ const AdminGuides = () => {
     });
 
     setSocket(newSocket);
-    
+
     return () => {
       newSocket.off('connect');
       newSocket.off('connect_error');
@@ -163,8 +163,8 @@ const AdminGuides = () => {
     };
 
     const handleGuideUpdated = (updatedGuide) => {
-      setGuides(prevGuides => 
-        prevGuides.map(guide => 
+      setGuides(prevGuides =>
+        prevGuides.map(guide =>
           guide._id === updatedGuide._id ? updatedGuide : guide
         )
       );
@@ -172,7 +172,7 @@ const AdminGuides = () => {
     };
 
     const handleGuideDeleted = (deletedId) => {
-      setGuides(prevGuides => 
+      setGuides(prevGuides =>
         prevGuides.filter(guide => guide._id !== deletedId)
       );
       toast.success('Guide deleted');
@@ -213,10 +213,10 @@ const AdminGuides = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsUploading(true);
-    
+
     try {
       const formDataToSend = new FormData();
-      
+
       // Append all form data to FormData
       Object.keys(formData).forEach(key => {
         if (key === 'tags' && formData[key]) {
@@ -230,7 +230,7 @@ const AdminGuides = () => {
           formDataToSend.append(key, formData[key]);
         }
       });
-      
+
       // Append file if it exists
       if (formData.file) {
         formDataToSend.append('file', formData.file);
@@ -243,12 +243,12 @@ const AdminGuides = () => {
         // Use the correct base URL from environment or default to port 3500
         const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:3500/api/';
         console.log('Using hardcoded API Base URL:', baseURL);
-        
+
         if (currentGuide) {
           // Update existing guide
           const url = `${baseURL}guides/${currentGuide._id}`.replace(/([^:]\/)\/+/g, '$1');
           console.log('PUT URL:', url);
-          
+
           const response = await axios.put(url, formDataToSend, {
             headers: {
               'Content-Type': 'multipart/form-data',
@@ -274,7 +274,7 @@ const AdminGuides = () => {
           // Fetch all guides after successful upload
           await fetchGuides();
         }
-      
+
         setShowModal(false);
         resetForm();
       } catch (apiError) {
@@ -302,11 +302,11 @@ const AdminGuides = () => {
         status: error.response?.status,
         headers: error.response?.headers
       });
-      
-      const errorMessage = error.response?.data?.message || 
-                         error.message || 
-                         'Failed to save guide. Please try again.';
-      
+
+      const errorMessage = error.response?.data?.message ||
+        error.message ||
+        'Failed to save guide. Please try again.';
+
       toast.error(errorMessage);
     } finally {
       setIsUploading(false);
@@ -362,10 +362,10 @@ const AdminGuides = () => {
     setCurrentGuide(null);
   };
 
-  const filteredGuides = guides.filter(guide => 
+  const filteredGuides = guides.filter(guide =>
     guide.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
     guide.summary.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (guide.tags && Array.isArray(guide.tags) && guide.tags.some(tag => 
+    (guide.tags && Array.isArray(guide.tags) && guide.tags.some(tag =>
       tag.toLowerCase().includes(searchTerm.toLowerCase())
     ))
   );
@@ -394,7 +394,7 @@ const AdminGuides = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
       <AdminInsightsSidebar />
-      
+
       {/* Header */}
       <div className="sticky top-0 z-[9000] bg-white/95 backdrop-blur-xl border-b border-gray-200 shadow-sm">
         <div className="max-w-7xl mx-auto px-6 py-4">
@@ -577,9 +577,9 @@ const AdminGuides = () => {
         <div className="fixed z-50 inset-0 overflow-y-auto">
           <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
             <div className="fixed inset-0 bg-gray-900/75 backdrop-blur-sm transition-opacity" onClick={() => { setShowModal(false); resetForm(); }}></div>
-            
+
             <span className="hidden sm:inline-block sm:align-middle sm:h-screen">&#8203;</span>
-            
+
             <div className="inline-block align-bottom bg-white rounded-2xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full">
               <div className="absolute top-4 right-4 z-10">
                 <button

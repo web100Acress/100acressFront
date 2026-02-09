@@ -16,33 +16,46 @@ export const useAuth = () => {
   return context;
 };
 
-const localStorageToken = localStorage.getItem("myToken");
+const sanitizeToken = (raw) => {
+  if (!raw || typeof raw !== 'string') return '';
+  let t = raw.trim();
+  if (t.startsWith('"') && t.endsWith('"')) {
+    try { t = JSON.parse(t); } catch { }
+  }
+  return t;
+};
 
 export const AuthProvider = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(null);
-  const { admin = '' } = useContext(DataContext) || {}; 
+  const [token, setToken] = useState(() => sanitizeToken(localStorage.getItem("myToken")));
+  const [isAuthenticated, setIsAuthenticated] = useState(!!token);
+  const { admin = '' } = useContext(DataContext) || {};
   const [loading, setLoading] = useState(false);
   const [decodedTokenState, setDecodedTokenState] = useState(null);
   const history = useNavigate();
-  const [token, setToken] = useState("");
-  const { decodedToken } = useJwt(localStorageToken);
+  const { decodedToken } = useJwt(token);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isContentWriter, setIsContentWriter] = useState(false);
   const [isHr, setIsHr] = useState(false);
   const [isSalesHead, setIsSalesHead] = useState(false);
 
-  const [agentData, setAgentData] = useState({
-    name: "",
-    email: "",
-    mobile: "",
+  const [agentData, setAgentData] = useState(() => {
+    const saved = localStorage.getItem("agentData");
+    try {
+      return saved ? JSON.parse(saved) : { name: "", email: "", mobile: "" };
+    } catch (e) {
+      console.error("Error parsing agentData from localStorage:", e);
+      return { name: "", email: "", mobile: "" };
+    }
   });
 
   useEffect(() => {
     const checkAuthStatus = () => {
-      const token = localStorage.getItem("myToken");
+      const rawToken = localStorage.getItem("myToken");
+      const currentToken = sanitizeToken(rawToken);
+
       setDecodedTokenState(decodedToken);
-      setIsAuthenticated(!!token);
-      
+      setIsAuthenticated(!!currentToken);
+
       // Check user role from localStorage and set appropriate states
       const userRole = localStorage.getItem("userRole");
       if (userRole) {
@@ -50,9 +63,9 @@ export const AuthProvider = ({ children }) => {
           const role = JSON.parse(userRole);
           const roleRaw = (role || "").toString();
           const roleNormalized = roleRaw.replace(/\s+/g, "").toLowerCase();
-          
+
           console.log("Checking role from localStorage:", roleRaw, "normalized:", roleNormalized);
-          
+
           if (roleRaw === "Admin" || roleRaw === admin) {
             setIsAdmin(true);
           } else if (roleNormalized === "contentwriter" || roleNormalized === "blog") {
@@ -67,7 +80,7 @@ export const AuthProvider = ({ children }) => {
           console.error("Error parsing user role from localStorage:", error);
         }
       }
-      
+
       if (token) {
         try { hydrateFavoritesFromServer(); } catch (_) { }
       }
@@ -113,7 +126,7 @@ export const AuthProvider = ({ children }) => {
             if (typeof window !== 'undefined' && window.dispatchEvent) {
               window.dispatchEvent(new CustomEvent('closeAuthModal'));
             }
-          } catch (_) {}
+          } catch (_) { }
           setIsAuthenticated(true);
           history('/postproperty');
           return;
@@ -259,11 +272,11 @@ export const AuthProvider = ({ children }) => {
         if (typeof window !== 'undefined' && window.dispatchEvent) {
           window.dispatchEvent(new CustomEvent('closeAuthModal'));
         }
-      } catch (_) {}
+      } catch (_) { }
 
       // Navigate to OTP verification page
       history("/auth/signup/otp-verification/");
-      
+
       // Reset form data after successful navigation
       if (typeof resetData === 'function') {
         resetData();
@@ -318,7 +331,7 @@ export const AuthProvider = ({ children }) => {
     // You can implement your login modal logic here
     // For example, if you're using a state to control the login modal:
     // setShowLoginModal(true);
-    
+
     // Or if you're using a global modal:
     if (typeof window !== 'undefined' && window.dispatchEvent) {
       window.dispatchEvent(new CustomEvent('showLoginModal'));

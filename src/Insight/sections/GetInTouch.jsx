@@ -135,7 +135,7 @@ const LuxuryRealEstateContact = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br via-white to-blue-50 py-8">
       {/* Desktop Layout with Sidebar Space */}
-      <div className="md:ml-[260px] flex justify-center">
+      <div className="flex justify-center">
         <div className="w-full max-w-7xl px-6 lg:px-12 py-1">
           {/* Header Section */}
           <div className="text-center mb-8">
@@ -302,11 +302,10 @@ const LuxuryRealEstateContact = () => {
                         <button
                           key={type}
                           onClick={() => handleInquiryType(type)}
-                          className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
-                            formData.inquiryType === type
+                          className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${formData.inquiryType === type
                               ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg shadow-blue-400/25'
                               : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:scale-105'
-                          }`}
+                            }`}
                         >
                           {type}
                         </button>
