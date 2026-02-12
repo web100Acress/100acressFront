@@ -446,7 +446,7 @@ export default function Navbar() {
         top="0"
         left="0"
         right="0"
-        zIndex="9999"
+        zIndex="99999"
         width="100%"
         bg="transparent"
         transition="all 150ms ease-in-out"

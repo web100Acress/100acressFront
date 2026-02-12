@@ -1,82 +1,84 @@
-import { useNavigate } from "react-router-dom";
-
+import { Link } from "react-router-dom";
 export const DevelopersSection = () => {
-  const navigate = useNavigate();
-  
   const developers = [
-    { 
-      id: "emaar", 
-      name: "Emaar Properties", 
+    {
+      id: "emaar-properties",
+      name: "Emaar Properties",
       logo: "EMAAR",
       logoUrl: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/dubai/dubai-devloper-logo/Emaar-Properties-Logo-1.png"
     },
-    { 
-      id: "damac", 
-      name: "DAMAC", 
+    {
+      id: "damac-properties",
+      name: "DAMAC",
       logo: "DAMAC",
       logoUrl: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/dubai/dubai-devloper-logo/Damac_logo.svg.png"
     },
-    { 
-      id: "sobha", 
-      name: "Sobha", 
+    {
+      id: "sobha-realty",
+      name: "Sobha",
       logo: "SOBHA",
       logoUrl: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/dubai/dubai-devloper-logo/Sobha_(company).svg.png"
     },
-    { 
-      id: "nakheel", 
-      name: "Nakheel", 
-      logo: "NAKHEEL",
-      logoUrl: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/dubai/dubai-devloper-logo/idBSCaoKfO_1762680043330.png"
-    },
-    { 
-      id: "meraas", 
-      name: "Meraas", 
-      logo: "MERAAS",
-      logoUrl: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/dubai/dubai-devloper-logo/dev_logo_1829_meraas345-261.png"
-    },
-    { 
-      id: "binghatti", 
-      name: "Binghatti", 
-      logo: "BINGHATTI",
-      logoUrl: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/dubai/dubai-devloper-logo/Binghatti-logo-dark.webp.png"
-    },
-    { 
-      id: "aldar", 
-      name: "Aldar", 
-      logo: "ALDAR",
-      logoUrl: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/dubai/dubai-devloper-logo/Aldra-logo.png"
-    },
-    { 
-      id: "omniyat", 
-      name: "Omniyat", 
-      logo: "OMNIYAT",
-      logoUrl: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/dubai/dubai-devloper-logo/Omniyat.png"
-    },
-    { 
-      id: "bnw", 
-      name: "BNW", 
-      logo: "BNW",
-      logoUrl: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/dubai/dubai-devloper-logo/bnw_properties_logo.png"
-    },
-    { 
-      id: "danube", 
-      name: "Danube", 
+
+ {
+      id: "danube-properties",
+      name: "Danube",
       logo: "DANUBE",
       logoUrl: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/dubai/dubai-devloper-logo/DANUBE.png"
     },
+
+
+      {
+      id: "binghatti-developers",
+      name: "Binghatti",
+      logo: "BINGHATTI",
+      logoUrl: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/dubai/dubai-devloper-logo/Binghatti-logo-dark.webp.png"
+    },
+
+       {
+      id: "bnw-properties",
+      name: "BNW",
+      logo: "BNW",
+      logoUrl: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/dubai/dubai-devloper-logo/bnw_properties_logo.png"
+    },
+    {
+      id: "nakheel-properties",
+      name: "Nakheel",
+      logo: "NAKHEEL",
+      logoUrl: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/dubai/dubai-devloper-logo/idBSCaoKfO_1762680043330.png"
+    },
+    {
+      id: "meraas-properties",
+      name: "Meraas",
+      logo: "MERAAS",
+      logoUrl: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/dubai/dubai-devloper-logo/dev_logo_1829_meraas345-261.png"
+    },
+  
+    {
+      id: "aldar-properties",
+      name: "Aldar",
+      logo: "ALDAR",
+      logoUrl: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/dubai/dubai-devloper-logo/Aldra-logo.png"
+    },
+    {
+      id: "omniyat-properties",
+      name: "Omniyat",
+      logo: "OMNIYAT",
+      logoUrl: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/dubai/dubai-devloper-logo/Omniyat.png"
+    },
+ 
+   
   ];
 
   return (
     <section id="developers" className="py-24 relative overflow-hidden border-y border-white/10">
-      {/* Blurry Video Background Effect */}
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/20 to-transparent">
         <div className="absolute inset-0 backdrop-blur-sm">
           <div className="h-full w-full bg-gradient-to-br from-gold/5 via-transparent to-gold/5 animate-pulse" />
         </div>
       </div>
-      
+
       <div className="container relative">
-        {/* Section Header */}
         <div className="text-center mb-8 sm:mb-12 lg:mb-16 space-y-3 sm:space-y-4 px-4 animate-fade-in">
           <span className="text-gold text-xs sm:text-sm font-medium tracking-[0.2em] sm:tracking-[0.3em] uppercase">
             Trusted Partners
@@ -89,16 +91,15 @@ export const DevelopersSection = () => {
           </p>
         </div>
 
-        {/* Developers Grid */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6 max-w-6xl mx-auto px-4">
           {developers.map((developer, index) => (
-            <div
-              key={developer.name}
-              // onClick={() => navigate(`/united-arab-emirates/developer/${developer.id}/`)}
-              className="group relative aspect-square rounded-lg border border-white/10 hover:border-gold/50 transition-all duration-500 flex items-center justify-center animate-fade-in-scale cursor-pointer overflow-hidden bg-white/95 hover:bg-white"
+            <Link
+              key={developer.id}
+              to={`/developers/${developer.id}/`}
+              className="group flex flex-col items-center justify-center p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-400 hover:shadow-lg transition-all duration-300 cursor-pointer text-center relative overflow-hidden"
               style={{ animationDelay: `${index * 0.1}s` }}
             >
-              <div className="text-center p-4 w-full h-full flex items-center justify-center">
+              <div className="text-center p-4 w-full h-full flex items-center justify-center relative z-10">
                 <img
                   src={developer.logoUrl}
                   alt={developer.name}
@@ -112,14 +113,11 @@ export const DevelopersSection = () => {
                   {developer.logo}
                 </p>
               </div>
-              
-              {/* Hover Overlay */}
               <div className="absolute inset-0 bg-gradient-to-br from-gold/5 to-gold/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-            </div>
+            </Link>
           ))}
         </div>
 
-        {/* Trust Indicators */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16 pt-16 border-t border-white/10">
           <div className="text-center space-y-2">
             <p className="text-4xl font-bold text-gold">50+</p>

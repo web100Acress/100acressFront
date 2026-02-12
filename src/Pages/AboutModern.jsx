@@ -178,9 +178,9 @@ const AboutModern = () => {
       link: "/developers/dlf-homes/",
     },
     {
-      name: "Emaar India",
+      name: "Emaar Properties",
       logo: "https://cdn.in.emaar.com/wp-content/themes/emaar/inc/assets/images/emaar-india-logo-en.svg",
-      link: "/developers/emaar-india/",
+      link: "/developers/emaar-properties/",
     },
     {
       name: "Birla Estates",
@@ -266,6 +266,26 @@ const AboutModern = () => {
       name: "Aarize",
       logo: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/project/tmfm0mywshnqqnmz7j9x",
       link: "/developers/aarize-developers/",
+    },
+    {
+      name: "Danube Properties",
+      logo: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/dubai/dubai-devloper-logo/DANUBE.png",
+      link: "/developers/danube-properties/",
+    },
+    {
+      name: "BNW Properties",
+      logo: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/dubai/dubai-devloper-logo/bnw_properties_logo.png",
+      link: "/developers/bnw-properties/",
+    },
+    {
+      name: "Binghatti Developers",
+      logo: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/dubai/dubai-devloper-logo/Binghatti-logo-dark.webp.png",
+      link: "/developers/binghatti-developers/",
+    },
+    {
+      name: "Sobha Realty",
+      logo: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/dubai/dubai-devloper-logo/Sobha_(company).svg.png",
+      link: "/developers/sobha-realty/",
     },
   ];
 

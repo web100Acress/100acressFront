@@ -275,6 +275,28 @@ const Home = () => {
   const [trendingPage, setTrendingPage] = useState(0);
   const trendingScrollRef = useRef(null);
   const [showLeftButton, setShowLeftButton] = useState(false);
+  const [isTrendingHovered, setIsTrendingHovered] = useState(false);
+
+  // Auto-scroll logic for Trending Projects
+  useEffect(() => {
+    let interval;
+    if (activeFilter === "Trending" && !isTrendingHovered && TrendingProjects.length > 0) {
+      interval = setInterval(() => {
+        if (trendingScrollRef.current) {
+          const { scrollLeft, scrollWidth, clientWidth } = trendingScrollRef.current;
+          const maxScroll = scrollWidth - clientWidth;
+
+          if (scrollLeft >= maxScroll - 5) { // Near the end
+            trendingScrollRef.current.scrollTo({ left: 0, behavior: 'smooth' });
+          } else {
+            // Scroll by card width + gap ≈ 286px
+            trendingScrollRef.current.scrollBy({ left: 286, behavior: 'smooth' });
+          }
+        }
+      }, 3000); // 3 seconds interval
+    }
+    return () => clearInterval(interval);
+  }, [activeFilter, isTrendingHovered, TrendingProjects.length]);
 
   const handleTrendingScroll = () => {
     if (trendingScrollRef.current) {
@@ -663,7 +685,11 @@ const Home = () => {
                   {/* Display Filtered Projects (compact sizing) */}
                   {/* Display Filtered Projects (compact sizing) */}
                   {activeFilter === "Trending" ? (
-                    <div className="relative group">
+                    <div
+                      className="relative group"
+                      onMouseEnter={() => setIsTrendingHovered(true)}
+                      onMouseLeave={() => setIsTrendingHovered(false)}
+                    >
                       <div
                         ref={trendingScrollRef}
                         onScroll={handleTrendingScroll}

@@ -618,7 +618,7 @@ const SearchData = () => {
                 value={projectStatus}
                 onChange={(e) => setProjectStatus(e.target.value)}
               >
-                <option value="">🏗️ Status</option>
+                <option value=""> Status</option>
                 <option value="ready to move">Ready to Move</option>
                 <option value="under construction">Under Construction</option>
                 <option value="upcoming">Upcoming</option>
@@ -767,99 +767,116 @@ const SearchData = () => {
       </button>
 
       {/* New Compact Sticky Filter Bar (always visible) */}
-      <div className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-gray-200">
-        <div className="py-3 h md:max-w-7xl md:mx-auto md:px-4">
+      <div className="sticky top-[82px] z-30 bg-white/95 backdrop-blur-md border-b border-gray-200 transition-all duration-300">
+        <div className="py-4 md:py-4 max-w-7xl mx-auto px-4 lg:px-8">
           {/* Filter Controls */}
-          <div className={`${showFilters ? "flex" : "hidden"} md:flex flex-col md:flex-row md:flex-wrap gap-3 md:items-center md:justify-center px-4 md:px-0`}>
+          <div className={`${showFilters ? "flex" : "hidden"} md:flex flex-col md:flex-row flex-wrap gap-4 md:gap-x-6 md:gap-y-4 items-stretch md:items-center justify-center`}>
             {/* Type */}
-            <div className="flex flex-col md:flex-row md:items-center gap-2 w-full md:w-auto">
-              <span className="text-xs font-medium text-gray-700 md:text-gray-600">Type</span>
-              <select
-                aria-label="Type"
-                className="w-full md:min-w-[180px] md:w-auto px-3 py-2 text-sm border border-gray-300 rounded-xl bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-red-500"
-                value={projectType}
-                onChange={(e) => setProjectType(e.target.value)}
-              >
-                <option value="">All Types</option>
-                <optgroup label="Transaction">
-                  <option value="project">Project</option>
-                  <option value="rental">Rental</option>
-                  <option value="resale">Resale</option>
-                </optgroup>
-                <optgroup label="Property Type">
-                  <option value="residential">Residential</option>
-                  <option value="commercial">Commercial</option>
-                  <option value="apartment">Apartment</option>
-                  <option value="villa">Villa</option>
-                  <option value="sco">SCO</option>
-                </optgroup>
-              </select>
+            <div className="flex flex-col md:flex-row md:items-center gap-2.5 w-full md:w-auto group">
+              <span className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.1em] group-hover:text-red-500 transition-colors">Type</span>
+              <div className="relative">
+                <select
+                  aria-label="Type"
+                  className="appearance-none w-full md:min-w-[160px] pl-4 pr-10 py-2.5 text-sm border border-gray-200 rounded-xl bg-white/70 shadow-sm focus:outline-none focus:ring-4 focus:ring-red-500/10 focus:border-red-500 transition-all cursor-pointer hover:border-red-200"
+                  value={projectType}
+                  onChange={(e) => setProjectType(e.target.value)}
+                >
+                  <option value="">All Types</option>
+                  <optgroup label="Transaction">
+                    <option value="project">Project</option>
+                    <option value="rental">Rental</option>
+                    <option value="resale">Resale</option>
+                  </optgroup>
+                  <optgroup label="Property Type">
+                    <option value="residential">Residential</option>
+                    <option value="commercial">Commercial</option>
+                    <option value="apartment">Apartment</option>
+                    <option value="villa">Villa</option>
+                    <option value="sco">SCO</option>
+                  </optgroup>
+                </select>
+                <FiChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none group-hover:text-red-500 transition-colors" />
+              </div>
             </div>
 
             {/* Sort */}
-            <div className="flex flex-col md:flex-row md:items-center gap-2 w-full md:w-auto">
-              <span className="text-xs font-medium text-gray-700 md:text-gray-600">Sort</span>
-              <select
-                aria-label="Sort"
-                className="w-full md:min-w-[170px] md:w-auto px-3 py-2 text-sm border border-gray-300 rounded-xl bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-red-500"
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
-              >
-                <option value="">Default</option>
-                <option value="price_low_high">Price: Low to High</option>
-                <option value="price_high_low">Price: High to Low</option>
-              </select>
+            <div className="flex flex-col md:flex-row md:items-center gap-2.5 w-full md:w-auto group">
+              <span className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.1em] group-hover:text-red-500 transition-colors">Sort</span>
+              <div className="relative">
+                <select
+                  aria-label="Sort"
+                  className="appearance-none w-full md:min-w-[160px] pl-4 pr-10 py-2.5 text-sm border border-gray-200 rounded-xl bg-white/70 shadow-sm focus:outline-none focus:ring-4 focus:ring-red-500/10 focus:border-red-500 transition-all cursor-pointer hover:border-red-200"
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value)}
+                >
+                  <option value="">Default</option>
+                  <option value="price_low_high">Price: Low to High</option>
+                  <option value="price_high_low">Price: High to Low</option>
+                </select>
+                <FiChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none group-hover:text-red-500 transition-colors" />
+              </div>
             </div>
 
             {/* Price */}
-            <div className="flex flex-col md:flex-row md:items-center gap-2 w-full md:w-auto">
-              <span className="text-xs font-medium text-gray-700 md:text-gray-600">Price</span>
-              <select
-                aria-label="Price"
-                className="w-full md:min-w-[200px] md:w-auto px-3 py-2 text-sm border border-gray-300 rounded-xl bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-red-500"
-                value={priceRange}
-                onChange={(e) => setPriceRange(e.target.value)}
-              >
-                <option value="">All Prices</option>
-                <option value="0-5000000">Up to 50 Lakh</option>
-                <option value="5000000-10000000">50 Lakh - 1 Cr</option>
-                <option value="10000000-20000000">1 Cr - 2 Cr</option>
-                <option value="20000000-50000000">2 Cr - 5 Cr</option>
-                <option value="50000000-100000000">5 Cr - 10 Cr</option>
-                <option value="100000000-">10 Cr +</option>
-              </select>
+            <div className="flex flex-col md:flex-row md:items-center gap-2.5 w-full md:w-auto group">
+              <span className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.1em] group-hover:text-red-500 transition-colors">Price</span>
+              <div className="relative">
+                <select
+                  aria-label="Price"
+                  className="appearance-none w-full md:min-w-[160px] pl-4 pr-10 py-2.5 text-sm border border-gray-200 rounded-xl bg-white/70 shadow-sm focus:outline-none focus:ring-4 focus:ring-red-500/10 focus:border-red-500 transition-all cursor-pointer hover:border-red-200"
+                  value={priceRange}
+                  onChange={(e) => setPriceRange(e.target.value)}
+                >
+                  <option value="">All Prices</option>
+                  <option value="0-5000000">Up to 50 Lakh</option>
+                  <option value="5000000-10000000">50 Lakh - 1 Cr</option>
+                  <option value="10000000-20000000">1 Cr - 2 Cr</option>
+                  <option value="20000000-50000000">2 Cr - 5 Cr</option>
+                  <option value="50000000-100000000">5 Cr - 10 Cr</option>
+                  <option value="100000000-">10 Cr +</option>
+                </select>
+                <FiChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none group-hover:text-red-500 transition-colors" />
+              </div>
             </div>
 
             {/* City */}
-            <div className="flex flex-col md:flex-row md:items-center gap-2 w-full md:w-auto">
-              <span className="text-xs font-medium text-gray-700 md:text-gray-600">City</span>
-              <select
-                aria-label="City"
-                className="w-full md:min-w-[180px] md:w-auto px-3 py-2 text-sm border border-gray-300 rounded-xl bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-red-500"
-                value={primeLocation}
-                onChange={(e) => setPrimeLocation(e.target.value)}
-              >
-                <option value="">All Cities</option>
-                {cityOptions.map((c) => (
-                  <option key={c} value={c}>{c}</option>
-                ))}
-              </select>
+            <div className="flex flex-col md:flex-row md:items-center gap-2.5 w-full md:w-auto group">
+              <span className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.1em] group-hover:text-red-500 transition-colors">City</span>
+              <div className="relative">
+                <select
+                  aria-label="City"
+                  className="appearance-none w-full md:min-w-[160px] pl-4 pr-10 py-2.5 text-sm border border-gray-200 rounded-xl bg-white/70 shadow-sm focus:outline-none focus:ring-4 focus:ring-red-500/10 focus:border-red-500 transition-all cursor-pointer hover:border-red-200"
+                  value={primeLocation}
+                  onChange={(e) => setPrimeLocation(e.target.value)}
+                >
+                  <option value="">All Cities</option>
+                  {cityOptions.map((c) => (
+                    <option key={c} value={c}>{c}</option>
+                  ))}
+                </select>
+                <FiChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none group-hover:text-red-500 transition-colors" />
+              </div>
             </div>
 
-            {/* Clear */}
+            {/* Clear Filters */}
             {(projectType || priceRange || primeLocation || sortBy) && (
               <button
-                onClick={() => { setProjectType(""); setPriceRange(""); setPrimeLocation(""); setSortBy(""); }}
-                className="text-sm text-gray-600 underline w-full md:w-auto text-center md:text-left mt-2 md:mt-0"
+                onClick={() => { 
+                  setProjectType(""); 
+                  setPriceRange(""); 
+                  setPrimeLocation(""); 
+                  setSortBy(""); 
+                }}
+                className="text-xs font-bold text-red-500 hover:text-red-600 transition-all uppercase tracking-widest px-4 py-2 hover:bg-red-50 rounded-lg"
               >
-                Clear All Filters
+                Clear All
               </button>
             )}
           </div>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12" style={{ paddingTop: isFallbackMode ? "48px" : "48px" }}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 mt-8" style={{ paddingTop: isFallbackMode ? "48px" : "48px" }}>
 
         {/* Property Cards Grid */}
         {fallbackLoading ? (

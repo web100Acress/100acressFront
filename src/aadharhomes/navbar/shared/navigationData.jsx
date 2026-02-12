@@ -178,5 +178,5 @@ export const QUICK_LINKS = {
   rental: { label: "Rental Properties", path: "/rental-properties/best-rental-property-in-gurugram/" },
   resale: { label: "Resale Properties", path: "/buy-properties/best-resale-property-in-gurugram/" },
   dubai: { label: "Dubai", path: "/united-arab-emirates/" },
-  insights: { label: "Insights", path: "/analytics" },
+  insights: { label: "Insights", path: "/real-estate-insights/" },
 };

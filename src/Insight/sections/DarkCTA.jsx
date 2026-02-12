@@ -130,7 +130,7 @@ export default function DarkCTA() {
 
                 <div className="flex flex-col sm:flex-row gap-4">
                   <Link
-                    to="/analytics/price-trends?zone=All+Zones&type=Apartment&duration=5y&sort=recommended&page=1pricetrend"
+                    to="/real-estate-insights/price-trends?zone=All+Zones&type=Apartment&duration=5y&sort=recommended&page=1pricetrend"
                     className="group inline-flex items-center justify-center bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold px-8 py-3.5 rounded-xl shadow-lg shadow-blue-600/25 transition-all duration-300 hover:shadow-xl hover:shadow-blue-600/40 hover:-translate-y-0.5"
                   >
                     <span>Explore Properties</span>
