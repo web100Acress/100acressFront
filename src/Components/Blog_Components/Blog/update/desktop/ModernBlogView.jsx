@@ -781,14 +781,14 @@ const ModernBlogView = () => {
               </div>
 
               {/* Quick Enquiry Form */}
-              <div className="border border-red-700 rounded-lg p-4 mt-8">
-                <h3 className="text-lg font-bold text-gray-900 mb-3" style={{ fontFamily: "'Open Sans', sans-serif" }}>
+              <div className="bg-blue-600 border border-blue-600 rounded-lg p-4 mt-8">
+                <h3 className="text-lg font-bold text-white mb-3" style={{ fontFamily: "'Open Sans', sans-serif" }}>
                   Quick Enquiry
                 </h3>
                 
                 <form className="space-y-3" onSubmit={handleQuickEnquirySubmit}>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                    <label className="block text-sm font-medium text-white mb-1">Name</label>
                     <input
                       type="text"
                       className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-red-500 focus:border-transparent text-sm"
@@ -799,7 +799,7 @@ const ModernBlogView = () => {
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Mobile Number</label>
+                    <label className="block text-sm font-medium text-white mb-1">Mobile Number</label>
                     <input
                       type="tel"
                       className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-red-500 focus:border-transparent text-sm"

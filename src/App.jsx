@@ -459,20 +459,19 @@ function App() {
                         <Route path="/property-market-trends/" element={<RealEstateInsightsHome />} />
                         <Route path="/real-estate-insights/" element={<RealEstateInsightsHome />} />
                         <Route path="/insights/" element={<RealEstateInsightsHome />} />
-                        <Route path="/insights/property-insights" element={<RealEstateInsightsHome />} />
+                        <Route path="/real-estate-insights/property-insights" element={<RealEstateInsightsHome />} />
 
-                        <Route path="/insights/price-trends" element={<PriceTrends />} />
                         <Route path="/real-estate-insights/price-trends" element={<PriceTrends />} />
 
-                        <Route path="/insights/market-reports" element={<MarketReports />} />
+                        <Route path="/real-estate-insights/market-reports" element={<MarketReports />} />
                         <Route path="/insights/area-analytics" element={<AreaAnalytics />} />
                         <Route path="/insights/market-analytics" element={<MarketAnalytics />} />
                         <Route path="/insights/location" element={<LocationIntelligence />} />
                         <Route path="/insights/investment" element={<InvestmentInsights />} />
-                        <Route path="/insights/news" element={<InsightsNews />} />
-                        <Route path="/insights/blog" element={<InsightsBlog />} />
+                        <Route path="/real-estate-insights/news" element={<InsightsNews />} />
+                        <Route path="/real-estate-insights/blog" element={<InsightsBlog />} />
                         <Route path="/insights/blog/:id" element={<BlogView />} />
-                        <Route path="/insights/guides" element={<InsightsGuides />} />
+                        <Route path="/real-estate-insights/guides" element={<InsightsGuides />} />
                         <Route path="/loan-eligibility" element={<LoanEligibility />} />
 
                         {/* Backwards compatibility aliases */}
