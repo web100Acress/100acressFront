@@ -354,7 +354,7 @@ export default function HeroWithFilters() {
     if (areaMax) params.set('areaMax', areaMax);
     if (furnishing) params.set('furnishing', furnishing);
     if (rera) params.set('rera', rera);
-    return invalid ? '#' : `/analytics/market?${params.toString()}`;
+    return invalid ? '#' : `/real-estate-insights/market?${params.toString()}`;
   }, [category, propertyType, city, builder, bedrooms, bathrooms, areaMin, areaMax, furnishing, rera]);
 
   const areaInvalid = !!(areaMin && areaMax && Number(areaMin) > Number(areaMax));

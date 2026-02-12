@@ -1,100 +1,33 @@
-import React, { useMemo, useState } from 'react';
-import { ArrowRight, Clock, Eye, Flame, Search, Tag, TrendingUp, BarChart3, MapPin, Download, ChevronDown } from 'lucide-react';
+import React, { useMemo, useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { ArrowRight, Clock, Eye, Flame, Search, Tag, TrendingUp, BarChart3, MapPin, Download, ChevronDown, CheckCircle2 } from 'lucide-react';
+import api from '../../../config/apiClient';
 
 const MobileInsightBlog = () => {
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('all');
   const [selectedCity, setSelectedCity] = useState('gurgaon');
+  const [posts, setPosts] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const posts = useMemo(
-    () => [
-      {
-        id: 1,
-        title: 'Delhi NCR Real Estate Outlook 2026: Where the Demand is Moving',
-        excerpt:
-          'A data-backed view of micro-markets, buyer preferences, and connectivity impact across Gurgaon, Noida, and Faridabad.',
-        category: 'market',
-        date: '2026-02-01',
-        author: '100acress Insights',
-        readTime: 6,
-        views: 18450,
-        image:
-          'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1200&h=700&fit=crop',
-        tags: ['delhi ncr', 'demand', 'outlook']
-      },
-      {
-        id: 2,
-        title: 'Sector-by-Sector Price Trend: Gurgaon (2024–2026)',
-        excerpt:
-          'A sector-wise breakdown of what drives price movement with inventory signals and buyer segments.',
-        category: 'price-trends',
-        date: '2026-01-18',
-        author: 'Research Desk',
-        readTime: 5,
-        views: 12310,
-        image:
-          'https://images.unsplash.com/photo-1519501025264-65ba15a82390?w=1200&h=700&fit=crop',
-        tags: ['gurgaon', 'price', 'sector']
-      },
-      {
-        id: 3,
-        title: 'How Infrastructure is Reshaping New Gurgaon Corridors',
-        excerpt:
-          'From expressways to metro extensions—see which pockets gain the most and why early movers benefit.',
-        category: 'infrastructure',
-        date: '2026-01-05',
-        author: 'Urban Analysis',
-        readTime: 7,
-        views: 9750,
-        image:
-          'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1200&h=700&fit=crop',
-        tags: ['infra', 'corridors', 'connectivity']
-      },
-      {
-        id: 4,
-        title: 'Investor Playbook: Rental Yield vs Capital Appreciation',
-        excerpt:
-          'A practical guide to choosing between yield-focused assets and appreciation bets based on your horizon.',
-        category: 'investment',
-        date: '2025-12-22',
-        author: 'Investment Team',
-        readTime: 8,
-        views: 14220,
-        image:
-          'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=1200&h=700&fit=crop',
-        tags: ['yield', 'investment', 'strategy']
-      },
-      {
-        id: 5,
-        title: 'Luxury Demand Signals: What Buyers Want in 2026',
-        excerpt:
-          'Amenity expectations, smart-home adoption, and why low-density living is commanding a premium.',
-        category: 'luxury',
-        date: '2025-12-09',
-        author: 'Luxury Desk',
-        readTime: 6,
-        views: 11040,
-        image:
-          'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=1200&h=700&fit=crop',
-        tags: ['luxury', 'amenities', 'buyers']
-      },
-      {
-        id: 6,
-        title: 'Home Loan Rate Cycles: When to Lock vs Float',
-        excerpt:
-          'How rate cycles impact EMI and what a smart borrower should do when macro signals shift.',
-        category: 'finance',
-        date: '2025-11-28',
-        author: 'Finance Desk',
-        readTime: 5,
-        views: 8850,
-        image:
-          'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=1200&h=700&fit=crop',
-        tags: ['home loan', 'rates', 'emi']
+  // Fetch real blog data
+  useEffect(() => {
+    const fetchPosts = async () => {
+      setIsLoading(true);
+      try {
+        const response = await api.get('blog/view');
+        if (response.data?.data) {
+          setPosts(response.data.data);
+        }
+      } catch (error) {
+        console.error('Error fetching blogs:', error);
+      } finally {
+        setTimeout(() => setIsLoading(false), 600);
       }
-    ],
-    []
-  );
+    };
+    fetchPosts();
+  }, []);
 
   const cities = useMemo(
     () => [
@@ -171,10 +104,10 @@ const MobileInsightBlog = () => {
   const categories = useMemo(
     () => [
       { id: 'all', name: 'All' },
-      { id: 'market', name: 'Market' },
+      { id: 'Market Insight', name: 'Market' },
       { id: 'price-trends', name: 'Price Trends' },
       { id: 'infrastructure', name: 'Infrastructure' },
-      { id: 'investment', name: 'Investment' },
+      { id: 'Investment', name: 'Investment' },
       { id: 'luxury', name: 'Luxury' },
       { id: 'finance', name: 'Finance' }
     ],
@@ -185,19 +118,19 @@ const MobileInsightBlog = () => {
     const q = searchQuery.trim().toLowerCase();
 
     return posts.filter((p) => {
-      const matchesCategory = activeCategory === 'all' || p.category === activeCategory;
+      const matchesCategory = activeCategory === 'all' || p.blog_Category === activeCategory;
       if (!matchesCategory) return false;
       if (!q) return true;
 
-      const hay = [p.title, p.excerpt, p.author, p.category, ...(p.tags || [])]
+      const hay = [p.blog_Title, p.blog_Description, p.author, p.blog_Category, ...(p.tags || [])]
         .join(' ')
         .toLowerCase();
       return hay.includes(q);
     });
   }, [activeCategory, posts, searchQuery]);
 
-  const featured = filteredPosts[0] || posts[0];
-  const list = filteredPosts.filter((p) => p.id !== featured?.id);
+  const featured = filteredPosts[0];
+  const list = filteredPosts.slice(1);
   const trending = [...posts].sort((a, b) => (b.views || 0) - (a.views || 0)).slice(0, 3);
 
   const tagCounts = useMemo(() => {
@@ -218,66 +151,82 @@ const MobileInsightBlog = () => {
     return d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
   };
 
-  return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 via-white to-gray-50">
-      <div className="px-4 py-8">
-        <div>
-          <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">Insight Blog</h1>
-          <p className="mt-1 text-sm text-gray-500">
-            Market research, trends, and actionable real estate insights.
-          </p>
-        </div>
+  const getReadingTime = (description) => {
+    const words = description?.replace(/<[^>]*>/g, "").split(" ").length || 0;
+    const minutes = Math.ceil(words / 200);
+    return `${minutes} min`;
+  };
 
-        <div className="mt-4 grid grid-cols-3 gap-3">
+  const blogLink = (post) => `/insights/blog/${post._id}`;
+
+  // Shimmering Skeletons
+  const BlogSkeleton = () => (
+    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden animate-pulse mb-4">
+      <div className="h-52 bg-gray-100"></div>
+      <div className="p-4 space-y-3">
+        <div className="h-4 bg-gray-100 rounded w-1/4"></div>
+        <div className="h-6 bg-gray-100 rounded w-3/4"></div>
+        <div className="h-4 bg-gray-100 rounded w-full"></div>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="min-h-screen bg-slate-50">
+      <div className="px-4 py-8">
+        <header className="mb-8">
+          <h1 className="text-3xl font-black text-slate-900 tracking-tight">Market Intelligence</h1>
+          <p className="mt-2 text-sm text-slate-500 font-medium">
+            Real-time data-backed real estate analysis.
+          </p>
+        </header>
+
+        {/* Market Stats */}
+        <div className="grid grid-cols-3 gap-3 mb-4">
           {marketPulse.map((m) => (
-            <div key={m.label} className="bg-white rounded-2xl border border-gray-200 shadow-sm p-4">
-              <div className="flex items-start justify-between gap-3">
-                <div>
-                  <div className="text-[10px] font-black text-gray-500 uppercase tracking-widest">{m.label}</div>
-                  <div className="mt-1 text-lg font-extrabold text-gray-900">{m.value}</div>
-                  <div className="mt-0.5 text-[10px] text-gray-500">{m.sub}</div>
-                </div>
-                <div
-                  className={`w-9 h-9 rounded-2xl flex items-center justify-center border ${
-                    m.tone === 'emerald'
-                      ? 'bg-emerald-50 border-emerald-200'
-                      : m.tone === 'blue'
-                        ? 'bg-blue-50 border-blue-200'
-                        : 'bg-violet-50 border-violet-200'
+            <div key={m.label} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 text-center">
+              <div
+                className={`w-9 h-9 mx-auto mb-3 rounded-2xl flex items-center justify-center border shadow-sm ${m.tone === 'emerald'
+                  ? 'bg-emerald-50 border-emerald-100'
+                  : m.tone === 'blue'
+                    ? 'bg-blue-50 border-blue-100'
+                    : 'bg-violet-50 border-violet-100'
                   }`}
-                >
-                  {m.icon}
-                </div>
+              >
+                {m.icon}
               </div>
+              <div className="text-[9px] font-black text-slate-400 uppercase tracking-widest">{m.label}</div>
+              <div className="mt-1 text-base font-black text-slate-900">{m.value}</div>
             </div>
           ))}
         </div>
 
-        <div className="mt-4">
-          <div className="relative">
-            <Search className="absolute left-3 top-3.5 w-4 h-4 text-gray-400" />
+        {/* Search */}
+        <div className="mb-6">
+          <div className="relative group">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-red-500 transition-colors" />
             <input
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search articles..."
-              className="w-full rounded-xl border border-gray-200 bg-white pl-10 pr-4 py-3 text-sm outline-none focus:ring-2 focus:ring-red-500/30 focus:border-red-300"
+              placeholder="Search intelligence library..."
+              className="w-full rounded-2xl border border-gray-100 bg-white pl-11 pr-4 py-4 text-sm font-medium outline-none shadow-sm focus:ring-2 focus:ring-red-500/10 focus:border-red-200 transition-all placeholder:text-slate-400"
             />
           </div>
         </div>
 
-        <div className="mt-4 flex items-center justify-between">
-          <div className="flex gap-2 overflow-x-auto pb-2">
+        {/* Filter & City Picker */}
+        <div className="flex flex-col gap-4 mb-8">
+          <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
             {categories.map((c) => (
               <button
                 key={c.id}
                 onClick={() => setActiveCategory(c.id)}
-                className={`shrink-0 px-4 py-2 rounded-full text-sm font-semibold transition-colors border ${
-                  activeCategory === c.id
-                    ? 'bg-red-600 text-white border-red-600'
-                    : 'bg-white text-gray-700 border-gray-200'
-                }`}
+                className={`shrink-0 px-5 py-2.5 rounded-xl text-xs font-black transition-all border shadow-sm ${activeCategory === c.id
+                  ? 'bg-red-600 text-white border-red-600'
+                  : 'bg-white text-slate-600 border-gray-100 hover:border-gray-200'
+                  }`}
               >
-                {c.name}
+                {c.name.toUpperCase()}
               </button>
             ))}
           </div>
@@ -288,16 +237,18 @@ const MobileInsightBlog = () => {
                 const dropdown = document.getElementById('mobile-city-dropdown');
                 dropdown.classList.toggle('hidden');
               }}
-              className="flex items-center gap-2 px-3 py-2 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors shrink-0"
+              className="w-full flex items-center justify-between px-4 py-3 bg-white border border-gray-100 rounded-xl shadow-sm active:scale-[0.98] transition-all"
             >
-              <MapPin className="w-4 h-4 text-red-600" />
-              <span className="text-sm font-semibold text-gray-900">
-                {cities.find(c => c.id === selectedCity)?.name}
-              </span>
-              <ChevronDown className="w-4 h-4 text-gray-500" />
+              <div className="flex items-center gap-3">
+                <MapPin className="w-4 h-4 text-red-600" />
+                <span className="text-sm font-bold text-slate-900">
+                  {cities.find(c => c.id === selectedCity)?.name} Market
+                </span>
+              </div>
+              <ChevronDown className="w-4 h-4 text-slate-400" />
             </button>
-            
-            <div id="mobile-city-dropdown" className="hidden absolute right-0 mt-2 w-36 bg-white border border-gray-200 rounded-xl shadow-lg z-10">
+
+            <div id="mobile-city-dropdown" className="hidden absolute top-full left-0 right-0 mt-2 bg-white border border-gray-100 rounded-xl shadow-xl z-20 overflow-hidden">
               {cities.map((city) => (
                 <button
                   key={city.id}
@@ -305,9 +256,8 @@ const MobileInsightBlog = () => {
                     setSelectedCity(city.id);
                     document.getElementById('mobile-city-dropdown').classList.add('hidden');
                   }}
-                  className={`w-full text-left px-3 py-2 text-sm hover:bg-gray-50 transition-colors ${
-                    selectedCity === city.id ? 'bg-red-50 text-red-600 font-semibold' : 'text-gray-700'
-                  } ${city.id === 'gurgaon' ? 'rounded-t-xl' : ''} ${city.id === 'faridabad' ? 'rounded-b-xl' : ''}`}
+                  className={`w-full text-left px-5 py-3 text-sm font-bold transition-colors ${selectedCity === city.id ? 'bg-red-50 text-red-600' : 'text-slate-600 hover:bg-slate-50'
+                    }`}
                 >
                   {city.name}
                 </button>
@@ -316,244 +266,215 @@ const MobileInsightBlog = () => {
           </div>
         </div>
 
-        <div className="mt-5 bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-          <div className="relative h-52">
-            <img src={featured.image} alt={featured.title} className="w-full h-full object-cover" />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-            <div className="absolute bottom-0 left-0 right-0 p-4">
-              <div className="flex items-center gap-2">
-                <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-white/15 text-white border border-white/20">
-                  {categories.find((c) => c.id === featured.category)?.name || featured.category}
-                </span>
-                <span className="inline-flex items-center gap-1 text-xs text-white/85">
-                  <Clock className="w-3.5 h-3.5" />
-                  {featured.readTime} min
-                </span>
-                <span className="inline-flex items-center gap-1 text-xs text-white/85">
-                  <Eye className="w-3.5 h-3.5" />
-                  {(featured.views || 0).toLocaleString()}
-                </span>
-              </div>
-              <h2 className="mt-2 text-lg font-extrabold text-white leading-snug line-clamp-2">
-                {featured.title}
-              </h2>
-              <p className="mt-1 text-xs text-white/80">{formatDate(featured.date)}</p>
-              <button className="mt-3 inline-flex items-center gap-2 text-sm font-bold text-white">
-                Read article
-                <ArrowRight className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-          <div className="p-4">
-            <p className="text-sm text-gray-600 line-clamp-3">{featured.excerpt}</p>
-          </div>
-        </div>
-
-        <div className="mt-5 space-y-4">
-          {list.map((p) => (
-            <div key={p.id} className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-              <div className="flex gap-3 p-4">
-                <div className="w-24 h-20 rounded-xl overflow-hidden bg-gray-100 shrink-0">
-                  <img src={p.image} alt={p.title} className="w-full h-full object-cover" />
-                </div>
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="text-xs font-bold text-red-600">
-                      {categories.find((c) => c.id === p.category)?.name || p.category}
-                    </span>
-                    <span className="text-xs text-gray-500">{formatDate(p.date)}</span>
-                  </div>
-                  <div className="mt-1 text-sm font-extrabold text-gray-900 line-clamp-2">{p.title}</div>
-                  <div className="mt-2 flex items-center gap-3 text-xs text-gray-500">
-                    <span className="inline-flex items-center gap-1">
-                      <Clock className="w-3.5 h-3.5" />
-                      {p.readTime} min
-                    </span>
-                    <span className="inline-flex items-center gap-1">
-                      <Eye className="w-3.5 h-3.5" />
-                      {(p.views || 0).toLocaleString()}
-                    </span>
-                  </div>
+        {/* Blog Post List */}
+        <div className="space-y-6">
+          {isLoading ? (
+            <>
+              <BlogSkeleton />
+              <BlogSkeleton />
+              <div className="flex gap-4 bg-white p-4 rounded-2xl border border-gray-100 animate-pulse">
+                <div className="w-24 h-20 bg-gray-100 rounded-xl"></div>
+                <div className="flex-1 space-y-2">
+                  <div className="h-4 bg-gray-100 rounded w-1/4"></div>
+                  <div className="h-5 bg-gray-100 rounded w-full"></div>
                 </div>
               </div>
-              <div className="px-4 pb-4">
-                <p className="text-sm text-gray-600 line-clamp-2">{p.excerpt}</p>
-                <button className="mt-3 inline-flex items-center gap-2 text-sm font-bold text-gray-900 hover:text-red-600">
-                  Read
-                  <ArrowRight className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-          ))}
-
-          {filteredPosts.length === 0 && (
-            <div className="bg-white border border-gray-200 rounded-2xl p-8 text-center">
-              <div className="text-sm font-bold text-gray-900">No articles found</div>
-              <div className="mt-1 text-sm text-gray-600">Try changing the search or category.</div>
-              <div className="mt-5">
-                <button
-                  onClick={() => {
-                    setSearchQuery('');
-                    setActiveCategory('all');
-                  }}
-                  className="px-4 py-2 rounded-xl bg-red-600 text-white text-sm font-bold hover:bg-red-700"
+            </>
+          ) : filteredPosts.length > 0 ? (
+            <>
+              {/* Featured Post */}
+              {featured && (
+                <div
+                  onClick={() => navigate(blogLink(featured))}
+                  className="bg-white rounded-3xl border border-gray-100 shadow-md overflow-hidden active:scale-[0.98] transition-all"
                 >
-                  Reset
-                </button>
+                  <div className="relative h-60">
+                    <img
+                      src={featured.blog_Image?.cdn_url || featured.blog_Image?.url || featured.blog_Image?.Location || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1200&h=700&fit=crop'}
+                      alt={featured.blog_Title}
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                    <div className="absolute top-4 left-4">
+                      <span className="px-3 py-1 bg-red-600 text-white text-[10px] font-black uppercase tracking-widest rounded-lg">
+                        {featured.blog_Category || 'INSIGHT'}
+                      </span>
+                    </div>
+                    <div className="absolute bottom-4 left-4 right-4">
+                      <h2 className="text-xl font-bold text-white leading-tight line-clamp-2">
+                        {featured.blog_Title}
+                      </h2>
+                      <div className="mt-3 flex items-center gap-4 text-[10px] text-white/80 font-bold uppercase tracking-widest">
+                        <span className="flex items-center gap-1">
+                          <Clock className="w-3 h-3" />
+                          {getReadingTime(featured.blog_Description)}
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <Eye className="w-3 h-3" />
+                          {(featured.views || 0).toLocaleString()}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="p-5">
+                    <p className="text-sm text-slate-500 font-medium leading-relaxed line-clamp-2">
+                      {featured.metaDescription || featured.blog_Description?.replace(/<[^>]*>/g, '').substring(0, 120)}...
+                    </p>
+                    <div className="mt-5 flex items-center justify-between pt-4 border-t border-slate-50">
+                      <div className="flex items-center gap-2">
+                        <div className="w-6 h-6 rounded-full bg-red-100 flex items-center justify-center text-red-600">
+                          <CheckCircle2 className="w-3 h-3" />
+                        </div>
+                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Verified Report</span>
+                      </div>
+                      <span className="text-[10px] font-black text-red-600 uppercase tracking-widest">Read Now →</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* List Posts */}
+              <div className="space-y-4">
+                {list.map((p) => (
+                  <div
+                    key={p._id}
+                    onClick={() => navigate(blogLink(p))}
+                    className="bg-white rounded-2xl border border-gray-100 shadow-sm p-3 flex gap-4 active:scale-[0.98] transition-all"
+                  >
+                    <div className="w-24 h-24 rounded-xl overflow-hidden bg-slate-100 shrink-0">
+                      <img
+                        src={p.blog_Image?.cdn_url || p.blog_Image?.url || p.blog_Image?.Location || 'https://images.unsplash.com/photo-1519501025264-65ba15a82390?w=400&h=400&fit=crop'}
+                        alt={p.blog_Title}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div className="flex-1 min-w-0 py-1 flex flex-col justify-between">
+                      <div>
+                        <div className="flex items-center justify-between gap-2 mb-1">
+                          <span className="text-[9px] font-black text-red-600 uppercase tracking-widest">
+                            {p.blog_Category || 'TREND'}
+                          </span>
+                          <span className="text-[9px] font-bold text-slate-400">{formatDate(p.createdAt)}</span>
+                        </div>
+                        <h3 className="text-sm font-bold text-slate-900 line-clamp-2 leading-tight">
+                          {p.blog_Title}
+                        </h3>
+                      </div>
+                      <div className="flex items-center gap-4 text-[9px] font-black text-slate-400 uppercase tracking-widest">
+                        <span className="flex items-center gap-1">
+                          <Clock className="w-3 h-3" />
+                          {getReadingTime(p.blog_Description)}
+                        </span>
+                        <span className="flex items-center gap-1 text-red-600/80">
+                          READ REPORT →
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
+            </>
+          ) : (
+            <div className="bg-white border border-gray-100 rounded-3xl p-10 text-center shadow-sm">
+              <div className="w-16 h-16 bg-red-50 text-red-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <Search className="w-8 h-8" />
+              </div>
+              <h3 className="text-lg font-black text-slate-900">No Intelligence Found</h3>
+              <p className="mt-2 text-sm text-slate-500 font-medium">Try refining your search or city selection.</p>
+              <button
+                onClick={() => {
+                  setSearchQuery('');
+                  setActiveCategory('all');
+                }}
+                className="mt-8 px-8 py-3 bg-red-600 text-white text-xs font-black uppercase tracking-widest rounded-xl shadow-lg shadow-red-100 active:scale-95 transition-all"
+              >
+                Reset Filters
+              </button>
             </div>
           )}
         </div>
 
-        <div className="mt-6 grid grid-cols-1 gap-4">
-          <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-            <div className="p-4 border-b border-gray-200 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <MapPin className="w-5 h-5 text-red-600" />
-                <div className="text-base font-extrabold text-gray-900">Micro‑Markets to Watch</div>
+        {/* Micro-markets Widget */}
+        <div className="mt-10 bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden">
+          <div className="p-6 border-b border-slate-50 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-black text-white rounded-xl flex items-center justify-center">
+                <TrendingUp className="w-4 h-4" />
               </div>
-              <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
-                {cities.find(c => c.id === selectedCity)?.name}
-              </div>
+              <div className="text-base font-black text-slate-900 tracking-tight">Market Momentum</div>
             </div>
-            <div className="divide-y divide-gray-100">
-              {microMarkets.map((mm) => (
-                <div key={mm.name} className="p-4">
-                  <div className="flex items-center justify-between gap-3 mb-2">
-                    <div className="min-w-0">
-                      <div className="text-sm font-extrabold text-gray-900 truncate">{mm.name}</div>
-                      <div className="mt-1 text-xs text-gray-500 line-clamp-1">{mm.reason}</div>
-                    </div>
-                    <div className="text-right">
-                      <div className="text-sm font-extrabold text-gray-900">{mm.change}</div>
-                      <div
-                        className={`mt-1 inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-widest border ${
-                          mm.signal === 'Hot'
-                            ? 'bg-red-50 text-red-700 border-red-200'
-                            : mm.signal === 'Rising'
-                              ? 'bg-amber-50 text-amber-700 border-amber-200'
-                              : 'bg-emerald-50 text-emerald-700 border-emerald-200'
+            <div className="text-[9px] font-black text-slate-400 uppercase tracking-widest">
+              {cities.find(c => c.id === selectedCity)?.name}
+            </div>
+          </div>
+          <div className="divide-y divide-slate-50">
+            {microMarkets.map((mm) => (
+              <div key={mm.name} className="p-6">
+                <div className="flex items-start justify-between gap-4 mb-4">
+                  <div className="min-w-0">
+                    <div className="text-sm font-black text-slate-900 truncate">{mm.name}</div>
+                    <div className="mt-1 text-[10px] font-medium text-slate-500 leading-relaxed">{mm.reason}</div>
+                  </div>
+                  <div className="text-right shrink-0">
+                    <div className="text-sm font-black text-emerald-600">{mm.change}</div>
+                    <div
+                      className={`mt-1 inline-flex items-center px-2 py-1 rounded-lg text-[8px] font-black uppercase tracking-widest border ${mm.signal === 'Hot'
+                        ? 'bg-red-50 text-red-600 border-red-100'
+                        : mm.signal === 'Rising'
+                          ? 'bg-emerald-50 text-emerald-600 border-emerald-100'
+                          : 'bg-slate-50 text-slate-600 border-slate-100'
                         }`}
-                      >
-                        {mm.signal}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="mt-2">
-                    <div className="flex items-center gap-2">
-                      <div className="flex-1 bg-gray-200 rounded-full h-2 overflow-hidden">
-                        <div 
-                          className={`h-full transition-all duration-500 ${
-                            mm.strength >= 80 ? 'bg-red-500' :
-                            mm.strength >= 65 ? 'bg-amber-500' :
-                            mm.strength >= 50 ? 'bg-emerald-500' : 'bg-gray-400'
-                          }`}
-                          style={{ width: `${mm.strength}%` }}
-                        />
-                      </div>
-                      <span className="text-xs font-black text-gray-600 w-10 text-right">{mm.strength}%</span>
+                    >
+                      {mm.signal}
                     </div>
                   </div>
                 </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-            <div className="p-4 border-b border-gray-200 flex items-center gap-2">
-              <Flame className="w-5 h-5 text-orange-500" />
-              <div className="text-base font-extrabold text-gray-900">Trending</div>
-            </div>
-            <div className="divide-y divide-gray-100">
-              {trending.map((p, idx) => (
-                <button key={p.id} className="w-full text-left p-4 hover:bg-gray-50 transition-colors">
-                  <div className="flex gap-3">
-                    <div className="w-8 h-8 rounded-xl bg-red-50 text-red-600 font-extrabold flex items-center justify-center shrink-0">
-                      {idx + 1}
-                    </div>
-                    <div className="min-w-0">
-                      <div className="text-sm font-extrabold text-gray-900 line-clamp-2">{p.title}</div>
-                      <div className="mt-1 flex items-center gap-3 text-xs text-gray-500">
-                        <span className="inline-flex items-center gap-1">
-                          <Eye className="w-3.5 h-3.5" />
-                          {(p.views || 0).toLocaleString()}
-                        </span>
-                        <span className="inline-flex items-center gap-1">
-                          <Clock className="w-3.5 h-3.5" />
-                          {p.readTime} min
-                        </span>
-                      </div>
-                    </div>
+                <div className="flex items-center gap-3">
+                  <div className="flex-1 bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                    <div
+                      className={`h-full transition-all duration-1000 ${mm.strength >= 80 ? 'bg-red-600' :
+                        mm.strength >= 65 ? 'bg-emerald-500' : 'bg-slate-400'
+                        }`}
+                      style={{ width: `${mm.strength}%` }}
+                    />
                   </div>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-            <div className="p-4 border-b border-gray-200 flex items-center gap-2">
-              <Tag className="w-5 h-5 text-blue-600" />
-              <div className="text-base font-extrabold text-gray-900">Popular Tags</div>
-            </div>
-            <div className="p-4 flex flex-wrap gap-2">
-              {popularTags.map((t) => (
-                <button
-                  key={t}
-                  onClick={() => setSearchQuery(t)}
-                  className="px-3 py-1.5 rounded-full text-sm font-semibold bg-gray-100 text-gray-700"
-                >
-                  {t}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="bg-gradient-to-br from-red-600 to-red-700 rounded-2xl shadow-sm overflow-hidden">
-            <div className="p-5">
-              <div className="text-base font-extrabold text-white">Weekly insights in your inbox</div>
-              <div className="mt-1 text-sm text-white/80">
-                Subscribe for market notes, price trend highlights, and new research.
-              </div>
-              <form className="mt-4">
-                <div className="flex">
-                  <input
-                    type="email"
-                    placeholder="Your email"
-                    className="flex-1 min-w-0 px-4 py-2 text-sm text-gray-900 placeholder-gray-500 bg-white border border-r-0 border-white/20 rounded-l-xl focus:ring-2 focus:ring-white/60 focus:outline-none"
-                  />
-                  <button
-                    type="submit"
-                    className="px-4 py-2 text-sm font-extrabold text-red-700 bg-white rounded-r-xl hover:bg-gray-100"
-                  >
-                    Subscribe
-                  </button>
-                </div>
-              </form>
-              <div className="mt-3 text-xs text-white/75">No spam. Unsubscribe anytime.</div>
-            </div>
-          </div>
-
-          <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl shadow-sm overflow-hidden border border-slate-700/40">
-            <div className="p-5">
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <div className="text-xs font-black uppercase tracking-widest text-slate-300">Research Pack</div>
-                  <div className="mt-2 text-lg font-extrabold text-white leading-snug">
-                    Download: Weekly NCR Snapshot
-                  </div>
-                  <div className="mt-1 text-sm text-slate-300">
-                    Micro‑market momentum, price map, and key launch tracker.
-                  </div>
-                </div>
-                <div className="w-10 h-10 rounded-2xl bg-white/10 border border-white/15 flex items-center justify-center">
-                  <Download className="w-5 h-5 text-white" />
+                  <span className="text-[10px] font-black text-slate-400 w-8 text-right">{mm.strength}%</span>
                 </div>
               </div>
-              <button className="mt-4 w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-white text-slate-900 text-sm font-extrabold hover:bg-slate-100">
-                Download PDF
-                <ArrowRight className="w-4 h-4" />
+            ))}
+          </div>
+        </div>
+
+        {/* Newsletter / Download */}
+        <div className="mt-6 space-y-4">
+          <div className="bg-slate-900 rounded-3xl p-6 text-white relative overflow-hidden group">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-red-600 opacity-20 blur-3xl -mr-16 -mt-16 transition-opacity group-hover:opacity-30"></div>
+            <div className="relative">
+              <Download className="w-8 h-8 text-red-500 mb-4" />
+              <h3 className="text-lg font-black tracking-tight mb-2">Weekly Market Snapshot</h3>
+              <p className="text-xs text-slate-400 font-medium leading-relaxed mb-6">
+                Download the latest research on NCR price trends and infra updates.
+              </p>
+              <button className="w-full py-3.5 bg-white text-slate-900 text-xs font-black uppercase tracking-widest rounded-xl active:scale-95 transition-all">
+                Download PDF Analysis
               </button>
-              <div className="mt-2 text-xs text-slate-400">Updated every Monday • Free</div>
+            </div>
+          </div>
+
+          <div className="bg-red-600 rounded-3xl p-6 text-white text-center">
+            <h3 className="text-lg font-black tracking-tight mb-4">Subscribe to Intel</h3>
+            <p className="text-xs text-red-100 font-medium leading-relaxed mb-6">
+              Get raw market signals delivered to your inbox every Thursday.
+            </p>
+            <div className="flex gap-2">
+              <input
+                type="email"
+                placeholder="Email Address"
+                className="flex-1 px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-xs font-bold focus:bg-white focus:text-slate-900 outline-none transition-all placeholder:text-white/60"
+              />
+              <button className="px-5 py-3 bg-white text-red-600 text-xs font-black uppercase tracking-widest rounded-xl active:scale-95 transition-all shadow-lg shadow-black/10">
+                Join
+              </button>
             </div>
           </div>
         </div>

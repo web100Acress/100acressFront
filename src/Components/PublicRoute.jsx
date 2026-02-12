@@ -20,9 +20,9 @@ const PublicRoute = () => {
     hideNavbar = true;
   }
 
-  // Hide navbar for analytics and insights pages (they use InsightHeader)
+  // Hide navbar for real-estate-insights and insights pages (they use InsightHeader)
   if (
-    path.startsWith('/analytics') ||
+    path.startsWith('/real-estate-insights') ||
     path.startsWith('/insights') ||
     path.startsWith('/property-market-trends') ||
     path.startsWith('/loan-eligibility') ||

@@ -49,10 +49,10 @@ export default function MarketAnalytics() {
       const base = getApiBase();
       const qs = new URLSearchParams({ city, locality, projectId: project, period }).toString();
       const [pt, ry, la, ds] = await Promise.all([
-        fetch(`${base}/analytics/price-trends?${qs}`).then(r => r.json()).catch(() => null),
-        fetch(`${base}/analytics/rental-yield?${new URLSearchParams({ city, locality }).toString()}`).then(r => r.json()).catch(() => null),
-        fetch(`${base}/analytics/launches?${new URLSearchParams({ city }).toString()}`).then(r => r.json()).catch(() => null),
-        fetch(`${base}/analytics/demand-supply?${new URLSearchParams({ city }).toString()}`).then(r => r.json()).catch(() => null),
+        fetch(`${base}/real-estate-insights/price-trends?${qs}`).then(r => r.json()).catch(() => null),
+        fetch(`${base}/real-estate-insights/rental-yield?${new URLSearchParams({ city, locality }).toString()}`).then(r => r.json()).catch(() => null),
+        fetch(`${base}/real-estate-insights/launches?${new URLSearchParams({ city }).toString()}`).then(r => r.json()).catch(() => null),
+        fetch(`${base}/real-estate-insights/demand-supply?${new URLSearchParams({ city }).toString()}`).then(r => r.json()).catch(() => null),
       ]);
       setLive({
         priceTrends: pt && pt.success ? pt.data : null,
