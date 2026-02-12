@@ -894,7 +894,8 @@ export default function NavbarDesktop({
               right: '-6px',
               padding: '0.125rem 0.625rem',
               backgroundColor: '#E53935',
-              color: isHome ? "white" : (colorChange ? "white" : "#e53e3e"),
+              color:
+               "white",
               fontSize: '8px',
               fontWeight: '600',
               letterSpacing: '0.7px',

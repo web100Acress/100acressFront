@@ -2,7 +2,7 @@ import { useDispatch } from "react-redux";
 import { spotlight, trending, featured, upcoming, affordable, luxury, scoplots, commercial, budget, projectindelhi } from "../slice/projectSlice";
 import { gurugram, delhi, noida, goa, ayodhya, mumbai, panipat, panchkula, kasauli, karnal, jalandhar, sonipat, alwar, dubai, pushkar, pune } from "../slice/StateProject";
 import { allupcomingproject, builderindependentfloor, commercialProjectAll, deendayalplots, dlfsco, luxuryAll, luxuryvillas, newlaunch, readytomove, residential, scoplotsall, underconstruction, possessionafter2026, plotsingurugram, farmhouse, industrialplots, industrialprojects, seniorliving } from "../slice/AllSectionData";
-import { signatureglobal, m3m, dlf, experion, elan, bptp, adani, smartworld, trevoc, indiabulls, centralpark, emaarindia, godrej, whiteland, aipl, birla, sobha, trump, puri, aarize, maxestates, shapoorji, satya, danube } from "../slice/BuilderSlice";
+import { signatureglobal, m3m, dlf, experion, elan, bptp, adani, smartworld, trevoc, indiabulls, centralpark, emaarindia, godrej, whiteland, aipl, birla, sobha, trump, puri, aarize, maxestates, shapoorji, satya, danube, bnw, binghatti, sobharealty, damac, nakheel, meraas, aldar, omniyat } from "../slice/BuilderSlice";
 import { Possessionin2025, Possessionin2026 } from "../slice/PossessionSlice";
 import { bptpplots, orrisplots } from "../slice/ProjectOverviewSlice";
 
@@ -544,27 +544,38 @@ const Api_service = () => {
       }
       console.log('🟦 getProjectbyBuilder: start', { query, limit });
       const response = await api.get(`${API_ROUTES.projectsBase()}/projectsearch?builderName=${query}&limit=${limit}`, { timeout: 15000 });
-      console.log('🟦 getProjectbyBuilder: success', { count: Array.isArray(response?.data?.data) ? response.data.data.length : 'n/a' });
+      console.log('🟦 getProjectbyBuilder: success', { query, count: Array.isArray(response?.data?.data) ? response.data.data.length : 'n/a' });
       const BuilderbyQuery = response.data.data;
+      
+      // Log builder names from results to see exact matching needs
+      if (Array.isArray(BuilderbyQuery) && BuilderbyQuery.length > 0) {
+        const uniqueBuilderNames = [...new Set(BuilderbyQuery.map(p => p.builderName))];
+        console.log(`🔍 [BuilderDebug] Query: "${query}", Unique builderNames in results:`, uniqueBuilderNames);
+      } else {
+        console.log(`🔍 [BuilderDebug] Query: "${query}", No projects found.`);
+      }
 
-      switch (query) {
-        case 'Signature Global':
+      // Convert query to lower case for more robust matching
+      const normalizedQuery = typeof query === 'string' ? query.toLowerCase().trim() : query;
+
+      switch (normalizedQuery) {
+        case 'signature global':
           dispatch(signatureglobal(BuilderbyQuery));
           break;
-        case 'M3M India':
+        case 'm3m india':
           dispatch(m3m(BuilderbyQuery));
           break;
-        case 'DLF Homes':
+        case 'dlf homes':
+        case 'dlf':
           dispatch(dlf(BuilderbyQuery));
           break;
-        case 'Experion Developers':
+        case 'experion developers':
           dispatch(experion(BuilderbyQuery));
           break;
-        case 'Elan Group':
+        case 'elan group':
           dispatch(elan(BuilderbyQuery));
           break;
-        case 'Shapoorji Pallonji': // Exact match with database
-        case 'shapoorji pallonji': // Case-insensitive match for safety
+        case 'shapoorji pallonji': 
           console.log('🔍 Shapoorji Pallonji data received:', BuilderbyQuery);
           if (!Array.isArray(BuilderbyQuery)) {
             console.error('🟥 Expected BuilderbyQuery to be an array, got:', typeof BuilderbyQuery);
@@ -574,7 +585,7 @@ const Api_service = () => {
           dispatch(shapoorji(BuilderbyQuery));
           console.log('✅ Shapoorji Pallonji data dispatched to Redux');
           break;
-        case 'Satya Group':
+        case 'satya group':
           console.log('🔍 Satya Group data received:', BuilderbyQuery);
           if (!Array.isArray(BuilderbyQuery)) {
             console.error('🟥 Expected BuilderbyQuery to be an array, got:', typeof BuilderbyQuery);
@@ -584,72 +595,103 @@ const Api_service = () => {
           dispatch(satya(BuilderbyQuery));
           console.log('✅ Satya Group data dispatched to Redux');
           break;
-        case 'BPTP LTD':
+        case 'bptp ltd':
+        case 'bptp':
           dispatch(bptp(BuilderbyQuery));
           break;
-        case 'Adani Realty':
+        case 'adani realty':
           dispatch(adani(BuilderbyQuery));
           break;
-        case 'Smartworld':
+        case 'smartworld':
           dispatch(smartworld(BuilderbyQuery));
           break;
-        case 'Trevoc Group':
+        case 'trevoc group':
           dispatch(trevoc(BuilderbyQuery));
           break;
-        case 'Indiabulls':
+        case 'indiabulls':
           dispatch(indiabulls(BuilderbyQuery));
           break;
-        case 'Central Park':
+        case 'central park':
           dispatch(centralpark(BuilderbyQuery));
           break;
-        case 'Emaar India':
+        case 'emaar india':
           dispatch(emaarindia(BuilderbyQuery));
           break;
-        case 'Godrej Properties':
+        case 'godrej properties':
           dispatch(godrej(BuilderbyQuery));
           break;
-        case 'Whiteland Corporation':
+        case 'whiteland':
           dispatch(whiteland(BuilderbyQuery));
           break;
-        case 'AIPL':
+        case 'aipl':
           dispatch(aipl(BuilderbyQuery));
           break;
-        case 'Birla Estate':
-        case 'Birla Estates':
+        case 'birla estate':
           dispatch(birla(BuilderbyQuery));
           break;
-        case 'Sobha':
-        case 'Sobha Developers':
-          console.log('🔍 Dispatching sobha action with data:', BuilderbyQuery);
+        case 'sobha developers':
           dispatch(sobha(BuilderbyQuery));
           break;
-        case 'Trump Towers':
-        case 'trump':
+        case 'trump towers':
           dispatch(trump(BuilderbyQuery));
           break;
-        case 'Puri Constructions':
-        case 'Puri':
-        case 'Puri Developers':
-          console.log('🔍 Dispatching puri action with data:', BuilderbyQuery);
+        case 'puri developers':
           dispatch(puri(BuilderbyQuery));
           break;
-        case 'Aarize Group':
-        case 'Aarize':
-        case 'Aarize Developers':
-          console.log('🔍 Dispatching aarize action with data:', BuilderbyQuery);
+        case 'aarize developers':
           dispatch(aarize(BuilderbyQuery));
           break;
-        case 'Max Estates':
         case 'max estates':
           console.log('🔍 Dispatching maxestates action with data:', BuilderbyQuery);
           dispatch(maxestates(BuilderbyQuery));
           break;
-        case 'Danube Properties':
+        case 'danube properties':
           console.log('🔍 Dispatching danube action with data:', BuilderbyQuery);
           dispatch(danube(BuilderbyQuery));
           break;
+        case 'bnw properties':
+        case 'bnw':
+        case 'bnw developments':
+          console.log('🔍 Dispatching bnw action with data:', BuilderbyQuery);
+          dispatch(bnw(BuilderbyQuery));
+          break;
+        case 'binghatti developers':
+        case 'binghatti':
+          console.log('🔍 Dispatching binghatti action with data:', BuilderbyQuery);
+          dispatch(binghatti(BuilderbyQuery));
+          break;
+        case 'sobha realty':
+          console.log('🔍 Dispatching sobharealty action with data:', BuilderbyQuery);
+          dispatch(sobharealty(BuilderbyQuery));
+          break;
+        case 'damac properties':
+        case 'damac':
+          console.log('🔍 Dispatching damac action with data:', BuilderbyQuery);
+          dispatch(damac(BuilderbyQuery));
+          break;
+        case 'nakheel':
+        case 'nakheel properties':
+          console.log('🔍 Dispatching nakheel action with data:', BuilderbyQuery);
+          dispatch(nakheel(BuilderbyQuery));
+          break;
+        case 'meraas':
+        case 'meraas properties':
+          console.log('🔍 Dispatching meraas action with data:', BuilderbyQuery);
+          dispatch(meraas(BuilderbyQuery));
+          break;
+        case 'aldar':
+        case 'aldar properties':
+          console.log('🔍 Dispatching aldar action with data:', BuilderbyQuery);
+          dispatch(aldar(BuilderbyQuery));
+          break;
+        case 'omniyat':
+        case 'omniyat properties':
+          console.log('🔍 Dispatching omniyat action with data:', BuilderbyQuery);
+          dispatch(omniyat(BuilderbyQuery));
+          break;
         default:
-          console.warn('Unknown builder:', query);
+          console.warn(`⚠️ getProjectbyBuilder: Unhandled query "${query}"`);
+          break;
       }
       return BuilderbyQuery;
     } catch (error) {

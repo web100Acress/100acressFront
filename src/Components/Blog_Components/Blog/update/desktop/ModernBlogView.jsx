@@ -5,7 +5,7 @@ import { DataContext } from "../../../../../MyContext";
 import { useSelector } from "react-redux";
 import { Helmet } from "react-helmet";
 import DOMPurify from 'dompurify';
-import { Calendar, Clock, Eye, User } from 'lucide-react';
+import { Calendar, Clock, Eye, User, X, Phone, Send } from 'lucide-react';
 import { FALLBACK_IMG } from '../../../../../Utils/imageUtils';
 import Footer from "../../../../../Home/Footer/CrimsonEleganceFooter";
 import FAQSection from "../../../../Actual_Components/FAQSection";
@@ -20,6 +20,11 @@ const ModernBlogView = () => {
   const [showStickyHeader, setShowStickyHeader] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
   const [relatedBlogs, setRelatedBlogs] = useState([]);
+  const [showEnquiryModal, setShowEnquiryModal] = useState(false);
+  const [formData, setFormData] = useState({ name: "", mobile: "" });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [quickFormData, setQuickFormData] = useState({ name: "", mobile: "" });
+  const [isQuickSubmitting, setIsQuickSubmitting] = useState(false);
   const { id, slug } = useParams();
 
   // Extract headings from HTML content
@@ -92,6 +97,19 @@ const ModernBlogView = () => {
 
     if (id || slug) {
       fetchBlog();
+      // Auto-open enquiry form after a short delay once blog starts loading
+      const timer = setTimeout(() => {
+        setShowEnquiryModal(true);
+      }, 1000); // 1 second delay
+
+      const interval = setInterval(() => {
+        setShowEnquiryModal((prev) => (prev ? prev : true));
+      }, 15000); // re-open after every 15 seconds
+
+      return () => {
+        clearTimeout(timer);
+        clearInterval(interval);
+      };
     } else {
       setLoadError("No blog post specified");
       setIsLoading(false);
@@ -201,6 +219,64 @@ const ModernBlogView = () => {
     return `/blog/${slug}/${blog._id}`;
   };
 
+  const handleEnquirySubmit = async (e) => {
+    e.preventDefault();
+    if (!formData.name || !formData.mobile) {
+      alert("Please fill in all fields");
+      return;
+    }
+    setIsSubmitting(true);
+    try {
+      const countryCode = "+91";
+      const fullPhoneNumber = `${countryCode}${String(formData.mobile).trim()}`;
+
+      await api.post('userInsert', {
+        name: formData.name,
+        mobile: fullPhoneNumber,
+        countryCode,
+        projectName: `Blog: ${data.blog_Title}`,
+        address: window.location.href,
+      });
+      alert("Enquiry submitted successfully!");
+      setShowEnquiryModal(false);
+    } catch (error) {
+      console.error("Enquiry error:", error);
+      alert("Failed to submit enquiry. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleQuickEnquirySubmit = async (e) => {
+    e.preventDefault();
+    if (!quickFormData.name || !quickFormData.mobile) {
+      alert("Please fill in all fields");
+      return;
+    }
+
+    setIsQuickSubmitting(true);
+    try {
+      const countryCode = "+91";
+      const fullPhoneNumber = `${countryCode}${String(quickFormData.mobile).trim()}`;
+
+      await api.post('userInsert', {
+        name: quickFormData.name,
+        mobile: fullPhoneNumber,
+        countryCode,
+        projectName: `Blog: ${data.blog_Title}`,
+        address: window.location.href,
+      });
+
+      alert("Enquiry submitted successfully!");
+      setQuickFormData({ name: "", mobile: "" });
+    } catch (error) {
+      console.error("Enquiry error:", error);
+      alert("Failed to submit enquiry. Please try again.");
+    } finally {
+      setIsQuickSubmitting(false);
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -239,6 +315,82 @@ const ModernBlogView = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Enquiry Modal */}
+      {showEnquiryModal && (
+        <div className="fixed inset-0 z-[2000] flex items-center justify-center p-4">
+          <div 
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            onClick={() => setShowEnquiryModal(false)}
+          ></div>
+          <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden transform transition-all animate-in fade-in zoom-in duration-300">
+            <button 
+              onClick={() => setShowEnquiryModal(false)}
+              className="absolute right-3 top-3 p-1.5 hover:bg-gray-100 rounded-full transition-colors z-10"
+            >
+              <X className="w-4 h-4 text-gray-400" />
+            </button>
+            
+            <div className="p-6">
+              <div className="text-center mb-6">
+                <div className="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center mx-auto mb-3">
+                  <Send className="w-6 h-6" />
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-1">Submit Your Enquiry</h3>
+              </div>
+
+              <form onSubmit={handleEnquirySubmit} className="space-y-3.5">
+                <div>
+                  <label className="block text-xs font-semibold text-gray-700 mb-1 ml-1">Your Name</label>
+                  <div className="relative group">
+                    <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-blue-600 transition-colors" />
+                    <input
+                      type="text"
+                      required
+                      placeholder="Enter your name"
+                      className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-4 focus:ring-blue-500/10 focus:border-blue-600 outline-none text-sm transition-all"
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-gray-700 mb-1 ml-1">Mobile Number</label>
+                  <div className="relative group">
+                    <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-blue-600 transition-colors" />
+                    <input
+                      type="tel"
+                      required
+                      placeholder="Enter your mobile number"
+                      className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-4 focus:ring-blue-500/10 focus:border-blue-600 outline-none text-sm transition-all"
+                      value={formData.mobile}
+                      onChange={(e) => setFormData({ ...formData, mobile: e.target.value })}
+                    />
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 transition-all disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2 group mt-4 text-sm"
+                >
+                  {isSubmitting ? (
+                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                  ) : (
+                    <>
+                      Submit Enquiry
+                      <Send className="w-3.5 h-3.5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                    </>
+                  )}
+                </button>
+              </form>
+              <p className="text-center text-[10px] text-gray-400 mt-4">
+                By submitting, you agree to our privacy policy.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
       <Helmet>
         <title>{data.blog_Title || 'Blog Post'}</title>
         <meta name="description" content={data.metaDescription || data.blog_Description?.substring(0, 160)} />
@@ -634,13 +786,15 @@ const ModernBlogView = () => {
                   Quick Enquiry
                 </h3>
                 
-                <form className="space-y-3">
+                <form className="space-y-3" onSubmit={handleQuickEnquirySubmit}>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
                     <input
                       type="text"
                       className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-red-500 focus:border-transparent text-sm"
                       placeholder="Your name"
+                      value={quickFormData.name}
+                      onChange={(e) => setQuickFormData({ ...quickFormData, name: e.target.value })}
                     />
                   </div>
                   
@@ -651,14 +805,17 @@ const ModernBlogView = () => {
                       className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-red-500 focus:border-transparent text-sm"
                       placeholder="Your mobile number"
                       maxLength={10}
+                      value={quickFormData.mobile}
+                      onChange={(e) => setQuickFormData({ ...quickFormData, mobile: e.target.value })}
                     />
                   </div>
                   
                   <button
                     type="submit"
+                    disabled={isQuickSubmitting}
                     className="w-full px-3 py-1 bg-red-600 text-white font-medium rounded hover:bg-red-700 transition-colors text-sm"
                   >
-                    Submit Enquiry
+                    {isQuickSubmitting ? 'Submitting...' : 'Submit Enquiry'}
                   </button>
                 </form>
               </div>

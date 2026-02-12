@@ -148,10 +148,10 @@ export default function InsightsMega({ isOpen, onClose }) {
                     </Box>
                     <Flex direction="column" gap={2}>
                       {[
-                        { name: "Investment outlook", path: "/analytics/investment-outlook" },
-                        { name: "Global Investment Committee", path: "/analytics/global-committee" },
-                        { name: "Asset allocation", path: "/analytics/asset-allocation" },
-                        { name: "Responsible investing", path: "/analytics/responsible-investing" },
+                        { name: "Investment outlook", path: "/real-estate-insights/investment-outlook" },
+                        { name: "Global Investment Committee", path: "/real-estate-insights/global-committee" },
+                        { name: "Asset allocation", path: "/real-estate-insights/asset-allocation" },
+                        { name: "Responsible investing", path: "/real-estate-insights/responsible-investing" },
                         { name: "Subscribe to insights", path: "/subscribe/insights" },
                       ].map((item, idx) => (
                         <Link
@@ -172,7 +172,7 @@ export default function InsightsMega({ isOpen, onClose }) {
                       ))}
                       <Button
                         as={Link}
-                        to="/analytics"
+                        to="/real-estate-insights"
                         variant="outline"
                         borderColor="whiteAlpha.400"
                         colorScheme="whiteAlpha"

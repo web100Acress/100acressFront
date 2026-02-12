@@ -27,6 +27,14 @@ const builderSlice = createSlice({
     shapoorji: [],
     satya: [],
     danube: [],
+    bnw: [],
+    binghatti: [],
+    sobharealty: [],
+    damac: [],
+    nakheel: [],
+    meraas: [],
+    aldar: [],
+    omniyat: [],
   },
   reducers: {
     signatureglobal: (state, action) => {
@@ -101,34 +109,66 @@ const builderSlice = createSlice({
     danube: (state, action) => {
       state.danube = action.payload;
     },
+    bnw: (state, action) => {
+      state.bnw = action.payload;
+    },
+    binghatti: (state, action) => {
+      state.binghatti = action.payload;
+    },
+    sobharealty: (state, action) => {
+      state.sobharealty = action.payload;
+    },
+    damac: (state, action) => {
+      state.damac = action.payload;
+    },
+    nakheel: (state, action) => {
+      state.nakheel = action.payload;
+    },
+    meraas: (state, action) => {
+      state.meraas = action.payload;
+    },
+    aldar: (state, action) => {
+      state.aldar = action.payload;
+    },
+    omniyat: (state, action) => {
+      state.omniyat = action.payload;
+    },
   },
 });
 
-export const { 
-  signatureglobal, 
-  m3m, 
-  dlf, 
-  experion, 
-  elan, 
-  bptp, 
-  adani, 
-  smartworld, 
-  trevoc, 
-  indiabulls, 
-  centralpark, 
-  emaarindia, 
-  godrej, 
-  whiteland, 
-  aipl, 
-  birla, 
-  sobha, 
-  trump, 
-  puri, 
-  aarize, 
+export const {
+  signatureglobal,
+  m3m,
+  dlf,
+  experion,
+  elan,
+  bptp,
+  adani,
+  smartworld,
+  trevoc,
+  indiabulls,
+  centralpark,
+  emaarindia,
+  godrej,
+  whiteland,
+  aipl,
+  birla,
+  sobha,
+  trump,
+  puri,
+  aarize,
   maxestates,
   shapoorji,
   satya,
-  danube
+  danube,
+  bnw,
+  binghatti,
+  sobharealty,
+  damac,
+  nakheel,
+  meraas,
+  aldar,
+  omniyat
 } = builderSlice.actions;
 
 export default builderSlice.reducer;

@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useMemo, useCallback } from "react";
+import React, { useEffect, useState, useMemo, useCallback } from "react";
 import { useParams, Link, useLocation } from "react-router-dom";
 import Footer from "../../Components/Actual_Components/Footer";
 import { Helmet } from "react-helmet";
@@ -59,7 +59,7 @@ const BUILDER_INFO = {
     hq: "Gurugram, Haryana",
     website: "https://www.bptp.com/",
   },
-  "emaar-india": {
+  "emaar-properties": {
     about:
       "Emaar is a famous real estate company known for building beautiful apartments, flats, and homes that look stylish and are comfortable to live in. Their projects in Gurgaon have green spaces, clean surroundings, and modern amenities like gardens and sports areas. Emaar follows international designs and focuses on quality so that families can enjoy a happy lifestyle. Their homes are in prime locations with good connectivity to schools, hospitals, and offices. People who want luxury homes or residential projects with world-class facilities trust Emaar because they build spaces that are safe, convenient, and perfect for families and investors alike.",
     founded: "2005 (India)",
@@ -140,6 +140,57 @@ const BUILDER_INFO = {
     hq: "Dubai, UAE",
     website: "https://www.danubeproperties.com/",
   },
+  "bnw-properties": {
+    about:
+      "BNW Properties is a premier real estate firm in Dubai, specializing in high-end residential and commercial developments. Renowned for their architectural excellence and attention to detail, BNW creates iconic structures that redefine urban living. Their projects are strategically located in Dubai's most sought-after areas, offering investors and residents a blend of luxury, comfort, and exceptional returns. With a focus on sustainable development and modern aesthetics, BNW Properties continues to set new benchmarks in the luxury real estate sector.",
+    hq: "Dubai, UAE",
+  },
+  "binghatti-developers": {
+    about:
+      "Binghatti Developers is an innovative real estate development company based in Dubai, led by the vision of its CEO Muhammad Binghatti. The brand is known for its distinct architectural style that blends traditional elements with contemporary design, creating recognizable landmarks across the city. Binghatti focuses on delivering high-quality residential properties that cater to modern lifestyles, offering premium amenities and strategic locations. Their commitment to timely delivery and exceptional value has made them a preferred choice for investors and homeowners in Dubai.",
+    hq: "Dubai, UAE",
+    website: "https://www.binghatti.com/",
+  },
+  "sobha-realty": {
+    about:
+      "Sobha Realty is an international luxury real estate developer committed to redefining the art of living through sustainable communities. Established in 1976 as an interior decoration firm in Oman, Sobha has grown into a powerhouse in the Dubai property market. They are unique for their 'Backward Integration' model, ensuring complete control over quality from design to execution. Sobha Realty is renowned for its flagship development, Sobha Hartland, and continues to deliver world-class homes characterized by impeccable craftsmanship and attention to detail.",
+    founded: "1976",
+    hq: "Dubai, UAE",
+    website: "https://www.sobharealty.com/",
+  },
+  "damac-properties": {
+    about:
+      "DAMAC Properties has been at the forefront of the Middle East's luxury real estate market since 2002, delivering residential, commercial and leisure properties across the region, including the UAE, Saudi Arabia, Qatar, Jordan, Lebanon, Iraq, the Maldives, Canada, the United Kingdom and the United States. DAMAC is known for its iconic projects like DAMAC Hills, AKOYA, and partnerships with global brands like Versace and Fendi to create branded residences of unmatched luxury.",
+    founded: "2002",
+    hq: "Dubai, UAE",
+    website: "https://www.damacproperties.com/",
+  },
+  "nakheel-properties": {
+    about:
+      "Nakheel is a world-leading master developer based in Dubai, responsible for iconic projects like the Palm Jumeirah and The World Islands. Their master developments have played a pivotal role in realizing Dubai's vision as a global destination for living, tourism, and business. Nakheel's portfolio includes a diverse range of residential, retail, hospitality and leisure projects that continue to reshape the city's skyline and coastline.",
+    hq: "Dubai, UAE",
+    website: "https://www.nakheel.com/",
+  },
+  "meraas-properties": {
+    about:
+      "Meraas is a Dubai-based holding company that creates diverse and innovative urban destinations. Their vision is to design cities that are rich in culture and heritage while embracing modern advancement. Meraas is responsible for some of Dubai's most vibrant destinations, including City Walk, Bluewaters Island, and Port de La Mer, offering a unique blend of residential, retail, and leisure experiences that inspire a creative and active lifestyle.",
+    hq: "Dubai, UAE",
+    website: "https://www.meraas.com/",
+  },
+  "aldar-properties": {
+    about:
+      "Aldar Properties is the leading real estate developer and manager in Abu Dhabi, known for its commitment to creating thriving communities. Since its inception in 2004, Aldar has delivered numerous landmark projects, including Yas Island, Al Raha Beach, and Saadiyat Island. Their portfolio spans residential, commercial, retail and hospitality sectors, focusing on sustainable development and enhancing the lifestyle of residents across the UAE.",
+    founded: "2004",
+    hq: "Abu Dhabi, UAE",
+    website: "https://www.aldar.com/",
+  },
+  "omniyat-properties": {
+    about:
+      "Omniyat is a privately-held real estate development and service group that since 2005 has been contributing to Dubai's skyline through unique, artistic and high-end developments. Known for its collaboration with world-renowned architects like Zaha Hadid and Foster + Partners, Omniyat creates bespoke living experiences. Their flagship projects like The Opus and One at Palm Jumeirah are testaments to their focus on design, luxury, and exclusivity.",
+    founded: "2005",
+    hq: "Dubai, UAE",
+    website: "https://www.omniyat.com/",
+  },
 };
 
 // Map URL slugs to exact builder names as they appear in the database
@@ -157,7 +208,7 @@ const BUILDER_QUERIES = {
   'trevoc-group': 'Trevoc Group',
   'indiabulls-real-estate': 'Indiabulls Real Estate',
   'central-park': 'Central Park',
-  'emaar-india': 'Emaar India',
+  'emaar-properties': 'Emaar Properties',
   'godrej-properties': 'Godrej Properties',
   'whiteland': 'Whiteland',
   'aipl': 'AIPL',
@@ -167,7 +218,15 @@ const BUILDER_QUERIES = {
   'puri-developers': 'Puri Developers',
   'aarize-developers': 'Aarize Developers',
   'max-estates': 'Max Estates',
-  'danube-properties': 'Danube Properties'
+  'danube-properties': 'Danube Properties',
+  'bnw-properties': 'BNW Developments',
+  'binghatti-developers': 'Binghatti',
+  'sobha-realty': 'Sobha Realty',
+  'damac-properties': 'DAMAC Properties',
+  'nakheel-properties': 'Nakheel Properties',
+  'meraas-properties': 'Meraas Properties',
+  'aldar-properties': 'Aldar Properties',
+  'omniyat-properties': 'Omniyat Properties'
 };
 
 // Canonical display names for builder brands (for titles/meta)
@@ -176,7 +235,7 @@ const DISPLAY_NAMES = {
   'satya-group': 'Satya Group',
   'adani-realty': 'Adani Realty',
   'm3m-india': 'M3M India',
-  'emaar-india': 'Emaar India',
+  'emaar-properties': 'Emaar Properties',
   'experion-developers': 'Experion Developers',
   'signature-global': 'Signature Global',
   'dlf-homes': 'DLF Homes',
@@ -190,6 +249,14 @@ const DISPLAY_NAMES = {
   'central-park': 'Central Park',
   'max-estates': 'Max Estates',
   'danube-properties': 'Danube Properties',
+  'bnw-properties': 'BNW Developments',
+  'binghatti-developers': 'Binghatti',
+  'sobha-realty': 'Sobha Realty',
+  'damac-properties': 'DAMAC Properties',
+  'nakheel-properties': 'Nakheel Properties',
+  'meraas-properties': 'Meraas Properties',
+  'aldar-properties': 'Aldar Properties',
+  'omniyat-properties': 'Omniyat Properties',
 };
 
 // Builder logos aligned with the grid in Builder.jsx
@@ -218,6 +285,14 @@ const BUILDER_LOGOS = {
   'shapoorji-pallonji': '/Images/100acresslogo.png',
   'satya-group': '/Images/100acresslogo.png',
   'danube-properties': 'https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/dubai/dubai-devloper-logo/DANUBE.png',
+  'bnw-properties': 'https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/dubai/dubai-devloper-logo/bnw_properties_logo.png',
+  'binghatti-developers': 'https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/dubai/dubai-devloper-logo/Binghatti-logo-dark.webp.png',
+  'sobha-realty': 'https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/dubai/dubai-devloper-logo/Sobha_(company).svg.png',
+  'damac-properties': 'https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/dubai/dubai-devloper-logo/Damac_logo.svg.png',
+  'nakheel-properties': 'https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/dubai/dubai-devloper-logo/idBSCaoKfO_1762680043330.png',
+  'meraas-properties': 'https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/dubai/dubai-devloper-logo/dev_logo_1829_meraas345-261.png',
+  'aldar-properties': 'https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/dubai/dubai-devloper-logo/Aldra-logo.png',
+  'omniyat-properties': 'https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/dubai/dubai-devloper-logo/Omniyat.png',
 };
 
 // Sidebar component that stays fixed (sticky) on large screens
@@ -237,12 +312,12 @@ const DeveloperSidebar = ({ builderKey, builderName }) => {
     const check = () => {
       try {
         setNeedsMore(el.scrollHeight > el.clientHeight + 4);
-      } catch {}
+      } catch { }
     };
     check();
     const ro = new ResizeObserver(check);
     ro.observe(el);
-    return () => { try { ro.disconnect(); } catch {} };
+    return () => { try { ro.disconnect(); } catch { } };
   }, [aboutText, builderKey]);
 
   return (
@@ -324,82 +399,94 @@ const DeveloperSidebar = ({ builderKey, builderName }) => {
 };
 
 const BuilderPage = React.memo(() => {
-    const { builderName: paramBuilderName } = useParams();
-    const location = useLocation();
-    const dispatch = useDispatch();
-    
-    // Extract builder name from URL params or pathname for direct routes like /max-estates/
-    const builderName = paramBuilderName || location.pathname.replace(/^\/|\/$/g, '');
-    
-    // Set the query to the exact builder name from the database
-    const [query, setQuery] = useState(BUILDER_QUERIES[builderName] || '');
-    const [loading, setLoading] = useState(true);
-    const [isSynced, setIsSynced] = useState(false);
-    const [favoriteIds, setFavoriteIds] = useState([]);
-    const {getProjectbyBuilder, getPropertyOrder} = Api_Service();
-    
-    // Fetch projects when component mounts or builderName changes
-    useEffect(() => {
-      const fetchProjects = async () => {
-        try {
-          setLoading(true);
-          if (query) {
-            console.log(`🔄 Fetching projects for ${query}...`);
-            await getProjectbyBuilder(query, 20);
-          }
-        } catch (error) {
-          console.error('❌ Error fetching projects:', error);
-        } finally {
-          setLoading(false);
-        }
-      };
-      
-      fetchProjects();
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [builderName, query]);
-    
-    // Memoize sync function to prevent infinite re-renders
-    const memoizedSyncProjectOrders = useCallback(() => {
-      return dispatch(syncProjectOrdersFromServer());
-    }, [dispatch]);
-    
-    // Subscribe to favorites to trigger re-render on updates
-    useEffect(() => {
-      hydrateFavoritesFromServer();
-      const unsub = subscribe((ids) => setFavoriteIds(ids || []));
-      return () => { if (typeof unsub === 'function') unsub(); };
-    }, []);
+  const { builderName: paramBuilderName } = useParams();
+  const location = useLocation();
+  const dispatch = useDispatch();
 
-    // Get builder projects from Redux store
-    const SignatureBuilder = useSelector(store => store?.builder?.signatureglobal);
-    const M3M = useSelector(store => store?.builder?.m3m);
-    const dlfAllProjects= useSelector(store => store?.builder?.dlf);
-    const Experion = useSelector(store => store?.builder?.experion);
-    const Elan = useSelector(store => store?.builder?.elan);
-    const BPTP = useSelector(store => store?.builder?.bptp);
-    const Adani = useSelector(store => store?.builder?.adani);
-    const SmartWorld = useSelector(store => store?.builder?.smartworld);
-    const Trevoc = useSelector(store => store?.builder?.trevoc);
-    const IndiaBulls = useSelector(store => store?.builder?.indiabulls);
-    const centralpark = useSelector(store => store?.builder?.centralpark);
-    const emaarindia = useSelector(store => store?.builder?.emaarindia);
-    const godrej = useSelector(store => store?.builder?.godrej);
-    const whiteland = useSelector(store => store?.builder?.whiteland);
-    const aipl = useSelector(store => store?.builder?.aipl);
-    const birla = useSelector(store => store?.builder?.birla);
-    const sobha = useSelector(store => store?.builder?.sobha);
-    const trump = useSelector(store => store?.builder?.trump);
-    const puri = useSelector(store => store?.builder?.puri);
-    const aarize = useSelector(store => store?.builder?.aarize);
-    const maxestates = useSelector(store => store?.builder?.maxestates);
-    const shapoorjiBuilder = useSelector(store => store?.builder?.shapoorji);
-    const satyaBuilder = useSelector(store => store?.builder?.satya);
-    const danubeBuilder = useSelector(store => store?.builder?.danube);
-    
-    // Get project order state from Redux store
-    const customOrders = useSelector(store => store?.projectOrder?.customOrders);
-    const buildersWithCustomOrder = useSelector(store => store?.projectOrder?.buildersWithCustomOrder);
-    const randomSeeds = useSelector(store => store?.projectOrder?.randomSeeds);
+  // Extract builder name from URL params or pathname for direct routes like /max-estates/
+  const builderName = paramBuilderName || location.pathname.replace(/^\/|\/$/g, '');
+
+  // Set the query to the exact builder name from the database
+  const query = BUILDER_QUERIES[builderName] || '';
+  const [loading, setLoading] = useState(true);
+  const [isSynced, setIsSynced] = useState(false);
+  const [favoriteIds, setFavoriteIds] = useState([]);
+  const { getProjectbyBuilder, getPropertyOrder } = Api_Service();
+
+  // Fetch projects when component mounts or builderName changes
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        setLoading(true);
+        if (query) {
+          console.log(`🔄 [BinghattiDebug] BuilderName: ${builderName}, Query: ${query}`);
+          console.log(`🔄 Fetching projects for ${query}...`);
+          await getProjectbyBuilder(query, 20);
+        } else {
+          console.warn(`⚠️ [BinghattiDebug] No query found for builderName: ${builderName}`);
+        }
+      } catch (error) {
+        console.error('❌ Error fetching projects:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProjects();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [builderName, query]);
+
+  // Memoize sync function to prevent infinite re-renders
+  const memoizedSyncProjectOrders = useCallback(() => {
+    return dispatch(syncProjectOrdersFromServer());
+  }, [dispatch]);
+
+  // Subscribe to favorites to trigger re-render on updates
+  useEffect(() => {
+    hydrateFavoritesFromServer();
+    const unsub = subscribe((ids) => setFavoriteIds(ids || []));
+    return () => { if (typeof unsub === 'function') unsub(); };
+  }, []);
+
+  // Get builder projects from Redux store
+  const SignatureBuilder = useSelector(store => store?.builder?.signatureglobal);
+  const M3M = useSelector(store => store?.builder?.m3m);
+  const dlfAllProjects = useSelector(store => store?.builder?.dlf);
+  const Experion = useSelector(store => store?.builder?.experion);
+  const Elan = useSelector(store => store?.builder?.elan);
+  const BPTP = useSelector(store => store?.builder?.bptp);
+  const Adani = useSelector(store => store?.builder?.adani);
+  const SmartWorld = useSelector(store => store?.builder?.smartworld);
+  const Trevoc = useSelector(store => store?.builder?.trevoc);
+  const IndiaBulls = useSelector(store => store?.builder?.indiabulls);
+  const centralpark = useSelector(store => store?.builder?.centralpark);
+  const emaarindia = useSelector(store => store?.builder?.emaarindia);
+  const godrej = useSelector(store => store?.builder?.godrej);
+  const whiteland = useSelector(store => store?.builder?.whiteland);
+  const aipl = useSelector(store => store?.builder?.aipl);
+  const birla = useSelector(store => store?.builder?.birla);
+  const sobha = useSelector(store => store?.builder?.sobha);
+  const trump = useSelector(store => store?.builder?.trump);
+  const puri = useSelector(store => store?.builder?.puri);
+  const aarize = useSelector(store => store?.builder?.aarize);
+  const maxestates = useSelector(store => store?.builder?.maxestates);
+  const shapoorjiBuilder = useSelector(store => store?.builder?.shapoorji);
+  const satyaBuilder = useSelector(store => store?.builder?.satya);
+  const danubeBuilder = useSelector(store => store?.builder?.danube);
+  const bnwBuilder = useSelector(store => store?.builder?.bnw);
+  const binghattiBuilder = useSelector(store => store?.builder?.binghatti);
+  console.log(`📊 [BinghattiDebug] binghattiBuilder data from Redux:`, binghattiBuilder);
+  const sobharealtyBuilder = useSelector(store => store?.builder?.sobharealty);
+  const damacBuilder = useSelector(store => store?.builder?.damac);
+  const nakheelBuilder = useSelector(store => store?.builder?.nakheel);
+  const meraasBuilder = useSelector(store => store?.builder?.meraas);
+  const aldarBuilder = useSelector(store => store?.builder?.aldar);
+  const omniyatBuilder = useSelector(store => store?.builder?.omniyat);
+
+  // Get project order state from Redux store
+  const customOrders = useSelector(store => store?.projectOrder?.customOrders);
+  const buildersWithCustomOrder = useSelector(store => store?.projectOrder?.buildersWithCustomOrder);
+  const randomSeeds = useSelector(store => store?.projectOrder?.randomSeeds);
 
   const buildersData = {
     'signature-global': SignatureBuilder,
@@ -407,16 +494,16 @@ const BuilderPage = React.memo(() => {
     'dlf-homes': dlfAllProjects,
     'experion-developers': Experion,
     'elan-group': Elan,
-    'bptp-limited':BPTP,
-    'adani-realty':Adani,
-    'smartworld-developers':SmartWorld, 
-    'trevoc-group':Trevoc,
-    'indiabulls-real-estate':IndiaBulls ,
-    'central-park':centralpark,
-    'emaar-india' : emaarindia,
-    'godrej-properties' : godrej,
-    'whiteland' : whiteland,
-    'aipl' : aipl,
+    'bptp-limited': BPTP,
+    'adani-realty': Adani,
+    'smartworld-developers': SmartWorld,
+    'trevoc-group': Trevoc,
+    'indiabulls-real-estate': IndiaBulls,
+    'central-park': centralpark,
+    'emaar-india': emaarindia,
+    'godrej-properties': godrej,
+    'whiteland': whiteland,
+    'aipl': aipl,
     'birla-estate': birla,
     'sobha-developers': sobha,
     'trump-towers': trump,
@@ -425,16 +512,24 @@ const BuilderPage = React.memo(() => {
     'max-estates': maxestates,
     'shapoorji-pallonji': shapoorjiBuilder,
     'satya-group': satyaBuilder,
-    'danube-properties': danubeBuilder
+    'danube-properties': danubeBuilder,
+    'bnw-properties': bnwBuilder,
+    'binghatti-developers': binghattiBuilder,
+    'sobha-realty': sobharealtyBuilder,
+    'damac-properties': damacBuilder,
+    'nakheel-properties': nakheelBuilder,
+    'meraas-properties': meraasBuilder,
+    'aldar-properties': aldarBuilder,
+    'omniyat-properties': omniyatBuilder
   };
   const builderProjects = buildersData[builderName] || [];
 
   const filteredBuilderProjects = builderName === 'birla-estate'
     ? (builderProjects || []).filter(
-        p => p.builderName && p.builderName.trim().toLowerCase().includes('birla estate') &&
-             (!p.type || p.type.toLowerCase() !== 'rental') &&
-             (!p.project_Status || p.project_Status.toLowerCase() !== 'rental')
-      )
+      p => p.builderName && p.builderName.trim().toLowerCase().includes('birla estate') &&
+        (!p.type || p.type.toLowerCase() !== 'rental') &&
+        (!p.project_Status || p.project_Status.toLowerCase() !== 'rental')
+    )
     : builderProjects;
 
   // Fetch Property Order for this builder's query name and cache IDs for ordering
@@ -463,12 +558,12 @@ const BuilderPage = React.memo(() => {
     const hasCustomOrderDefined = hasCustomOrder(keyForOrder, buildersWithCustomOrder);
     const customOrder = getCustomOrder(keyForOrder, customOrders);
     const randomSeed = getRandomSeed(keyForOrder, randomSeeds);
-    
+
     console.log('🔍 BuilderPage - hasCustomOrderDefined:', hasCustomOrderDefined);
     console.log('🔍 BuilderPage - customOrder:', customOrder);
     console.log('🔍 BuilderPage - randomSeed:', randomSeed);
     console.log('🔍 BuilderPage - filteredBuilderProjects length:', filteredBuilderProjects.length);
-    
+
     // First, try to apply Property Order if we've fetched it (stored in state below)
     // We'll use a closure-captured variable propOrderIds if defined via effect
     if (Array.isArray(propOrderIds) && propOrderIds.length > 0) {
@@ -490,7 +585,7 @@ const BuilderPage = React.memo(() => {
       randomSeed
     );
   }, [filteredBuilderProjects, builderName, query, buildersWithCustomOrder, customOrders, randomSeeds, propOrderIds]);
-  
+
 
   const handleShare = (project) => {
     if (navigator.share) {
@@ -510,7 +605,7 @@ const BuilderPage = React.memo(() => {
   const onToggleFavorite = (project) => (e) => {
     e.preventDefault();
     e.stopPropagation();
-    
+
     const snapshot = {
       title: project.projectName,
       image: project.frontImage?.url || project.frontImage?.cdn_url,
@@ -523,10 +618,10 @@ const BuilderPage = React.memo(() => {
       maxPrice: project.maxPrice,
       minPrice: project.minPrice,
     };
-    
+
     // Get authentication state from localStorage since we don't have access to AuthContext here
     const isAuthenticated = !!localStorage.getItem('myToken');
-    
+
     if (!isAuthenticated) {
       if (typeof window.showAuthModal === 'function') {
         window.showAuthModal();
@@ -536,62 +631,26 @@ const BuilderPage = React.memo(() => {
       }
       return;
     }
-    
+
     toggleFavorite(project._id || project.id || project.slug, snapshot, isAuthenticated);
   };
 
   const formatBuilderName = (name) => {
     return name
-      .split('-') 
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1)) 
-      .join(' '); 
+      .split('-')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
   };
-  
+
   const formattedBuilderName = formatBuilderName(builderName);
   const displayName = DISPLAY_NAMES[builderName] || formattedBuilderName;
   const heroTitleText = `${displayName} Projects in Gurugram`;
-  
-  useEffect(() => {
-    if (builderName) {
-      const builderQueries = {
-        'signature-global': 'Signature Global',
-        'm3m-india': 'M3M India',
-        'dlf-homes': 'DLF Homes',
-        'experion-developers': 'Experion Developers',
-        'elan-group': 'Elan Group',
-        'bptp-limited' : 'BPTP LTD',
-        'adani-realty': 'Adani Realty',
-        'trevoc-group' : 'Trevoc Group',
-        'indiabulls-real-estate' : 'Indiabulls',
-        'smartworld-developers' : 'Smartworld',
-        'central-park' : 'Central Park',
-        'emaar-india' : 'Emaar India',
-        'godrej-properties' : 'Godrej Properties',
-        'whiteland' : 'Whiteland Corporation',
-        'aipl' : 'AIPL',
-        'birla-estate': 'Birla Estates',
-        'sobha-developers': 'Sobha',
-        'trump-towers': 'Trump Towers',
-        'puri-developers': 'Puri Constructions',
-        'aarize-developers': 'Aarize Group',
-        'max-estates': 'Max Estates',
-        'shapoorji-pallonji': 'Shapoorji Pallonji',
-        'satya-group': 'Satya Group',
-        'danube-properties': 'Danube Properties'
-      };
-
-      const queryValue = builderQueries[builderName.toLowerCase()];
-      if (queryValue) {
-        setQuery(queryValue);
-      }
-    }
-  }, [builderName]);
 
   // Sync project orders from server on component mount
   useEffect(() => {
     console.log('🔍 BuilderPage - Syncing project orders from server...');
     setIsSynced(false);
-    
+
     memoizedSyncProjectOrders()
       .then((result) => {
         console.log('🔍 BuilderPage - Sync result:', result);
@@ -612,6 +671,20 @@ const BuilderPage = React.memo(() => {
         .then((result) => {
           console.log('🔍 BuilderPage - Auto-sync result:', result);
           setIsSynced(true);
+          // This part of the instruction seems misplaced, as dispatching builder-specific actions
+          // usually happens after fetching data, not during a sync of project orders.
+          // Assuming it's meant to be part of a broader dispatch logic that might be triggered
+          // or checked during sync, or it's a placeholder for future logic.
+          // For now, it's placed here as per instruction, but it's likely incorrect contextually.
+          // case 'BNW Properties':
+          // case 'BNW':
+          // case 'BNW Developments':
+          // case 'bnw properties':
+          // case 'bnw':
+          // case 'bnw developments':
+          //   console.log('🔍 Dispatching bnw action with data:', BuilderbyQuery); // BuilderbyQuery is not defined here
+          //   dispatch(bnw(BuilderbyQuery));
+          //   break;
         })
         .catch((error) => {
           console.error('🔍 BuilderPage - Auto-sync failed:', error);
@@ -665,7 +738,7 @@ const BuilderPage = React.memo(() => {
       // analytics hook
       window.dataLayer = window.dataLayer || [];
       window.dataLayer.push({ event: 'developer_explore_click', project: project?.projectName });
-    } catch {}
+    } catch { }
     const pUrl = project?.project_url;
     if (pUrl) window.location.href = `/${pUrl}/`;
   };
@@ -674,12 +747,12 @@ const BuilderPage = React.memo(() => {
     try {
       window.dataLayer = window.dataLayer || [];
       window.dataLayer.push({ event: 'developer_favorite_click', project: project?.projectName });
-    } catch {}
-    return onToggleFavorite(project)({ preventDefault: () => {}, stopPropagation: () => {} });
+    } catch { }
+    return onToggleFavorite(project)({ preventDefault: () => { }, stopPropagation: () => { } });
   };
 
   // Determine canonical URL - use direct route for max-estates, developers route for others
-  const canonicalUrl = builderName === 'max-estates' 
+  const canonicalUrl = builderName === 'max-estates'
     ? `https://www.100acress.com/max-estates/`
     : `https://www.100acress.com/developers/${builderName.toLowerCase()}/`;
 
@@ -692,7 +765,7 @@ const BuilderPage = React.memo(() => {
       </Helmet>
 
       {/* Hero */}
-      <Hero title={heroTitleText} onExplore={() => {}} onContact={() => {}} onSearch={handleHeroSearch} />
+      <Hero title={heroTitleText} onExplore={() => { }} onContact={() => { }} onSearch={handleHeroSearch} />
       {/* Sticky Filters */}
       <FilterBar view={view} setView={setView} sort={sort} setSort={setSort} mapView={mapView} setMapView={setMapView} />
 

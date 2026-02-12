@@ -1,336 +1,144 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Clock, User, TrendingUp, ArrowRight, Flame, Bookmark, Share2, MessageSquare, Eye, Filter, X } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Search, Clock, User, TrendingUp, ArrowRight, Flame, Bookmark, Share2, Eye, Filter, CheckCircle2 } from 'lucide-react';
+import api from '../../../config/apiClient';
 
 const InsightsNewsMobile = () => {
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedNews, setSelectedNews] = useState(null);
   const [activeCategory, setActiveCategory] = useState('all');
   const [isLoading, setIsLoading] = useState(true);
-  const [showCategoryFilter, setShowCategoryFilter] = useState(false);
+  const [news, setNews] = useState([]);
 
-  // Sample news data
-  const [news, setNews] = useState([
-    {
-      id: 1,
-      title: 'Real Estate Market Shows Strong Recovery in Q2 2024',
-      date: '2024-09-10',
-      author: 'Market Watch',
-      category: 'market-trends',
-      summary: 'The real estate market has shown a significant recovery with a 15% increase in transactions compared to last quarter.',
-      content: 'Detailed analysis of the Q2 2024 real estate market trends, including price movements and inventory levels across major cities. The recovery has been particularly strong in the residential sector, with luxury properties leading the way.',
-      image: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&h=400&fit=crop',
-      tags: ['market', 'trends', '2024', 'recovery'],
-      views: 12453,
-      likes: 243,
-      comments: 34,
-      isBreaking: true,
-      readTime: 5,
-      isTrending: true
-    },
-    {
-      id: 2,
-      title: 'New Infrastructure Projects to Boost Property Values',
-      date: '2024-09-08',
-      author: 'Urban Development',
-      category: 'infrastructure',
-      summary: 'Government announces $2B investment in suburban infrastructure, expected to drive property values up by 20%.',
-      content: 'The government has unveiled a comprehensive infrastructure plan focusing on suburban areas. The plan includes new highways, public transport links, and community facilities.',
-      image: 'https://images.unsplash.com/photo-1519501025264-65ba15a82390?w=800&h=400&fit=crop',
-      tags: ['infrastructure', 'suburban', 'investment', 'growth'],
-      views: 8765,
-      likes: 189,
-      comments: 27,
-      isBreaking: false,
-      readTime: 4,
-      isTrending: true
-    },
-    {
-      id: 3,
-      title: 'Sustainable Housing: The Future of Real Estate',
-      date: '2024-09-05',
-      author: 'Eco Living',
-      category: 'sustainability',
-      summary: 'Developers are increasingly focusing on eco-friendly construction methods and sustainable materials.',
-      content: 'As environmental concerns grow, the real estate industry is shifting towards more sustainable practices. This article explores the latest trends in green building technologies.',
-      image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&h=400&fit=crop',
-      tags: ['sustainability', 'green-building', 'eco-friendly', 'innovation'],
-      views: 5432,
-      likes: 321,
-      comments: 45,
-      isBreaking: false,
-      readTime: 6,
-      isTrending: false
-    },
-    {
-      id: 4,
-      title: 'Interest Rate Cuts Expected to Stimulate Housing Market',
-      date: '2024-09-12',
-      author: 'Finance Today',
-      category: 'finance',
-      summary: 'Central bank signals potential rate cuts, which could lead to increased mortgage applications.',
-      content: 'With the central bank hinting at possible interest rate cuts in the coming months, analysts predict a surge in mortgage applications and home purchases.',
-      image: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=800&h=400&fit=crop',
-      tags: ['finance', 'interest-rates', 'mortgage', 'market-trends'],
-      views: 9876,
-      likes: 432,
-      comments: 56,
-      isBreaking: true,
-      readTime: 5,
-      isTrending: true
-    },
-    {
-      id: 5,
-      title: 'Luxury Real Estate Market Reaches All-Time High',
-      date: '2024-09-15',
-      author: 'Luxury Living',
-      category: 'luxury',
-      summary: 'Demand for high-end properties surges as wealthy buyers look for safe investments.',
-      content: 'The luxury real estate market is experiencing unprecedented growth, with prices reaching record highs. This article explores the factors driving this trend.',
-      image: 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&h=400&fit=crop',
-      tags: ['luxury', 'high-end', 'investment', 'market-trends'],
-      views: 7654,
-      likes: 298,
-      comments: 32,
-      isBreaking: false,
-      readTime: 4,
-      isTrending: false
-    },
-    {
-      id: 6,
-      title: 'Remote Work Reshapes Housing Preferences',
-      date: '2024-09-14',
-      author: 'Work From Home',
-      category: 'lifestyle',
-      summary: 'Work-from-home trend leads to increased demand for home offices and larger living spaces.',
-      content: 'As remote work becomes the norm, homebuyers are prioritizing properties with dedicated workspaces and larger square footage.',
-      image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&h=400&fit=crop',
-      tags: ['remote-work', 'lifestyle', 'home-office', 'trends'],
-      views: 6543,
-      likes: 187,
-      comments: 23,
-      isBreaking: false,
-      readTime: 5,
-      isTrending: true
-    }
-  ]);
-
-  // Simulate loading
+  // Fetch real blog data for news
   useEffect(() => {
-    const timer = setTimeout(() => setIsLoading(false), 1000);
-    return () => clearTimeout(timer);
+    const fetchNews = async () => {
+      setIsLoading(true);
+      try {
+        const response = await api.get('blog/view');
+        if (response.data?.data) {
+          setNews(response.data.data);
+        }
+      } catch (error) {
+        console.error('Error fetching news:', error);
+      } finally {
+        setTimeout(() => setIsLoading(false), 600);
+      }
+    };
+    fetchNews();
   }, []);
 
-  // Categories
-  const categories = [
+  const categories = useMemo(() => [
     { id: 'all', name: 'All News' },
-    { id: 'market-trends', name: 'Market Trends' },
-    { id: 'infrastructure', name: 'Infrastructure' },
-    { id: 'sustainability', name: 'Sustainability' },
-    { id: 'finance', name: 'Finance' },
-    { id: 'luxury', name: 'Luxury' },
-    { id: 'lifestyle', name: 'Lifestyle' }
-  ];
+    { id: 'Market Insight', name: 'Market' },
+    { id: 'Infrastructure', name: 'Infra' },
+    { id: 'Investment', name: 'Invest' },
+    { id: 'Luxury', name: 'Luxury' },
+    { id: 'Finance', name: 'Finance' }
+  ], []);
 
-  // Get trending news
-  const trendingNews = [...news]
-    .sort((a, b) => b.views - a.views)
-    .slice(0, 3);
+  const filteredNews = useMemo(() => {
+    return news.filter(item => {
+      const matchesSearch = searchQuery === '' ||
+        item.blog_Title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.blog_Description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.tags?.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
 
-  // Get breaking news
-  const breakingNews = news.filter(item => item.isBreaking);
+      const matchesCategory = activeCategory === 'all' || item.blog_Category === activeCategory;
 
-  // Get popular tags
-  const allTags = news.flatMap(item => item.tags);
-  const tagCounts = allTags.reduce((acc, tag) => {
-    acc[tag] = (acc[tag] || 0) + 1;
-    return acc;
-  }, {});
-  const popularTags = Object.entries(tagCounts)
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 5)
-    .map(([tag]) => tag);
+      return matchesSearch && matchesCategory;
+    });
+  }, [news, searchQuery, activeCategory]);
 
-  const filteredNews = news.filter(item => {
-    const matchesSearch = searchQuery === '' ||
-      item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
+  const trendingNews = useMemo(() =>
+    [...news].sort((a, b) => (b.views || 0) - (a.views || 0)).slice(0, 3)
+    , [news]);
 
-    const matchesCategory = activeCategory === 'all' || item.category === activeCategory;
-
-    return matchesSearch && matchesCategory;
-  });
-
-  // Format date
   const formatDate = (dateString) => {
-    const options = { year: 'numeric', month: 'short', day: 'numeric' };
-    return new Date(dateString).toLocaleDateString('en-US', options);
+    const d = new Date(dateString);
+    if (isNaN(d.getTime())) return dateString;
+    return d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
   };
 
-  // Mobile News Card
-  const MobileNewsCard = ({ item, onClick }) => (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden mb-4 cursor-pointer" onClick={onClick}>
-      <div className="relative h-40 overflow-hidden">
-        <img
-          src={item.image}
-          alt={item.title}
-          className="w-full h-full object-cover"
-        />
-        {item.isBreaking && (
-          <div className="absolute top-2 left-2 bg-red-600 text-white px-2 py-1 rounded text-xs font-semibold flex items-center gap-1">
-            <Flame className="w-3 h-3" />
-            Breaking
-          </div>
-        )}
-        {item.isTrending && (
-          <div className="absolute top-2 right-2 bg-blue-600 text-white px-2 py-1 rounded text-xs font-semibold flex items-center gap-1">
-            <TrendingUp className="w-3 h-3" />
-            Trending
-          </div>
-        )}
-      </div>
-      <div className="p-4">
-        <h3 className="font-bold text-gray-900 mb-2 line-clamp-2 text-sm">
-          {item.title}
-        </h3>
-        <p className="text-gray-600 text-xs mb-3 line-clamp-2">
-          {item.summary}
-        </p>
-        <div className="flex items-center justify-between text-xs text-gray-500">
-          <div className="flex items-center gap-3">
-            <span className="flex items-center gap-1">
-              <User className="w-3 h-3" />
-              {item.author}
-            </span>
-            <span>{item.readTime} min</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="flex items-center gap-1">
-              <Eye className="w-3 h-3" />
-              {item.views > 1000 ? `${(item.views / 1000).toFixed(1)}k` : item.views}
-            </span>
-          </div>
-        </div>
-        <div className="flex flex-wrap gap-1 mt-2">
-          {item.tags.slice(0, 3).map((tag, index) => (
-            <span
-              key={index}
-              className="px-2 py-1 bg-gray-100 text-gray-600 rounded text-xs"
-            >
-              #{tag}
-            </span>
-          ))}
-        </div>
-      </div>
+  const getReadingTime = (description) => {
+    const words = description?.replace(/<[^>]*>/g, "").split(" ").length || 0;
+    const minutes = Math.ceil(words / 200);
+    return `${minutes} min`;
+  };
+
+  const blogLink = (id) => `/insights/blog/${id}`;
+
+  const SkeletonCard = () => (
+    <div className="bg-white rounded-2xl border border-slate-100 p-4 animate-pulse mb-4">
+      <div className="h-40 bg-slate-100 rounded-xl mb-4"></div>
+      <div className="h-4 bg-slate-100 rounded w-1/4 mb-3"></div>
+      <div className="h-5 bg-slate-100 rounded w-3/4 mb-2"></div>
+      <div className="h-4 bg-slate-100 rounded w-full"></div>
     </div>
   );
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-slate-50">
       {/* Header */}
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-40">
-        <div className="px-4 py-3">
-          <div className="flex items-center justify-between mb-3">
-            <h1 className="text-xl font-bold text-gray-900">Real Estate News</h1>
+      <div className="bg-white border-b border-slate-100 px-4 pt-6 pb-3 sticky top-0 z-40">
+        <h1 className="text-xl font-black text-slate-900 tracking-tight">Market News</h1>
+        <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mt-0.5">Daily Intelligence Report</p>
+
+        <div className="mt-3 relative group">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400 group-focus-within:text-red-500 transition-colors" />
+          <input
+            type="text"
+            placeholder="Search news library..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-100 rounded-xl text-sm font-semibold outline-none focus:bg-white focus:ring-2 focus:ring-red-500/10 focus:border-red-200 transition-all"
+          />
+        </div>
+
+        <div className="mt-3 flex gap-2 overflow-x-auto scrollbar-hide pb-0.5">
+          {categories.map((c) => (
             <button
-              onClick={() => setShowCategoryFilter(!showCategoryFilter)}
-              className="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors"
+              key={c.id}
+              onClick={() => setActiveCategory(c.id)}
+              className={`shrink-0 px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all border ${activeCategory === c.id
+                ? 'bg-red-600 text-white border-red-600 shadow-md shadow-red-100'
+                : 'bg-white text-slate-600 border-slate-100'
+                }`}
             >
-              <Filter className="w-5 h-5 text-gray-600" />
+              {c.name}
             </button>
-          </div>
-          
-          {/* Search */}
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-            <input
-              type="text"
-              placeholder="Search news..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full text-sm"
-            />
-          </div>
+          ))}
         </div>
+      </div>
 
-        {/* Category Filter */}
-        <AnimatePresence>
-          {showCategoryFilter && (
-            <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: 'auto', opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              className="border-t border-gray-200 overflow-hidden"
-            >
-              <div className="px-4 py-3">
-                <div className="flex flex-wrap gap-2">
-                  {categories.map((category) => (
-                    <button
-                      key={category.id}
-                      onClick={() => {
-                        setActiveCategory(category.id);
-                        setShowCategoryFilter(false);
-                      }}
-                      className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
-                        activeCategory === category.id
-                          ? 'bg-blue-600 text-white'
-                          : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                      }`}
-                    >
-                      {category.name}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </header>
-
-      {/* Breaking News Alert */}
-      {breakingNews.length > 0 && (
-        <div className="bg-red-50 border-b border-red-200 px-4 py-3">
-          <div className="flex items-center gap-2 mb-1">
-            <Flame className="w-4 h-4 text-red-600" />
-            <span className="font-semibold text-red-900 text-sm">Breaking News</span>
-          </div>
-          <div className="text-sm text-red-800">
-            {breakingNews[0].title}
-          </div>
-        </div>
-      )}
-
-      {/* Main Content */}
-      <div className="px-4 py-4">
-        {/* Trending Section */}
-        {trendingNews.length > 0 && (
+      <div className="px-4 py-5">
+        {/* Trending Strip */}
+        {trendingNews.length > 0 && !searchQuery && activeCategory === 'all' && (
           <div className="mb-6">
             <div className="flex items-center gap-2 mb-3">
-              <TrendingUp className="w-5 h-5 text-blue-600" />
-              <h2 className="font-bold text-gray-900">Trending Now</h2>
+              <TrendingUp className="w-3.5 h-3.5 text-red-600" />
+              <h2 className="text-[10px] font-black text-slate-900 uppercase tracking-widest">Trending Insights</h2>
             </div>
-            <div className="flex gap-3 overflow-x-auto pb-2">
-              {trendingNews.map((item, index) => (
+            <div className="flex gap-3 overflow-x-auto scrollbar-hide">
+              {trendingNews.map((item, idx) => (
                 <div
-                  key={item.id}
-                  className="flex-shrink-0 w-64 bg-white rounded-lg border border-gray-200 p-3 cursor-pointer hover:shadow-md transition-shadow"
-                  onClick={() => setSelectedNews(item)}
+                  key={item._id}
+                  onClick={() => navigate(blogLink(item._id))}
+                  className="shrink-0 w-64 bg-slate-900 rounded-2xl p-4 text-white relative overflow-hidden active:scale-95 transition-transform"
                 >
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="w-6 h-6 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-semibold text-xs">
-                      {index + 1}
+                  <div className="absolute top-0 right-0 w-24 h-24 bg-red-600 opacity-20 blur-2xl -mr-12 -mt-12"></div>
+                  <div className="relative">
+                    <span className="text-[9px] font-black text-red-500 uppercase tracking-widest mb-1.5 block">Top Pick {idx + 1}</span>
+                    <h3 className="text-xs font-bold leading-tight line-clamp-2 mb-2.5">
+                      {item.blog_Title}
+                    </h3>
+                    <div className="flex items-center justify-between">
+                      <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest">
+                        {(item.views || 0).toLocaleString()} Views
+                      </span>
+                      <ArrowRight className="w-3.5 h-3.5 text-red-500" />
                     </div>
-                    <span className="text-xs text-gray-500">{formatDate(item.date)}</span>
-                  </div>
-                  <h3 className="font-medium text-gray-900 text-sm line-clamp-2 mb-2">
-                    {item.title}
-                  </h3>
-                  <div className="flex items-center gap-2 text-xs text-gray-500">
-                    <span className="flex items-center gap-1">
-                      <Eye className="w-3 h-3" />
-                      {item.views > 1000 ? `${(item.views / 1000).toFixed(1)}k` : item.views}
-                    </span>
                   </div>
                 </div>
               ))}
@@ -338,161 +146,97 @@ const InsightsNewsMobile = () => {
           </div>
         )}
 
-        {/* News List */}
+        {/* Content Feed */}
         <div className="space-y-4">
           {isLoading ? (
-            Array.from({ length: 5 }).map((_, index) => (
-              <div key={index} className="animate-pulse">
-                <div className="h-40 bg-gray-200 rounded-lg mb-3"></div>
-                <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
-                <div className="h-3 bg-gray-200 rounded w-1/2 mb-3"></div>
-                <div className="h-3 bg-gray-200 rounded w-full mb-2"></div>
-                <div className="h-3 bg-gray-200 rounded w-5/6"></div>
-              </div>
-            ))
-          ) : (
+            Array(3).fill(0).map((_, i) => <SkeletonCard key={i} />)
+          ) : filteredNews.length > 0 ? (
             <AnimatePresence>
-              {filteredNews.map((item) => (
+              {filteredNews.map((item, idx) => (
                 <motion.div
-                  key={item.id}
-                  initial={{ opacity: 0, y: 20 }}
+                  key={item._id}
+                  initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  transition={{ duration: 0.3 }}
+                  transition={{ delay: idx * 0.05 }}
+                  onClick={() => navigate(blogLink(item._id))}
+                  className="bg-white rounded-2xl border border-slate-100 overflow-hidden shadow-sm active:scale-[0.98] transition-all"
                 >
-                  <MobileNewsCard
-                    item={item}
-                    onClick={() => setSelectedNews(item)}
-                  />
+                  <div className="relative h-36">
+                    <img
+                      src={item.blog_Image?.cdn_url || item.blog_Image?.url || item.blog_Image?.Location || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600&h=400&fit=crop'}
+                      alt={item.blog_Title}
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute top-3 left-3">
+                      <span className="px-2 py-0.5 bg-white/95 backdrop-blur-sm text-red-600 text-[8px] font-black uppercase tracking-widest rounded-md shadow-sm">
+                        {item.blog_Category || 'Update'}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="p-4">
+                    <div className="flex items-center gap-3 text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1.5">
+                      <span className="flex items-center gap-1"><Clock className="w-2.5 h-2.5" /> {getReadingTime(item.blog_Description)}</span>
+                      <span className="w-1 h-1 rounded-full bg-slate-200" />
+                      <span>{formatDate(item.createdAt)}</span>
+                    </div>
+                    <h3 className="text-sm font-bold text-slate-900 leading-tight mb-1.5">
+                      {item.blog_Title}
+                    </h3>
+                    <p className="text-[11px] text-slate-500 font-medium line-clamp-2 leading-relaxed mb-3">
+                      {item.metaDescription || item.blog_Description?.replace(/<[^>]*>/g, '').substring(0, 100)}...
+                    </p>
+                    <div className="flex items-center justify-between pt-3 border-t border-slate-50">
+                      <div className="flex items-center gap-2">
+                        <div className="w-5 h-5 rounded-full bg-red-50 flex items-center justify-center text-red-600">
+                          <CheckCircle2 className="w-2.5 h-2.5" />
+                        </div>
+                        <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest">Verified Signal</span>
+                      </div>
+                      <span className="text-[8px] font-black text-red-600 uppercase tracking-widest">Explore Intel →</span>
+                    </div>
+                  </div>
                 </motion.div>
               ))}
             </AnimatePresence>
+          ) : (
+            <div className="bg-white rounded-[2rem] border border-slate-100 p-10 text-center">
+              <div className="w-16 h-16 bg-slate-50 text-slate-300 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <Search className="w-6 h-6" />
+              </div>
+              <h3 className="text-lg font-black text-slate-900">No News Found</h3>
+              <p className="text-xs text-slate-500 font-medium mt-1">Try resetting your search query.</p>
+              <button
+                onClick={() => { setSearchQuery(''); setActiveCategory('all'); }}
+                className="mt-6 px-6 py-3 bg-red-600 text-white text-[10px] font-black uppercase tracking-widest rounded-xl shadow-lg shadow-red-100"
+              >
+                Reset Filters
+              </button>
+            </div>
           )}
         </div>
 
-        {/* Popular Tags */}
-        {popularTags.length > 0 && (
-          <div className="mt-8 mb-4">
-            <h3 className="font-bold text-gray-900 mb-3">Popular Tags</h3>
-            <div className="flex flex-wrap gap-2">
-              {popularTags.map((tag, index) => (
-                <span
-                  key={index}
-                  className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-xs"
-                >
-                  #{tag}
-                </span>
-              ))}
+        {/* Newsletter Mobile */}
+        <div className="mt-8 bg-slate-900 rounded-2xl p-5 text-white text-center relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-24 h-24 bg-red-600 opacity-20 blur-2xl -mr-12 -mt-12"></div>
+          <div className="relative">
+            <Flame className="w-6 h-6 text-red-500 mx-auto mb-3" />
+            <h3 className="text-base font-black tracking-tight mb-1.5">Weekly NCR Sync</h3>
+            <p className="text-[11px] text-slate-400 font-medium leading-relaxed mb-5">
+              Get the raw data highlights delivered to your inbox every Thursday.
+            </p>
+            <div className="flex flex-col gap-2">
+              <input
+                type="email"
+                placeholder="support@100acress.com"
+                className="w-full px-4 py-2.5 bg-white/10 border border-white/20 rounded-xl text-[11px] font-bold placeholder:text-slate-500 focus:bg-white focus:text-slate-900 outline-none transition-all"
+              />
+              <button className="w-full py-2.5 bg-white text-slate-900 text-[9px] font-black uppercase tracking-widest rounded-xl shadow-lg active:scale-95 transition-all">
+                Subscribe
+              </button>
             </div>
           </div>
-        )}
+        </div>
       </div>
-
-      {/* News Detail Modal */}
-      <AnimatePresence>
-        {selectedNews && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-end"
-            onClick={() => setSelectedNews(null)}
-          >
-            <motion.div
-              initial={{ y: '100%' }}
-              animate={{ y: 0 }}
-              exit={{ y: '100%' }}
-              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="bg-white rounded-t-3xl w-full max-h-[90vh] overflow-y-auto"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="relative">
-                <img
-                  src={selectedNews.image}
-                  alt={selectedNews.title}
-                  className="w-full h-48 object-cover"
-                />
-                <button
-                  onClick={() => setSelectedNews(null)}
-                  className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm rounded-full p-2"
-                >
-                  <X className="w-5 h-5" />
-                </button>
-                {selectedNews.isBreaking && (
-                  <div className="absolute top-4 left-4 bg-red-600 text-white px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1">
-                    <Flame className="w-3 h-3" />
-                    Breaking
-                  </div>
-                )}
-                {selectedNews.isTrending && (
-                  <div className="absolute top-4 left-4 bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1">
-                    <TrendingUp className="w-3 h-3" />
-                    Trending
-                  </div>
-                )}
-              </div>
-              
-              <div className="p-6">
-                <h1 className="text-2xl font-bold text-gray-900 mb-4">{selectedNews.title}</h1>
-                
-                <div className="flex items-center gap-4 text-gray-600 mb-4 text-sm">
-                  <span className="flex items-center gap-1">
-                    <User className="w-4 h-4" />
-                    {selectedNews.author}
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <Clock className="w-4 h-4" />
-                    {formatDate(selectedNews.date)}
-                  </span>
-                  <span>{selectedNews.readTime} min read</span>
-                </div>
-
-                <div className="text-gray-700 leading-relaxed mb-6">
-                  {selectedNews.content}
-                </div>
-
-                <div className="flex flex-wrap gap-2 mb-6">
-                  {selectedNews.tags.map((tag, index) => (
-                    <span
-                      key={index}
-                      className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-xs"
-                    >
-                      #{tag}
-                    </span>
-                  ))}
-                </div>
-
-                <div className="flex items-center justify-between pt-4 border-t border-gray-200">
-                  <div className="flex items-center gap-4">
-                    <button className="flex items-center gap-2 text-gray-600">
-                      <Bookmark className="w-5 h-5" />
-                      <span className="text-sm">Save</span>
-                    </button>
-                    <button className="flex items-center gap-2 text-gray-600">
-                      <Share2 className="w-5 h-5" />
-                      <span className="text-sm">Share</span>
-                    </button>
-                  </div>
-                  <div className="flex items-center gap-4 text-gray-600 text-sm">
-                    <span className="flex items-center gap-1">
-                      <Eye className="w-4 h-4" />
-                      {selectedNews.views.toLocaleString()}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <MessageSquare className="w-4 h-4" />
-                      {selectedNews.comments}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <Bookmark className="w-4 h-4" />
-                      {selectedNews.likes}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </div>
   );
 };

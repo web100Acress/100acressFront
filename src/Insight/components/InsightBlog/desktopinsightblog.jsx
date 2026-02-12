@@ -1,15 +1,53 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, Clock, Eye, ArrowRight, Flame, Tag, TrendingUp, BarChart3, MapPin, Download, ChevronDown } from 'lucide-react';
+import api from '../../../config/apiClient';
 
 const DesktopInsightBlog = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('all');
   const [selectedCity, setSelectedCity] = useState('gurgaon');
+  const [apiPosts, setApiPosts] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const posts = useMemo(
-    () => [
+  // Fetch blogs from API
+  useEffect(() => {
+    const fetchBlogs = async () => {
+      setIsLoading(true);
+      try {
+        const response = await api.get('blog/view');
+        if (response?.data?.data) {
+          setApiPosts(response.data.data);
+        }
+      } catch (error) {
+        console.error('Error fetching blogs:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchBlogs();
+  }, []);
+
+  const posts = useMemo(() => {
+    if (apiPosts.length > 0) {
+      return apiPosts.map(post => ({
+        id: post._id,
+        title: post.blog_Title,
+        excerpt: post.blog_Description?.replace(/<[^>]*>/g, "").substring(0, 160) + '...',
+        category: post.blog_Category?.toLowerCase() || 'market',
+        date: post.createdAt,
+        author: post.author || '100acress Insights',
+        readTime: Math.ceil((post.blog_Description?.split(" ").length || 0) / 200) || 5,
+        views: post.views || 0,
+        image: post.blog_Image?.cdn_url || post.blog_Image?.url || post.blog_Image?.Location || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1600&h=900&fit=crop',
+        tags: post.tags || [],
+        slug: post.slug
+      }));
+    }
+
+    // Fallback mock data if API fails or is empty (keeping structure for UI)
+    return [
       {
         id: 1,
         title: 'Delhi NCR Real Estate Outlook 2026: Where the Demand is Moving',
@@ -23,94 +61,9 @@ const DesktopInsightBlog = () => {
         image:
           'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1600&h=900&fit=crop',
         tags: ['delhi ncr', 'demand', 'outlook']
-      },
-      {
-        id: 2,
-        title: 'Sector-by-Sector Price Trend: Gurgaon (2024–2026)',
-        excerpt:
-          'Understand what is driving price movement with a sector-wise breakdown, buyer segments, and inventory signals.',
-        category: 'price-trends',
-        date: '2026-01-18',
-        author: 'Research Desk',
-        readTime: 5,
-        views: 12310,
-        image:
-          'https://images.unsplash.com/photo-1519501025264-65ba15a82390?w=1600&h=900&fit=crop',
-        tags: ['gurgaon', 'price', 'sector']
-      },
-      {
-        id: 3,
-        title: 'How Infrastructure is Reshaping New Gurgaon Corridors',
-        excerpt:
-          'From expressways to metro extensions—see which pockets gain the most and why early movers benefit.',
-        category: 'infrastructure',
-        date: '2026-01-05',
-        author: 'Urban Analysis',
-        readTime: 7,
-        views: 9750,
-        image:
-          'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1600&h=900&fit=crop',
-        tags: ['infra', 'corridors', 'connectivity']
-      },
-      {
-        id: 4,
-        title: 'Investor Playbook: Rental Yield vs Capital Appreciation',
-        excerpt:
-          'A practical guide to choosing between yield-focused assets and appreciation bets based on your horizon.',
-        category: 'investment',
-        date: '2025-12-22',
-        author: 'Investment Team',
-        readTime: 8,
-        views: 14220,
-        image:
-          'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=1600&h=900&fit=crop',
-        tags: ['yield', 'investment', 'strategy']
-      },
-      {
-        id: 5,
-        title: 'Luxury Demand Signals: What Buyers Want in 2026',
-        excerpt:
-          'Amenity expectations, smart-home adoption, and why low-density living is commanding a premium.',
-        category: 'luxury',
-        date: '2025-12-09',
-        author: 'Luxury Desk',
-        readTime: 6,
-        views: 11040,
-        image:
-          'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=1600&h=900&fit=crop',
-        tags: ['luxury', 'amenities', 'buyers']
-      },
-      {
-        id: 6,
-        title: 'Home Loan Rate Cycles: When to Lock vs Float',
-        excerpt:
-          'How rate cycles impact EMI and what a smart borrower should do when macro signals shift.',
-        category: 'finance',
-        date: '2025-11-28',
-        author: 'Finance Desk',
-        readTime: 5,
-        views: 8850,
-        image:
-          'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=1600&h=900&fit=crop',
-        tags: ['home loan', 'rates', 'emi']
-      },
-      {
-        id: 6,
-        title: 'Home Loan Rate Cycles: When to Lock vs Float',
-        excerpt:
-          'How rate cycles impact EMI and what a smart borrower should do when macro signals shift.',
-        category: 'finance',
-        date: '2025-11-28',
-        author: 'Finance Desk',
-        readTime: 5,
-        views: 8850,
-        image:
-          'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=1600&h=900&fit=crop',
-        tags: ['home loan', 'rates', 'emi']
       }
-    ],
-    []
-  );
+    ];
+  }, [apiPosts]);
 
   const cities = useMemo(
     () => [
@@ -234,6 +187,19 @@ const DesktopInsightBlog = () => {
     return d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
   };
 
+  const blogLink = (blog) => {
+    if (blog?.slug) return `/blog/${blog.slug}`;
+    const slug = (blog.title || '')
+      .toString()
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9\s-]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-')
+      .replace(/^-+|-+$/g, '');
+    return `/blog/${slug}/${blog.id}`;
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 via-white to-gray-50">
       <div className="max-w-7xl mx-auto px-6 py-10">
@@ -264,11 +230,10 @@ const DesktopInsightBlog = () => {
               <button
                 key={c.id}
                 onClick={() => setActiveCategory(c.id)}
-                className={`px-4 py-2 rounded-full text-sm font-semibold transition-colors border ${
-                  activeCategory === c.id
-                    ? 'bg-red-600 text-white border-red-600'
-                    : 'bg-white text-gray-700 border-gray-200 hover:bg-gray-50'
-                }`}
+                className={`px-4 py-2 rounded-full text-sm font-semibold transition-colors border ${activeCategory === c.id
+                  ? 'bg-red-600 text-white border-red-600'
+                  : 'bg-white text-gray-700 border-gray-200 hover:bg-gray-50'
+                  }`}
               >
                 {c.name}
               </button>
@@ -289,7 +254,7 @@ const DesktopInsightBlog = () => {
               </span>
               <ChevronDown className="w-4 h-4 text-gray-500" />
             </button>
-            
+
             <div id="city-dropdown" className="hidden absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-xl shadow-lg z-10">
               {cities.map((city) => (
                 <button
@@ -298,9 +263,8 @@ const DesktopInsightBlog = () => {
                     setSelectedCity(city.id);
                     document.getElementById('city-dropdown').classList.add('hidden');
                   }}
-                  className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-50 transition-colors ${
-                    selectedCity === city.id ? 'bg-red-50 text-red-600 font-semibold' : 'text-gray-700'
-                  } ${city.id === 'gurgaon' ? 'rounded-t-xl' : ''} ${city.id === 'faridabad' ? 'rounded-b-xl' : ''}`}
+                  className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-50 transition-colors ${selectedCity === city.id ? 'bg-red-50 text-red-600 font-semibold' : 'text-gray-700'
+                    } ${city.id === 'gurgaon' ? 'rounded-t-xl' : ''} ${city.id === 'faridabad' ? 'rounded-b-xl' : ''}`}
                 >
                   {city.name}
                 </button>
@@ -322,13 +286,12 @@ const DesktopInsightBlog = () => {
                   <div className="mt-1 text-xs text-gray-500">{m.sub}</div>
                 </div>
                 <div
-                  className={`w-10 h-10 rounded-2xl flex items-center justify-center border ${
-                    m.tone === 'emerald'
-                      ? 'bg-emerald-50 border-emerald-200'
-                      : m.tone === 'blue'
-                        ? 'bg-blue-50 border-blue-200'
-                        : 'bg-violet-50 border-violet-200'
-                  }`}
+                  className={`w-10 h-10 rounded-2xl flex items-center justify-center border ${m.tone === 'emerald'
+                    ? 'bg-emerald-50 border-emerald-200'
+                    : m.tone === 'blue'
+                      ? 'bg-blue-50 border-blue-200'
+                      : 'bg-violet-50 border-violet-200'
+                    }`}
                 >
                   {m.icon}
                 </div>
@@ -367,7 +330,7 @@ const DesktopInsightBlog = () => {
                       <span className="mx-2">•</span>
                       <span>{formatDate(featured.date)}</span>
                     </div>
-                    <button 
+                    <button
                       onClick={() => navigate(`/insights/blog/${featured.id}`)}
                       className="inline-flex items-center gap-2 text-sm font-bold text-white hover:text-white/90"
                     >
@@ -410,7 +373,7 @@ const DesktopInsightBlog = () => {
                           {(p.views || 0).toLocaleString()}
                         </span>
                       </div>
-                      <button 
+                      <button
                         onClick={() => navigate(`/insights/blog/${p.id}`)}
                         className="inline-flex items-center gap-1 text-sm font-bold text-gray-900 hover:text-red-600"
                       >
@@ -446,13 +409,12 @@ const DesktopInsightBlog = () => {
                       <div className="text-right">
                         <div className="text-sm font-extrabold text-gray-900">{mm.change}</div>
                         <div
-                          className={`mt-1 inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-widest border ${
-                            mm.signal === 'Hot'
-                              ? 'bg-red-50 text-red-700 border-red-200'
-                              : mm.signal === 'Rising'
-                                ? 'bg-amber-50 text-amber-700 border-amber-200'
-                                : 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                          }`}
+                          className={`mt-1 inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-widest border ${mm.signal === 'Hot'
+                            ? 'bg-red-50 text-red-700 border-red-200'
+                            : mm.signal === 'Rising'
+                              ? 'bg-amber-50 text-amber-700 border-amber-200'
+                              : 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                            }`}
                         >
                           {mm.signal}
                         </div>
@@ -461,12 +423,11 @@ const DesktopInsightBlog = () => {
                     <div className="mt-2">
                       <div className="flex items-center gap-2">
                         <div className="flex-1 bg-gray-200 rounded-full h-2 overflow-hidden">
-                          <div 
-                            className={`h-full transition-all duration-500 ${
-                              mm.strength >= 80 ? 'bg-red-500' :
+                          <div
+                            className={`h-full transition-all duration-500 ${mm.strength >= 80 ? 'bg-red-500' :
                               mm.strength >= 65 ? 'bg-amber-500' :
-                              mm.strength >= 50 ? 'bg-emerald-500' : 'bg-gray-400'
-                            }`}
+                                mm.strength >= 50 ? 'bg-emerald-500' : 'bg-gray-400'
+                              }`}
                             style={{ width: `${mm.strength}%` }}
                           />
                         </div>
@@ -489,7 +450,11 @@ const DesktopInsightBlog = () => {
               </div>
               <div className="divide-y divide-gray-100">
                 {trending.map((p, idx) => (
-                  <button key={p.id} className="w-full text-left p-4 hover:bg-gray-50 transition-colors">
+                  <button
+                    key={p.id}
+                    onClick={() => navigate(`/insights/blog/${p.id}`)}
+                    className="w-full text-left p-4 hover:bg-gray-50 transition-colors"
+                  >
                     <div className="flex gap-3">
                       <div className="w-8 h-8 rounded-xl bg-red-50 text-red-600 font-extrabold flex items-center justify-center shrink-0">
                         {idx + 1}

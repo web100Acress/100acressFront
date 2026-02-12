@@ -64,7 +64,7 @@ const CitiesGrid = () => {
   };
 
   const handleCityClick = (cityName) => {
-    navigate('/analytics/price-trends?zone=All+Zones&type=Apartment&duration=5y&sort=recommended&page=1');
+    navigate('/real-estate-insights/price-trends?zone=All+Zones&type=Apartment&duration=5y&sort=recommended&page=1');
   };
 
   return (
@@ -280,7 +280,7 @@ const CitiesGrid = () => {
 
             {/* Explore More Luxury Card */}
             <div className="group relative rounded-2xl bg-gradient-to-br from-slate-900 via-blue-900 to-purple-900 cursor-pointer h-80 flex flex-col items-center justify-center text-white p-4"
-              onClick={() => navigate('/analytics/price-trends?zone=All+Zones&type=Apartment&duration=5y&sort=recommended&page=1')}>
+              onClick={() => navigate('/real-estate-insights/price-trends?zone=All+Zones&type=Apartment&duration=5y&sort=recommended&page=1')}>
               <div className="w-20 h-20 bg-white/10 rounded-full flex items-center justify-center mb-3 group-hover:bg-white/20 transition-all duration-300">
                 <MapPin className="w-10 h-10" />
               </div>

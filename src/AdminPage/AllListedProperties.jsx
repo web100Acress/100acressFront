@@ -177,42 +177,6 @@ const AllListedProperties = () => {
     setOpenModal(true);
   };
 
-  const handleOk = useCallback(async () => {
-    if (!propertyToDelete) {
-      showToast.error('No property selected for deletion');
-      return;
-    }
-
-    setModalText('Deleting property...');
-    setConfirmLoading(true);
-
-    try {
-      const result = await handleDeleteProperty(propertyToDelete);
-      if (result?.success) {
-        showToast.success(result.message || 'Property deleted successfully');
-        // The fetchData() inside handleDeleteProperty will update the list
-      } else {
-        const errorMessage = result?.message || 'Failed to delete property';
-        showToast.error(`Error: ${errorMessage}`);
-      }
-    } catch (error) {
-      console.error('Error in handleOk:', error);
-      const errorMessage = error.response?.data?.message || error.message || 'An error occurred while deleting the property';
-      showToast.error(errorMessage);
-    } finally {
-      setModalText('Do you want to delete this Property?');
-      setConfirmLoading(false);
-      setOpenModal(false);
-      setPropertyToDelete(null);
-    }
-  }, [propertyToDelete, handleDeleteProperty]);
-
-  const handleCancel = useCallback(() => {
-    setOpenModal(false);
-    setPropertyToDelete(null);
-    setModalText('Do you want to delete this Property?');
-  }, []);
-
   const handleDeleteProperty = useCallback(async (id) => {
     if (!id) {
       console.error("No property ID provided for deletion");
@@ -287,7 +251,43 @@ const AllListedProperties = () => {
         error: error
       };
     }
-  }, [tokenMemo]);
+  }, [tokenMemo, fetchData]);
+
+  const handleOk = useCallback(async () => {
+    if (!propertyToDelete) {
+      showToast.error('No property selected for deletion');
+      return;
+    }
+
+    setModalText('Deleting property...');
+    setConfirmLoading(true);
+
+    try {
+      const result = await handleDeleteProperty(propertyToDelete);
+      if (result?.success) {
+        showToast.success(result.message || 'Property deleted successfully');
+        // The fetchData() inside handleDeleteProperty will update the list
+      } else {
+        const errorMessage = result?.message || 'Failed to delete property';
+        showToast.error(`Error: ${errorMessage}`);
+      }
+    } catch (error) {
+      console.error('Error in handleOk:', error);
+      const errorMessage = error.response?.data?.message || error.message || 'An error occurred while deleting the property';
+      showToast.error(errorMessage);
+    } finally {
+      setModalText('Do you want to delete this Property?');
+      setConfirmLoading(false);
+      setOpenModal(false);
+      setPropertyToDelete(null);
+    }
+  }, [propertyToDelete, handleDeleteProperty]);
+
+  const handleCancel = useCallback(() => {
+    setOpenModal(false);
+    setPropertyToDelete(null);
+    setModalText('Do you want to delete this Property?');
+  }, []);
 
   const handleDeleteButtonClicked = useCallback((id) => {
     setOpenModal(true);

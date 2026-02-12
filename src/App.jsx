@@ -111,7 +111,7 @@ const CityProjects = lazy(() => import("./Pages/ProjectCities/CityProjects"));
 // Analytics pages (MVP scaffold)
 const MarketReports = lazy(() => import("./Insight/components/Marketreport/MarketReports"));
 const AreaAnalytics = lazy(() => import("./Insight/pages/AreaAnalytics"));
-const AnalyticsHome = lazy(() => import("./Insight/pages/AnalyticsHome"));
+const RealEstateInsightsHome = lazy(() => import("./Insight/pages/AnalyticsHome"));
 const MarketAnalytics = lazy(() => import("./Insight/pages/MarketAnalytics"));
 const LocationIntelligence = lazy(() => import("./Insight/pages/LocationIntelligence"));
 const InvestmentInsights = lazy(() => import("./Insight/pages/InvestmentInsights"));
@@ -456,13 +456,13 @@ function App() {
 
                       {/* Shared Layout for Analytics/Insights */}
                       <Route element={<InsightsLayout />}>
-                        <Route path="/property-market-trends/" element={<AnalyticsHome />} />
-                        <Route path="/analytics/" element={<AnalyticsHome />} />
-                        <Route path="/insights/" element={<AnalyticsHome />} />
-                        <Route path="/insights/property-insights" element={<AnalyticsHome />} />
+                        <Route path="/property-market-trends/" element={<RealEstateInsightsHome />} />
+                        <Route path="/real-estate-insights/" element={<RealEstateInsightsHome />} />
+                        <Route path="/insights/" element={<RealEstateInsightsHome />} />
+                        <Route path="/insights/property-insights" element={<RealEstateInsightsHome />} />
 
                         <Route path="/insights/price-trends" element={<PriceTrends />} />
-                        <Route path="/analytics/price-trends" element={<PriceTrends />} />
+                        <Route path="/real-estate-insights/price-trends" element={<PriceTrends />} />
 
                         <Route path="/insights/market-reports" element={<MarketReports />} />
                         <Route path="/insights/area-analytics" element={<AreaAnalytics />} />
@@ -476,9 +476,9 @@ function App() {
                         <Route path="/loan-eligibility" element={<LoanEligibility />} />
 
                         {/* Backwards compatibility aliases */}
-                        <Route path="/analytics/market" element={<MarketAnalytics />} />
-                        <Route path="/analytics/location" element={<LocationIntelligence />} />
-                        <Route path="/analytics/investment" element={<InvestmentInsights />} />
+                        <Route path="/real-estate-insights/market" element={<MarketAnalytics />} />
+                        <Route path="/real-estate-insights/location" element={<LocationIntelligence />} />
+                        <Route path="/real-estate-insights/investment" element={<InvestmentInsights />} />
                       </Route>
 
                       <Route path="/projects/upcoming-projects-in-gurgaon/" element={<Navigate to="/" replace />} />
@@ -539,7 +539,7 @@ function App() {
                       <Route path="/blogging" element={<Blogging />} />
                       <Route path="/blog-insights" element={<BlogInsights />} />
                       <Route path="/insights/price-trends" element={<PriceTrends />} />
-                      <Route path="/insights/property-insights" element={<AnalyticsHome />} />
+                      <Route path="/insights/property-insights" element={<RealEstateInsightsHome />} />
                       <Route path="/insights/news" element={<InsightsNews />} />
                       <Route path="/insights/blog" element={<InsightsBlog />} />
                       <Route path="/insights/guides" element={<InsightsGuides />} />
