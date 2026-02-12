@@ -1,4 +1,4 @@
-import React from "react";
+
 import DesktopInsightHeader from "./desktopinsightheader";
 import MobileInsightHeader from "./mobileinsightheader";
 

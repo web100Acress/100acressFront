@@ -66,17 +66,17 @@ function DesktopInsightsSidebarComponent() {
                         {!collapsed && <p className="px-3 mb-3 text-[10px] font-black text-gray-400 uppercase tracking-widest">Market Analysis</p>}
                         <div className="space-y-1">
                             <SidebarItemLux
-                                to="/insights/property-insights"
+                                to="/real-estate-insights/property-insights"
                                 label="Property Insights"
                                 icon={icons.property}
-                                active={isActive('/insights/property-insights')}
+                                active={isActive('/real-estate-insights/property-insights')}
                                 showLabel={!collapsed}
                             />
                             <SidebarItemLux
-                                to="/insights/price-trends"
+                                to="/real-estate-insights/price-trends"
                                 label="Price Trends"
                                 icon={icons.trends}
-                                active={isActive('/insights/price-trends')}
+                                active={isActive('/real-estate-insights/price-trends')}
                                 showLabel={!collapsed}
                             />
                         </div>
@@ -86,32 +86,32 @@ function DesktopInsightsSidebarComponent() {
                         {!collapsed && <p className="px-3 mb-3 text-[10px] font-black text-gray-400 uppercase tracking-widest">Reports & Strategic</p>}
                         <div className="space-y-1">
                             <SidebarItemLux
-                                to="/insights/market-reports"
+                                to="/real-estate-insights/market-reports"
                                 label="Market Reports"
                                 icon={icons.market}
-                                active={isActive('/insights/market-reports')}
+                                active={isActive('/real-estate-insights/market-reports')}
                                 showLabel={!collapsed}
                                 badge="NEW"
                             />
                             <SidebarItemLux
-                                to="/insights/blog"
+                                to="/real-estate-insights/blog"
                                 label="Insight Blog"
                                 icon={icons.blog}
-                                active={isActive('/insights/blog')}
+                                active={isActive('/real-estate-insights/blog')}
                                 showLabel={!collapsed}
                             />
                             <SidebarItemLux
-                                to="/insights/news"
+                                to="/real-estate-insights/news"
                                 label="Market News"
                                 icon={icons.news}
-                                active={isActive('/insights/news')}
+                                active={isActive('/real-estate-insights/news')}
                                 showLabel={!collapsed}
                             />
                             <SidebarItemLux
-                                to="/insights/guides"
+                                to="/real-estate-insights/guides"
                                 label="Expert Guides"
                                 icon={icons.guides}
-                                active={isActive('/insights/guides')}
+                                active={isActive('/real-estate-insights/guides')}
                                 showLabel={!collapsed}
                             />
                         </div>
