@@ -75,13 +75,11 @@ export default function DesktopInsightsHeader() {
                                     <path d="M9 22V12h6v10" />
                                 </svg>
                             </div>
-                            <h1 className="text-xl font-bold text-gray-900 tracking-tight">
-                                100acress <span className="text-[#e53e3e]">Insights</span>
+                            <h1 className="text-xl font-bold text-gray-900 tracking-tight mt-2">
+                                Real Estate <span className="text-[#e53e3e]">Insights</span>
                             </h1>
                         </div>
                     </Link>
-
-                    <div className="h-6 w-px bg-gray-200 hidden lg:block"></div>
                 </div>
 
                 {/* Center: Search Trigger */}

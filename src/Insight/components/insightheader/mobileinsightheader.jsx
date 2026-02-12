@@ -64,8 +64,8 @@ export default function MobileInsightsHeader() {
                                     </svg>
                                 </div>
 
-                                <h1 className="text-lg font-bold text-gray-900 tracking-tight">
-                                    100acress <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#e53e3e] to-[#c62828]">Insights</span>
+                                <h1 className="text-lg font-bold text-gray-900 tracking-tight mt-2">
+                                    Real Estate <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#e53e3e] to-[#c62828]">Insights</span>
                                 </h1>
                             </div>
                         </Link>
@@ -106,9 +106,6 @@ export default function MobileInsightsHeader() {
                         </div>
                     </div>
                 </div>
-
-
-
                 {/* Persistent Search Bar & Filter - Row 2 */}
                 <div className="px-4 py-3 bg-white border-t border-gray-100">
                     <div className="relative">

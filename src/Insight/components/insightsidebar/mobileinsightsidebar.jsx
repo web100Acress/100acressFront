@@ -116,7 +116,7 @@ export default function MobileInsightsSidebar() {
                         </div>
                         <div className="flex flex-col">
                             <span className="text-[11px] font-black text-gray-900 tracking-wider uppercase leading-none">Intelligence</span>
-                            <span className="text-[9px] text-gray-400 font-bold mt-1 tracking-tighter leading-none uppercase">100ACRESS INSIGHTS</span>
+                            <span className="text-[9px] text-gray-400 font-bold mt-1 tracking-tighter leading-none uppercase">REAL ESTATE INSIGHTS</span>
                         </div>
                     </div>
                     <button
@@ -145,46 +145,46 @@ export default function MobileInsightsSidebar() {
                         {expandedSections.insights && (
                             <div className="space-y-1.5 mt-2">
                                 <SidebarItemLux
-                                    to="/insights/property-insights"
+                                    to="/real-estate-insights/property-insights"
                                     label="Property Insights"
                                     icon={icons.property}
-                                    active={isActive('/insights/property-insights')}
+                                    active={isActive('/real-estate-insights/property-insights')}
                                     onClick={() => setMobileOpen(false)}
                                 />
                                 <SidebarItemLux
-                                    to="/insights/price-trends"
+                                    to="/real-estate-insights/price-trends"
                                     label="Price Analytics"
                                     icon={icons.trends}
-                                    active={isActive('/insights/price-trends')}
+                                    active={isActive('/real-estate-insights/price-trends')}
                                     onClick={() => setMobileOpen(false)}
                                 />
                                 <SidebarItemLux
-                                    to="/insights/market-reports"
+                                    to="/real-estate-insights/market-reports"
                                     label="Market Reports"
                                     icon={icons.market}
-                                    active={isActive('/insights/market-reports')}
+                                    active={isActive('/real-estate-insights/market-reports')}
                                     badge="NEW"
                                     onClick={() => setMobileOpen(false)}
                                 />
                                 <SidebarItemLux
-                                    to="/insights/blog"
+                                    to="/real-estate-insights/blog"
                                     label="Insight Blog"
                                     icon={icons.blog}
-                                    active={isActive('/insights/blog')}
+                                    active={isActive('/real-estate-insights/blog')}
                                     onClick={() => setMobileOpen(false)}
                                 />
                                 <SidebarItemLux
-                                    to="/insights/news"
+                                    to="/real-estate-insights/news"
                                     label="Market News"
                                     icon={icons.news}
-                                    active={isActive('/insights/news')}
+                                    active={isActive('/real-estate-insights/news')}
                                     onClick={() => setMobileOpen(false)}
                                 />
                                 <SidebarItemLux
-                                    to="/insights/guides"
+                                    to="/real-estate-insights/guides"
                                     label="Expert Guides"
                                     icon={icons.guides}
-                                    active={isActive('/insights/guides')}
+                                    active={isActive('/real-estate-insights/guides')}
                                     onClick={() => setMobileOpen(false)}
                                 />
                             </div>
@@ -197,7 +197,7 @@ export default function MobileInsightsSidebar() {
                     <div className="flex items-center justify-center gap-2 px-3 py-2.5 bg-white rounded-xl border border-gray-200 shadow-sm">
                         <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></div>
                         <p className="text-[10px] font-bold text-gray-600 tracking-wide">
-                            <span className="text-[#e53e3e]">100acress</span> Intelligence
+                            <span className="text-[#e53e3e]">Real Estate</span> Intelligence
                         </p>
                     </div>
                 </div>
