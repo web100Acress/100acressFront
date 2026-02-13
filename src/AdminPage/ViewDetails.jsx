@@ -115,91 +115,97 @@ const ViewDetails = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                   <div>
                     <Tippy content={<span>Property Name</span>} animation="scale" theme="light-border">
-                      <label className="block text-red-700 font-semibold mb-2 flex items-center"><MdApartment className="mr-1" />Property Name</label>
+                      <label className="text-red-700 font-semibold mb-2 flex items-center"><MdApartment className="mr-1" />Property Name</label>
                     </Tippy>
                     <div className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 text-gray-800">{viewDetails.propertyName || <span className="text-gray-400 italic">N/A</span>}</div>
                   </div>
                   <div>
                     <Tippy content={<span>Property Type</span>} animation="scale" theme="light-border">
-                      <label className="block text-red-700 font-semibold mb-2 flex items-center"><MdApartment className="mr-1" />Property Type</label>
+                      <label className="text-red-700 font-semibold mb-2 flex items-center"><MdApartment className="mr-1" />Category</label>
+                    </Tippy>
+                    <div className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 text-gray-800">{viewDetails.selectoption || <span className="text-gray-400 italic">N/A</span>}</div>
+                  </div>
+                  <div>
+                    <Tippy content={<span>Property Sub-type</span>} animation="scale" theme="light-border">
+                      <label className="text-red-700 font-semibold mb-2 flex items-center"><MdApartment className="mr-1" />Property Type</label>
                     </Tippy>
                     <div className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 text-gray-800">{viewDetails.propertyType || <span className="text-gray-400 italic">N/A</span>}</div>
                   </div>
                   <div>
                     <Tippy content={<span>Address</span>} animation="scale" theme="light-border">
-                      <label className="block text-red-700 font-semibold mb-2 flex items-center"><MdLocationOn className="mr-1" />Address</label>
+                      <label className="text-red-700 font-semibold mb-2 flex items-center"><MdLocationOn className="mr-1" />Address</label>
                     </Tippy>
                     <div className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 text-gray-800">{viewDetails.address || <span className="text-gray-400 italic">N/A</span>}</div>
                   </div>
                   <div>
                     <Tippy content={<span>City</span>} animation="scale" theme="light-border">
-                      <label className="block text-red-700 font-semibold mb-2 flex items-center"><MdLocationOn className="mr-1" />City</label>
+                      <label className="text-red-700 font-semibold mb-2 flex items-center"><MdLocationOn className="mr-1" />City</label>
                     </Tippy>
                     <div className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 text-gray-800">{viewDetails.city || <span className="text-gray-400 italic">N/A</span>}</div>
                   </div>
                   <div>
                     <Tippy content={<span>Price</span>} animation="scale" theme="light-border">
-                      <label className="block text-red-700 font-semibold mb-2 flex items-center"><MdAttachMoney className="mr-1" />Price</label>
+                      <label className="text-red-700 font-semibold mb-2 flex items-center"><MdAttachMoney className="mr-1" />Price</label>
                     </Tippy>
-                    <div className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 text-gray-800">{viewDetails.price || <span className="text-gray-400 italic">N/A</span>}</div>
+                    <div className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 text-gray-800">{viewDetails.price || <span className="text-gray-400 italic">N/A</span>} {viewDetails.priceunits || <span className="text-gray-400 italic">N/A</span>}</div>
                   </div>
                   <div>
                     <Tippy content={<span>Area</span>} animation="scale" theme="light-border">
-                      <label className="block text-red-700 font-semibold mb-2 flex items-center"><MdApartment className="mr-1" />Area</label>
+                      <label className="text-red-700 font-semibold mb-2 flex items-center"><MdApartment className="mr-1" />Area</label>
                     </Tippy>
-                    <div className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 text-gray-800">{viewDetails.area || <span className="text-gray-400 italic">N/A</span>}</div>
+                    <div className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 text-gray-800">{viewDetails.area || <span className="text-gray-400 italic">N/A</span>} {viewDetails.areaUnit || <span className="text-gray-400 italic">N/A</span>}</div>
                   </div>
                   <div>
                     <Tippy content={<span>State</span>} animation="scale" theme="light-border">
-                      <label className="block text-red-700 font-semibold mb-2 flex items-center"><MdLocationOn className="mr-1" />State</label>
+                      <label className="text-red-700 font-semibold mb-2 flex items-center"><MdLocationOn className="mr-1" />State</label>
                     </Tippy>
                     <div className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 text-gray-800">{viewDetails.state || <span className="text-gray-400 italic">N/A</span>}</div>
                   </div>
                   <div>
                     <Tippy content={<span>LandMark</span>} animation="scale" theme="light-border">
-                      <label className="block text-red-700 font-semibold mb-2 flex items-center"><MdLocationOn className="mr-1" />LandMark</label>
+                      <label className="text-red-700 font-semibold mb-2 flex items-center"><MdLocationOn className="mr-1" />LandMark</label>
                     </Tippy>
                     <div className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 text-gray-800">{viewDetails.landMark || <span className="text-gray-400 italic">N/A</span>}</div>
                   </div>
                   <div>
                     <Tippy content={<span>Built Year</span>} animation="scale" theme="light-border">
-                      <label className="block text-red-700 font-semibold mb-2 flex items-center"><MdInfo className="mr-1" />Built Year</label>
+                      <label className="text-red-700 font-semibold mb-2 flex items-center"><MdInfo className="mr-1" />Built Year</label>
                     </Tippy>
                     <div className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 text-gray-800">{viewDetails.builtYear || <span className="text-gray-400 italic">N/A</span>}</div>
                   </div>
                   <div>
                     <Tippy content={<span>Furnishing</span>} animation="scale" theme="light-border">
-                      <label className="block text-red-700 font-semibold mb-2 flex items-center"><MdInfo className="mr-1" />Furnishing</label>
+                      <label className="text-red-700 font-semibold mb-2 flex items-center"><MdInfo className="mr-1" />Furnishing</label>
                     </Tippy>
                     <div className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 text-gray-800">{viewDetails.furnishing || <span className="text-gray-400 italic">N/A</span>}</div>
                   </div>
                   <div>
                     <Tippy content={<span>Available Date</span>} animation="scale" theme="light-border">
-                      <label className="block text-red-700 font-semibold mb-2 flex items-center"><MdInfo className="mr-1" />Available Date</label>
+                      <label className="text-red-700 font-semibold mb-2 flex items-center"><MdInfo className="mr-1" />Available Date</label>
                     </Tippy>
                     <div className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 text-gray-800">{viewDetails.availableDate || <span className="text-gray-400 italic">N/A</span>}</div>
                   </div>
                   <div>
                     <Tippy content={<span>Select Property Type</span>} animation="scale" theme="light-border">
-                      <label className="block text-red-700 font-semibold mb-2 flex items-center"><MdApartment className="mr-1" />Select Property Type</label>
+                      <label className="text-red-700 font-semibold mb-2 flex items-center"><MdApartment className="mr-1" />Select Property Type</label>
                     </Tippy>
                     <div className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 text-gray-800">{viewDetails.propertyLooking || <span className="text-gray-400 italic">N/A</span>}</div>
                   </div>
                   <div>
                     <Tippy content={<span>Type</span>} animation="scale" theme="light-border">
-                      <label className="block text-red-700 font-semibold mb-2 flex items-center"><MdApartment className="mr-1" />Type</label>
+                      <label className="text-red-700 font-semibold mb-2 flex items-center"><MdApartment className="mr-1" />Type</label>
                     </Tippy>
                     <div className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 text-gray-800">{viewDetails.type || <span className="text-gray-400 italic">N/A</span>}</div>
                   </div>
                   <div className="sm:col-span-2 lg:col-span-4">
                     <Tippy content={<span>Project Description</span>} animation="scale" theme="light-border">
-                      <label className="block text-red-700 font-semibold mb-2 flex items-center"><MdInfo className="mr-1" />Project Description</label>
+                      <label className="text-red-700 font-semibold mb-2 flex items-center"><MdInfo className="mr-1" />Project Description</label>
                     </Tippy>
-                    <div className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 text-gray-800 whitespace-pre-wrap">{viewDetails.description || <span className="text-gray-400 italic">N/A</span>}</div>
+                    <div className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 text-gray-800 whitespace-pre-wrap">{viewDetails.descripation || <span className="text-gray-400 italic">N/A</span>}</div>
                   </div>
                   <div className="sm:col-span-2 lg:col-span-4">
                     <Tippy content={<span>Amenities</span>} animation="scale" theme="light-border">
-                      <label className="block text-red-700 font-semibold mb-2 flex items-center"><MdInfo className="mr-1" />Amenities</label>
+                      <label className="text-red-700 font-semibold mb-2 flex items-center"><MdInfo className="mr-1" />Amenities</label>
                     </Tippy>
                     <div className="flex flex-wrap gap-2">
                       {Amenities && Array.isArray(Amenities) && Amenities.length > 0 ? Amenities.map((item, index) => (

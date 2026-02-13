@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 // import Footer from "../Components/Actual_Components/Footer";
 import axios from "axios";
 import { Link, useNavigate, useParams, useLocation } from "react-router-dom";
@@ -11,29 +11,34 @@ const UserViewProperty = () => {
   const [userViewProperty, setUserViewProperty] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [search, setSearch] = useState("");
   const { id: routeUserId } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
   const userId = routeUserId || localStorage.getItem("mySellerId");
   const pollRef = useRef(null);
+  const isFetchingRef = useRef(false);
 
   const fetchData = async () => {
+    if (isFetchingRef.current) return;
+    isFetchingRef.current = true;
+
     try {
       setLoading(true);
       setError("");
-      showToast.loading('Loading properties...', { id: 'loadProperties' });
+      showToast.loading("Loading properties...", { id: "loadProperties" });
+
       const base = getApiBase();
       const res = await axios.get(`${base}/postPerson/propertyView/${userId}`);
-      const list = res?.data?.data?.postProperty || [];
-      setUserViewProperty(list);
-      showToast.success('Properties loaded successfully!', { id: 'loadProperties' });
+      setUserViewProperty(res?.data?.data?.postProperty || []);
+
+      showToast.success("Properties loaded successfully!", { id: "loadProperties" });
     } catch (error) {
-      console.log(error?.response || error);
       setError("Failed to load your properties. Please try again.");
-      showToast.error('Failed to load properties', { id: 'loadProperties' });
-    }
-    finally {
+      showToast.error("Failed to load properties", { id: "loadProperties" });
+    } finally {
       setLoading(false);
+      isFetchingRef.current = false;
     }
   };
 
@@ -105,8 +110,18 @@ const UserViewProperty = () => {
     return () => { try { if (es) es.close(); } catch { } };
   }, [userId]);
 
+  // Memoized filtered properties for performance
+  const filteredProperties = useMemo(() =>
+    userViewProperty.filter(item =>
+      `${item.projectName} ${item.city} ${item.state}`
+        .toLowerCase()
+        .includes(search.toLowerCase())
+    ), [userViewProperty, search]
+  );
+
   return (
-    <div style={{ overflowX: "hidden" }}>
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
       <section className="flex flex-col bg-white ">
         {/* Page heading */}
         <div className="w-full max-w-screen-xl mx-auto px-4 md:px-10 pt-20 md:pt-16 text-center">
@@ -133,6 +148,40 @@ const UserViewProperty = () => {
           )}
         </div>
 
+        {/* Stats Cards */}
+        <div className="max-w-screen-xl mx-auto px-4 md:px-10 mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="bg-white rounded-2xl border shadow-sm p-5">
+            <p className="text-sm text-gray-500">Total Properties</p>
+            <h3 className="text-3xl font-extrabold text-gray-900">
+              {userViewProperty.length}
+            </h3>
+          </div>
+
+          <div className="bg-white rounded-2xl border shadow-sm p-5">
+            <p className="text-sm text-gray-500">Approved</p>
+            <h3 className="text-3xl font-extrabold text-green-600">
+              {userViewProperty.filter(p => p.verify === "verified").length}
+            </h3>
+          </div>
+
+          <div className="bg-white rounded-2xl border shadow-sm p-5">
+            <p className="text-sm text-gray-500">Pending</p>
+            <h3 className="text-3xl font-extrabold text-yellow-600">
+              {userViewProperty.filter(p => p.verify !== "verified").length}
+            </h3>
+          </div>
+        </div>
+
+        {/* Search Bar */}
+        <div className="max-w-screen-xl mx-auto px-4 md:px-10 mt-6 flex flex-col sm:flex-row gap-3">
+          <input
+            type="text"
+            placeholder="Search by project, city, state..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full sm:w-96 rounded-xl border px-4 py-2 text-sm focus:ring-2 focus:ring-red-500 outline-none"
+          />
+        </div>
         {/* Grid */}
         <div className="grid max-w-md grid-cols-1 p-4 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-10 lg:grid-cols-4 sm:gap-3 lg:gap-5 mx-auto">
           {loading && (
@@ -153,37 +202,39 @@ const UserViewProperty = () => {
             <div className="col-span-full text-center py-4 text-red-600">{error}</div>
           )}
           {!loading && !error && userViewProperty.length === 0 && (
-            <div className="col-span-full">
-              <div className="flex flex-col items-center justify-center border border-dashed rounded-xl py-16 bg-gray-50 text-center">
-                <div className="text-3xl mb-2">🏠</div>
-                <h2 className="text-lg font-semibold text-gray-800">No properties yet</h2>
-                <p className="text-sm text-gray-500 mt-1">When you add properties, they will appear here.</p>
-                <button
-                  type="button"
-                  onClick={() => navigate('/userdashboard/')}
-                  className="mt-4 inline-flex items-center justify-center rounded-full bg-gradient-to-r from-red-600 to-rose-500 px-5 py-2.5 text-white text-sm font-semibold shadow-md shadow-red-600/20 hover:opacity-95"
-                >
-                  Go to Dashboard
-                </button>
-              </div>
+            <div className="col-span-full flex flex-col items-center justify-center py-20 bg-gray-50 rounded-2xl border">
+              <h2 className="text-2xl font-bold text-gray-800">No Properties Found</h2>
+              <p className="text-sm text-gray-500 mt-2">
+                Start by adding your first property
+              </p>
+              <button
+                onClick={() => navigate("/userdashboard")}
+                className="mt-6 bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-xl shadow"
+              >
+                Add Property
+              </button>
             </div>
           )}
-          {userViewProperty.map((item, index) => {
+          {filteredProperties.map((item, index) => {
             const pUrl = item.projectName ? item.projectName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') : item._id;
             return (
-              <Link key={item?._id || index}>
+              <div key={item?._id || index}>
                 <article
-                  className="mb-4 overflow-hidden rounded-xl border text-gray-700 shadow-lg hover:shadow-xl duration-300 ease-in-out bg-gradient-to-br from-white to-gray-50"
+                  className="group overflow-hidden rounded-2xl border bg-white shadow-sm hover:shadow-xl transition-all duration-300"
                 >
                   {item && item.frontImage && (
                     <div className="relative">
                       <img
                         src={item.frontImage.url}
                         alt={item.projectName || 'Property'}
-                        className="w-full h-48 object-cover"
+                        className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
                       />
                       <div className="absolute top-2 right-2">
-                        <span className={`px-2 py-1 text-xs font-semibold rounded-full ${item.verify === 'verified' ? 'bg-green-500 text-white' : 'bg-yellow-500 text-white'}`}>
+                        <span className={`px-3 py-1 text-xs font-bold rounded-full shadow-sm ${
+                          item.verify === 'verified'
+                            ? 'bg-green-100 text-green-700 border border-green-300'
+                            : 'bg-yellow-100 text-yellow-700 border border-yellow-300'
+                        }`}>
                           {item.verify === 'verified' ? 'Approved' : 'Pending'}
                         </span>
                       </div>
@@ -200,24 +251,33 @@ const UserViewProperty = () => {
                       </p>
                       <div className="flex flex-wrap gap-2 text-xs font-semibold text-gray-700">
                         <span className="bg-blue-50 text-blue-700 px-3 py-1 rounded-full border border-blue-200 font-bold">🏠 {item.propertyType || 'N/A'}</span>
-                        <span className="bg-green-50 text-green-700 px-3 py-1 rounded-full border border-green-200 font-bold">💰 {item.price ? `₹${item.price}` : 'N/A'}</span>
+                        <span className="bg-green-50 text-green-700 px-3 py-1 rounded-full border border-green-200 font-bold">💰 {item.price ? `₹${Number(item.price).toLocaleString("en-IN")}` : 'N/A'}</span>
                       </div>
                     </div>
                     <div className="mt-4 flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        {item.verify === 'verified' && (
+                      <span className="text-xs text-gray-400">
+                        ID: {item._id.slice(-6)}
+                      </span>
+
+                      <div className="flex gap-2">
+                        {item.verify === "verified" && (
                           <button
-                            type="button"
-                            onClick={(e) => { e.preventDefault(); e.stopPropagation(); navigate(`/buy-properties/${pUrl}/${item._id}`); }}
-                            className="text-white bg-blue-600 hover:bg-blue-700 focus:ring-2 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-xs md:text-sm px-3 py-2 flex items-center gap-1"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              navigate(`/buy-properties/${pUrl}/${item._id}`);
+                            }}
+                            className="bg-blue-600 hover:bg-blue-700 text-white text-xs px-3 py-2 rounded-lg"
                           >
-                            View on Website
+                            View
                           </button>
                         )}
+
                         <button
-                          type="button"
-                          onClick={(e) => { e.preventDefault(); e.stopPropagation(); navigate('/usereditproperty', { state: { property: item } }); }}
-                          className="text-white bg-gray-800 hover:bg-gray-900 focus:ring-2 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-xs md:text-sm px-3 py-2"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            navigate("/usereditproperty", { state: { property: item } });
+                          }}
+                          className="bg-gray-900 hover:bg-black text-white text-xs px-3 py-2 rounded-lg"
                         >
                           Edit
                         </button>
@@ -225,7 +285,7 @@ const UserViewProperty = () => {
                     </div>
                   </div>
                 </article>
-              </Link>
+              </div>
             );
           })}
         </div>

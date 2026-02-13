@@ -31,7 +31,7 @@ const PropertyRow = memo(({ property, onDelete }) => (
         {property.propertyName}
       </div>
       <div className="property-type-text">
-        {property.propertyType}
+        {property.selectoption} - {property.propertyType}
       </div>
     </td>
     <td className="table-cell price-cell">

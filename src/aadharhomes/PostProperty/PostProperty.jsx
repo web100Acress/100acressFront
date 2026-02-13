@@ -106,6 +106,7 @@ const NewSellProperty = () => {
     bedrooms: "",
     bathrooms: "",
     area: "",
+    areaUnit: "",
     descripation: "",
     landMark: "",
     amenities: [],
@@ -131,10 +132,13 @@ const NewSellProperty = () => {
     return stateObj?.isoCode || "";
   };
 
-  const stateCode = getStateCode(selectedState);
-  const cities = selectedState
-    ? City.getCitiesOfState(countryCode, stateCode)
-    : [];
+  const citiesList = [
+    "Gurugram", "Delhi", "Noida", "Goa", "Ayodhya", "Mumbai", "Panipat", 
+    "Panchkula", "Kasauli", "Sonipat", "Karnal", "Jalandhar", "Pushkar",
+    "Ghaziabad", "Faridabad", "Greater Noida", "Sohna"
+  ].sort();
+
+  const cities = citiesList.map(city => ({ name: city }));
 
   // Responsive detection
   useEffect(() => {
@@ -193,6 +197,7 @@ const NewSellProperty = () => {
 
   const handleChangeValue = (e) => {
     const { name, value } = e.target;
+    
     if ((name === "price" || name === "area") && !/^\d*\.?\d*$/.test(value)) {
       return;
     }
@@ -243,8 +248,14 @@ const NewSellProperty = () => {
     const apiEndpoint = `/postPerson/propertyInsert/${sellerId}`;
     const formDataAPI = new FormData();
 
-    for (const key in sellProperty) {
-      formDataAPI.append(key, sellProperty[key]);
+    // Ensure subType is set to propertyType value for backend compatibility
+    const updatedSellProperty = {
+      ...sellProperty,
+      subType: sellProperty.propertyType
+    };
+
+    for (const key in updatedSellProperty) {
+      formDataAPI.append(key, updatedSellProperty[key]);
     }
 
     for (let i = 0; i < otherImageLength; i++) {
@@ -341,6 +352,7 @@ const NewSellProperty = () => {
         return (
           selectedState !== "" &&
           selectedCity !== "" &&
+          selectedCity !== "Select City" &&
           sellProperty.propertyName.trim() !== "" &&
           sellProperty.address.trim() !== ""
         );
@@ -355,7 +367,9 @@ const NewSellProperty = () => {
         sellProperty.areaUnit !== "" &&
         sellProperty.furnishing !== "" &&
         sellProperty.builtYear.trim() !== "" &&
+        sellProperty.availableDate !== "" &&
         sellProperty.landMark.trim() !== "" &&
+        sellProperty.type !== "" &&
         sellProperty.descripation.trim() !== ""
       );
 

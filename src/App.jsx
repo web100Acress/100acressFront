@@ -454,15 +454,17 @@ function App() {
                         </LazyLoad>
                       } />
 
+                   {/* this the whole about insight section routes */}
+
+
+
                       {/* Shared Layout for Analytics/Insights */}
                       <Route element={<InsightsLayout />}>
-                        <Route path="/property-market-trends/" element={<RealEstateInsightsHome />} />
+                        {/* <Route path="/property-market-trends/" element={<RealEstateInsightsHome />} /> */}
                         <Route path="/real-estate-insights/" element={<RealEstateInsightsHome />} />
-                        <Route path="/insights/" element={<RealEstateInsightsHome />} />
+                        {/* <Route path="/insights/" element={<RealEstateInsightsHome />} /> */}
                         <Route path="/real-estate-insights/property-insights" element={<RealEstateInsightsHome />} />
-
                         <Route path="/real-estate-insights/price-trends" element={<PriceTrends />} />
-
                         <Route path="/real-estate-insights/market-reports" element={<MarketReports />} />
                         <Route path="/insights/area-analytics" element={<AreaAnalytics />} />
                         <Route path="/insights/market-analytics" element={<MarketAnalytics />} />
@@ -473,12 +475,16 @@ function App() {
                         <Route path="/insights/blog/:id" element={<BlogView />} />
                         <Route path="/real-estate-insights/guides" element={<InsightsGuides />} />
                         <Route path="/loan-eligibility" element={<LoanEligibility />} />
-
                         {/* Backwards compatibility aliases */}
                         <Route path="/real-estate-insights/market" element={<MarketAnalytics />} />
                         <Route path="/real-estate-insights/location" element={<LocationIntelligence />} />
                         <Route path="/real-estate-insights/investment" element={<InvestmentInsights />} />
                       </Route>
+
+
+
+
+
 
                       <Route path="/projects/upcoming-projects-in-gurgaon/" element={<Navigate to="/" replace />} />
 

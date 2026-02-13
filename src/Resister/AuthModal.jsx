@@ -67,8 +67,7 @@ export default function AuthModal({ open = false, onClose = () => { }, defaultVi
           }
         }}
       >
-        <ModalHeader>{view === "login" ? "" : ""}</ModalHeader>
-
+        
         <ModalBody pb={6}>
           {view === "login" ? (
             <LoginForm inModal onSwitchToRegister={() => setView("register")} />
