@@ -41,32 +41,62 @@ const UserEditProperty = () => {
   });
   const [frontImageFile, setFrontImageFile] = useState(null);
   const [otherImageFiles, setOtherImageFiles] = useState([]);
+  const [existingFrontImage, setExistingFrontImage] = useState(null);
+  const [existingOtherImages, setExistingOtherImages] = useState([]);
+  const [formErrors, setFormErrors] = useState({});
 
   useEffect(() => {
     if (selected) {
-      console.log('Selected property data:', selected); // Debug log
+      const rawCategory = typeof selected.selectoption === "string" && selected.selectoption.trim() !== ""
+        ? selected.selectoption.trim()
+        : "";
+      const derivedCategory = getCategoryFromSubType(selected.propertyType || selected.subType);
+      const selectoptionValue =
+        rawCategory === "Commercial" || rawCategory === "Residential"
+          ? rawCategory
+          : derivedCategory || "Select Property Type";
+
+      const rawPropertyType =
+        typeof selected.propertyType === "string" && selected.propertyType.trim() !== ""
+          ? selected.propertyType.trim()
+          : typeof selected.subType === "string" && selected.subType.trim() !== ""
+            ? selected.subType.trim()
+            : "";
+
       setSellProperty((prev) => ({
         ...prev,
         propertyLooking: selected.propertyLooking || selected.propertylooking || "",
-        selectoption: selected.selectoption || selected.propertyType || "Select Property Type",
-        propertyType: selected.propertyType || selected.subType || "",
-        subType: selected.subType || "",
+        selectoption: selectoptionValue,
+        propertyType: rawPropertyType,
+        subType: typeof selected.subType === "string" && selected.subType.trim() !== "" ? selected.subType.trim() : "",
         propertyName: selected.projectName || selected.propertyName || selected.name || "",
         address: selected.address || selected.location || "",
         city: selected.city || "",
         state: selected.state || "",
         price: selected.price || selected.cost || "",
-        priceunits: selected.priceunits || "",
+        priceunits: (() => {
+          const u = (selected.priceunits || "").toString().trim().toLowerCase();
+          return u === "lakhs" || u === "crores" ? u : "";
+        })(),
         area: selected.area || selected.size || "",
         areaUnit: selected.areaUnit || "",
         description: selected.description || selected.descripation || selected.projectDescription || selected.details || "",
         landmark: selected.landMark || selected.landmark || selected.nearby || "",
         amenities: Array.isArray(selected.amenities) ? selected.amenities.join(", ") : (selected.amenities || ""),
-        builtyear: selected.builtyear || selected.builtYear || selected.yearBuilt || "",
+        builtyear: getBuiltYearValue(selected),
         furnishing: selected.furnishing || selected.furnished || "",
-        type: selected.type || selected.propertyType || "",
+        type: selected.type || "",
         availabledate: selected.availabledate || selected.availableDate || selected.dateAvailable || "",
       }));
+      // Set existing images if present
+      if (selected.frontImage) {
+        setExistingFrontImage(selected.frontImage);
+      }
+      if (selected.otherImage && Array.isArray(selected.otherImage)) {
+        setExistingOtherImages(selected.otherImage);
+      } else if (selected.otherImage && typeof selected.otherImage === 'string') {
+        setExistingOtherImages([selected.otherImage]);
+      }
     }
   }, [selected]);
 
@@ -91,6 +121,29 @@ const UserEditProperty = () => {
     ],
   };
 
+  // Derive category (Commercial/Residential) from propertyType/subType when selectoption is missing
+  const getCategoryFromSubType = (propertyTypeOrSubType) => {
+    if (!propertyTypeOrSubType || typeof propertyTypeOrSubType !== "string") return "";
+    const t = propertyTypeOrSubType.trim();
+    if (subTypes.Commercial.includes(t)) return "Commercial";
+    if (subTypes.Residential.includes(t)) return "Residential";
+    return "";
+  };
+
+  const getBuiltYearValue = (obj) => {
+    if (!obj) return "";
+    const v =
+      obj.builtyear ??
+      obj.builtYear ??
+      obj.yearBuilt ??
+      obj.built_year;
+    if (v === null || v === undefined) return "";
+    if (typeof v === "number" && !Number.isNaN(v)) return String(v);
+    if (typeof v === "string" && v.trim() !== "") return v.trim();
+    if (v instanceof Date && !Number.isNaN(v.getFullYear())) return String(v.getFullYear());
+    return "";
+  };
+
   const handleChangeValue = (e) => {
     const { name, value } = e.target;
     setSellProperty((prev) => ({
@@ -104,11 +157,18 @@ const UserEditProperty = () => {
   const handleFrontImageChange = (e) => {
     const file = e.target.files && e.target.files[0] ? e.target.files[0] : null;
     setFrontImageFile(file);
+    if (file) setExistingFrontImage(null);
   };
 
   const handleOtherImagesChange = (e) => {
     const files = e.target.files ? Array.from(e.target.files) : [];
     setOtherImageFiles(files);
+    if (files.length) setExistingOtherImages([]);
+  };
+
+  // Remove single existing other image
+  const handleRemoveExistingOtherImage = (idx) => {
+    setExistingOtherImages((prev) => prev.filter((_, i) => i !== idx));
   };
 
   const handleSubmit = async (e) => {
@@ -116,6 +176,27 @@ const UserEditProperty = () => {
     if (!selected || !selected._id) {
       showToast.error('No property selected for editing');
       navigate(-1);
+      return;
+    }
+    // Validation
+    const errors = {};
+    if (!sellProperty.selectoption || sellProperty.selectoption === 'Select Property Type') {
+      errors.selectoption = 'Property Category is required';
+    }
+    if (!sellProperty.propertyType) {
+      errors.propertyType = 'Property Type is required';
+    }
+    const currentYear = new Date().getFullYear();
+    if (!sellProperty.builtyear) {
+      errors.builtyear = 'Built Year is required';
+    } else if (isNaN(Number(sellProperty.builtyear))) {
+      errors.builtyear = 'Built Year must be a number';
+    } else if (Number(sellProperty.builtyear) < 1900 || Number(sellProperty.builtyear) > currentYear) {
+      errors.builtyear = `Built Year must be between 1900 and ${currentYear}`;
+    }
+    setFormErrors(errors);
+    if (Object.keys(errors).length > 0) {
+      showToast.error('Please fill all required fields');
       return;
     }
     try {
@@ -233,10 +314,10 @@ const UserEditProperty = () => {
                 <div className="group">
                   <label className="text-xs font-bold text-gray-700 uppercase mb-1 ml-1 flex items-center gap-2">
                     <Building className="w-3 h-3 text-red-500" />
-                    Property Category
+                    Property Category <span className="text-red-500">*</span>
                   </label>
                   <select
-                    className="h-11 w-full rounded-md border border-gray-300 bg-gray-50 px-4 text-gray-700 focus:outline-none focus:ring-2 focus:ring-red-500"
+                    className={`h-11 w-full rounded-md border border-gray-300 bg-gray-50 px-4 text-gray-700 focus:outline-none focus:ring-2 focus:ring-red-500 ${formErrors.selectoption ? 'border-red-500' : ''}`}
                     name="selectoption"
                     value={sellProperty.selectoption}
                     onChange={handleChangeValue}
@@ -247,26 +328,29 @@ const UserEditProperty = () => {
                       </option>
                     ))}
                   </select>
+                  {formErrors.selectoption && <div className="text-xs text-red-500 mt-1">{formErrors.selectoption}</div>}
                 </div>
 
                 {sellProperty.selectoption !== "Select Property Type" && (
                   <div className="group">
                     <label className="text-xs font-bold text-gray-700 uppercase mb-1 ml-1 flex items-center gap-2">
                       <Building className="w-3 h-3 text-red-500" />
-                      Property Type
+                      Property Type <span className="text-red-500">*</span>
                     </label>
                     <select
-                      className="h-11 w-full rounded-md border border-gray-300 bg-gray-50 px-4 text-gray-700 focus:outline-none focus:ring-2 focus:ring-red-500"
+                      className={`h-11 w-full rounded-md border border-gray-300 bg-gray-50 px-4 text-gray-700 focus:outline-none focus:ring-2 focus:ring-red-500 ${formErrors.propertyType ? 'border-red-500' : ''}`}
                       name="propertyType"
                       value={sellProperty.propertyType}
                       onChange={handleChangeValue}
                     >
+                      <option value="">Select Type</option>
                       {subTypes[sellProperty.selectoption]?.map((subType, index) => (
                         <option key={index} value={subType}>
                           {subType}
                         </option>
                       ))}
                     </select>
+                    {formErrors.propertyType && <div className="text-xs text-red-500 mt-1">{formErrors.propertyType}</div>}
                   </div>
                 )}
               </div>
@@ -449,16 +533,19 @@ const UserEditProperty = () => {
                 <div className="group">
                   <label className="text-xs font-bold text-gray-700 uppercase mb-1 ml-1 flex items-center gap-2">
                     <Calendar className="w-3 h-3 text-red-500" />
-                    Built Year
+                    Built Year <span className="text-red-500">*</span>
                   </label>
                   <input
-                    type="text"
+                    type="number"
+                    min="1900"
+                    max={new Date().getFullYear()}
                     placeholder="Built year"
                     name="builtyear"
-                    className="h-11 w-full rounded-md border border-gray-300 bg-gray-50 px-4 text-gray-700 focus:outline-none focus:ring-2 focus:ring-red-500"
-                    value={sellProperty.builtyear}
+                    className={`h-11 w-full rounded-md border border-gray-300 bg-gray-50 px-4 text-gray-700 focus:outline-none focus:ring-2 focus:ring-red-500 ${formErrors.builtyear ? 'border-red-500' : ''}`}
+                    value={sellProperty.builtyear ?? ""}
                     onChange={handleChangeValue}
                   />
+                  {formErrors.builtyear && <div className="text-xs text-red-500 mt-1">{formErrors.builtyear}</div>}
                 </div>
                 <div className="group">
                   <label className="text-xs font-bold text-gray-700 uppercase mb-1 ml-1 flex items-center gap-2">
@@ -517,6 +604,12 @@ const UserEditProperty = () => {
                     <ImageIcon className="w-3 h-3 text-red-500" />
                     Upload Front Image
                   </label>
+                  {existingFrontImage && typeof existingFrontImage === 'string' && (
+                    <div className="mb-2 flex items-center gap-2">
+                      <img src={existingFrontImage.startsWith('http') ? existingFrontImage : `${process.env.REACT_APP_API_URL || ''}${existingFrontImage}`} alt="Front" className="w-20 h-14 object-cover rounded border" />
+                      <button type="button" className="text-xs text-red-500 underline" onClick={() => setExistingFrontImage(null)}>Remove</button>
+                    </div>
+                  )}
                   <input
                     type="file"
                     name="frontImage"
@@ -531,6 +624,19 @@ const UserEditProperty = () => {
                     <ImageIcon className="w-3 h-3 text-red-500" />
                     Upload Other Images
                   </label>
+                  {existingOtherImages && existingOtherImages.length > 0 && (
+                    <div className="mb-2 flex flex-wrap gap-2">
+                      {existingOtherImages.map((img, idx) => {
+                        if (typeof img !== 'string') return null;
+                        return (
+                          <div key={idx} className="relative inline-block">
+                            <img src={img.startsWith('http') ? img : `${process.env.REACT_APP_API_URL || ''}${img}`} alt={`Other ${idx+1}`} className="w-16 h-12 object-cover rounded border" />
+                            <button type="button" className="absolute top-0 right-0 bg-white bg-opacity-80 rounded-full text-xs text-red-500 px-1" onClick={() => handleRemoveExistingOtherImage(idx)}>x</button>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
                   <input
                     type="file"
                     multiple

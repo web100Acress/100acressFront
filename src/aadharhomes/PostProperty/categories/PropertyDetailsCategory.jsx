@@ -199,18 +199,27 @@ const PropertyDetailsCategory = ({
                 </div>
                 <label className="text-xs font-bold text-gray-700 uppercase tracking-wider">Built Year</label>
               </div>
-              <input
-                type="text"
-                placeholder="e.g., 2015"
-                name="builtYear"
-                value={sellProperty.builtYear}
-                onChange={handleChangeValue}
-                className={`h-9 w-full rounded-lg bg-white border-2 px-3 outline-none transition-all duration-200 placeholder-gray-400 text-gray-900 text-sm font-semibold ${
-                  sellProperty.builtYear
-                    ? "border-gray-400 bg-gray-50" 
-                    : "border-gray-300 hover:border-gray-400 focus:border-gray-400"
-                }`}
-              />
+              <div className="relative group">
+                <select
+                  name="builtYear"
+                  value={sellProperty.builtYear}
+                  onChange={handleChangeValue}
+                  className={`h-9 w-full rounded-lg bg-white border-2 px-3 outline-none transition-all duration-200 text-gray-900 text-sm font-semibold appearance-none cursor-pointer ${
+                    sellProperty.builtYear
+                      ? "border-gray-400 bg-gray-50"
+                      : "border-gray-300 hover:border-gray-400 focus:border-gray-400"
+                  }`}
+                >
+                  <option value="">Select Year</option>
+                  {(() => {
+                    const currentYear = new Date().getFullYear();
+                    const years = [];
+                    for (let y = currentYear + 1; y >= 1990; y--) years.push(y);
+                    return years.map((y) => <option key={y} value={String(y)}>{y}</option>);
+                  })()}
+                </select>
+                <ChevronDown className="w-3 h-3 text-gray-400 absolute right-3 top-2.5 pointer-events-none group-hover:text-gray-500 transition-colors" />
+              </div>
             </div>
           </div>
         </div>

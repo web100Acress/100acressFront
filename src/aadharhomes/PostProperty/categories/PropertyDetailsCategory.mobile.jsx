@@ -90,7 +90,7 @@ const PropertyDetailsCategoryMobile = ({
               name="bedrooms"
               value={sellProperty.bedrooms}
               onChange={handleSelectChange}
-              className={`h-12 rounded-xl border bg-white px-4 text-sm font-medium outline-none focus:ring-2 focus:ring-red-100 ${
+              className={`h-12 rounded-xl border bg-white px-4 text-sm font-medium outline-none focus:ring-2 focus:ring-red-100 mobile-select-fix ${
                 errors.bedrooms ? "border-red-500 focus:border-red-500" : "border-gray-300 focus:border-red-500"
               }`}
             >
@@ -107,7 +107,7 @@ const PropertyDetailsCategoryMobile = ({
               name="bathrooms"
               value={sellProperty.bathrooms}
               onChange={handleSelectChange}
-              className={`h-12 rounded-xl border bg-white px-4 text-sm font-medium outline-none focus:ring-2 focus:ring-red-100 ${
+              className={`h-12 rounded-xl border bg-white px-4 text-sm font-medium outline-none focus:ring-2 focus:ring-red-100 mobile-select-fix ${
                 errors.bathrooms ? "border-red-500 focus:border-red-500" : "border-gray-300 focus:border-red-500"
               }`}
             >
@@ -138,7 +138,7 @@ const PropertyDetailsCategoryMobile = ({
             name="areaUnit"
             value={sellProperty.areaUnit}
             onChange={handleSelectChange}
-            className={`h-12 rounded-xl border bg-white px-3 text-sm font-medium outline-none focus:ring-2 focus:ring-red-100 ${
+            className={`h-12 rounded-xl border bg-white px-3 text-sm font-medium outline-none focus:ring-2 focus:ring-red-100 mobile-select-fix ${
               errors.areaUnit ? "border-red-500 focus:border-red-500 text-gray-900" : "border-gray-300 text-gray-900 focus:border-red-500"
             }`}
           >
@@ -174,7 +174,7 @@ const PropertyDetailsCategoryMobile = ({
             name="priceunits"
             value={sellProperty.priceunits}
             onChange={handleSelectChange}
-            className={`h-12 rounded-xl border bg-white px-3 text-sm font-medium outline-none focus:ring-2 focus:ring-red-100 ${
+            className={`h-12 rounded-xl border bg-white px-3 text-sm font-medium outline-none focus:ring-2 focus:ring-red-100 mobile-select-fix ${
               errors.priceunits ? "border-red-500 focus:border-red-500 text-gray-900" : "border-gray-300 text-gray-900 focus:border-red-500"
             }`}
           >
@@ -193,9 +193,10 @@ const PropertyDetailsCategoryMobile = ({
 
         {/* Furnishing */}
         <select
+          name="furnishing"
           value={sellProperty.furnishing}
           onChange={handleSelectChange}
-          className={`h-12 w-full rounded-xl border bg-white px-4 text-sm font-medium outline-none focus:ring-2 focus:ring-red-100 ${
+          className={`h-12 w-full rounded-xl border bg-white px-4 text-sm font-medium outline-none focus:ring-2 focus:ring-red-100 mobile-select-fix ${
             errors.furnishing ? "border-red-500 focus:border-red-500 text-gray-900" : "border-gray-300 text-gray-900 focus:border-red-500"
           }`}
         >
@@ -223,38 +224,40 @@ const PropertyDetailsCategoryMobile = ({
           <p className="text-xs text-red-500 mt-1">{errors.availableDate}</p>
         )}
 
-        {/* Property Type */}
+        {/* Property Status */}
         <select
           name="type"
           value={sellProperty.type}
           onChange={handleSelectChange}
-          className={`h-12 w-full rounded-xl border bg-white px-4 text-sm font-medium outline-none focus:ring-2 focus:ring-red-100 ${
+          className={`h-12 w-full rounded-xl border bg-white px-4 text-sm font-medium outline-none focus:ring-2 focus:ring-red-100 mobile-select-fix ${
             errors.type ? "border-red-500 focus:border-red-500 text-gray-900" : "border-gray-300 text-gray-900 focus:border-red-500"
           }`}
         >
-          <option value="">Property Type</option>
-          <option value="Apartment">Apartment</option>
-          <option value="IndependentHouse">Independent House</option>
-          <option value="Villa">Villa</option>
-          <option value="Plot">Plot</option>
-          <option value="Commercial">Commercial</option>
-          <option value="Studio">Studio</option>
+          <option value="">Property Status</option>
+          <option value="Ready to Move">Ready to Move</option>
+          <option value="Under Construction">Under Construction</option>
         </select>
         {errors.type && (
           <p className="text-xs text-red-500 mt-1">{errors.type}</p>
         )}
 
         {/* Built Year */}
-        <input
-          type="text"
-          placeholder="Built Year"
+        <select
           name="builtYear"
           value={sellProperty.builtYear}
-          onChange={handleFieldChange}
-          className={`h-12 w-full rounded-xl border bg-white px-4 text-sm outline-none placeholder-gray-400 focus:ring-2 focus:ring-red-100 ${
+          onChange={handleSelectChange}
+          className={`h-12 w-full rounded-xl border bg-white px-4 text-sm font-medium outline-none focus:ring-2 focus:ring-red-100 mobile-select-fix ${
             errors.builtYear ? "border-red-500 focus:border-red-500 text-gray-900" : "border-gray-300 text-gray-900 focus:border-red-500"
           }`}
-        />
+        >
+          <option value="">Built Year</option>
+          {(() => {
+            const currentYear = new Date().getFullYear();
+            const years = [];
+            for (let y = currentYear + 1; y >= 1990; y--) years.push(y);
+            return years.map((y) => <option key={y} value={String(y)}>{y}</option>);
+          })()}
+        </select>
         {errors.builtYear && (
           <p className="text-xs text-red-500 mt-1">{errors.builtYear}</p>
         )}

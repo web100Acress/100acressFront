@@ -375,10 +375,11 @@ function DesktopMenu({ avatarUrl, firstName, isHome, colorChange, isAdmin, isBlo
   }, [open]);
 
   return (
-    <div className="relative" ref={menuRef}>
+    <div className="relative" ref={menuRef} onMouseEnter={() => setOpen(true)} onMouseLeave={() => setOpen(false)}>
       {/* Trigger button */}
       <button
         aria-label="Profile"
+        aria-expanded={open}
         onClick={() => setOpen((v) => !v)}
         className="bg-transparent border-none p-1 flex items-center gap-2"
       >
@@ -417,26 +418,30 @@ function DesktopMenu({ avatarUrl, firstName, isHome, colorChange, isAdmin, isBlo
         )}
       </button>
 
-      {/* Dropdown */}
-      {open && (
-        <div
-          className="fixed bg-white border border-gray-200 rounded-xl shadow-lg overflow-y-auto"
-          style={{
-            top: (() => {
-              if (!menuRef.current) return 56;
-              const rect = menuRef.current.getBoundingClientRect();
-              return rect.bottom + 4;
-            })(),
-            right: (() => {
-              if (!menuRef.current) return 16;
-              const rect = menuRef.current.getBoundingClientRect();
-              return window.innerWidth - rect.right;
-            })(),
-            minWidth: 220,
-            maxHeight: "60vh",
-            zIndex: 14000,
-          }}
-        >
+      {/* Dropdown (always rendered so CSS transition can animate) */}
+      <div
+        className="fixed bg-white border border-gray-200 rounded-xl shadow-lg overflow-y-auto"
+        style={{
+          top: (() => {
+            if (!menuRef.current) return 56;
+            const rect = menuRef.current.getBoundingClientRect();
+            return rect.bottom + 4;
+          })(),
+          right: (() => {
+            if (!menuRef.current) return 16;
+            const rect = menuRef.current.getBoundingClientRect();
+            return window.innerWidth - rect.right;
+          })(),
+          minWidth: 220,
+          maxHeight: "60vh",
+          zIndex: 14000,
+          opacity: open ? 1 : 0,
+          transform: open ? "translateY(0)" : "translateY(-8px)",
+          pointerEvents: open ? "auto" : "none",
+          visibility: open ? "visible" : "hidden",
+          transition: "opacity 180ms ease, transform 180ms ease",
+        }}
+      >
           {/* Close button */}
           <div className="flex justify-end p-2 absolute top-0 right-0 z-10">
             <button
@@ -482,7 +487,7 @@ function DesktopMenu({ avatarUrl, firstName, isHome, colorChange, isAdmin, isBlo
             <span className="text-gray-700">Log out</span>
           </button>
         </div>
-      )}
+      
     </div>
   );
 }

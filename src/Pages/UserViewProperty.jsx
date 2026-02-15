@@ -1,41 +1,45 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
-// import Footer from "../Components/Actual_Components/Footer";
 import axios from "axios";
-import { Link, useNavigate, useParams, useLocation } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { getApiBase } from "../config/apiBase";
 import CrimsonEleganceFooter from "../Home/Footer/CrimsonEleganceFooter";
 import showToast from "../Utils/toastUtils";
-// import Nav from "../aadharhomes/Nav";
+import { 
+  LayoutDashboard, PlusCircle, RefreshCw, Search, 
+  Home, CheckCircle2, Clock, Eye, Edit3, MapPin
+} from "lucide-react";
+
+const LISTING_STATUS_OPTIONS = [
+  { value: "available", label: "Available" },
+  { value: "sold", label: "Sold" },
+  { value: "rented", label: "Rented" },
+  { value: "withdrawn", label: "Withdrawn" },
+];
 
 const UserViewProperty = () => {
   const [userViewProperty, setUserViewProperty] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
   const [search, setSearch] = useState("");
+  const [updatingId, setUpdatingId] = useState(null);
+  
   const { id: routeUserId } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
+  
   const userId = routeUserId || localStorage.getItem("mySellerId");
-  const pollRef = useRef(null);
+  const routeFilter = location.state?.filter || "all";
   const isFetchingRef = useRef(false);
 
-  const fetchData = async () => {
+  const fetchData = async (isSilent = false) => {
     if (isFetchingRef.current) return;
     isFetchingRef.current = true;
-
     try {
-      setLoading(true);
-      setError("");
-      showToast.loading("Loading properties...", { id: "loadProperties" });
-
+      if (!isSilent) setLoading(true);
       const base = getApiBase();
       const res = await axios.get(`${base}/postPerson/propertyView/${userId}`);
       setUserViewProperty(res?.data?.data?.postProperty || []);
-
-      showToast.success("Properties loaded successfully!", { id: "loadProperties" });
     } catch (error) {
-      setError("Failed to load your properties. Please try again.");
-      showToast.error("Failed to load properties", { id: "loadProperties" });
+      showToast.error("Sync failed");
     } finally {
       setLoading(false);
       isFetchingRef.current = false;
@@ -44,247 +48,167 @@ const UserViewProperty = () => {
 
   useEffect(() => {
     fetchData();
+    const interval = setInterval(() => fetchData(true), 60000);
+    return () => clearInterval(interval);
   }, []);
 
-  // Refetch when tab gains focus or becomes visible (e.g., after editing)
-  useEffect(() => {
-    const onFocus = () => fetchData();
-    const onVisibility = () => { if (!document.hidden) fetchData(); };
-    window.addEventListener('focus', onFocus);
-    document.addEventListener('visibilitychange', onVisibility);
-    return () => {
-      window.removeEventListener('focus', onFocus);
-      document.removeEventListener('visibilitychange', onVisibility);
-    };
-  }, []);
+  // Filter Logic - Merged Category + Search Filtration
+  const filteredProperties = useMemo(() => {
+    let list = userViewProperty;
 
-  // Cross-tab real-time update via BroadcastChannel + storage fallback
-  useEffect(() => {
-    let channel;
-    const onStorage = (e) => {
-      if (e.key === 'property-updated') {
-        fetchData();
-      }
-    };
+    // 1. Category Filter (From Dashboard)
+    if (routeFilter === "published") list = list.filter(p => p.verify === "verified");
+    else if (routeFilter === "under_review") list = list.filter(p => p.verify !== "verified");
+    else if (routeFilter === "sell") list = list.filter(p => p.propertyLooking === "Sell");
+    else if (routeFilter === "rent") list = list.filter(p => p.propertyLooking === "rent");
+
+    // 2. Deep Search Filter
+    if (!search.trim()) return list;
+    const query = search.toLowerCase();
+    return list.filter(item => 
+      item.propertyName?.toLowerCase().includes(query) ||
+      item.projectName?.toLowerCase().includes(query) ||
+      item.city?.toLowerCase().includes(query) ||
+      item.state?.toLowerCase().includes(query) ||
+      item.listingStatus?.toLowerCase().includes(query)
+    );
+  }, [userViewProperty, routeFilter, search]);
+
+  const updatePropertyStatus = async (propertyId, payload) => {
+    setUpdatingId(propertyId);
     try {
-      channel = new BroadcastChannel('property-updates');
-      channel.onmessage = (ev) => {
-        if (ev && ev.data && String(ev.data).includes('property:updated')) {
-          fetchData();
-        }
-      };
-    } catch { }
-    window.addEventListener('storage', onStorage);
-    return () => {
-      try { if (channel) channel.close(); } catch { }
-      window.removeEventListener('storage', onStorage);
-    };
-  }, []);
-
-  // Light polling for near real-time updates
-  useEffect(() => {
-    // Poll every 15s; cleared on unmount
-    pollRef.current = setInterval(() => {
-      fetchData();
-    }, 15000);
-    return () => {
-      if (pollRef.current) clearInterval(pollRef.current);
-    };
-  }, []);
-
-  // Optional backend-driven real-time via SSE
-  useEffect(() => {
-    // Support both Vite (import.meta.env.VITE_*) and CRA (process.env.REACT_APP_*) without throwing in the browser
-    const base = (
-      (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_PROPERTY_UPDATES_URL) ||
-      (typeof process !== 'undefined' && process.env && process.env.REACT_APP_PROPERTY_UPDATES_URL) ||
-      ''
-    ); // e.g. https://api.example.com/sse/property-updates
-    if (!base || !userId) return;
-    let es;
-    try {
-      es = new EventSource(`${base}?userId=${encodeURIComponent(userId)}`);
-      es.onmessage = () => fetchData();
-      es.onerror = () => { /* silently ignore and let polling/focus handle */ };
-    } catch { }
-    return () => { try { if (es) es.close(); } catch { } };
-  }, [userId]);
-
-  // Memoized filtered properties for performance
-  const filteredProperties = useMemo(() =>
-    userViewProperty.filter(item =>
-      `${item.projectName} ${item.city} ${item.state}`
-        .toLowerCase()
-        .includes(search.toLowerCase())
-    ), [userViewProperty, search]
-  );
+      const base = getApiBase();
+      const form = new FormData();
+      Object.entries(payload).forEach(([k, v]) => form.append(k, v));
+      await axios.post(`${base}/postPerson/propertyoneUserUpdate/${propertyId}`, form, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      showToast.success("Status Synchronized");
+      fetchData(true);
+    } catch (err) {
+      showToast.error("Update failed");
+    } finally {
+      setUpdatingId(null);
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <section className="flex flex-col bg-white ">
-        {/* Page heading */}
-        <div className="w-full max-w-screen-xl mx-auto px-4 md:px-10 pt-20 md:pt-16 text-center">
-          <div className="flex items-center justify-center gap-3">
-            <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-900">My Properties</h1>
-            <button
-              type="button"
-              onClick={() => {
-                showToast.loading('Refreshing...', { id: 'refreshProperties' });
-                fetchData();
-              }}
-              title="Refresh"
-              className="hidden sm:inline-flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-200 w-9 h-9"
-            >
-              ⟳
-            </button>
-          </div>
-          <div className="mt-3 flex justify-center">
-            <div className="h-1 w-16 rounded-full bg-gradient-to-r from-red-600 to-rose-500" />
-          </div>
-          <p className="text-sm md:text-base text-gray-500 mt-3">Manage and edit the properties you have listed.</p>
-          {!loading && (
-            <p className="text-xs md:text-sm text-gray-400 mt-1">Total: {userViewProperty.length}</p>
-          )}
-        </div>
-
-        {/* Stats Cards */}
-        <div className="max-w-screen-xl mx-auto px-4 md:px-10 mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div className="bg-white rounded-2xl border shadow-sm p-5">
-            <p className="text-sm text-gray-500">Total Properties</p>
-            <h3 className="text-3xl font-extrabold text-gray-900">
-              {userViewProperty.length}
-            </h3>
+    <div className="min-h-screen bg-slate-50">
+      <section className="max-w-screen-2xl mx-auto px-3 md:px-10 pt-20 pb-12">
+        
+        {/* Compact Dashboard Header */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+          <div>
+            <h1 className="text-xl md:text-2xl font-black text-slate-900 flex items-center gap-2">
+              <LayoutDashboard className="text-red-600" size={24} /> 
+              Property Manager
+            </h1>
+            <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mt-1">
+              Showing {filteredProperties.length} listings
+            </p>
           </div>
 
-          <div className="bg-white rounded-2xl border shadow-sm p-5">
-            <p className="text-sm text-gray-500">Approved</p>
-            <h3 className="text-3xl font-extrabold text-green-600">
-              {userViewProperty.filter(p => p.verify === "verified").length}
-            </h3>
-          </div>
-
-          <div className="bg-white rounded-2xl border shadow-sm p-5">
-            <p className="text-sm text-gray-500">Pending</p>
-            <h3 className="text-3xl font-extrabold text-yellow-600">
-              {userViewProperty.filter(p => p.verify !== "verified").length}
-            </h3>
+          <div className="flex items-center gap-2">
+             <div className="relative flex-1 md:w-64">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={14} />
+                <input 
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder="Filter name, city..." 
+                  className="w-full pl-9 pr-3 py-2 text-xs border-none rounded-lg bg-white shadow-sm ring-1 ring-slate-200 focus:ring-2 focus:ring-red-500 outline-none"
+                />
+             </div>
+             <button onClick={() => fetchData()} className="p-2 bg-white ring-1 ring-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 transition-colors">
+                <RefreshCw size={16} className={loading ? "animate-spin" : ""} />
+             </button>
+             <button onClick={() => navigate("/userdashboard")} className="p-2 bg-slate-900 text-white rounded-lg hover:bg-black transition-all">
+                <PlusCircle size={16} />
+             </button>
           </div>
         </div>
 
-        {/* Search Bar */}
-        <div className="max-w-screen-xl mx-auto px-4 md:px-10 mt-6 flex flex-col sm:flex-row gap-3">
-          <input
-            type="text"
-            placeholder="Search by project, city, state..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full sm:w-96 rounded-xl border px-4 py-2 text-sm focus:ring-2 focus:ring-red-500 outline-none"
-          />
-        </div>
-        {/* Grid */}
-        <div className="grid max-w-md grid-cols-1 p-4 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-10 lg:grid-cols-4 sm:gap-3 lg:gap-5 mx-auto">
-          {loading && (
-            <>
-              {[...Array(4)].map((_, i) => (
-                <div key={i} className="animate-pulse bg-white rounded-xl shadow-sm border overflow-hidden">
-                  <div className="h-40 bg-gray-200" />
-                  <div className="p-4 space-y-2">
-                    <div className="h-4 bg-gray-200 rounded w-3/4" />
-                    <div className="h-3 bg-gray-200 rounded w-1/2" />
-                    <div className="h-8 bg-gray-200 rounded w-2/3 mt-3" />
+        {/* Small Property Grid */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
+          {loading ? (
+             [...Array(10)].map((_, i) => (
+              <div key={i} className="animate-pulse bg-slate-200 rounded-xl h-64" />
+            ))
+          ) : filteredProperties.map((item) => {
+            const name = item.propertyName || item.projectName || "Property";
+            const isDisabled = !!item.isDisabled;
+
+            return (
+              <div key={item._id} className={`bg-white rounded-xl border border-slate-200 overflow-hidden transition-all hover:shadow-md ${isDisabled ? 'opacity-60' : ''}`}>
+                
+                {/* Compact Thumbnail */}
+                <div className="relative h-28 md:h-32">
+                  <img 
+                    src={typeof item.frontImage === "string" ? item.frontImage : item.frontImage?.url || "https://placehold.co/400x300"} 
+                    alt={name}
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute top-2 left-2 right-2 flex justify-between">
+                     <span className={`text-[9px] font-black px-1.5 py-0.5 rounded shadow-sm ${item.verify === "verified" ? 'bg-green-500 text-white' : 'bg-orange-500 text-white'}`}>
+                        {item.verify === "verified" ? 'Live' : 'Review'}
+                     </span>
+                     <span className="bg-black/50 backdrop-blur-md text-white text-[9px] px-1.5 py-0.5 rounded font-bold">
+                        ₹{(Number(item.price)/100000).toFixed(1)}L
+                     </span>
                   </div>
                 </div>
-              ))}
-            </>
-          )}
-          {!!error && (
-            <div className="col-span-full text-center py-4 text-red-600">{error}</div>
-          )}
-          {!loading && !error && userViewProperty.length === 0 && (
-            <div className="col-span-full flex flex-col items-center justify-center py-20 bg-gray-50 rounded-2xl border">
-              <h2 className="text-2xl font-bold text-gray-800">No Properties Found</h2>
-              <p className="text-sm text-gray-500 mt-2">
-                Start by adding your first property
-              </p>
-              <button
-                onClick={() => navigate("/userdashboard")}
-                className="mt-6 bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-xl shadow"
-              >
-                Add Property
-              </button>
-            </div>
-          )}
-          {filteredProperties.map((item, index) => {
-            const pUrl = item.projectName ? item.projectName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') : item._id;
-            return (
-              <div key={item?._id || index}>
-                <article
-                  className="group overflow-hidden rounded-2xl border bg-white shadow-sm hover:shadow-xl transition-all duration-300"
-                >
-                  {item && item.frontImage && (
-                    <div className="relative">
-                      <img
-                        src={item.frontImage.url}
-                        alt={item.projectName || 'Property'}
-                        className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
-                      />
-                      <div className="absolute top-2 right-2">
-                        <span className={`px-3 py-1 text-xs font-bold rounded-full shadow-sm ${
-                          item.verify === 'verified'
-                            ? 'bg-green-100 text-green-700 border border-green-300'
-                            : 'bg-yellow-100 text-yellow-700 border border-yellow-300'
-                        }`}>
-                          {item.verify === 'verified' ? 'Approved' : 'Pending'}
-                        </span>
-                      </div>
-                    </div>
-                  )}
 
-                  <div className="p-4">
-                    <div className="pb-2">
-                      <h3 className="text-lg md:text-xl font-bold text-gray-900 hover:text-red-600 duration-300 ease-in-out mb-1">
-                        {item.projectName}
-                      </h3>
-                      <p className="text-sm font-medium text-gray-600 mb-2">
-                        {item.city}, <span className="font-bold text-gray-800">{item.state}</span>
-                      </p>
-                      <div className="flex flex-wrap gap-2 text-xs font-semibold text-gray-700">
-                        <span className="bg-blue-50 text-blue-700 px-3 py-1 rounded-full border border-blue-200 font-bold">🏠 {item.propertyType || 'N/A'}</span>
-                        <span className="bg-green-50 text-green-700 px-3 py-1 rounded-full border border-green-200 font-bold">💰 {item.price ? `₹${Number(item.price).toLocaleString("en-IN")}` : 'N/A'}</span>
-                      </div>
-                    </div>
-                    <div className="mt-4 flex items-center justify-between">
-                      <span className="text-xs text-gray-400">
-                        ID: {item._id.slice(-6)}
-                      </span>
-
-                      <div className="flex gap-2">
-                        {item.verify === "verified" && (
-                          <button
-                            onClick={(e) => {
-                              e.preventDefault();
-                              navigate(`/buy-properties/${pUrl}/${item._id}`);
-                            }}
-                            className="bg-blue-600 hover:bg-blue-700 text-white text-xs px-3 py-2 rounded-lg"
-                          >
-                            View
-                          </button>
-                        )}
-
-                        <button
-                          onClick={(e) => {
-                            e.preventDefault();
-                            navigate("/usereditproperty", { state: { property: item } });
-                          }}
-                          className="bg-gray-900 hover:bg-black text-white text-xs px-3 py-2 rounded-lg"
-                        >
-                          Edit
-                        </button>
-                      </div>
-                    </div>
+                {/* Compact Details */}
+                <div className="p-2.5 space-y-2">
+                  <div className="min-h-[32px]">
+                    <h3 className="text-xs font-bold text-slate-800 line-clamp-1 leading-tight">{name}</h3>
+                    <p className="text-[10px] text-slate-400 flex items-center gap-0.5 truncate">
+                      <MapPin size={10} /> {item.city}
+                    </p>
                   </div>
-                </article>
+
+                  {/* Efficient Dropdown Box */}
+                  <div className="space-y-1.5 bg-slate-50 p-1.5 rounded-lg border border-slate-100">
+                    <select
+                      value={item.listingStatus || "available"}
+                      onChange={(e) => updatePropertyStatus(item._id, { listingStatus: e.target.value })}
+                      disabled={updatingId === item._id}
+                      className="w-full bg-white text-[10px] font-bold py-1 px-1 rounded border border-slate-200 outline-none focus:ring-1 focus:ring-red-500"
+                    >
+                      {LISTING_STATUS_OPTIONS.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
+                    </select>
+                    
+                    <label className="flex items-center gap-1.5 cursor-pointer">
+                      <input 
+                        type="checkbox" 
+                        checked={isDisabled} 
+                        onChange={(e) => updatePropertyStatus(item._id, { isDisabled: e.target.checked })}
+                        className="w-3 h-3 rounded text-red-600 focus:ring-0" 
+                      />
+                      <span className="text-[9px] font-bold text-slate-500">Hide Listing</span>
+                    </label>
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className="flex gap-1.5 pt-1">
+                    <button 
+                      onClick={() => navigate("/usereditproperty", { state: { property: item } })}
+                      className="flex-1 py-1.5 bg-slate-100 text-slate-700 text-[10px] font-bold rounded-md hover:bg-slate-200 transition-colors flex items-center justify-center gap-1"
+                    >
+                      <Edit3 size={10} /> Edit
+                    </button>
+                    {item.verify === "verified" && (
+                      <button 
+                        onClick={() => {
+                          const pUrl = (item.projectName || item.propertyName || "").toLowerCase().replace(/[^a-z0-9]+/g, "-");
+                          navigate(`/buy-properties/${pUrl}/${item._id}`);
+                        }}
+                        className="p-1.5 bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100 transition-colors"
+                      >
+                        <Eye size={12} />
+                      </button>
+                    )}
+                  </div>
+                </div>
               </div>
             );
           })}

@@ -44,6 +44,17 @@ const EditDetails = () => {
 
   const { id } = useParams();
 
+  // Derive category (Commercial/Residential) from propertyType when selectoption missing
+  const getCategoryFromPropertyType = (propertyType) => {
+    if (!propertyType || typeof propertyType !== "string") return "";
+    const commercial = ["Office", "Retail", "Industrial", "Plot / Land", "Storage", "Hospitality", "Other"];
+    const residential = ["Flat/Apartment", "Independent House / Villa", "Independent / Builder Floor", "1 RK/ Studio Apartment", "Serviced Apartment", "Farmhouse", "Other"];
+    const t = propertyType.trim();
+    if (commercial.includes(t)) return "Commercial";
+    if (residential.includes(t)) return "Residential";
+    return "";
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -51,16 +62,22 @@ const EditDetails = () => {
         const data = res?.data?.data;
         const list = Array.isArray(data?.postProperty) ? data.postProperty : [];
         const payload = list.length > 0 ? list[0] : {};
-        
+        const rawSelectoption = payload.selectoption || getCategoryFromPropertyType(payload.propertyType) || "";
+        const rawPriceunits = (payload.priceunits || "").toString().trim().toLowerCase();
+        const priceunits = rawPriceunits === "lakhs" || rawPriceunits === "crores" ? rawPriceunits : (payload.priceunits || "");
+        const areaUnit = payload.areaUnit || payload.areaunit || "";
         setValues(prev => ({
           ...prev,
           ...payload,
+          selectoption: rawSelectoption === "Commercial" || rawSelectoption === "Residential" ? rawSelectoption : getCategoryFromPropertyType(payload.propertyType) || "",
+          priceunits,
+          areaUnit,
           otherImage: Array.isArray(payload?.otherImage) ? payload.otherImage : [],
-          frontImage: payload?.frontImage && typeof payload.frontImage === 'object'
+          frontImage: payload?.frontImage && typeof payload.frontImage === "object" && payload.frontImage !== null
             ? payload.frontImage
-            : (typeof payload?.frontImage === 'string' && payload.frontImage
-                ? { url: payload.frontImage }
-                : prev.frontImage),
+            : typeof payload?.frontImage === "string" && payload.frontImage
+              ? { url: payload.frontImage }
+              : prev.frontImage,
         }));
       } catch (error) {
         console.log(error);
@@ -264,7 +281,7 @@ const EditDetails = () => {
 
                   <div>
                     <label className="text-red-700 font-semibold mb-2 flex items-center"><MdAttachMoney className="mr-1" />Price Unit</label>
-                    <select value={values.priceunits} className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 text-gray-800" onChange={e => setValues({ ...values, priceunits: e.target.value })}>
+                    <select value={(values.priceunits || "").toString().toLowerCase()} className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 text-gray-800" onChange={e => setValues({ ...values, priceunits: e.target.value })}>
                       <option value="">Select Unit</option>
                       <option value="lakhs">Lakhs</option>
                       <option value="crores">Crores</option>
@@ -278,10 +295,15 @@ const EditDetails = () => {
 
                   <div>
                     <label className="text-red-700 font-semibold mb-2 flex items-center"><MdApartment className="mr-1" />Area Unit</label>
-                    <select value={values.areaUnit} className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 text-gray-800" onChange={e => setValues({ ...values, areaUnit: e.target.value })}>
+                    <select value={values.areaUnit || ""} className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 text-gray-800" onChange={e => setValues({ ...values, areaUnit: e.target.value })}>
                       <option value="">Select Unit</option>
                       <option value="sqft">Sqft</option>
                       <option value="sqyd">Sqyd</option>
+                      <option value="sqmt">Sqmt</option>
+                      <option value="acre">Acre</option>
+                      <option value="kanal">Kanal</option>
+                      <option value="marla">Marla</option>
+                      <option value="gaj">Gaj</option>
                     </select>
                   </div>
 
