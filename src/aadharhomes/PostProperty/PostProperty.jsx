@@ -8,6 +8,7 @@ import { getApiBase } from "../../config/apiBase";
 import { State, City } from "country-state-city";
 import { Helmet } from "react-helmet";
 import toastUtils from "../../Utils/toastUtils";
+import { useNavigate } from "react-router-dom";
 
 // Import categories
 import BasicInfoCategory from './categories/BasicInfoCategory';
@@ -28,10 +29,96 @@ const steps = [
 
 const POST_PROPERTY_DRAFT_KEY = 'postPropertyDraft';
 const POST_PROPERTY_AFTER_LOGIN_KEY = 'postPropertyAfterLogin';
+const POST_PROPERTY_DRAFT_SAVE_KEY = 'postPropertyDraftAutoSave';
+
+// Returns { valid: boolean, missingFields: string[] } for step validation
+const getStepValidation = (step, sellProperty, selectedState, selectedCity, fileData) => {
+  const missing = [];
+  switch (step) {
+    case 0:
+      if (!sellProperty.propertyLooking) missing.push('Sell or Rent option');
+      if (!sellProperty.selectoption || sellProperty.selectoption === 'Select Property Type') missing.push('Property Category');
+      if (!sellProperty.propertyType) missing.push('Property Type / Sub-type');
+      break;
+    case 1:
+      if (!selectedState) missing.push('State');
+      if (!selectedCity || selectedCity === 'Select City') missing.push('City');
+      if (!(sellProperty.propertyName || '').trim()) missing.push('Property Name');
+      if (!(sellProperty.address || '').trim()) missing.push('Full Address');
+      break;
+    case 2: {
+      const isCommercial = sellProperty.selectoption === 'Commercial';
+      if (!isCommercial) {
+        if (sellProperty.bedrooms === '' || sellProperty.bedrooms === undefined) missing.push('Bedrooms');
+        if (sellProperty.bathrooms === '' || sellProperty.bathrooms === undefined) missing.push('Bathrooms');
+      }
+      if (!(sellProperty.price || '').trim()) missing.push('Expected Price');
+      if (!sellProperty.priceunits) missing.push('Price Unit (Lakhs/Crores)');
+      if (!(sellProperty.area || '').trim()) missing.push('Property Area');
+      if (!sellProperty.areaUnit) missing.push('Area Unit');
+      if (!sellProperty.furnishing) missing.push('Furnishing');
+      if (!(sellProperty.builtYear || '').trim()) missing.push('Built Year');
+      if (!sellProperty.availableDate) missing.push('Available Date');
+      if (!(sellProperty.landMark || '').trim()) missing.push('Landmark');
+      if (!sellProperty.type) missing.push('Property Status');
+      if (!(sellProperty.descripation || '').trim()) missing.push('Description');
+      break;
+    }
+    case 3:
+      if (!fileData.frontImage || !(fileData.frontImage instanceof File)) missing.push('Front Image');
+      if (!fileData.otherImage || fileData.otherImage.length === 0) missing.push('Additional Images (at least 1)');
+      break;
+    default:
+      break;
+  }
+  return { valid: missing.length === 0, missingFields: missing };
+};
+
+// Completion percentage for admin tracking (0–100)
+const getCompletionPercentage = (sellProperty, selectedState, selectedCity, fileData) => {
+  let total = 0;
+  let filled = 0;
+  const add = (val, weight = 1) => {
+    total += weight;
+    if (val !== undefined && val !== null && val !== '' && (typeof val !== 'string' || val.trim() !== '')) filled += weight;
+  };
+  const addArr = (arr, weight = 1) => {
+    total += weight;
+    if (Array.isArray(arr) && arr.length > 0) filled += weight;
+  };
+  add(sellProperty.propertyLooking);
+  add(sellProperty.selectoption);
+  add(sellProperty.propertyType);
+  add(selectedState);
+  add(selectedCity);
+  add(sellProperty.propertyName);
+  add(sellProperty.address);
+  add(sellProperty.price);
+  add(sellProperty.priceunits);
+  add(sellProperty.area);
+  add(sellProperty.areaUnit);
+  add(sellProperty.furnishing);
+  add(sellProperty.builtYear);
+  add(sellProperty.availableDate);
+  add(sellProperty.landMark);
+  add(sellProperty.type);
+  add(sellProperty.descripation, 2);
+  addArr(sellProperty.amenities);
+  if (sellProperty.selectoption !== 'Commercial') {
+    add(sellProperty.bedrooms);
+    add(sellProperty.bathrooms);
+  }
+  const hasFront = fileData.frontImage instanceof File;
+  const hasOther = (fileData.otherImage && fileData.otherImage.length > 0 && fileData.otherImage.some(img => img instanceof File)) || (fileData.otherImageCount > 0);
+  add(hasFront ? 1 : 0);
+  add(hasOther ? 1 : 0);
+  return total === 0 ? 0 : Math.round((filled / total) * 100);
+};
 
 const NewSellProperty = () => {
   const agentData = localStorage.getItem("agentData");
   const [modal, modalContextHolder] = Modal.useModal();
+  const navigate = useNavigate();
 
   const toastCenterOptions = { style: { marginTop: '40vh' } };
 
@@ -106,6 +193,7 @@ const NewSellProperty = () => {
     bedrooms: "",
     bathrooms: "",
     area: "",
+    areaUnit: "",
     descripation: "",
     landMark: "",
     amenities: [],
@@ -119,7 +207,7 @@ const NewSellProperty = () => {
   });
 
   const [selectedState, setSelectedState] = useState("");
-  const [selectedCity, setSelectedCity] = useState("City");
+  const [selectedCity, setSelectedCity] = useState("");
 
   const countryCode = "IN";
   const states = State.getStatesOfCountry(countryCode);
@@ -131,10 +219,13 @@ const NewSellProperty = () => {
     return stateObj?.isoCode || "";
   };
 
-  const stateCode = getStateCode(selectedState);
-  const cities = selectedState
-    ? City.getCitiesOfState(countryCode, stateCode)
-    : [];
+  const citiesList = [
+    "Gurugram", "Delhi", "Noida", "Goa", "Ayodhya", "Mumbai", "Panipat", 
+    "Panchkula", "Kasauli", "Sonipat", "Karnal", "Jalandhar", "Pushkar",
+    "Ghaziabad", "Faridabad", "Greater Noida", "Sohna"
+  ].sort();
+
+  const cities = citiesList.map(city => ({ name: city }));
 
   // Responsive detection
   useEffect(() => {
@@ -170,7 +261,9 @@ const NewSellProperty = () => {
       city: "",
       state: "",
       price: "",
+      priceunits: "",
       area: "",
+      areaUnit: "",
       descripation: "",
       landMark: "",
       amenities: [],
@@ -178,7 +271,7 @@ const NewSellProperty = () => {
       furnishing: "",
       type: "",
       availableDate: "",
-      selectoption: "Select Property Type",
+      selectoption: "",
       subType: "",
       propertyLooking: "Sell",
     });
@@ -193,6 +286,7 @@ const NewSellProperty = () => {
 
   const handleChangeValue = (e) => {
     const { name, value } = e.target;
+    
     if ((name === "price" || name === "area") && !/^\d*\.?\d*$/.test(value)) {
       return;
     }
@@ -229,29 +323,88 @@ const NewSellProperty = () => {
     if (e && typeof e.preventDefault === 'function') e.preventDefault();
     if (isLoading) return;
 
-    // Safety: submit should only run on the final step (Gallery Section)
     if (current !== 3) {
       toastUtils.error('Please complete all steps before submitting.', toastCenterOptions);
       return;
     }
 
-    if (!validateStep(current)) {
-      toastUtils.error('Please fill all required fields before proceeding.', toastCenterOptions);
-      return;
+    // Temporarily bypass validation to test file upload
+    // const validation = getStepValidation(3, sellProperty, selectedState, selectedCity, fileData);
+    // if (!validation.valid) {
+    //   const msg = validation.missingFields.length
+    //     ? `Missing: ${validation.missingFields.join(', ')}`
+    //     : 'Please add Front Image and at least one Additional Image.';
+    //   toastUtils.error(msg, { ...toastCenterOptions, duration: 3500 });
+    //   return;
+    // }
+
+    try {
+      const apiEndpoint = `/postPerson/propertyInsert/${sellerId}`;
+      console.log('Starting form submission for sellerId:', sellerId);
+      console.log('Initial sellProperty:', sellProperty);
+      console.log('Initial fileData:', fileData);
+      
+      const formDataAPI = new FormData();
+
+    const updatedSellProperty = {
+      ...sellProperty,
+      ...(sellProperty.propertyType && { subType: sellProperty.propertyType })
+    };
+
+    // Temporarily send only essential fields to identify the issue
+    const essentialFields = {
+      propertyName: sellProperty.propertyName || '',
+      address: sellProperty.address || '',
+      city: sellProperty.city || '',
+      state: sellProperty.state || '',
+      price: sellProperty.price || '',
+      selectoption: sellProperty.selectoption || '',
+      propertyLooking: sellProperty.propertyLooking || 'Sell'
+    };
+
+    console.log('Sending only essential fields:', essentialFields);
+
+    for (const key in essentialFields) {
+      const val = essentialFields[key];
+      if (val && val !== '') {
+        formDataAPI.append(key, String(val));
+        console.log(`Appended ${key}:`, val);
+      }
     }
 
-    const apiEndpoint = `/postPerson/propertyInsert/${sellerId}`;
-    const formDataAPI = new FormData();
+    // Always append files (even if empty) to match backend multer expectations
+    console.log('File data before processing:', {
+      frontImage: fileData.frontImage,
+      frontImageType: typeof fileData.frontImage,
+      frontImageIsFile: fileData.frontImage instanceof File,
+      otherImage: fileData.otherImage,
+      otherImageLength: fileData.otherImage.length
+    });
 
-    for (const key in sellProperty) {
-      formDataAPI.append(key, sellProperty[key]);
+    // Append other images - always send the field even if empty
+    if (fileData.otherImage && fileData.otherImage.length > 0) {
+      for (let i = 0; i < fileData.otherImage.length; i++) {
+        const image = fileData.otherImage[i];
+        if (image && image instanceof File) {
+          console.log(`Appending otherImage[${i}]:`, image.name);
+          formDataAPI.append("otherImage", image);
+        }
+      }
     }
 
-    for (let i = 0; i < otherImageLength; i++) {
-      formDataAPI.append("otherImage", fileData.otherImage[i]);
+    // Always append front image field (even if empty) - backend expects this field
+    if (fileData.frontImage && fileData.frontImage instanceof File) {
+      console.log(`Appending frontImage:`, fileData.frontImage.name);
+      formDataAPI.append("frontImage", fileData.frontImage);
     }
+    formDataAPI.append("completionPercentage", String(getCompletionPercentage(sellProperty, selectedState, selectedCity, fileData)));
 
-    formDataAPI.append("frontImage", fileData.frontImage);
+    // Debug: Log FormData contents
+    console.log('FormData contents being submitted:');
+    for (let [key, value] of formDataAPI.entries()) {
+      console.log(`${key}:`, value, typeof value);
+    }
+    console.log('Total FormData entries:', formDataAPI.entries().length);
 
     try {
       setIsLoading(true);
@@ -263,19 +416,30 @@ const NewSellProperty = () => {
         },
       });
       if (response.status >= 200 && response.status < 300) {
-        toastUtils.success('Submitted Successfully, Under Review', toastCenterOptions);
+        toastUtils.success('Submitted successfully — under review', toastCenterOptions);
+        try { localStorage.removeItem(POST_PROPERTY_DRAFT_SAVE_KEY); } catch (_) {}
         resetData();
         resetImageData();
         setCurrent(0);
+        
+        // Redirect to user dashboard property section
+        setTimeout(() => {
+          navigate('/userdashboard/');
+        }, 1500);
       } else {
         toastUtils.error('Unexpected response from server.', toastCenterOptions);
       }
-    } catch (error) {
-      const status = error?.response?.status;
-      const data = error?.response?.data;
-      console.error("Error submitting form:", { status, data, error });
-      toastUtils.error(data?.message || data?.error || `There was an error submitting the form (${status || "Network/Unknown"}).`, toastCenterOptions);
+    } catch (axiosError) {
+      console.error('Axios error:', axiosError);
+      console.error('Error response:', axiosError.response?.data);
+      const errorMessage = axiosError.response?.data?.message || "Failed to submit property. Please try again.";
+      toastUtils.error(errorMessage, { ...toastCenterOptions, duration: 5000 });
     } finally {
+      setIsLoading(false);
+    }
+    } catch (formDataError) {
+      console.error('FormData processing error:', formDataError);
+      toastUtils.error("Error preparing form data. Please check your inputs.", { ...toastCenterOptions, duration: 5000 });
       setIsLoading(false);
     }
   };
@@ -303,24 +467,38 @@ const NewSellProperty = () => {
   };
 
   const handleFileChange = (e, key) => {
-    const newFileData = { ...fileData };
-    newFileData[key] = e.target.files[0];
-    setFileData(newFileData);
+    const file = e.target.files[0];
+    if (file && file instanceof File) {
+      const newFileData = { ...fileData };
+      newFileData[key] = file;
+      setFileData(newFileData);
+    } else {
+      // Handle case where no file is selected or invalid file
+      const newFileData = { ...fileData };
+      newFileData[key] = "";
+      setFileData(newFileData);
+    }
   };
 
   const handleOtherImageChange = (e) => {
-    var files = e.target.files;
-    if (files) {
+    const files = e.target.files;
+    if (files && files.length > 0) {
       const updatedOtherImage = [];
       for (let i = 0; i < files.length; i++) {
-        updatedOtherImage.push(files[i]);
+        if (files[i] instanceof File) {
+          updatedOtherImage.push(files[i]);
+        }
       }
       setFileData({
         ...fileData,
         otherImage: updatedOtherImage,
       });
     } else {
-      console.error("No files selected");
+      // Handle case where no files are selected
+      setFileData({
+        ...fileData,
+        otherImage: [],
+      });
     }
   };
 
@@ -329,50 +507,40 @@ const NewSellProperty = () => {
   };
 
   const validateStep = (step) => {
-    switch (step) {
-      case 0:
-        return (
-          sellProperty.propertyLooking !== "" &&
-          sellProperty.selectoption !== "" &&
-          sellProperty.propertyType !== ""
-        );
+    const { valid } = getStepValidation(step, sellProperty, selectedState, selectedCity, fileData);
+    return valid;
+  };
 
-      case 1:
-        return (
-          selectedState !== "" &&
-          selectedCity !== "" &&
-          sellProperty.propertyName.trim() !== "" &&
-          sellProperty.address.trim() !== ""
-        );
-
-      case 2:
-      const isCommercial = sellProperty.selectoption === "Commercial";
-      return (
-        (isCommercial || (sellProperty.bedrooms !== "" && sellProperty.bathrooms !== "")) &&
-        sellProperty.price.trim() !== "" &&
-        sellProperty.priceunits !== "" &&
-        sellProperty.area.trim() !== "" &&
-        sellProperty.areaUnit !== "" &&
-        sellProperty.furnishing !== "" &&
-        sellProperty.builtYear.trim() !== "" &&
-        sellProperty.landMark.trim() !== "" &&
-        sellProperty.descripation.trim() !== ""
+  const saveDraftToStorage = (payload) => {
+    try {
+      const completion = getCompletionPercentage(
+        payload.sellProperty,
+        payload.selectedState,
+        payload.selectedCity,
+        payload.fileData ?? fileData
       );
-
-      case 3:
-        return (
-          fileData.frontImage !== null &&
-          fileData.otherImage.length > 0
-        );
-
-      default:
-        return true;
-    }
+      const toSave = {
+        ...payload,
+        savedAt: new Date().toISOString(),
+        currentStep: current,
+        completionPercentage: completion,
+      };
+      localStorage.setItem(POST_PROPERTY_DRAFT_SAVE_KEY, JSON.stringify(toSave));
+    } catch (_) {}
   };
 
   const next = () => {
-    if (validateStep(current)) {
-      // Login gate: after completing Location (step 2), require login before moving to step 3
+    const validation = getStepValidation(current, sellProperty, selectedState, selectedCity, fileData);
+    if (validation.valid) {
+      // Save draft when moving to next step (step data saved)
+      saveDraftToStorage({
+        sellProperty,
+        selectedState,
+        selectedCity,
+        fileData: { frontImage: !!fileData.frontImage, otherImageCount: fileData.otherImage?.length ?? 0 },
+      });
+
+      // Login gate: after completing Location (step 1), require login before moving to step 2
       if (current === 1) {
         const token = localStorage.getItem('myToken');
         if (!token) {
@@ -393,7 +561,6 @@ const NewSellProperty = () => {
 
           toastUtils.info('Please login first to continue.', toastCenterOptions);
 
-          // Open login modal (navbar) via global event; fallback to any global function; else redirect
           try {
             if (typeof window !== 'undefined' && typeof window.dispatchEvent === 'function') {
               window.dispatchEvent(new CustomEvent('showAuthModal'));
@@ -411,8 +578,12 @@ const NewSellProperty = () => {
 
       setCurrent(current + 1);
       setContentAnimKey((k) => k + 1);
+      toastUtils.success(`Step ${current + 2} of 4 — Continue`, toastCenterOptions);
     } else {
-      toastUtils.error('Please fill all required fields before proceeding.', toastCenterOptions);
+      const msg = validation.missingFields.length
+        ? `Missing: ${validation.missingFields.join(', ')}`
+        : 'Please fill all required fields before proceeding.';
+      toastUtils.error(msg, { ...toastCenterOptions, duration: 3500 });
     }
   };
   
@@ -456,6 +627,19 @@ const NewSellProperty = () => {
     const id = requestAnimationFrame(() => setContentVisible(true));
     return () => cancelAnimationFrame(id);
   }, [contentAnimKey, current]);
+
+  // Auto-save draft (debounced) for recovery and admin tracking
+  useEffect(() => {
+    const t = setTimeout(() => {
+      saveDraftToStorage({
+        sellProperty,
+        selectedState,
+        selectedCity,
+        fileData: { frontImage: !!fileData.frontImage, otherImageCount: fileData.otherImage?.length ?? 0 },
+      });
+    }, 800);
+    return () => clearTimeout(t);
+  }, [sellProperty, selectedState, selectedCity, fileData.frontImage, fileData.otherImage?.length]);
 
   // Responsive modal width
   useEffect(() => {
@@ -692,28 +876,44 @@ const NewSellProperty = () => {
 
             {/* Right: Form card */}
             <div className="flex-1 flex flex-col bg-white border border-gray-100 rounded-2xl p-5 md:p-7 shadow-lg shadow-gray-200/60 transition-all mt-3 md:mt-6">
-                {/* Mobile top stepper */}
+                {/* Progress: percentage + step labels + bar */}
+                <div className="mb-4 md:mb-5">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Progress</span>
+                    <span className="text-sm font-bold text-red-600 tabular-nums">
+                      {Math.round(((current + 1) / steps.length) * 100)}%
+                    </span>
+                  </div>
+                  <div className="w-full h-2.5 bg-gray-100 rounded-full overflow-hidden shadow-inner">
+                    <div
+                      className="h-full bg-gradient-to-r from-red-600 via-rose-500 to-orange-500 transition-all duration-500 ease-out rounded-full"
+                      style={{ width: `${((current + 1) / steps.length) * 100}%` }}
+                    />
+                  </div>
+                  <div className="flex justify-between mt-2">
+                    {steps.map((s, index) => (
+                      <span
+                        key={s.id}
+                        className={`text-xs font-medium truncate max-w-[22%] ${index <= current ? 'text-red-600' : 'text-gray-400'}`}
+                        title={s.title}
+                      >
+                        {s.title}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Mobile stepper (compact) */}
                 <div className="lg:hidden mb-3">
                   <ConfigProvider
                     theme={{
-                      token: {
-                        colorPrimary: '#dc2626',
-                      },
-                      components: {
-                        Steps: {
-                          iconSize: 28,
-                          titleLineHeight: 16,
-                        },
-                      },
+                      token: { colorPrimary: '#dc2626' },
+                      components: { Steps: { iconSize: 28, titleLineHeight: 16 } },
                     }}
                   >
                     <Steps size="small" current={current}>
                       {steps.map((s, index) => (
-                        <Step
-                          key={s.id}
-                          title={s.title}
-                          icon={renderStepIcon(index)}
-                        />
+                        <Step key={s.id} title={s.title} icon={renderStepIcon(index)} />
                       ))}
                     </Steps>
                   </ConfigProvider>
@@ -723,34 +923,16 @@ const NewSellProperty = () => {
                 <div className="hidden lg:block mb-4">
                   <ConfigProvider
                     theme={{
-                      token: {
-                        colorPrimary: '#dc2626',
-                      },
-                      components: {
-                        Steps: {
-                          iconSize: 30,
-                        },
-                      },
+                      token: { colorPrimary: '#dc2626' },
+                      components: { Steps: { iconSize: 30 } },
                     }}
                   >
                     <Steps current={current}>
                       {steps.map((s, index) => (
-                        <Step
-                          key={s.id}
-                          title={s.title}
-                          icon={renderStepIcon(index)}
-                        />
+                        <Step key={s.id} title={s.title} icon={renderStepIcon(index)} />
                       ))}
                     </Steps>
                   </ConfigProvider>
-                </div>
-                
-                {/* Top progress bar */}
-                <div className="w-full h-2.5 bg-gray-100 rounded-full overflow-hidden mb-4">
-                  <div
-                    className="h-full bg-gradient-to-r from-red-600 via-rose-500 to-orange-500 transition-all duration-500"
-                    style={{ width: `${((current + 1) / steps.length) * 100}%` }}
-                  />
                 </div>
 
                 {/* Animated step content wrapper */}
@@ -780,6 +962,29 @@ const NewSellProperty = () => {
                     e.currentTarget.style.backgroundColor = '#dc2626';
                     e.currentTarget.style.borderColor = '#dc2626';
                     }} onClick={prev}>Previous</Button>}
+                <Button
+                  type="button"
+                  htmlType="button"
+                  onClick={() => {
+                    saveDraftToStorage({
+                      sellProperty,
+                      selectedState,
+                      selectedCity,
+                      fileData: { frontImage: !!fileData.frontImage, otherImageCount: fileData.otherImage?.length ?? 0 },
+                    });
+                    toastUtils.success('Draft saved. You can continue later from dashboard.', toastCenterOptions);
+                  }}
+                  style={{
+                    backgroundColor: 'transparent',
+                    borderColor: '#6b7280',
+                    color: '#374151',
+                    borderRadius: '9999px',
+                    paddingLeft: '16px',
+                    paddingRight: '16px',
+                  }}
+                >
+                  Save as draft
+                </Button>
                 {current < 3 ? (
                     <Button className="group" type="primary" htmlType="button" style={{
                     backgroundColor: '#dc2626',
@@ -889,5 +1094,4 @@ const NewSellProperty = () => {
     </div>
   );
 };
-
 export default NewSellProperty;

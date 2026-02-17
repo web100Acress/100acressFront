@@ -65,10 +65,10 @@ function SpacesAvailable() {
       <div className="container">
         {/* Header Section */}
         <div className="flex flex-col items-center justify-center text-center mb-4 px-4" data-aos="fade-up">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-[#111] mb-3 leading-tight">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-[#111] mb-3 leading-tight">
             <span className="text-red-600">Dream</span> Properties In The Heart of{" "}
             <span className="text-red-600">Gurugram</span>
-          </h1>
+          </h2>
           <div className="h-1.5 w-32 bg-gradient-to-r from-red-500 to-red-600 rounded-full"></div>
         </div>
 

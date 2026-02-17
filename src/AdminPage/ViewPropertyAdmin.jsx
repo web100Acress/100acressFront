@@ -242,7 +242,7 @@ const ViewPropertyAdmin = () => {
                       <thead className="bg-gray-100">
                         <tr>
                           <th className="px-4 py-2">#</th>
-                          <th className="px-4 py-2">Type</th>
+                          <th className="px-4 py-2">Category - Type</th>
                           <th className="px-4 py-2">Name</th>
                           <th className="px-4 py-2">City</th>
                           <th className="px-4 py-2">Actions</th>
@@ -252,7 +252,9 @@ const ViewPropertyAdmin = () => {
                         {currentRows.map((item, index) => (
                           <tr key={item._id} className="even:bg-gray-50">
                             <td className="px-4 py-2 text-center">{index + 1}</td>
-                            <td className="px-4 py-2 text-center">{item.propertyType}</td>
+                            <td className="px-4 py-2 text-center">
+                              {item.selectoption} - {item.propertyType}
+                            </td>
                             <td className="px-4 py-2 text-center">{item.propertyName}</td>
                             <td className="px-4 py-2 text-center">{item.city}</td>
                             <td className="px-4 py-2 text-center space-x-2">

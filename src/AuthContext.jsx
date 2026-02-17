@@ -101,6 +101,14 @@ export const AuthProvider = ({ children }) => {
         { email, password }
       );
 
+      // 🔥 Check if email verification is required
+      if (loginResponse?.data?.message?.includes("Registration is required") || 
+          loginResponse?.data?.message?.includes("verify") ||
+          !loginResponse?.data?.token) {
+        // Return special response for email verification
+        return { emailVerified: false, message: loginResponse?.data?.message || "Please verify your email first" };
+      }
+
       const newToken = loginResponse?.data?.token;
       if (!newToken || typeof newToken !== 'string') {
         throw new Error("Login failed: token not received.");
@@ -187,16 +195,19 @@ export const AuthProvider = ({ children }) => {
       setIsAuthenticated(true);
 
     } catch (error) {
+      console.error("🚨 Login error:", error);
+      
       if (error.response) {
         const { status, data } = error.response;
 
-        // ✅ Email verification required (ONLY when backend explicitly says so)
-        if (
-          status === 403 &&
+        // 🔥 EMAIL VERIFICATION REQUIRED - Check for specific message
+        if (status === 403 && (
+          data?.message?.includes("verify your email") ||
+          data?.message?.includes("Registration is required") ||
           data?.reason === "EMAIL_NOT_VERIFIED"
-        ) {
-          history("/auth/signup/email-verification");
-          throw new Error("Please verify your email before logging in.");
+        )) {
+          // Return special response for email verification instead of throwing error
+          return { emailVerified: false, message: data?.message || "Please verify your email first" };
         }
 
         // ❌ Wrong credentials (NO redirect)
@@ -204,7 +215,8 @@ export const AuthProvider = ({ children }) => {
           throw new Error("Invalid email or password.");
         }
 
-        throw new Error("Something went wrong. Please try again.");
+        // ❌ Other server errors
+        throw new Error(data?.message || "Something went wrong. Please try again.");
       }
 
       // Already a thrown Error
@@ -267,20 +279,13 @@ export const AuthProvider = ({ children }) => {
         }
       }
 
-      // Close any open auth modal before navigating (hide register UI)
-      try {
-        if (typeof window !== 'undefined' && window.dispatchEvent) {
-          window.dispatchEvent(new CustomEvent('closeAuthModal'));
-        }
-      } catch (_) { }
-
-      // Navigate to OTP verification page
-      history("/auth/signup/otp-verification/");
-
-      // Reset form data after successful navigation
-      if (typeof resetData === 'function') {
-        resetData();
-      }
+      // Return response for modal handling instead of direct navigation
+      return {
+        success: true,
+        message: "Registration successful! Please verify your email.",
+        requiresOTP: true,
+        email: email
+      };
 
     } catch (error) {
       console.error("Registration failed:", error);
