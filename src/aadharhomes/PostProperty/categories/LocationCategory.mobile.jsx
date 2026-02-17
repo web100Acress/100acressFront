@@ -39,7 +39,8 @@ const LocationCategoryMobile = ({
           ))}
         </select>
 
-        {/* {selectedState && (
+        {/* City Selection */}
+        {selectedState && (
           <select
             value={selectedCity}
             name="city"
@@ -53,7 +54,7 @@ const LocationCategoryMobile = ({
               </option>
             ))}
           </select>
-        )} */}
+        )}
       </div>
 
       {/* Property Info */}

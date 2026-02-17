@@ -73,7 +73,7 @@ const BasicInfoCategoryMobile = ({
         {/* Main Type */}
         <div className="relative">
           <select
-            className="h-12 w-full rounded-xl border border-gray-300 bg-white px-4 pr-10 text-sm font-medium text-gray-900 outline-none focus:border-gray-900"
+            className="h-12 w-full rounded-xl border border-gray-300 bg-white px-4 pr-10 text-sm font-medium text-gray-900 outline-none focus:border-gray-900 mobile-select-fix"
             name="selectoption"
             value={sellProperty?.selectoption}
             onChange={handleChangeValue}
@@ -84,14 +84,14 @@ const BasicInfoCategoryMobile = ({
             ))}
           </select>
 
-          <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" />
+          <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none z-10" />
         </div>
 
         {/* Sub Type */}
         {sellProperty.selectoption && (
           <div className="relative animate-in fade-in slide-in-from-top-1 duration-300">
             <select
-              className="h-12 w-full rounded-xl border border-gray-300 bg-white px-4 pr-10 text-sm font-medium text-gray-900 outline-none focus:border-gray-900"
+              className="h-12 w-full rounded-xl border border-gray-300 bg-white px-4 pr-10 text-sm font-medium text-gray-900 outline-none focus:border-gray-900 mobile-select-fix"
               name="propertyType"
               value={sellProperty.propertyType}
               onChange={handleChangeValue}
@@ -102,7 +102,7 @@ const BasicInfoCategoryMobile = ({
               ))}
             </select>
 
-            <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" />
+            <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none z-10" />
           </div>
         )}
       </div>

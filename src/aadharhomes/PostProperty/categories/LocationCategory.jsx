@@ -30,7 +30,7 @@ const LocationCategory = ({
       <div className="grid gap-4 md:grid-cols-2">
         {/* State Select */}
         <div className="group">
-          <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+          <label className="text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
             <MapPin className="w-4 h-4 text-red-500" />
             Select State
           </label>
@@ -59,7 +59,7 @@ const LocationCategory = ({
 
         {/* Property Name */}
         <div className="group">
-          <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+          <label className="text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
             <Home className="w-4 h-4 text-red-500" />
             Property Name
           </label>
@@ -79,41 +79,39 @@ const LocationCategory = ({
       </div>
 
       {/* City Select */}
-      {/* {selectedState && (
-        <div className="group animate-in fade-in slide-in-from-top-2 duration-300">
-          <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
-            <MapPinned className="w-4 h-4 text-red-500" />
-            Select City
-          </label>
-          <select
-            value={selectedCity}
-            name="city"
-            onChange={handleChangeCityValue}
-            className={`h-10 w-full rounded-xl bg-white border-2 px-4 py-2 outline-none transition-all duration-300 text-gray-900 font-medium appearance-none cursor-pointer shadow-sm hover:shadow-md ${
-              selectedCity && selectedCity !== "Select City"
-                ? "border-red-500 ring-2 ring-red-100 shadow-lg" 
-                : "border-gray-200 hover:border-red-300 focus:border-red-500 focus:ring-2 focus:ring-red-100"
-            }`}
-            style={{
-              backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23dc2626' d='M10.293 3.293L6 7.586 1.707 3.293A1 1 0 00.293 4.707l5 5a1 1 0 001.414 0l5-5a1 1 0 10-1.414-1.414z'/%3E%3C/svg%3E")`,
-              backgroundRepeat: 'no-repeat',
-              backgroundPosition: 'right 12px center',
-              paddingRight: '40px'
-            }}
-          >
-            <option value="Select City">Select City</option>
-            {cities.map((city) => (
-              <option key={city.name} value={city.name}>{city.name}</option>
-            ))}
-          </select>
-        </div>
-      )} */}
+      <div className="group animate-in fade-in slide-in-from-top-2 duration-300">
+        <label className="text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+          <MapPinned className="w-4 h-4 text-red-500" />
+          Select City
+        </label>
+        <select
+          value={selectedCity}
+          name="city"
+          onChange={handleChangeCityValue}
+          className={`h-10 w-full rounded-xl bg-white border-2 px-4 py-2 outline-none transition-all duration-300 text-gray-900 font-medium appearance-none cursor-pointer shadow-sm hover:shadow-md ${
+            selectedCity && selectedCity !== "Select City"
+              ? "border-red-500 ring-2 ring-red-100 shadow-lg" 
+              : "border-gray-200 hover:border-red-300 focus:border-red-500 focus:ring-2 focus:ring-red-100"
+          }`}
+          style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23dc2626' d='M10.293 3.293L6 7.586 1.707 3.293A1 1 0 00.293 4.707l5 5a1 1 0 001.414 0l5-5a1 1 0 10-1.414-1.414z'/%3E%3C/svg%3E")`,
+            backgroundRepeat: 'no-repeat',
+            backgroundPosition: 'right 12px center',
+            paddingRight: '40px'
+          }}
+        >
+          <option value="Select City">Select City</option>
+          {cities.map((city, index) => (
+            <option key={index} value={city.name}>{city.name}</option>
+          ))}
+        </select>
+      </div>
 
       {/* Property Details */}
       <div className="space-y-3 pt-2">
         {/* Address */}
         <div className="group">
-          <label className="block text-sm font-semibold text-gray-700 mb-1 flex items-center gap-2">
+          <label className="text-sm font-semibold text-gray-700 mb-1 flex items-center gap-2">
             <MapPinned className="w-4 h-4 text-red-500" />
             Complete Address
           </label>

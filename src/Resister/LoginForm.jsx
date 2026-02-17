@@ -1,35 +1,18 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { Eye, EyeOff, X } from "lucide-react";
 import { AuthContext } from "../AuthContext";
-import axios from "axios";
+import api from "../config/apiClient";
 import showToast from "../Utils/toastUtils";
-// import { initializeApp } from "firebase/app";
-// import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
-
+import { useNavigate } from "react-router-dom";
 function LoginForm({ inModal = false, onSwitchToRegister, preventRedirect = false }) {
   const { login } = useContext(AuthContext);
-
-  // Remove custom toast positioning to use default appearance
+  const navigate = useNavigate();
+  
   useEffect(() => {
-    // No custom styling - use default toast positioning
     return () => {
 
     };
   }, []);
-
-  // Firebase configuration - commented out for now
-  // const firebaseConfig = {
-  //   apiKey: "AIzaSyD YOUR_API_KEY", // You'll need to get this from Firebase console
-  //   authDomain: "your-project-id.firebaseapp.com",
-  //   projectId: "your-project-id",
-  //   storageBucket: "your-project-id.appspot.com",
-  //   messagingSenderId: "your-sender-id",
-  //   appId: "your-app-id"
-  // };
-
-  // Initialize Firebase - commented out for now
-  // const app = initializeApp(firebaseConfig);
-  // const auth = getAuth(app);
 
   const [userLogin, setUserLogin] = useState({ email: "", password: "" });
   const [passwordHide, setPasswordHide] = useState(true);
@@ -37,6 +20,13 @@ function LoginForm({ inModal = false, onSwitchToRegister, preventRedirect = fals
   const [showForgot, setShowForgot] = useState(false);
   const [forgotEmail, setForgotEmail] = useState("");
   const [forgotLoading, setForgotLoading] = useState(false);
+
+  // 🔥 NEW STATES FOR EMAIL VERIFICATION
+  const [showVerifyPopup, setShowVerifyPopup] = useState(false);
+  const [showOTPSection, setShowOTPSection] = useState(false);
+  const [otp, setOtp] = useState("");
+  const [otpLoading, setOtpLoading] = useState(false);
+  const [resendCooldown, setResendCooldown] = useState(0);
 
 
   const handleLoginChange = (e) => {
@@ -73,19 +63,6 @@ function LoginForm({ inModal = false, onSwitchToRegister, preventRedirect = fals
       setIsLoading(true);
       showToast.info("Google sign-in is currently disabled");
 
-      // TODO: Enable Firebase Google Sign-In when needed
-      // Initialize Google Sign-In
-      // const provider = new GoogleAuthProvider();
-      // provider.setCustomParameters({
-      //   client_id: '666295986601-f68ub4o5jo8f4vdhp2ad8nc5vn5c6q81.apps.googleusercontent.com'
-      // });
-
-      // Sign in with Google
-      // const result = await signInWithPopup(auth, provider);
-      // const user = result.user;
-
-      // Get ID token and send to backend...
-
     } catch (error) {
       console.error("🚨 Google Sign-In error:", error);
       showToast.info("Google sign-in is currently disabled");
@@ -94,7 +71,9 @@ function LoginForm({ inModal = false, onSwitchToRegister, preventRedirect = fals
     }
   };
 
-  const handleUserLogin = async () => {
+  // 🔥 MODIFIED LOGIN HANDLER WITH EMAIL VERIFICATION
+  const handleUserLogin = async (e) => {
+    e.preventDefault();
     console.log("🔍 Login button clicked, starting login process...");
 
     // Basic validation
@@ -106,13 +85,18 @@ function LoginForm({ inModal = false, onSwitchToRegister, preventRedirect = fals
     setIsLoading(true);
 
     try {
-      await login(userLogin);
+      const res = await login(userLogin);
 
-      // Only show success toast if we're preventing redirect (modal mode)
-      if (preventRedirect || inModal) {
-        showToast.success("Login successful!");
+      // 🔴 EMAIL NOT VERIFIED
+      if (res?.emailVerified === false) {
+        setShowVerifyPopup(true);
+        return;
       }
-      // If not preventing redirect, the AuthContext will handle navigation
+
+      // 🟢 NORMAL LOGIN
+      showToast.success("Login successful");
+      navigate("/dashboard");
+
     } catch (error) {
       console.error("🚨 Login error details:", error);
       console.error("🚨 Error message:", error?.message);
@@ -126,6 +110,15 @@ function LoginForm({ inModal = false, onSwitchToRegister, preventRedirect = fals
       setIsLoading(false);
     }
   };
+
+  // 🔥 RESEND COOLDOWN TIMER
+  useEffect(() => {
+    if (resendCooldown <= 0) return;
+    const t = setInterval(() => {
+      setResendCooldown((s) => s - 1);
+    }, 1000);
+    return () => clearInterval(t);
+  }, [resendCooldown]);
 
   return (
     <>
@@ -152,10 +145,7 @@ function LoginForm({ inModal = false, onSwitchToRegister, preventRedirect = fals
 
         <form
           className="space-y-1.5"
-          onSubmit={(e) => {
-            e.preventDefault(); // 🛑 stops page refresh
-            handleUserLogin();  // 🧠 manually trigger login
-          }}
+          onSubmit={handleUserLogin}
         >
           {/* Email */}
           <div className="flex flex-col">
@@ -168,6 +158,85 @@ function LoginForm({ inModal = false, onSwitchToRegister, preventRedirect = fals
               className="w-full border border-slate-300 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#e53935] focus:border-[#e53935] transition"
               onChange={handleLoginChange}
             />
+            
+            {/* 🔥 OTP SECTION */}
+            {showOTPSection && (
+              <div className="mt-2 space-y-2">
+                {/* GET OTP */}
+                <button
+                  type="button"
+                  disabled={resendCooldown > 0 || !userLogin.email}
+                  onClick={async () => {
+                    try {
+                      const response = await api.post("/postPerson/verifyEmail", {
+                        email: userLogin.email,
+                      });
+                      console.log("🔍 OTP sent response:", response.data);
+                      showToast.success("OTP sent to your email");
+                      setResendCooldown(60);
+                    } catch (err) {
+                      console.error("🚨 Send OTP error:", err);
+                      const errorMessage = err?.response?.data?.message || "Failed to send OTP";
+                      showToast.error(errorMessage);
+                    }
+                  }}
+                  className="text-sm text-[#e53935] font-semibold disabled:text-gray-400"
+                >
+                  {resendCooldown > 0
+                    ? `Resend OTP in ${resendCooldown}s` 
+                    : "Get OTP"}
+                </button>
+
+                {/* OTP INPUT */}
+                <input
+                  type="text"
+                  value={otp}
+                  maxLength={6}
+                  onChange={(e) => setOtp(e.target.value)}
+                  placeholder="Enter 6-digit OTP"
+                  className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm"
+                />
+
+                {/* VERIFY OTP & LOGIN */}
+                <button
+                  type="button"
+                  disabled={otp.length !== 6 || otpLoading || !userLogin.email}
+                  onClick={async () => {
+                    try {
+                      setOtpLoading(true);
+                      console.log("🔍 Verifying OTP:", { email: userLogin.email, otp });
+                      
+                      const response = await api.post("/postPerson/otp", {
+                        email: userLogin.email,
+                        otp,
+                      });
+                      
+                      console.log("🔍 OTP verification response:", response.data);
+                      
+                      // After successful OTP verification, attempt login
+                      try {
+                        await login(userLogin);
+                        showToast.success("Email verified & Logged in successfully!");
+                        navigate("/dashboard");
+                      } catch (loginError) {
+                        console.error("🚨 Login after OTP error:", loginError);
+                        showToast.error("OTP verified but login failed. Please try again.");
+                      }
+                      
+                    } catch (err) {
+                      console.error("🚨 OTP verification error:", err);
+                      const errorMessage = err?.response?.data?.message || "Invalid OTP";
+                      showToast.error(errorMessage);
+                    } finally {
+                      setOtpLoading(false);
+                    }
+                  }}
+                  className="w-full bg-[#e53935] text-white py-2 rounded disabled:bg-gray-400"
+                >
+                  {otpLoading ? "Verifying..." : "Verify OTP & Login"}
+                </button>
+              </div>
+            )}
           </div>
 
           {/* Password */}
@@ -271,6 +340,28 @@ function LoginForm({ inModal = false, onSwitchToRegister, preventRedirect = fals
           </button>
         </div>
       </div>
+
+      {/* 🔥 VERIFY EMAIL POPUP */}
+      {showVerifyPopup && (
+        <div className="fixed inset-0 bg-opacity-40 z-50 flex items-center justify-center">
+       <div className="bg-[rgb(243,190,195)] rounded-xl p-6 w-80 text-center">
+
+            <h3 className="text-lg font-bold mb-2 text-black">Verify Email</h3>
+            <p className="text-sm text-black mb-4">
+              Please verify your email to continue login
+            </p>
+            <button
+              className="bg-[#e53935] text-white px-6 py-2 rounded"
+              onClick={() => {
+                setShowVerifyPopup(false);
+                setShowOTPSection(true);
+              }}
+            >
+              OK
+            </button>
+          </div>
+        </div>
+      )}
     </>
   );
 }

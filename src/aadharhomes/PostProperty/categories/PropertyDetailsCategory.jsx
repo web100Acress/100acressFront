@@ -106,7 +106,12 @@ const PropertyDetailsCategory = ({
                 >
                   <option value="">Units</option>
                   <option value="sqft">Sqft</option>
-                  <option value="sqrd">Sqyd</option>
+                  <option value="sqyd">Sqyd</option>
+                  <option value="sqmt">Sqmt</option>
+                  <option value="acre">Acre</option>
+                  <option value="kanal">Kanal</option>
+                  <option value="marla">Marla</option>
+                  <option value="gaj">Gaj</option>
                 </select>
                 <ChevronDown className="w-3 h-3 text-gray-400 absolute right-2 top-2.5 pointer-events-none group-hover:text-gray-500 transition-colors" />
               </div>
@@ -194,14 +199,74 @@ const PropertyDetailsCategory = ({
                 </div>
                 <label className="text-xs font-bold text-gray-700 uppercase tracking-wider">Built Year</label>
               </div>
+              <div className="relative group">
+                <select
+                  name="builtYear"
+                  value={sellProperty.builtYear}
+                  onChange={handleChangeValue}
+                  className={`h-9 w-full rounded-lg bg-white border-2 px-3 outline-none transition-all duration-200 text-gray-900 text-sm font-semibold appearance-none cursor-pointer ${
+                    sellProperty.builtYear
+                      ? "border-gray-400 bg-gray-50"
+                      : "border-gray-300 hover:border-gray-400 focus:border-gray-400"
+                  }`}
+                >
+                  <option value="">Select Year</option>
+                  {(() => {
+                    const currentYear = new Date().getFullYear();
+                    const years = [];
+                    for (let y = currentYear + 1; y >= 1990; y--) years.push(y);
+                    return years.map((y) => <option key={y} value={String(y)}>{y}</option>);
+                  })()}
+                </select>
+                <ChevronDown className="w-3 h-3 text-gray-400 absolute right-3 top-2.5 pointer-events-none group-hover:text-gray-500 transition-colors" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Property Status & Date */}
+        <div className="bg-white p-3 rounded-xl border border-gray-100 shadow-sm">
+          <div className="grid gap-2 md:grid-cols-2">
+            <div>
+              <div className="flex items-center gap-2 pb-2 mb-1 border-b border-gray-200">
+                <div className="p-1.5 bg-gradient-to-br from-teal-100 to-teal-50 rounded-lg">
+                  <Info className="w-3 h-3 text-teal-600" />
+                </div>
+                <label className="text-xs font-bold text-gray-700 uppercase tracking-wider">Property Status</label>
+              </div>
+              <div className="relative group">
+                <select
+                  name="type"
+                  value={sellProperty.type}
+                  onChange={handleChangeValue}
+                  className={`h-9 w-full rounded-lg bg-white border-2 px-3 outline-none transition-all duration-200 text-gray-900 text-sm appearance-none cursor-pointer font-semibold ${
+                    sellProperty.type
+                      ? "border-gray-400 bg-gray-50" 
+                      : "border-gray-300 hover:border-gray-400 focus:border-gray-400"
+                  }`}
+                >
+                  <option value="">Select Status</option>
+                  <option value="Ready to Move">Ready to Move</option>
+                  <option value="Under Construction">Under Construction</option>
+                </select>
+                <ChevronDown className="w-3 h-3 text-gray-400 absolute right-3 top-2.5 pointer-events-none group-hover:text-gray-500 transition-colors" />
+              </div>
+            </div>
+
+            <div>
+              <div className="flex items-center gap-2 pb-2 mb-1 border-b border-gray-200">
+                <div className="p-1.5 bg-gradient-to-br from-rose-100 to-rose-50 rounded-lg">
+                  <Calendar className="w-3 h-3 text-rose-600" />
+                </div>
+                <label className="text-xs font-bold text-gray-700 uppercase tracking-wider">Available From</label>
+              </div>
               <input
-                type="text"
-                placeholder="e.g., 2015"
-                name="builtYear"
-                value={sellProperty.builtYear}
+                type="date"
+                name="availableDate"
+                value={sellProperty.availableDate}
                 onChange={handleChangeValue}
-                className={`h-9 w-full rounded-lg bg-white border-2 px-3 outline-none transition-all duration-200 placeholder-gray-400 text-gray-900 text-sm font-semibold ${
-                  sellProperty.builtYear
+                className={`h-9 w-full rounded-lg bg-white border-2 px-3 outline-none transition-all duration-200 text-gray-900 text-sm font-semibold ${
+                  sellProperty.availableDate
                     ? "border-gray-400 bg-gray-50" 
                     : "border-gray-300 hover:border-gray-400 focus:border-gray-400"
                 }`}

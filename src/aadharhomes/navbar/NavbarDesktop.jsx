@@ -10,6 +10,8 @@ import {
   QUICK_LINKS
 } from "./shared/navigationData";
 import { useScreenSize } from "./shared/screenSizeDetector";
+import LimitedTimeOfferOverlay from "../../Components/CampaignOverlay/LimitedTimeOfferOverlay";
+import { useCampaignManager } from "../../Components/CampaignOverlay/useCampaignManager";
 
 export default function NavbarDesktop({
   colorChange,
@@ -33,6 +35,18 @@ export default function NavbarDesktop({
 
   // Screen size detection
   const { screenSize, config, cities, isMobile, isTablet, isDesktop, isClient } = useScreenSize();
+
+  // Campaign manager for limited-time offer overlay
+  const {
+    isOverlayVisible,
+    overlayPosition,
+    handleMouseEnter,
+    handleMouseLeave,
+    handleOverlayMouseEnter,
+    handleOverlayMouseLeave,
+    closeOverlay,
+    cleanup
+  } = useCampaignManager();
 
   // Debug logging
   console.log('🔍 NavbarDesktop Debug:', {
@@ -178,6 +192,11 @@ export default function NavbarDesktop({
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  // Cleanup campaign manager on unmount
+  useEffect(() => {
+    return cleanup;
+  }, [cleanup]);
 
   // Don't render until client-side hydration is complete - AFTER all hooks
   if (!isClient) {
@@ -841,7 +860,9 @@ export default function NavbarDesktop({
 
       {/* Insights Button */}
       <button
+        className="insights-button"
         onClick={() => handleNavigation(QUICK_LINKS.insights.path)}
+        onMouseEnter={handleMouseEnter}
         style={{
           background: 'linear-gradient(to right, #3B82F6, #2563EB)',
           color: 'white',
@@ -862,14 +883,6 @@ export default function NavbarDesktop({
           cursor: 'pointer',
           transition: 'all 0.2s ease',
           boxSizing: 'border-box'
-        }}
-        onMouseEnter={(e) => {
-          e.target.style.transform = 'translateY(-1px)';
-          e.target.style.boxShadow = '0 10px 25px rgba(59, 130, 246, 0.4)';
-        }}
-        onMouseLeave={(e) => {
-          e.target.style.transform = 'translateY(0)';
-          e.target.style.boxShadow = '0 8px 22px rgba(59, 130, 246, 0.3)';
         }}
       >
         INSIGHTS
@@ -960,6 +973,15 @@ export default function NavbarDesktop({
           </button>
         </div>
       )}
+
+      {/* Campaign Overlay */}
+      <LimitedTimeOfferOverlay
+        isVisible={isOverlayVisible}
+        onClose={closeOverlay}
+        position={overlayPosition}
+        onMouseEnter={handleOverlayMouseEnter}
+        onMouseLeave={handleOverlayMouseLeave}
+      />
     </div>
   );
 }
