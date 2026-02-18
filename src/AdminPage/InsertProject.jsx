@@ -747,8 +747,7 @@ const handleChangeProjectData = (e) => {
     projectName: 'Project Name',
     builderName: 'Builder Name',
     city: 'City',
-    state: 'State',
-    country: 'Country'
+    state: 'State'
   };
   
   const label = fieldLabels[name] || name;
