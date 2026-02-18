@@ -10,7 +10,7 @@ import LocationPrompt from "./LocationPrompt";
 import { LocationProvider } from "./LocationContext";
 import api from "../../config/apiClient";
 import showToast from "../../Utils/toastUtils";
-import CountryCodeOnly from "../../components/CountryCodeOnly";
+import CountryCodeOnly from "../../../components/CountryCodeOnly";
 
 // Quick Enquiry Modal Component (Same as ProjectLayout2)
 const QuickEnquiryModal = ({ isOpen, onClose, pageName }) => {
