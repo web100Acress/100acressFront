@@ -11,7 +11,7 @@ import {
 } from "./shared/navigationData";
 import { useScreenSize } from "./shared/screenSizeDetector";
 import LimitedTimeOfferOverlay from "../../Components/CampaignOverlay/LimitedTimeOfferOverlay";
-import { useCampaignManager } from "../../Components/CampaignOverlay/useCampaignManager";
+// import { useCampaignManager } from "../../Components/CampaignOverlay/useCampaignManager";
 
 export default function NavbarDesktop({
   colorChange,
@@ -37,16 +37,16 @@ export default function NavbarDesktop({
   const { screenSize, config, cities, isMobile, isTablet, isDesktop, isClient } = useScreenSize();
 
   // Campaign manager for limited-time offer overlay
-  const {
-    isOverlayVisible,
-    overlayPosition,
-    handleMouseEnter,
-    handleMouseLeave,
-    handleOverlayMouseEnter,
-    handleOverlayMouseLeave,
-    closeOverlay,
-    cleanup
-  } = useCampaignManager();
+  // const {
+  //   isOverlayVisible,
+  //   overlayPosition,
+  //   handleMouseEnter,
+  //   handleMouseLeave,
+  //   handleOverlayMouseEnter,
+  //   handleOverlayMouseLeave,
+  //   closeOverlay,
+  //   cleanup
+  // } = useCampaignManager();
 
   // Debug logging
   console.log('🔍 NavbarDesktop Debug:', {
@@ -194,9 +194,9 @@ export default function NavbarDesktop({
   }, []);
 
   // Cleanup campaign manager on unmount
-  useEffect(() => {
-    return cleanup;
-  }, [cleanup]);
+  // useEffect(() => {
+  //   return cleanup;
+  // }, [cleanup]);
 
   // Don't render until client-side hydration is complete - AFTER all hooks
   if (!isClient) {
@@ -862,7 +862,7 @@ export default function NavbarDesktop({
       <button
         className="insights-button"
         onClick={() => handleNavigation(QUICK_LINKS.insights.path)}
-        onMouseEnter={handleMouseEnter}
+        onMouseEnter={() => {}}
         style={{
           background: 'linear-gradient(to right, #3B82F6, #2563EB)',
           color: 'white',
@@ -975,13 +975,13 @@ export default function NavbarDesktop({
       )}
 
       {/* Campaign Overlay */}
-      <LimitedTimeOfferOverlay
+      {/* <LimitedTimeOfferOverlay
         isVisible={isOverlayVisible}
         onClose={closeOverlay}
         position={overlayPosition}
         onMouseEnter={handleOverlayMouseEnter}
         onMouseLeave={handleOverlayMouseLeave}
-      />
+      /> */}
     </div>
   );
 }
