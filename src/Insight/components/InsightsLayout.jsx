@@ -10,10 +10,12 @@ import LocationPrompt from "./LocationPrompt";
 import { LocationProvider } from "./LocationContext";
 import api from "../../config/apiClient";
 import showToast from "../../Utils/toastUtils";
+import CountryCodeOnly from "../../components/CountryCodeOnly";
 
 // Quick Enquiry Modal Component (Same as ProjectLayout2)
 const QuickEnquiryModal = ({ isOpen, onClose, pageName }) => {
   const [details, setDetails] = useState({ name: '', mobile: '' });
+  const [countryCode, setCountryCode] = useState('+91'); // Default to India
   const [buttonText, setButtonText] = useState('Submit');
   const [isLoading, setIsLoading] = useState(false);
 
@@ -24,6 +26,7 @@ const QuickEnquiryModal = ({ isOpen, onClose, pageName }) => {
 
   const resetData = () => {
     setDetails({ name: '', mobile: '' });
+    setCountryCode('+91'); // Reset to India
     setButtonText('Submit');
     setIsLoading(false);
   };
@@ -150,17 +153,24 @@ const QuickEnquiryModal = ({ isOpen, onClose, pageName }) => {
             <label className="block text-sm font-medium text-black mb-2">
               Mobile Number *
             </label>
-            <input
-              type="tel"
-              name="mobile"
-              value={details.mobile}
-              onChange={handleChange}
-              required
-              pattern="[6-9][0-9]{9}"
-              maxLength="10"
-              className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 text-black"
-              placeholder="Enter mobile number"
-            />
+            <div className="flex">
+              <CountryCodeOnly
+                value={countryCode}
+                onChange={setCountryCode}
+                className="flex-shrink-0"
+              />
+              <input
+                type="tel"
+                name="mobile"
+                value={details.mobile}
+                onChange={handleChange}
+                required
+                pattern="[6-9][0-9]{9}"
+                maxLength="10"
+                className="flex-1 px-4 py-3 bg-white border border-gray-300 rounded-r-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 text-black"
+                placeholder="Enter mobile number"
+              />
+            </div>
           </div>
 
           <button

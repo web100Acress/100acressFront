@@ -599,7 +599,7 @@ function App() {
                       <Route path="/property-types/luxury-villas-gurgaon/" element={<Navigate to="/" replace />} />
                       <Route path="/property-types/residential-flats-gurgaon/" element={<ResidentialFlatsGurgaon />} />
                       <Route path="/property-types/retail-shops-gurgaon/" element={<RetailShopsGurgaon />} />
-                      <Route path="/property-types/builder-floor-gurgaon/" element={<BuilderFloorGurgaon />} />
+                      <Route path="/property-types/builder-floor-gurgaon/" element={<Navigate to="/" replace />} />
                       <Route path="/property-types/industrial-plots-gurgaon/" element={<IndustrialPlotsGurgaon />} />
                       <Route path="/property-types/sco-plots-gurgaon/" element={<SCOPlotsGurgaon />} />
                       <Route path="/property-types/shop-cum-office-plots-gurgaon/" element={<ShopCumOfficePlotsGurgaon />} />
@@ -649,7 +649,7 @@ function App() {
                       <Route path="buy/view/edit/:id" element={<LazyLoad> <BuyEdit /></LazyLoad>} />
                       <Route path="contactpage" element={<LazyLoad> <ContactPage /></LazyLoad>} />
                       <Route path="shorts" element={<LazyLoad><ShortsSettings /></LazyLoad>} />
-                      <Route path="banner-management" element={<LazyLoad><BannerManagement /></LazyLoad>} />
+                        <Route path="banner-management" element={<LazyLoad><BannerManagement /></LazyLoad>} />
                       <Route path="unified-banner-management" element={<LazyLoad><UnifiedBannerManagement /></LazyLoad>} />
                       <Route
                         path="ContactUs/UserProfile"

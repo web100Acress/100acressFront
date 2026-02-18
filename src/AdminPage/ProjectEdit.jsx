@@ -3,10 +3,11 @@ import Sidebar from "./Sidebar";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import api from "../config/apiClient";
 import { showToast } from "../Utils/toastUtils";
-import { MdOutlineDeleteOutline, MdInfo, MdAttachMoney, MdDateRange, MdBarChart, MdDescription, MdStar, MdCheckCircle, MdUpdate, MdMovie, MdTitle } from "react-icons/md";
+import { MdOutlineDeleteOutline, MdInfo, MdAttachMoney, MdDateRange, MdBarChart, MdDescription, MdStar, MdCheckCircle, MdUpdate, MdMovie, MdTitle, MdLocationOn, MdKeyboardArrowDown, MdSearch } from "react-icons/md";
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
 import 'tippy.js/animations/scale.css';
+import { addState, getStates, addCity, getCities, addCountry, getCountries } from "../api/locationApi";
 const customStyle = {
   position: "absolute",
   top: "100px",
@@ -91,6 +92,21 @@ const ProjectEdit = () => {
   const [isStateDropdownOpen, setIsStateDropdownOpen] = useState(false);
   const [stateSearchTerm, setStateSearchTerm] = useState("");
 
+  // Country dropdown states
+  const [countriesList, setCountriesList] = useState([]);
+  const [filteredCountries, setFilteredCountries] = useState([]);
+  const [loadingCountries, setLoadingCountries] = useState(true);
+  const [isCountryDropdownOpen, setIsCountryDropdownOpen] = useState(false);
+  const [countrySearchTerm, setCountrySearchTerm] = useState("");
+
+  // Custom input states
+  const [showCustomCityInput, setShowCustomCityInput] = useState(false);
+  const [customCityName, setCustomCityName] = useState("");
+  const [showCustomStateInput, setShowCustomStateInput] = useState(false);
+  const [customStateName, setCustomStateName] = useState("");
+  const [showCustomCountryInput, setShowCustomCountryInput] = useState(false);
+  const [customCountryName, setCustomCountryName] = useState("");
+
   const { id } = useParams();
 
   // Safely derive arrays from values to avoid destructuring errors
@@ -108,10 +124,11 @@ const ProjectEdit = () => {
     fetchData();
   }, [id]);
 
-  // Load cities and states on component mount
+  // Load cities, states, and countries on component mount
   useEffect(() => {
     fetchCitiesFromBackend();
     fetchStatesFromBackend();
+    fetchCountriesFromBackend();
   }, []);
 
   // Initialize city search term when values.city changes
@@ -127,6 +144,13 @@ const ProjectEdit = () => {
       setStateSearchTerm(values.state);
     }
   }, [values.state]);
+
+  // Initialize country search term when values.country changes
+  useEffect(() => {
+    if (values.country) {
+      setCountrySearchTerm(values.country);
+    }
+  }, [values.country]);
 
   // Fetch all project types for dropdown (includes existing + defaults)
   useEffect(() => {
@@ -378,6 +402,32 @@ const ProjectEdit = () => {
     }
   };
 
+  // Function to fetch countries from backend
+  const fetchCountriesFromBackend = async () => {
+    try {
+      setLoadingCountries(true);
+      
+      // Try real API first
+      const { data } = await getCountries();
+      if (data?.data) {
+        const countries = data.data.map(item => item.name);
+        setCountriesList(countries);
+        setFilteredCountries(countries);
+        return countries;
+      }
+      return [];
+    } catch (error) {
+      console.error("Error fetching countries:", error);
+      // Fallback to default countries if API fails
+      const defaultCountries = ["India", "United States", "United Kingdom", "Canada", "Australia", "UAE", "Singapore", "Malaysia"];
+      setCountriesList(defaultCountries);
+      setFilteredCountries(defaultCountries);
+      return defaultCountries;
+    } finally {
+      setLoadingCountries(false);
+    }
+  };
+
   // Filter cities based on search term
   useEffect(() => {
     const filtered = citiesList.filter((city) =>
@@ -393,6 +443,14 @@ const ProjectEdit = () => {
     );
     setFilteredStates(filtered);
   }, [stateSearchTerm, statesList]);
+
+  // Filter countries based on search term
+  useEffect(() => {
+    const filtered = countriesList.filter((country) =>
+      country.toLowerCase().includes(countrySearchTerm.toLowerCase())
+    );
+    setFilteredCountries(filtered);
+  }, [countrySearchTerm, countriesList]);
 
   // Handle city selection
   const handleCitySelect = (cityName) => {
@@ -456,6 +514,174 @@ const ProjectEdit = () => {
     setIsStateDropdownOpen(true);
   };
 
+  // Handle country selection
+  const handleCountrySelect = (countryName) => {
+    setValues((prev) => ({
+      ...prev,
+      country: countryName,
+    }));
+    setCountrySearchTerm(countryName);
+    setIsCountryDropdownOpen(false);
+  };
+
+  // Handle country input change - allow direct typing of new countries
+  const handleCountryInputChange = (e) => {
+    const value = e.target.value;
+    setCountrySearchTerm(value);
+
+    // Filter countries based on search term
+    const filtered = countriesList.filter(country =>
+      country.toLowerCase().includes(value.toLowerCase())
+    );
+    setFilteredCountries(filtered);
+
+    // If user types a new country name, set it directly
+    if (value && !filtered.includes(value)) {
+      setValues((prev) => ({
+        ...prev,
+        country: value,
+      }));
+    }
+
+    setIsCountryDropdownOpen(true);
+  };
+
+  // Handle country input focus
+  const handleCountryInputFocus = () => {
+    setIsCountryDropdownOpen(true);
+    // Filter countries when focused
+    const filtered = countriesList.filter(country =>
+      country.toLowerCase().includes(countrySearchTerm.toLowerCase())
+    );
+    setFilteredCountries(filtered);
+  };
+
+  // Handle custom city submit
+  const handleCustomCitySubmit = async () => {
+    if (customCityName.trim()) {
+      try {
+        showToast.loading('Adding new city...', { id: 'addCity' });
+        const response = await addCity(customCityName.trim());
+
+        if (response.status === 200 || response.success) {
+          setValues((prev) => ({
+            ...prev,
+            city: customCityName.trim(),
+          }));
+          setCitySearchTerm(customCityName.trim());
+          setShowCustomCityInput(false);
+
+          if (!citiesList.includes(customCityName.trim())) {
+            const newCitiesList = [...citiesList, customCityName.trim()].sort();
+            setCitiesList(newCitiesList);
+            setFilteredCities(newCitiesList.filter(city =>
+              city.toLowerCase().includes(citySearchTerm.toLowerCase())
+            ));
+          }
+
+          setCustomCityName("");
+          showToast.dismiss('addCity');
+          showToast.success('City added successfully!');
+        }
+      } catch (error) {
+        console.error("Error adding city:", error);
+        setValues((prev) => ({
+          ...prev,
+          city: customCityName.trim(),
+        }));
+        setCitySearchTerm(customCityName.trim());
+        setShowCustomCityInput(false);
+        setCustomCityName("");
+        showToast.dismiss('addCity');
+        showToast.warning('City added locally. Backend may need to be updated.');
+      }
+    }
+  };
+
+  // Handle custom state submit
+  const handleCustomStateSubmit = async () => {
+    if (customStateName.trim()) {
+      try {
+        showToast.loading('Adding new state...', { id: 'addState' });
+        const response = await addState(customStateName.trim());
+
+        if (response.status === 200 || response.success) {
+          setValues((prev) => ({
+            ...prev,
+            state: customStateName.trim(),
+          }));
+          setStateSearchTerm(customStateName.trim());
+          setShowCustomStateInput(false);
+
+          if (!statesList.includes(customStateName.trim())) {
+            const newStatesList = [...statesList, customStateName.trim()].sort();
+            setStatesList(newStatesList);
+            setFilteredStates(newStatesList.filter(state =>
+              state.toLowerCase().includes(stateSearchTerm.toLowerCase())
+            ));
+          }
+
+          setCustomStateName("");
+          showToast.dismiss('addState');
+          showToast.success('State added successfully!');
+        }
+      } catch (error) {
+        console.error("Error adding state:", error);
+        setValues((prev) => ({
+          ...prev,
+          state: customStateName.trim(),
+        }));
+        setStateSearchTerm(customStateName.trim());
+        setShowCustomStateInput(false);
+        setCustomStateName("");
+        showToast.dismiss('addState');
+        showToast.warning('State added locally. Backend may need to be updated.');
+      }
+    }
+  };
+
+  // Handle custom country submit
+  const handleCustomCountrySubmit = async () => {
+    if (customCountryName.trim()) {
+      try {
+        showToast.loading('Adding new country...', { id: 'addCountry' });
+        const response = await addCountry(customCountryName.trim());
+
+        if (response.status === 200 || response.success) {
+          setValues((prev) => ({
+            ...prev,
+            country: customCountryName.trim(),
+          }));
+          setCountrySearchTerm(customCountryName.trim());
+          setShowCustomCountryInput(false);
+
+          if (!countriesList.includes(customCountryName.trim())) {
+            const newCountriesList = [...countriesList, customCountryName.trim()].sort();
+            setCountriesList(newCountriesList);
+            setFilteredCountries(newCountriesList.filter(country =>
+              country.toLowerCase().includes(countrySearchTerm.toLowerCase())
+            ));
+          }
+
+          setCustomCountryName("");
+          showToast.dismiss('addCountry');
+          showToast.success('Country added successfully!');
+        }
+      } catch (error) {
+        console.error("Error adding country:", error);
+        setValues((prev) => ({
+          ...prev,
+          country: customCountryName.trim(),
+        }));
+        setCountrySearchTerm(customCountryName.trim());
+        setShowCustomCountryInput(false);
+        setCustomCountryName("");
+        showToast.dismiss('addCountry');
+        showToast.warning('Country added locally. Backend may need to be updated.');
+      }
+    }
+  };
+
   // Handle click outside to close dropdown
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -465,13 +691,16 @@ const ProjectEdit = () => {
       if (isStateDropdownOpen && !event.target.closest(".state-dropdown")) {
         setIsStateDropdownOpen(false);
       }
+      if (isCountryDropdownOpen && !event.target.closest(".country-dropdown")) {
+        setIsCountryDropdownOpen(false);
+      }
     };
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [isCityDropdownOpen, isStateDropdownOpen]);
+  }, [isCityDropdownOpen, isStateDropdownOpen, isCountryDropdownOpen]);
 
   const handleFileChange = (event) => {
     const input = event.target;
@@ -1050,6 +1279,52 @@ const ProjectEdit = () => {
                               ) : (
                                 <div className="px-4 py-2 text-gray-500">No cities found</div>
                               )}
+                              {/* Add new city option */}
+                              <div className="border-t border-gray-200 mt-1">
+                                <button
+                                  type="button"
+                                  className="w-full text-left px-3 py-2 text-sm hover:bg-blue-50 focus:bg-blue-50 focus:outline-none text-blue-600 font-medium"
+                                  onClick={() => {
+                                    setShowCustomCityInput(true);
+                                    setIsCityDropdownOpen(false);
+                                  }}
+                                >
+                                  + Add New City
+                                </button>
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Custom City Input */}
+                          {showCustomCityInput && (
+                            <div className="mt-1 p-2 bg-blue-50 border border-blue-200 rounded-md">
+                              <div className="flex gap-1">
+                                <input
+                                  type="text"
+                                  placeholder="City name..."
+                                  className="flex-1 px-2 py-1 text-xs border border-blue-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                  value={customCityName}
+                                  onChange={(e) => setCustomCityName(e.target.value)}
+                                  autoFocus
+                                />
+                                <button
+                                  type="button"
+                                  onClick={handleCustomCitySubmit}
+                                  className="px-2 py-1 text-xs bg-blue-600 text-white rounded hover:bg-blue-700 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                >
+                                  Add
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    setShowCustomCityInput(false);
+                                    setCustomCityName("");
+                                  }}
+                                  className="px-2 py-1 text-xs bg-gray-300 text-gray-700 rounded hover:bg-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-500"
+                                >
+                                  ✕
+                                </button>
+                              </div>
                             </div>
                           )}
                         </div>
@@ -1099,6 +1374,158 @@ const ProjectEdit = () => {
                               ) : (
                                 <div className="px-4 py-2 text-gray-500">No states found</div>
                               )}
+                              {/* Add new state option */}
+                              <div className="border-t border-gray-200 mt-1">
+                                <button
+                                  type="button"
+                                  className="w-full text-left px-3 py-2 text-sm hover:bg-blue-50 focus:bg-blue-50 focus:outline-none text-blue-600 font-medium"
+                                  onClick={() => {
+                                    setShowCustomStateInput(true);
+                                    setIsStateDropdownOpen(false);
+                                  }}
+                                >
+                                  + Add New State
+                                </button>
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Custom State Input */}
+                          {showCustomStateInput && (
+                            <div className="mt-1 p-2 bg-blue-50 border border-blue-200 rounded-md">
+                              <div className="flex gap-1">
+                                <input
+                                  type="text"
+                                  placeholder="State name..."
+                                  className="flex-1 px-2 py-1 text-xs border border-blue-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                  value={customStateName}
+                                  onChange={(e) => setCustomStateName(e.target.value)}
+                                  autoFocus
+                                />
+                                <button
+                                  type="button"
+                                  onClick={handleCustomStateSubmit}
+                                  className="px-2 py-1 text-xs bg-blue-600 text-white rounded hover:bg-blue-700 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                >
+                                  Add
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    setShowCustomStateInput(false);
+                                    setCustomStateName("");
+                                  }}
+                                  className="px-2 py-1 text-xs bg-gray-300 text-gray-700 rounded hover:bg-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-500"
+                                >
+                                  ✕
+                                </button>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      ) : field.name === 'country' ? (
+                        /* Country Dropdown */
+                        <div className="relative country-dropdown">
+                          <Tippy content={<span>Country</span>} animation="scale" theme="light-border">
+                            <div className="relative">
+                              <input
+                                type="text"
+                                value={countrySearchTerm}
+                                onChange={handleCountryInputChange}
+                                onFocus={handleCountryInputFocus}
+                                placeholder="Type or select country"
+                                className="w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2 text-gray-800 pr-10"
+                                autoComplete="off"
+                              />
+                              <button
+                                type="button"
+                                onClick={() => setIsCountryDropdownOpen(!isCountryDropdownOpen)}
+                                className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                              >
+                                <MdKeyboardArrowDown className="w-5 h-5" />
+                              </button>
+                            </div>
+                          </Tippy>
+
+                          {/* Dropdown */}
+                          {isCountryDropdownOpen && (
+                            <div className="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-auto">
+                              <div className="p-2 border-b border-gray-200">
+                                <div className="relative">
+                                  <MdSearch className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                                  <input
+                                    type="text"
+                                    placeholder="Search countries..."
+                                    className="w-full pl-8 pr-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-red-500"
+                                    value={countrySearchTerm}
+                                    onChange={(e) => setCountrySearchTerm(e.target.value)}
+                                    autoFocus
+                                  />
+                                </div>
+                              </div>
+                              <div className="max-h-48 overflow-y-auto">
+                                {filteredCountries.length > 0 ? (
+                                  <>
+                                    {filteredCountries.map((country, index) => (
+                                      <div
+                                        key={index}
+                                        onClick={() => handleCountrySelect(country)}
+                                        className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-gray-800"
+                                      >
+                                        {country}
+                                      </div>
+                                    ))}
+                                  </>
+                                ) : (
+                                  <div className="px-4 py-2 text-gray-500">No countries found</div>
+                                )}
+                                {/* Add new country option */}
+                                <div className="border-t border-gray-200 mt-1">
+                                  <button
+                                    type="button"
+                                    className="w-full text-left px-3 py-2 text-sm hover:bg-blue-50 focus:bg-blue-50 focus:outline-none text-blue-600 font-medium"
+                                    onClick={() => {
+                                      setShowCustomCountryInput(true);
+                                      setIsCountryDropdownOpen(false);
+                                    }}
+                                  >
+                                    + Add New Country
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Custom Country Input */}
+                          {showCustomCountryInput && (
+                            <div className="mt-1 p-2 bg-blue-50 border border-blue-200 rounded-md">
+                              <div className="flex gap-1">
+                                <input
+                                  type="text"
+                                  placeholder="Country name..."
+                                  className="flex-1 px-2 py-1 text-xs border border-blue-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                  value={customCountryName}
+                                  onChange={(e) => setCustomCountryName(e.target.value)}
+                                  autoFocus
+                                />
+                                <button
+                                  type="button"
+                                  onClick={handleCustomCountrySubmit}
+                                  className="px-2 py-1 text-xs bg-blue-600 text-white rounded hover:bg-blue-700 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                >
+                                  Add
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    setShowCustomCountryInput(false);
+                                    setCustomCountryName("");
+                                  }}
+                                  className="px-2 py-1 text-xs bg-gray-300 text-gray-700 rounded hover:bg-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-500"
+                                >
+                                  ✕
+                                </button>
+                              </div>
                             </div>
                           )}
                         </div>
