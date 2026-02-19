@@ -357,7 +357,12 @@ function SearchBar() {
 
   // Enhanced search function with fuzzy matching and fallback
   const performAdvancedSearch = async (query) => {
+    console.log('🔍 Search Debug - Query:', query);
+    console.log('🔍 Search Debug - Environment:', import.meta.env.MODE);
+    console.log('🔍 Search Debug - API Base:', import.meta.env.VITE_API_BASE || 'default');
+    
     const allFormats = getNumberFormats(query);
+    console.log('🔍 Search Debug - All formats:', allFormats);
 
     // Also add fuzzy matches (prefix/suffix matching)
     const fuzzyMatches = [];
@@ -380,15 +385,27 @@ function SearchBar() {
     });
 
     const allSearchTerms = [...new Set([...allFormats, ...fuzzyMatches])];
+    console.log('🔍 Search Debug - All search terms:', allSearchTerms);
 
-    const searchPromises = allSearchTerms.map((format) =>
-      api
-        .get(`/search/suggestions/${encodeURIComponent(format)}`)
-        .then((response) => ({ format, data: response.data.suggestions || [] }))
-        .catch(() => ({ format, data: [] }))
-    );
+    const searchPromises = allSearchTerms.map((format) => {
+      const searchUrl = `/search/suggestions/${encodeURIComponent(format)}`;
+      console.log('🔍 Search Debug - Making request to:', searchUrl);
+      
+      return api
+        .get(searchUrl)
+        .then((response) => {
+          console.log('🔍 Search Debug - Response for', format, ':', response.data);
+          return { format, data: response.data.suggestions || [] };
+        })
+        .catch((error) => {
+          console.error('🔍 Search Debug - Error for', format, ':', error);
+          return { format, data: [] };
+        });
+    });
 
     return Promise.all(searchPromises).then((results) => {
+      console.log('🔍 Search Debug - All results:', results);
+      
       const combinedSuggestions = new Map();
 
       results.forEach(({ format, data }) => {
@@ -404,7 +421,9 @@ function SearchBar() {
         });
       });
 
-      return Array.from(combinedSuggestions.values());
+      const finalSuggestions = Array.from(combinedSuggestions.values());
+      console.log('🔍 Search Debug - Final suggestions:', finalSuggestions);
+      return finalSuggestions;
     });
   };
 
