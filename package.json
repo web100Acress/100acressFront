@@ -94,7 +94,7 @@
   "scripts": {
     "start": "vite",
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && cp public/sitemap.xml dist/sitemap.xml",
     "winBuild": "set \"GENERATE_SOURCEMAP=false\" && react-scripts build",
     "serve": "vite preview",
     "host": "vite --host",
