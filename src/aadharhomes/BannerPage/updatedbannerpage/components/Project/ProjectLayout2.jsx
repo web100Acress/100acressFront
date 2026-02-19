@@ -414,7 +414,7 @@ const QuickEnquiryModal = ({ isOpen, onClose, onSubmit, projectName }) => {
                 <button
                   type="button"
                   onClick={() => setIsCountryDropdownOpen(!isCountryDropdownOpen)}
-                  className="flex items-center justify-center px-3 py-2 bg-white border border-gray-300 rounded-l-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 hover:bg-gray-50"
+                  className="flex items-center justify-center px-3 py-4 bg-white border border-gray-300 rounded-l-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 hover:bg-gray-50"
                 >
                   <span className="text-sm font-medium text-gray-700">{selectedCountry.code}</span>
                   <svg className="w-4 h-4 text-gray-400 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
