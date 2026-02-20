@@ -344,29 +344,54 @@ const NewSellProperty = () => {
       console.log('Initial sellProperty:', sellProperty);
       console.log('Initial fileData:', fileData);
       
-      const formDataAPI = new FormData();
+    const formDataAPI = new FormData();
 
-    const updatedSellProperty = {
-      ...sellProperty,
-      ...(sellProperty.propertyType && { subType: sellProperty.propertyType })
-    };
-
-    // Temporarily send only essential fields to identify the issue
-    const essentialFields = {
+    // Include ALL property fields, not just essential ones
+    const allFields = {
+      // Basic Info
       propertyName: sellProperty.propertyName || '',
-      address: sellProperty.address || '',
-      city: sellProperty.city || '',
-      state: sellProperty.state || '',
-      price: sellProperty.price || '',
+      propertyLooking: sellProperty.propertyLooking || 'Sell',
       selectoption: sellProperty.selectoption || '',
-      propertyLooking: sellProperty.propertyLooking || 'Sell'
+      propertyType: sellProperty.propertyType || '',
+      subType: sellProperty.propertyType || '', // subType same as propertyType
+      
+      // Location
+      address: sellProperty.address || '',
+      city: sellProperty.city || selectedCity || '',
+      state: sellProperty.state || selectedState || '',
+      landMark: sellProperty.landMark || '',
+      
+      // Property Details
+      price: sellProperty.price || '',
+      priceunits: sellProperty.priceunits || '',
+      area: sellProperty.area || '',
+      areaUnit: sellProperty.areaUnit || '',
+      furnishing: sellProperty.furnishing || '',
+      builtYear: sellProperty.builtYear || '',
+      type: sellProperty.type || '', // Property Status (Ready to Move/New Launch)
+      availableDate: sellProperty.availableDate || '',
+      amenities: sellProperty.amenities || '',
+      descripation: sellProperty.descripation || '',
+      
+      // Additional fields for residential
+      bedrooms: sellProperty.bedrooms || '',
+      bathrooms: sellProperty.bathrooms || '',
+      balconies: sellProperty.balconies || '',
+      floorNumber: sellProperty.floorNumber || '',
+      totalFloors: sellProperty.totalFloors || '',
+      parking: sellProperty.parking || '',
+      
+      // Additional fields for commercial
+      commercialType: sellProperty.commercialType || '',
+      suitableFor: sellProperty.suitableFor || '',
     };
 
-    console.log('Sending only essential fields:', essentialFields);
+    console.log('Sending all fields:', allFields);
 
-    for (const key in essentialFields) {
-      const val = essentialFields[key];
-      if (val && val !== '') {
+    // Append all non-empty fields to FormData
+    for (const key in allFields) {
+      const val = allFields[key];
+      if (val !== undefined && val !== null && val !== '') {
         formDataAPI.append(key, String(val));
         console.log(`Appended ${key}:`, val);
       }

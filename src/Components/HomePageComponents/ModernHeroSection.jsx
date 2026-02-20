@@ -12,15 +12,18 @@ import {
   MdBusiness,
   MdApartment,
   MdVilla,
-  MdLandscape
+  MdLandscape,
+  MdArrowDropDown
 } from 'react-icons/md';
 import { FaBed, FaBath, FaRulerCombined } from 'react-icons/fa';
 import Typewriter from "typewriter-effect";
 import { imageSrc as bannerDesktop, phoneSrc as bannerPhone } from "../../Pages/datafeed/Desiredorder";
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Autoplay, Pagination } from 'swiper/modules';
+import { Autoplay, Pagination, Navigation } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
+import 'swiper/css/navigation';
+import api from "../../config/apiClient";
 
 // Use video from public folder to avoid bundling issues with large media
 const videoBg = "/videos/shot_3.mp4";
@@ -57,6 +60,12 @@ const ModernHeroSection = () => {
   const [isMobile, setIsMobile] = useState(false);
   const [swiperReady, setSwiperReady] = useState(false);
   const [bannerLoaded, setBannerLoaded] = useState(false);
+  
+  // Search suggestions states
+  const [suggestions, setSuggestions] = useState([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(false);
+  const debounceTimer = useRef(null);
 
   // Animated placeholder texts
   const placeholderTexts = [
@@ -139,6 +148,71 @@ const ModernHeroSection = () => {
     { metric: "ROI", value: "8.5%", change: "+2.1%", trend: "up" }
   ];
 
+  // Fetch search suggestions
+  const fetchSuggestions = async (query) => {
+    if (!query || query.length < 2) {
+      setSuggestions([]);
+      setShowSuggestions(false);
+      return;
+    }
+
+    setIsLoadingSuggestions(true);
+    try {
+      const response = await api.get(`/search/suggestions/${encodeURIComponent(query)}`);
+      console.log('🔍 Hero Search Debug - Response:', response.data);
+      
+      if (response.data && response.data.suggestions) {
+        setSuggestions(response.data.suggestions);
+        setShowSuggestions(true);
+      } else {
+        setSuggestions([]);
+        setShowSuggestions(false);
+      }
+    } catch (error) {
+      console.error('🔍 Hero Search Debug - Error:', error);
+      setSuggestions([]);
+      setShowSuggestions(false);
+    } finally {
+      setIsLoadingSuggestions(false);
+    }
+  };
+
+  // Debounced search suggestions
+  useEffect(() => {
+    if (debounceTimer.current) {
+      clearTimeout(debounceTimer.current);
+    }
+
+    debounceTimer.current = setTimeout(() => {
+      if (searchQuery.trim()) {
+        fetchSuggestions(searchQuery.trim());
+      } else {
+        setSuggestions([]);
+        setShowSuggestions(false);
+      }
+    }, 300);
+
+    return () => {
+      if (debounceTimer.current) {
+        clearTimeout(debounceTimer.current);
+      }
+    };
+  }, [searchQuery]);
+
+  // Close suggestions when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (searchRef.current && !searchRef.current.contains(event.target)) {
+        setShowSuggestions(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
   const handleSearch = () => {
     const searchData = {
       location: selectedLocation,
@@ -204,19 +278,55 @@ const ModernHeroSection = () => {
               ))}
             </div>
 
-            <div className="searchbar">
+            <div className="searchbar" ref={searchRef}>
               <MdLocationPin className="s-icon" />
               <input
                 type="text"
                 placeholder={`Search \"3 BHK Flats in Gurugram\"`}
                 value={searchQuery}
                 onChange={(e)=>setSearchQuery(e.target.value)}
+                onFocus={() => setIsSearchFocused(true)}
                 onKeyPress={handleKeyPress}
               />
               <button className="search-btn" onClick={handleSearch} type="button">
                 <MdSearch />
                 <span>Search</span>
               </button>
+              
+              {/* Search Suggestions Dropdown */}
+              {showSuggestions && (
+                <div className="location-suggestions">
+                  {isLoadingSuggestions ? (
+                    <div className="suggestion-item loading">
+                      <span>Loading...</span>
+                    </div>
+                  ) : suggestions.length > 0 ? (
+                    suggestions.map((suggestion, index) => (
+                      <div
+                        key={index}
+                        className="suggestion-item"
+                        onClick={() => {
+                          setSearchQuery(suggestion.text);
+                          setShowSuggestions(false);
+                          handleSearch();
+                        }}
+                      >
+                        <MdLocationPin className="suggestion-icon" />
+                        <div className="suggestion-content">
+                          <div className="suggestion-text">{suggestion.text}</div>
+                          {suggestion.type && (
+                            <div className="suggestion-type">{suggestion.type}</div>
+                          )}
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="suggestion-item no-results">
+                      <span>No suggestions found</span>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
 
             <div className="localities">
@@ -388,7 +498,7 @@ const HeroWrapper = styled.section`
   .tab:hover { background:#ffffff; transform: translateY(-1px); box-shadow: 0 10px 24px rgba(2,6,23,0.10); }
   .tab.active { border-color: rgba(239,68,68,0.45); background: rgba(239,68,68,0.08); color: #b91c1c; }
 
-  .searchbar { display:flex; align-items:center; gap: 10px; background:#fff; border:1px solid #e2e8f0; border-radius: 999px; padding: 10px 12px; box-shadow: 0 10px 28px rgba(15,23,42,0.08); }
+  .searchbar { display:flex; align-items:center; gap: 10px; background:#fff; border:1px solid #e2e8f0; border-radius: 999px; padding: 10px 12px; box-shadow: 0 10px 28px rgba(15,23,42,0.08); position: relative; }
   .s-icon { color:#e53e3e; font-size: 20px; }
   .searchbar input { border:none; outline:none; flex:1; font-size:16px; padding: 6px 6px; background: transparent; color:#0f172a; }
   .search-btn { display:inline-flex; align-items:center; gap:8px; background:#e53e3e; color:#fff; border:none; border-radius:999px; padding:10px 16px; font-weight:700; cursor:pointer; box-shadow: 0 12px 30px rgba(229,62,62,0.35); transition: transform .15s ease, box-shadow .2s ease, background-color .15s ease; }
@@ -1085,6 +1195,44 @@ const HeroWrapper = styled.section`
 
                 &:hover {
                   background: #fff0e0;
+                }
+
+                &.loading {
+                  justify-content: center;
+                  color: #64748b;
+                  font-style: italic;
+                }
+
+                &.no-results {
+                  justify-content: center;
+                  color: #64748b;
+                  font-style: italic;
+                }
+
+                .suggestion-icon {
+                  color: #ff512f;
+                  font-size: 1.1rem;
+                  flex-shrink: 0;
+                }
+
+                .suggestion-content {
+                  flex: 1;
+                  min-width: 0;
+
+                  .suggestion-text {
+                    font-weight: 500;
+                    color: #1e293b;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                  }
+
+                  .suggestion-type {
+                    font-size: 0.75rem;
+                    color: #64748b;
+                    margin-top: 0.25rem;
+                    text-transform: capitalize;
+                  }
                 }
 
                 .property-count {
