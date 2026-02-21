@@ -9,7 +9,7 @@ import PricingSection from './projectprice';
 import AmenitiesSection from './projectAmenities';
 import AboutBuilder from './projectbuilder';
 import Gallery from './projectGallery';
-import FloorPlan from "../FloorPlan";
+import FloorPlan from "./FloorPlan/FloorPlan";
 import LocationSection from './ProjectLocation';
 import VideoSection from '../VideoSection';
 import MasterPlan from './projectmasterplan';
@@ -570,12 +570,12 @@ function ProjectLayout2() {
           // Don't show popup if user has already submitted any form
           // Temporarily disabled for testing - always show modal
           if (true) { // (!quickEnquirySubmitted && !callbackSubmitted && !anyEnquirySubmitted && !globalEnquirySubmitted) {
-            // Show quick enquiry modal after 2 seconds
+            // Show quick enquiry modal after 20 seconds
             setTimeout(() => {
               if (isMounted) {
                 setIsQuickEnquiryModalOpen(true);
               }
-            }, 2000);
+            }, 20000);
           }
         }
       } catch (err) {
@@ -592,7 +592,9 @@ function ProjectLayout2() {
     };
   }, [pUrl]);
 
+  // Desktop: frontImage, Mobile: thumbnailImage
   const backgroundImage = projectViewDetails?.frontImage?.url || undefined;
+  const thumbnailImage = projectViewDetails?.thumbnailImage?.url || projectViewDetails?.frontImage?.url || undefined;
   const projectTitle = projectViewDetails?.projectName || "";
   const location = projectViewDetails?.projectAddress
     ? `${projectViewDetails.projectAddress}${projectViewDetails?.city ? ", " + projectViewDetails.city : ""}`
@@ -727,7 +729,7 @@ function ProjectLayout2() {
       {/* Hero Section */}
       <ProjectHero
         backgroundImage={backgroundImage}
-        thumbnailImage={projectViewDetails?.projectGallery?.[0]?.url}
+        thumbnailImage={thumbnailImage}
         projectTitle={projectTitle}
         location={location}
         phoneNumber={phoneNumber}

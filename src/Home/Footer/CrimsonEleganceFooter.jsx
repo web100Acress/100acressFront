@@ -422,7 +422,9 @@ import api from "../../config/apiClient";
   </div>
 
 
-            <div className="relative flex items-center justify-center py-8">
+            <div className="relative flex flex-col items-center justify-center py-8 gap-6">
+             {/* <iframe src="https://profiles.dunsregistered.com/TPIN-BAS-004.aspx?PaArea=Email" width="100%" height="100%"></iframe> */}
+
               <a
                 href="https://www.100acress.com"
                 target="_blank"

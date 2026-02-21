@@ -318,7 +318,7 @@ const LocationSection = ({
                 </div>
 
                 {/* Quick Actions */}
-                <div className="mt-4 p-4 bg-gradient-to-br from-gray-900 to-gray-800/50 rounded-2xl border border-gray-700/50">
+                {/* <div className="mt-4 p-4 bg-gradient-to-br from-gray-900 to-gray-800/50 rounded-2xl border border-gray-700/50">
                   <h4 className="text-sm font-medium text-gray-300 mb-3">Quick Actions</h4>
                   <div className="grid grid-cols-2 gap-2">
                     <button onClick={handleCall} className="flex items-center justify-center space-x-1.5 px-2 py-1.5 bg-gray-800/50 hover:bg-gray-700/70 rounded-lg border border-gray-700/50 transition-colors duration-300 text-xs">
@@ -347,14 +347,14 @@ const LocationSection = ({
                       <span>Share</span>
                     </button>
                   </div>
-                </div>
+                </div> */}
               </div>
             )}
           </motion.div>
         </div>
 
         {/* Additional Info Section */}
-        <motion.div 
+        {/* <motion.div 
           className="mt-12 md:mt-16 grid grid-cols-1 md:grid-cols-3 gap-6"
           initial={{ opacity: 0, y: 20 }}
           animate={isMounted ? { opacity: 1, y: 0 } : {}}
@@ -390,7 +390,7 @@ const LocationSection = ({
             <h4 className="text-lg font-semibold text-white mb-2">Secure Neighborhood</h4>
             <p className="text-gray-400 text-sm">Located in a safe and well-maintained community with 24/7 security.</p>
           </div>
-        </motion.div>
+        </motion.div> */}
       </div>
 
       {/* Scoped styles for this component */}
