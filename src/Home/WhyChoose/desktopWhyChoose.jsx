@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import "aos/dist/aos.css";
 import AOS from "aos";
 import CountUp from "react-countup";
@@ -10,16 +10,9 @@ import {
   CommercialProjectIcon,
   ScoPlotsIcon,
   PlotnFloorIcon,
-} from "../../Assets/icons"; // Ensure these paths are correct
+} from "../../Assets/icons";
 
-function WhyChoose() {
-  const [expanded, setExpanded] = useState(false);
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 425);
-
-  const toggleParagraph = () => {
-    setExpanded(!expanded);
-  };
-
+function DesktopWhyChoose() {
   useEffect(() => {
     AOS.init({ duration: 1000, once: true });
   }, []);
@@ -54,25 +47,12 @@ function WhyChoose() {
     { title: "Awards", count: 1000, suffix: "+", icon: <AwardsIcon /> },
   ];
 
-  useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth <= 425);
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
   const paragraphText = `Why Choose 100acress.com for Real Estate in Gurgaon & Delhi NCR?
-100acress is transforming property buying, selling, and renting by offering verified property listings for flats, villas, apartments, SCO plots, commercial spaces, and budget-friendly homes. Whether you’re looking for affordable housing projects, under-construction apartments, ready-to-move flats, or investment properties, 100acress makes your journey simple, safe, and transparent. With a huge database of residential and commercial real estate projects in India, the platform ensures trusted builders, genuine deals, and expert guidance every step of the way.
+100acress is transforming property buying, selling, and renting by offering verified property listings for flats, villas, apartments, SCO plots, commercial spaces, and budget-friendly homes. Whether you're looking for affordable housing projects, under-construction apartments, ready-to-move flats, or investment properties, 100acress makes your journey simple, safe, and transparent. With a huge database of residential and commercial real estate projects in India, the platform ensures trusted builders, genuine deals, and expert guidance every step of the way.
 `;
 
-  const truncateText = (text, limit) => {
-    const words = text.split(" ");
-    return words.length > limit
-      ? words.slice(0, limit).join(" ") + "..."
-      : text;
-  };
-
   return (
-    <section className="font-sans px-4 sm:px-6 lg:px-12 py-12 max-w-[1250px] mx-auto">
+    <section className="font-sans px-6 lg:px-12 py-12 max-w-[1250px] mx-auto">
       <div className="flex flex-col md:flex-row items-center bg-white rounded-3xl shadow-2xl overflow-hidden">
         {/* Left Section */}
         <div className="w-full md:w-1/2 p-6 md:p-12 flex flex-col justify-center bg-gradient-to-r  to-white">
@@ -85,22 +65,8 @@ function WhyChoose() {
 
           <div className="text-justify text-gray-700 leading-relaxed text-base">
             <p className="mb-6">
-              {isMobile
-                ? expanded
-                  ? paragraphText
-                  : truncateText(paragraphText, 25)
-                : paragraphText}
+              {paragraphText}
             </p>
-            {isMobile && (
-              <button
-                className="inline-flex items-center justify-center px-6 py-2 border border-transparent text-sm font-medium rounded-full shadow-lg text-white
-                           bg-gradient-to-r from-[#FF9933] to-[#138808] hover:from-[#e67e22] hover:to-[#107c07]
-                           focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#FF9933] transition duration-300 ease-in-out transform hover:scale-105"
-                onClick={toggleParagraph}
-              >
-                {expanded ? "Read less" : "Read more"}
-              </button>
-            )}
             <div className="mt-8 space-y-1">
               <h3 className="text-xl font-semibold text-gray-800">
                 Rajesh Aggarwal
@@ -152,4 +118,4 @@ function WhyChoose() {
   );
 }
 
-export default WhyChoose;
+export default DesktopWhyChoose;

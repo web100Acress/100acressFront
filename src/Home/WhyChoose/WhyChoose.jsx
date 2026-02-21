@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import MobileCities from "./mobilecities";
-import DesktopCities from "./desktopcities";
+import MobileWhyChoose from "./mobileWhyChoose";
+import DesktopWhyChoose from "./desktopWhyChoose";
 
-const Cities = () => {
+function WhyChoose() {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
   useEffect(() => {
@@ -14,8 +14,7 @@ const Cities = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  return isMobile ? <MobileCities /> : <DesktopCities />;
-};
+  return isMobile ? <MobileWhyChoose /> : <DesktopWhyChoose />;
+}
 
-export default Cities;
-
+export default WhyChoose;
