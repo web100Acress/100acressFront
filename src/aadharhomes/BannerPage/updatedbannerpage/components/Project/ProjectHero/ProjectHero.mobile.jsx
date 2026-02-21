@@ -80,17 +80,17 @@ const ProjectHeroMobile = ({
   };
 
   return (
-    <header role="banner" className="relative h-screen w-full overflow-hidden">
+    <header role="banner" className="relative w-full overflow-hidden">
       {/* Structured data for search engines */}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       
-      {/* Background Image */}
+      {/* Background Image - Reduced Height with gap from header */}
       <div 
-        className="absolute inset-0 hero-background"
+        className="relative h-[25vh] w-full hero-background mt-14"
         style={backgroundStyle}
       >
         {backgroundImage && (
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
         )}
       </div>
 
@@ -146,8 +146,8 @@ const ProjectHeroMobile = ({
         </div>
       </div>
       
-      {/* Bottom Section - Mobile Optimized */}
-      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-20 w-full max-w-md px-4" style={{ contentVisibility: 'auto' }}>
+      {/* Bottom Section - Below Image */}
+      <div className="relative w-full bg-gray-900 px-4 py-6" style={{ contentVisibility: 'auto' }}>
         {/* Breadcrumbs kept for accessibility but hidden visually */}
         <nav className="sr-only" aria-label="Breadcrumb">
           <ol>
@@ -157,18 +157,18 @@ const ProjectHeroMobile = ({
           </ol>
         </nav>
 
-        {/* Title and Location - Mobile Optimized */}
+        {/* Title and Location */}
         <div className="text-center text-white mb-4">
-          <h1 className="text-white text-2xl md:text-3xl font-bold leading-tight mb-3 max-w-3xl mx-auto">
+          <h1 className="text-white text-2xl md:text-3xl font-bold leading-tight mb-2 max-w-3xl mx-auto">
             {projectTitle}
           </h1>
-          <p className="text-sm font-medium opacity-90 text-gray-200 drop-shadow-md">
+          <p className="text-sm font-medium text-gray-300">
             {location}
           </p>
         </div>
 
-        {/* Info Bar - Mobile Stack Layout */}
-        <div className="border border-yellow-400/60 bg-black/40 backdrop-blur-lg rounded-xl shadow-2xl p-4">
+        {/* Info Bar */}
+        <div className="border border-yellow-400/60 bg-black/80 backdrop-blur-lg rounded-xl shadow-2xl p-4 max-w-md mx-auto">
           <div className="grid grid-cols-2 gap-3">
             {/* Land Area */}
             <div className="text-center p-3 bg-white/5 rounded-lg border border-white/10 hover:bg-yellow-400/10 transition-all duration-300">

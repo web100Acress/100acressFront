@@ -52,7 +52,7 @@ const ProjectHeroDesktop = ({
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       {/* Background Image */}
       <div 
-        className="absolute inset-0"
+        className="absolute inset-0 mt-16"
         style={backgroundStyle}
       >
         {backgroundImage && (
