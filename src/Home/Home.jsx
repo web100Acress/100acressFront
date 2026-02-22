@@ -391,9 +391,42 @@ const Home = () => {
   // const [showConfetti, setShowConfetti] = useState(true);
   // const [showConfetti, setShowConfetti] = useState(true);
 
+  // Loading state to control CSS and content rendering order
+  const [isDataLoaded, setIsDataLoaded] = useState(false);
+  const [isCssReady, setIsCssReady] = useState(false);
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  // Effect to check if essential data is loaded
+  useEffect(() => {
+    const checkDataLoaded = () => {
+      // Consider data loaded if we have at least some projects
+      const hasData = TrendingProjects.length > 0 || CommercialProjects.length > 0 || LuxuryProjects.length > 0;
+      
+      if (hasData) {
+        setIsDataLoaded(true);
+        // Delay CSS slightly to ensure data renders first
+        setTimeout(() => setIsCssReady(true), 100);
+      }
+    };
+
+    // Check immediately and then periodically
+    checkDataLoaded();
+    const interval = setInterval(checkDataLoaded, 500);
+    
+    // Fallback: show content after 3 seconds even if data isn't loaded
+    const fallback = setTimeout(() => {
+      setIsDataLoaded(true);
+      setIsCssReady(true);
+    }, 3000);
+
+    return () => {
+      clearInterval(interval);
+      clearTimeout(fallback);
+    };
+  }, [TrendingProjects.length, CommercialProjects.length, LuxuryProjects.length]);
 
   // Shorts ID is now fetched directly by FloatingShorts via backend polling.
 
@@ -861,7 +894,7 @@ const Home = () => {
 
 
   return (
-    <Wrapper className="section">
+    <Wrapper className={`section ${!isCssReady ? 'css-loading' : ''}`}>
       <Helmet>
         <meta
           name="description"
@@ -874,8 +907,44 @@ const Home = () => {
       </Helmet>
       {/* Visually hidden H1 for correct heading order without affecting layout */}
       <h1 className="sr-only">100acress Real Estate in Gurgaon – Buy, Rent, Sell & New Launch Projects</h1>
+      
+      {/* Loading Wrapper - Controls CSS and Data Loading Order */}
+      {!isDataLoaded ? (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100vw',
+          height: '100vh',
+          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 9999,
+          color: 'white',
+          fontSize: '18px',
+          fontWeight: '500'
+        }}>
+          <div style={{ textAlign: 'center' }}>
+            <div style={{
+              width: '40px',
+              height: '40px',
+              border: '4px solid rgba(255,255,255,0.3)',
+              borderTop: '4px solid white',
+              borderRadius: '50%',
+              animation: 'spin 1s linear infinite',
+              margin: '0 auto 20px'
+            }}></div>
+            Loading amazing properties...
+          </div>
+        </div>
+      ) : null}
+      
       {/* Main landmark for primary content region */}
-      <main id="main-content" role="main">
+      <main id="main-content" role="main" style={{ 
+        opacity: isDataLoaded ? 1 : 0,
+        transition: 'opacity 0.3s ease-in-out'
+      }}>
 
         <HeroBannerWrapper>
           {/* This is the div whose background you want to blur more */}
@@ -1626,5 +1695,28 @@ const Wrapper = styled.div`
    }
 
    /* Sticky Banner Styles - Using JavaScript-based positioning instead of CSS sticky */
+
+  /* Loading Animation CSS */
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  /* CSS Loading State - Delays CSS transitions until data is ready */
+  .css-loading * {
+    transition: none !important;
+    animation: none !important;
+    transform: none !important;
+  }
+
+  .css-loading {
+    /* Prevent layout shifts during loading */
+    overflow: hidden;
+  }
+
+  /* Ensure smooth content reveal */
+  .css-loading main {
+    opacity: 0 !important;
+  }
 
 `;
