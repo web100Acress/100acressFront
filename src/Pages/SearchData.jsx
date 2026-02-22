@@ -239,8 +239,17 @@ const SearchData = () => {
           return matchesSearch(searchableText);
         });
 
-        setIsFallbackMode(true);
-        useFallback = true; // Mark as using fallback
+        // Check if we have any results from the search
+        const searchResultsCount = localSearchArr.length + localRentArr.length + localBuyArr.length;
+        
+        // Only set fallback mode if there are no results
+        if (searchResultsCount === 0) {
+          setIsFallbackMode(true);
+          useFallback = true; // Mark as using fallback
+        } else {
+          setIsFallbackMode(false);
+          useFallback = false;
+        }
 
         console.log('🔍 Production Search - Client-side search results:', {
           rentals: localRentArr.length,
