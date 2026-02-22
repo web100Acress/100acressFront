@@ -95,9 +95,10 @@ const DesktopFloorPlan = ({ floorPlans = [], bhkDetails = [], onShowCallback = (
                 {/* Floor Plan Image */}
                 <div className="relative h-[600px] overflow-hidden">
                   <img 
-                    fetchPriority='high'
                     src={floorPlans[currentIndex]?.url} 
                     alt={`Floor plan ${currentIndex + 1} for ${bhkDetails[currentIndex]?.bhk_type || 'Project'}`}
+                    loading="lazy"
+                    decoding="async"
                     className={`w-full h-full object-contain transition-all duration-1000 transform group-hover:scale-105 ${
                       isImageUnlocked ? '' : 'blur-lg'
                     }`}

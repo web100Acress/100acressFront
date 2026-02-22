@@ -183,6 +183,8 @@ function OurServices() {
                     src={service.image}
                     className={`${isWide ? 'w-12 h-12' : 'w-10 h-10'} object-contain brightness-0 invert relative z-10 drop-shadow-lg`}
                     alt={service.title}
+                    loading="lazy"
+                    decoding="async"
                   />
                 )}
                 

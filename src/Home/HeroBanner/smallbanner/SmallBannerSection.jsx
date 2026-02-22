@@ -116,6 +116,7 @@ const SmallBannerSection = () => {
                 alt={banner.title || `Slide ${index}`}
                 className="w-full h-auto cursor-pointer rounded-lg responsive-banner-img" 
                 loading="lazy"
+                decoding="async"
                 data-mobile-src={mobileImageUrl || fallbackImageUrl || '/Images/placeholder-banner.jpg'}
                 data-desktop-src={desktopImageUrl || fallbackImageUrl || '/Images/placeholder-banner.jpg'}
               />

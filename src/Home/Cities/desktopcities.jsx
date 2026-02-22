@@ -128,8 +128,8 @@ const DesktopCities = () => {
                         src={city.image}
                         alt={city.title}
                         className="card-image"
-                        fetchPriority="high"
                         loading="lazy"
+                        decoding="async"
                       />
                       <div className="card-overlay">
                         <div className="city-info">

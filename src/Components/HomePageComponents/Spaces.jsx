@@ -168,9 +168,9 @@ function SpacesAvailable() {
                       <img
                         src={project.image}
                         alt={project.title}
-                        fetchPriority="high"
                         className="card-image"
                         loading="lazy"
+                        decoding="async"
                       />
                       <div className="badge">{project.badge}</div>
                       <div className="title-overlay">
@@ -199,9 +199,9 @@ function SpacesAvailable() {
                       <img
                         src={project.image}
                         alt={project.title}
-                        fetchPriority="high"
                         className="card-image"
                         loading="lazy"
+                        decoding="async"
                       />
                       <div className="badge">{project.badge}</div>
                       <div className="title-overlay">

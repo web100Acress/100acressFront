@@ -39,6 +39,8 @@ const ProjectDetails = ({ project, onClose, onFavorite, onShare, isFavorited = f
           src={imageUrl}
           alt={project.projectName}
           className="w-full h-64 object-cover"
+          loading="lazy"
+          decoding="async"
         />
         <div className="absolute top-4 right-4 flex gap-2">
           <button

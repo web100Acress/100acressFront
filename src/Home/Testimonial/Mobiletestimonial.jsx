@@ -178,6 +178,8 @@ const Mobiletestimonial = () => {
                                         <img
                                             src={`https://ui-avatars.com/api/?name=${encodeURIComponent(item.name)}&background=random`}
                                             alt={item.name}
+                                            loading="lazy"
+                                            decoding="async"
                                             className="w-full h-full object-cover"
                                         />
                                     </div>
@@ -191,7 +193,7 @@ const Mobiletestimonial = () => {
                                         <p className="text-xs text-gray-500">{item.role}</p>
                                     </div>
                                 </div>
-                                <img src="https://www.gstatic.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png" alt="Google" className="h-4 opacity-80" />
+                                <img src="https://www.gstatic.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png" alt="Google" loading="lazy" decoding="async" className="h-4 opacity-80" />
                             </div>
 
                             {/* Stars */}

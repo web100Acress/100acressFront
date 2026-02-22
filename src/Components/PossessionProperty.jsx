@@ -308,6 +308,8 @@ const PossessionProperty = () => {
                         alt=""
                         role="presentation"
                         aria-hidden="true"
+                        loading="lazy"
+                        decoding="async"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/70 to-transparent">
                         <div className="absolute bottom-2 left-2 right-2">
@@ -374,6 +376,8 @@ const PossessionProperty = () => {
                       alt=""
                       role="presentation"
                       aria-hidden="true"
+                      loading="lazy"
+                      decoding="async"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent">
                       <div className="absolute bottom-4 left-4 right-4">

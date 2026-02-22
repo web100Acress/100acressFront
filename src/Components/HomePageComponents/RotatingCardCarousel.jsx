@@ -225,10 +225,24 @@ const RotatingCardCarousel = ({ cards = [], interval = 3000 }) => {
           onClick={() => handleCardClick(large)}
           animating={animation.large}
         >
-          <CardImage 
-            style={{ backgroundImage: `url(${large.image})` }} 
-            alt={large.title}
-          />
+          <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+            <img 
+              src={large.image}
+              alt={large.title}
+              loading="lazy"
+              decoding="async"
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                objectPosition: 'center',
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                transition: 'transform 0.3s ease',
+              }}
+            />
+          </div>
           <CardContent large>
             <h3>{large.title}</h3>
             <p>{large.location}</p>
@@ -246,10 +260,24 @@ const RotatingCardCarousel = ({ cards = [], interval = 3000 }) => {
               onClick={() => handleCardClick(card)}
               animating={animation[`small${idx + 1}`]}
             >
-              <CardImage 
-                style={{ backgroundImage: `url(${card.image})` }} 
-                alt={card.title}
-              />
+              <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+                <img 
+                  src={card.image}
+                  alt={card.title}
+                  loading="lazy"
+                  decoding="async"
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover',
+                    objectPosition: 'center',
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    transition: 'transform 0.3s ease',
+                  }}
+                />
+              </div>
               <CardContent>
                 <h3>{card.title}</h3>
                 <p>{card.location}</p>

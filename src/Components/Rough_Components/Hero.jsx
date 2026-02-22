@@ -12,7 +12,8 @@ function Hero() {
       className="d-block w-100"
       src={Image1}  
       alt="Second slide"
-      
+      fetchpriority="high"
+      loading="eager"
     />
         <Carousel.Caption>
           
@@ -23,7 +24,8 @@ function Hero() {
       className="d-block w-100"
       src={Image2}
       alt="Second slide"
-
+      fetchpriority="high"
+      loading="eager"
     />
         <Carousel.Caption>
           
@@ -34,6 +36,8 @@ function Hero() {
       className="d-block w-100"
       src={Image3}
       alt="Second slide"
+      fetchpriority="high"
+      loading="eager"
     />
         <Carousel.Caption>
           

@@ -41,7 +41,7 @@ const EnhancedRecommendedSection = () => {
     if (!project) return null;
     return (
       <PropertyCard className={`property-card ${type}-card`} type={type}>
-        <img src={project.frontImage.url} alt={project.projectName} className="card-image" />
+        <img src={project.frontImage.url} alt={project.projectName} className="card-image" loading="lazy" decoding="async" />
         <div className="card-overlay" />
         <div className="card-content">
           <h3>{project.projectName}</h3>

@@ -6,6 +6,9 @@ const OptimizedImage = ({
   className = '', 
   placeholder = 'blur',
   loading = 'lazy',
+  fetchPriority = 'auto',
+  width,
+  height,
   ...props 
 }) => {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -21,7 +24,7 @@ const OptimizedImage = ({
           observer.disconnect();
         }
       },
-      { threshold: 0.1 }
+      { threshold: 0.1, rootMargin: '50px' } // Load 50px before entering viewport
     );
 
     if (imgRef.current) {
@@ -39,8 +42,8 @@ const OptimizedImage = ({
     setHasError(true);
   };
 
-  // Generate a low-quality placeholder
-  const placeholderSrc = `${src}?w=10&blur=10`;
+  // Generate a low-quality placeholder with proper sizing
+  const placeholderSrc = src ? `${src}?w=20&h=20&blur=20&format=webp` : null;
 
   return (
     <div ref={imgRef} className={`relative ${className}`}>
@@ -61,6 +64,10 @@ const OptimizedImage = ({
             src={hasError ? '/placeholder-image.jpg' : src}
             alt={alt}
             loading={loading}
+            fetchPriority={fetchPriority}
+            decoding="async"
+            width={width}
+            height={height}
             onLoad={handleLoad}
             onError={handleError}
             className={`w-full h-full object-cover transition-opacity duration-300 ${

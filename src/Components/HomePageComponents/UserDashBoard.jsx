@@ -288,6 +288,8 @@ const UserDashBoard = () => {
                                   src={property.frontImage} 
                                   alt={property.propertyName || 'Property'}
                                   className="w-16 h-16 rounded-lg object-cover bg-gray-200"
+                                  loading="lazy"
+                                  decoding="async"
                                 />
                               ) : (
                                 <div className="w-16 h-16 rounded-lg bg-gray-200 flex items-center justify-center">

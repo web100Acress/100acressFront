@@ -83,7 +83,8 @@ function FinalNavBar() {
                 } 
                 alt='100acress' 
                 width='140' 
-                loading="lazy" 
+                fetchpriority="high"
+                loading="eager"
               />
             </Link>
             
@@ -111,7 +112,8 @@ function FinalNavBar() {
                   src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/white-logo.webp" 
                   alt='100acress' 
                   width='140' 
-                  loading="lazy"
+                  fetchpriority="high"
+                  loading="eager"
                 />
                 
               </div>
@@ -208,7 +210,8 @@ function FinalNavBar() {
                   } 
                   alt='100acress' 
                   width='140' 
-                  loading="lazy" 
+                  fetchpriority="high"
+                  loading="eager"
                 />
               </Link>
               
