@@ -804,6 +804,44 @@ const SearchData = () => {
         </div>
       )}
 
+      {/* Search Results Banner with Count */}
+      {!isFallbackMode && key1 && (
+        <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
+                  <FiFilter className="w-6 h-6" />
+                </div>
+                <div>
+                  <h2 className="text-xl font-semibold">
+                    Found {displayedItems.length} Properties
+                  </h2>
+                  <p className="text-blue-100 text-sm">
+                    Matching your search for "{key1}"
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="px-3 py-1 bg-white/20 rounded-full text-sm">
+                  {displayedItems.length} Results
+                </span>
+                {key2 && typeof key2 === 'string' && (
+                  <span className="px-3 py-1 bg-white/20 rounded-full text-sm">
+                    {key2}
+                  </span>
+                )}
+                {key2 && typeof key2 === 'object' && key2.city && (
+                  <span className="px-3 py-1 bg-white/20 rounded-full text-sm">
+                    {key2.city}
+                  </span>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Premium Property Grid */}
       {/* Mobile Floating Filter Button - Bottom Right */}
       <button
