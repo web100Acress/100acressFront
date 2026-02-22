@@ -406,6 +406,7 @@ const Home = () => {
 
   const [resalesectionvisible, SetResaleSectionVisible] = useState(false);
   const [isFirstLoad, setIsFirstLoad] = useState(true);
+  const [isContentReady, setIsContentReady] = useState(false);
 
   const [isPopupActive, setIsPopupActive] = useState(false)
 
