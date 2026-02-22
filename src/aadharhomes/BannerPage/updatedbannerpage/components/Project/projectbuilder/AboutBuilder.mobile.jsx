@@ -1,7 +1,32 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import RelatedProjects from '../Relatedproject/RelatedProjects.mobile';
 
-const AboutBuilderMobile = ({ builderName = "", aboutDeveloper = "" }) => {
+const AboutBuilderMobile = ({ builderName = "", aboutDeveloper = "", currentProjectUrl = "" }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  // Function to strip HTML tags for word counting
+  const stripHtml = (html) => {
+    const tmp = document.createElement('div');
+    tmp.innerHTML = html;
+    return tmp.textContent || tmp.innerText || '';
+  };
+
+  // Get plain text and truncate to 40 words
+  const getTruncatedContent = (html, wordLimit = 40) => {
+    const plainText = stripHtml(html);
+    const words = plainText.trim().split(/\s+/);
+    if (words.length <= wordLimit) return html;
+    const truncatedText = words.slice(0, wordLimit).join(' ') + '...';
+    return truncatedText;
+  };
+
+  const plainText = stripHtml(aboutDeveloper);
+  const wordCount = plainText.trim().split(/\s+/).filter(w => w.length > 0).length;
+  const shouldTruncate = wordCount > 40;
+  const displayContent = isExpanded || !shouldTruncate 
+    ? aboutDeveloper 
+    : getTruncatedContent(aboutDeveloper, 40);
   // Don't render if no builder information is available
   if (!builderName && !aboutDeveloper) {
     return null;
@@ -52,48 +77,47 @@ const AboutBuilderMobile = ({ builderName = "", aboutDeveloper = "" }) => {
           className="max-w-5xl mx-auto mt-6"
         >
           <div className="relative group">
-            <div className="relative bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 rounded-xl p-4 md:p-6 border border-gray-700/50">
+            <div className="relative bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 rounded-xl p-2 md:p-6 border border-gray-700/50">
               
               {/* Developer Description */}
               {aboutDeveloper && (
-                <div className="prose prose-sm prose-invert max-w-none mb-6">
+                <div className="prose prose-sm prose-invert max-w-none mb-2">
                   <div 
                     className="text-white font-semibold text-base md:text-lg leading-snug"
-                    dangerouslySetInnerHTML={{ __html: aboutDeveloper }}
+                    dangerouslySetInnerHTML={{ __html: displayContent }}
                   />
+                  {shouldTruncate && (
+                    <button
+                      onClick={() => setIsExpanded(!isExpanded)}
+                      className="mt-2 text-amber-400 font-semibold text-sm hover:text-amber-300 transition-colors duration-300 flex items-center gap-1"
+                    >
+                      {isExpanded ? 'View Less' : 'View More'}
+                      <svg 
+                        className={`w-4 h-4 transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}
+                        fill="none" 
+                        stroke="currentColor" 
+                        viewBox="0 0 24 24"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </button>
+                  )}
                 </div>
               )}
 
               {/* Mobile Developer Highlights */}
            
+              {/* Mobile Other Projects Section - Inside About Box */}
+              <div className="mt-2 pt-2 border-gray-700/50">
+                <RelatedProjects 
+                  builderName={builderName} 
+                  currentProjectUrl={currentProjectUrl}
+                />
+              </div>
             </div>
           </div>
         </motion.div>
 
-        {/* Mobile Trust Indicators */}
-        {/* <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.6 }}
-          className="max-w-3xl mx-auto mt-6"
-        >
-          <div className="bg-gradient-to-br from-gray-900 to-gray-800/50 rounded-xl p-4 border border-gray-700/50">
-            <div className="flex items-start space-x-3">
-              <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-amber-500 to-amber-600 rounded-lg flex items-center justify-center">
-                <svg className="w-4 h-4 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-              <div>
-                <h4 className="text-amber-400 font-semibold text-sm mb-2">Trusted Developer</h4>
-                <p className="text-gray-300 text-xs leading-relaxed">
-                  {builderName} is a renowned real estate developer known for delivering premium 
-                  residential and commercial projects with exceptional quality and customer satisfaction.
-                </p>
-              </div>
-            </div>
-          </div>
-        </motion.div> */}
       </div>
 
       {/* Scoped styles for this component */}

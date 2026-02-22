@@ -105,7 +105,7 @@ const RelatedProjectsDesktop = ({ builderName = "", currentProjectUrl = "", onSh
             RELATED PROJECTS
           </h2> */}
           <h3 className="text-white text-xl md:text-2xl lg:text-3xl font-bold leading-tight mb-4 max-w-4xl mx-auto">
-           Other Properties by {builderName}
+           Other Projects by {builderName}
           </h3>
           <div className="w-24 h-1 bg-gradient-to-r from-amber-600 via-amber-500 to-amber-400 rounded-full mx-auto"></div>
         </motion.div>

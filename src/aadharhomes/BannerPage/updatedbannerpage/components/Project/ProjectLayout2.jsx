@@ -958,6 +958,7 @@ function ProjectLayout2() {
       <AboutBuilder 
         builderName={projectViewDetails?.builderName}
         aboutDeveloper={projectViewDetails?.AboutDeveloper}
+        currentProjectUrl={pUrl}
       />
 
         <div className="relative p-6 md:p-8 text-center">

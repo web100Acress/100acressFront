@@ -210,7 +210,7 @@ const BUILDER_QUERIES = {
   'central-park': 'Central Park',
   'emaar-properties': 'Emaar Properties',
   'godrej-properties': 'Godrej Properties',
-  'whiteland': 'Whiteland',
+  'whiteland': 'Whiteland Corporation',
   'aipl': 'AIPL',
   'birla-estate': 'Birla Estate',
   'sobha-developers': 'Sobha Developers',
@@ -463,6 +463,7 @@ const BuilderPage = React.memo(() => {
   const emaarindia = useSelector(store => store?.builder?.emaarindia);
   const godrej = useSelector(store => store?.builder?.godrej);
   const whiteland = useSelector(store => store?.builder?.whiteland);
+  console.log(`📊 [WhitelandDebug] whiteland data from Redux:`, whiteland);
   const aipl = useSelector(store => store?.builder?.aipl);
   const birla = useSelector(store => store?.builder?.birla);
   const sobha = useSelector(store => store?.builder?.sobha);
