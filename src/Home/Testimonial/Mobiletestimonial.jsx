@@ -138,11 +138,7 @@ const Mobiletestimonial = () => {
                     <button
                         onClick={() => scroll('left')}
                         disabled={!canScrollLeft}
-                        className={`absolute left-0 top-1/2 -translate-y-1/2 z-10 p-2 rounded-full transition-all md:hidden ${
-                            canScrollLeft 
-                                ? 'bg-[#0A2647] text-white shadow-lg' 
-                                : 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                        }`}
+                        className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white/90 backdrop-blur-sm text-gray-700 rounded-full w-10 h-10 flex items-center justify-center hover:bg-white hover:text-gray-900 transition-all duration-300 z-10 shadow-lg border border-gray-200"
                     >
                         <ChevronLeft size={20} />
                     </button>
@@ -150,11 +146,7 @@ const Mobiletestimonial = () => {
                     <button
                         onClick={() => scroll('right')}
                         disabled={!canScrollRight}
-                        className={`absolute right-0 top-1/2 -translate-y-1/2 z-10 p-2 rounded-full transition-all md:hidden ${
-                            canScrollRight 
-                                ? 'bg-[#0A2647] text-white shadow-lg' 
-                                : 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                        }`}
+                        className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white/90 backdrop-blur-sm text-gray-700 rounded-full w-10 h-10 flex items-center justify-center hover:bg-white hover:text-gray-900 transition-all duration-300 z-10 shadow-lg border border-gray-200"
                     >
                         <ChevronRight size={20} />
                     </button>

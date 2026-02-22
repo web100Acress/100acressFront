@@ -280,7 +280,7 @@ function SpacesAvailable() {
           {projects.length > 0 && (
             <button
               onClick={() => scroll('right')}
-              className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-black text-white rounded-full w-10 h-10 flex items-center justify-center hover:bg-gray-800 transition-colors duration-300 z-10 shadow-lg"
+              className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white/90 backdrop-blur-sm text-gray-700 rounded-full w-10 h-10 flex items-center justify-center hover:bg-white hover:text-gray-900 transition-all duration-300 z-10 shadow-lg border border-gray-200"
               aria-label="Next projects"
             >
               <svg
@@ -302,7 +302,7 @@ function SpacesAvailable() {
           {projects.length > 0 && showLeftButton && (
             <button
               onClick={() => scroll('left')}
-              className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-black text-white rounded-full w-10 h-10 flex items-center justify-center hover:bg-gray-800 transition-colors duration-300 z-10 shadow-lg"
+              className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white/90 backdrop-blur-sm text-gray-700 rounded-full w-10 h-10 flex items-center justify-center hover:bg-white hover:text-gray-900 transition-all duration-300 z-10 shadow-lg border border-gray-200"
               aria-label="Previous projects"
             >
               <svg

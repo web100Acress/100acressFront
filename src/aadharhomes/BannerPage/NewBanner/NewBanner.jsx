@@ -737,7 +737,7 @@ const items =text.map((item, index) => ({
                             <span className="relative inline-block transition-all px-3 duration-500">
                               {sideButtonText}
                             </span>
-                            <span className="absolute top-1/2 -translate-y-1/2 right-0 opacity-0 transition-all duration-500 transform translate-x-5 group-hover:opacity-100 group-hover:translate-x-0">
+                            <span className="absolute right-0 top-1/2 -translate-y-1/2 opacity-0 transform translate-x-5 group-hover:opacity-100 group-hover:translate-x-0">
                               <ForwardIcon />
                             </span>
                           </button>
@@ -846,7 +846,7 @@ const items =text.map((item, index) => ({
                           <span className="relative inline-block transition-all px-3 duration-500">
                             {PopUpbuttonText}
                           </span>
-                          <span className="absolute top-1/2 -translate-y-1/2 right-0 opacity-0 transition-all duration-500 transform translate-x-5 group-hover:opacity-100 group-hover:translate-x-0">
+                          <span className="absolute right-0 top-1/2 -translate-y-1/2 opacity-0 transform translate-x-5 group-hover:opacity-100 group-hover:translate-x-0">
                             <ForwardIcon />
                           </span>
                         </button>
@@ -874,7 +874,7 @@ const items =text.map((item, index) => ({
 
                 {/* New Div Positioned Below the Image on Mobile */}
                 <div
-                  className="absolute top-2/4 right-[70px] transform -translate-y-1/2 bg-black bg-opacity-75 text-white p-6 rounded-lg shadow-lg z-[20] hidden lg:block md:block "
+                  className="absolute top-2/4 right-[70px] transform -translate-y-1/2 bg-white p-6 z-[20] hidden lg:block md:block "
                 >
                   <h1 className="text-2xl mb-2 font-AbrialFatFace">
                     {projectViewDetails.projectName}
@@ -897,7 +897,8 @@ const items =text.map((item, index) => ({
                   </button>
                 </div>
                 {/* <div
-                    className="absolute top-2/4 right-[70px] transform -translate-y-1/2 bg-black bg-opacity-75 text-white p-6 rounded-lg shadow-lg z-[20] hidden lg:block"
+                    className="absolute top-2/4 right-[70px] transform -translate-y-1/2 bg-white p-6 z-[20] hidden lg:block"
+                  >
                   >
                     <h1
                       

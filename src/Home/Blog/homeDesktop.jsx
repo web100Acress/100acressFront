@@ -96,7 +96,7 @@ const HomeDesktopBlog = () => {
           transition={{ duration: 0.8 }}
         >
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 bg-clip-text text-transparent leading-tight mb-3">
-            <span className="text-red-600">Our </span> Latest Blogs
+            <span className="text-red-600">NEWS</span> AND <span className="text-red-600">ARTICLES</span>
           </h2>
           <div className="h-1.5 w-32 bg-gradient-to-r from-red-500 to-red-600 rounded-full mb-4"></div>
 

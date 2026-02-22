@@ -209,12 +209,7 @@ function MobileWhyChoose() {
                            hover:shadow-2xl hover:shadow-[#FF9933]/40 border border-gray-100 hover:border-[#FF9933]/50
                            transition-all duration-300 ease-in-out transform hover:-translate-y-2"
               >
-                <div
-                  className="absolute -top-6 left-3 p-2 rounded-full bg-white backdrop-blur-sm
-                             shadow-xl flex items-center justify-center"
-                >
-                  <div className="text-[#FF9933] text-2xl">{data.icon}</div>
-                </div>
+                
                 <div className="mt-6 text-gray-900 font-extrabold text-2xl leading-none tracking-tight">
                   <CountUp
                     end={data.count}
