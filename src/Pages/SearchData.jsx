@@ -1165,4 +1165,4 @@ const SearchData = () => {
   );
 };
 
-export default SearchData;
+export default React.memo(SearchData);

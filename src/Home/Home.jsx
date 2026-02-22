@@ -14,14 +14,11 @@ import AuthModal from "../Resister/AuthModal";
 import { Link } from "react-router-dom";
 // import BackToTopButton from "./BackToTopButton";
 // import PossessionProperty from "../Components/PossessionProperty";
-import BudgetPlotsInGurugraon from "../Pages/BudgetPlotsInGurugraon";
-// import TopSeoPlots from "./TopSeoPlots";
 import { useMediaQuery } from "@chakra-ui/react";
 import { EyeIcon, HomeIcon, MessageCircle, PhoneIcon, User as UserIcon, ArrowUpRight } from "lucide-react";
 import ModernRecommendedSection from "./Recomended/ModernRecommendedSection";
 import AOS from 'aos';
 import 'aos/dist/aos.css';
-import Builder from "./Builder/Builder";
 import CustomSkeleton from "../Utils/CustomSkeleton";
 import CommonProject from "../Utils/CommonProject";
 // import Builderaction from "./HomePages/Builderaction";
@@ -36,8 +33,12 @@ import TestimonialIndex from "./Testimonial";
 import BlogIndex from "./Blog/index";
 // import Tesimonial from "../Components/HomePageComponents/Tesimonial";
 
+// Lazy load heavy components
+const BudgetPlotsInGurugraon = React.lazy(() => import("../Pages/BudgetPlotsInGurugraon"));
+const Builder = React.lazy(() => import("./Builder/Builder"));
+
 // Generic Projects Slider Component with navigation and auto-scroll (mobile only)
-const ProjectsSlider = ({ projects, title, animation, path, compact = true }) => {
+const ProjectsSlider = React.memo(({ projects, title, animation, path, compact = true }) => {
   const scrollRef = useRef(null);
   const [showLeftButton, setShowLeftButton] = useState(false);
   const [isAutoScrolling, setIsAutoScrolling] = useState(true);
@@ -209,10 +210,10 @@ const ProjectsSlider = ({ projects, title, animation, path, compact = true }) =>
       </div>
     </div>
   );
-};
+});
 
 // Commercial Projects Slider Component with navigation and auto-scroll (mobile only)
-const CommercialProjectsSlider = ({ projects }) => {
+const CommercialProjectsSlider = React.memo(({ projects }) => {
   const scrollRef = useRef(null);
   const [showLeftButton, setShowLeftButton] = useState(false);
   const [isAutoScrolling, setIsAutoScrolling] = useState(true);
@@ -384,7 +385,7 @@ const CommercialProjectsSlider = ({ projects }) => {
       </div>
     </div>
   );
-};
+});
 
 const Home = () => {
   // const [showConfetti, setShowConfetti] = useState(true);
@@ -1190,7 +1191,9 @@ const Home = () => {
               </div>
 
               <SpacesAvailable />
-              <BudgetPlotsInGurugraon />
+              <Suspense fallback={<CustomSkeleton />}>
+                <BudgetPlotsInGurugraon />
+              </Suspense>
 
               {/* Commercial Projects */}
               <div ref={setRef("commercial")} data-section="commercial" style={{ height: "10px" }}></div>
@@ -1323,7 +1326,9 @@ const Home = () => {
                 )}
               </div> */}
 
-              <Builder />
+              <Suspense fallback={<CustomSkeleton />}>
+                <Builder />
+              </Suspense>
               <OurServices />
               <WhyChoose />
 
