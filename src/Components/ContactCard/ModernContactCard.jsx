@@ -350,20 +350,23 @@ const ModernContactCard = () => {
           <div className="backdrop-blur-xl bg-white/30 border border-white/40 rounded-3xl shadow-2xl overflow-hidden">
             {/* Profile Header */}
             <div className="relative p-5 pb-3 text-center">
-              {/* Gradient Background */}
+              {/* Banner Background Image */}
+              {contactData.banner_image_url && (
+                <img
+                  src={resolveMediaUrl(contactData.banner_image_url)}
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                  className="absolute inset-0 w-full h-full object-cover opacity-90 -z-10"
+                  aria-hidden="true"
+                />
+              )}
+              {/* Gradient Fallback Background */}
               <div 
-                className="absolute inset-0 opacity-90"
-                style={
-                  contactData.banner_image_url
-                    ? {
-                        backgroundImage: `url(${resolveMediaUrl(contactData.banner_image_url)})`,
-                        backgroundSize: 'cover',
-                        backgroundPosition: 'center',
-                      }
-                    : {
-                        background: `linear-gradient(135deg, ${contactData.brandColor || '#6366f1'}, ${contactData.brandColor ? contactData.brandColor + '80' : '#8b5cf6'})`,
-                      }
-                }
+                className="absolute inset-0 opacity-90 -z-20"
+                style={{
+                  background: `linear-gradient(135deg, ${contactData.brandColor || '#6366f1'}, ${contactData.brandColor ? contactData.brandColor + '80' : '#8b5cf6'})`,
+                }}
               />
                   
                   {/* Company Logo - Top Left */}

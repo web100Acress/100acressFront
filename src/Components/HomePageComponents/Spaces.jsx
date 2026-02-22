@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import AOS from 'aos';
@@ -6,7 +6,85 @@ import 'aos/dist/aos.css';
 import { FireExtinguisher } from "lucide-react";
 
 function SpacesAvailable() {
-  useEffect(() => { AOS.init(); }, []);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const scrollRef = useRef(null);
+  const [showLeftButton, setShowLeftButton] = useState(false);
+  const [isAutoScrolling, setIsAutoScrolling] = useState(true);
+  const autoScrollIntervalRef = useRef(null);
+
+  // Check screen size
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const handleScroll = () => {
+    if (scrollRef.current) {
+      setShowLeftButton(scrollRef.current.scrollLeft > 0);
+    }
+  };
+
+  const scroll = (direction) => {
+    if (scrollRef.current) {
+      const scrollAmount = 286; // Card width + gap
+      scrollRef.current.scrollBy({
+        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        behavior: 'smooth'
+      });
+      // Pause auto-scroll when user manually scrolls
+      setIsAutoScrolling(false);
+      setTimeout(() => setIsAutoScrolling(true), 5000);
+    }
+  };
+
+  const startAutoScroll = () => {
+    if (autoScrollIntervalRef.current) {
+      clearInterval(autoScrollIntervalRef.current);
+    }
+    
+    autoScrollIntervalRef.current = setInterval(() => {
+      if (scrollRef.current && isAutoScrolling && isMobile) {
+        const maxScroll = scrollRef.current.scrollWidth - scrollRef.current.clientWidth;
+        const currentScroll = scrollRef.current.scrollLeft;
+        
+        if (currentScroll >= maxScroll - 10) {
+          // Reached the end, scroll back to start
+          scrollRef.current.scrollTo({ left: 0, behavior: 'smooth' });
+        } else {
+          // Scroll to next card
+          scrollRef.current.scrollBy({ left: 286, behavior: 'smooth' });
+        }
+      }
+    }, 3000); // Auto-scroll every 3 seconds
+  };
+
+  const stopAutoScroll = () => {
+    if (autoScrollIntervalRef.current) {
+      clearInterval(autoScrollIntervalRef.current);
+    }
+  };
+
+  useEffect(() => { 
+    AOS.init(); 
+    
+    const container = scrollRef.current;
+    if (container && isMobile) {
+      container.addEventListener('scroll', handleScroll);
+      handleScroll(); // Initial check
+      
+      // Start auto-scroll
+      startAutoScroll();
+      
+      return () => {
+        container.removeEventListener('scroll', handleScroll);
+        stopAutoScroll();
+      };
+    }
+  }, [isMobile]);
 
   const projects = [
     {
@@ -60,6 +138,90 @@ function SpacesAvailable() {
     },
   ];
 
+  // Desktop view: show grid layout
+  if (!isMobile) {
+    return (
+      <Wrapper className="section">
+        <div className="container">
+          {/* Header Section */}
+          <div className="flex flex-col items-center justify-center text-center mb-4 px-4" data-aos="fade-up">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-[#111] mb-3 leading-tight">
+              <span className="text-red-600">Dream</span> Properties In The Heart of{" "}
+              <span className="text-red-600">Gurugram</span>
+            </h2>
+            <div className="h-1.5 w-32 bg-gradient-to-r from-red-500 to-red-600 rounded-full"></div>
+          </div>
+
+          {/* Cards Grid */}
+          <div className="cards-grid">
+            {/* First Row - 3 Cards */}
+            <div className="first-row">
+              {projects.slice(0, 3).map((project, index) => (
+                <div
+                  key={index}
+                  className="card-wrapper"
+                  data-aos="fade-up"
+                  data-aos-delay={index * 100}
+                >
+                  <Link to={project.link} className="card">
+                    <div className="card-image-container">
+                      <img
+                        src={project.image}
+                        alt={project.title}
+                        className="card-image"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                      <div className="badge">{project.badge}</div>
+                      <div className="title-overlay">
+                        <h2 className="project-title">{project.title}</h2>
+                      </div>
+                      <div className="description-overlay">
+                        <span className="project-description">{project.description}</span>
+                      </div>
+                    </div>
+                  </Link>
+                </div>
+              ))}
+            </div>
+
+            {/* Second Row - 4 Cards */}
+            <div className="second-row">
+              {projects.slice(3).map((project, index) => (
+                <div
+                  key={index + 3}
+                  className="card-wrapper"
+                  data-aos="fade-up"
+                  data-aos-delay={(index + 3) * 100}
+                >
+                  <Link to={project.link} className="card">
+                    <div className="card-image-container">
+                      <img
+                        src={project.image}
+                        alt={project.title}
+                        className="card-image"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                      <div className="badge">{project.badge}</div>
+                      <div className="title-overlay">
+                        <h2 className="project-title">{project.title}</h2>
+                      </div>
+                      <div className="description-overlay">
+                        <span className="project-description">{project.description}</span>
+                      </div>
+                    </div>
+                  </Link>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </Wrapper>
+    );
+  }
+
+  // Mobile view: show horizontal scrolling
   return (
     <Wrapper className="section">
       <div className="container">
@@ -72,69 +234,91 @@ function SpacesAvailable() {
           <div className="h-1.5 w-32 bg-gradient-to-r from-red-500 to-red-600 rounded-full"></div>
         </div>
 
-        {/* Cards Grid */}
-        <div className="cards-grid">
-          {/* First Row - 3 Cards */}
-          <div className="first-row">
-            {projects.slice(0, 3).map((project, index) => (
-              <div
-                key={index}
-                className="card-wrapper"
-                data-aos="fade-up"
-                data-aos-delay={index * 100}
-              >
-                <Link to={project.link} className="card">
-                  <div className="card-image-container">
-                    <img
-                      src={project.image}
-                      alt={project.title}
-                      fetchPriority="high"
-                      className="card-image"
-                      loading="lazy"
-                    />
-                    <div className="badge">{project.badge}</div>
-                    <div className="title-overlay">
-                      <h2 className="project-title">{project.title}</h2>
-                    </div>
-                    <div className="description-overlay">
-                      <span className="project-description">{project.description}</span>
-                    </div>
+        {/* Scrollable Content */}
+        <div className="relative group">
+          <div
+            ref={scrollRef}
+            className="overflow-x-auto scrollbar-hide py-4"
+            style={{ width: '100%', scrollBehavior: 'smooth' }}
+          >
+            <div className="flex gap-4">
+              {projects.map((project, index) => (
+                <div key={index} className="flex-shrink-0 w-72">
+                  <div
+                    className="card-wrapper"
+                    data-aos="fade-up"
+                    data-aos-delay={index * 100}
+                  >
+                    <Link to={project.link} className="card">
+                      <div className="card-image-container">
+                        <img
+                          src={project.image}
+                          alt={project.title}
+                          fetchPriority="high"
+                          className="card-image"
+                          loading="lazy"
+                        />
+                        <div className="badge">{project.badge}</div>
+                        <div className="title-overlay">
+                          <h2 className="project-title">{project.title}</h2>
+                        </div>
+                        <div className="description-overlay">
+                          <span className="project-description">{project.description}</span>
+                        </div>
+                      </div>
+                    </Link>
                   </div>
-                </Link>
-              </div>
-            ))}
+                </div>
+              ))}
+            </div>
           </div>
+          
+          {/* Right Gradient Overlay */}
+          <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-white via-white/50 to-transparent z-[5] pointer-events-none"></div>
 
-          {/* Second Row - 4 Cards */}
-          <div className="second-row">
-            {projects.slice(3).map((project, index) => (
-              <div
-                key={index + 3}
-                className="card-wrapper"
-                data-aos="fade-up"
-                data-aos-delay={(index + 3) * 100}
+          {/* Next Button */}
+          {projects.length > 0 && (
+            <button
+              onClick={() => scroll('right')}
+              className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white/90 backdrop-blur-sm text-gray-700 rounded-full w-10 h-10 flex items-center justify-center hover:bg-white hover:text-gray-900 transition-all duration-300 z-10 shadow-lg border border-gray-200"
+              aria-label="Next projects"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="w-5 h-5"
               >
-                <Link to={project.link} className="card">
-                  <div className="card-image-container">
-                    <img
-                      src={project.image}
-                      alt={project.title}
-                      fetchPriority="high"
-                      className="card-image"
-                      loading="lazy"
-                    />
-                    <div className="badge">{project.badge}</div>
-                    <div className="title-overlay">
-                      <h2 className="project-title">{project.title}</h2>
-                    </div>
-                    <div className="description-overlay">
-                      <span className="project-description">{project.description}</span>
-                    </div>
-                  </div>
-                </Link>
-              </div>
-            ))}
-          </div>
+                <polyline points="9 18 15 12 9 6"></polyline>
+              </svg>
+            </button>
+          )}
+          
+          {/* Previous Button */}
+          {projects.length > 0 && showLeftButton && (
+            <button
+              onClick={() => scroll('left')}
+              className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white/90 backdrop-blur-sm text-gray-700 rounded-full w-10 h-10 flex items-center justify-center hover:bg-white hover:text-gray-900 transition-all duration-300 z-10 shadow-lg border border-gray-200"
+              aria-label="Previous projects"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="w-5 h-5"
+              >
+                <polyline points="15 18 9 12 15 6"></polyline>
+              </svg>
+            </button>
+          )}
         </div>
       </div>
     </Wrapper>

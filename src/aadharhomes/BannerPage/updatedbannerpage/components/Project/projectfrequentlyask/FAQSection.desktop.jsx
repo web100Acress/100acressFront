@@ -125,7 +125,7 @@ const FAQSectionDesktop = ({ projectViewDetails = {}, onShowCallback = () => {} 
                   {/* Glow Effect */}
                   <div className="absolute -inset-1 bg-gradient-to-r from-amber-600 to-amber-400 rounded-xl blur opacity-20 group-hover:opacity-30 transition duration-300"></div>
                   
-                  <div className="relative bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 rounded-xl border border-gray-700/50 backdrop-blur-sm overflow-hidden">
+                  <div className="relative bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 rounded-xl backdrop-blur-sm overflow-hidden">
                     
                     {/* Question */}
                     <button
@@ -178,7 +178,7 @@ const FAQSectionDesktop = ({ projectViewDetails = {}, onShowCallback = () => {} 
             <div className="absolute -inset-1 bg-gradient-to-r from-amber-600 to-amber-400 rounded-2xl blur opacity-20 group-hover:opacity-30 transition-all duration-700"></div>
             
             <motion.div 
-              className="relative bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 rounded-xl p-6 md:p-8 border border-gray-700/50 backdrop-blur-sm"
+              className="relative bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 rounded-xl p-6 md:p-8 backdrop-blur-sm"
               whileHover={{ scale: 1.02 }}
             >
               <div className="flex items-center justify-between space-x-8">

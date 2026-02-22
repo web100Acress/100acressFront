@@ -79,184 +79,236 @@ const SearchData = () => {
           return;
         }
 
-        // Always fetch from all endpoints for comprehensive search
-        const [rentResult, saleResult, projectsResult] = await Promise.allSettled([
-          api.get("/property/rent/viewall"),
-          api.get("/property/buy/ViewAll"), // Note: capital V for buy endpoint
-          api.get("/project/viewAll/data")
+        // Use proper search endpoints for production
+        const searchTerm = key.toLowerCase().trim();
+        console.log('🔍 Production Search - Search term:', searchTerm);
+        console.log('🔍 Production Search - Environment:', import.meta.env.MODE);
+        
+        // Try search endpoints first
+        const searchEndpoints = [
+          { name: 'rental', url: `/property/rent/search/${encodeURIComponent(searchTerm)}` },
+          { name: 'sale', url: `/property/buy/search/${encodeURIComponent(searchTerm)}` },
+          { name: 'project', url: `/project/search/${encodeURIComponent(searchTerm)}` }
+        ];
+
+        console.log('🔍 Production Search - Attempting endpoints:', searchEndpoints.map(e => e.url));
+        
+        const [rentSearchResult, saleSearchResult, projectSearchResult] = await Promise.allSettled([
+          api.get(searchEndpoints[0].url).catch(err => {
+            console.log(`❌ Rental search failed:`, err.response?.status || err.message);
+            return { status: 'rejected', reason: err };
+          }),
+          api.get(searchEndpoints[1].url).catch(err => {
+            console.log(`❌ Sale search failed:`, err.response?.status || err.message);
+            return { status: 'rejected', reason: err };
+          }),
+          api.get(searchEndpoints[2].url).catch(err => {
+            console.log(`❌ Project search failed:`, err.response?.status || err.message);
+            return { status: 'rejected', reason: err };
+          })
         ]);
 
-        console.log('API Results:', {
-          rent: rentResult,
-          sale: saleResult,
-          projects: projectsResult
+        console.log('🔍 Production Search Results:', {
+          rent: { 
+            status: rentSearchResult.status,
+            error: rentSearchResult.status === 'rejected' ? rentSearchResult.reason?.response?.status || rentSearchResult.reason?.message : null
+          },
+          sale: { 
+            status: saleSearchResult.status,
+            error: saleSearchResult.status === 'rejected' ? saleSearchResult.reason?.response?.status || saleSearchResult.reason?.message : null
+          },
+          projects: { 
+            status: projectSearchResult.status,
+            error: projectSearchResult.status === 'rejected' ? projectSearchResult.reason?.response?.status || projectSearchResult.reason?.message : null
+          }
         });
 
-        let localRentArr = rentResult.status === "fulfilled"
-          ? (rentResult.value?.data?.rentaldata || []).map((item) => ({
-              ...item,
-              sourceType: "rent",
-              type: 'rental'
-            }))
-          : [];
+        let localRentArr = [];
+        let localBuyArr = [];
+        let localSearchArr = [];
+        let useFallback = false;
 
-        let localBuyArr = saleResult.status === "fulfilled"
-          ? (saleResult.value?.data?.ResaleData || saleResult.value?.data?.saledata || saleResult.value?.data?.buydata || []).map((item) => ({
-              ...item,
-              sourceType: "buy",
-              type: 'sale'
-            }))
-          : [];
+        // Check if any search endpoints succeeded
+        const hasSuccessfulSearch = 
+          rentSearchResult.status === 'fulfilled' || 
+          saleSearchResult.status === 'fulfilled' || 
+          projectSearchResult.status === 'fulfilled';
 
-        let localSearchArr = projectsResult.status === "fulfilled"
-          ? (projectsResult.value?.data?.data || []).map((item) => ({
-              projectName: item.projectName,
-              project_url: item.project_url,
-              frontImage: item.frontImage,
-              price: item.price,
-              type: item.type,
-              projectAddress: item.projectAddress,
-              city: item.city,
-              state: item.state,
-              minPrice: item.minPrice,
-              maxPrice: item.maxPrice,
-              sourceType: "project",
-            }))
-          : [];
+        if (hasSuccessfulSearch) {
+          console.log('🔍 Production Search - Using search endpoint results');
+          
+          // Use successful search endpoint results
+          localRentArr = rentSearchResult.status === "fulfilled"
+            ? (rentSearchResult.value?.data?.rentaldata || []).map((item) => ({
+                ...item,
+                sourceType: "rent",
+                type: 'rental'
+              }))
+            : [];
 
-        console.log('Processed data:', {
-          rentals: localRentArr.length,
-          sales: localBuyArr.length,
-          projects: localSearchArr.length
-        });
+          localBuyArr = saleSearchResult.status === "fulfilled"
+            ? (saleSearchResult.value?.data?.ResaleData || saleSearchResult.value?.data?.saledata || saleSearchResult.value?.data?.buydata || []).map((item) => ({
+                ...item,
+                sourceType: "buy",
+                type: 'sale'
+              }))
+            : [];
 
-        // Filter results based on search term
-        const searchTerm = key.toLowerCase().trim();
+          localSearchArr = projectSearchResult.status === "fulfilled"
+            ? (projectSearchResult.value?.data?.data || []).map((item) => ({
+                projectName: item.projectName,
+                project_url: item.project_url,
+                frontImage: item.frontImage,
+                price: item.price,
+                type: item.type,
+                projectAddress: item.projectAddress,
+                city: item.city,
+                state: item.state,
+                minPrice: item.minPrice,
+                maxPrice: item.maxPrice,
+                sourceType: "project",
+              }))
+            : [];
+        } else {
+          // All search endpoints failed - use fallback method
+          console.log('🔍 Production Search - All search endpoints failed, using fallback method (client-side search)');
+          useFallback = true;
+          
+          // Fallback to fetching all data and client-side filtering
+          const [rentResult, saleResult, projectsResult] = await Promise.allSettled([
+            api.get("/property/rent/viewall"),
+            api.get("/property/buy/ViewAll"),
+            api.get("/project/viewAll/data")
+          ]);
 
-        if (searchTerm) {
-          // Split search term into individual words for more flexible matching
+          localRentArr = rentResult.status === "fulfilled"
+            ? (rentResult.value?.data?.rentaldata || []).map((item) => ({
+                ...item,
+                sourceType: "rent",
+                type: 'rental'
+              }))
+            : [];
+
+          localBuyArr = saleResult.status === "fulfilled"
+            ? (saleResult.value?.data?.ResaleData || saleResult.value?.data?.saledata || saleResult.value?.data?.buydata || []).map((item) => ({
+                ...item,
+                sourceType: "buy",
+                type: 'sale'
+              }))
+            : [];
+
+          localSearchArr = projectsResult.status === "fulfilled"
+            ? (projectsResult.value?.data?.data || []).map((item) => ({
+                projectName: item.projectName,
+                project_url: item.project_url,
+                frontImage: item.frontImage,
+                price: item.price,
+                type: item.type,
+                projectAddress: item.projectAddress,
+                city: item.city,
+                state: item.state,
+                minPrice: item.minPrice,
+                maxPrice: item.maxPrice,
+                sourceType: "project",
+              }))
+            : [];
+        }
+
+        // Apply client-side filtering only when using fallback method
+        if (useFallback) {
           const searchWords = searchTerm.split(/\s+/).filter(word => word.length > 0);
-
-          // Helper function to calculate relevance score
-          const calculateRelevance = (item, searchableText) => {
-            const text = searchableText.toLowerCase();
-            let score = 0;
-            
-            // Get property name for exact match checking (check multiple possible fields)
-            const propertyName = (
-              item.propertyName || 
-              item.projectName || 
-              item.postProperty?.propertyName || 
-              ''
-            ).toLowerCase();
-            
-            // Exact match gets highest score
-            if (propertyName === searchTerm) {
-              score += 1000;
-            }
-            // Starts with search term gets high score
-            else if (propertyName.startsWith(searchTerm)) {
-              score += 500;
-            }
-            // Contains exact phrase gets medium-high score
-            else if (text.includes(searchTerm)) {
-              score += 250;
-            }
-            // All words match gets medium score
-            else if (searchWords.every(word => text.includes(word))) {
-              score += 100;
-            }
-            // Some words match gets lower score
-            else if (searchWords.some(word => text.includes(word))) {
-              score += 50;
-            }
-            
-            return score;
-          };
-
-          // Helper function to check if any search word matches the searchable text
+          
           const matchesSearch = (searchableText) => {
             const text = searchableText.toLowerCase();
             return searchWords.some(word => text.includes(word));
           };
 
-          // Filter and score rental properties
           localRentArr = localRentArr.filter((item) => {
-            const searchableText = [
-              item.propertyName,
-              item.projectName,
-              item.postProperty?.propertyName,
-              item.builderName,
-              item.type,
-              item.propertyType,
-              item.address,
-              item.projectAddress,
-              item.postProperty?.address,
-              item.city,
-              item.postProperty?.city,
-              item.state,
-              item.postProperty?.state,
-              item.descripation,
-              item.description,
-              item.title,
-              item.name
-            ].filter(Boolean).join(' ');
-            const matches = matchesSearch(searchableText);
-            if (matches) {
-              item._relevanceScore = calculateRelevance(item, searchableText);
-            }
-            return matches;
-          }).sort((a, b) => (b._relevanceScore || 0) - (a._relevanceScore || 0));
+          const searchableText = [
+            item.propertyName,
+            item.projectName,
+            item.postProperty?.propertyName,
+            item.builderName,
+            item.type,
+            item.propertyType,
+            item.address,
+            item.projectAddress,
+            item.postProperty?.address,
+            item.city,
+            item.postProperty?.city,
+            item.state,
+            item.postProperty?.state,
+            item.descripation,
+            item.description,
+            item.title,
+            item.name
+          ].filter(Boolean).join(' ');
+          return matchesSearch(searchableText);
+        });
 
-          // Filter and score sale properties
-          localBuyArr = localBuyArr.filter((item) => {
-            const searchableText = [
-              item.propertyName,
-              item.projectName,
-              item.postProperty?.propertyName,
-              item.builderName,
-              item.type,
-              item.propertyType,
-              item.address,
-              item.projectAddress,
-              item.postProperty?.address,
-              item.city,
-              item.postProperty?.city,
-              item.state,
-              item.postProperty?.state,
-              item.descripation,
-              item.description,
-              item.title,
-              item.name
-            ].filter(Boolean).join(' ');
-            const matches = matchesSearch(searchableText);
-            if (matches) {
-              item._relevanceScore = calculateRelevance(item, searchableText);
-            }
-            return matches;
-          }).sort((a, b) => (b._relevanceScore || 0) - (a._relevanceScore || 0));
+        localBuyArr = localBuyArr.filter((item) => {
+          const searchableText = [
+            item.propertyName,
+            item.projectName,
+            item.postProperty?.propertyName,
+            item.builderName,
+            item.type,
+            item.propertyType,
+            item.address,
+            item.projectAddress,
+            item.postProperty?.address,
+            item.city,
+            item.postProperty?.city,
+            item.state,
+            item.postProperty?.state,
+            item.descripation,
+            item.description,
+            item.title,
+            item.name
+          ].filter(Boolean).join(' ');
+          return matchesSearch(searchableText);
+        });
 
-          // Filter and score projects
-          localSearchArr = localSearchArr.filter((item) => {
-            const searchableText = [
-              item.projectName,
-              item.builderName,
-              item.type,
-              item.projectAddress,
-              item.city,
-              item.state,
-              item.project_discripation,
-              item.description,
-              item.title,
-              item.name
-            ].filter(Boolean).join(' ');
-            const matches = matchesSearch(searchableText);
-            if (matches) {
-              item._relevanceScore = calculateRelevance(item, searchableText);
-            }
-            return matches;
-          }).sort((a, b) => (b._relevanceScore || 0) - (a._relevanceScore || 0));
+        localSearchArr = localSearchArr.filter((item) => {
+          const searchableText = [
+            item.projectName,
+            item.builderName,
+            item.type,
+            item.projectAddress,
+            item.city,
+            item.state,
+            item.descripation,
+            item.description
+          ].filter(Boolean).join(' ');
+          return matchesSearch(searchableText);
+        });
+
+        } // End of fallback filtering block
+
+        // Check if we have any results from the search
+        const searchResultsCount = localSearchArr.length + localRentArr.length + localBuyArr.length;
+        
+        // Only set fallback mode if there are no results
+        if (searchResultsCount === 0) {
+          setIsFallbackMode(true);
+          useFallback = true; // Mark as using fallback
+        } else {
+          setIsFallbackMode(false);
+          useFallback = false;
         }
+
+        console.log('🔍 Production Search - Client-side search results:', {
+          rentals: localRentArr.length,
+          sales: localBuyArr.length,
+          projects: localSearchArr.length
+        });
+
+        console.log('🔍 Production Search - Final results:', {
+          rentals: localRentArr.length,
+          sales: localBuyArr.length,
+          projects: localSearchArr.length,
+          fallback: useFallback
+        });
 
         setSearchData(localSearchArr);
         setRentSearchData(localRentArr);
@@ -752,6 +804,44 @@ const SearchData = () => {
         </div>
       )}
 
+      {/* Search Results Banner with Count */}
+      {!isFallbackMode && key1 && (
+        <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
+                  <FiFilter className="w-6 h-6" />
+                </div>
+                <div>
+                  <h2 className="text-xl font-semibold">
+                    Found {displayedItems.length} Properties
+                  </h2>
+                  <p className="text-blue-100 text-sm">
+                    Matching your search for "{key1}"
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="px-3 py-1 bg-white/20 rounded-full text-sm">
+                  {displayedItems.length} Results
+                </span>
+                {key2 && typeof key2 === 'string' && (
+                  <span className="px-3 py-1 bg-white/20 rounded-full text-sm">
+                    {key2}
+                  </span>
+                )}
+                {key2 && typeof key2 === 'object' && key2.city && (
+                  <span className="px-3 py-1 bg-white/20 rounded-full text-sm">
+                    {key2.city}
+                  </span>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Premium Property Grid */}
       {/* Mobile Floating Filter Button - Bottom Right */}
       <button
@@ -1075,4 +1165,4 @@ const SearchData = () => {
   );
 };
 
-export default SearchData;
+export default React.memo(SearchData);

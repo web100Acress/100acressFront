@@ -23,47 +23,22 @@ const ProjectHeroMobile = ({
     return null;
   }
 
-  // Set full image as background, use thumbnail as fallback
-  const backgroundStyle = useMemo(() => ({
-    backgroundImage: `url(${backgroundImage || thumbnailImage})`,
-    contentVisibility: 'auto',
-    containIntrinsicSize: '100vw 100vh',
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-    backgroundRepeat: 'no-repeat',
-    backgroundColor: '#1a202c'
-  }), [backgroundImage, thumbnailImage]);
-
-  // Preload thumbnail for faster initial load
-  React.useEffect(() => {
-    if (thumbnailImage && backgroundImage) {
-      const img = new Image();
-      img.src = thumbnailImage;
-      img.onload = () => {
-        // Show thumbnail first if full image not loaded yet
-        const element = document.querySelector('.hero-background');
-        if (element && !element.dataset.fullLoaded) {
-          element.style.backgroundImage = `url(${thumbnailImage})`;
-        }
-      };
+  // Optimized image loading strategy
+  const imageProps = useMemo(() => ({
+    src: backgroundImage || thumbnailImage,
+    alt: `${projectTitle} in ${location}`,
+    loading: 'eager',
+    fetchPriority: 'high',
+    width: 1973,
+    height: 450,
+    style: {
+      objectFit: 'cover',
+      position: 'absolute',
+      inset: 0,
+      width: '100%',
+      height: '100%',
     }
-  }, [thumbnailImage, backgroundImage]);
-
-  // Preload full background image
-  React.useEffect(() => {
-    if (backgroundImage) {
-      const img = new Image();
-      img.src = backgroundImage;
-      img.onload = () => {
-        // Update to full image when loaded
-        const element = document.querySelector('.hero-background');
-        if (element) {
-          element.style.backgroundImage = `url(${backgroundImage})`;
-          element.dataset.fullLoaded = 'true';
-        }
-      };
-    }
-  }, [backgroundImage]);
+  }), [backgroundImage, thumbnailImage, projectTitle, location]);
 
   // Basic JSON-LD structured data describing the project hero entity
   const jsonLd = {
@@ -87,25 +62,12 @@ const ProjectHeroMobile = ({
       {/* Background Image - Reduced Height with gap from header */}
       <div 
         className="relative h-[25vh] w-full hero-background mt-14"
-        style={backgroundStyle}
       >
+        <img {...imageProps} />
         {backgroundImage && (
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
         )}
       </div>
-
-      {/* Accessible image for SEO without changing visual BG */}
-      {(thumbnailImage || backgroundImage) && (
-        <img
-          src={thumbnailImage || backgroundImage}
-          alt={`${projectTitle} in ${location}`}
-          fetchpriority="high"
-          loading="eager"
-          width="1973"
-          height="1100"
-          className="sr-only"
-        />
-      )}
       
       {/* Top Bar - Compact Mobile Navbar */}
       <div className="fixed top-0 left-0 right-0 z-50 px-3 py-2 bg-black/30 backdrop-blur-lg border-b border-white/20 transition-colors duration-300" aria-label="Project top navigation">

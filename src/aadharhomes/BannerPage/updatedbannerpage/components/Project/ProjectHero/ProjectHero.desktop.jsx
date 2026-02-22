@@ -22,15 +22,7 @@ const ProjectHeroDesktop = ({
     return null;
   }
   // Only set background image if it exists
-  const backgroundStyle = useMemo(() => ({
-    ...(backgroundImage && { backgroundImage: `url(${backgroundImage})` }),
-    contentVisibility: 'auto',
-    containIntrinsicSize: '100vw 100vh',
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-    backgroundRepeat: 'no-repeat',
-    backgroundColor: backgroundImage ? 'transparent' : '#1a202c' // Dark background if no image
-  }), [backgroundImage]);
+  const hasBackgroundImage = !!backgroundImage;
 
   // Basic JSON-LD structured data describing the project hero entity
   const jsonLd = {
@@ -51,27 +43,20 @@ const ProjectHeroDesktop = ({
       {/* Structured data for search engines */}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       {/* Background Image */}
-      <div 
-        className="absolute inset-0 mt-16"
-        style={backgroundStyle}
-      >
-        {backgroundImage && (
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
-        )}
-      </div>
-      {/* Accessible image for SEO without changing visual BG */}
-      {backgroundImage && (
-        <img
-          src={backgroundImage}
-          alt={`${projectTitle} in ${location}`}
-          fetchpriority="high"
-          loading="eager"
-          width="1973"
-          height="1100"
-          className="sr-only"
-        />
+      {hasBackgroundImage && (
+        <>
+          <img
+            src={backgroundImage}
+            alt={`${projectTitle} in ${location}`}
+            fetchpriority="high"
+            loading="eager"
+            width="1973"
+            height="1100"
+            className="absolute inset-0 mt-16 w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 mt-16 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
+        </>
       )}
-      
       
       {/* Top Bar - Glassy Navbar */}
       <div className="fixed top-0 left-0 right-0 z-50 px-4 sm:px-6 lg:px-8 py-3 bg-black/20 backdrop-blur-md border-b border-white/10 transition-colors duration-300" aria-label="Project top navigation">
@@ -106,16 +91,16 @@ const ProjectHeroDesktop = ({
 
             {/* Phone Number Button - Hidden on mobile, visible on tablet and desktop */}
             <a href={`tel:+91${phoneNumber}`} aria-label={`Call +91${phoneNumber}`} rel="nofollow" className="hidden sm:block">
-              <div className="flex items-center bg-gradient-to-br from-yellow-400 via-yellow-500 to-yellow-600 rounded-full shadow-[0_4px_15px_rgba(212,175,55,0.35)] hover:shadow-[0_6px_20px_rgba(212,175,55,0.5)] transition-all duration-300 transform hover:scale-105 border-2 border-yellow-400 pr-4 gap-3">
+              <div className="flex items-center transiti duration-300 transform hover:scale-105 pr-4 gap-1">
                 {/* Circular phone icon */}
-                <div className="w-10 h-10 bg-gradient-to-br from-yellow-400 via-yellow-500 to-yellow-600 border-2 border-white rounded-full flex items-center justify-center flex-shrink-0 shadow-[0_3px_8px_rgba(212,175,55,0.5)]">
-                  <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0">
+                  <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M6.62 10.79a15.05 15.05 0 006.59 6.59l2.2-2.2a1 1 0 011.01-.24 11.36 11.36 0 003.55.57 1 1 0 011 1v3.61a1 1 0 01-.91 1A16 16 0 014 5.92 1 1 0 015 5h3.61a1 1 0 011 1 11.36 11.36 0 00.57 3.55 1 1 0 01-.24 1.01l-2.32 2.23z"/>
                   </svg>
                 </div>
 
                 {/* Phone number text */}
-                <span className="text-white text-lg font-semibold tracking-wide whitespace-nowrap" style={{ textShadow: '0px 0px 5px rgba(0, 0, 0, 0.3)' }}>{phoneNumber}</span>
+                <span className="text-white text-2xl font-black tracking-wide whitespace-nowrap" style={{ textShadow: '0px 0px 5px rgba(0, 0, 0, 0.3)' }}>{phoneNumber}</span>
               </div>
             </a>
 

@@ -20,6 +20,7 @@ import FooterForm from './Projectfooter';
 import StickyBrochureButton from '../StickyBrochureButton';
 import BrochureDownloadModal from '../BrochureDownloadModal';
 import SimpleNotification from '../SimpleNotification';
+import CountryCodeSelector from '../../../../../Components/Actual_Components/CountryCodeSelector';
 import { Helmet } from 'react-helmet-async';
 import { useParams, useNavigate } from "react-router-dom";
 import api from "../../../../../config/apiClient";
@@ -361,10 +362,10 @@ const QuickEnquiryModal = ({ isOpen, onClose, onSubmit, projectName }) => {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       <div className="absolute inset-0 bg-black/50" onClick={onClose} />
-      <div className="relative bg-white rounded-lg shadow-xl w-11/12 max-w-md p-6">
+      <div className="relative bg-[#1e293b] rounded-2xl shadow-2xl w-11/12 max-w-md p-6 border border-gray-700">
         {/* Close Button */}
         <button
-          className="absolute top-3 right-3 text-gray-400 hover:text-gray-600"
+          className="absolute top-3 right-3 text-gray-400 hover:text-white transition-colors"
           onClick={onClose}
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -373,57 +374,58 @@ const QuickEnquiryModal = ({ isOpen, onClose, onSubmit, projectName }) => {
         </button>
 
         {/* Modal Header */}
-        <div className="text-center mb-4">
-          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div className="text-center mb-6">
+          <div className="w-16 h-16 bg-gradient-to-br from-orange-500/20 to-yellow-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg className="w-8 h-8 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
-          <h3 className="text-xl font-bold text-gray-900 mb-2">
+          <h3 className="text-xl font-bold text-white mb-2">
             Quick Enquiry
           </h3>
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-gray-400">
             Get details about {projectName}
           </p>
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-black mb-2">
-              Name *
-            </label>
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div className="relative">
             <input
               type="text"
               name="name"
+              id="name"
               value={details.name}
               onChange={handleChange}
               required
-              className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 text-black"
-              placeholder="Enter your name"
+              className="peer w-full pl-10 py-3 rounded-lg bg-[#1a1a1a] text-white focus:ring-2 focus:ring-orange-500 border border-gray-600 outline-none placeholder-transparent focus:bg-[#1a1a1a]"
+              placeholder="Name"
             />
+            {/* <i className="fa-solid fa-user absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-base"></i> */}
+            <label
+              htmlFor="name"
+              className="absolute left-10 -top-2.5 px-2 bg-[#263238] text-gray-400 text-sm transition-all duration-300 transform scale-75 pointer-events-none peer-valid:text-white peer-placeholder-shown:top-3.5 peer-placeholder-shown:scale-100 peer-placeholder-shown:bg-transparent peer-placeholder-shown:text-gray-500 peer-focus:-top-2.5 peer-focus:bg-[#263238] peer-focus:text-orange-400"
+            >
+              Name *
+            </label>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-black mb-2">
-              Mobile Number *
-            </label>
+          <div className="relative">
             <div className="flex">
-              {/* Country Code Selector */}
               <div className="relative">
                 <button
                   type="button"
                   onClick={() => setIsCountryDropdownOpen(!isCountryDropdownOpen)}
-                  className="flex items-center justify-center px-3 py-4 bg-white border border-gray-300 rounded-l-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 hover:bg-gray-50"
+                  className="flex items-center justify-center px-2 py-4 bg-[#1a1a1a] border border-gray-600 rounded-l-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 hover:bg-gray-700"
                 >
-                  <span className="text-sm font-medium text-gray-700">{selectedCountry.code}</span>
+                  <span className="text-sm font-medium text-gray-300">{selectedCountry.code}</span>
                   <svg className="w-4 h-4 text-gray-400 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                   </svg>
                 </button>
 
                 {isCountryDropdownOpen && (
-                  <div className="absolute top-full left-0 z-50 mt-1 w-20 bg-white border border-gray-300 rounded-lg shadow-lg max-h-64 overflow-y-auto">
+                  <div className="absolute top-full left-0 z-50 mt-1 w-20 bg-[#263238] border border-gray-600 rounded-lg shadow-lg max-h-64 overflow-y-auto">
                     {countryCodes.map((country) => (
                       <button
                         key={country.code}
@@ -432,7 +434,7 @@ const QuickEnquiryModal = ({ isOpen, onClose, onSubmit, projectName }) => {
                           setCountryCode(country.code);
                           setIsCountryDropdownOpen(false);
                         }}
-                        className="w-full px-3 py-2 text-left hover:bg-gray-50 flex items-center justify-center"
+                        className="w-full px-3 py-2 text-left hover:bg-gray-700 flex items-center justify-center"
                       >
                         <span className="text-lg">{country.flag}</span>
                       </button>
@@ -440,39 +442,47 @@ const QuickEnquiryModal = ({ isOpen, onClose, onSubmit, projectName }) => {
                   </div>
                 )}
               </div>
-
-              {/* Mobile Input */}
               <input
                 type="tel"
                 name="mobile"
+                id="mobile"
                 value={details.mobile}
                 onChange={handleChange}
                 required
                 pattern="[6-9][0-9]{9}"
                 maxLength="10"
-                className="flex-1 px-4 py-3 bg-white border border-gray-300 rounded-r-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 text-black"
+                className="flex-1 pl-4 py-3 rounded-r-lg bg-[#1a1a1a] text-white focus:ring-2 focus:ring-orange-500 border border-gray-600 border-l-0 outline-none placeholder-transparent focus:bg-[#1a1a1a]"
                 placeholder="Enter mobile number"
               />
             </div>
+            <label
+              htmlFor="mobile"
+              className={`absolute left-[76px] -top-2.5 px-2 bg-[#263238] text-gray-400 text-sm transition-all duration-300 transform scale-75 pointer-events-none ${details.mobile ? 'text-white' : ''} ${details.mobile ? '' : 'peer-placeholder-shown:top-3.5 peer-placeholder-shown:scale-100 peer-placeholder-shown:bg-transparent peer-placeholder-shown:text-gray-500 peer-focus:-top-2.5 peer-focus:bg-[#263238] peer-focus:text-orange-400'}`}
+            >
+              Mobile Number *
+            </label>
           </div>
 
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="w-full bg-red-600 text-white py-3 px-4 rounded-lg hover:bg-red-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
-          >
-            {buttonText}
-            {buttonText === 'Submit' && (
-              <svg className="w-5 h-5 ml-2 transition-transform duration-300 group-hover:translate-x-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-              </svg>
-            )}
-          </button>
+          {/* Submit Button */}
+          <div className="flex justify-center pt-2">
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="group w-full rounded-xl bg-gradient-to-r from-orange-500 to-yellow-500 px-8 py-3 font-bold text-black border-2 border-transparent outline-none relative overflow-hidden transition-all duration-300 hover:shadow-lg hover:scale-105 hover:from-orange-400 hover:to-yellow-400 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+            >
+              <span className="relative inline-block transition-all duration-300">
+                {buttonText}
+              </span>
+              {!isLoading && (
+                <svg className="w-5 h-5 ml-2 transition-transform duration-300 group-hover:translate-x-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
+              )}
+            </button>
+          </div>
         </form>
 
-        <p className='text-xs text-gray-400 leading-relaxed pt-4 text-center'>
-          * Your information will be kept strictly confidential and will not be shared, sold, or otherwise disclosed.
-        </p>
+        <p className='text-xs text-gray-400 leading-relaxed pt-4 text-center'>* Your information will be kept strictly confidential and will not be shared, sold, or otherwise disclosed.</p>
       </div>
     </div>
   );
@@ -958,6 +968,7 @@ function ProjectLayout2() {
       <AboutBuilder 
         builderName={projectViewDetails?.builderName}
         aboutDeveloper={projectViewDetails?.AboutDeveloper}
+        currentProjectUrl={pUrl}
       />
 
         <div className="relative p-6 md:p-8 text-center">

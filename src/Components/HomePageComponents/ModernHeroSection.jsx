@@ -344,7 +344,6 @@ const ModernHeroSection = () => {
             <div
               className="featured-wide-card"
               style={{
-                backgroundImage: ((isMobile ? bannerPhone : bannerDesktop) && (isMobile ? bannerPhone : bannerDesktop)[0]) ? `url(${(isMobile ? bannerPhone : bannerDesktop)[0].image})` : undefined,
                 backgroundSize: 'cover',
                 backgroundPosition: 'center'
               }}
@@ -365,6 +364,8 @@ const ModernHeroSection = () => {
                 <img
                   src={(isMobile ? bannerPhone : bannerDesktop)[0].image}
                   alt="Banner test"
+                  loading="eager"
+                  decoding="async"
                   style={{ display:'block', width:'100%', height:'170px', objectFit:'cover', border:'2px solid #22c55e', marginBottom: 8 }}
                 />
               )}

@@ -156,7 +156,7 @@ function Services() {
                         bottom: "0",
                         right: "0",
                       }}>
-                      <img src='' alt='' />
+                      <img src='' alt='' loading="lazy" decoding="async" />
                     </span>
                   </div>
                   <div className='content'>
@@ -212,7 +212,7 @@ function Services() {
                         bottom: "0",
                         right: "0",
                       }}>
-                      <img src='' alt='' />
+                      <img src='' alt='' loading="lazy" decoding="async" />
                     </span>
                   </div>
                   <div className='content'>
@@ -270,7 +270,7 @@ function Services() {
                     bottom: "0",
                     right: "0",
                   }}>
-                  <img src='' alt='' />
+                  <img src='' alt='' loading="lazy" decoding="async" />
                 </span>
               </div>
               <div className='content'>
@@ -320,7 +320,7 @@ function Services() {
                     bottom: "0",
                     right: "0",
                   }}>
-                  <img src='' alt='' />
+                  <img src='' alt='' loading="lazy" decoding="async" />
                 </span>
               </div>
               <div className='content'>
@@ -370,7 +370,7 @@ function Services() {
                     bottom: "0",
                     right: "0",
                   }}>
-                  <img src='' alt='' />
+                  <img src='' alt='' loading="lazy" decoding="async" />
                 </span>
               </div>
               <div className='content'>
@@ -420,7 +420,7 @@ function Services() {
                     bottom: "0",
                     right: "0",
                   }}>
-                  <img src='' alt='' />
+                  <img src='' alt='' loading="lazy" decoding="async" />
                 </span>
               </div>
               <div className='content'>

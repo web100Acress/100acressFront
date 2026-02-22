@@ -63,6 +63,7 @@ function ModernCard() {
               alt={item.projectName}
               className="property-image"
               loading="lazy"
+              decoding="async"
             />
             
             {/* Image Overlay */}

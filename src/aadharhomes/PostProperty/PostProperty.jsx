@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Steps, Button, Modal, ConfigProvider } from "antd";
+import { Button, Modal, ConfigProvider } from "antd";
 import "antd/dist/reset.css";
-const { Step } = Steps;
+
 import Footer from "../../Components/Actual_Components/Footer";
 import axios from "axios";
 import { getApiBase } from "../../config/apiBase";
@@ -930,34 +930,36 @@ const NewSellProperty = () => {
 
                 {/* Mobile stepper (compact) */}
                 <div className="lg:hidden mb-3">
-                  <ConfigProvider
-                    theme={{
-                      token: { colorPrimary: '#dc2626' },
-                      components: { Steps: { iconSize: 28, titleLineHeight: 16 } },
-                    }}
-                  >
-                    <Steps size="small" current={current}>
-                      {steps.map((s, index) => (
-                        <Step key={s.id} title={s.title} icon={renderStepIcon(index)} />
-                      ))}
-                    </Steps>
-                  </ConfigProvider>
+                  <div className="flex items-center justify-between">
+                    {steps.map((s, index) => (
+                      <div key={s.id} className="flex items-center flex-1">
+                        <div className="flex flex-col items-center">
+                          {renderStepIcon(index)}
+                          <span className="text-xs mt-1 text-gray-600 font-medium hidden xs:block">{s.title}</span>
+                        </div>
+                        {index < steps.length - 1 && (
+                          <div className={`flex-1 h-0.5 mx-1 ${index < current ? 'bg-red-600' : 'bg-gray-300'}`}></div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
                 </div>
 
                 {/* Desktop stepper */}
                 <div className="hidden lg:block mb-4">
-                  <ConfigProvider
-                    theme={{
-                      token: { colorPrimary: '#dc2626' },
-                      components: { Steps: { iconSize: 30 } },
-                    }}
-                  >
-                    <Steps current={current}>
-                      {steps.map((s, index) => (
-                        <Step key={s.id} title={s.title} icon={renderStepIcon(index)} />
-                      ))}
-                    </Steps>
-                  </ConfigProvider>
+                  <div className="flex items-center justify-between">
+                    {steps.map((s, index) => (
+                      <div key={s.id} className="flex items-center flex-1">
+                        <div className="flex flex-col items-center">
+                          {renderStepIcon(index)}
+                          <span className="text-sm mt-2 text-gray-700 font-medium">{s.title}</span>
+                        </div>
+                        {index < steps.length - 1 && (
+                          <div className={`flex-1 h-1 mx-2 ${index < current ? 'bg-red-600' : 'bg-gray-300'}`}></div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
                 </div>
 
                 {/* Animated step content wrapper */}

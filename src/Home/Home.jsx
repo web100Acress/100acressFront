@@ -2,11 +2,9 @@ import React, { Suspense, useCallback, useEffect, useMemo, useRef, useState, use
 // import PopupForm from "./HomePages/PopupForm";
 import Cities from "./Cities/Cities";
 // import FormHome from "../Components/HomePageComponents/FormHome";
-import WhyChoose from "../Components/HomePageComponents/WhyChoose";
 import SpacesAvailable from "../Components/HomePageComponents/Spaces";
 import SearchBar from "./SearchBar/SearchBar";
 import styled from "styled-components";
-import OurServices from "./Services/ourServices";
 import { Helmet } from "react-helmet";
 // import Footer from "../Components/Actual_Components/Footer";
 import Footer from "../Components/Actual_Components/Footer";
@@ -14,14 +12,10 @@ import AuthModal from "../Resister/AuthModal";
 import { Link } from "react-router-dom";
 // import BackToTopButton from "./BackToTopButton";
 // import PossessionProperty from "../Components/PossessionProperty";
-import BudgetPlotsInGurugraon from "../Pages/BudgetPlotsInGurugraon";
-// import TopSeoPlots from "./TopSeoPlots";
 import { useMediaQuery } from "@chakra-ui/react";
 import { EyeIcon, HomeIcon, MessageCircle, PhoneIcon, User as UserIcon, ArrowUpRight } from "lucide-react";
-import ModernRecommendedSection from "./Recomended/ModernRecommendedSection";
 import AOS from 'aos';
 import 'aos/dist/aos.css';
-import Builder from "./Builder/Builder";
 import CustomSkeleton from "../Utils/CustomSkeleton";
 import CommonProject from "../Utils/CommonProject";
 // import Builderaction from "./HomePages/Builderaction";
@@ -31,10 +25,367 @@ import { useSelector } from "react-redux";
 import { AuthContext } from "../AuthContext";
 // import FloatingShorts from "../aadharhomes/BannerPage/updatedbannerpage/components/youtubeshorts";
 import DynamicHeroBanner from "./HeroBanner/largebanner/DynamicHeroBanner";
-import DynamicSideBanner from "./sidehomebanner";
-import TestimonialIndex from "./Testimonial";
-import BlogIndex from "./Blog/index";
 // import Tesimonial from "../Components/HomePageComponents/Tesimonial";
+
+// Lazy load heavy components
+const BudgetPlotsInGurugraon = React.lazy(() => import("../Pages/BudgetPlotsInGurugraon"));
+const Builder = React.lazy(() => import("./Builder/Builder"));
+const ModernRecommendedSection = React.lazy(() => import("./Recomended/ModernRecommendedSection"));
+const OurServices = React.lazy(() => import("./Services/ourServices"));
+const WhyChoose = React.lazy(() => import("./WhyChoose/WhyChoose"));
+const TestimonialIndex = React.lazy(() => import("./Testimonial"));
+const BlogIndex = React.lazy(() => import("./Blog/index"));
+const DynamicSideBanner = React.lazy(() => import("./sidehomebanner"));
+
+// Generic Projects Slider Component with navigation and auto-scroll (mobile only)
+const ProjectsSlider = React.memo(({ projects, title, animation, path, compact = true }) => {
+  const scrollRef = useRef(null);
+  const [showLeftButton, setShowLeftButton] = useState(false);
+  const [isAutoScrolling, setIsAutoScrolling] = useState(true);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const autoScrollIntervalRef = useRef(null);
+
+  // Check screen size
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const handleScroll = () => {
+    if (scrollRef.current) {
+      setShowLeftButton(scrollRef.current.scrollLeft > 0);
+    }
+  };
+
+  const scroll = (direction) => {
+    if (scrollRef.current) {
+      const scrollAmount = 286; // Card width (260px) + gap (16px) + extra margin (10px)
+      scrollRef.current.scrollBy({
+        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        behavior: 'smooth'
+      });
+      // Pause auto-scroll when user manually scrolls
+      setIsAutoScrolling(false);
+      setTimeout(() => setIsAutoScrolling(true), 5000);
+    }
+  };
+
+  const startAutoScroll = () => {
+    if (autoScrollIntervalRef.current) {
+      clearInterval(autoScrollIntervalRef.current);
+    }
+    
+    autoScrollIntervalRef.current = setInterval(() => {
+      if (scrollRef.current && isAutoScrolling && isMobile) {
+        const maxScroll = scrollRef.current.scrollWidth - scrollRef.current.clientWidth;
+        const currentScroll = scrollRef.current.scrollLeft;
+        
+        if (currentScroll >= maxScroll - 10) {
+          // Reached the end, scroll back to start
+          scrollRef.current.scrollTo({ left: 0, behavior: 'smooth' });
+        } else {
+          // Scroll to next card
+          scrollRef.current.scrollBy({ left: 286, behavior: 'smooth' });
+        }
+      }
+    }, 3000); // Auto-scroll every 3 seconds
+  };
+
+  const stopAutoScroll = () => {
+    if (autoScrollIntervalRef.current) {
+      clearInterval(autoScrollIntervalRef.current);
+    }
+  };
+
+  useEffect(() => {
+    const container = scrollRef.current;
+    if (container && isMobile) {
+      container.addEventListener('scroll', handleScroll);
+      handleScroll(); // Initial check
+      
+      // Start auto-scroll
+      startAutoScroll();
+      
+      return () => {
+        container.removeEventListener('scroll', handleScroll);
+        stopAutoScroll();
+      };
+    }
+  }, [isMobile]);
+
+  // Desktop view: show grid layout
+  if (!isMobile) {
+    return (
+      <CommonProject 
+        data={projects.slice(0, 4)} 
+        title={title} 
+        animation={animation} 
+        path={path} 
+        compact={compact} 
+      />
+    );
+  }
+
+  // Mobile view: show horizontal scrolling
+  return (
+    <div>
+      {/* Static Title */}
+      <div className="relative flex flex-col items-center justify-center text-center mb-4 mt-6 px-4">
+        <h2 className="text-2xl xl:text-4xl lg:text-3xl md:text-2xl text-[#111] font-bold font-['Rubik',sans-serif] mb-3">
+          {title}
+        </h2>
+        <div className="h-1.5 w-32 bg-gradient-to-r from-red-500 to-red-600 rounded-full"></div>
+      </div>
+      
+      {/* Scrollable Content */}
+      <div className="relative group">
+        <div
+          ref={scrollRef}
+          className="overflow-x-auto scrollbar-hide py-4"
+          style={{ width: '100%', scrollBehavior: 'smooth' }}
+        >
+          <div className="flex w-full">
+            <CommonProject
+              data={projects}
+              animation={animation}
+              path={path}
+              compact={compact}
+              showGrid={false}
+              slideView={true}
+              hideHeader={true}
+            />
+          </div>
+        </div>
+        
+        {/* Right Gradient Overlay */}
+        <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-white via-white/50 to-transparent z-[5] pointer-events-none"></div>
+
+        {/* Next Button */}
+        {projects.length > 0 && (
+          <button
+            onClick={() => scroll('right')}
+            className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white/90 backdrop-blur-sm text-gray-700 rounded-full w-10 h-10 flex items-center justify-center hover:bg-white hover:text-gray-900 transition-all duration-300 z-10 shadow-lg border border-gray-200"
+            aria-label="Next projects"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="w-5 h-5"
+            >
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </button>
+        )}
+        
+        {/* Previous Button */}
+        {projects.length > 0 && showLeftButton && (
+          <button
+            onClick={() => scroll('left')}
+            className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white/90 backdrop-blur-sm text-gray-700 rounded-full w-10 h-10 flex items-center justify-center hover:bg-white hover:text-gray-900 transition-all duration-300 z-10 shadow-lg border border-gray-200"
+            aria-label="Previous projects"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="w-5 h-5"
+            >
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </button>
+        )}
+      </div>
+    </div>
+  );
+});
+
+// Commercial Projects Slider Component with navigation and auto-scroll (mobile only)
+const CommercialProjectsSlider = React.memo(({ projects }) => {
+  const scrollRef = useRef(null);
+  const [showLeftButton, setShowLeftButton] = useState(false);
+  const [isAutoScrolling, setIsAutoScrolling] = useState(true);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const autoScrollIntervalRef = useRef(null);
+
+  // Check screen size
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const handleScroll = () => {
+    if (scrollRef.current) {
+      setShowLeftButton(scrollRef.current.scrollLeft > 0);
+    }
+  };
+
+  const scroll = (direction) => {
+    if (scrollRef.current) {
+      const scrollAmount = 286; // Card width (260px) + gap (16px) + extra margin (10px)
+      scrollRef.current.scrollBy({
+        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        behavior: 'smooth'
+      });
+      // Pause auto-scroll when user manually scrolls
+      setIsAutoScrolling(false);
+      setTimeout(() => setIsAutoScrolling(true), 5000);
+    }
+  };
+
+  const startAutoScroll = () => {
+    if (autoScrollIntervalRef.current) {
+      clearInterval(autoScrollIntervalRef.current);
+    }
+    
+    autoScrollIntervalRef.current = setInterval(() => {
+      if (scrollRef.current && isAutoScrolling && isMobile) {
+        const maxScroll = scrollRef.current.scrollWidth - scrollRef.current.clientWidth;
+        const currentScroll = scrollRef.current.scrollLeft;
+        
+        if (currentScroll >= maxScroll - 10) {
+          // Reached the end, scroll back to start
+          scrollRef.current.scrollTo({ left: 0, behavior: 'smooth' });
+        } else {
+          // Scroll to next card
+          scrollRef.current.scrollBy({ left: 286, behavior: 'smooth' });
+        }
+      }
+    }, 3000); // Auto-scroll every 3 seconds
+  };
+
+  const stopAutoScroll = () => {
+    if (autoScrollIntervalRef.current) {
+      clearInterval(autoScrollIntervalRef.current);
+    }
+  };
+
+  useEffect(() => {
+    const container = scrollRef.current;
+    if (container && isMobile) {
+      container.addEventListener('scroll', handleScroll);
+      handleScroll(); // Initial check
+      
+      // Start auto-scroll
+      startAutoScroll();
+      
+      return () => {
+        container.removeEventListener('scroll', handleScroll);
+        stopAutoScroll();
+      };
+    }
+  }, [isMobile]);
+
+  // Desktop view: show grid layout
+  if (!isMobile) {
+    return (
+      <CommonProject 
+        data={projects.slice(0, 4)} 
+        title="Commercial Projects in Delhi NCR" 
+        animation="fade-down" 
+        path="/projects/commercial/" 
+        compact 
+      />
+    );
+  }
+
+  // Mobile view: show horizontal scrolling
+  return (
+    <div>
+      {/* Static Title */}
+      <div className="relative flex flex-col items-center justify-center text-center mb-4 mt-6 px-4">
+        <h2 className="text-2xl xl:text-4xl lg:text-3xl md:text-2xl text-[#111] font-bold font-['Rubik',sans-serif] mb-3">
+          Commercial Projects in Delhi NCR
+        </h2>
+        <div className="h-1.5 w-32 bg-gradient-to-r from-red-500 to-red-600 rounded-full"></div>
+      </div>
+      
+      {/* Scrollable Content */}
+      <div className="relative group">
+        <div
+          ref={scrollRef}
+          className="overflow-x-auto scrollbar-hide py-4"
+          style={{ width: '100%', scrollBehavior: 'smooth' }}
+        >
+          <div className="flex w-full">
+            <CommonProject
+              data={projects}
+              animation="fade-down"
+              path="/projects/commercial/"
+              compact
+              showGrid={false}
+              slideView={true}
+              hideHeader={true}
+            />
+          </div>
+        </div>
+        
+        {/* Right Gradient Overlay */}
+        <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-white via-white/50 to-transparent z-[5] pointer-events-none"></div>
+
+        {/* Next Button */}
+        {projects.length > 0 && (
+          <button
+            onClick={() => scroll('right')}
+            className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white/90 backdrop-blur-sm text-gray-700 rounded-full w-10 h-10 flex items-center justify-center hover:bg-white hover:text-gray-900 transition-all duration-300 z-10 shadow-lg border border-gray-200"
+            aria-label="Next projects"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="w-5 h-5"
+            >
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </button>
+        )}
+        
+        {/* Previous Button */}
+        {projects.length > 0 && showLeftButton && (
+          <button
+            onClick={() => scroll('left')}
+            className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white/90 backdrop-blur-sm text-gray-700 rounded-full w-10 h-10 flex items-center justify-center hover:bg-white hover:text-gray-900 transition-all duration-300 z-10 shadow-lg border border-gray-200"
+            aria-label="Previous projects"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="w-5 h-5"
+            >
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </button>
+        )}
+      </div>
+    </div>
+  );
+});
 
 const Home = () => {
   // const [showConfetti, setShowConfetti] = useState(true);
@@ -54,7 +405,8 @@ const Home = () => {
   const [path, setPath] = useState(null);
 
   const [resalesectionvisible, SetResaleSectionVisible] = useState(false);
-
+  const [isFirstLoad, setIsFirstLoad] = useState(true);
+  const [isContentReady, setIsContentReady] = useState(false);
 
   const [isPopupActive, setIsPopupActive] = useState(false)
 
@@ -438,7 +790,11 @@ const Home = () => {
   }, [activeFilter, memoizedProjects, path]);
 
   useEffect(() => {
-    AOS.init();
+    // Defer AOS to prevent blocking initial render
+    const timer = setTimeout(() => {
+      AOS.init();
+    }, 1000);
+    return () => clearTimeout(timer);
   }, []);
 
   useEffect(() => {
@@ -447,6 +803,16 @@ const Home = () => {
     }, 100);
 
   }, [activeFilter]);
+
+  // Fast loading state - hide skeleton quickly
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsFirstLoad(false);
+      setIsContentReady(true);
+    }, 100); // Ultra fast - 100ms
+
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -520,6 +886,10 @@ const Home = () => {
           100acress.com - Buy Property in India & Dubai | Trusted Real Estate Platform
         </title>
         <link rel="canonical" href="https://www.100acress.com/" />
+        {/* Preconnect to critical domains */}
+        <link rel="preconnect" href="https://d16gdc5rm7f21b.cloudfront.net" />
+        <link rel="dns-prefetch" href="https://d16gdc5rm7f21b.cloudfront.net" />
+        <link rel="preconnect" href="https://www.100acress.com" />
       </Helmet>
       {/* Visually hidden H1 for correct heading order without affecting layout */}
       <h1 className="sr-only">100acress Real Estate in Gurgaon – Buy, Rent, Sell & New Launch Projects</h1>
@@ -553,12 +923,26 @@ const Home = () => {
         ${isPopupActive ? 'blur-sm pointer-events-none select-none' : ''}
       `}>
 
-          <div className="relative">
+          {/* Minimal loading state to prevent white space */}
+          {isFirstLoad && (
+            <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+              <div className="animate-pulse">
+                <div className="h-32 bg-gray-100"></div>
+                <div className="h-64 bg-gray-50"></div>
+                <div className="h-32 bg-gray-100"></div>
+              </div>
+            </div>
+          )}
+
+          <div className={isFirstLoad ? 'opacity-0 absolute' : 'opacity-100 relative'}>
+            <div className="relative">
             {/* Removed themed overlay */}
 
             <div className="relative">
               {/* <SpotlightBanner /> */}
+              <Suspense fallback={<CustomSkeleton />}>
               <ModernRecommendedSection />
+            </Suspense>
             </div>
           </div>
 
@@ -570,7 +954,9 @@ const Home = () => {
               <div style={{ height: asideSpacerHeight ? `${asideSpacerHeight}px` : undefined }} />
               <div ref={asideInnerRef} style={asideStyle} className="space-y-4">
                 {/* Dynamic Side Banner */}
+                <Suspense fallback={<div className="animate-pulse bg-gray-200 h-64 rounded-lg" />}>
                 <DynamicSideBanner />
+              </Suspense>
               </div>
             </aside>
 
@@ -717,7 +1103,7 @@ const Home = () => {
                               trendingScrollRef.current.scrollBy({ left: 286, behavior: 'smooth' });
                             }
                           }}
-                          className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-black text-white rounded-full w-10 h-10 flex items-center justify-center hover:bg-gray-800 transition-colors duration-300 z-10 shadow-lg"
+                          className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white/90 backdrop-blur-sm text-gray-700 rounded-full w-10 h-10 flex items-center justify-center hover:bg-white hover:text-gray-900 transition-all duration-300 z-10 shadow-lg border border-gray-200"
                           aria-label="Next projects"
                         >
                           <svg
@@ -742,7 +1128,7 @@ const Home = () => {
                               trendingScrollRef.current.scrollBy({ left: -286, behavior: 'smooth' });
                             }
                           }}
-                          className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-black text-white rounded-full w-10 h-10 flex items-center justify-center hover:bg-gray-800 transition-colors duration-300 z-10 shadow-lg"
+                          className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white/90 backdrop-blur-sm text-gray-700 rounded-full w-10 h-10 flex items-center justify-center hover:bg-white hover:text-gray-900 transition-all duration-300 z-10 shadow-lg border border-gray-200"
                           aria-label="Previous projects"
                         >
                           <svg
@@ -772,7 +1158,13 @@ const Home = () => {
               <div>
                 {console.log("Upcoming Projects Data:", UpcomingProjects)}
                 {UpcomingProjects.length === 0 ? <CustomSkeleton /> : (
-                  <CommonProject data={UpcomingProjects.slice(0, 4)} title="New Launch Projects in Gurgaon" animation="fade-down" path={"/projects/newlaunch/"} compact />
+                  <ProjectsSlider 
+                    projects={UpcomingProjects} 
+                    title="New Launch Projects in Gurgaon" 
+                    animation="fade-down" 
+                    path={"/projects/newlaunch/"} 
+                    compact 
+                  />
                 )}
               </div>
 
@@ -780,7 +1172,13 @@ const Home = () => {
               <div ref={setRef("luxury")} data-section="luxury" style={{ height: "10px" }}></div>
               <div>
                 {LuxuryAllProject.length === 0 ? <CustomSkeleton /> : (
-                  <CommonProject data={LuxuryAllProject.slice(0, 4)} title="Top Luxury Apartments For You" animation="fade-up" path={"/top-luxury-projects/"} compact />
+                  <ProjectsSlider 
+                    projects={LuxuryAllProject} 
+                    title="Top Luxury Apartments For You" 
+                    animation="fade-up" 
+                    path={"/top-luxury-projects/"} 
+                    compact 
+                  />
                 )}
               </div>
 
@@ -789,7 +1187,12 @@ const Home = () => {
               <div ref={setRef("budget")} data-section="budget" style={{ height: "10px" }}></div>
               <div>
                 {BudgetHomesProjects.length === 0 ? <CustomSkeleton /> : (
-                  <CommonProject data={BudgetHomesProjects} title="Best Budget Projects in Gurugram" animation="flip-left" compact />
+                  <ProjectsSlider 
+                    projects={BudgetHomesProjects} 
+                    title="Best Budget Projects in Gurugram" 
+                    animation="flip-left" 
+                    compact 
+                  />
                 )}
               </div>
 
@@ -797,7 +1200,13 @@ const Home = () => {
               <div ref={setRef("SCO")} data-section="SCO" style={{ height: "10px" }}></div>
               <div>
                 {SCOProjects.length === 0 ? <CustomSkeleton /> : (
-                  <CommonProject data={SCOProjects.slice(0, 4)} title="SCO Projects in Gurugram" animation="flip-left" path="/projects/sco-plots/" compact />
+                  <ProjectsSlider 
+                    projects={SCOProjects} 
+                    title="SCO Projects in Gurugram" 
+                    animation="flip-left" 
+                    path="/projects/sco-plots/" 
+                    compact 
+                  />
                 )}
               </div>
               {/* farmhouses */}
@@ -806,18 +1215,26 @@ const Home = () => {
               <div>
                 {console.log("🏡 Farmhouse Projects Data:", FarmhouseProjects, "Length:", FarmhouseProjects.length)}
                 {FarmhouseProjects.length === 0 ? <CustomSkeleton /> : (
-                  <CommonProject data={FarmhouseProjects.slice(0, 4)} title="Naugaon Farm Houses" animation="flip-left" path="/projects/farmhouses/" compact />
+                  <ProjectsSlider 
+                    projects={FarmhouseProjects} 
+                    title="Naugaon Farm Houses" 
+                    animation="flip-left" 
+                    path="/projects/farmhouses/" 
+                    compact 
+                  />
                 )}
               </div>
 
               <SpacesAvailable />
-              <BudgetPlotsInGurugraon />
+              <Suspense fallback={<CustomSkeleton />}>
+                <BudgetPlotsInGurugraon />
+              </Suspense>
 
               {/* Commercial Projects */}
               <div ref={setRef("commercial")} data-section="commercial" style={{ height: "10px" }}></div>
               <div>
                 {CommercialProjects.length === 0 ? <CustomSkeleton /> : (
-                  <CommonProject data={CommercialProjects.slice(0, 4)} title="Commercial Projects in Delhi NCR" animation="fade-down" path="/projects/commercial/" compact />
+                  <CommercialProjectsSlider projects={CommercialProjects} />
                 )}
               </div>
 
@@ -873,7 +1290,7 @@ const Home = () => {
                             featuredScrollRef.current.scrollBy({ left: 276, behavior: 'smooth' });
                           }
                         }}
-                        className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-black text-white rounded-full w-10 h-10 flex items-center justify-center hover:bg-gray-800 transition-colors duration-300 z-10 shadow-lg"
+                        className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white/90 backdrop-blur-sm text-gray-700 rounded-full w-10 h-10 flex items-center justify-center hover:bg-white hover:text-gray-900 transition-all duration-300 z-10 shadow-lg border border-gray-200"
                         aria-label="Next featured projects"
                       >
                         <svg
@@ -898,7 +1315,7 @@ const Home = () => {
                             featuredScrollRef.current.scrollBy({ left: -276, behavior: 'smooth' });
                           }
                         }}
-                        className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-black text-white rounded-full w-10 h-10 flex items-center justify-center hover:bg-gray-800 transition-colors duration-300 z-10 shadow-lg"
+                        className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white/90 backdrop-blur-sm text-gray-700 rounded-full w-10 h-10 flex items-center justify-center hover:bg-white hover:text-gray-900 transition-all duration-300 z-10 shadow-lg border border-gray-200"
                         aria-label="Previous featured projects"
                       >
                         <svg
@@ -944,19 +1361,29 @@ const Home = () => {
                 )}
               </div> */}
 
-              <Builder />
+              <Suspense fallback={<CustomSkeleton />}>
+                <Builder />
+              </Suspense>
+              <Suspense fallback={<CustomSkeleton />}>
               <OurServices />
+            </Suspense>
+            <Suspense fallback={<CustomSkeleton />}>
               <WhyChoose />
+            </Suspense>
 
+            </div>
             </div>
             {/* Main content */}
           </div> {/* Closing div for the grid container */}
-        </div> {/* Closing div for the blur container */}
 
         {/* Blog Section - Responsive Index */}
-        <BlogIndex />
+        <Suspense fallback={<CustomSkeleton />}>
+          <BlogIndex />
+        </Suspense>
 
-        <TestimonialIndex />
+        <Suspense fallback={<CustomSkeleton />}>
+          <TestimonialIndex />
+        </Suspense>
 
         {/* Auth Modal for login/register */}
         <AuthModal open={authOpen} onClose={() => setAuthOpen(false)} defaultView={authDefaultView} />
@@ -964,14 +1391,12 @@ const Home = () => {
         {/* Floating Shorts */}
         {/* <FloatingShorts /> */}
 
-
-
         <Footer />
+        </div> {/* Closing div for the blur container */}
 
       </main>
     </Wrapper>
   );
-
 }
 
 export default Home;

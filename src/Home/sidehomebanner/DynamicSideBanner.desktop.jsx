@@ -37,6 +37,8 @@ const DynamicSideBannerDesktop = () => {
         <img 
           src="Images/M3M Elie Saab Banner Vertical Resized copy3 (1).webp" 
           alt="Premium Real Estate Banner" 
+          loading="lazy"
+          decoding="async"
           className="w-full h-full object-cover"
         />
       </div>
@@ -63,6 +65,8 @@ const DynamicSideBannerDesktop = () => {
         <img 
           src={currentBanner.image.cdn_url || currentBanner.image.url}
           alt={currentBanner.title || 'Side Banner'}
+          loading="lazy"
+          decoding="async"
           className="w-full h-full object-cover"
         />
       ) : (

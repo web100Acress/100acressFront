@@ -166,7 +166,7 @@ const LocationSection = ({
           <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-gradient-to-br from-amber-500 to-amber-600 rounded-full blur-3xl animate-float"></div>
           <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-gradient-to-tl from-blue-400 to-blue-500 rounded-full blur-3xl animate-float animation-delay-2000"></div>
         </div>
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-amber-500/3 to-transparent"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-black to-transparent"></div>
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

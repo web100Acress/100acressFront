@@ -96,7 +96,7 @@ const HomeDesktopBlog = () => {
           transition={{ duration: 0.8 }}
         >
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 bg-clip-text text-transparent leading-tight mb-3">
-            <span className="text-red-600">Our </span> Latest Blogs
+            <span className="text-red-600">NEWS</span> AND <span className="text-red-600">ARTICLES</span>
           </h2>
           <div className="h-1.5 w-32 bg-gradient-to-r from-red-500 to-red-600 rounded-full mb-4"></div>
 
@@ -142,6 +142,8 @@ const HomeDesktopBlog = () => {
                     <img
                       src={featuredBlog.blog_Image?.url || FALLBACK_IMG}
                       alt={featuredBlog.blog_Image?.alt || featuredBlog.blog_Title}
+                      loading="lazy"
+                      decoding="async"
                       className="w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
                       onError={onImgError}
                       style={{ objectFit: 'cover', objectPosition: 'center' }}
@@ -228,6 +230,8 @@ const HomeDesktopBlog = () => {
                       <img
                         src={blog.blog_Image?.url || FALLBACK_IMG}
                         alt={blog.blog_Title}
+                        loading="lazy"
+                        decoding="async"
                         className="w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
                         onError={onImgError}
                         style={{ objectFit: 'cover', objectPosition: 'center' }}

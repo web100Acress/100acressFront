@@ -621,6 +621,8 @@ const Api_service = () => {
           dispatch(godrej(BuilderbyQuery));
           break;
         case 'whiteland':
+        case 'whiteland corporation':
+        case 'Whiteland Corporation':
           dispatch(whiteland(BuilderbyQuery));
           break;
         case 'aipl':
