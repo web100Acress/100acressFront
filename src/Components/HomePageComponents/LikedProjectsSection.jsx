@@ -104,6 +104,8 @@ const LikedProjectsSection = () => {
                       src={p.image}
                       alt={p.title || "Project"}
                       className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                      loading="lazy"
+                      decoding="async"
                     />
                   ) : (
                     <div className="w-full h-full bg-gray-100" />
@@ -194,6 +196,8 @@ const LikedProjectsSection = () => {
                       src={project.image}
                       alt={project.title}
                       className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                      loading="lazy"
+                      decoding="async"
                     />
                     {project.tag && (
                       <span className="absolute top-2 left-2 bg-red-600 text-white text-xs px-2 py-1 rounded">

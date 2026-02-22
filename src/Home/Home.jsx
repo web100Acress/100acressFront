@@ -2,11 +2,9 @@ import React, { Suspense, useCallback, useEffect, useMemo, useRef, useState, use
 // import PopupForm from "./HomePages/PopupForm";
 import Cities from "./Cities/Cities";
 // import FormHome from "../Components/HomePageComponents/FormHome";
-import WhyChoose from "./WhyChoose/WhyChoose";
 import SpacesAvailable from "../Components/HomePageComponents/Spaces";
 import SearchBar from "./SearchBar/SearchBar";
 import styled from "styled-components";
-import OurServices from "./Services/ourServices";
 import { Helmet } from "react-helmet";
 // import Footer from "../Components/Actual_Components/Footer";
 import Footer from "../Components/Actual_Components/Footer";
@@ -14,14 +12,10 @@ import AuthModal from "../Resister/AuthModal";
 import { Link } from "react-router-dom";
 // import BackToTopButton from "./BackToTopButton";
 // import PossessionProperty from "../Components/PossessionProperty";
-import BudgetPlotsInGurugraon from "../Pages/BudgetPlotsInGurugraon";
-// import TopSeoPlots from "./TopSeoPlots";
 import { useMediaQuery } from "@chakra-ui/react";
 import { EyeIcon, HomeIcon, MessageCircle, PhoneIcon, User as UserIcon, ArrowUpRight } from "lucide-react";
-import ModernRecommendedSection from "./Recomended/ModernRecommendedSection";
 import AOS from 'aos';
 import 'aos/dist/aos.css';
-import Builder from "./Builder/Builder";
 import CustomSkeleton from "../Utils/CustomSkeleton";
 import CommonProject from "../Utils/CommonProject";
 // import Builderaction from "./HomePages/Builderaction";
@@ -31,13 +25,20 @@ import { useSelector } from "react-redux";
 import { AuthContext } from "../AuthContext";
 // import FloatingShorts from "../aadharhomes/BannerPage/updatedbannerpage/components/youtubeshorts";
 import DynamicHeroBanner from "./HeroBanner/largebanner/DynamicHeroBanner";
-import DynamicSideBanner from "./sidehomebanner";
-import TestimonialIndex from "./Testimonial";
-import BlogIndex from "./Blog/index";
 // import Tesimonial from "../Components/HomePageComponents/Tesimonial";
 
+// Lazy load heavy components
+const BudgetPlotsInGurugraon = React.lazy(() => import("../Pages/BudgetPlotsInGurugraon"));
+const Builder = React.lazy(() => import("./Builder/Builder"));
+const ModernRecommendedSection = React.lazy(() => import("./Recomended/ModernRecommendedSection"));
+const OurServices = React.lazy(() => import("./Services/ourServices"));
+const WhyChoose = React.lazy(() => import("./WhyChoose/WhyChoose"));
+const TestimonialIndex = React.lazy(() => import("./Testimonial"));
+const BlogIndex = React.lazy(() => import("./Blog/index"));
+const DynamicSideBanner = React.lazy(() => import("./sidehomebanner"));
+
 // Generic Projects Slider Component with navigation and auto-scroll (mobile only)
-const ProjectsSlider = ({ projects, title, animation, path, compact = true }) => {
+const ProjectsSlider = React.memo(({ projects, title, animation, path, compact = true }) => {
   const scrollRef = useRef(null);
   const [showLeftButton, setShowLeftButton] = useState(false);
   const [isAutoScrolling, setIsAutoScrolling] = useState(true);
@@ -209,10 +210,10 @@ const ProjectsSlider = ({ projects, title, animation, path, compact = true }) =>
       </div>
     </div>
   );
-};
+});
 
 // Commercial Projects Slider Component with navigation and auto-scroll (mobile only)
-const CommercialProjectsSlider = ({ projects }) => {
+const CommercialProjectsSlider = React.memo(({ projects }) => {
   const scrollRef = useRef(null);
   const [showLeftButton, setShowLeftButton] = useState(false);
   const [isAutoScrolling, setIsAutoScrolling] = useState(true);
@@ -384,7 +385,7 @@ const CommercialProjectsSlider = ({ projects }) => {
       </div>
     </div>
   );
-};
+});
 
 const Home = () => {
   // const [showConfetti, setShowConfetti] = useState(true);
@@ -404,7 +405,7 @@ const Home = () => {
   const [path, setPath] = useState(null);
 
   const [resalesectionvisible, SetResaleSectionVisible] = useState(false);
-
+  const [isFirstLoad, setIsFirstLoad] = useState(true);
 
   const [isPopupActive, setIsPopupActive] = useState(false)
 
@@ -788,7 +789,11 @@ const Home = () => {
   }, [activeFilter, memoizedProjects, path]);
 
   useEffect(() => {
-    AOS.init();
+    // Defer AOS to prevent blocking initial render
+    const timer = setTimeout(() => {
+      AOS.init();
+    }, 1000);
+    return () => clearTimeout(timer);
   }, []);
 
   useEffect(() => {
@@ -797,6 +802,16 @@ const Home = () => {
     }, 100);
 
   }, [activeFilter]);
+
+  // Fast loading state - hide skeleton quickly
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsFirstLoad(false);
+      setIsContentReady(true);
+    }, 100); // Ultra fast - 100ms
+
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -870,6 +885,10 @@ const Home = () => {
           100acress.com - Buy Property in India & Dubai | Trusted Real Estate Platform
         </title>
         <link rel="canonical" href="https://www.100acress.com/" />
+        {/* Preconnect to critical domains */}
+        <link rel="preconnect" href="https://d16gdc5rm7f21b.cloudfront.net" />
+        <link rel="dns-prefetch" href="https://d16gdc5rm7f21b.cloudfront.net" />
+        <link rel="preconnect" href="https://www.100acress.com" />
       </Helmet>
       {/* Visually hidden H1 for correct heading order without affecting layout */}
       <h1 className="sr-only">100acress Real Estate in Gurgaon – Buy, Rent, Sell & New Launch Projects</h1>
@@ -903,12 +922,26 @@ const Home = () => {
         ${isPopupActive ? 'blur-sm pointer-events-none select-none' : ''}
       `}>
 
-          <div className="relative">
+          {/* Minimal loading state to prevent white space */}
+          {isFirstLoad && (
+            <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+              <div className="animate-pulse">
+                <div className="h-32 bg-gray-100"></div>
+                <div className="h-64 bg-gray-50"></div>
+                <div className="h-32 bg-gray-100"></div>
+              </div>
+            </div>
+          )}
+
+          <div className={isFirstLoad ? 'opacity-0 absolute' : 'opacity-100 relative'}>
+            <div className="relative">
             {/* Removed themed overlay */}
 
             <div className="relative">
               {/* <SpotlightBanner /> */}
+              <Suspense fallback={<CustomSkeleton />}>
               <ModernRecommendedSection />
+            </Suspense>
             </div>
           </div>
 
@@ -920,7 +953,9 @@ const Home = () => {
               <div style={{ height: asideSpacerHeight ? `${asideSpacerHeight}px` : undefined }} />
               <div ref={asideInnerRef} style={asideStyle} className="space-y-4">
                 {/* Dynamic Side Banner */}
+                <Suspense fallback={<div className="animate-pulse bg-gray-200 h-64 rounded-lg" />}>
                 <DynamicSideBanner />
+              </Suspense>
               </div>
             </aside>
 
@@ -1190,7 +1225,9 @@ const Home = () => {
               </div>
 
               <SpacesAvailable />
-              <BudgetPlotsInGurugraon />
+              <Suspense fallback={<CustomSkeleton />}>
+                <BudgetPlotsInGurugraon />
+              </Suspense>
 
               {/* Commercial Projects */}
               <div ref={setRef("commercial")} data-section="commercial" style={{ height: "10px" }}></div>
@@ -1323,19 +1360,29 @@ const Home = () => {
                 )}
               </div> */}
 
-              <Builder />
+              <Suspense fallback={<CustomSkeleton />}>
+                <Builder />
+              </Suspense>
+              <Suspense fallback={<CustomSkeleton />}>
               <OurServices />
+            </Suspense>
+            <Suspense fallback={<CustomSkeleton />}>
               <WhyChoose />
+            </Suspense>
 
+            </div>
             </div>
             {/* Main content */}
           </div> {/* Closing div for the grid container */}
-        </div> {/* Closing div for the blur container */}
 
         {/* Blog Section - Responsive Index */}
-        <BlogIndex />
+        <Suspense fallback={<CustomSkeleton />}>
+          <BlogIndex />
+        </Suspense>
 
-        <TestimonialIndex />
+        <Suspense fallback={<CustomSkeleton />}>
+          <TestimonialIndex />
+        </Suspense>
 
         {/* Auth Modal for login/register */}
         <AuthModal open={authOpen} onClose={() => setAuthOpen(false)} defaultView={authDefaultView} />
@@ -1343,14 +1390,12 @@ const Home = () => {
         {/* Floating Shorts */}
         {/* <FloatingShorts /> */}
 
-
-
         <Footer />
+        </div> {/* Closing div for the blur container */}
 
       </main>
     </Wrapper>
   );
-
 }
 
 export default Home;

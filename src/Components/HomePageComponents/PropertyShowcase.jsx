@@ -129,7 +129,7 @@ const Card = ({ item, $size, className, style }) => {
   if (!item) return null;
   return (
     <CardBox $size={$size} className={`card ${className || ''}`} style={style}>
-      <img src={item.image} alt={item.name} className="bg" />
+      <img src={item.image} alt={item.name} className="bg" loading="lazy" decoding="async" />
       <div className="overlay" />
       <div className="content">
         <h3>{item.name}</h3>

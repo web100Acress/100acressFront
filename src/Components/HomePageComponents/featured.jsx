@@ -26,6 +26,8 @@ function FeaturedSection() {
                 src={elem.photo[0].url}
                 alt='builder Image'
                 className='rounded'
+                loading="lazy"
+                decoding="async"
               />
             </div>
             <div className='pad'>

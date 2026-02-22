@@ -6,6 +6,8 @@ import { styled } from "styled-components";
 import { Routes, Route, Navigate, Link, useLocation } from "react-router-dom";
 import { DataProvider } from "./MyContext";
 import { AuthProvider } from "./AuthContext";
+import { Provider } from "react-redux";
+import AppStore from "./Redux/store/AppStore";
 import { Toaster } from "./Components/ui/Toaster";
 import { Toaster as Sonner } from "./Components/ui/sonner";
 import { Toaster as HotToaster } from "react-hot-toast";
@@ -53,7 +55,7 @@ const Activity = lazy(() => import("./Pages/Activity"));
 const CareerWithUs = lazy(() => import("./Pages/CareerWithUs"));
 const UserEditProperty = lazy(() => import("./Pages/UserEditProperty"));
 const Blogging = lazy(() => import("./Components/Blog_Components/Blog/pages/desktop/Blogging"));
-import ModernBlogPage from "./Components/Blog_Components/Blog/update/desktop/ModernBlogPage";
+const ModernBlogPage = lazy(() => import("./Components/Blog_Components/Blog/update/desktop/ModernBlogPage"));
 const ProjectStatusSearch = lazy(() => import("./Pages/ProjectStatusSearch"));
 // Global Template Components
 const ProjectStatusSearchGlobal = lazy(() => import("./Pages/ProjectStatusSearch/ProjectStatusSearchGlobal"));
@@ -63,9 +65,9 @@ const DeenDayalPlots = lazy(() => import("./Components/HomePageComponents/DeenDa
 const NewsandArtical = lazy(() => import("./Pages/NewsandArtical"));
 const UserDashBoard = lazy(() => import("./Components/HomePageComponents/UserDashBoard"));
 const UserEdit = lazy(() => import("./Components/HomePageComponents/UserEdit"));
-import ModernBlogView from "./Components/Blog_Components/Blog/update/desktop/ModernBlogView";
-import AuthorPage from "./Components/Blog_Components/Blog/update/desktop/AuthorPage";
-import AuthorProfileUpdate from "./Components/Blog_Components/Blog/update/desktop/AuthorProfileUpdate";
+const ModernBlogView = lazy(() => import("./Components/Blog_Components/Blog/update/desktop/ModernBlogView"));
+const AuthorPage = lazy(() => import("./Components/Blog_Components/Blog/update/desktop/AuthorPage"));
+const AuthorProfileUpdate = lazy(() => import("./Components/Blog_Components/Blog/update/desktop/AuthorProfileUpdate"));
 const BlogInsights = lazy(() => import("./Components/Blog_Components/Blog/insights/desktop/BlogInsights"));
 const GurugramPrimeLocation = lazy(() => import("./Pages/GurugramPrimeLocation"));
 // Per-city pages are now handled by CityProjects; imports removed
@@ -290,10 +292,11 @@ function App() {
 
   return (
     <>
-      <DataProvider>
-        <AuthProvider>
-          <TooltipProvider>
-            <QueryClientProvider client={queryClient}>
+      <Provider store={AppStore}>
+        <DataProvider>
+          <AuthProvider>
+            <TooltipProvider>
+              <QueryClientProvider client={queryClient}>
               <ErrorBoundary>
                 <Suspense fallback={<LoadingSpinner />}>
                   <Toaster position="top-center" />
@@ -794,6 +797,7 @@ function App() {
           {!isProjectPage && <MobileBottomNav />}
         </AuthProvider>
       </DataProvider>
+      </Provider>
     </>
   );
 }

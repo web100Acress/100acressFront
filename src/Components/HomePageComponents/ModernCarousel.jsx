@@ -163,6 +163,7 @@ const PropertyCard = ({ property }) => {
           alt={property?.projectName}
           className="property-image"
           loading="lazy"
+          decoding="async"
         />
         
         {/* Image Overlay */}

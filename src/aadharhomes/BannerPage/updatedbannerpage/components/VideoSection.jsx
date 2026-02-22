@@ -119,10 +119,16 @@ const VideoSection = ({
             <div className="relative aspect-video">
               {!isVideoLoaded && (
                 <div 
-                  className="absolute inset-0 bg-cover bg-center cursor-pointer group"
-                  style={{ backgroundImage: `url(${backgroundImage || thumbnailUrl})` }}
+                  className="absolute inset-0 cursor-pointer group"
                   onClick={() => setIsVideoLoaded(true)}
                 >
+                  <img 
+                    src={backgroundImage || thumbnailUrl}
+                    alt="Video thumbnail"
+                    loading="lazy"
+                    decoding="async"
+                    className="absolute inset-0 w-full h-full object-cover"
+                  />
                   {/* Dark overlay */}
                   <div className="absolute inset-0 bg-black/40 group-hover:bg-black/30 transition-all duration-300"></div>
                   

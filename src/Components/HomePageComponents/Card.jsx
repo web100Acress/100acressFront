@@ -60,6 +60,8 @@ const [trendingProject, setTrendingProject] = useState([]);
                   src={item.frontImage.url}
                   alt='image'
                   className="w-100 h-100 object-cover"
+                  loading="lazy"
+                  decoding="async"
                 />
               </div>
               <div className='eoiU d-flex align-items-center'>

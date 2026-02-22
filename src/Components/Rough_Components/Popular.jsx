@@ -8,28 +8,28 @@ function Popular() {
       <h3>Popular Projects</h3>
       <div className="flexContainer">
           <div className="flex1">
-                <img src="https://img.etimg.com/photo/msid-92893855,imgsize-998731/M3M-Golfestate-pic.jpg" alt="" loading="lazy"/>
+                <img src="https://img.etimg.com/photo/msid-92893855,imgsize-998731/M3M-Golfestate-pic.jpg" alt="" loading="lazy" decoding="async"/>
                 <div className="pad">
                 <p>M3M Urbana . D22</p>
                 <p className='sub'>Gurgaon '2022 .206 units</p>
               </div>
             </div>
           <div className="flex1">
-          <img src="https://img.etimg.com/photo/msid-92893855,imgsize-998731/M3M-Golfestate-pic.jpg"  loading="lazy" alt="" />
+          <img src="https://img.etimg.com/photo/msid-92893855,imgsize-998731/M3M-Golfestate-pic.jpg"  loading="lazy" decoding="async" alt="" />
           <div className="pad">
                 <p>M3M Urbana . D22</p>
                 <p className='sub'>Gurgaon '2022 .206 units</p>
               </div>
             </div>
           <div className="flex1">
-          <img src="https://img.etimg.com/photo/msid-92893855,imgsize-998731/M3M-Golfestate-pic.jpg" loading="lazy" alt="" />
+          <img src="https://img.etimg.com/photo/msid-92893855,imgsize-998731/M3M-Golfestate-pic.jpg" loading="lazy" decoding="async" alt="" />
           <div className="pad">
           <p>M3M Urbana . D22</p>
           <p className='sub'>Gurgaon '2022 .206 units</p>
         </div>
       </div>
           <div className="flex1">
-          <img src="https://img.etimg.com/photo/msid-92893855,imgsize-998731/M3M-Golfestate-pic.jpg" loading="lazy" alt="" />
+          <img src="https://img.etimg.com/photo/msid-92893855,imgsize-998731/M3M-Golfestate-pic.jpg" loading="lazy" decoding="async" alt="" />
           <div className="pad">
           <p>M3M Urbana . D22</p>
           <p className='sub'>Gurgaon '2022 .206 units</p>

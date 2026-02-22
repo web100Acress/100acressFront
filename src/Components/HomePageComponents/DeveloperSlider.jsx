@@ -268,6 +268,8 @@ function DeveloperSlider() {
                 height="100"
                 width="250"
                 alt=""
+                loading="lazy"
+                decoding="async"
               />
             </div>
           ))}

@@ -22,15 +22,7 @@ const ProjectHeroDesktop = ({
     return null;
   }
   // Only set background image if it exists
-  const backgroundStyle = useMemo(() => ({
-    ...(backgroundImage && { backgroundImage: `url(${backgroundImage})` }),
-    contentVisibility: 'auto',
-    containIntrinsicSize: '100vw 100vh',
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-    backgroundRepeat: 'no-repeat',
-    backgroundColor: backgroundImage ? 'transparent' : '#1a202c' // Dark background if no image
-  }), [backgroundImage]);
+  const hasBackgroundImage = !!backgroundImage;
 
   // Basic JSON-LD structured data describing the project hero entity
   const jsonLd = {
@@ -51,25 +43,19 @@ const ProjectHeroDesktop = ({
       {/* Structured data for search engines */}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       {/* Background Image */}
-      <div 
-        className="absolute inset-0 mt-16"
-        style={backgroundStyle}
-      >
-        {backgroundImage && (
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
-        )}
-      </div>
-      {/* Accessible image for SEO without changing visual BG */}
-      {backgroundImage && (
-        <img
-          src={backgroundImage}
-          alt={`${projectTitle} in ${location}`}
-          fetchpriority="high"
-          loading="eager"
-          width="1973"
-          height="1100"
-          className="sr-only"
-        />
+      {hasBackgroundImage && (
+        <>
+          <img
+            src={backgroundImage}
+            alt={`${projectTitle} in ${location}`}
+            fetchpriority="high"
+            loading="eager"
+            width="1973"
+            height="1100"
+            className="absolute inset-0 mt-16 w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 mt-16 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
+        </>
       )}
       
       {/* Top Bar - Glassy Navbar */}

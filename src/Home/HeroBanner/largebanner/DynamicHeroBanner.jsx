@@ -250,20 +250,30 @@ const DynamicHeroBanner = () => {
                       aria-label={banner.title}
                     >
                       <div
-                        className="hero-strip-99-dynamic"
+                        className="hero-strip-99-dynamic relative"
                         aria-hidden="true"
                         style={{
                           backfaceVisibility: "hidden",
-                          backgroundImage: imageUrl
-                            ? `url("${imageUrl}")`
-                            : 'url("/Images/m3m-jacob-noida-mobile.webp")',
-                          backgroundSize: "cover",
-                          backgroundPosition: "center",
-                          backgroundRepeat: "no-repeat",
                           height: "450px",
                           width: "100%",
                         }}
-                      />
+                      >
+                        <img
+                          src={imageUrl || "/Images/m3m-jacob-noida-mobile.webp"}
+                          alt={banner.title || "Property banner"}
+                          loading="eager"
+                          fetchpriority="high"
+                          width="1280"
+                          height="450"
+                          style={{
+                            objectFit: 'cover',
+                            position: 'absolute',
+                            inset: 0,
+                            width: '100%',
+                            height: '100%',
+                          }}
+                        />
+                      </div>
                       {/* Banner Content Overlay - Removed title and description */}
                       {/* Debug overlay to show if image is loading */}
                       {!imageUrl && (

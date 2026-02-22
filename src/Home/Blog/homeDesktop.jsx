@@ -142,6 +142,8 @@ const HomeDesktopBlog = () => {
                     <img
                       src={featuredBlog.blog_Image?.url || FALLBACK_IMG}
                       alt={featuredBlog.blog_Image?.alt || featuredBlog.blog_Title}
+                      loading="lazy"
+                      decoding="async"
                       className="w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
                       onError={onImgError}
                       style={{ objectFit: 'cover', objectPosition: 'center' }}
@@ -228,6 +230,8 @@ const HomeDesktopBlog = () => {
                       <img
                         src={blog.blog_Image?.url || FALLBACK_IMG}
                         alt={blog.blog_Title}
+                        loading="lazy"
+                        decoding="async"
                         className="w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
                         onError={onImgError}
                         style={{ objectFit: 'cover', objectPosition: 'center' }}

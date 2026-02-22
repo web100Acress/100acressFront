@@ -51,6 +51,8 @@ const ProjectCard = ({
               src={imageUrl}
               alt={project.projectName}
               className="w-full h-full object-cover rounded-t-lg sm:rounded-l-xl sm:rounded-t-none"
+              loading="lazy"
+              decoding="async"
             />
           </div>
           
@@ -115,6 +117,8 @@ const ProjectCard = ({
           src={imageUrl}
           alt={project.projectName}
           className="w-full h-40 sm:h-48 object-cover transition-transform duration-300 group-hover:scale-105"
+          loading="lazy"
+          decoding="async"
         />
         
         {/* Overlay Actions */}

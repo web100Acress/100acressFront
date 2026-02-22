@@ -78,12 +78,20 @@ const LuxuryFooter = () => {
     <>
       <motion.footer
         className="relative w-full min-w-full bg-gradient-to-br from-red-600 via-red-200 to-white overflow-hidden"
-        style={{ backgroundImage: "url('/Images/1.png')", backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.3 }}
         variants={footerVariants}
       >
+        {/* Background image - lazy loaded since footer is below fold */}
+        <img 
+          src="/Images/1.png"
+          alt=""
+          loading="lazy"
+          decoding="async"
+          className="absolute inset-0 w-full h-full object-cover -z-10"
+          aria-hidden="true"
+        />
         {/* Subtle Background Gradients and Orbs */}
         <div className="absolute inset-0 opacity-30">
           <div className="absolute top-10 left-1/4 w-40 h-40 bg-gradient-to-r from-red-400/20 to-red-300/20 rounded-full blur-2xl animate-pulse-slow"></div>

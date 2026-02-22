@@ -415,7 +415,7 @@ const UserEdit = () => {
               <div className="flex flex-col items-center sm:items-center">
                 <div className="w-24 h-24 rounded-full bg-gray-200 overflow-hidden flex items-center justify-center ring-2 ring-gray-200 shadow-sm">
                   {avatar ? (
-                    <img src={avatar} alt="avatar" className="w-full h-full object-cover" />
+                    <img src={avatar} alt="avatar" className="w-full h-full object-cover" loading="lazy" decoding="async" />
                   ) : (
                     <span className="text-gray-500 text-sm">No Photo</span>
                   )}
