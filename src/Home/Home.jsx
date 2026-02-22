@@ -405,6 +405,7 @@ const Home = () => {
   const [path, setPath] = useState(null);
 
   const [resalesectionvisible, SetResaleSectionVisible] = useState(false);
+  const [isFirstLoad, setIsFirstLoad] = useState(true);
 
   const [isPopupActive, setIsPopupActive] = useState(false)
 
@@ -798,6 +799,15 @@ const Home = () => {
 
   }, [activeFilter]);
 
+  // Fast loading state - only 300ms to hide white space
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsFirstLoad(false);
+    }, 300); // Very fast - just enough to hide white flash
+
+    return () => clearTimeout(timer);
+  }, []);
+
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -903,7 +913,19 @@ const Home = () => {
         ${isPopupActive ? 'blur-sm pointer-events-none select-none' : ''}
       `}>
 
-          <div className="relative">
+          {/* Minimal loading state to prevent white space */}
+          {isFirstLoad && (
+            <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+              <div className="animate-pulse">
+                <div className="h-32 bg-gray-100"></div>
+                <div className="h-64 bg-gray-50"></div>
+                <div className="h-32 bg-gray-100"></div>
+              </div>
+            </div>
+          )}
+
+          <div className={isFirstLoad ? 'opacity-0 absolute' : 'opacity-100 relative'}>
+            <div className="relative">
             {/* Removed themed overlay */}
 
             <div className="relative">
@@ -1350,6 +1372,9 @@ const Home = () => {
 
 
         <Footer />
+
+          </div> {/* Close the opacity div */}
+        </div> {/* Close the blurred wrapper */}
 
       </main>
     </Wrapper>
