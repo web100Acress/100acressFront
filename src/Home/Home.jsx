@@ -2,7 +2,7 @@ import React, { Suspense, useCallback, useEffect, useMemo, useRef, useState, use
 // import PopupForm from "./HomePages/PopupForm";
 import Cities from "./Cities/Cities";
 // import FormHome from "../Components/HomePageComponents/FormHome";
-import WhyChoose from "../Components/HomePageComponents/WhyChoose";
+import WhyChoose from "./WhyChoose/WhyChoose";
 import SpacesAvailable from "../Components/HomePageComponents/Spaces";
 import SearchBar from "./SearchBar/SearchBar";
 import styled from "styled-components";
@@ -35,6 +35,356 @@ import DynamicSideBanner from "./sidehomebanner";
 import TestimonialIndex from "./Testimonial";
 import BlogIndex from "./Blog/index";
 // import Tesimonial from "../Components/HomePageComponents/Tesimonial";
+
+// Generic Projects Slider Component with navigation and auto-scroll (mobile only)
+const ProjectsSlider = ({ projects, title, animation, path, compact = true }) => {
+  const scrollRef = useRef(null);
+  const [showLeftButton, setShowLeftButton] = useState(false);
+  const [isAutoScrolling, setIsAutoScrolling] = useState(true);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const autoScrollIntervalRef = useRef(null);
+
+  // Check screen size
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const handleScroll = () => {
+    if (scrollRef.current) {
+      setShowLeftButton(scrollRef.current.scrollLeft > 0);
+    }
+  };
+
+  const scroll = (direction) => {
+    if (scrollRef.current) {
+      const scrollAmount = 286; // Card width (260px) + gap (16px) + extra margin (10px)
+      scrollRef.current.scrollBy({
+        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        behavior: 'smooth'
+      });
+      // Pause auto-scroll when user manually scrolls
+      setIsAutoScrolling(false);
+      setTimeout(() => setIsAutoScrolling(true), 5000);
+    }
+  };
+
+  const startAutoScroll = () => {
+    if (autoScrollIntervalRef.current) {
+      clearInterval(autoScrollIntervalRef.current);
+    }
+    
+    autoScrollIntervalRef.current = setInterval(() => {
+      if (scrollRef.current && isAutoScrolling && isMobile) {
+        const maxScroll = scrollRef.current.scrollWidth - scrollRef.current.clientWidth;
+        const currentScroll = scrollRef.current.scrollLeft;
+        
+        if (currentScroll >= maxScroll - 10) {
+          // Reached the end, scroll back to start
+          scrollRef.current.scrollTo({ left: 0, behavior: 'smooth' });
+        } else {
+          // Scroll to next card
+          scrollRef.current.scrollBy({ left: 286, behavior: 'smooth' });
+        }
+      }
+    }, 3000); // Auto-scroll every 3 seconds
+  };
+
+  const stopAutoScroll = () => {
+    if (autoScrollIntervalRef.current) {
+      clearInterval(autoScrollIntervalRef.current);
+    }
+  };
+
+  useEffect(() => {
+    const container = scrollRef.current;
+    if (container && isMobile) {
+      container.addEventListener('scroll', handleScroll);
+      handleScroll(); // Initial check
+      
+      // Start auto-scroll
+      startAutoScroll();
+      
+      return () => {
+        container.removeEventListener('scroll', handleScroll);
+        stopAutoScroll();
+      };
+    }
+  }, [isMobile]);
+
+  // Desktop view: show grid layout
+  if (!isMobile) {
+    return (
+      <CommonProject 
+        data={projects.slice(0, 4)} 
+        title={title} 
+        animation={animation} 
+        path={path} 
+        compact={compact} 
+      />
+    );
+  }
+
+  // Mobile view: show horizontal scrolling
+  return (
+    <div>
+      {/* Static Title */}
+      <div className="relative flex flex-col items-center justify-center text-center mb-4 mt-6 px-4">
+        <h2 className="text-2xl xl:text-4xl lg:text-3xl md:text-2xl text-[#111] font-bold font-['Rubik',sans-serif] mb-3">
+          {title}
+        </h2>
+        <div className="h-1.5 w-32 bg-gradient-to-r from-red-500 to-red-600 rounded-full"></div>
+      </div>
+      
+      {/* Scrollable Content */}
+      <div className="relative group">
+        <div
+          ref={scrollRef}
+          className="overflow-x-auto scrollbar-hide py-4"
+          style={{ width: '100%', scrollBehavior: 'smooth' }}
+        >
+          <div className="flex w-full">
+            <CommonProject
+              data={projects}
+              animation={animation}
+              path={path}
+              compact={compact}
+              showGrid={false}
+              slideView={true}
+              hideHeader={true}
+            />
+          </div>
+        </div>
+        
+        {/* Right Gradient Overlay */}
+        <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-white via-white/50 to-transparent z-[5] pointer-events-none"></div>
+
+        {/* Next Button */}
+        {projects.length > 0 && (
+          <button
+            onClick={() => scroll('right')}
+            className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-black text-white rounded-full w-10 h-10 flex items-center justify-center hover:bg-gray-800 transition-colors duration-300 z-10 shadow-lg"
+            aria-label="Next projects"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="w-5 h-5"
+            >
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </button>
+        )}
+        
+        {/* Previous Button */}
+        {projects.length > 0 && showLeftButton && (
+          <button
+            onClick={() => scroll('left')}
+            className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-black text-white rounded-full w-10 h-10 flex items-center justify-center hover:bg-gray-800 transition-colors duration-300 z-10 shadow-lg"
+            aria-label="Previous projects"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="w-5 h-5"
+            >
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </button>
+        )}
+      </div>
+    </div>
+  );
+};
+
+// Commercial Projects Slider Component with navigation and auto-scroll (mobile only)
+const CommercialProjectsSlider = ({ projects }) => {
+  const scrollRef = useRef(null);
+  const [showLeftButton, setShowLeftButton] = useState(false);
+  const [isAutoScrolling, setIsAutoScrolling] = useState(true);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const autoScrollIntervalRef = useRef(null);
+
+  // Check screen size
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const handleScroll = () => {
+    if (scrollRef.current) {
+      setShowLeftButton(scrollRef.current.scrollLeft > 0);
+    }
+  };
+
+  const scroll = (direction) => {
+    if (scrollRef.current) {
+      const scrollAmount = 286; // Card width (260px) + gap (16px) + extra margin (10px)
+      scrollRef.current.scrollBy({
+        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        behavior: 'smooth'
+      });
+      // Pause auto-scroll when user manually scrolls
+      setIsAutoScrolling(false);
+      setTimeout(() => setIsAutoScrolling(true), 5000);
+    }
+  };
+
+  const startAutoScroll = () => {
+    if (autoScrollIntervalRef.current) {
+      clearInterval(autoScrollIntervalRef.current);
+    }
+    
+    autoScrollIntervalRef.current = setInterval(() => {
+      if (scrollRef.current && isAutoScrolling && isMobile) {
+        const maxScroll = scrollRef.current.scrollWidth - scrollRef.current.clientWidth;
+        const currentScroll = scrollRef.current.scrollLeft;
+        
+        if (currentScroll >= maxScroll - 10) {
+          // Reached the end, scroll back to start
+          scrollRef.current.scrollTo({ left: 0, behavior: 'smooth' });
+        } else {
+          // Scroll to next card
+          scrollRef.current.scrollBy({ left: 286, behavior: 'smooth' });
+        }
+      }
+    }, 3000); // Auto-scroll every 3 seconds
+  };
+
+  const stopAutoScroll = () => {
+    if (autoScrollIntervalRef.current) {
+      clearInterval(autoScrollIntervalRef.current);
+    }
+  };
+
+  useEffect(() => {
+    const container = scrollRef.current;
+    if (container && isMobile) {
+      container.addEventListener('scroll', handleScroll);
+      handleScroll(); // Initial check
+      
+      // Start auto-scroll
+      startAutoScroll();
+      
+      return () => {
+        container.removeEventListener('scroll', handleScroll);
+        stopAutoScroll();
+      };
+    }
+  }, [isMobile]);
+
+  // Desktop view: show grid layout
+  if (!isMobile) {
+    return (
+      <CommonProject 
+        data={projects.slice(0, 4)} 
+        title="Commercial Projects in Delhi NCR" 
+        animation="fade-down" 
+        path="/projects/commercial/" 
+        compact 
+      />
+    );
+  }
+
+  // Mobile view: show horizontal scrolling
+  return (
+    <div>
+      {/* Static Title */}
+      <div className="relative flex flex-col items-center justify-center text-center mb-4 mt-6 px-4">
+        <h2 className="text-2xl xl:text-4xl lg:text-3xl md:text-2xl text-[#111] font-bold font-['Rubik',sans-serif] mb-3">
+          Commercial Projects in Delhi NCR
+        </h2>
+        <div className="h-1.5 w-32 bg-gradient-to-r from-red-500 to-red-600 rounded-full"></div>
+      </div>
+      
+      {/* Scrollable Content */}
+      <div className="relative group">
+        <div
+          ref={scrollRef}
+          className="overflow-x-auto scrollbar-hide py-4"
+          style={{ width: '100%', scrollBehavior: 'smooth' }}
+        >
+          <div className="flex w-full">
+            <CommonProject
+              data={projects}
+              animation="fade-down"
+              path="/projects/commercial/"
+              compact
+              showGrid={false}
+              slideView={true}
+              hideHeader={true}
+            />
+          </div>
+        </div>
+        
+        {/* Right Gradient Overlay */}
+        <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-white via-white/50 to-transparent z-[5] pointer-events-none"></div>
+
+        {/* Next Button */}
+        {projects.length > 0 && (
+          <button
+            onClick={() => scroll('right')}
+            className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-black text-white rounded-full w-10 h-10 flex items-center justify-center hover:bg-gray-800 transition-colors duration-300 z-10 shadow-lg"
+            aria-label="Next projects"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="w-5 h-5"
+            >
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </button>
+        )}
+        
+        {/* Previous Button */}
+        {projects.length > 0 && showLeftButton && (
+          <button
+            onClick={() => scroll('left')}
+            className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-black text-white rounded-full w-10 h-10 flex items-center justify-center hover:bg-gray-800 transition-colors duration-300 z-10 shadow-lg"
+            aria-label="Previous projects"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="w-5 h-5"
+            >
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </button>
+        )}
+      </div>
+    </div>
+  );
+};
 
 const Home = () => {
   // const [showConfetti, setShowConfetti] = useState(true);
@@ -772,7 +1122,13 @@ const Home = () => {
               <div>
                 {console.log("Upcoming Projects Data:", UpcomingProjects)}
                 {UpcomingProjects.length === 0 ? <CustomSkeleton /> : (
-                  <CommonProject data={UpcomingProjects.slice(0, 4)} title="New Launch Projects in Gurgaon" animation="fade-down" path={"/projects/newlaunch/"} compact />
+                  <ProjectsSlider 
+                    projects={UpcomingProjects} 
+                    title="New Launch Projects in Gurgaon" 
+                    animation="fade-down" 
+                    path={"/projects/newlaunch/"} 
+                    compact 
+                  />
                 )}
               </div>
 
@@ -780,7 +1136,13 @@ const Home = () => {
               <div ref={setRef("luxury")} data-section="luxury" style={{ height: "10px" }}></div>
               <div>
                 {LuxuryAllProject.length === 0 ? <CustomSkeleton /> : (
-                  <CommonProject data={LuxuryAllProject.slice(0, 4)} title="Top Luxury Apartments For You" animation="fade-up" path={"/top-luxury-projects/"} compact />
+                  <ProjectsSlider 
+                    projects={LuxuryAllProject} 
+                    title="Top Luxury Apartments For You" 
+                    animation="fade-up" 
+                    path={"/top-luxury-projects/"} 
+                    compact 
+                  />
                 )}
               </div>
 
@@ -789,7 +1151,12 @@ const Home = () => {
               <div ref={setRef("budget")} data-section="budget" style={{ height: "10px" }}></div>
               <div>
                 {BudgetHomesProjects.length === 0 ? <CustomSkeleton /> : (
-                  <CommonProject data={BudgetHomesProjects} title="Best Budget Projects in Gurugram" animation="flip-left" compact />
+                  <ProjectsSlider 
+                    projects={BudgetHomesProjects} 
+                    title="Best Budget Projects in Gurugram" 
+                    animation="flip-left" 
+                    compact 
+                  />
                 )}
               </div>
 
@@ -797,7 +1164,13 @@ const Home = () => {
               <div ref={setRef("SCO")} data-section="SCO" style={{ height: "10px" }}></div>
               <div>
                 {SCOProjects.length === 0 ? <CustomSkeleton /> : (
-                  <CommonProject data={SCOProjects.slice(0, 4)} title="SCO Projects in Gurugram" animation="flip-left" path="/projects/sco-plots/" compact />
+                  <ProjectsSlider 
+                    projects={SCOProjects} 
+                    title="SCO Projects in Gurugram" 
+                    animation="flip-left" 
+                    path="/projects/sco-plots/" 
+                    compact 
+                  />
                 )}
               </div>
               {/* farmhouses */}
@@ -806,7 +1179,13 @@ const Home = () => {
               <div>
                 {console.log("🏡 Farmhouse Projects Data:", FarmhouseProjects, "Length:", FarmhouseProjects.length)}
                 {FarmhouseProjects.length === 0 ? <CustomSkeleton /> : (
-                  <CommonProject data={FarmhouseProjects.slice(0, 4)} title="Naugaon Farm Houses" animation="flip-left" path="/projects/farmhouses/" compact />
+                  <ProjectsSlider 
+                    projects={FarmhouseProjects} 
+                    title="Naugaon Farm Houses" 
+                    animation="flip-left" 
+                    path="/projects/farmhouses/" 
+                    compact 
+                  />
                 )}
               </div>
 
@@ -817,7 +1196,7 @@ const Home = () => {
               <div ref={setRef("commercial")} data-section="commercial" style={{ height: "10px" }}></div>
               <div>
                 {CommercialProjects.length === 0 ? <CustomSkeleton /> : (
-                  <CommonProject data={CommercialProjects.slice(0, 4)} title="Commercial Projects in Delhi NCR" animation="fade-down" path="/projects/commercial/" compact />
+                  <CommercialProjectsSlider projects={CommercialProjects} />
                 )}
               </div>
 

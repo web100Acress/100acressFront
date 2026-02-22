@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { EyeIcon } from "lucide-react";
@@ -8,6 +8,67 @@ import { getBudgetPlots } from "../Utils/ProjectOrderData";
 
 const BudgetPlotsInGurugraon = () => {
   const [budgetPlots, setBudgetPlots] = useState([]);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const scrollRef = useRef(null);
+  const [showLeftButton, setShowLeftButton] = useState(false);
+  const [isAutoScrolling, setIsAutoScrolling] = useState(true);
+  const autoScrollIntervalRef = useRef(null);
+
+  // Check screen size
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const handleScroll = () => {
+    if (scrollRef.current) {
+      setShowLeftButton(scrollRef.current.scrollLeft > 0);
+    }
+  };
+
+  const scroll = (direction) => {
+    if (scrollRef.current) {
+      const scrollAmount = 286; // Card width + gap
+      scrollRef.current.scrollBy({
+        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        behavior: 'smooth'
+      });
+      // Pause auto-scroll when user manually scrolls
+      setIsAutoScrolling(false);
+      setTimeout(() => setIsAutoScrolling(true), 5000);
+    }
+  };
+
+  const startAutoScroll = () => {
+    if (autoScrollIntervalRef.current) {
+      clearInterval(autoScrollIntervalRef.current);
+    }
+    
+    autoScrollIntervalRef.current = setInterval(() => {
+      if (scrollRef.current && isAutoScrolling && isMobile) {
+        const maxScroll = scrollRef.current.scrollWidth - scrollRef.current.clientWidth;
+        const currentScroll = scrollRef.current.scrollLeft;
+        
+        if (currentScroll >= maxScroll - 10) {
+          // Reached the end, scroll back to start
+          scrollRef.current.scrollTo({ left: 0, behavior: 'smooth' });
+        } else {
+          // Scroll to next card
+          scrollRef.current.scrollBy({ left: 286, behavior: 'smooth' });
+        }
+      }
+    }, 3000); // Auto-scroll every 3 seconds
+  };
+
+  const stopAutoScroll = () => {
+    if (autoScrollIntervalRef.current) {
+      clearInterval(autoScrollIntervalRef.current);
+    }
+  };
 
   useEffect(() => {
     const loadBudgetPlots = async () => {
@@ -30,49 +91,159 @@ const BudgetPlotsInGurugraon = () => {
     loadBudgetPlots();
   }, []);
 
-  useEffect(() => { AOS.init(); }, []);
+  useEffect(() => { 
+    AOS.init(); 
+    
+    const container = scrollRef.current;
+    if (container && isMobile) {
+      container.addEventListener('scroll', handleScroll);
+      handleScroll(); // Initial check
+      
+      // Start auto-scroll
+      startAutoScroll();
+      
+      return () => {
+        container.removeEventListener('scroll', handleScroll);
+        stopAutoScroll();
+      };
+    }
+  }, [isMobile]);
 
+  // Desktop view: show grid layout
+  if (!isMobile) {
+    return (
+      <Wrapper className="section">
+        <div data-aos="zoom-in-up" className="container" style={{ boxShadow: "0px 0px 0px 0px #0000001a" }}>
+          <div className="relative flex flex-col items-center justify-center text-center mb-4 mt-6 px-4">
+            <h2 className="text-3xl xl:text-4xl lg:text-3xl md:text-2xl font-extrabold mb-3 text-neutral-900">
+                      <span className="bg-gradient-to-r from-[#f43f5e] to-[#dc2626] bg-clip-text text-transparent">Best Budget</span>
+                      <span> Plots in Gurugram</span>
+            </h2>
+            <div className="h-1.5 w-32 bg-gradient-to-r from-red-500 to-red-600 rounded-full"></div>
+          </div>
+          <div className="grid  lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-1 grid-cols-1 mx-0 gap-3 lg:gap-4 pb-2 pt-3">
+            {budgetPlots.length === 0 ? (
+              <div className="col-span-full text-center py-8">
+                <div className="text-gray-500">Loading budget plots...</div>
+              </div>
+            ) : (
+              budgetPlots.slice(0, 4).map((project, index) => (
+                <Link to={project.link} key={index} className="card group" aria-label={project.title}>
+                  <div className="card-image-wrapper">
+                    <img
+                      src={project.image}
+                      alt={project.title}
+                      loading="lazy"
+                      className="card-image transition-transform duration-300 group-hover:scale-105"
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = '../../Images/logo.png';
+                      }}
+                    />
+                  </div>
+                  <button className="card-button bg-red-600 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-500/30 transition-all duration-300">{project.title}</button>
+                </Link>
+              ))
+            )}
+          </div>
+        </div>
+      </Wrapper>
+    );
+  }
+
+  // Mobile view: show horizontal scrolling
   return (
     <Wrapper className="section">
       <div data-aos="zoom-in-up" className="container" style={{ boxShadow: "0px 0px 0px 0px #0000001a" }}>
         <div className="relative flex flex-col items-center justify-center text-center mb-4 mt-6 px-4">
           <h2 className="text-3xl xl:text-4xl lg:text-3xl md:text-2xl font-extrabold mb-3 text-neutral-900">
-            <span className="bg-gradient-to-r from-[#f43f5e] to-[#dc2626] bg-clip-text text-transparent">Best Budget</span>
-            <span> Plots in Gurugram</span>
+                    <span className="bg-gradient-to-r from-[#f43f5e] to-[#dc2626] bg-clip-text text-transparent">Best Budget</span>
+                    <span> Plots in Gurugram</span>
           </h2>
           <div className="h-1.5 w-32 bg-gradient-to-r from-red-500 to-red-600 rounded-full"></div>
-          {/* <div className="absolute right-3 lg:right-6 xl:right-14 hidden sm:block">
-            <Link to="/projects/plots/" target="_top">
-              <span className="flex items-center text-white text-sm px-3 py-1.5 rounded-full bg-red-600 shadow-lg hover:shadow-xl transition-all duration-300">
-                <EyeIcon size={16} />
-                <span className="ml-2">View All</span>
-              </span>
-            </Link>
-          </div> */}
         </div>
-        <div className="grid  lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-1 grid-cols-1 mx-0 gap-3 lg:gap-4 pb-2 pt-3">
-          {budgetPlots.length === 0 ? (
-            <div className="col-span-full text-center py-8">
-              <div className="text-gray-500">Loading budget plots...</div>
-            </div>
-          ) : (
-            budgetPlots.map((project, index) => (
-              <Link to={project.link} key={index} className="card group" aria-label={project.title}>
-                <div className="card-image-wrapper">
-                  <img
-                    src={project.image}
-                    alt={project.title}
-                    loading="lazy"
-                    className="card-image transition-transform duration-300 group-hover:scale-105"
-                    onError={(e) => {
-                      e.target.onerror = null;
-                      e.target.src = '../../Images/logo.png';
-                    }}
-                  />
+        
+        {/* Scrollable Content */}
+        <div className="relative group">
+          <div
+            ref={scrollRef}
+            className="overflow-x-auto scrollbar-hide py-4"
+            style={{ width: '100%', scrollBehavior: 'smooth' }}
+          >
+            <div className="flex gap-3">
+              {budgetPlots.length === 0 ? (
+                <div className="text-center py-8 px-4">
+                  <div className="text-gray-500">Loading budget plots...</div>
                 </div>
-                <button className="card-button bg-red-600 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-500/30 transition-all duration-300">{project.title}</button>
-              </Link>
-            ))
+              ) : (
+                budgetPlots.map((project, index) => (
+                  <div key={index} className="flex-shrink-0 w-64">
+                    <Link to={project.link} className="card group" aria-label={project.title}>
+                      <div className="card-image-wrapper">
+                        <img
+                          src={project.image}
+                          alt={project.title}
+                          loading="lazy"
+                          className="card-image transition-transform duration-300 group-hover:scale-105"
+                          onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src = '../../Images/logo.png';
+                          }}
+                        />
+                      </div>
+                      <button className="card-button bg-red-600 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-500/30 transition-all duration-300">{project.title}</button>
+                    </Link>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+          
+          {/* Right Gradient Overlay */}
+          <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-white via-white/50 to-transparent z-[5] pointer-events-none"></div>
+
+          {/* Next Button */}
+          {budgetPlots.length > 0 && (
+            <button
+              onClick={() => scroll('right')}
+              className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-black text-white rounded-full w-10 h-10 flex items-center justify-center hover:bg-gray-800 transition-colors duration-300 z-10 shadow-lg"
+              aria-label="Next projects"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="w-5 h-5"
+              >
+                <polyline points="9 18 15 12 9 6"></polyline>
+              </svg>
+            </button>
+          )}
+          
+          {/* Previous Button */}
+          {budgetPlots.length > 0 && showLeftButton && (
+            <button
+              onClick={() => scroll('left')}
+              className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-black text-white rounded-full w-10 h-10 flex items-center justify-center hover:bg-gray-800 transition-colors duration-300 z-10 shadow-lg"
+              aria-label="Previous projects"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="w-5 h-5"
+              >
+                <polyline points="15 18 9 12 15 6"></polyline>
+              </svg>
+            </button>
           )}
         </div>
       </div>
