@@ -405,7 +405,6 @@ const Home = () => {
   const [path, setPath] = useState(null);
 
   const [resalesectionvisible, SetResaleSectionVisible] = useState(false);
-  const [isInitialLoading, setIsInitialLoading] = useState(true);
 
   const [isPopupActive, setIsPopupActive] = useState(false)
 
@@ -799,16 +798,6 @@ const Home = () => {
 
   }, [activeFilter]);
 
-  // Handle initial loading state
-  useEffect(() => {
-    // Hide loading after a short delay to allow components to mount
-    const timer = setTimeout(() => {
-      setIsInitialLoading(false);
-    }, 1500);
-
-    return () => clearTimeout(timer);
-  }, []);
-
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -887,17 +876,6 @@ const Home = () => {
       {/* Main landmark for primary content region */}
       <main id="main-content" role="main">
 
-        {/* Initial Loading Overlay */}
-        {isInitialLoading && (
-          <div className="fixed inset-0 bg-white z-50 flex items-center justify-center">
-            <div className="text-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black mx-auto mb-4"></div>
-              <p className="text-gray-600 text-lg font-medium">Loading 100acress...</p>
-              <p className="text-gray-400 text-sm mt-2">Finding your dream property</p>
-            </div>
-          </div>
-        )}
-
         <HeroBannerWrapper>
           {/* This is the div whose background you want to blur more */}
           <div
@@ -921,7 +899,7 @@ const Home = () => {
         {/* Reopen blurred wrapper for the rest of the content */}
         <div
           className={`
-        transition-filter duration-300 ease-in-out min-h-screen bg-gray-50
+        transition-filter duration-300 ease-in-out
         ${isPopupActive ? 'blur-sm pointer-events-none select-none' : ''}
       `}>
 
