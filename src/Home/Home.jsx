@@ -1373,13 +1373,13 @@ const Home = () => {
 
         <Footer />
 
-          </div> {/* Close the opacity div */}
-        </div> {/* Close the blurred wrapper */}
+          </div> {/* Close the main content div */}
+        </div> {/* Close the opacity div */}
+      </div> {/* Close the blurred wrapper */}
 
-      </main>
-    </Wrapper>
-  );
-
+    </main>
+  </Wrapper>
+);
 }
 
 export default Home;
