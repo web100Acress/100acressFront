@@ -1373,7 +1373,8 @@ const Home = () => {
 
         <Footer />
 
-          </div> {/* Close the main content div */}
+            </div> {/* Close the main content div */}
+          </div> {/* Close the grid layout div */}
         </div> {/* Close the opacity div */}
       </div> {/* Close the blurred wrapper */}
 
