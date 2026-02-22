@@ -417,7 +417,7 @@ const GurugramPrimeLocation = () => {
                 >
                   <div>
                     <img
-                      src={item.frontImage.url}
+                      src={item.frontImage?.url || '/fallback-image.jpg'}
                       alt="property In Gurugram"
                       className="w-full h-48 object-fit "
                     />
