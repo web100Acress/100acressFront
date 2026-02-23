@@ -570,9 +570,9 @@ function App() {
                         path="/property-in-gurugram/:location"
                         element={<GurugramPrimeLocation />}
                       />
+                      <Route path="/searchdata/:key" element={<SearchData />} />
                       <Route path="*" element={<PageNotFound />} />
                       <Route path="/contactmainpage" element={<ContactPage />} />
-                      <Route path="/searchdata/:key" element={<SearchData />} />
                       <Route path="/bptp-plots-gurugram/" element={<Bptp />} />
                       {/* <Route path="/orris-plots-gurugram/" element={<Orris />} /> */}
                       <Route path="/top-luxury-projects/" element={<LuxuryProject />} />
