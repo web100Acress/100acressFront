@@ -1,6 +1,13 @@
 import React, { useState, useEffect, useMemo } from "react";
+import axios from "axios";
 import { useLocation, Link } from "react-router-dom";
-import api from "../config/apiClient";
+
+// SearchData uses only api.100acress.com
+const searchApi = axios.create({
+  baseURL: "https://api.100acress.com",
+  timeout: 30000,
+  headers: { "Content-Type": "application/json", "Accept": "application/json" },
+});
 import Footer from "../Components/Actual_Components/Footer";
 import { Helmet } from "react-helmet";
 import { FiHeart, FiMapPin, FiHome, FiCalendar, FiCheck, FiX, FiFilter, FiChevronDown } from "react-icons/fi";
@@ -19,16 +26,22 @@ const SearchData = () => {
     decodedFormData = {};
   }
 
-  function getFormDataValues({ query, location, collectionName }) {
+  // Parse payload - supports navbar format { query, location: "", collectionName }
+  // and hero/searchbar format { query, location: {lat,lng}|string, collectionName, ... }
+  function getFormDataValues(payload) {
+    const query = typeof payload?.query === 'string' ? payload.query : '';
+    const loc = payload?.location;
+    const locationStr = typeof loc === 'string' ? loc : '';
+    const collectionName = payload?.collectionName ?? '';
     return {
       key1: query,
-      key2: location,
+      key2: locationStr,
       key3: collectionName,
     };
   }
 
   const { key1, key2, key3 } = getFormDataValues(decodedFormData);
-  // Build a clean search key. Prefer explicit text query; do not append undefined.
+  // Build search key - same logic as navbar (query is primary, location string if any)
   const key = [
     typeof key1 === 'string' ? key1 : '',
     typeof key2 === 'string' ? key2 : ''
@@ -55,7 +68,7 @@ const SearchData = () => {
     const fetchData = async () => {
       try {
         if (isEmptySearch) {
-          const allProjectsRes = await api.get(
+          const allProjectsRes = await searchApi.get(
             "/project/viewAll/data"
           );
           let allProjectsArr = (allProjectsRes.data.data || []).map((item) => ({
@@ -81,9 +94,9 @@ const SearchData = () => {
 
         // Always fetch from all endpoints for comprehensive search
         const [rentResult, saleResult, projectsResult] = await Promise.allSettled([
-          api.get("/property/rent/viewall"),
-          api.get("/property/buy/ViewAll"), // Note: capital V for buy endpoint
-          api.get("/project/viewAll/data")
+          searchApi.get("/property/rent/viewall"),
+          searchApi.get("/property/buy/ViewAll"), // Note: capital V for buy endpoint
+          searchApi.get("/project/viewAll/data")
         ]);
 
         console.log('API Results:', {
@@ -91,6 +104,32 @@ const SearchData = () => {
           sale: saleResult,
           projects: projectsResult
         });
+
+        // Debug: Log raw API responses
+        if (rentResult.status === "fulfilled") {
+          console.log('Rent API Raw Response:', rentResult.value?.data);
+          console.log('Rent Data Path:', rentResult.value?.data?.rentaldata);
+        } else {
+          console.error('Rent API Error:', rentResult.reason);
+        }
+
+        if (saleResult.status === "fulfilled") {
+          console.log('Sale API Raw Response:', saleResult.value?.data);
+          console.log('Sale Data Paths:', {
+            ResaleData: saleResult.value?.data?.ResaleData,
+            saledata: saleResult.value?.data?.saledata,
+            buydata: saleResult.value?.data?.buydata
+          });
+        } else {
+          console.error('Sale API Error:', saleResult.reason);
+        }
+
+        if (projectsResult.status === "fulfilled") {
+          console.log('Projects API Raw Response:', projectsResult.value?.data);
+          console.log('Projects Data Path:', projectsResult.value?.data?.data);
+        } else {
+          console.error('Projects API Error:', projectsResult.reason);
+        }
 
         let localRentArr = rentResult.status === "fulfilled"
           ? (rentResult.value?.data?.rentaldata || []).map((item) => ({
@@ -132,53 +171,54 @@ const SearchData = () => {
 
         // Filter results based on search term
         const searchTerm = key.toLowerCase().trim();
+        
+        // Split search term into individual words for more flexible matching
+        const searchWords = searchTerm ? searchTerm.split(/\s+/).filter(word => word.length > 0) : [];
+
+        // Helper function to calculate relevance score
+        const calculateRelevance = (item, searchableText) => {
+          const text = searchableText.toLowerCase();
+          let score = 0;
+          
+          // Get property name for exact match checking (check multiple possible fields)
+          const propertyName = (
+            item.propertyName || 
+            item.projectName || 
+            item.postProperty?.propertyName || 
+            ''
+          ).toLowerCase();
+          
+          // Exact match gets highest score
+          if (propertyName === searchTerm) {
+            score += 1000;
+          }
+          // Starts with search term gets high score
+          else if (propertyName.startsWith(searchTerm)) {
+            score += 500;
+          }
+          // Contains exact phrase gets medium-high score
+          else if (text.includes(searchTerm)) {
+            score += 250;
+          }
+          // All words match gets medium score
+          else if (searchWords.every(word => text.includes(word))) {
+            score += 100;
+          }
+          // Some words match gets lower score
+          else if (searchWords.some(word => text.includes(word))) {
+            score += 50;
+          }
+          
+          return score;
+        };
+
+        // Helper function to check if any search word matches the searchable text
+        const matchesSearch = (searchableText) => {
+          const text = searchableText.toLowerCase();
+          return searchWords.some(word => text.includes(word));
+        };
 
         if (searchTerm) {
-          // Split search term into individual words for more flexible matching
-          const searchWords = searchTerm.split(/\s+/).filter(word => word.length > 0);
-
-          // Helper function to calculate relevance score
-          const calculateRelevance = (item, searchableText) => {
-            const text = searchableText.toLowerCase();
-            let score = 0;
-            
-            // Get property name for exact match checking (check multiple possible fields)
-            const propertyName = (
-              item.propertyName || 
-              item.projectName || 
-              item.postProperty?.propertyName || 
-              ''
-            ).toLowerCase();
-            
-            // Exact match gets highest score
-            if (propertyName === searchTerm) {
-              score += 1000;
-            }
-            // Starts with search term gets high score
-            else if (propertyName.startsWith(searchTerm)) {
-              score += 500;
-            }
-            // Contains exact phrase gets medium-high score
-            else if (text.includes(searchTerm)) {
-              score += 250;
-            }
-            // All words match gets medium score
-            else if (searchWords.every(word => text.includes(word))) {
-              score += 100;
-            }
-            // Some words match gets lower score
-            else if (searchWords.some(word => text.includes(word))) {
-              score += 50;
-            }
-            
-            return score;
-          };
-
-          // Helper function to check if any search word matches the searchable text
-          const matchesSearch = (searchableText) => {
-            const text = searchableText.toLowerCase();
-            return searchWords.some(word => text.includes(word));
-          };
 
           // Filter and score rental properties
           localRentArr = localRentArr.filter((item) => {
@@ -260,6 +300,51 @@ const SearchData = () => {
 
         setSearchData(localSearchArr);
         setRentSearchData(localRentArr);
+        console.log('Search Results Summary:', {
+          searchTerm,
+          searchWords,
+          totalBeforeFilter: {
+            rentals: rentResult.status === "fulfilled" ? (rentResult.value?.data?.rentaldata || []).length : 0,
+            sales: saleResult.status === "fulfilled" ? (saleResult.value?.data?.ResaleData || saleResult.value?.data?.saledata || saleResult.value?.data?.buydata || []).length : 0,
+            projects: projectsResult.status === "fulfilled" ? (projectsResult.value?.data?.data || []).length : 0
+          },
+          totalAfterFilter: {
+            rentals: localRentArr.length,
+            sales: localBuyArr.length,
+            projects: localSearchArr.length
+          },
+          isEmptySearch
+        });
+
+        // Check if any data was found
+        if (localRentArr.length === 0 && localBuyArr.length === 0 && localSearchArr.length === 0) {
+          console.warn('No search results found for:', {
+            searchTerm,
+            searchWords,
+            originalQuery: key1,
+            originalLocation: key2,
+            collectionName: key3
+          });
+        } else {
+          console.log('Search results found:', {
+            rentals: localRentArr.map(item => ({
+              name: item.propertyName || item.projectName,
+              sourceType: item.sourceType,
+              relevanceScore: item.relevanceScore
+            })).slice(0, 3),
+            sales: localBuyArr.map(item => ({
+              name: item.propertyName || item.projectName,
+              sourceType: item.sourceType,
+              relevanceScore: item.relevanceScore
+            })).slice(0, 3),
+            projects: localSearchArr.map(item => ({
+              name: item.projectName,
+              sourceType: item.sourceType,
+              relevanceScore: item.relevanceScore
+            })).slice(0, 3)
+          });
+        }
+
         setBuySearchData(localBuyArr);
 
         const isAllEmpty =
@@ -277,7 +362,7 @@ const SearchData = () => {
         if (shouldUseFallback && (!key1 || !key1.trim())) {
           // Empty search - show all projects
           setFallbackLoading(true);
-          const allProjectsRes = await api.get("/project/viewAll/data");
+          const allProjectsRes = await searchApi.get("/project/viewAll/data");
           let allProjectsArr = (allProjectsRes.data.data || []).map((item) => ({
             projectName: item.projectName,
             project_url: item.project_url,
@@ -300,63 +385,67 @@ const SearchData = () => {
         } else if (shouldUseFallback && key1 && key1.trim()) {
           // Search query with no results - try fallback search through all projects
           setFallbackLoading(true);
-          const allProjectsRes = await api.get("/project/viewAll/data");
+          const allProjectsRes = await searchApi.get("/project/viewAll/data");
           let allProjectsArr = (allProjectsRes.data.data || []);
 
-          // Client-side search filter
-          const searchTerm = key1.toLowerCase();
-          const filteredProjects = allProjectsArr.filter((item) => {
-            return (
-              (item.projectName && item.projectName.toLowerCase().includes(searchTerm)) ||
-              (item.builderName && item.builderName.toLowerCase().includes(searchTerm)) ||
-              (item.type && item.type.toLowerCase().includes(searchTerm)) ||
-              (item.projectAddress && item.projectAddress.toLowerCase().includes(searchTerm)) ||
-              (item.city && item.city.toLowerCase().includes(searchTerm)) ||
-              (item.state && item.state.toLowerCase().includes(searchTerm)) ||
-              (item.project_discripation && item.project_discripation.toLowerCase().includes(searchTerm))
-            );
-          });
-
-          if (filteredProjects.length > 0) {
-            // Show filtered results
-            const mappedProjects = filteredProjects.map((item) => ({
-              projectName: item.projectName,
-              project_url: item.project_url,
-              frontImage: item.frontImage,
-              price: item.price,
-              type: item.type,
-              projectAddress: item.projectAddress,
-              city: item.city,
-              state: item.state,
-              minPrice: item.minPrice,
-              maxPrice: item.maxPrice,
-              sourceType: "project",
-            }));
-            setBuySearchData([]);
-            setRentSearchData([]);
-            setSearchData(mappedProjects);
-            setIsFallbackMode(true);
-          } else {
-            // No results at all - show random projects
-            let allProjectsArr = (allProjectsRes.data.data || []).map((item) => ({
-              projectName: item.projectName,
-              project_url: item.project_url,
-              frontImage: item.frontImage,
-              price: item.price,
-              type: item.type,
-              projectAddress: item.projectAddress,
-              city: item.city,
-              state: item.state,
-              minPrice: item.minPrice,
-              maxPrice: item.maxPrice,
-              sourceType: "project",
-            }));
-            allProjectsArr = allProjectsArr.sort(() => Math.random() - 0.5);
-            setBuySearchData([]);
-            setRentSearchData([]);
-            setSearchData(allProjectsArr);
-            setIsFallbackMode(true);
-          }
+          // Score by relevance: exact first, then all-words, then some-words; never empty - fallback to random
+          const searchTerm = key1.toLowerCase().trim();
+          const searchWords = searchTerm.split(/\s+/).filter(w => w.length > 0);
+          const getSearchableText = (item) => [
+            item.projectName,
+            item.builderName,
+            item.type,
+            item.projectAddress,
+            item.city,
+            item.state,
+            item.project_discripation,
+            item.description,
+            item.title,
+            item.name,
+          ].filter(Boolean).join(' ').toLowerCase();
+          const scoreProject = (item) => {
+            const text = getSearchableText(item);
+            const name = (item.projectName || '').toLowerCase();
+            if (name === searchTerm) return 1000;
+            if (name.startsWith(searchTerm)) return 500;
+            if (text.includes(searchTerm)) return 250;
+            if (searchWords.every(w => text.includes(w))) return 100;
+            if (searchWords.some(w => text.includes(w))) return 50;
+            return 0;
+          };
+          const scored = allProjectsArr.map((item) => ({ item, score: scoreProject(item) }));
+          const matched = scored.filter(({ score }) => score > 0).sort((a, b) => b.score - a.score);
+          const toShow = matched.length > 0
+            ? matched.map(({ item }) => ({
+                projectName: item.projectName,
+                project_url: item.project_url,
+                frontImage: item.frontImage,
+                price: item.price,
+                type: item.type,
+                projectAddress: item.projectAddress,
+                city: item.city,
+                state: item.state,
+                minPrice: item.minPrice,
+                maxPrice: item.maxPrice,
+                sourceType: "project",
+              }))
+            : allProjectsArr.map((item) => ({
+                projectName: item.projectName,
+                project_url: item.project_url,
+                frontImage: item.frontImage,
+                price: item.price,
+                type: item.type,
+                projectAddress: item.projectAddress,
+                city: item.city,
+                state: item.state,
+                minPrice: item.minPrice,
+                maxPrice: item.maxPrice,
+                sourceType: "project",
+              })).sort(() => Math.random() - 0.5);
+          setBuySearchData([]);
+          setRentSearchData([]);
+          setSearchData(toShow);
+          setIsFallbackMode(true);
           setFallbackLoading(false);
         } else {
           // We have search results - show them (projects, rent, and buy properties)
@@ -367,7 +456,7 @@ const SearchData = () => {
         console.log('Search error, triggering fallback:', error.message);
         setFallbackLoading(true);
         try {
-          const allProjectsRes = await api.get("/project/viewAll/data");
+          const allProjectsRes = await searchApi.get("/project/viewAll/data");
           let allProjectsArr = (allProjectsRes.data.data || []).map((item) => ({
             projectName: item.projectName,
             project_url: item.project_url,
@@ -752,7 +841,6 @@ const SearchData = () => {
         </div>
       )}
 
-      {/* Premium Property Grid */}
       {/* Mobile Floating Filter Button - Bottom Right */}
       <button
         onClick={() => setShowFilters(!showFilters)}
@@ -767,7 +855,7 @@ const SearchData = () => {
       </button>
 
       {/* New Compact Sticky Filter Bar (always visible) */}
-      <div className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-gray-200">
+      <div className="sticky top-[60px] z-30 bg-white/95 backdrop-blur-md border-b border-gray-200">
         <div className="py-3 h md:max-w-7xl md:mx-auto md:px-4">
           {/* Filter Controls */}
           <div className={`${showFilters ? "flex" : "hidden"} md:flex flex-col md:flex-row md:flex-wrap gap-3 md:items-center md:justify-center px-4 md:px-0`}>

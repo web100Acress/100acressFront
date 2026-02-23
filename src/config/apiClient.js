@@ -35,10 +35,9 @@ const getBaseUrl = () => {
 
 // Helper function to determine the base URL
 const getApiBaseUrl = () => {
-  // Use VITE_API_URL if available (set in .env), otherwise fallback to VITE_API_BASE or default
-  return import.meta.env.VITE_API_URL || 
-         import.meta.env.VITE_API_BASE || 
-         (import.meta.env.PROD ? 'https://api.100acress.com' : 'http://localhost:3500');
+  // Production: only use api.100acress.com
+  if (import.meta.env.PROD) return 'https://api.100acress.com';
+  return import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE || 'http://localhost:3500';
 };
 
 // Create axios instance with defaults
