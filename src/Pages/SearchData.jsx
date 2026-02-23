@@ -1,13 +1,16 @@
 import React, { useState, useEffect, useMemo } from "react";
 import axios from "axios";
 import { useLocation, Link } from "react-router-dom";
+import { getApiBase } from "../config/apiBase";
 
-// SearchData uses only api.100acress.com
+// SearchData uses centralized API configuration
 const searchApi = axios.create({
-  baseURL: "https://api.100acress.com",
+  baseURL: getApiBase(),
   timeout: 30000,
   headers: { "Content-Type": "application/json", "Accept": "application/json" },
 });
+
+console.log('SearchData using API base:', getApiBase());
 import Footer from "../Components/Actual_Components/Footer";
 import { Helmet } from "react-helmet";
 import { FiHeart, FiMapPin, FiHome, FiCalendar, FiCheck, FiX, FiFilter, FiChevronDown } from "react-icons/fi";
@@ -16,13 +19,30 @@ import { MdOutlineBedroomParent } from "react-icons/md";
 import { BiArea } from "react-icons/bi";
 
 const SearchData = () => {
+  console.log('SearchData component mounting...');
+  
+  // Add global error handler for this component
+  useEffect(() => {
+    const handleError = (event) => {
+      console.error('Unhandled error in SearchData:', event.error);
+    };
+    
+    window.addEventListener('error', handleError);
+    return () => window.removeEventListener('error', handleError);
+  }, []);
+  
   const location = useLocation();
   // Safely extract and parse the encoded search payload from the URL
   const encodedFormData = (location.pathname.split("/searchdata/")[1] || "").trim();
+  console.log('URL pathname:', location.pathname);
+  console.log('Encoded form data:', encodedFormData);
+  
   let decodedFormData = {};
   try {
     decodedFormData = encodedFormData ? JSON.parse(decodeURIComponent(encodedFormData)) : {};
+    console.log('Decoded form data:', decodedFormData);
   } catch (e) {
+    console.error('Error parsing form data:', e);
     decodedFormData = {};
   }
 
@@ -41,12 +61,15 @@ const SearchData = () => {
   }
 
   const { key1, key2, key3 } = getFormDataValues(decodedFormData);
+  console.log('Extracted form values:', { key1, key2, key3 });
+  
   // Build search key - same logic as navbar (query is primary, location string if any)
   const key = [
     typeof key1 === 'string' ? key1 : '',
     typeof key2 === 'string' ? key2 : ''
   ].filter(Boolean).join(' ').trim();
 
+  console.log('Final search key:', key);
   localStorage.setItem("myKey", key);
   const [searchData, setSearchData] = useState([]);
   const [buySearchData, setBuySearchData] = useState([]);
@@ -65,12 +88,28 @@ const SearchData = () => {
   const isEmptySearch = !key1 && !key2;
 
   useEffect(() => {
+    console.log('SearchData useEffect triggered:', {
+      key,
+      key1,
+      key2,
+      key3,
+      isEmptySearch
+    });
+    
+    let isMounted = true;
     const fetchData = async () => {
+      console.log('fetchData function called');
+      console.log('Current API Base URL:', searchApi.defaults.baseURL);
+      console.log('Search parameters:', { key, key1, key2, key3, isEmptySearch });
+      
       try {
         if (isEmptySearch) {
+          console.log('Empty search detected, fetching all projects...');
           const allProjectsRes = await searchApi.get(
             "/project/viewAll/data"
           );
+          console.log('All projects API response:', allProjectsRes.data);
+          
           let allProjectsArr = (allProjectsRes.data.data || []).map((item) => ({
             projectName: item.projectName,
             project_url: item.project_url,
@@ -84,13 +123,20 @@ const SearchData = () => {
             maxPrice: item.maxPrice,
             sourceType: "project",
           }));
+          
+          console.log('Processed all projects:', allProjectsArr.length);
           allProjectsArr = allProjectsArr.sort(() => Math.random() - 0.5);
+          
+          console.log('Setting state for empty search...');
           setBuySearchData([]);
           setRentSearchData([]);
           setSearchData(allProjectsArr);
           setIsFallbackMode(true);
+          console.log('Empty search state update completed');
           return;
         }
+
+        console.log('Non-empty search, fetching from all endpoints...');
 
         // Always fetch from all endpoints for comprehensive search
         const [rentResult, saleResult, projectsResult] = await Promise.allSettled([
@@ -345,7 +391,19 @@ const SearchData = () => {
           });
         }
 
+        console.log('About to update state with search results:', {
+          rentals: localRentArr.length,
+          sales: localBuyArr.length,
+          projects: localSearchArr.length,
+          isFallbackMode: false
+        });
+
+        setSearchData(localSearchArr);
+        setRentSearchData(localRentArr);
         setBuySearchData(localBuyArr);
+        setIsFallbackMode(false);
+        
+        console.log('State update completed');
 
         const isAllEmpty =
           (Array.isArray(localSearchArr) ? localSearchArr.length : 0) === 0 &&
@@ -453,7 +511,14 @@ const SearchData = () => {
         }
       } catch (error) {
         // Any error should trigger fallback mode (show all projects)
-        console.log('Search error, triggering fallback:', error.message);
+        console.error('Search error, triggering fallback:', error);
+        console.error('Error details:', {
+          message: error.message,
+          stack: error.stack,
+          response: error.response?.data,
+          status: error.response?.status
+        });
+        
         setFallbackLoading(true);
         try {
           const allProjectsRes = await searchApi.get("/project/viewAll/data");
