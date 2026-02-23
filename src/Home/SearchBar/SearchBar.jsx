@@ -555,14 +555,13 @@ function SearchBar() {
       saveSearchToLocalStorage(format);
     });
 
+    // Use same payload format as navbar search (ensures correct SearchData parsing)
     const searchData = {
-      location: { lat: latitude, lng: longitude },
       query: searchQuery,
+      location: "",
       collectionName: activeLink,
-      nearby: true,
     };
     const key = encodeURIComponent(JSON.stringify(searchData));
-    // Always redirect to search page - it will handle project search and fallbacks
     window.location.href = `/searchdata/${key}`;
   };
 
@@ -586,12 +585,11 @@ function SearchBar() {
       saveSearchToLocalStorage(format);
     });
 
-    // Navigate to search results page
+    // Use same payload format as navbar search
     const searchData = {
-      location: { lat: latitude, lng: longitude },
       query: suggestionText,
+      location: "",
       collectionName: activeLink,
-      nearby: true,
     };
     const key = encodeURIComponent(JSON.stringify(searchData));
     window.location.href = `/searchdata/${key}`;
@@ -615,12 +613,11 @@ function SearchBar() {
         // Optional: show coords in the input briefly
         setSearchQuery(`${latitude.toFixed(5)}, ${longitude.toFixed(5)}`);
 
-        // Navigate directly to results with current location so nearby properties show
+        // Use same payload format as navbar - empty query shows all projects
         const searchData = {
-          location: { lat: latitude, lng: longitude },
           query: "",
+          location: "",
           collectionName: activeLink,
-          nearby: true,
         };
         const key = encodeURIComponent(JSON.stringify(searchData));
         window.location.href = `/searchdata/${key}`;

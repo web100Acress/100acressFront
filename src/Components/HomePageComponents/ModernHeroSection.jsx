@@ -214,15 +214,12 @@ const ModernHeroSection = () => {
   }, []);
 
   const handleSearch = () => {
+    // Use same payload format as navbar search (ensures correct SearchData parsing)
     const searchData = {
-      location: selectedLocation,
-      query: searchQuery,
-      budget: budgetRange,
-      propertyType: propertyType,
-      collectionName: activeTab
+      query: [searchQuery, selectedLocation].filter(Boolean).join(" ").trim() || "",
+      location: "",
+      collectionName: activeTab,
     };
-    
-    // Navigate to search results
     window.location.href = `/searchdata/${encodeURIComponent(JSON.stringify(searchData))}`;
   };
 
