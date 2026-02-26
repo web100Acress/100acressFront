@@ -247,10 +247,10 @@ export default function NavbarMobile({
                       type="button" 
                       className="mobile-menu-primary" 
                       onClick={() => { 
-                        handleNavigation(QUICK_LINKS.dubai.path, null, true); 
+                        handleNavigation("/choose-country", null, true); 
                       }}
                     >
-                      Dubai
+                      🌍 Global
                     </button>
                     <button 
                       type="button" 

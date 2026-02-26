@@ -177,6 +177,6 @@ export const POPULAR_CITIES_LINKS = [
 export const QUICK_LINKS = {
   rental: { label: "Rental Properties", path: "/rental-properties/best-rental-property-in-gurugram/" },
   resale: { label: "Resale Properties", path: "/buy-properties/best-resale-property-in-gurugram/" },
-  dubai: { label: "Dubai", path: "/united-arab-emirates/" },
+  global: { label: "Global", path: "/choose-country" },
   insights: { label: "Insights", path: "/real-estate-insights/" },
 };

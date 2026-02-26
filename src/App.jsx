@@ -76,6 +76,8 @@ const GurugramPrimeLocation = lazy(() => import("./Pages/GurugramPrimeLocation")
 // const GoaProject = lazy(() => import("./Pages/ProjectCities/GoaProject"));
 // const PanipatProject = lazy(() => import("./Pages/ProjectCities/PanipatProject"));
 // const Pushkar = lazy(() => import("./Pages/ProjectCities/Pushkar"));
+// ChooseCountry is now handled by Next.js pages/country/choose.tsx
+const ChooseCountry = lazy(() => import("./country/modules/pages/choose/index.jsx"));
 const QRGeneratorPage = lazy(() => import("./Pages/QRGeneratorPage"));
 const BudgetPrice = lazy(() => import("./Pages/BudgetPrice"));
 const PossessionAfter2028 = lazy(() => import("./Pages/PossessionAfter2028"));
@@ -307,6 +309,7 @@ function App() {
                   <Routes>
                     <Route element={<PublicRoute />}>
                       <Route index element={<Home />} />
+                      {/* choose-country route is now handled by Next.js pages/country/choose.tsx */}
                       <Route path="/verify-email/*" element={<VerifyEmailRedirect />} />
                       <Route path="/post-property/*" element={<PostPropertyRedirect />} />
                       <Route path="/postproperty" element={<NewSellProperty />} />
@@ -376,7 +379,7 @@ function App() {
                         path="/developers/:builderName"
                         element={<BuilderPage />}
                       />
-                      <Route path="/max-estates/" element={<BuilderPage />} />
+                         <Route path="/max-estates/" element={<BuilderPage />} />
                       <Route
                         path="/projects-in-gurugram/property-possession-in-2025/"
                         element={<Possessionin2025 />}
@@ -788,6 +791,8 @@ function App() {
                         <Route path="drafts" element={<DraftManagement />} />
                       </Route>
                     </Route>
+                    {/* Explicit route for country selection - must come before catch-all */}
+                    <Route path="/choose-country" element={<ChooseCountry />} />
                     <Route path="/:pUrl/" element={<ProjectLayout2 />} />
                   </Routes>
                 </Suspense>

@@ -15,6 +15,7 @@ import { BrowserRouter, useLocation } from "react-router-dom";
 import { HelmetProvider } from 'react-helmet-async';
 import CustomSkeleton from "../src/Utils/CustomSkeleton";
 import { initAxios } from "./config/axiosSetup";
+import { CountryProvider, ThemeProvider } from "./country/providers";
 
 // Initialize global axios config (base URL + interceptors)
 initAxios();
@@ -50,7 +51,11 @@ root.render(
           >
             <ScrollToTop>
               <Suspense fallback={<div><CustomSkeleton/></div>}>
-                <App />
+                <ThemeProvider>
+                  <CountryProvider>
+                    <App />
+                  </CountryProvider>
+                </ThemeProvider>
               </Suspense>
             </ScrollToTop>
           </BrowserRouter>

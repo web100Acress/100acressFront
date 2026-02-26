@@ -159,14 +159,14 @@ const LocationSection = ({
   };
 
   return (
-    <section className="relative py-8 md:py-10 lg:py-12 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 text-white overflow-hidden">
+    <section className="relative py-8 md:py-10 lg:py-12  text-white overflow-hidden">
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-full opacity-5">
           <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-gradient-to-br from-amber-500 to-amber-600 rounded-full blur-3xl animate-float"></div>
           <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-gradient-to-tl from-blue-400 to-blue-500 rounded-full blur-3xl animate-float animation-delay-2000"></div>
         </div>
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-amber-500/3 to-transparent"></div>
+        <div className="absolute inset-0 from-transparent"></div>
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

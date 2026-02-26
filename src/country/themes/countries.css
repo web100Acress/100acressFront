@@ -1,0 +1,222 @@
+/* ==========================
+   GLOBAL THEME - Base Styles
+   ========================== */
+
+:root {
+  /* Global Brand Colors */
+  --global-primary: #1a365d;
+  --global-secondary: #d69e2e;
+  --global-accent: #ffffff;
+  --global-background: #f7fafc;
+  --global-text: #2d3748;
+  --global-text-muted: #718096;
+  --global-border: #e2e8f0;
+  
+  /* Global Spacing */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+  --spacing-2xl: 3rem;
+  
+  /* Global Typography */
+  --font-heading: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+  
+  /* Global Border Radius */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-full: 9999px;
+  
+  /* Global Shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+/* ==========================
+   UK THEME - United Kingdom
+   ========================== */
+
+[data-theme="uk"] {
+  --primary: #1e3a5f;
+  --secondary: #c8102e;
+  --accent: #ffffff;
+  --background: #f8fafc;
+  --surface: #ffffff;
+  --text: #1a202c;
+  --text-muted: #64748b;
+  --border: #e2e8f0;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --error: #ef4444;
+  
+  /* UK Specific */
+  --royal-blue: #1e3a5f;
+  --union-red: #c8102e;
+  --uk-gradient: linear-gradient(135deg, #1e3a5f 0%, #c8102e 100%);
+}
+
+/* ==========================
+   USA THEME - United States
+   ========================== */
+
+[data-theme="usa"] {
+  --primary: #1e40af;
+  --secondary: #b91c1c;
+  --accent: #ffffff;
+  --background: #fafafa;
+  --surface: #ffffff;
+  --text: #111827;
+  --text-muted: #6b7280;
+  --border: #e5e7eb;
+  --success: #22c55e;
+  --warning: #f59e0b;
+  --error: #ef4444;
+  
+  /* USA Specific */
+  --old-glory-blue: #1e40af;
+  --old-glory-red: #b91c1c;
+  --usa-gradient: linear-gradient(135deg, #1e40af 0%, #b91c1c 100%);
+}
+
+/* ==========================
+   SRILANKA THEME
+   ========================== */
+
+[data-theme="srilanka"] {
+  --primary: #8b5a2b;
+  --secondary: #ff9933;
+  --accent: #128807;
+  --background: #fffbf5;
+  --surface: #ffffff;
+  --text: #2d3748;
+  --text-muted: #718096;
+  --border: #e8dfd5;
+  --success: #128807;
+  --warning: #ff9933;
+  --error: #dc2626;
+  
+  /* Sri Lanka Specific */
+  --golden-lion: #8b5a2b;
+  --saffron: #ff9933;
+  --forest-green: #128807;
+  --lk-gradient: linear-gradient(135deg, #8b5a2b 0%, #ff9933 50%, #128807 100%);
+}
+
+/* ==========================
+   BASE STYLES
+   ========================== */
+
+.country-theme {
+  font-family: var(--font-body);
+  background-color: var(--background);
+  color: var(--text);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.country-theme h1,
+.country-theme h2,
+.country-theme h3,
+.country-theme h4,
+.country-theme h5,
+.country-theme h6 {
+  font-family: var(--font-heading);
+  color: var(--text);
+}
+
+/* Primary Button */
+.btn-primary {
+  background: var(--primary);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.btn-primary:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+/* Secondary Button */
+.btn-secondary {
+  background: var(--secondary);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.btn-secondary:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+/* Card Styles */
+.country-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.2s ease;
+}
+
+.country-card:hover {
+  box-shadow: var(--shadow-md);
+}
+
+/* Navbar Styles */
+.country-navbar {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+.country-navbar .nav-link {
+  color: var(--text);
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.country-navbar .nav-link:hover {
+  color: var(--primary);
+}
+
+.country-navbar .nav-link.active {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+/* Hero Section */
+.country-hero {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+  color: white;
+}
+
+.country-hero h1 {
+  color: white;
+}
+
+/* Footer */
+.country-footer {
+  background: var(--text);
+  color: var(--surface);
+}
+
+.country-footer a {
+  color: var(--text-muted);
+  transition: color 0.2s ease;
+}
+
+.country-footer a:hover {
+  color: var(--surface);
+}

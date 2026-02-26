@@ -888,90 +888,38 @@ export default function NavbarDesktop({
         INSIGHTS
       </button>
 
-      {/* Dubai Button - Show based on screen size config */}
+      {/* Global Button - Show based on screen size config */}
       {config.showDubaiButton && (
-        <div
+        <button
+          className="global-button"
+          onClick={() => { 
+            handleNavigation("/choose-country", null, true); 
+          }}
+          onMouseEnter={() => {}}
           style={{
-            position: 'relative',
-            display: (window.innerWidth >= 768 && !forceHamburger) ? 'inline-block' : 'none',
+            background: 'linear-gradient(to right, #FACC15, #F59E0B)',
+            color: '#000000',
+            padding: '0 1rem',
+            height: '18px',
+            lineHeight: '18px',
+            fontSize: '11px',
+            fontWeight: '800',
+            borderRadius: '999px',
+            border: '1px solid rgba(255,255,255,0.9)',
+            boxShadow: '0 8px 22px rgba(251, 191, 36, 0.3)',
+            display: (typeof window !== 'undefined' && window.innerWidth >= 768 && !forceHamburger) ? 'inline-flex' : 'none',
+            alignItems: 'center',
+            justifyContent: 'center',
             marginLeft: '0.375rem',
             marginTop: '0',
             marginBottom: '0',
-            zIndex: 2
+            cursor: 'pointer',
+            transition: 'all 0.2s ease',
+            boxSizing: 'border-box'
           }}
         >
-          <motion.div
-            style={{
-              position: 'absolute',
-              top: '-10px',
-              right: '-6px',
-              padding: '0.125rem 0.625rem',
-              backgroundColor: '#E53935',
-              color:
-               "white",
-              fontSize: '8px',
-              fontWeight: '600',
-              letterSpacing: '0.7px',
-              borderRadius: '999px',
-              textTransform: 'uppercase',
-              boxShadow: '0 6px 16px rgba(229,57,53,0.5)',
-              zIndex: 3,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-            initial={{ opacity: 0, y: -4, scale: 0.9 }}
-            animate={{ opacity: 1, y: 0, scale: [0.9, 1.06, 1] }}
-            transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
-          >
-            NEW
-          </motion.div>
-          <button
-            onClick={() => handleNavigation("/united-arab-emirates/")}
-            style={{
-              background: "linear-gradient(to right, rgb(212, 162, 53), rgb(184, 134, 11))",
-              color: "white",
-              padding: '0 1rem',
-              height: '18px',
-              lineHeight: '18px',
-              fontSize: '11px',
-              fontWeight: '800',
-              borderRadius: '999px',
-              border: '1px solid rgba(255,255,255,0.9)',
-              boxShadow: '0 8px 22px rgba(0,0,0,0.2)',
-              display: (window.innerWidth >= 768 && !forceHamburger) ? 'inline-flex' : 'none',
-              alignItems: 'center',
-              justifyContent: 'center',
-              position: 'relative',
-              overflow: 'hidden',
-              cursor: 'pointer',
-              boxSizing: 'border-box'
-            }}
-            onMouseEnter={(e) => {
-              e.target.style.background = "linear-gradient(to-r, #FFD700, #FFA500)";
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.background = "linear-gradient(to-r, #FFC107, #FFD700)";
-            }}
-          >
-            <motion.div
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                borderRadius: '999px',
-                // background: 'linear(to right, rgba(229,57,53,0) 0%, rgba(229,57,53,0.6) 50%, rgba(229,57,53,0) 100%)',
-                transform: 'translateX(50%)'
-              }}
-              initial={{ x: "110%" }}
-              animate={{ x: "-110%" }}
-              transition={{ duration: 3, ease: "linear", repeat: Infinity }}
-            />
-            <span style={{ position: 'relative', zIndex: 4 }}>DUBAI</span>
-          </button>
-        </div>
+          GLOBAL
+        </button>
       )}
 
       {/* Campaign Overlay */}
