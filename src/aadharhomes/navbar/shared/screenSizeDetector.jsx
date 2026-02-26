@@ -159,7 +159,7 @@ export const CITY_SELECTION_BY_SIZE = {
     { name: "Gurugram", path: "/projects-in-gurugram/" },
     { name: "Delhi", path: "/projects-in-delhi/" },
     { name: "Noida", path: "/projects-in-noida/" },
-    // { name: "Dubai", path: "/united-arab-emirates/" }
+    // { name: "Dubai", path: "/global/projects-in-dubai-uae/" }
   ],
   MD: [
     { name: "Gurugram", path: "/projects-in-gurugram/" },
@@ -167,7 +167,7 @@ export const CITY_SELECTION_BY_SIZE = {
     { name: "Noida", path: "/projects-in-noida/" },
     { name: "Goa", path: "/projects-in-goa/" },
     { name: "Mumbai", path: "/projects-in-mumbai/" },
-    // { name: "Dubai", path: "/united-arab-emirates/" }
+    // { name: "Dubai", path: "/global/projects-in-dubai-uae/" }
   ],
   LG: [
     { name: "Gurugram", path: "/projects-in-gurugram/" },
@@ -178,7 +178,7 @@ export const CITY_SELECTION_BY_SIZE = {
     { name: "Mumbai", path: "/projects-in-mumbai/" },
     { name: "Panipat", path: "/projects-in-panipat/" },
     { name: "Pune", path: "/projects-in-pune/" },
-    // { name: "Dubai", path: "/united-arab-emirates/" }
+    // { name: "Dubai", path: "/global/projects-in-dubai-uae/" }
   ],
   XL: [
     { name: "Gurugram", path: "/projects-in-gurugram/" },
@@ -192,7 +192,7 @@ export const CITY_SELECTION_BY_SIZE = {
     { name: "Kasauli", path: "/projects-in-kasauli/" },
     { name: "Sonipat", path: "/projects-in-sonipat/" },
     { name: "Pune", path: "/projects-in-pune/" },
-    // { name: "Dubai", path: "/united-arab-emirates/" }
+    // { name: "Dubai", path: "/global/projects-in-dubai-uae/" }
   ],
   XXL: [
     { name: "Gurugram", path: "/projects-in-gurugram/" },
@@ -208,7 +208,7 @@ export const CITY_SELECTION_BY_SIZE = {
     // { name: "Alwar", path: "/projects-in-alwar/" },
     { name: "Karnal", path: "/projects-in-karnal/" },
     { name: "Pune", path: "/projects-in-pune/" },
-    // { name: "Dubai", path: "/united-arab-emirates/" }
+    // { name: "Dubai", path: "/global/projects-in-dubai-uae/" }
   ],
   XXXL: [
     { name: "Gurugram", path: "/projects-in-gurugram/" },
@@ -224,7 +224,7 @@ export const CITY_SELECTION_BY_SIZE = {
     // { name: "Alwar", path: "/projects-in-alwar/" },
     { name: "Karnal", path: "/projects-in-karnal/" },
     { name: "Pune", path: "/projects-in-pune/" },
-    // { name: "Dubai", path: "/united-arab-emirates/" }
+    // { name: "Dubai", path: "/global/projects-in-dubai-uae/" }
   ],
   ULTRA: [
     { name: "Gurugram", path: "/projects-in-gurugram/" },
@@ -240,7 +240,7 @@ export const CITY_SELECTION_BY_SIZE = {
     // { name: "Alwar", path: "/projects-in-alwar/" },
     { name: "Karnal", path: "/projects-in-karnal/" },
     { name: "Pune", path: "/projects-in-pune/" },
-    // { name: "Dubai", path: "/united-arab-emirates/" }
+    // { name: "Dubai", path: "/global/projects-in-dubai-uae/" }
   ],
   // NEW: Compact desktop cities for 800-1300px range
   COMPACT_DESKTOP: [
@@ -250,7 +250,7 @@ export const CITY_SELECTION_BY_SIZE = {
     { name: "Goa", path: "/projects-in-goa/" },
     { name: "Mumbai", path: "/projects-in-mumbai/" },
     { name: "Ayodhya", path: "/projects-in-ayodhya/" },
-    // { name: "Dubai", path: "/united-arab-emirates/" },
+    // { name: "Dubai", path: "/global/projects-in-dubai-uae/" },
     { name: "Pune", path: "/projects-in-pune/" }
   ]
 };

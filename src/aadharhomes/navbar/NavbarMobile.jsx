@@ -247,7 +247,7 @@ export default function NavbarMobile({
                       type="button" 
                       className="mobile-menu-primary" 
                       onClick={() => { 
-                        handleNavigation("/choose-country", null, true); 
+                        handleNavigation("/global", null, true); 
                       }}
                     >
                       🌍 Global

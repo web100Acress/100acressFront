@@ -1,6 +1,6 @@
 import { GetStaticProps, NextPage } from 'next';
 import Head from 'next/head';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import GlobalNavbar from '@/country/modules/global/navbar/GlobalNavbar';
 import GlobalFooter from '@/country/modules/global/footer/GlobalFooter';
 import MobileChooseCountry from '@/country/modules/pages/choose/MobileChooseCountry';
@@ -25,6 +25,17 @@ interface ChooseCountryPageProps {
 
 const ChooseCountryPage: NextPage<ChooseCountryPageProps> = ({ countries }) => {
   const [isMobile, setIsMobile] = useState(false);
+  const [search, setSearch] = useState('');
+  const [sortBy, setSortBy] = useState('name');
+  const [showSort, setShowSort] = useState(false);
+
+  const filteredCount = useMemo(() => {
+    if (!search) return countries.length;
+    return countries.filter(c => 
+      c.name.toLowerCase().includes(search.toLowerCase()) ||
+      c.shortName.toLowerCase().includes(search.toLowerCase())
+    ).length;
+  }, [countries, search]);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -49,8 +60,8 @@ const ChooseCountryPage: NextPage<ChooseCountryPageProps> = ({ countries }) => {
         <meta property="og:title" content="Choose Your Country | 100acress Global" />
         <meta property="og:description" content="Explore premium real estate properties across 50+ countries with 100acress." />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://100acress.com/choose-country" />
-        <link rel="canonical" href="https://100acress.com/choose-country" />
+        <meta property="og:url" content="https://100acress.com/global" />
+        <link rel="canonical" href="https://100acress.com/global" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -59,7 +70,7 @@ const ChooseCountryPage: NextPage<ChooseCountryPageProps> = ({ countries }) => {
               '@type': 'WebPage',
               name: 'Choose Your Country - 100acress Global',
               description: 'Select your country to explore premium real estate properties.',
-              url: 'https://100acress.com/choose-country',
+              url: 'https://100acress.com/global',
               mainEntity: {
                 '@type': 'ItemList',
                 itemListElement: countries.map((c, i) => ({
@@ -77,7 +88,16 @@ const ChooseCountryPage: NextPage<ChooseCountryPageProps> = ({ countries }) => {
         <GlobalNavbar />
         
         {isMobile ? (
-          <MobileChooseCountry countries={countries} />
+          <MobileChooseCountry 
+            countries={countries} 
+            search={search}
+            setSearch={setSearch}
+            sortBy={sortBy}
+            setSortBy={setSortBy}
+            showSort={showSort}
+            setShowSort={setShowSort}
+            filteredCount={filteredCount}
+          />
         ) : (
           <DesktopChooseCountry countries={countries} />
         )}

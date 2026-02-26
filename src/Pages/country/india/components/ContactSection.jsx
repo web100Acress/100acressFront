@@ -1,12 +1,12 @@
-import { Button } from "../../../Components/ui/button";
-import { Input } from "../../../Components/ui/Input";
-import { Textarea } from "../../../Components/ui/Textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../Components/ui/Select";
+import { Button } from "../../../../Components/ui/button";
+import { Input } from "../../../../Components/ui/input";
+import { Textarea } from "../../../../Components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../../Components/ui/select";
 import { Phone, Mail, MapPin, Send } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-import api from "../../../config/apiClient";
-import { cn } from "../../../lib/utils";
+import api from "../../../../config/apiClient";
+import { cn } from "../../../../lib/utils";
 
 export const ContactSection = () => {
   const [formData, setFormData] = useState({

@@ -74,7 +74,7 @@ import api from "../../config/apiClient";
       { name: "Flats in Karnal", href: "/projects-in-karnal/" },
       { name: "Flats in Jalandhar", href: "/projects-in-jalandhar/" },
       { name: "Flats in Pushkar", href: "/projects-in-pushkar/" },
-      // { name: "Flats in Dubai", href: "/united-arab-emirates/" },
+      // { name: "Flats in Dubai", href: "/global/projects-in-dubai-uae/" },
     ];
 
     const primeLocations = [

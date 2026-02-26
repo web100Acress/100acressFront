@@ -4,7 +4,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 const DubaiContext = createContext();
 const emiratesConfig = {
   "Dubai": {
-    route: "/united-arab-emirates",
+    route: "/global/projects-in-dubai-uae",
     headline: "New & Upcoming Projects in Dubai",
     subheadline: "Your Gateway to Premium Properties",
     description: "Explore Premium Projects in Dubai",
@@ -12,7 +12,7 @@ const emiratesConfig = {
     tagline: "The City of Gold"
   },
   "Abu Dhabi": {
-    route: "/united-arab-emirates",
+    route: "/global/projects-in-dubai-uae",
     headline: "Luxury Properties in Abu Dhabi",
     subheadline: "Capital of Elegance",
     description: "Find your dream home in UAE's sophisticated capital city",
@@ -20,7 +20,7 @@ const emiratesConfig = {
     tagline: "Capital of the UAE"
   },
   "Sharjah": {
-    route: "/united-arab-emirates",
+    route: "/global/projects-in-dubai-uae",
     headline: "Premium Real Estate in Sharjah",
     subheadline: "Cultural Heart of UAE",
     description: "Discover affordable luxury in the cultural capital",
@@ -28,7 +28,7 @@ const emiratesConfig = {
     tagline: "The Cultural Capital"
   },
   "Ajman": {
-    route: "/united-arab-emirates",
+    route: "/global/projects-in-dubai-uae",
     headline: "Affordable Luxury in Ajman",
     subheadline: "Hidden Gem of UAE",
     description: "Explore value-driven properties with modern amenities",
@@ -36,7 +36,7 @@ const emiratesConfig = {
     tagline: "The Pearl of the Gulf"
   },
   "Ras Al Khaimah": {
-    route: "/united-arab-emirates",
+    route: "/global/projects-in-dubai-uae",
     headline: "Scenic Properties in Ras Al Khaimah",
     subheadline: "Nature Meets Luxury",
     description: "Mountain views and beachfront living combined",
@@ -44,7 +44,7 @@ const emiratesConfig = {
     tagline: "Adventure & Serenity"
   },
   "Fujairah": {
-    route: "/united-arab-emirates",
+    route: "/global/projects-in-dubai-uae",
     headline: "Coastal Living in Fujairah",
     subheadline: "East Coast Paradise",
     description: "Beachfront properties with stunning mountain backdrops",
@@ -52,7 +52,7 @@ const emiratesConfig = {
     tagline: "The Hidden Treasure"
   },
   "Umm Al Quwain": {
-    route: "/united-arab-emirates",
+    route: "/global/projects-in-dubai-uae",
     headline: "Tranquil Properties in Umm Al Quwain",
     subheadline: "Peaceful Living",
     description: "Serene waterfront properties away from the hustle",
@@ -80,17 +80,17 @@ export const DubaiProvider = ({ children }) => {
   const currentEmirateConfig = emiratesConfig[selectedEmirate] || emiratesConfig["Dubai"];
 
   // Custom setter that does NOT change the route
-  // All emirates stay on /united-arab-emirates route
+  // All emirates stay on /global/projects-in-dubai-uae route
   const setSelectedEmirate = (emirate) => {
     setSelectedEmirateState(emirate);
-    // No route navigation - all emirates use /united-arab-emirates
+    // No route navigation - all emirates use /global/projects-in-dubai-uae
   };
 
-  // Initialize to Dubai as default emirate when on /united-arab-emirates route
+  // Initialize to Dubai as default emirate when on /global/projects-in-dubai-uae route
   useEffect(() => {
     const currentPath = location.pathname;
     // Only set default emirate if we're on the UAE page and haven't selected one yet
-    if ((currentPath === '/united-arab-emirates' || currentPath === '/united-arab-emirates/') && !selectedEmirate) {
+    if ((currentPath === '/global/projects-in-dubai-uae' || currentPath === '/global/projects-in-dubai-uae/') && !selectedEmirate) {
       setSelectedEmirateState('Dubai');
     }
   }, [location.pathname]);

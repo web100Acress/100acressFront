@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import { Button } from "../../../Components/ui/button";
+import { Button } from "../../../../Components/ui/button";
 import { Menu, X, Phone, ChevronDown } from "lucide-react";
-import { cn } from "../../../lib/utils";
+import { cn } from "../../../../lib/utils";
 import { useDubai } from "../context/DubaiContext";
 
 // Logo URL
@@ -79,7 +79,7 @@ export const Header = () => {
       <div className="container flex items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Logo with Emirates Dropdown */}
         <div className="flex items-center space-x-2 sm:space-x-3">
-          <a href="/united-arab-emirates/" className="flex items-center space-x-2 sm:space-x-3">
+          <a href="/global/projects-in-dubai-uae/" className="flex items-center space-x-2 sm:space-x-3">
             <img 
               src={LOGO}
               alt="100acress" 

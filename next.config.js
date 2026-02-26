@@ -20,7 +20,7 @@ const nextConfig = {
   async rewrites() {
     return [
       {
-        source: '/choose-country',
+        source: '/global',
         destination: '/country/choose',
       },
       {

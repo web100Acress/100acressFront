@@ -68,7 +68,7 @@ export const CountryProvider: React.FC<CountryProviderProps> = ({ children }) =>
   const [isGlobal, setIsGlobal] = useState<boolean>(() => {
     if (typeof window === 'undefined') return false;
     const path = window.location.pathname;
-    return path === '/' || path === '/global' || path === '/choose-country' || path === '/country/choose';
+    return path === '/' || path === '/global' || path === '/country/choose';
   });
 
   useEffect(() => {

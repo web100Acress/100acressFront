@@ -171,12 +171,12 @@ export const POPULAR_CITIES_LINKS = [
   { label: "Projects in Karnal", path: "/projects-in-karnal/" },
   { label: "Projects in Jalandhar", path: "/projects-in-jalandhar/" },
   { label: "Projects in Pushkar", path: "/projects-in-pushkar/" },
-  // { label: "Projects in Dubai *", path: "/united-arab-emirates/", special: true },
+  // { label: "Projects in Dubai *", path: "/global/projects-in-dubai-uae/", special: true },
 ];
 
 export const QUICK_LINKS = {
   rental: { label: "Rental Properties", path: "/rental-properties/best-rental-property-in-gurugram/" },
   resale: { label: "Resale Properties", path: "/buy-properties/best-resale-property-in-gurugram/" },
-  global: { label: "Global", path: "/choose-country" },
+  global: { label: "Global", path: "/global" },
   insights: { label: "Insights", path: "/real-estate-insights/" },
 };

@@ -54,7 +54,7 @@ export const CITY_OPTIONS_BY_DEVICE = {
     { name: "Noida", path: "/projects-in-noida/" },
     { name: "Goa", path: "/projects-in-goa/" },
     { name: "Mumbai", path: "/projects-in-mumbai/" },
-    { name: "Dubai", path: "/united-arab-emirates/" }
+    { name: "Dubai", path: "/global/projects-in-dubai-uae/" }
   ],
   tablet: [
     { name: "Gurugram", path: "/projects-in-gurugram/" },
@@ -65,7 +65,7 @@ export const CITY_OPTIONS_BY_DEVICE = {
     { name: "Mumbai", path: "/projects-in-mumbai/" },
     { name: "Panipat", path: "/projects-in-panipat/" },
     { name: "Pune", path: "/projects-in-pune/" },
-    { name: "Dubai", path: "/united-arab-emirates/" }
+    { name: "Dubai", path: "/global/projects-in-dubai-uae/" }
   ],
   ipad: [
     { name: "Gurugram", path: "/projects-in-gurugram/" },
@@ -79,7 +79,7 @@ export const CITY_OPTIONS_BY_DEVICE = {
     { name: "Kasauli", path: "/projects-in-kasauli/" },
     { name: "Sonipat", path: "/projects-in-sonipat/" },
     { name: "Pune", path: "/projects-in-pune/" },
-    { name: "Dubai", path: "/united-arab-emirates/" }
+    { name: "Dubai", path: "/global/projects-in-dubai-uae/" }
   ],
   macbook: [
     { name: "Gurugram", path: "/projects-in-gurugram/" },
@@ -96,7 +96,7 @@ export const CITY_OPTIONS_BY_DEVICE = {
     { name: "Karnal", path: "/projects-in-karnal/" },
     { name: "Pune", path: "/projects-in-pune/" },
     { name: "Jalandhar", path: "/projects-in-jalandhar/" },
-    { name: "Dubai", path: "/united-arab-emirates/" }
+    { name: "Dubai", path: "/global/projects-in-dubai-uae/" }
   ],
   desktop: [
     { name: "Gurugram", path: "/projects-in-gurugram/" },

@@ -88,7 +88,7 @@ const DesktopCities = () => {
     },
     {
       title: "Dubai",
-      link: "/united-arab-emirates/",
+      link: "/global/projects-in-dubai-uae/",
       image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/CITIES/DUBAI.webp",
       state: "UAE"
     },

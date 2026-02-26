@@ -1347,7 +1347,7 @@ const Home = () => {
               {/* <div ref={setRef("dubai")} data-section="dubai" style={{ height: "10px" }}></div>
               <div>
                 {DubaiProjects.length === 0 ? <CustomSkeleton /> : (
-                  <CommonProject data={DubaiProjects} title="Projects in Dubai" animation="zoom-out-left" path="/united-arab-emirates/" compact />
+                  <CommonProject data={DubaiProjects} title="Projects in Dubai" animation="zoom-out-left" path="/global/projects-in-dubai-uae/" compact />
                 )}
               </div> */}
 

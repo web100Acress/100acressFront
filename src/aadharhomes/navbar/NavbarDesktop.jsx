@@ -893,7 +893,7 @@ export default function NavbarDesktop({
         <button
           className="global-button"
           onClick={() => { 
-            handleNavigation("/choose-country", null, true); 
+            handleNavigation("/global", null, true); 
           }}
           onMouseEnter={() => {}}
           style={{

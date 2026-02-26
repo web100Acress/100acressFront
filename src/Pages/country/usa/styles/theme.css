@@ -1,0 +1,238 @@
+/* Dubai Theme Styles */
+
+/* Dark Theme (Default) */
+.dark {
+  --bg-primary: #000000;
+  --bg-secondary: #0a0a0a;
+  --text-primary: #ffffff;
+  --text-secondary: rgba(255, 255, 255, 0.7);
+  --text-muted: rgba(255, 255, 255, 0.6);
+  --border-color: rgba(255, 255, 255, 0.1);
+  --gold: #d4af37;
+  --accent: #d4af37;
+}
+
+/* Light Theme */
+.light {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f5f5f5;
+  --text-primary: #1a1a1a;
+  --text-secondary: rgba(0, 0, 0, 0.8);
+  --text-muted: rgba(0, 0, 0, 0.6);
+  --border-color: rgba(0, 0, 0, 0.1);
+  --gold: #c9161f;
+  --accent: #c9161f;
+}
+
+/* Apply theme colors */
+.dark .bg-black {
+  background-color: var(--bg-primary) !important;
+}
+
+.light .bg-black {
+  background-color: var(--bg-primary) !important;
+}
+
+.dark .text-white {
+  color: var(--text-primary) !important;
+}
+
+.light .text-white {
+  color: var(--text-primary) !important;
+}
+
+.dark .text-white\/90 {
+  color: var(--text-secondary) !important;
+}
+
+.light .text-white\/90 {
+  color: var(--text-secondary) !important;
+}
+
+.dark .text-white\/70,
+.dark .text-white\/60 {
+  color: var(--text-muted) !important;
+}
+
+.light .text-white\/70,
+.light .text-white\/60 {
+  color: var(--text-muted) !important;
+}
+
+.dark .border-white\/10 {
+  border-color: var(--border-color) !important;
+}
+
+.light .border-white\/10 {
+  border-color: var(--border-color) !important;
+}
+
+/* Glass effect adjustments */
+.light .glass-effect {
+  background: rgba(255, 255, 255, 0.8) !important;
+  backdrop-filter: blur(10px);
+  border-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+.dark .glass-effect {
+  background: rgba(0, 0, 0, 0.4) !important;
+  backdrop-filter: blur(10px);
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Gradient overlays for light theme - Default (non-hero sections) */
+.light .bg-gradient-to-t {
+  background-image: linear-gradient(to top, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.6), transparent) !important;
+}
+
+.light .bg-gradient-to-r {
+  background-image: linear-gradient(to right, rgba(255, 255, 255, 0.9), transparent, rgba(255, 255, 255, 0.5)) !important;
+}
+
+/* Override for hero sections - keep dark overlay for text visibility */
+.light section.relative .bg-gradient-to-t,
+.light section.relative .bg-gradient-to-r {
+  background-image: none !important;
+}
+
+/* Card backgrounds */
+.light .bg-black\/40 {
+  background-color: rgba(255, 255, 255, 0.6) !important;
+  backdrop-filter: blur(10px);
+}
+
+.light .bg-white\/5,
+.light .bg-white\/\[0\.02\] {
+  background-color: rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Muted foreground */
+.light .text-muted-foreground {
+  color: rgba(0, 0, 0, 0.6) !important;
+}
+
+.dark .text-muted-foreground {
+  color: rgba(255, 255, 255, 0.6) !important;
+}
+
+/* Smooth transitions */
+* {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Gradient gold button - changes to red in light theme */
+.light .gradient-gold {
+  background: linear-gradient(135deg, #c9161f 0%, #e01e28 100%) !important;
+  box-shadow: 0 4px 15px rgba(201, 22, 31, 0.3) !important;
+}
+
+.dark .gradient-gold {
+  background: linear-gradient(135deg, #d4af37 0%, #f4d03f 100%) !important;
+  box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3) !important;
+}
+
+.light .hover\:shadow-gold:hover {
+  box-shadow: 0 8px 25px rgba(201, 22, 31, 0.4) !important;
+}
+
+.dark .hover\:shadow-gold:hover {
+  box-shadow: 0 8px 25px rgba(212, 175, 55, 0.4) !important;
+}
+
+/* Apply accent color (gold in dark, red in light) */
+.text-gold {
+  color: var(--gold) !important;
+}
+
+.border-gold {
+  border-color: var(--gold) !important;
+}
+
+.bg-gold {
+  background-color: var(--gold) !important;
+}
+
+/* Gold hover effects */
+.hover\:text-gold:hover {
+  color: var(--gold) !important;
+}
+
+.hover\:border-gold:hover {
+  border-color: var(--gold) !important;
+}
+
+.hover\:bg-gold:hover {
+  background-color: var(--gold) !important;
+}
+
+/* Gold with opacity */
+.light .bg-gold\/10 {
+  background-color: rgba(201, 22, 31, 0.1) !important;
+}
+
+.light .bg-gold\/20 {
+  background-color: rgba(201, 22, 31, 0.2) !important;
+}
+
+.light .border-gold\/30 {
+  border-color: rgba(201, 22, 31, 0.3) !important;
+}
+
+.light .border-gold\/50 {
+  border-color: rgba(201, 22, 31, 0.5) !important;
+}
+
+.dark .bg-gold\/10 {
+  background-color: rgba(212, 175, 55, 0.1) !important;
+}
+
+.dark .bg-gold\/20 {
+  background-color: rgba(212, 175, 55, 0.2) !important;
+}
+
+.dark .border-gold\/30 {
+  border-color: rgba(212, 175, 55, 0.3) !important;
+}
+
+.dark .border-gold\/50 {
+  border-color: rgba(212, 175, 55, 0.5) !important;
+}
+
+/* Hero section adjustments for light theme */
+.light section {
+  position: relative;
+}
+
+/* Add dark overlay to hero images in light theme for text visibility */
+.light section .bg-gradient-to-t {
+  background-image: linear-gradient(to top, rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.5), transparent) !important;
+}
+
+.light section .bg-gradient-to-r {
+  background-image: linear-gradient(to right, rgba(0, 0, 0, 0.75), transparent, rgba(0, 0, 0, 0.4)) !important;
+}
+
+/* Ensure text remains white/visible in hero section for light theme */
+.light section .text-white {
+  color: #ffffff !important;
+}
+
+.light section .text-white\/90 {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.light section .text-white\/60 {
+  color: rgba(255, 255, 255, 0.6) !important;
+}
+
+/* Info cards in hero - keep dark background in light theme */
+.light section .bg-black\/40 {
+  background-color: rgba(0, 0, 0, 0.6) !important;
+  backdrop-filter: blur(10px);
+}
+
+/* Ensure content is above overlay */
+.light section > * {
+  position: relative;
+  z-index: 2;
+}
