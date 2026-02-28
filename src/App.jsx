@@ -77,6 +77,7 @@ const GurugramPrimeLocation = lazy(() => import("./Pages/GurugramPrimeLocation")
 // const PanipatProject = lazy(() => import("./Pages/ProjectCities/PanipatProject"));
 // const Pushkar = lazy(() => import("./Pages/ProjectCities/Pushkar"));
 const QRGeneratorPage = lazy(() => import("./Pages/QRGeneratorPage"));
+const TestimonialsPage = lazy(() => import("./Pages/TestimonialsPage"));
 const BudgetPrice = lazy(() => import("./Pages/BudgetPrice"));
 const PossessionAfter2028 = lazy(() => import("./Pages/PossessionAfter2028"));
 // New dynamic project type route
@@ -220,7 +221,6 @@ const EditProperty = lazy(() => import("./SalesHeadPage/EditProperty"));
 // Test Component
 const TestSalesHead = lazy(() => import("./Components/TestSalesHead"));
 const ProjectRouter = lazy(() => import("./aadharhomes/BannerPage/updatedbannerpage/components/Project/ProjectRouter"));
-const Testimonial = lazy(() => import("./Home/Testimonial"));
 import DubaiPage from "./Pages/Dubai/DubaiPage";
 import BlogView from "./Insight/components/InsightBlog/BlogView";
 
@@ -401,7 +401,6 @@ function App() {
                         element={<BuyPropViewCard />}
                       />
                       <Route path="/about-us/" element={<AboutModern />} />
-                      <Route path="/testimonials/" element={<Testimonial />} />
                       <Route
                         path="/rental-properties/:pUrl/:id/"
                         element={<RentViewDetails />}
@@ -438,7 +437,11 @@ function App() {
                       {/* Redirect developer pages to home */}
                       <Route path="/developers/experion" element={<Navigate to="/" replace />} />
                       <Route path="/developers/experion/" element={<Navigate to="/" replace />} />
+                      {/* Redirect luxury project page to home */}
+                      <Route path="/project/luxury" element={<Navigate to="/" replace />} />
+                      <Route path="/project/luxury/" element={<Navigate to="/" replace />} />
                       <Route path="/projects-in-goa/" element={<CityProjectsGlobal />} />
+                      <Route path="/testimonials" element={<TestimonialsPage />} />
                       <Route path="/projects-in-noida/" element={<CityProjectsGlobal />} />
                       <Route path="/projects-in-panipat/" element={<CityProjectsGlobal />} />
                       <Route path="/projects-in-panchkula/" element={<CityProjectsGlobal />} />

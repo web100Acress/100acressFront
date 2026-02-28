@@ -969,7 +969,7 @@ export default function NavbarDesktop({
               animate={{ x: "-110%" }}
               transition={{ duration: 3, ease: "linear", repeat: Infinity }}
             />
-            <span style={{ position: 'relative', zIndex: 4 }}>DUBAI</span>
+            <span style={{ position: 'relative', zIndex: 4 }}>Global</span>
           </button>
         </div>
       )}

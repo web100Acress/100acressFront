@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Star, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 
 const Desktoptestimonial = () => {
     const testimonials = [
@@ -92,7 +93,12 @@ const Desktoptestimonial = () => {
                             </p>
                             
                             <div className="text-right">
-                                <button className="text-xs text-gray-400 hover:text-gray-600 font-medium">read more</button>
+                                <Link 
+                                    to="/testimonials" 
+                                    className="text-xs text-gray-400 hover:text-gray-600 font-medium transition-colors"
+                                >
+                                    read more
+                                </Link>
                             </div>
                         </div>  
                     ))}
@@ -100,13 +106,21 @@ const Desktoptestimonial = () => {
 
                 {/* Footer Links */}
                 <div className="flex flex-col items-center gap-1">
+                    <Link 
+                        to="/testimonials"
+                        className="flex items-center gap-2 text-[#0A2647] font-semibold hover:underline transition-colors"
+                    >
+                        See more reviews <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                        </svg>
+                    </Link>
                     <a 
                         href="https://www.google.com/search?sca_esv=52b43d2d7ada44fc&sxsrf=ANbL-n7995QvsnxHRM_BwDPVJ1Ms6VP9xw:1770553620804&si=AL3DRZEsmMGCryMMFSHJ3StBhOdZ2-6yYkXd_doETEE1OR-qOWxYJB5qmXETLS9hVwSeHujJAAVqJjuc1_24JayouSjXeg3aI2cSHrPCCoutWf0j6IbM2DFBOqow4P7qCJ9Fvl68R5kf&q=100acress.com+Reviews&sa=X&ved=2ahUKEwjys_6c8smSAxUYkpUCHZtyJjEQ0bkNegQIPBAH&biw=1920&bih=911&dpr=1" 
                         target="_blank" 
                         rel="noopener noreferrer"
-                        className="flex items-center gap-2 text-[#0A2647] font-semibold hover:underline"
+                        className="flex items-center gap-2 text-gray-600 hover:text-[#0A2647] font-medium transition-colors"
                     >
-                        See more reviews <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        View on Google <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                         </svg>
                     </a>
