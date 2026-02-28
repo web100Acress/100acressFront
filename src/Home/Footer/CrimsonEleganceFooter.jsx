@@ -174,7 +174,7 @@ import api from "../../config/apiClient";
                     </a>
                   </div>
                   <a
-                    href="mailto:info@100acress.com"
+                    href="mailto:support@100acress.com"
                     className="flex items-center gap-4 text-footer-text hover:text-footer-accent transition-smooth"
                   >
                     <div className="p-3 bg-white/10 rounded-xl backdrop-blur-sm">
