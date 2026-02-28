@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Star, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Helmet } from 'react-helmet';
 
 const Mobiletestimonial = () => {
     const scrollContainerRef = useRef(null);
@@ -120,7 +121,46 @@ const Mobiletestimonial = () => {
     };
 
     return (
-        <section className="py-16 bg-white font-['Inter',sans-serif]">
+        <>
+            <Helmet>
+                <script type="application/ld+json">
+                    {JSON.stringify({
+                        "@context": "https://schema.org",
+                        "@type": "Organization",
+                        "name": "100acress.com",
+                        "aggregateRating": {
+                            "@type": "AggregateRating",
+                            "ratingValue": "4.9",
+                            "reviewCount": "3",
+                            "bestRating": "5"
+                        },
+                        "review": [
+                            {
+                                "@type": "Review",
+                                "author": { "@type": "Person", "name": "Soumya" },
+                                "reviewRating": { "@type": "Rating", "ratingValue": "5", "bestRating": "5" },
+                                "reviewBody": "Honestly, had a really smooth experience with 100acress. The team was friendly and actually listened to what I needed.",
+                                "publisher": { "@type": "Organization", "name": "100acress.com" }
+                            },
+                            {
+                                "@type": "Review",
+                                "author": { "@type": "Person", "name": "Purvi Rathee" },
+                                "reviewRating": { "@type": "Rating", "ratingValue": "5", "bestRating": "5" },
+                                "reviewBody": "100acress is really the best real estate office in Gurgaon. It helps customers find a perfect property according to their taste and demand.",
+                                "publisher": { "@type": "Organization", "name": "100acress.com" }
+                            },
+                            {
+                                "@type": "Review",
+                                "author": { "@type": "Person", "name": "Krishti" },
+                                "reviewRating": { "@type": "Rating", "ratingValue": "5", "bestRating": "5" },
+                                "reviewBody": "Had a great experience working with 100acress! The entire team process was smooth, transparent and extremely professional.",
+                                "publisher": { "@type": "Organization", "name": "100acress.com" }
+                            }
+                        ]
+                    })}
+                </script>
+            </Helmet>
+            <section className="py-16 bg-white font-['Inter',sans-serif]">
             <div className="max-w-7xl mx-auto px-4">
                 {/* Header Section */}
                 <div className="text-center mb-6">
@@ -234,6 +274,7 @@ const Mobiletestimonial = () => {
                 </div>
             </div>
         </section>
+        </>
     );
 };
 

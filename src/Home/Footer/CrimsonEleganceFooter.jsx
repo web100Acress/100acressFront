@@ -54,9 +54,9 @@ import api from "../../config/apiClient";
       { name: "Home", href: "/" },
       { name: "About Us", href: "/about-us/" },      
       { name: "Luxury Properties", href: "/top-luxury-projects/" },
-      { name: "Buy Our Services", href: "/postproperty/" },
       { name: "Blog", href: "/blog/" },
-      { name: "Career with Us", href: "/career-with-us/" },      
+      { name: "Career with Us", href: "/career-with-us/" },
+      { name: "Testimonials", href: "/testimonials" },
       { name: "Contact", href: "/contact-us/" },
     ];
 
@@ -105,6 +105,7 @@ import api from "../../config/apiClient";
     ];
 
     const toolsServices = [
+      { name: "Buy Our Services", href: "/postproperty/" },
       { name: "EMI Calculator", href: "/emi-calculator/" },
       { name: "QR Generator", href: "/qr-generator" },
       { name: "Gurugram Master Plan 2031", href: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/masterplan/gurgaon+master+plan.pdf", external: true },
