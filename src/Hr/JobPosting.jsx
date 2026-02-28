@@ -34,7 +34,13 @@ const JobPosting = () => {
 
   const fetchJobOpenings = async () => {
     try {
-      const res = await api.get("/career/opening/ViewAll");
+      // Fetch all job openings with no limit
+      const res = await api.get("/career/opening/ViewAll", {
+        params: {
+          limit: 1000,  // Large limit to fetch all jobs in one page
+          page: 1
+        }
+      });
       const list = res?.data?.data || [];
       setJobList(list);
       // Load applicant summaries per opening

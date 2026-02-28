@@ -5,6 +5,20 @@ import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 
 const Desktoptestimonial = () => {
+    const [selectedTestimonial, setSelectedTestimonial] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    
+    const openModal = (item) => {
+        setSelectedTestimonial(item);
+        setIsModalOpen(true);
+        document.body.style.overflow = 'hidden';
+    };
+
+    const closeModal = () => {
+        setIsModalOpen(false);
+        setSelectedTestimonial(null);
+        document.body.style.overflow = 'unset';
+    };
     const testimonials = [
         {
             id: 1,
@@ -128,17 +142,17 @@ const Desktoptestimonial = () => {
                             </div>
 
                             {/* Text */}
-                            <p className="text-gray-700 text-sm leading-relaxed mb-2">
+                            <p className="text-gray-700 text-sm leading-relaxed mb-2 line-clamp-3">
                                 "{item.text}"
                             </p>
                             
                             <div className="text-right">
-                                <Link 
-                                    to="/testimonials" 
+                                <button 
+                                    onClick={() => openModal(item)}
                                     className="text-xs text-gray-400 hover:text-gray-600 font-medium transition-colors"
                                 >
                                     read more
-                                </Link>
+                                </button>
                             </div>
                         </div>  
                     ))}
@@ -166,6 +180,85 @@ const Desktoptestimonial = () => {
                     </a>
                 </div>
             </div>
+            
+            {/* Modal Popup for Read More */}
+            {isModalOpen && selectedTestimonial && (
+                <div 
+                    className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+                    onClick={closeModal}
+                >
+                    <motion.div 
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.95 }}
+                        className="bg-white rounded-2xl max-w-lg w-full max-h-[80vh] shadow-2xl overflow-hidden"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        {/* Modal Header */}
+                        <div className="flex items-center justify-between p-6 border-b border-gray-100">
+                            <div className="flex items-center gap-3">
+                                <div className="w-12 h-12 rounded-full overflow-hidden bg-gray-100">
+                                    <img
+                                        src={`https://ui-avatars.com/api/?name=${encodeURIComponent(selectedTestimonial.name)}&background=random`}
+                                        alt={selectedTestimonial.name}
+                                        className="w-full h-full object-cover"
+                                    />
+                                </div>
+                                <div>
+                                    <div className="flex items-center gap-1.5">
+                                        <h4 className="font-bold text-[#0A2647] text-base">{selectedTestimonial.name}</h4>
+                                        <svg className="w-4 h-4 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                                        </svg>
+                                    </div>
+                                    <p className="text-xs text-gray-500">{selectedTestimonial.role}</p>
+                                </div>
+                            </div>
+                            <button 
+                                onClick={closeModal}
+                                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                            >
+                                <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        </div>
+                        
+                        {/* Modal Content - Scrollable */}
+                        <div className="p-6 overflow-y-auto max-h-[50vh]">
+                            {/* Stars */}
+                            <div className="flex gap-1 mb-4">
+                                {[...Array(5)].map((_, i) => (
+                                    <Star
+                                        key={i}
+                                        size={20}
+                                        fill="#FBBF24"
+                                        className="text-amber-400"
+                                    />
+                                ))}
+                            </div>
+                            
+                            {/* Full Testimonial Text */}
+                            <p className="text-gray-700 text-base leading-relaxed">
+                                "{selectedTestimonial.text}"
+                            </p>
+                        </div>
+                        
+                        {/* Modal Footer */}
+                        <div className="p-6 border-t border-gray-100 bg-gray-50">
+                            <div className="flex items-center justify-between">
+                                <img src="https://www.gstatic.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png" alt="Google" className="h-5 opacity-80" />
+                                <button 
+                                    onClick={closeModal}
+                                    className="px-6 py-2 bg-[#0A2647] text-white rounded-full font-semibold hover:bg-[#1A5F7A] transition-colors"
+                                >
+                                    Close
+                                </button>
+                            </div>
+                        </div>
+                    </motion.div>
+                </div>
+            )}
         </section>
         </>
     );
