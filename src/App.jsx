@@ -108,7 +108,6 @@ const LuxuryProject = lazy(() => import("./Pages/BuilderPages/LuxuryProjects"));
 const ForgetPassword = lazy(() => import("./Pages/ForgetPassword"));
 const ViewAllProperty = lazy(() => import("./Pages/ViewAllProperty"));
 const BlogWriteModal = lazy(() => import("./Components/Blog_Components/Blog/admin/desktop/BlogWriteModal"));
-// const Dubai = lazy(() => import("./Pages/ProjectCities/Dubai"));
 const GlobalBudgetPrice = lazy(() => import("./Pages/GlobalBudgetPrice"));
 const PriceTrends = lazy(() => import("./Insight/components/Pricetrend/PriceTrends"));
 const CityProjects = lazy(() => import("./Pages/ProjectCities/CityProjects"));
@@ -223,10 +222,10 @@ const EditProperty = lazy(() => import("./SalesHeadPage/EditProperty"));
 const TestSalesHead = lazy(() => import("./Components/TestSalesHead"));
 const ProjectRouter = lazy(() => import("./aadharhomes/BannerPage/updatedbannerpage/components/Project/ProjectRouter"));
 const Testimonial = lazy(() => import("./Home/Testimonial"));
-import DubaiPage from "./Pages/country/DubaiPage";
 import IndiaPage from "./Pages/country/india/IndiaPage";
 import SriLankaPage from "./Pages/country/srilanka/SriLankaPage";
 import UsaPage from "./Pages/country/usa/UsaPage";
+import UkPage from "./Pages/country/uk/UkPage";
 import BlogView from "./Insight/components/InsightBlog/BlogView";
 
 // Property Types Pages
@@ -426,21 +425,19 @@ function App() {
                         element={<ProjectTypeGlobal />}
                       />
                       <Route path="/projects/sco-plots/" element={<ProjectTypeGlobal />} />
+                      <Route path="/united-arab-emirates/" element={<UsaPage />} />
                       {/* <Route path="/dlf-homes-sco-plots/" element={<DlfSco />} /> */}
                       <Route
                         path="/projects/independent-floors/"
                         element={<ProjectTypeGlobal />}
                       />
                       <Route path="/projects-in-delhi/" element={<CityProjectsGlobal />} />
-                      <Route path="/global/projects-in-dubai-uae/" element={<DubaiPage />} />
+                      <Route path="/global/projects-in-london-uk/" element={<UkPage />} />
+                      <Route path="/global/projects-in-srilanka/" element={<SriLankaPage />} />
                       <Route path="/country/india/" element={<IndiaPage />} />
                       <Route path="/country/srilanka/" element={<SriLankaPage />} />
                       <Route path="/country/usa/" element={<UsaPage />} />
-                      {/* Redirect deleted Dubai routes to home */}
-                      <Route path="/projects-in-dubai" element={<Navigate to="/" replace />} />
-                      <Route path="/dubai/insights" element={<Navigate to="/" replace />} />
-                      <Route path="/dubai/developers" element={<Navigate to="/" replace />} />
-                      <Route path="/dubai/contact" element={<Navigate to="/" replace />} />
+                      <Route path="/country/uk/" element={<UkPage />} />
                       <Route path="/projects-in-goa/" element={<CityProjectsGlobal />} />
                       <Route path="/projects-in-noida/" element={<CityProjectsGlobal />} />
                       <Route path="/projects-in-panipat/" element={<CityProjectsGlobal />} />
@@ -879,14 +876,13 @@ function MobileBottomNav() {
               <span className={`${isActive(["/", "/projects", "/property"]) ? "text-gray-900 font-semibold" : ""}`}>Home</span>
             </Link>
 
-            {/* UAE */}
-            <Link to="/global/projects-in-dubai-uae/" className="flex flex-col items-center gap-1 py-2">
-              <span className={`text-xl ${isActive("/global/projects-in-dubai-uae") ? "text-red-600" : "text-gray-500"}`}>
-                <img src="/icons/noun-burj-khalifa-3945.svg" width="20" height="20" alt="UAE" style={{ filter: isActive("/global/projects-in-dubai-uae") ? 'brightness(0) saturate(100%) invert(27%) sepia(51%) saturate(2878%) hue-rotate(346deg) brightness(104%) contrast(97%)' : 'brightness(0) saturate(100%) invert(60%) sepia(8%) saturate(872%) hue-rotate(169deg) brightness(99%) contrast(86%)' }} />
+            <Link to="/united-arab-emirates/" className="flex flex-col items-center gap-1 py-2">
+              <span className={`text-xl ${isActive("/united-arab-emirates") ? "text-red-600" : "text-gray-500"}`}>
+                <img src="/icons/noun-burj-khalifa-3945.svg" width="20" height="20" alt="UAE" style={{ filter: isActive("/united-arab-emirates") ? 'brightness(0) saturate(100%) invert(27%) sepia(51%) saturate(2878%) hue-rotate(346deg) brightness(104%) contrast(97%)' : 'brightness(0) saturate(100%) invert(60%) sepia(8%) saturate(872%) hue-rotate(169deg) brightness(99%) contrast(86%)' }} />
               </span>
-              <span className={`${isActive("/global/projects-in-dubai-uae") ? "text-gray-900 font-semibold" : ""}`}>UAE</span>
+              <span className={`${isActive("/united-arab-emirates") ? "text-gray-900 font-semibold" : ""}`}>UAE</span>
             </Link>
-
+            
             {/* Center CTA: Contact (call by phone) */}
             <div className="flex flex-col items-center justify-center -mt-6">
               <a

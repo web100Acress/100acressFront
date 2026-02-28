@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "../../../../Components/ui/button";
-import { Menu, X, Phone, ChevronDown } from "lucide-react";
+import { Menu, X, Phone, ChevronDown, Globe } from "lucide-react";
 import { cn } from "../../../../lib/utils";
-import { useDubai } from "../context/DubaiContext";
 
 // Logo URL
 const LOGO = "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/white-logo.webp";
@@ -10,17 +9,14 @@ const LOGO = "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre
 export const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isEmiratesDropdownOpen, setIsEmiratesDropdownOpen] = useState(false);
-  const { selectedEmirate, setSelectedEmirate, currency, setCurrency } = useDubai();
+  const [isCountriesDropdownOpen, setIsCountriesDropdownOpen] = useState(false);
 
-  const emirates = [
-    { name: "Dubai", label: "Dubai" },
-    { name: "Abu Dhabi", label: "Abu Dhabi" },
-    { name: "Sharjah", label: "Sharjah" },
-    { name: "Ajman", label: "Ajman" },
-    { name: "Ras Al Khaimah", label: "Ras Al Khaimah" },
-    { name: "Fujairah", label: "Fujairah" },
-    { name: "Umm Al Quwain", label: "Umm Al Quwain" },
+  const countries = [
+    { name: "UAE", label: "UAE", path: "/global/projects-in-dubai-uae/" },
+    { name: "UK", label: "United Kingdom", path: "/global/projects-in-london-uk/" },
+    { name: "USA", label: "United States", path: "/country/usa/" },
+    { name: "Sri Lanka", label: "Sri Lanka", path: "/global/projects-in-srilanka/" },
+    { name: "India", label: "India", path: "/country/india/" },
   ];
 
   useEffect(() => {
@@ -34,17 +30,20 @@ export const Header = () => {
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (isEmiratesDropdownOpen && !event.target.closest('.emirates-dropdown')) {
-        setIsEmiratesDropdownOpen(false);
+      if (isCountriesDropdownOpen && !event.target.closest('.countries-dropdown')) {
+        setIsCountriesDropdownOpen(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [isEmiratesDropdownOpen]);
+  }, [isCountriesDropdownOpen]);
 
   const navLinks = [
-
-
+    { name: "India Properties", href: "#properties" },
+    { name: "Developers", href: "#developers" },
+    { name: "Lifestyle", href: "#lifestyle" },
+    { name: "Investment", href: "#investment" },
+    { name: "Contact", href: "#contact" },
   ];
 
   // Smooth scroll function
@@ -77,49 +76,47 @@ export const Header = () => {
       )}
     >
       <div className="container flex items-center justify-between px-4 sm:px-6 lg:px-8">
-        {/* Logo with Emirates Dropdown */}
+        {/* Logo with Countries Dropdown */}
         <div className="flex items-center space-x-2 sm:space-x-3">
-          <a href="/global/projects-in-dubai-uae/" className="flex items-center space-x-2 sm:space-x-3">
+          <a href="/country/india/" className="flex items-center space-x-2 sm:space-x-3">
             <img 
               src={LOGO}
               alt="100acress" 
               className="h-10 sm:h-14 md:h-16 w-auto object-contain"
             />
+            <span className="hidden sm:block text-white font-bold text-lg sm:text-xl">100acress India</span>
           </a>
-          
-          {/* Emirates Dropdown */}
-          <div className="relative emirates-dropdown hidden sm:block">
+          {/* Countries Dropdown */}
+          <div className="relative countries-dropdown hidden sm:block">
             <button
-              onClick={() => setIsEmiratesDropdownOpen(!isEmiratesDropdownOpen)}
-              className="flex items-center space-x-1 text-xs text-gold uppercase tracking-widest border-l border-gold pl-2 sm:pl-3 hover:text-gold/80 transition-colors"
+              onClick={() => setIsCountriesDropdownOpen(!isCountriesDropdownOpen)}
+              className="flex items-center gap-2 text-white hover:text-gold transition-colors"
             >
-              <span className="hidden md:inline">{selectedEmirate}</span>
-              <span className="md:hidden">{selectedEmirate.substring(0, 3)}</span>
+              <Globe className="w-4 h-4" />
+              <span className="hidden md:inline">India</span>
               <ChevronDown className={cn(
-                "h-3 w-3 transition-transform duration-200",
-                isEmiratesDropdownOpen && "rotate-180"
+                "h-4 w-4 transition-transform duration-200",
+                isCountriesDropdownOpen && "rotate-180"
               )} />
             </button>
 
             {/* Dropdown Menu */}
-            {isEmiratesDropdownOpen && (
-              <div className="absolute top-full left-0 mt-2 w-48 glass-effect border border-white/10 rounded-lg shadow-luxury overflow-hidden z-50 animate-fade-in">
-                {emirates.map((emirate) => (
-                  <button
-                    key={emirate.name}
-                    onClick={() => {
-                      setSelectedEmirate(emirate.name);
-                      setIsEmiratesDropdownOpen(false);
-                    }}
+            {isCountriesDropdownOpen && (
+              <div className="absolute top-full left-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+                {countries.map((country) => (
+                  <a
+                    key={country.name}
+                    href={country.path}
                     className={cn(
-                      "w-full text-left px-4 py-3 text-sm transition-colors",
-                      selectedEmirate === emirate.name
-                        ? "bg-gold/20 text-gold font-semibold"
-                        : "text-white hover:bg-white/10 hover:text-gold"
+                      country.name === "India" 
+                        ? "text-gold bg-gray-50 font-semibold" 
+                        : "text-gray-700 hover:bg-gray-100 hover:text-gold",
+                      "block px-4 py-2 text-sm transition-colors first:rounded-t-lg last:rounded-b-lg"
                     )}
+                    onClick={() => setIsCountriesDropdownOpen(false)}
                   >
-                    {emirate.label}
-                  </button>
+                    {country.label}
+                  </a>
                 ))}
               </div>
             )}
@@ -135,72 +132,43 @@ export const Header = () => {
               onClick={(e) => {
                 if (link.isWhatsApp) {
                   e.preventDefault();
-                  window.open("https://wa.me/919811750740?text=Hi! I'm interested in Dubai properties. Can you help me?", "_blank");
+                  window.open("https://wa.me/919811750740?text=Hi! I'm interested in premium properties. Can you help me?", "_blank");
                 } else {
                   handleSmoothScroll(e, link.href);
                 }
               }}
               className={cn(
                 "transition-colors duration-200 text-xs xl:text-sm uppercase tracking-wider font-medium cursor-pointer",
-                link.label === 'India'
+                link.name === 'India Properties'
                   ? "gradient-gold text-black px-3 py-1 rounded-full hover:shadow-gold"
                   : "text-white hover:text-gold"
               )}
             >
-              {link.label}
+              {link.name}
             </a>
           ))}
         </nav>
 
         {/* Right Actions */}
         <div className="hidden lg:flex items-center space-x-2 xl:space-x-4">
-          {/* Currency Toggle - Visual Icons */}
-          <div className="flex items-center gap-0.5 px-1.5 xl:px-2 py-1 rounded-full glass-effect border border-white/20">
-            <button
-              onClick={() => setCurrency("INR")}
-              className={cn(
-                "p-1 xl:p-1.5 rounded-full transition-all duration-300",
-                currency === "INR" 
-                  ? "bg-gold text-black scale-110" 
-                  : "text-white/60 hover:text-gold hover:bg-white/10"
-              )}
-              title="Indian Rupee"
-            >
-              <span className="text-sm xl:text-base font-bold">₹</span>
-            </button>
-            <button
-              onClick={() => setCurrency("AED")}
-              className={cn(
-                "p-1 xl:p-1.5 rounded-full transition-all duration-300",
-                currency === "AED" 
-                  ? "bg-gold text-black scale-110" 
-                  : "text-white/60 hover:text-gold hover:bg-white/10"
-              )}
-              title="UAE Dirham"
-            >
-              <span className="text-xs xl:text-sm font-bold">د.إ</span>
-            </button>
-            <button
-              onClick={() => setCurrency("USD")}
-              className={cn(
-                "p-1 xl:p-1.5 rounded-full transition-all duration-300",
-                currency === "USD" 
-                  ? "bg-gold text-black scale-110" 
-                  : "text-white/60 hover:text-gold hover:bg-white/10"
-              )}
-              title="US Dollar"
-            >
-              <span className="text-sm xl:text-base font-bold">$</span>
-            </button>
-          </div>
-          
-          <a href="tel:+919811750740">
-            <Button size="sm" className="gradient-gold text-black hover:shadow-gold text-xs xl:text-base font-semibold px-3 xl:px-4 py-2">
-              <Phone className="h-4 w-4 xl:h-5 xl:w-5 mr-1 xl:mr-2" />
-              <span className="hidden xl:inline">+91 9811 750 740</span>
-              <span className="xl:hidden">Call</span>
-            </Button>
-          </a>
+          <Button 
+            variant="outline" 
+            size="sm"
+            className="border-gold text-gold hover:bg-gold hover:text-black transition-all duration-300"
+            onClick={() => window.open("https://wa.me/919811750740?text=Hi! I'm interested in India properties. Can you help me?", "_blank")}
+          >
+            <Phone className="w-4 h-4 mr-2" />
+            <span className="hidden xl:inline">Contact Us</span>
+          </Button>
+          <Button 
+            size="sm"
+            className="gradient-gold text-black hover:shadow-gold transition-all duration-300"
+            onClick={() => window.open("tel:+919811750740", "_blank")}
+          >
+            <Phone className="w-4 h-4 mr-2" />
+            <span className="hidden xl:inline">+91 9811 750 740</span>
+            <span className="xl:hidden">Call</span>
+          </Button>
         </div>
 
         {/* Mobile Menu Button */}
@@ -221,17 +189,18 @@ export const Header = () => {
       {isMobileMenuOpen && (
         <div className="lg:hidden glass-effect mt-4 border-t border-white/10 animate-fade-in">
           <nav className="container py-4 space-y-3 px-4 sm:px-6">
-            {/* Emirates Dropdown Mobile */}
+            {/* Countries Dropdown Mobile */}
             <div className="sm:hidden pb-3 border-b border-white/10">
-              <label className="block text-xs text-muted-foreground mb-2">Select Emirate</label>
+              <label className="block text-xs text-muted-foreground mb-2">Select Country</label>
               <select
-                value={selectedEmirate}
-                onChange={(e) => setSelectedEmirate(e.target.value)}
+                onChange={(e) => {
+                  window.location.href = e.target.value;
+                }}
                 className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white text-sm focus:outline-none focus:border-gold/50"
               >
-                {emirates.map((emirate) => (
-                  <option key={emirate.name} value={emirate.name} className="bg-black">
-                    {emirate.label}
+                {countries.map((country) => (
+                  <option key={country.name} value={country.path} className="bg-black">
+                    {country.label}
                   </option>
                 ))}
               </select>
@@ -249,7 +218,7 @@ export const Header = () => {
                 )}
                 onClick={() => {
                   if (link.isWhatsApp) {
-                    window.open("https://wa.me/919811750740?text=Hi! I'm interested in Dubai properties. Can you help me?", "_blank");
+                    window.open("https://wa.me/919811750740?text=Hi! I'm interested in premium properties. Can you help me?", "_blank");
                   }
                   setIsMobileMenuOpen(false);
                 }}
@@ -257,53 +226,21 @@ export const Header = () => {
                 {link.label}
               </a>
             ))}
-            <div className="pt-3 space-y-3 border-t border-white/10">
-              {/* Currency Toggle Mobile - Visual Icons */}
-              <div className="flex items-center justify-center gap-2 p-3 rounded-lg glass-effect border border-white/20">
-                <button
-                  onClick={() => setCurrency("INR")}
-                  className={cn(
-                    "flex-1 p-3 rounded-lg transition-all duration-300 flex items-center justify-center gap-2",
-                    currency === "INR" 
-                      ? "bg-gold text-black font-bold" 
-                      : "text-white/60 hover:text-gold hover:bg-white/10"
-                  )}
-                >
-                  <span className="text-xl font-bold">₹</span>
-                  <span className="text-xs">INR</span>
-                </button>
-                <button
-                  onClick={() => setCurrency("AED")}
-                  className={cn(
-                    "flex-1 p-3 rounded-lg transition-all duration-300 flex items-center justify-center gap-2",
-                    currency === "AED" 
-                      ? "bg-gold text-black font-bold" 
-                      : "text-white/60 hover:text-gold hover:bg-white/10"
-                  )}
-                >
-                  <span className="text-lg font-bold">د.إ</span>
-                  <span className="text-xs">AED</span>
-                </button>
-                <button
-                  onClick={() => setCurrency("USD")}
-                  className={cn(
-                    "flex-1 p-3 rounded-lg transition-all duration-300 flex items-center justify-center gap-2",
-                    currency === "USD" 
-                      ? "bg-gold text-black font-bold" 
-                      : "text-white/60 hover:text-gold hover:bg-white/10"
-                  )}
-                >
-                  <span className="text-xl font-bold">$</span>
-                  <span className="text-xs">USD</span>
-                </button>
-              </div>
-              
+            <div className="pt-3">
               <a href="tel:+919811750740" className="w-full">
                 <Button className="w-full gradient-gold text-black text-lg font-semibold">
                   <Phone className="h-5 w-5 mr-2" />
                   +91 9811 750 740
                 </Button>
               </a>
+              <Button 
+                className="w-full mt-2 border-gold text-gold hover:bg-gold hover:text-black transition-all duration-300"
+                variant="outline"
+                onClick={() => window.open("https://wa.me/919811750740?text=Hi! I'm interested in India properties. Can you help me?", "_blank")}
+              >
+                <Phone className="h-5 w-5 mr-2" />
+                WhatsApp
+              </Button>
             </div>
           </nav>
         </div>

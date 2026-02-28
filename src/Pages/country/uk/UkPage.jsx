@@ -12,10 +12,10 @@ import { ThemeProvider } from "./context/ThemeContext";
 import "./i18n/config"; 
 import "./styles/theme.css";
 
-const UsaPageContent = () => {
-  // Update meta tags for USA page
+const UkPageContent = () => {
+  // Update meta tags for UK page
   useEffect(() => {
-    document.title = "New & Upcoming Real Estate Projects in USA 2026 | 100Acress";
+    document.title = "New & Upcoming Real Estate Projects in UK 2026 | 100Acress";
     
     // Update or create meta description
     let metaDescription = document.querySelector('meta[name="description"]');
@@ -24,7 +24,7 @@ const UsaPageContent = () => {
       metaDescription.name = 'description';
       document.head.appendChild(metaDescription);
     }
-    metaDescription.content = "Explore premium real estate projects in USA 2026. From New York condos to Los Angeles homes. View prices, payment plans and exclusive deals.";
+    metaDescription.content = "Explore premium real estate projects in UK 2026. From London apartments to Manchester homes. View prices, payment plans and exclusive deals.";
     
     // Update or create canonical URL
     let canonicalLink = document.querySelector('link[rel="canonical"]');
@@ -33,32 +33,32 @@ const UsaPageContent = () => {
       canonicalLink.rel = 'canonical';
       document.head.appendChild(canonicalLink);
     }
-    canonicalLink.href = "https://www.100acress.com/country/usa/";
+    canonicalLink.href = "https://www.100acress.com/country/uk/";
     
     // Update Open Graph meta tags for social sharing
-    updateMetaTag('og:title', "New & Upcoming Real Estate Projects in USA 2026 | 100Acress");
-    updateMetaTag('og:description', "Explore premium real estate projects in USA 2026. From New York condos to Los Angeles homes. View prices, payment plans and exclusive deals.");
-    updateMetaTag('og:url', "https://www.100acress.com/country/usa/");
+    updateMetaTag('og:title', "New & Upcoming Real Estate Projects in UK 2026 | 100Acress");
+    updateMetaTag('og:description', "Explore premium real estate projects in UK 2026. From London apartments to Manchester homes. View prices, payment plans and exclusive deals.");
+    updateMetaTag('og:url', "https://www.100acress.com/country/uk/");
 
     // Add JSON-LD Schema
-    let schemaScript = document.getElementById('usa-schema');
+    let schemaScript = document.getElementById('uk-schema');
     if (!schemaScript) {
       schemaScript = document.createElement('script');
       schemaScript.type = 'application/ld+json';
-      schemaScript.id = 'usa-schema';
+      schemaScript.id = 'uk-schema';
       document.head.appendChild(schemaScript);
     }
     
     const schemaData = {
       "@context": "https://schema.org",
       "@type": "WebPage",
-      "name": "Real Estate Projects in USA",
-      "url": "https://www.100acress.com/country/usa/",
-      "description": "Explore premium real estate projects in USA 2026. From New York condos to Los Angeles homes.",
+      "name": "Real Estate Projects in UK",
+      "url": "https://www.100acress.com/country/uk/",
+      "description": "Explore premium real estate projects in UK 2026. From London apartments to Manchester homes.",
       "mainEntity": {
         "@type": "RealEstateListing",
-        "name": "USA Property Projects",
-        "description": "Premium residential and commercial properties in United States"
+        "name": "UK Property Projects",
+        "description": "Premium residential and commercial properties in United Kingdom"
       }
     };
     
@@ -81,29 +81,29 @@ const UsaPageContent = () => {
       <div className="min-h-screen bg-gray-50">
         <Header />
         <NewHero 
-          title="Premium Real Estate in United States"
-          subtitle="Discover exclusive properties across New York, Los Angeles, Miami and more"
-          backgroundImage="https://images.unsplash.com/photo-1575917649705-5b59aaa12e6b?w=1920&q=85"
+          title="Premium Real Estate in United Kingdom"
+          subtitle="Discover exclusive properties across London, Manchester, Birmingham and more"
+          backgroundImage="https://images.unsplash.com/photo-15130933843-5c6132b1e5d5?w=1920&q=85"
         />
         <PropertiesSection 
-          title="Featured USA Properties"
+          title="Featured UK Properties"
           subtitle="Handpicked selection of premium residential and commercial properties"
-          country="usa"
+          country="uk"
         />
         <DevelopersSection 
-          title="Trusted USA Developers"
-          subtitle="Partner with renowned American and international developers"
+          title="Trusted UK Developers"
+          subtitle="Partner with renowned British and international developers"
         />
         <LifestyleSection 
-          title="USA Lifestyle & Living"
-          subtitle="Experience the best of American living with world-class amenities"
+          title="UK Lifestyle & Living"
+          subtitle="Experience the best of British living with world-class amenities"
         />
         <InvestmentSection 
           title="Investment Opportunities"
-          subtitle="High-return investment opportunities in USA's growing property market"
+          subtitle="High-return investment opportunities in UK's growing property market"
         />
         <ContactSection 
-          title="Start Your USA Property Journey"
+          title="Start Your UK Property Journey"
           subtitle="Our experts are here to help you find your perfect property"
         />
         <Footer />
@@ -113,8 +113,8 @@ const UsaPageContent = () => {
   );
 };
 
-const UsaPage = () => {
-  return <UsaPageContent />;
+const UkPage = () => {
+  return <UkPageContent />;
 };
 
-export default UsaPage;
+export default UkPage;

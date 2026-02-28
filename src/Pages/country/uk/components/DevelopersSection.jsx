@@ -2,52 +2,52 @@ import { Link } from "react-router-dom";
 export const DevelopersSection = () => {
   const developers = [
     {
-      id: "dlf-limited",
-      name: "DLF Limited",
-      logo: "DLF",
-      logoUrl: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/india/developers/dlf-logo.png"
+      id: "berkeley-homes",
+      name: "Berkeley Homes",
+      logo: "BERKELEY",
+      logoUrl: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/uk/developers/berkeley-homes-logo.png"
     },
     {
-      id: "godrej-properties",
-      name: "Godrej Properties",
-      logo: "GODREJ",
-      logoUrl: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/india/developers/godrej-logo.png"
+      id: "barratt-homes",
+      name: "Barratt Homes",
+      logo: "BARRATT",
+      logoUrl: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/uk/developers/barratt-homes-logo.png"
     },
     {
-      id: "prestige-group",
-      name: "Prestige Group",
-      logo: "PRESTIGE",
-      logoUrl: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/india/developers/prestige-logo.png"
+      id: "taylor-wimpey",
+      name: "Taylor Wimpey",
+      logo: "TAYLOR WIMPEY",
+      logoUrl: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/uk/developers/taylor-wimpey-logo.png"
     },
     {
-      id: "lodha-group",
-      name: "Lodha Group",
-      logo: "LODHA",
-      logoUrl: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/india/developers/lodha-logo.png"
+      id: "persimmon-homes",
+      name: "Persimmon Homes",
+      logo: "PERSIMMON",
+      logoUrl: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/uk/developers/persimmon-homes-logo.png"
     },
     {
-      id: "tata-housing",
-      name: "Tata Housing",
-      logo: "TATA",
-      logoUrl: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/india/developers/tata-logo.png"
+      id: "redrow-homes",
+      name: "Redrow Homes",
+      logo: "REDROW",
+      logoUrl: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/uk/developers/redrow-homes-logo.png"
     },
     {
-      id: "shapoorji-pallonji",
-      name: "Shapoorji Pallonji",
-      logo: "SP",
-      logoUrl: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/india/developers/shapoorji-logo.png"
+      id: "crest-nicholson",
+      name: "Crest Nicholson",
+      logo: "CREST",
+      logoUrl: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/uk/developers/crest-nicholson-logo.png"
     },
     {
-      id: "brigade-group",
-      name: "Brigade Group",
-      logo: "BRIGADE",
-      logoUrl: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/india/developers/brigade-logo.png"
+      id: "bellway-homes",
+      name: "Bellway Homes",
+      logo: "BELLWAY",
+      logoUrl: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/uk/developers/bellway-homes-logo.png"
     },
     {
-      id: "oberoi-realty",
-      name: "Oberoi Realty",
-      logo: "OBEROI",
-      logoUrl: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/india/developers/oberoi-logo.png"
+      id: "bovis-homes",
+      name: "Bovis Homes",
+      logo: "BOVIS",
+      logoUrl: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/uk/developers/bovis-homes-logo.png"
     }
   ];
 
@@ -65,10 +65,10 @@ export const DevelopersSection = () => {
             Trusted Partners
           </span>
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-display font-bold text-white leading-tight">
-            Top Developers in India
+            Top Developers in United Kingdom
           </h2>
           <p className="text-sm sm:text-base lg:text-xl text-muted-foreground max-w-lg sm:max-w-2xl mx-auto">
-            Invest in the finest projects in India featuring luxury apartments and high-ROI properties from the country's most trusted developers.
+            Invest in the finest projects in UK featuring luxury apartments and high-ROI properties from the country's most trusted developers.
           </p>
         </div>
 
@@ -101,19 +101,19 @@ export const DevelopersSection = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16 pt-16 border-t border-white/10">
           <div className="text-center space-y-2">
-            <p className="text-4xl font-bold text-gold">100+</p>
+            <p className="text-4xl font-bold text-gold">40+</p>
             <p className="text-sm text-muted-foreground uppercase tracking-wider">
               Verified Developers
             </p>
           </div>
           <div className="text-center space-y-2">
-            <p className="text-4xl font-bold text-gold">2000+</p>
+            <p className="text-4xl font-bold text-gold">800+</p>
             <p className="text-sm text-muted-foreground uppercase tracking-wider">
               Premium Projects
             </p>
           </div>
           <div className="text-center space-y-2">
-            <p className="text-4xl font-bold text-gold">10000+</p>
+            <p className="text-4xl font-bold text-gold">3000+</p>
             <p className="text-sm text-muted-foreground uppercase tracking-wider">
               Happy Clients
             </p>

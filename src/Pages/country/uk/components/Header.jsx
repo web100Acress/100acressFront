@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import { Button } from "../../../Components/ui/button";
+import { Button } from "../../../../Components/ui/button";
 import { Menu, X, Phone, ChevronDown, Globe } from "lucide-react";
-import { cn } from "../../../lib/utils";
+import { cn } from "../../../../lib/utils";
 
 // Logo URL
 const LOGO = "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/white-logo.webp";
@@ -13,9 +13,9 @@ export const Header = () => {
 
   const countries = [
     { name: "UAE", label: "UAE", path: "/global/projects-in-dubai-uae/" },
-    { name: "UK", label: "United Kingdom", path: "/country/uk/" },
+    { name: "UK", label: "United Kingdom", path: "/global/projects-in-london-uk/" },
     { name: "USA", label: "United States", path: "/country/usa/" },
-    { name: "Sri Lanka", label: "Sri Lanka", path: "/country/srilanka/" },
+    { name: "Sri Lanka", label: "Sri Lanka", path: "/global/projects-in-srilanka/" },
     { name: "India", label: "India", path: "/country/india/" },
   ];
 
@@ -39,7 +39,7 @@ export const Header = () => {
   }, [isCountriesDropdownOpen]);
 
   const navLinks = [
-    { name: "Properties", href: "#properties" },
+    { name: "UK Properties", href: "#properties" },
     { name: "Developers", href: "#developers" },
     { name: "Lifestyle", href: "#lifestyle" },
     { name: "Investment", href: "#investment" },
@@ -76,14 +76,15 @@ export const Header = () => {
       )}
     >
       <div className="container flex items-center justify-between px-4 sm:px-6 lg:px-8">
-        {/* Logo with Emirates Dropdown */}
+        {/* Logo with Countries Dropdown */}
         <div className="flex items-center space-x-2 sm:space-x-3">
-          <a href="/global/projects-in-dubai-uae/" className="flex items-center space-x-2 sm:space-x-3">
+          <a href="/country/uk/" className="flex items-center space-x-2 sm:space-x-3">
             <img 
               src={LOGO}
               alt="100acress" 
               className="h-10 sm:h-14 md:h-16 w-auto object-contain"
             />
+            <span className="hidden sm:block text-white font-bold text-lg sm:text-xl">100acress UK</span>
           </a>
           
           {/* Countries Dropdown */}
@@ -93,23 +94,26 @@ export const Header = () => {
               className="flex items-center gap-2 text-white hover:text-gold transition-colors"
             >
               <Globe className="w-4 h-4" />
-              <span className="hidden md:inline">Countries</span>
-              <span className="md:hidden">Countries</span>
-              <ChevronDown 
-                className={`w-4 h-4 transition-transform ${
-                  isCountriesDropdownOpen && "rotate-180"
-                }`}
-              />
+              <span className="hidden md:inline">UK</span>
+              <ChevronDown className={cn(
+                "h-4 w-4 transition-transform duration-200",
+                isCountriesDropdownOpen && "rotate-180"
+              )} />
             </button>
 
-            {/* Countries Dropdown */}
+            {/* Dropdown Menu */}
             {isCountriesDropdownOpen && (
-              <div className="countries-dropdown absolute top-full left-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+              <div className="absolute top-full left-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
                 {countries.map((country) => (
                   <a
                     key={country.name}
                     href={country.path}
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gold transition-colors first:rounded-t-lg last:rounded-b-lg"
+                    className={cn(
+                      "block px-4 py-2 text-sm transition-colors first:rounded-t-lg last:rounded-b-lg",
+                      country.name === "UK" 
+                        ? "text-gold bg-gray-50 font-semibold" 
+                        : "text-gray-700 hover:bg-gray-100 hover:text-gold"
+                    )}
                     onClick={() => setIsCountriesDropdownOpen(false)}
                   >
                     {country.label}
@@ -129,19 +133,19 @@ export const Header = () => {
               onClick={(e) => {
                 if (link.isWhatsApp) {
                   e.preventDefault();
-                  window.open("https://wa.me/919811750740?text=Hi! I'm interested in Dubai properties. Can you help me?", "_blank");
+                  window.open("https://wa.me/919811750740?text=Hi! I'm interested in premium properties. Can you help me?", "_blank");
                 } else {
                   handleSmoothScroll(e, link.href);
                 }
               }}
               className={cn(
                 "transition-colors duration-200 text-xs xl:text-sm uppercase tracking-wider font-medium cursor-pointer",
-                link.label === 'India'
+                link.name === 'UK Properties'
                   ? "gradient-gold text-black px-3 py-1 rounded-full hover:shadow-gold"
                   : "text-white hover:text-gold"
               )}
             >
-              {link.label}
+              {link.name}
             </a>
           ))}
         </nav>
@@ -152,10 +156,19 @@ export const Header = () => {
             variant="outline" 
             size="sm"
             className="border-gold text-gold hover:bg-gold hover:text-black transition-all duration-300"
-            onClick={() => window.open("https://wa.me/919811750740?text=Hi! I'm interested in premium properties. Can you help me?", "_blank")}
+            onClick={() => window.open("https://wa.me/919811750740?text=Hi! I'm interested in UK properties. Can you help me?", "_blank")}
           >
             <Phone className="w-4 h-4 mr-2" />
-            <span className="hidden xl:inline"></span>
+            <span className="hidden xl:inline">Contact Us</span>
+          </Button>
+          <Button 
+            size="sm"
+            className="gradient-gold text-black hover:shadow-gold transition-all duration-300"
+            onClick={() => window.open("tel:+919811750740", "_blank")}
+          >
+            <Phone className="w-4 h-4 mr-2" />
+            <span className="hidden xl:inline">+91 9811 750 740</span>
+            <span className="xl:hidden">Call</span>
           </Button>
         </div>
 
@@ -177,17 +190,18 @@ export const Header = () => {
       {isMobileMenuOpen && (
         <div className="lg:hidden glass-effect mt-4 border-t border-white/10 animate-fade-in">
           <nav className="container py-4 space-y-3 px-4 sm:px-6">
-            {/* Emirates Dropdown Mobile */}
+            {/* Countries Dropdown Mobile */}
             <div className="sm:hidden pb-3 border-b border-white/10">
-              <label className="block text-xs text-muted-foreground mb-2">Select Emirate</label>
+              <label className="block text-xs text-muted-foreground mb-2">Select Country</label>
               <select
-                value={selectedEmirate}
-                onChange={(e) => setSelectedEmirate(e.target.value)}
+                onChange={(e) => {
+                  window.location.href = e.target.value;
+                }}
                 className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white text-sm focus:outline-none focus:border-gold/50"
               >
-                {emirates.map((emirate) => (
-                  <option key={emirate.name} value={emirate.name} className="bg-black">
-                    {emirate.label}
+                {countries.map((country) => (
+                  <option key={country.name} value={country.path} className="bg-black">
+                    {country.label}
                   </option>
                 ))}
               </select>
@@ -205,7 +219,7 @@ export const Header = () => {
                 )}
                 onClick={() => {
                   if (link.isWhatsApp) {
-                    window.open("https://wa.me/919811750740?text=Hi! I'm interested in Dubai properties. Can you help me?", "_blank");
+                    window.open("https://wa.me/919811750740?text=Hi! I'm interested in premium properties. Can you help me?", "_blank");
                   }
                   setIsMobileMenuOpen(false);
                 }}
@@ -220,6 +234,14 @@ export const Header = () => {
                   +91 9811 750 740
                 </Button>
               </a>
+              <Button 
+                className="w-full mt-2 border-gold text-gold hover:bg-gold hover:text-black transition-all duration-300"
+                variant="outline"
+                onClick={() => window.open("https://wa.me/919811750740?text=Hi! I'm interested in UK properties. Can you help me?", "_blank")}
+              >
+                <Phone className="h-5 w-5 mr-2" />
+                WhatsApp
+              </Button>
             </div>
           </nav>
         </div>

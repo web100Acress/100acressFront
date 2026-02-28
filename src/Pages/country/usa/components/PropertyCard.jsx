@@ -1,10 +1,8 @@
-import { Button } from "../../../../Components/ui/button";
+import { Button } from "../../../Components/ui/button";
 import { MapPin, BedDouble, Bath, Maximize, Heart } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { cn } from "../../../../lib/utils";
-import { useDubai } from "../context/DubaiContext";
-import { convertPrice } from "../utils/currencyConverter";
+import { cn } from "../../../lib/utils";
 
 export const PropertyCard = ({
   image,
@@ -18,7 +16,6 @@ export const PropertyCard = ({
   projectSlug,
 }) => {
   const [isLiked, setIsLiked] = useState(false);
-  const { currency } = useDubai();
   const navigate = useNavigate();
 
   const handleCardClick = () => {
@@ -36,7 +33,7 @@ export const PropertyCard = ({
     setIsLiked(!isLiked);
   };
 
-  // Format price based on currency
+  // Format price without currency conversion
   const formatPrice = (priceInCr) => {
     console.log('formatPrice called with:', { priceInCr, type: typeof priceInCr, isZero: priceInCr === 0 });
 
@@ -54,8 +51,14 @@ export const PropertyCard = ({
       return 'Contact for Price';
     }
 
-    const converted = convertPrice(numericPrice, currency);
-    return `${converted.symbol} ${converted.formatted} ${converted.suffix}`;
+    // Simple price formatting (assuming price is in local currency)
+    if (numericPrice >= 10000000) { // 1 Crore+
+      return `₹${(numericPrice / 10000000).toFixed(2)} Cr`;
+    } else if (numericPrice >= 100000) { // 1 Lakh+
+      return `₹${(numericPrice / 100000).toFixed(2)} L`;
+    } else {
+      return `₹${numericPrice.toLocaleString('en-IN')}`;
+    }
   };
 
   return (

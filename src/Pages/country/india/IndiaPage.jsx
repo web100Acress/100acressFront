@@ -7,18 +7,14 @@ import { LifestyleSection } from "./components/LifestyleSection";
 import { InvestmentSection } from "./components/InvestmentSection";
 import { ContactSection } from "./components/ContactSection";
 import { Copyright } from "./components/Copyright";
-import DubaiBottomNav from "./components/DubaiBottomNav";
-import { DubaiProvider, useDubai } from "./context/DubaiContext";
+import { Footer } from "./components/Footer";
 import { ThemeProvider } from "./context/ThemeContext";
 import "./i18n/config"; 
 import "./styles/theme.css";
 
 const IndiaPageContent = () => {
-  const { selectedEmirate, emirateConfig } = useDubai();
-
-  // Update meta tags when emirate changes (but keep same page title)
+  // Update meta tags for India page
   useEffect(() => {
-    // Keep static page title since it's a single page
     document.title = "New & Upcoming Real Estate Projects in India 2026 | 100Acress";
     
     // Update or create meta description
@@ -28,7 +24,7 @@ const IndiaPageContent = () => {
       metaDescription.name = 'description';
       document.head.appendChild(metaDescription);
     }
-    metaDescription.content = "Explore 100+ verified New & upcoming real estate projects in India 2026, from affordable apartments to luxury villas. View Prices & Payment Plans Now.";
+    metaDescription.content = "Explore premium real estate projects in India 2026. From Delhi apartments to Mumbai homes. View prices, payment plans and exclusive deals.";
     
     // Update or create canonical URL
     let canonicalLink = document.querySelector('link[rel="canonical"]');
@@ -41,99 +37,84 @@ const IndiaPageContent = () => {
     
     // Update Open Graph meta tags for social sharing
     updateMetaTag('og:title', "New & Upcoming Real Estate Projects in India 2026 | 100Acress");
-    updateMetaTag('og:description', "Explore 100+ verified New & upcoming real estate projects in India 2026, from affordable apartments to luxury villas. View Prices & Payment Plans Now.");
+    updateMetaTag('og:description', "Explore premium real estate projects in India 2026. From Delhi apartments to Mumbai homes. View prices, payment plans and exclusive deals.");
     updateMetaTag('og:url', "https://www.100acress.com/country/india/");
 
-    // Add JSON-LD Schema (Breadcrumb and FAQ)
+    // Add JSON-LD Schema
     let schemaScript = document.getElementById('india-schema');
     if (!schemaScript) {
       schemaScript = document.createElement('script');
-      schemaScript.id = 'india-schema';
       schemaScript.type = 'application/ld+json';
+      schemaScript.id = 'india-schema';
       document.head.appendChild(schemaScript);
     }
-    schemaScript.text = JSON.stringify({
+    
+    const schemaData = {
       "@context": "https://schema.org",
-      "@graph": [
-        {
-          "@type": "BreadcrumbList",
-          "@id": "https://www.100acress.com/country/india/#breadcrumb",
-          "itemListElement": [
-            {
-              "@type": "ListItem",
-              "position": 1,
-              "name": "Home",
-              "item": "https://www.100acress.com/"
-            },
-            {
-              "@type": "ListItem",
-              "position": 2,
-              "name": "India",
-              "item": "https://www.100acress.com/country/india/"
-            }
-          ]
-        },
-        {
-          "@type": "FAQPage",
-          "@id": "https://www.100acress.com/country/india/#faq",
-          "mainEntity": [
-            {
-              "@type": "Question",
-              "name": "Where can I find affordable new housing projects in India?",
-              "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "Major cities like Delhi NCR, Mumbai, Pune, and Bangalore offer excellent affordable housing projects with premium amenities and competitive pricing."
-              }
-            },
-            {
-              "@type": "Question",
-              "name": "Is India a good place for property investment?",
-              "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "Yes, India offers excellent property investment opportunities with strong rental yields, capital appreciation, and government initiatives promoting real estate growth."
-              }
-            }
-          ]
-        }
-      ]
-    });
-  }, [selectedEmirate]);
+      "@type": "WebPage",
+      "name": "Real Estate Projects in India",
+      "url": "https://www.100acress.com/country/india/",
+      "description": "Explore premium real estate projects in India 2026. From Delhi apartments to Mumbai homes.",
+      "mainEntity": {
+        "@type": "RealEstateListing",
+        "name": "India Property Projects",
+        "description": "Premium residential and commercial properties in India"
+      }
+    };
+    
+    schemaScript.textContent = JSON.stringify(schemaData);
+
+    function updateMetaTag(property, content) {
+      let tag = document.querySelector(`meta[property="${property}"]`) || 
+                document.querySelector(`meta[name="${property}"]`);
+      if (!tag) {
+        tag = document.createElement('meta');
+        tag.setAttribute(property.startsWith('og:') ? 'property' : 'name', property);
+        document.head.appendChild(tag);
+      }
+      tag.content = content;
+    }
+  }, []);
 
   return (
     <ThemeProvider>
-      <div className="min-h-screen bg-white">
+      <div className="min-h-screen bg-gray-50">
         <Header />
-        <NewHero />
-        <PropertiesSection />
-        <DevelopersSection />
-        <LifestyleSection />
-        <InvestmentSection />
-        <ContactSection />
+        <NewHero 
+          title="Premium Real Estate in India"
+          subtitle="Discover exclusive properties across Delhi, Mumbai, Bangalore and more"
+          backgroundImage="https://images.unsplash.com/photo-1529253355930-ddbe423a2ac7?w=1920&q=85"
+        />
+        <PropertiesSection 
+          title="Featured India Properties"
+          subtitle="Handpicked selection of premium residential and commercial properties"
+          country="india"
+        />
+        <DevelopersSection 
+          title="Trusted Indian Developers"
+          subtitle="Partner with renowned Indian and international developers"
+        />
+        <LifestyleSection 
+          title="India Lifestyle & Living"
+          subtitle="Experience the best of Indian living with world-class amenities"
+        />
+        <InvestmentSection 
+          title="Investment Opportunities"
+          subtitle="High-return investment opportunities in India's growing property market"
+        />
+        <ContactSection 
+          title="Start Your India Property Journey"
+          subtitle="Our experts are here to help you find your perfect property"
+        />
+        <Footer />
         <Copyright />
-        <DubaiBottomNav />
       </div>
     </ThemeProvider>
   );
 };
 
 const IndiaPage = () => {
-  return (
-    <DubaiProvider>
-      <IndiaPageContent />
-    </DubaiProvider>
-  );
+  return <IndiaPageContent />;
 };
-
-// Helper function to update meta tags
-function updateMetaTag(property, content) {
-  let tag = document.querySelector(`meta[property="${property}"]`) || 
-            document.querySelector(`meta[name="${property}"]`);
-  if (!tag) {
-    tag = document.createElement('meta');
-    tag.setAttribute(property.startsWith('og:') ? 'property' : 'name', property);
-    document.head.appendChild(tag);
-  }
-  tag.setAttribute('content', content);
-}
 
 export default IndiaPage;

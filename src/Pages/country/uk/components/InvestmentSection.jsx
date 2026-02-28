@@ -5,35 +5,35 @@ export const InvestmentSection = () => {
   const insights = [
     {
       icon: TrendingUp,
-      title: "High ROI",
-      value: "12-18%",
+      title: "Steady ROI",
+      value: "8-12%",
       description: "Average annual return on investment",
     },
     {
       icon: DollarSign,
       title: "Rental Yield",
-      value: "3-5%",
-      description: "Residential rental income potential",
+      value: "4-6%",
+      description: "Competitive rental income potential",
     },
     {
       icon: Award,
       title: "Capital Growth",
-      value: "10-15%",
+      value: "5-8%",
       description: "Year-on-year property value increase",
     },
     {
       icon: Shield,
-      title: "RERA Protected",
-      value: "100%",
-      description: "All projects RERA registered",
+      title: "Stable Market",
+      value: "Low",
+      description: "Risk property market with strong regulations",
     },
   ];
 
   const hotspots = [
-    { name: "Mumbai", growth: "+12%", avgPrice: "₹15,000/sqft" },
-    { name: "Bangalore", growth: "+15%", avgPrice: "₹6,500/sqft" },
-    { name: "Delhi NCR", growth: "+10%", avgPrice: "₹7,000/sqft" },
-    { name: "Pune", growth: "+14%", avgPrice: "₹5,500/sqft" },
+    { name: "Central London", growth: "+8%", avgPrice: "£1,200/sqft" },
+    { name: "Manchester", growth: "+12%", avgPrice: "£280/sqft" },
+    { name: "Birmingham", growth: "+10%", avgPrice: "£240/sqft" },
+    { name: "Edinburgh", growth: "+9%", avgPrice: "£320/sqft" },
   ];
 
   return (
@@ -52,10 +52,10 @@ export const InvestmentSection = () => {
             Market Intelligence
           </span>
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-display font-bold text-white leading-tight">
-            Best Investment Projects in India
+            Best Investment Projects in UK
           </h2>
           <p className="text-sm sm:text-base lg:text-xl text-muted-foreground max-w-lg sm:max-w-2xl mx-auto">
-            Discover high-growth projects in India offering RERA protection and superior capital growth.
+            Discover high-growth projects in UK offering stable returns and long-term capital appreciation.
           </p>
         </div>
 
@@ -96,7 +96,7 @@ export const InvestmentSection = () => {
               Property Hotspots
             </h3>
             <p className="text-muted-foreground">
-              Top performing cities with highest growth potential
+              Top performing areas with highest growth potential
             </p>
           </div>
 
@@ -134,7 +134,7 @@ export const InvestmentSection = () => {
               className="gradient-gold text-black hover:shadow-gold"
               onClick={() =>
                 window.open(
-                  "https://wa.me/919811750740?text=Hi! I'm interested in getting the full India market report. Can you send it to me?",
+                  "https://wa.me/919811750740?text=Hi! I'm interested in getting the full UK market report. Can you send it to me?",
                   "_blank",
                 )
               }
@@ -153,9 +153,9 @@ export const InvestmentSection = () => {
             <div className="w-16 h-16 rounded-full bg-gold/10 flex items-center justify-center mx-auto">
               <span className="text-3xl">🌍</span>
             </div>
-            <h4 className="text-xl font-semibold text-white">Growing Economy</h4>
+            <h4 className="text-xl font-semibold text-white">Global Financial Hub</h4>
             <p className="text-sm text-muted-foreground">
-              World's fastest growing major economy
+              London remains a world-leading financial center
             </p>
           </div>
           <div
@@ -166,10 +166,10 @@ export const InvestmentSection = () => {
               <span className="text-3xl">🏆</span>
             </div>
             <h4 className="text-xl font-semibold text-white">
-              Infrastructure Boom
+              Premium Education
             </h4>
             <p className="text-sm text-muted-foreground">
-              Massive infrastructure development across cities
+              World-renowned universities attract global students
             </p>
           </div>
           <div
@@ -180,10 +180,10 @@ export const InvestmentSection = () => {
               <span className="text-3xl">💼</span>
             </div>
             <h4 className="text-xl font-semibold text-white">
-              RERA Protection
+              Strong Legal Framework
             </h4>
             <p className="text-sm text-muted-foreground">
-              Strong regulatory framework protects buyers
+              Transparent property laws protect investor rights
             </p>
           </div>
         </div>

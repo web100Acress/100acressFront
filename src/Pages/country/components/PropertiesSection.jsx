@@ -5,12 +5,14 @@ import { PropertyCard } from "./PropertyCard";
 import { Button } from "../../../Components/ui/button";
 import { ArrowRight } from "lucide-react";
 import Api_service from "../../../Redux/utils/Api_Service";
-import { useDubai } from "../context/DubaiContext";
 
-export const PropertiesSection = () => {
+export const PropertiesSection = ({ 
+  title = "Featured Properties",
+  subtitle = "Handpicked selection of premium residential and commercial properties",
+  country = "uae" 
+}) => {
   const { getAllUAEProjects } = Api_service();
   const dubaiProjects = useSelector(store => store?.stateproject?.dubai || []);
-  const { selectedEmirate } = useDubai();
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -134,16 +136,16 @@ export const PropertiesSection = () => {
 
       <div className="container relative">
         {/* Section Header */}
-        <div className="text-center mb-8 sm:mb-12 lg:mb-16 space-y-3 sm:space-y-4 px-4">
+        <div className="text-center mb-12 sm:mb-16">
           <span className="text-gold text-xs sm:text-sm font-medium tracking-[0.2em] sm:tracking-[0.3em] uppercase">
             Featured Listings
           </span>
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-display font-bold text-white leading-tight">
             Best Real Estate Projects in
-            <span className="block text-gold">{selectedEmirate}</span>
+            <span className="block text-gold">{country.toUpperCase()}</span>
           </h2>
           <p className="text-sm sm:text-base lg:text-xl text-muted-foreground max-w-lg sm:max-w-2xl mx-auto">
-            The finest projects in {selectedEmirate} offer a perfect blend of prime locations and an extraordinary lifestyle. These premium projects in {selectedEmirate} are curated for high rental yields and long-term investment growth.
+            The finest projects in {country.toUpperCase()} offer a perfect blend of prime locations and an extraordinary lifestyle. These premium projects in {country.toUpperCase()} are curated for high rental yields and long-term investment growth.
           </p>
         </div>
 
@@ -151,11 +153,11 @@ export const PropertiesSection = () => {
         {isLoading ? (
           <div className="text-center py-20">
             <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gold"></div>
-            <p className="text-white mt-4">Loading properties in {selectedEmirate}...</p>
+            <p className="text-white mt-4">Loading properties in {country.toUpperCase()}...</p>
           </div>
         ) : properties.length === 0 ? (
           <div className="text-center py-20">
-            <p className="text-white text-xl">No properties found in {selectedEmirate}</p>
+            <p className="text-white text-xl">No properties found in {country.toUpperCase()}</p>
             <p className="text-muted-foreground mt-2">Please check back later for more listings</p>
           </div>
         ) : (

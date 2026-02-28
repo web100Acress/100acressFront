@@ -7,18 +7,14 @@ import { LifestyleSection } from "./components/LifestyleSection";
 import { InvestmentSection } from "./components/InvestmentSection";
 import { ContactSection } from "./components/ContactSection";
 import { Copyright } from "./components/Copyright";
-import DubaiBottomNav from "./components/DubaiBottomNav";
-import { DubaiProvider, useDubai } from "./context/DubaiContext";
+import { Footer } from "./components/Footer";
 import { ThemeProvider } from "./context/ThemeContext";
 import "./i18n/config"; 
 import "./styles/theme.css";
 
-const SriLankaPageContent = () => {
-  const { selectedEmirate, emirateConfig } = useDubai();
-
-  // Update meta tags when emirate changes (but keep same page title)
+const SrilankaPageContent = () => {
+  // Update meta tags for Sri Lanka page
   useEffect(() => {
-    // Keep static page title since it's a single page
     document.title = "New & Upcoming Real Estate Projects in Sri Lanka 2026 | 100Acress";
     
     // Update or create meta description
@@ -28,7 +24,7 @@ const SriLankaPageContent = () => {
       metaDescription.name = 'description';
       document.head.appendChild(metaDescription);
     }
-    metaDescription.content = "Explore 100+ verified New & upcoming real estate projects in Sri Lanka 2026, from affordable apartments to luxury villas. View Prices & Payment Plans Now.";
+    metaDescription.content = "Explore premium real estate projects in Sri Lanka 2026. From Colombo apartments to beachfront villas. View prices, payment plans and exclusive deals.";
     
     // Update or create canonical URL
     let canonicalLink = document.querySelector('link[rel="canonical"]');
@@ -41,99 +37,84 @@ const SriLankaPageContent = () => {
     
     // Update Open Graph meta tags for social sharing
     updateMetaTag('og:title', "New & Upcoming Real Estate Projects in Sri Lanka 2026 | 100Acress");
-    updateMetaTag('og:description', "Explore 100+ verified New & upcoming real estate projects in Sri Lanka 2026, from affordable apartments to luxury villas. View Prices & Payment Plans Now.");
+    updateMetaTag('og:description', "Explore premium real estate projects in Sri Lanka 2026. From Colombo apartments to beachfront villas. View prices, payment plans and exclusive deals.");
     updateMetaTag('og:url', "https://www.100acress.com/country/srilanka/");
 
-    // Add JSON-LD Schema (Breadcrumb and FAQ)
+    // Add JSON-LD Schema
     let schemaScript = document.getElementById('srilanka-schema');
     if (!schemaScript) {
       schemaScript = document.createElement('script');
-      schemaScript.id = 'srilanka-schema';
       schemaScript.type = 'application/ld+json';
+      schemaScript.id = 'srilanka-schema';
       document.head.appendChild(schemaScript);
     }
-    schemaScript.text = JSON.stringify({
+    
+    const schemaData = {
       "@context": "https://schema.org",
-      "@graph": [
-        {
-          "@type": "BreadcrumbList",
-          "@id": "https://www.100acress.com/country/srilanka/#breadcrumb",
-          "itemListElement": [
-            {
-              "@type": "ListItem",
-              "position": 1,
-              "name": "Home",
-              "item": "https://www.100acress.com/"
-            },
-            {
-              "@type": "ListItem",
-              "position": 2,
-              "name": "Sri Lanka",
-              "item": "https://www.100acress.com/country/srilanka/"
-            }
-          ]
-        },
-        {
-          "@type": "FAQPage",
-          "@id": "https://www.100acress.com/country/srilanka/#faq",
-          "mainEntity": [
-            {
-              "@type": "Question",
-              "name": "Where can I find affordable new housing projects in Sri Lanka?",
-              "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "Colombo, Kandy, and other major cities in Sri Lanka offer excellent affordable housing projects with premium amenities and competitive pricing."
-              }
-            },
-            {
-              "@type": "Question",
-              "name": "Is Sri Lanka a good place for property investment?",
-              "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "Yes, Sri Lanka offers excellent property investment opportunities with strong rental yields, capital appreciation, and beautiful coastal properties."
-              }
-            }
-          ]
-        }
-      ]
-    });
-  }, [selectedEmirate]);
+      "@type": "WebPage",
+      "name": "Real Estate Projects in Sri Lanka",
+      "url": "https://www.100acress.com/country/srilanka/",
+      "description": "Explore premium real estate projects in Sri Lanka 2026. From Colombo apartments to beachfront villas.",
+      "mainEntity": {
+        "@type": "RealEstateListing",
+        "name": "Sri Lanka Property Projects",
+        "description": "Premium residential and commercial properties in Sri Lanka"
+      }
+    };
+    
+    schemaScript.textContent = JSON.stringify(schemaData);
+
+    function updateMetaTag(property, content) {
+      let tag = document.querySelector(`meta[property="${property}"]`) || 
+                document.querySelector(`meta[name="${property}"]`);
+      if (!tag) {
+        tag = document.createElement('meta');
+        tag.setAttribute(property.startsWith('og:') ? 'property' : 'name', property);
+        document.head.appendChild(tag);
+      }
+      tag.content = content;
+    }
+  }, []);
 
   return (
     <ThemeProvider>
-      <div className="min-h-screen bg-white">
+      <div className="min-h-screen bg-gray-50">
         <Header />
-        <NewHero />
-        <PropertiesSection />
-        <DevelopersSection />
-        <LifestyleSection />
-        <InvestmentSection />
-        <ContactSection />
+        <NewHero 
+          title="Premium Real Estate in Sri Lanka"
+          subtitle="Discover exclusive properties across Colombo, Kandy, Galle and coastal areas"
+          backgroundImage="https://images.unsplash.com/photo-1549688836-3c4a0838e327?w=1920&q=85"
+        />
+        <PropertiesSection 
+          title="Featured Sri Lanka Properties"
+          subtitle="Handpicked selection of premium residential and commercial properties"
+          country="srilanka"
+        />
+        <DevelopersSection 
+          title="Trusted Sri Lankan Developers"
+          subtitle="Partner with renowned local and international developers"
+        />
+        <LifestyleSection 
+          title="Sri Lanka Lifestyle & Living"
+          subtitle="Experience tropical paradise living with modern amenities"
+        />
+        <InvestmentSection 
+          title="Investment Opportunities"
+          subtitle="High-return investment opportunities in Sri Lanka's growing property market"
+        />
+        <ContactSection 
+          title="Start Your Sri Lanka Property Journey"
+          subtitle="Our experts are here to help you find your perfect property"
+        />
+        <Footer />
         <Copyright />
-        <DubaiBottomNav />
       </div>
     </ThemeProvider>
   );
 };
 
-const SriLankaPage = () => {
-  return (
-    <DubaiProvider>
-      <SriLankaPageContent />
-    </DubaiProvider>
-  );
+const SrilankaPage = () => {
+  return <SrilankaPageContent />;
 };
 
-// Helper function to update meta tags
-function updateMetaTag(property, content) {
-  let tag = document.querySelector(`meta[property="${property}"]`) || 
-            document.querySelector(`meta[name="${property}"]`);
-  if (!tag) {
-    tag = document.createElement('meta');
-    tag.setAttribute(property.startsWith('og:') ? 'property' : 'name', property);
-    document.head.appendChild(tag);
-  }
-  tag.setAttribute('content', content);
-}
-
-export default SriLankaPage;
+export default SrilankaPage;

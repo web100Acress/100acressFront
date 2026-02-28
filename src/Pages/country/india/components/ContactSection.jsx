@@ -1,5 +1,5 @@
 import { Button } from "../../../../Components/ui/button";
-import { Input } from "../../../../Components/ui/input";
+import { Input } from "../../../../Components/ui/Input";
 import { Textarea } from "../../../../Components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../../Components/ui/select";
 import { Phone, Mail, MapPin, Send } from "lucide-react";
@@ -49,15 +49,15 @@ export const ContactSection = () => {
         name: formData.name.trim(),
         mobile: formData.phone.trim(),
         email: formData.email.trim(),
-        projectName: `Dubai Property Inquiry - ${formData.propertyType || 'General'}`,
+        projectName: `India Property Inquiry - ${formData.propertyType || 'General'}`,
         address: `Budget: ${formData.budget || 'Not specified'} | Message: ${formData.message.trim() || 'No message'}`,
-        source: "dubai_luxury_page",
+        source: "india_luxury_page",
       };
 
       const response = await api.post("/userInsert", payload);
       
       toast.dismiss(loadingToast);
-      toast.success("Thank you! Our Dubai property expert will contact you shortly.", {
+      toast.success("Thank you! Our India property expert will contact you shortly.", {
         duration: 5000,
       });
       
@@ -105,7 +105,7 @@ export const ContactSection = () => {
                 <span className="block text-gold">Dream Property</span>
               </h2>
               <p className="text-sm sm:text-base lg:text-xl text-muted-foreground">
-                Connect with our Dubai property experts for personalized assistance
+                Connect with our India property experts for personalized assistance
               </p>
             </div>
 
@@ -116,9 +116,7 @@ export const ContactSection = () => {
                 </div>
                 <div>
                   <p className="text-white font-semibold mb-1">Phone</p>
-
                   <p className="text-muted-foreground">+91 8500-900-100</p>
-               
                 </div>
               </div>
 
@@ -128,28 +126,10 @@ export const ContactSection = () => {
                 </div>
                 <div>
                   <p className="text-white font-semibold mb-1">Email</p>
-
                   <p className="text-muted-foreground">support@100acress.com</p>
-
-        
-
-              </div>
-              </div>
-
-              {/* <div className="flex items-start space-x-4 group">
-                <div className="w-12 h-12 rounded-full bg-gold/10 flex items-center justify-center group-hover:bg-gold/20 transition-colors">
-                  <MapPin className="h-5 w-5 text-gold" />
                 </div>
-                <div>
-                  <p className="text-white font-semibold mb-1">Office</p>
-                  <p className="text-muted-foreground">Business Bay, Dubai, UAE</p>
-                </div>
-              </div> */}
+              </div>
             </div>
-
-           
-            
-            
           </div>
 
           {/* Right Side - Form */}
@@ -185,7 +165,7 @@ export const ContactSection = () => {
                 <Input
                   required
                   type="tel"
-                  placeholder="Enter Your phon Number"
+                  placeholder="Enter Your Phone Number"
                   value={formData.phone}
                   onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                   className="bg-black/30 border-white/10 text-white placeholder:text-muted-foreground focus:border-gold"
@@ -203,22 +183,22 @@ export const ContactSection = () => {
                       <SelectItem value="apartment">Apartment</SelectItem>
                       <SelectItem value="villa">Villa</SelectItem>
                       <SelectItem value="penthouse">Penthouse</SelectItem>
-                      <SelectItem value="townhouse">Townhouse</SelectItem>
+                      <SelectItem value="plot">Plot</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-white">Budget Range (AED)</label>
+                  <label className="text-sm font-medium text-white">Budget Range (INR)</label>
                   <Select onValueChange={(value) => setFormData({ ...formData, budget: value })}>
                     <SelectTrigger className="bg-black/30 border-white/10 text-white focus:border-gold">
                       <SelectValue placeholder="Select budget" />
                     </SelectTrigger>
                     <SelectContent className="bg-card border-white/10">
-                      <SelectItem value="1-5m">1M - 5M</SelectItem>
-                      <SelectItem value="5-10m">5M - 10M</SelectItem>
-                      <SelectItem value="10-20m">10M - 20M</SelectItem>
-                      <SelectItem value="20m+">20M+</SelectItem>
+                      <SelectItem value="50l-1cr">₹50L - ₹1Cr</SelectItem>
+                      <SelectItem value="1-2cr">₹1Cr - ₹2Cr</SelectItem>
+                      <SelectItem value="2-5cr">₹2Cr - ₹5Cr</SelectItem>
+                      <SelectItem value="5cr+">₹5Cr+</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>

@@ -1,35 +1,31 @@
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
-import { PropertyCard } from "./PropertyCard";
-import { Button } from "../../../../Components/ui/button";
-import { ArrowRight } from "lucide-react";
+import { PropertyCard } from "../../components/PropertyCard";
 import Api_service from "../../../../Redux/utils/Api_Service";
-import { useDubai } from "../context/DubaiContext";
 
-export const PropertiesSection = () => {
+export const PropertiesSection = ({ 
+  title = "Featured USA Properties",
+  subtitle = "Handpicked selection of premium residential and commercial properties"
+}) => {
   const { getAllUAEProjects } = Api_service();
-  const dubaiProjects = useSelector(store => store?.stateproject?.dubai || []);
-  const { selectedEmirate } = useDubai();
+  const usaProjects = useSelector(store => store?.stateproject?.usa || []);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (!Array.isArray(dubaiProjects) || dubaiProjects.length === 0) {
+    if (!Array.isArray(usaProjects) || usaProjects.length === 0) {
       setIsLoading(true);
-      getAllUAEProjects();
     } else {
       setIsLoading(false);
     }
   }, []);
 
   useEffect(() => {
-    if (dubaiProjects && dubaiProjects.length > 0) {
+    if (usaProjects && usaProjects.length > 0) {
       setIsLoading(false);
     }
-  }, [dubaiProjects]);
+  }, [usaProjects]);
 
-  // Show all projects without emirate filtering
-  const filteredProjects = dubaiProjects;
+  const filteredProjects = usaProjects;
 
   // Map API data to PropertyCard format
   const properties = filteredProjects.map((project) => {
@@ -113,7 +109,7 @@ export const PropertiesSection = () => {
       id: project._id,
       image: imageUrl,
       title: project.projectName || "Luxury Property",
-      location: project.city || "Dubai",
+      location: project.city || "New York",
       price: priceValue, // Pass as number or null
       beds: project.bedrooms || project.BhK_Details?.[0]?.bedrooms || 3,
       baths: project.bathrooms || project.BhK_Details?.[0]?.bathrooms || 2,
@@ -140,10 +136,10 @@ export const PropertiesSection = () => {
           </span>
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-display font-bold text-white leading-tight">
             Best Real Estate Projects in
-            <span className="block text-gold">{selectedEmirate}</span>
+            <span className="block text-gold">UNITED STATES</span>
           </h2>
           <p className="text-sm sm:text-base lg:text-xl text-muted-foreground max-w-lg sm:max-w-2xl mx-auto">
-            The finest projects in {selectedEmirate} offer a perfect blend of prime locations and an extraordinary lifestyle. These premium projects in {selectedEmirate} are curated for high rental yields and long-term investment growth.
+            The finest projects in USA offer a perfect blend of prime locations and an extraordinary lifestyle. These premium projects in USA are curated for high rental yields and long-term investment growth.
           </p>
         </div>
 
@@ -151,11 +147,11 @@ export const PropertiesSection = () => {
         {isLoading ? (
           <div className="text-center py-20">
             <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gold"></div>
-            <p className="text-white mt-4">Loading properties in {selectedEmirate}...</p>
+            <p className="text-white mt-4">Loading properties in USA...</p>
           </div>
         ) : properties.length === 0 ? (
           <div className="text-center py-20">
-            <p className="text-white text-xl">No properties found in {selectedEmirate}</p>
+            <p className="text-white text-xl">No properties found in USA</p>
             <p className="text-muted-foreground mt-2">Please check back later for more listings</p>
           </div>
         ) : (

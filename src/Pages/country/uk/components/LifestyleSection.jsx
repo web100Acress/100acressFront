@@ -17,14 +17,14 @@ export const LifestyleSection = () => {
         {/* Section Header */}
         <div className="text-center mb-8 sm:mb-12 lg:mb-16 space-y-3 sm:space-y-4 px-4 animate-fade-in">
           <span className="text-gold text-xs sm:text-sm font-medium tracking-[0.2em] sm:tracking-[0.3em] uppercase">
-            The India Experience
+            The UK Experience
           </span>
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-display font-bold text-white leading-tight">
             Prime Real Estate Locations in
-            <span className="block text-gold">India</span>
+            <span className="block text-gold">United Kingdom</span>
           </h2>
           <p className="text-sm sm:text-base lg:text-xl text-muted-foreground max-w-lg sm:max-w-2xl mx-auto">
-            Secure high rental yields projects in India
+            Secure high rental yields projects in UK
           </p>
         </div>
 
@@ -35,22 +35,22 @@ export const LifestyleSection = () => {
             <div className="relative h-[600px] lg:h-full">
               <img
                 src={lifestyle1}
-                alt="India Luxury Lifestyle"
+                alt="UK Luxury Lifestyle"
                 className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent" />
               
               <div className="absolute bottom-0 left-0 right-0 p-8 space-y-4">
                 <h3 className="text-3xl md:text-4xl font-display font-bold text-white">
-                  Modern & Traditional Blend
+                  Historic & Modern Blend
                 </h3>
                 <p className="text-lg text-gray-300">
-                  Experience the perfect blend of modern amenities and traditional values in Indian properties
+                  Experience the perfect blend of historic charm and modern luxury in UK properties
                 </p>
                 <Button 
                   variant="outline" 
                   className="border-gold text-gold  hover:text-black group"
-                  onClick={() => window.open("https://wa.me/919811750740?text=Hi! I'm interested in exploring India locations. Can you help me?", "_blank")}
+                  onClick={() => window.open("https://wa.me/919811750740?text=Hi! I'm interested in exploring UK locations. Can you help me?", "_blank")}
                 >
                   Explore Locations
                   <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
@@ -64,17 +64,17 @@ export const LifestyleSection = () => {
             <div className="relative h-[300px]">
               <img
                 src={lifestyle2}
-                alt="India Business District"
+                alt="UK Business District"
                 className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent" />
               
               <div className="absolute bottom-0 left-0 right-0 p-6 space-y-2">
                 <h3 className="text-2xl font-display font-bold text-white">
-                  IT & Business Hub
+                  Financial Hub
                 </h3>
                 <p className="text-sm text-gray-300">
-                  Prime locations near major IT parks and business centers
+                  Prime locations near London's financial districts
                 </p>
               </div>
             </div>
@@ -91,15 +91,15 @@ export const LifestyleSection = () => {
               <ul className="space-y-3 text-gray-300">
                 <li className="flex items-center">
                   <span className="w-1.5 h-1.5 rounded-full bg-gold mr-3" />
-                  Modern clubhouses & swimming pools
+                  Private gardens & parks
                 </li>
                 <li className="flex items-center">
                   <span className="w-1.5 h-1.5 rounded-full bg-gold mr-3" />
-                  24/7 security & concierge services
+                  Premium concierge services
                 </li>
                 <li className="flex items-center">
                   <span className="w-1.5 h-1.5 rounded-full bg-gold mr-3" />
-                  Premium retail & dining options
+                  Fine dining & cafes
                 </li>
                 <li className="flex items-center">
                   <span className="w-1.5 h-1.5 rounded-full bg-gold mr-3" />
@@ -113,10 +113,10 @@ export const LifestyleSection = () => {
         {/* Features Grid */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mt-16">
           {[
-            { icon: "🌳", label: "Green Living" },
-            { icon: "🏙️", label: "Smart Cities" },
-            { icon: "🚇", label: "Metro Connectivity" },
-            { icon: "🛍️", label: "Premium Malls" },
+            { icon: "🌳", label: "Garden Living" },
+            { icon: "🏙️", label: "Urban Excellence" },
+            { icon: "🚇", label: "Transport Links" },
+            { icon: "🛍️", label: "Premium Shopping" },
           ].map((item, index) => (
             <div
               key={item.label}

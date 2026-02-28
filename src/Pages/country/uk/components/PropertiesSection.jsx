@@ -4,27 +4,30 @@ import { PropertyCard } from "../../components/PropertyCard";
 import Api_service from "../../../../Redux/utils/Api_Service";
 
 export const PropertiesSection = ({ 
-  title = "Featured India Properties",
+  title = "Featured UK Properties",
   subtitle = "Handpicked selection of premium residential and commercial properties"
 }) => {
-  const indiaProjects = useSelector(store => store?.stateproject?.india || []);
+  const { getAllUAEProjects } = Api_service();
+  const ukProjects = useSelector(store => store?.stateproject?.uk || []);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (!Array.isArray(indiaProjects) || indiaProjects.length === 0) {
+    if (!Array.isArray(ukProjects) || ukProjects.length === 0) {
       setIsLoading(true);
+      // TODO: Replace with UK-specific API call when available
+      // getAllUKProjects();
     } else {
       setIsLoading(false);
     }
   }, []);
 
   useEffect(() => {
-    if (indiaProjects && indiaProjects.length > 0) {
+    if (ukProjects && ukProjects.length > 0) {
       setIsLoading(false);
     }
-  }, [indiaProjects]);
+  }, [ukProjects]);
 
-  const filteredProjects = indiaProjects;
+  const filteredProjects = ukProjects;
 
   const properties = filteredProjects.map((project) => {
     const nameSlug = project.projectName
@@ -49,7 +52,7 @@ export const PropertiesSection = ({
       id: project._id,
       image: imageUrl,
       title: project.projectName || "Luxury Property",
-      location: project.city || "Mumbai",
+      location: project.city || "London",
       price: priceValue,
       beds: project.bedrooms || 2,
       baths: project.bathrooms || 2,
@@ -74,21 +77,21 @@ export const PropertiesSection = ({
           </span>
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-display font-bold text-white leading-tight">
             Best Real Estate Projects in
-            <span className="block text-gold">INDIA</span>
+            <span className="block text-gold">UNITED KINGDOM</span>
           </h2>
           <p className="text-sm sm:text-base lg:text-xl text-muted-foreground max-w-lg sm:max-w-2xl mx-auto">
-            The finest projects in India offer a perfect blend of prime locations and an extraordinary lifestyle. These premium projects in India are curated for high rental yields and long-term investment growth.
+            The finest projects in UK offer a perfect blend of prime locations and an extraordinary lifestyle. These premium projects in UK are curated for high rental yields and long-term investment growth.
           </p>
         </div>
 
         {isLoading ? (
           <div className="text-center py-20">
             <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gold"></div>
-            <p className="text-white mt-4">Loading properties in India...</p>
+            <p className="text-white mt-4">Loading properties in UK...</p>
           </div>
         ) : properties.length === 0 ? (
           <div className="text-center py-20">
-            <p className="text-white text-xl">No properties found in India</p>
+            <p className="text-white text-xl">No properties found in UK</p>
             <p className="text-muted-foreground mt-2">Please check back later for more listings</p>
           </div>
         ) : (
