@@ -931,7 +931,7 @@ const ModernBlogView = () => {
               
               {/* View All Projects Button */}
               <Link
-                to="/projects"
+                to="/projects-in-gurugram/"
                 className="block w-full mt-6 text-center px-4 py-2 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 transition-colors"
               >
                 View All Projects
