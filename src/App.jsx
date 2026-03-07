@@ -362,7 +362,7 @@ function App() {
                       />
                       <Route
                         path="/projects-in-gurugram/property-possession-after-2026/"
-                        element={<PossessionAfter2028 />}
+                        element={<Navigate to="/" replace />}
                       />
                       <Route
                         path="/projects-in-gurugram/property-possession-in-2024/"
@@ -376,14 +376,18 @@ function App() {
                         path="/developers/:builderName"
                         element={<BuilderPage />}
                       />
-                      <Route path="/max-estates/" element={<BuilderPage />} />
+                      <Route path="/max-estates/" element={<Navigate to="/" replace />} />
                       <Route
                         path="/projects-in-gurugram/property-possession-in-2025/"
-                        element={<Possessionin2025 />}
+                        element={<Navigate to="/" replace />}
+                      />
+                      <Route
+                        path="/projects-in-gurugram/property-possession-after-2025/"
+                        element={<Navigate to="/" replace />}
                       />
                       <Route
                         path="/projects-in-gurugram/property-possession-in-2026/"
-                        element={<Possessionin2026 />}
+                        element={<Navigate to="/" replace />}
                       />
                       {/* Redirects to home page */}
                       <Route path="/property/residential/" element={<Navigate to="/" replace />} />
@@ -582,7 +586,7 @@ function App() {
                       <Route path="/searchdata/:key" element={<SearchData />} />
                       <Route path="*" element={<PageNotFound />} />
                       <Route path="/contactmainpage" element={<ContactPage />} />
-                      <Route path="/bptp-plots-gurugram/" element={<Bptp />} />
+                      <Route path="/bptp-plots-gurugram/" element={<Navigate to="/" replace />} />
                       {/* <Route path="/orris-plots-gurugram/" element={<Orris />} /> */}
                       <Route path="/top-luxury-projects/" element={<LuxuryProject />} />
                       <Route path="/onboarding/upload" element={<OnboardingUpload />} />
