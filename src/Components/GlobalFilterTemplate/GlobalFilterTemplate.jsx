@@ -1306,8 +1306,15 @@ const GlobalFilterTemplate = ({
                       <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4">
                         {section.title}
                       </h3>
+                      <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4">
+                        {section.title}
+                      </h3>
+
+
+
                       <div className="text-gray-600 leading-relaxed whitespace-pre-line">
                         {section.content}
+                        {/* content */}
                       </div>
                     </div>
                   ))}
@@ -1325,21 +1332,21 @@ const GlobalFilterTemplate = ({
                   </h2>
                   <div className="w-24 h-1 bg-blue-600 mx-auto mb-6"></div>
                   <p className="text-lg text-gray-600 max-w-4xl mx-auto">
-                    <a href="https://www.100acress.com/projects/upcoming/" className="text-blue-600 hover:underline font-medium">Upcoming projects in Gurgaon</a>: Explore verified upcoming projects in Gurgaon featuring luxury apartments, modern residences, and affordable housing options across Dwarka Expressway and New Gurgaon. These upcoming residential projects in Gurgaon 2025 are designed with world-class amenities, excellent road and metro connectivity, and strong future appreciation potential. Filter projects by location, price, and property type to find your ideal home.
+                    <a href="https://www.100acress.com/projects/upcoming/" className="text-blue-600 hover:underline font-medium">Upcoming projects in Gurgaon</a>: Explore verified upcoming 2BHK projects in Gurgaon offering smart layouts, modern designs, and affordable pricing. These newly launched 2BHK apartments are ideal for first-time homebuyers, young professionals, and smart investors looking for the best deals in 2026. Located across high-growth zones like Dwarka Expressway and New Gurgaon, these upcoming 2BHK residential projects come with world-class amenities, excellent metro connectivity, and strong appreciation potential.
                   </p>
                 </div>
 
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mb-8 sm:mb-12">
                   <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8 hover:shadow-xl transition-shadow duration-300">
                     <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 text-blue-600">
-                      Why Is the Gurgaon Real Estate Market Booming?
+                      Why Is the Gurgaon Real Estate Keeps Growing in 2026
                     </h3>
                     <div className="text-gray-600 leading-relaxed">
                       <p className="mb-4">
-                        Over the last decade, Gurgaon has transformed into one of India's fastest-growing real estate destinations. With the presence of leading MNCs, IT hubs, and commercial corridors, the demand for quality housing has increased significantly. This rapid urban growth has led to a surge in upcoming projects in Gurgaon, offering buyers modern homes with better layouts and infrastructure.
+                        Gurgaon's growth is not due to chance. Hundred of MNCs, IT corridors, and a continuously explanding workforce have created a housing demand that the city has not been able to fully meet, and this gap is precisely where buyers find opportunity.
                       </p>
                       <p>
-                        Key developments such as the Dwarka Expressway, Delhi-Mumbai Expressway, Metro expansion, and upcoming business districts are reshaping the city. These factors make upcoming projects in Gurgaon 2025 highly attractive for professionals, families, and long-term investors.
+                       New infrastructure is accelerating things further. The Dwarka Expressway is now fully operational. The Delhi-Mumbai Expressway has slashed travel times to southern zones. Metro lines are pushing deeper into New Gurgaon sectors that were considered "too far" just three years ago.
                       </p>
                     </div>
                   </div>
@@ -1363,25 +1370,25 @@ const GlobalFilterTemplate = ({
 
                   <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8 hover:shadow-xl transition-shadow duration-300">
                     <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 text-blue-600">
-                      Top Locations for Upcoming Projects in Gurgaon
+                        Best Aeras to Buy 1 BHK Flat in Gurugaon 
                     </h3>
                     <div className="text-gray-600 leading-relaxed">
                       <div className="space-y-4">
                         <div>
                           <h4 className="font-semibold text-gray-900 mb-2">Dwarka Expressway</h4>
-                          <p className="text-sm">One of the most promising real estate corridors, Dwarka Expressway offers excellent connectivity to Delhi and IGI Airport. Many luxury upcoming projects in Gurgaon are launching here with premium amenities.</p>
+                          <p className="text-sm">Dwarka Expressway is currently the fastest-growing residential belt in Gurgaon. Direct connectivity to Delhi, IGI Airport, and NH-48 makes it a top pick for working professionals. 1 BHK flat prices here are still competitive but rising steadily with every new possession. </p>
                         </div>
                         <div>
                           <h4 className="font-semibold text-gray-900 mb-2">New Gurgaon</h4>
-                          <p className="text-sm">Known for planned infrastructure and peaceful surroundings, New Gurgaon is ideal for families seeking value-driven upcoming residential projects.</p>
+                          <p className="text-sm">Planned layouts, wider roads, and peaceful surroundings make New Gurgaon the best area to buy a 1 BHK in Gurgaon for families. Affordable flat rates in Gurgaon's new sectors with strong long-term appreciation.</p>
                         </div>
                         <div>
                           <h4 className="font-semibold text-gray-900 mb-2">Golf Course Extension Road</h4>
-                          <p className="text-sm">This location is preferred for premium living, offering upscale apartments, social infrastructure, and strong appreciation prospects.</p>
+                          <p className="text-sm">Gurgaon's Golf Course Extension Road offers premimum living  without the exorbitant prices tag. Upsacle apartment, top schools, and a mature social infrastructure. This location is ideal for buyer seeking to combine  lifestyle and investment in a single address </p>
                         </div>
                         <div>
                           <h4 className="font-semibold text-gray-900 mb-2">Southern Peripheral Road (SPR)</h4>
-                          <p className="text-sm">SPR connects key sectors of Gurgaon and hosts several upcoming projects in 2025 with a balance of lifestyle and investment benefits.</p>
+                          <p className="text-sm">SPR strategically connects key Gurgaon sectors and offers upcoming residential projects at mid-range flat rates. Strong rental demand from nearby corporate campuses makes it a smart investor choice.</p>
                         </div>
                       </div>
                     </div>

@@ -376,22 +376,21 @@ const CommonProject = ({
             className="py-0 w-full mx-0 font-['Rubik',sans-serif]"
           >
             {(!hideHeader && (title || path)) && (
-              <div className="relative flex flex-col items-center justify-center text-center mb-4 mt-6 px-4">
+              <div className="relative flex items-center justify-between text-left mb-4 mt-6">
                 {title && (
                   <>
                     <h2 className="text-2xl xl:text-4xl lg:text-3xl md:text-2xl text-[#111] font-bold font-['Rubik',sans-serif] mb-3">
                       {title}
                     </h2>
-                    <div className="h-1.5 w-32 bg-gradient-to-r from-red-500 to-red-600 rounded-full"></div>
                   </>
                 )}
                 {path && (
-                  <div className="absolute right-3 lg:right-6 xl:right-14 hidden sm:block">
+                  <div className="hidden sm:block">
                     <Link to={path} target="_top">
-                      {/* <span className="flex items-center text-white text-sm px-3 py-1.5 rounded-full bg-red-600 shadow-lg hover:shadow-xl transition-all duration-300">
+                      <span className="relative overflow-hidden flex items-center text-white text-sm px-3 py-1.5 rounded-full bg-red-600 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 before:absolute before:left-0 before:top-0 before:h-full before:w-0 before:bg-red-700 before:transition-all before:duration-300 before:rounded-full before:-z-10 hover:before:w-full">
                         <EyeIcon size={16} />
-                        <span className="ml-2">View All</span>
-                      </span> */}
+                        <span className="ml-2">View All Project</span>
+                      </span>
                     </Link>
                   </div>
                 )}
