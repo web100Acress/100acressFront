@@ -1239,9 +1239,19 @@ const GlobalFilterTemplate = ({
                     <p className="text-sm leading-relaxed mb-4 text-gray-600">
                       {currentConfig.description}
                     </p>
+                    <p className="text-sm leading-relaxed mb-4 text-gray-600">
+                      {projectStatus === 'brandedresidences' ? 
+                        "Branded residences represent a new chapter in modern luxury living. These homes are created when experienced real estate developers collaborate with globally recognized design and lifestyle partners. The result is a residence where architecture, interiors, and everyday comfort are thoughtfully planned together. From carefully selected materials to elegant layouts, every detail reflects a refined standard of living." :
+                        `Browse through our curated collection of ${projectStatus === 'upcoming' ? 'upcoming' : projectStatus === 'underconstruction' ? 'under construction' : projectStatus === 'readytomove' ? 'ready to move' : 'new launch'} properties in Gurgaon.
+                      Each project is carefully selected to meet modern living standards.`
+                      }
+                    </p>
                     <p className="text-sm leading-relaxed mb-6 text-gray-600">
-                      Browse through our curated collection of {projectStatus === 'upcoming' ? 'upcoming' : projectStatus === 'underconstruction' ? 'under construction' : projectStatus === 'readytomove' ? 'ready to move' : 'new launch'} properties in Gurgaon.
-                      Each project is carefully selected to meet modern living standards.
+                      {projectStatus === 'brandedresidences' ? 
+                        "Compared to conventional housing, branded homes are aimed at design consistency, high-quality construction, and well curated lifestyle experience. Premium services, caring services and serene living conditions are usually taken by the residents to enable them to live in comfort and privacy. These residences are being developed in Gurugram and Noida, cities known for their modern skyline and growing demand for premium residential living." :
+                        `Browse through our curated collection of ${projectStatus === 'upcoming' ? 'upcoming' : projectStatus === 'underconstruction' ? 'under construction' : projectStatus === 'readytomove' ? 'ready to move' : 'new launch'} properties in Gurgaon.
+                      Each project is carefully selected to meet modern living standards.`
+                      }
                     </p>
 
                     {/* Enhanced Feature Cards */}

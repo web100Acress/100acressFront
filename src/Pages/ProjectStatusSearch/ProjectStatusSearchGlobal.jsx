@@ -157,17 +157,17 @@ const ProjectStatusSearchGlobal = () => {
       }
     },
     brandedresidences: {
-      title: "Discover Premium Projects",
-      description: "Explore the best properties with modern amenities",
-      metaTitle: "Discover Premium Projects - 100acress",
+      title: "Branded Residences in India | Luxury Homes by Global Brands",
+      description: "Explore Luxury Branded Residences | By Global Brands",
+      metaTitle: "Branded Residences in India | Luxury Homes by Global Brands",
       canonical: "https://www.100acress.com/branded-residences/",
       query: "allproject",
-      keywords: "premium projects, best properties, modern amenities, luxury homes, exclusive residences",
+      keywords: "branded residences india, luxury homes global brands, premium residences gurugram noida, global brand collaborations",
       structuredData: {
         "@context": "https://schema.org",
         "@type": "RealEstateAgent",
         "name": "100acress",
-        "description": "Discover premium projects with modern amenities and exclusive features",
+        "description": "Explore branded residences in prime locations, like Gurugram and Noida, where developers collaborate with global brands, creating luxury homes with premium amenities.",
         "url": "https://www.100acress.com",
         "areaServed": "India"
       }
