@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import api from "../../../../../config/apiClient";
 import HeroSection from "../../create/HeroSectionContainer";
@@ -7,6 +7,7 @@ import BlogCard from "../../create/desktop/BlogCard";
 import Footer from "../../../../../Home/Footer/CrimsonEleganceFooter";
 
 const ModernBlogPage = () => {
+  const location = useLocation();
   const [allBlogs, setAllBlogs] = useState([]);
   const [loading, setLoading] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
@@ -14,9 +15,17 @@ const ModernBlogPage = () => {
   const [hasMore, setHasMore] = useState(true);
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("latest");
+  const [activeCategory, setActiveCategory] = useState(null);
 
   // Fallback image
   const FALLBACK_IMG = "/Images/blog.avif";
+
+  // Handle category parameter from URL
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const categoryParam = params.get('category');
+    setActiveCategory(categoryParam);
+  }, [location.search]);
 
   // Fetch blogs
   useEffect(() => {
@@ -24,7 +33,7 @@ const ModernBlogPage = () => {
       setLoading(true);
       try {
         const params = {
-          limit: 50, // Get more blogs for bento grid
+          limit: 200, // Get more blogs to include all Dubai blogs
           sortBy: 'createdAt',
           sortOrder: 'desc'
         };
@@ -33,10 +42,22 @@ const ModernBlogPage = () => {
           params.search = search.trim();
         }
 
+        // Add category parameter if there's an active category
+        if (activeCategory && activeCategory.trim()) {
+          params.category = activeCategory.trim();
+        }
+
         const response = await api.get(`blog/view`, { params });
 
         if (response?.data?.data) {
-          setAllBlogs(Array.isArray(response.data.data) ? response.data.data : []);
+          let blogs = Array.isArray(response.data.data) ? response.data.data : [];
+          
+          // If API doesn't support category filtering, filter manually
+          if (activeCategory && activeCategory.trim()) {
+            blogs = blogs.filter(blog => blog.blog_Category === activeCategory);
+          }
+          
+          setAllBlogs(blogs);
         } else {
           setAllBlogs([]);
         }
@@ -48,17 +69,24 @@ const ModernBlogPage = () => {
       }
     };
     fetchBlogs();
-  }, [search]);
+  }, [search, activeCategory]);
 
-  // Get featured blog (first one or marked as featured)
-  const featuredBlog = useMemo(() => 
-    allBlogs.find((b) => b.isFeatured) || allBlogs[0],
-    [allBlogs]
-  );
+  // Get featured blog (first one or marked as featured) - only when no category filter
+  const featuredBlog = useMemo(() => {
+    if (activeCategory && activeCategory.trim()) {
+      return null; // No featured blog when category is filtered
+    }
+    return allBlogs.find((b) => b.isFeatured) || allBlogs[0];
+  }, [allBlogs, activeCategory]);
 
   // Filter and sort blogs
   const filteredBlogs = useMemo(() => {
-    let blogs = allBlogs.filter((b) => b !== featuredBlog);
+    let blogs = allBlogs;
+    
+    // Only remove featured blog when no category filter is active
+    if (!activeCategory && featuredBlog) {
+      blogs = blogs.filter((b) => b !== featuredBlog);
+    }
     
     if (sort === "latest")
       blogs = blogs.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
@@ -66,7 +94,7 @@ const ModernBlogPage = () => {
       blogs = blogs.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
     
     return blogs;
-  }, [allBlogs, featuredBlog, sort]);
+  }, [allBlogs, featuredBlog, sort, activeCategory]);
 
   // Blog link helper
   const blogLink = (blog) => {
@@ -150,7 +178,7 @@ const ModernBlogPage = () => {
       )}
 
       {/* Bento Grid Section */}
-      <section className="max-w-7xl mx-auto px-6 py-16">
+      <section className="max-w-7xl mx-auto px-6 py-24">
         <div className="mb-4 text-center">
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4" style={{ fontFamily: "'Open Sans', sans-serif" }}>
             Explore More Stories

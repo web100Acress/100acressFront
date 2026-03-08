@@ -316,6 +316,12 @@ export const statusConfigs = {
     description: "Explore new launch projects in Gurgaon with modern amenities. Find the latest residential & commercial spaces.",
     badgeColor: "bg-purple-500",
     badgeText: "New Launch"
+  },
+  brandedresidences: {
+    title: "Branded Residences in Gurgaon",
+    description: "Discover premium branded residences in Gurgaon offering luxury living with world-class amenities and exclusive lifestyle features.",
+    badgeColor: "bg-indigo-500",
+    badgeText: "Branded Residence"
   }
 };
 

@@ -521,6 +521,10 @@ function App() {
                         path="/projects/newlaunch/"
                         element={<ProjectStatusSearchGlobal />}
                       />
+                      <Route
+                        path="/branded-residences/"
+                        element={<ProjectStatusSearchGlobal />}
+                      />
 
 
                       <Route path="/projects/plots/" element={<ProjectTypeGlobal />} />

@@ -26,6 +26,7 @@ import { AuthContext } from "../AuthContext";
 // import FloatingShorts from "../aadharhomes/BannerPage/updatedbannerpage/components/youtubeshorts";
 import DynamicHeroBanner from "./HeroBanner/largebanner/DynamicHeroBanner";
 // import Tesimonial from "../Components/HomePageComponents/Tesimonial";
+import { getBrandedResidences } from "../Utils/ProjectOrderData";
 
 // Lazy load heavy components
 const BudgetPlotsInGurugraon = React.lazy(() => import("../Pages/BudgetPlotsInGurugraon"));
@@ -590,6 +591,7 @@ const Home = () => {
   const DubaiProjects = useSelector(store => store?.stateproject?.dubai) || [];
   const LuxuryAllProject = useSelector(store => store?.allsectiondata?.luxuryAll) || [];
   const NewLaunchProjects = useSelector(store => store?.allsectiondata?.newlaunch) || [];
+  const [brandedResidencesProjects, setBrandedResidencesProjects] = useState([]);
   const FarmhouseProjects = useSelector(store => {
     const data = store?.allsectiondata?.farmhouse || [];
     console.log('🏡 Redux Store State - All Section Data:', store?.allsectiondata);
@@ -747,6 +749,21 @@ const Home = () => {
       getUpcoming();
     }
   }, [UpcomingProjects]);
+
+  // Load branded residences data
+  useEffect(() => {
+    const loadBrandedResidences = async () => {
+      try {
+        const projects = await getBrandedResidences();
+        console.log('🏠 Home: Branded residences loaded:', projects);
+        setBrandedResidencesProjects(projects);
+      } catch (error) {
+        console.error('🏠 Home: Error loading branded residences:', error);
+      }
+    };
+
+    loadBrandedResidences();
+  }, []);
 
   // Set the displayed projects based on the active filter
   useEffect(() => {
@@ -1163,6 +1180,19 @@ const Home = () => {
                     title="New Launch Projects in Gurgaon" 
                     animation="fade-down" 
                     path={"/projects/newlaunch/"} 
+                    compact 
+                  />
+                )}
+              </div>
+
+              {/* Branded Residences */}
+              <div>
+                {brandedResidencesProjects.length === 0 ? <CustomSkeleton /> : (
+                  <ProjectsSlider 
+                    projects={brandedResidencesProjects} 
+                    title="Branded Residences" 
+                    animation="fade-up" 
+                    path={"/branded-residences/"} 
                     compact 
                   />
                 )}

@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import Api_Service from "../../Redux/utils/Api_Service";
 import GlobalFilterTemplate from "../../Components/GlobalFilterTemplate/GlobalFilterTemplate";
 import { statusConfigs } from "../../ProjectTypes/config/pageConfigs.js";
+import { getBrandedResidencesDesiredOrder, getBrandedResidences } from "../../Utils/ProjectOrderData.js";
 
 const ProjectStatusSearchGlobal = () => {
   const { allProjectData } = useContext(DataContext);
@@ -23,10 +24,21 @@ const ProjectStatusSearchGlobal = () => {
     setComponentKey(prev => prev + 1);
   }, [location.pathname]);
 
+  // State for branded residences
+  const [isLoading, setIsLoading] = useState(true);
+  const [brandedResidencesOrder, setBrandedResidencesOrder] = useState([]);
+  const [brandedResidencesProjects, setBrandedResidencesProjects] = useState([]);
+
   // Get project status from URL or props
   const getProjectStatus = () => {
     const path = location.pathname;
     console.log('Current path:', path);
+
+    // Check for branded-residences URL
+    if (path.includes('/branded-residences')) {
+      console.log('Detected branded residences URL');
+      return 'brandedresidences';
+    }
 
     // Check for new unified status URLs: projects/{status}
     if (path.includes('/projects/') && !path.includes('/projects-in-')) {
@@ -66,6 +78,7 @@ const ProjectStatusSearchGlobal = () => {
       case 'underconstruction': return underConstructionProjects;
       case 'readytomove': return readyToMoveProjects;
       case 'newlaunch': return newLaunchProjects;
+      case 'brandedresidences': return brandedResidencesProjects.length > 0 ? brandedResidencesProjects : allProjectData;
       default: return [];
     }
   };
@@ -142,6 +155,22 @@ const ProjectStatusSearchGlobal = () => {
         "url": "https://www.100acress.com",
         "areaServed": "Gurgaon, Haryana, India"
       }
+    },
+    brandedresidences: {
+      title: "Discover Premium Projects",
+      description: "Explore the best properties with modern amenities",
+      metaTitle: "Discover Premium Projects - 100acress",
+      canonical: "https://www.100acress.com/branded-residences/",
+      query: "allproject",
+      keywords: "premium projects, best properties, modern amenities, luxury homes, exclusive residences",
+      structuredData: {
+        "@context": "https://schema.org",
+        "@type": "RealEstateAgent",
+        "name": "100acress",
+        "description": "Discover premium projects with modern amenities and exclusive features",
+        "url": "https://www.100acress.com",
+        "areaServed": "India"
+      }
     }
   };
 
@@ -151,8 +180,37 @@ const ProjectStatusSearchGlobal = () => {
   // Debounce timer ref
   const debounceTimer = useRef(null);
 
-  // Loading state
-  const [isLoading, setIsLoading] = useState(true);
+  // Load branded residences data
+  useEffect(() => {
+    if (projectStatus === 'brandedresidences') {
+      setIsLoading(true);
+      
+      // Load order data
+      getBrandedResidencesDesiredOrder().then(order => {
+        console.log('🏠 ProjectStatusSearch: Branded residences order:', order);
+        setBrandedResidencesOrder(order);
+      });
+      
+      // Load actual project data
+      getBrandedResidences().then(projects => {
+        console.log('🏠 ProjectStatusSearch: Branded residences projects loaded:', projects);
+        setBrandedResidencesProjects(projects);
+        setIsLoading(false);
+      }).catch(error => {
+        console.error('🏠 ProjectStatusSearch: Error loading branded residences:', error);
+        setIsLoading(false);
+      });
+    }
+  }, [projectStatus]);
+
+  // Log when project data changes
+  useEffect(() => {
+    console.log('🏠 ProjectStatusSearch: Project data changed:', {
+      projectStatus,
+      dataLength: projectData?.length,
+      dataSample: projectData?.slice(0, 3).map(p => ({ name: p.projectName || p.title, city: p.city }))
+    });
+  }, [projectData, projectStatus]);
 
   // Throttled API call function
   const throttledGetAllProjects = useCallback(async (query, limit) => {
@@ -274,7 +332,54 @@ const ProjectStatusSearchGlobal = () => {
     itemsPerPage: 40,
     badgeColor: statusConfigs[projectStatus]?.badgeColor || 'bg-blue-500',
     badgeText: statusConfigs[projectStatus]?.badgeText || 'Featured',
-    typeFilter: (project) => true // Show all projects for status pages
+    typeFilter: projectStatus === 'brandedresidences' ? (project) => {
+      console.log('🔍 ProjectStatusSearch: Filtering branded residences project:', {
+        name: project.projectName || project.title,
+        city: project.city,
+        hasBrandedProjects: brandedResidencesProjects.length > 0
+      });
+      
+      // If we have branded residences projects from Project Order Management, show only those
+      if (brandedResidencesProjects.length > 0) {
+        const shouldShow = true; // Show all projects from the branded residences array
+        console.log('🔍 ProjectStatusSearch: Branded residences mode - showing project:', shouldShow);
+        return shouldShow;
+      }
+      
+      // Fallback filtering for all projects
+      const projectName = project.projectName || '';
+      const description = project.project_discripation?.toLowerCase() || project.description?.toLowerCase() || '';
+      const type = project.type?.toLowerCase() || '';
+      const projectType = project.projectType?.toLowerCase() || '';
+      
+      // Keywords that indicate branded residences
+      const brandedKeywords = [
+        'branded', 'luxury', 'premium', 'exclusive', 'signature', 'ultra luxury',
+        'ultra-luxury', 'high-end', 'bespoke', 'designer', 'collection', 'estate',
+        'residence', 'tower', 'grand', 'imperial', 'royal', 'platinum', 'gold',
+        'diamond', 'emerald', 'pearl', 'crystal', 'marble', 'penthouse'
+      ];
+      
+      const hasKeyword = brandedKeywords.some(keyword => 
+        projectName.toLowerCase().includes(keyword) || 
+        description.includes(keyword) ||
+        type.includes(keyword) ||
+        projectType.includes(keyword)
+      );
+      
+      console.log('🔍 ProjectStatusSearch: Keyword filtering result:', {
+        projectName,
+        hasKeyword,
+        keywords: brandedKeywords.filter(k => 
+          projectName.toLowerCase().includes(k) || 
+          description.includes(k) ||
+          type.includes(k) ||
+          projectType.includes(k)
+        )
+      });
+      
+      return hasKeyword;
+    } : (project) => true // Show all projects for other status pages
   };
 
   return (

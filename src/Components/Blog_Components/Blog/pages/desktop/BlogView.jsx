@@ -68,6 +68,15 @@ const BlogView = () => {
   const [scrollProgress, setScrollProgress] = useState(0);
   // Category filter state
   const [activeCategory, setActiveCategory] = useState('all');
+  
+  // Get category from URL query parameter
+  useEffect(() => {
+    const params = new URLSearchParams(location.search || '');
+    const categoryParam = params.get('category');
+    if (categoryParam) {
+      setActiveCategory(categoryParam);
+    }
+  }, [location.search]);
   // Sidebar sticky
   const containerRef = useRef(null);
   const sidebarRef = useRef(null);

@@ -32,14 +32,11 @@ import 'react-quill/dist/quill.snow.css';
  } from 'lucide-react';
 
  const initialCategories = [
-  'Commercial Property',
-  'Residential Flats',
-  'SCO Plots',
-  'Deen Dayal Plots',
-  'Residential Plots',
-  'Independent Floors',
-  'Builder Floors',
-  'Affordable Homes',
+  'News',
+  'Lifestyle', 
+  'Finance',
+  'Policies',
+  'Blog'
  ];
 
  /** slugify helper */
@@ -68,7 +65,7 @@ import 'react-quill/dist/quill.snow.css';
   const [frontImage, setFrontImage] = useState(null); // File or URL string
   const [frontImagePreview, setFrontImagePreview] = useState('');
   const [categories, setCategories] = useState('');
-  const [categoryList, setCategoryList] = useState(initialCategories);
+  const categoryList = initialCategories;
   const [addedCategory, setAddedCategory] = useState('');
 
   // SEO
@@ -105,6 +102,13 @@ import 'react-quill/dist/quill.snow.css';
   const [enableFAQ, setEnableFAQ] = useState(false);
   const [faqs, setFaqs] = useState([{ question: '', answer: '' }]);
 
+  // Schema/Structured Data state
+  const [enableSchema, setEnableSchema] = useState(false);
+  const [schemaType, setSchemaType] = useState('BlogPosting'); // BlogPosting, Article, NewsArticle
+  const [customSchema, setCustomSchema] = useState('');
+  const [schemaSaving, setSchemaSaving] = useState(false);
+  const [schemaLastSaved, setSchemaLastSaved] = useState(null);
+
   // Cropper state for inline content images
   const [showCropper, setShowCropper] = useState(false);
   const [rawImageUrl, setRawImageUrl] = useState('');
@@ -120,6 +124,175 @@ import 'react-quill/dist/quill.snow.css';
   const [frontImageError, setFrontImageError] = useState(false);
   const [frontTriedProxy, setFrontTriedProxy] = useState(false);
   const originalFrontUrlRef = useRef('');
+
+  // Helper to generate schema/structured data
+  const generateSchema = () => {
+    if (!enableSchema) return null;
+    
+    // Dynamic values from blog data
+    const currentDate = new Date();
+    const dynamicDescription = metaDescription || description.replace(/<[^>]*>/g, '').substring(0, 160);
+    const dynamicTitle = title || 'Untitled Blog';
+    const dynamicAuthor = author || '100acress.com';
+    const dynamicImage = frontImagePreview || '';
+    
+    const baseSchema = {
+      "@context": "https://schema.org",
+      "@type": schemaType,
+      "headline": dynamicTitle,
+      "description": dynamicDescription,
+      "image": dynamicImage,
+      "author": {
+        "@type": "Person",
+        "name": dynamicAuthor
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "100acress.com",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://www.100acress.com/logo.png"
+        },
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "telephone": "+918500900100",
+          "contactType": "customer service",
+          "availableLanguage": ["en", "Hindi"]
+        },
+        "sameAs": [
+          "https://www.facebook.com/100Acress",
+          "https://x.com/100acressdotcom",
+          "https://www.instagram.com/official100acress/",
+          "https://www.youtube.com/@100acress",
+          "https://www.linkedin.com/company/100acress/"
+        ]
+      },
+      "datePublished": currentDate.toISOString(),
+      "dateModified": currentDate.toISOString()
+    };
+
+    // Add dynamic fields
+    if (categories) {
+      baseSchema.about = categories;
+      baseSchema.keywords = categories;
+    }
+
+    if (slug) {
+      baseSchema.url = `https://www.100acress.com/blog/${slug}`;
+      baseSchema.identifier = `https://www.100acress.com/blog/${slug}`;
+    } else if (id) {
+      baseSchema.url = `https://www.100acress.com/blog/view/${id}`;
+      baseSchema.identifier = `https://www.100acress.com/blog/view/${id}`;
+    }
+
+    if (description) {
+      const cleanContent = description.replace(/<[^>]*>/g, '').substring(0, 300);
+      baseSchema.articleBody = cleanContent;
+      const wordCount = description.replace(/<[^>]*>/g, ' ').split(/\s+/).filter(word => word.length > 0).length;
+      baseSchema.wordCount = wordCount;
+    }
+
+    baseSchema.inLanguage = "en-US";
+    baseSchema.isFamilyFriendly = true;
+
+    if (relatedProjects && relatedProjects.length > 0) {
+      baseSchema.mainEntityOfPage = {
+        "@type": "WebPage",
+        "name": dynamicTitle,
+        "url": baseSchema.url
+      };
+    }
+
+    if (customSchema) {
+      try {
+        const customParsed = JSON.parse(customSchema);
+        const mergedSchema = { ...baseSchema, ...customParsed };
+
+        // Ensure critical fields remain dynamic
+        mergedSchema.headline = dynamicTitle;
+        mergedSchema.description = dynamicDescription;
+        mergedSchema.image = dynamicImage;
+        mergedSchema.author = { "@type": "Person", name: dynamicAuthor };
+        mergedSchema.datePublished = currentDate.toISOString();
+        mergedSchema.dateModified = currentDate.toISOString();
+
+        return mergedSchema;
+      } catch (e) {
+        console.error('Invalid custom schema JSON:', e);
+        return baseSchema;
+      }
+    }
+
+    return baseSchema;
+  };
+
+  // Manual save schema function
+  const manualSaveSchema = async () => {
+    if (!id || !enableSchema) {
+      showToast.error('Please enable schema first');
+      return;
+    }
+
+    try {
+      setSchemaSaving(true);
+      const schemaData = generateSchema();
+      if (!schemaData) {
+        showToast.error('No schema data to save');
+        return;
+      }
+
+      console.log('=== SCHEMA SAVE DEBUG ===');
+      console.log('Blog ID:', id);
+      console.log('Enable Schema:', enableSchema);
+      console.log('Schema Type:', schemaType);
+      console.log('Generated Schema:', schemaData);
+      console.log('Custom Schema:', customSchema);
+
+      const formData = new FormData();
+      formData.append('enableSchema', enableSchema);
+      formData.append('schemaType', schemaType);
+      formData.append('schema', JSON.stringify(schemaData));
+      
+      // Add required fields
+      formData.append('blog_Title', title || 'Schema Update');
+      formData.append('blog_Description', description || 'Schema Update');
+      formData.append('blog_Category', categories || 'Blog');
+      formData.append('author', author || 'Admin');
+
+      console.log('FormData contents:');
+      for (let [key, value] of formData.entries()) {
+        console.log(`${key}:`, value);
+      }
+
+      console.log('Sending API request to:', `/blog/update/${id}`);
+      const response = await api.put(`/blog/update/${id}`, formData);
+      
+      console.log('API Response:', response);
+      console.log('Response status:', response.status);
+      console.log('Response data:', response.data);
+      
+      if (response.status === 200) {
+        setSchemaLastSaved(new Date());
+        console.log('Schema manually saved successfully!');
+        showToast.success('Schema saved to backend successfully!');
+        
+        // Refresh blog data to verify
+        setTimeout(() => {
+          console.log('Refreshing page to verify schema...');
+          window.location.reload();
+        }, 1000);
+      }
+    } catch (error) {
+      console.error('=== SCHEMA SAVE ERROR ===');
+      console.error('Error details:', error);
+      console.error('Error response:', error.response?.data);
+      console.error('Error status:', error.response?.status);
+      console.error('Error message:', error.message);
+      showToast.error('Failed to save schema: ' + (error.response?.data?.message || error.message));
+    } finally {
+      setSchemaSaving(false);
+    }
+  };
 
   // Helper to normalize image URLs from API (handle relative paths)
   const normalizeImageUrl = (u) => {
@@ -257,6 +430,63 @@ import 'react-quill/dist/quill.snow.css';
   // FAQ UI helpers
   const [collapsedFaqs, setCollapsedFaqs] = useState([false]);
   const dragIndexRef = useRef(null);
+
+  // Auto-save schema to backend in real-time
+  useEffect(() => {
+    if (!id || !enableSchema) return;
+
+    const autoSaveSchema = setTimeout(async () => {
+      try {
+        setSchemaSaving(true);
+        const schemaData = generateSchema();
+        if (!schemaData) return;
+
+        console.log('=== AUTO-SAVE SCHEMA DEBUG ===');
+        console.log('Blog ID:', id);
+        console.log('Enable Schema:', enableSchema);
+        console.log('Schema Type:', schemaType);
+        console.log('Generated Schema:', schemaData);
+
+        // Use main update endpoint to save schema
+        const formData = new FormData();
+        formData.append('enableSchema', enableSchema);
+        formData.append('schemaType', schemaType);
+        formData.append('schema', JSON.stringify(schemaData));
+        
+        // Add minimal required fields to avoid validation errors
+        if (!title) formData.append('blog_Title', 'Auto-saving schema...');
+        if (!description) formData.append('blog_Description', 'Auto-saving schema...');
+        if (!categories) formData.append('blog_Category', 'Blog');
+        if (!author) formData.append('author', 'Auto-save');
+
+        console.log('Auto-save FormData:');
+        for (let [key, value] of formData.entries()) {
+          console.log(`${key}:`, value);
+        }
+
+        console.log('Auto-saving to endpoint:', `/blog/update/${id}`);
+        const response = await api.put(`/blog/update/${id}`, formData);
+        
+        console.log('Auto-save Response:', response);
+        console.log('Auto-save Status:', response.status);
+        
+        setSchemaLastSaved(new Date());
+        console.log('Schema auto-saved to backend via main endpoint');
+        showToast.success('Schema auto-saved successfully!');
+      } catch (error) {
+        console.error('=== AUTO-SAVE SCHEMA ERROR ===');
+        console.error('Error details:', error);
+        console.error('Error response:', error.response?.data);
+        console.error('Error status:', error.response?.status);
+        console.error('Error message:', error.message);
+        showToast.error('Failed to auto-save schema');
+      } finally {
+        setSchemaSaving(false);
+      }
+    }, 2000); // Auto-save after 2 seconds of inactivity
+
+    return () => clearTimeout(autoSaveSchema);
+  }, [enableSchema, schemaType, customSchema, title, metaDescription, frontImagePreview, author, id]);
 
   // Autosave & version history
   const draftKey = useMemo(() => `blogDraft:${id || 'new'}`, [id]);
@@ -608,6 +838,25 @@ import 'react-quill/dist/quill.snow.css';
               ? b.faqs.map(x => ({ question: x.question || '', answer: x.answer || '' }))
               : [{ question: '', answer: '' }]
             );
+
+            // Load Schema/Structured Data
+            setEnableSchema(!!b.enableSchema);
+            setSchemaType(b.schemaType || 'BlogPosting');
+            if (b.schema) {
+              try {
+                // If the schema is already a complete object, use it directly
+                if (typeof b.schema === 'object' && b.schema["@context"]) {
+                  setCustomSchema(JSON.stringify(b.schema, null, 2));
+                } else {
+                  setCustomSchema(JSON.stringify(b.schema, null, 2));
+                }
+              } catch (e) {
+                console.error('Error parsing schema:', e);
+                setCustomSchema('');
+              }
+            } else {
+              setCustomSchema('');
+            }
           } else {
             console.log('Blog not found');
           }
@@ -854,29 +1103,7 @@ import 'react-quill/dist/quill.snow.css';
     }
   };
 
-  // Load categories from backend (merge with initial list, unique)
-  useEffect(() => {
-    const loadCategories = async () => {
-      try {
-        const res = await api.get(`/blog/categories`);
-        const apiCats = (res?.data?.data || []).map((c) => c.name).filter(Boolean);
-        // merge with initial and unique (case-sensitive keep first)
-        const merged = [...initialCategories];
-        for (const name of apiCats) {
-          if (!merged.includes(name)) merged.push(name);
-        }
-        setCategoryList(merged);
-        // ensure current selected category is preserved if present
-        if (categories && !merged.includes(categories)) {
-          setCategoryList((prev) => [...prev, categories]);
-        }
-      } catch (e) {
-        // silent fail, keep initial list
-        // console.warn('Failed to load categories', e);
-      }
-    };
-    loadCategories();
-  }, []);
+  // Categories are fixed to only show the 4 specified types
 
   // Load all projects for dropdown (paginate in batches of 100)
   useEffect(() => {
@@ -1379,6 +1606,16 @@ import 'react-quill/dist/quill.snow.css';
           .map(f => ({ question: (f.question || '').trim(), answer: (f.answer || '').trim() }))
           .filter(f => f.question && f.answer);
         if (cleaned.length) formDataAPI.append('faqs', JSON.stringify(cleaned));
+      }
+
+      // Schema/Structured Data
+      formDataAPI.append('enableSchema', enableSchema);
+      if (enableSchema) {
+        const schemaData = generateSchema();
+        if (schemaData) {
+          formDataAPI.append('schema', JSON.stringify(schemaData));
+          formDataAPI.append('schemaType', schemaType);
+        }
       }
 
       // Handle file upload with better error handling
@@ -2402,28 +2639,7 @@ import 'react-quill/dist/quill.snow.css';
         {categoryList.map((c) => (
           <option key={c} value={c}>{c}</option>
         ))}
-        <option value="__other__">+ Add new</option>
       </select>
-
-      {categories === '__other__' && (
-        <>
-          <input
-            type="text"
-            value={addedCategory}
-            onChange={(e) => setAddedCategory(e.target.value)}
-            className="px-3 py-2 text-sm border border-gray-200 rounded-lg focus:ring-1 focus:ring-purple-500"
-            placeholder="New category name"
-          />
-          <button
-            type="button"
-            onClick={addNewCategory}
-            className="px-3 py-2 text-sm rounded-lg bg-purple-600 text-white hover:bg-purple-700"
-            disabled={!addedCategory.trim()}
-          >
-            Add
-          </button>
-        </>
-      )}
     </div>
   </div>
 </div>
@@ -2907,6 +3123,118 @@ import 'react-quill/dist/quill.snow.css';
                       <MessageSquare className="w-4 h-4" /> Add Suggested FAQs
                     </button>
                   </div>
+                </div>
+              )}
+            </div>
+
+            {/* Schema/Structured Data Section */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <label className="text-lg font-semibold text-gray-900">Schema/Structured Data</label>
+                  <span className="text-sm text-gray-500">(Optional - SEO)</span>
+                  {enableSchema && (
+                    <div className="flex items-center space-x-2">
+                      {schemaSaving ? (
+                        <span className="flex items-center text-xs text-blue-600">
+                          <div className="w-3 h-3 border-2 border-blue-600 border-t-transparent rounded-full animate-spin mr-1"></div>
+                          Auto-saving...
+                        </span>
+                      ) : schemaLastSaved ? (
+                        <span className="text-xs text-green-600">
+                          ✓ Auto-saved {schemaLastSaved.toLocaleTimeString()}
+                        </span>
+                      ) : null}
+                    </div>
+                  )}
+                </div>
+                <label className="inline-flex items-center gap-2 text-sm text-gray-700">
+                  <input
+                    type="checkbox"
+                    checked={enableSchema}
+                    onChange={(e)=>setEnableSchema(e.target.checked)}
+                  />
+                  Enable Schema
+                </label>
+              </div>
+
+              {enableSchema && (
+                <div className="space-y-4 bg-gray-50 border border-gray-200 rounded-xl p-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Schema Type</label>
+                    <select
+                      value={schemaType}
+                      onChange={(e)=>setSchemaType(e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    >
+                      <option value="BlogPosting">Blog Posting</option>
+                      <option value="Article">Article</option>
+                      <option value="NewsArticle">News Article</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Custom Schema JSON (Optional)
+                      <span className="text-xs text-gray-500 ml-2">Advanced users only</span>
+                    </label>
+                    <textarea
+                      value={customSchema}
+                      onChange={(e)=>setCustomSchema(e.target.value)}
+                      placeholder='{"additionalProperty": "value"}'
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-mono text-sm"
+                      rows={4}
+                    />
+                    <p className="text-xs text-gray-500 mt-1">
+                      Add custom JSON properties to merge with base schema. Must be valid JSON format.
+                    </p>
+                  </div>
+
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                    <p className="text-sm text-blue-800">
+                      <strong>Preview:</strong> Schema helps search engines understand your content better.
+                      {enableSchema && (
+                        <span className="block mt-1">
+                          Generated schema will include: title, description, image, author, publisher, and dates.
+                        </span>
+                      )}
+                    </p>
+                  </div>
+
+                  {/* Real-time Schema Preview */}
+                  {enableSchema && (
+                    <div className="border border-gray-300 rounded-lg p-4 bg-gray-900">
+                      <div className="flex items-center justify-between mb-3">
+                        <h4 className="text-sm font-medium text-gray-300">Generated Schema Preview</h4>
+                        <div className="flex gap-2">
+                          <button
+                            type="button"
+                            onClick={manualSaveSchema}
+                            disabled={schemaSaving}
+                            className="px-3 py-1 text-xs bg-green-600 text-white rounded hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                          >
+                            {schemaSaving ? 'Saving...' : 'Save Now'}
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const schema = generateSchema();
+                              if (schema) {
+                                navigator.clipboard.writeText(JSON.stringify(schema, null, 2));
+                                showToast.success('Schema copied to clipboard!');
+                              }
+                            }}
+                            className="px-3 py-1 text-xs bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+                          >
+                            Copy JSON
+                          </button>
+                        </div>
+                      </div>
+                      <pre className="text-xs text-green-400 overflow-x-auto max-h-64">
+                        {JSON.stringify(generateSchema(), null, 2)}
+                      </pre>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
