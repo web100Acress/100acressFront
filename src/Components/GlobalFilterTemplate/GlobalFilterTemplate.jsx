@@ -125,6 +125,16 @@ const GlobalFilterTemplate = ({
   const projectStatus = getProjectStatus();
   console.log('Detected project status:', projectStatus);
 
+  // Detect BHK type from URL for BHK flats pages
+  const getBhkType = () => {
+    const path = location.pathname;
+    const bhkMatch = path.match(/(\d)-bhk-flats-in-gurgaon/);
+    return bhkMatch ? bhkMatch[1] : null;
+  };
+
+  const bhkType = getBhkType();
+  console.log('Detected BHK type:', bhkType);
+
   // Get page data from static data based on URL
   const searchParams = new URLSearchParams(location.search);
   const searchParamsObj = Object.fromEntries(searchParams.entries());
@@ -1490,7 +1500,7 @@ const GlobalFilterTemplate = ({
                   </h2>
                   <div className="w-24 h-1 bg-blue-600 mx-auto mb-6"></div>
                   <p className="text-lg text-gray-600 max-w-4xl mx-auto">
-                    <a href="https://www.100acress.com/projects/upcoming/" className="text-blue-600 hover:underline font-medium">Explore verified upcoming projects in Gurgaon 2026</a> featuring spacious 5BHK apartments, luxury residences, and affordable housing options built for modern living. Whether you're a growing family, an NRI, or a smart investor, Gurgaon has exactly what you're looking for. It offers the perfect balance of space, comfort, rental yield, and resale value. Whether you're buying for your family or as an investment, a 5BHK in an upcoming Gurgaon project gives you the best return on every rupee spent.
+                    <a href="https://www.100acress.com/projects/upcoming/" className="text-blue-600 hover:underline font-medium">Explore verified upcoming projects in Gurgaon 2026</a> featuring spacious {bhkType ? `${bhkType}BHK` : 'BHK'} apartments, luxury residences, and affordable housing options built for modern living. Whether you're a growing family, an NRI, or a smart investor, Gurgaon has exactly what you're looking for. It offers the perfect balance of space, comfort, rental yield, and resale value. Whether you're buying for your family or as an investment, a {bhkType ? `${bhkType}BHK` : 'BHK'} in an upcoming Gurgaon project gives you the best return on every rupee spent.
                   </p>
                 </div>
 
@@ -1511,17 +1521,17 @@ const GlobalFilterTemplate = ({
 
                   <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8 hover:shadow-xl transition-shadow duration-300">
                     <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 text-blue-600">
-                      Best Areas to Buy 5 BHK Flat in Gurgaon
+                      Best Areas to Buy {bhkType ? `${bhkType} BHK` : 'BHK'} Flat in Gurgaon
                     </h3>
                     <div className="text-gray-600 leading-relaxed">
                       <div className="space-y-4">
                         <div>
                           <h4 className="font-semibold text-gray-900 mb-2">Dwarka Expressway</h4>
-                          <p className="text-sm">The fastest-growing residential belt in Gurgaon right now. Direct connectivity to Delhi, IGI Airport, and NH-48 makes it a top pick for working professionals. 5 BHK flat prices here are still competitive but rising steadily with every new possession.</p>
+                          <p className="text-sm">The fastest-growing residential belt in Gurgaon right now. Direct connectivity to Delhi, IGI Airport, and NH-48 makes it a top pick for working professionals. {bhkType ? `${bhkType} BHK` : 'BHK'} flat prices here are still competitive but rising steadily with every new possession.</p>
                         </div>
                         <div>
                           <h4 className="font-semibold text-gray-900 mb-2">New Gurgaon (Sectors 82–95)</h4>
-                          <p className="text-sm">Planned layouts, wider roads, and peaceful surroundings make New Gurgaon the best area to buy a 5 BHK in Gurgaon for families. Affordable flat rates in Gurgaon's new sectors with strong long-term appreciation.</p>
+                          <p className="text-sm">Planned layouts, wider roads, and peaceful surroundings make New Gurgaon the best area to buy a {bhkType ? `${bhkType} BHK` : 'BHK'} in Gurgaon for families. Affordable flat rates in Gurgaon's new sectors with strong long-term appreciation.</p>
                         </div>
                         <div>
                           <h4 className="font-semibold text-gray-900 mb-2">Golf Course Extension Road</h4>
@@ -1529,7 +1539,7 @@ const GlobalFilterTemplate = ({
                         </div>
                         <div>
                           <h4 className="font-semibold text-gray-900 mb-2">Sohna Road</h4>
-                          <p className="text-sm">Sohna Road is a value-driven corridor that provides a variety of affordable and mid-range 5 BHK flats. Good connectivity to NH-248A and proximity to educational institutions make it popular with families.</p>
+                          <p className="text-sm">Sohna Road is a value-driven corridor that provides a variety of affordable and mid-range {bhkType ? `${bhkType} BHK` : 'BHK'} flats. Good connectivity to NH-248A and proximity to educational institutions make it popular with families.</p>
                         </div>
                       </div>
                     </div>

@@ -19,7 +19,7 @@ const DubaiPageContent = () => {
   // Update meta tags when emirate changes (but keep same page title)
   useEffect(() => {
     // Keep static page title since it's a single page
-    document.title = "Top Projects in Dubai UAE | Luxury & Investment Properties | 100Acress";
+    document.title = "Top Projects in Dubai UAE | Luxury & Investment Properties";
     
     // Update or create meta description
     let metaDescription = document.querySelector('meta[name="description"]');
@@ -40,7 +40,7 @@ const DubaiPageContent = () => {
     canonicalLink.href = "https://www.100acress.com/global/projects-in-dubai-uae/";
     
     // Update Open Graph meta tags for social sharing
-    updateMetaTag('og:title', "Top Projects in Dubai UAE | Luxury & Investment Properties | 100Acress");
+    updateMetaTag('og:title', "Top Projects in Dubai UAE | Luxury & Investment Properties");
     updateMetaTag('og:description', "Explore the best projects in Dubai UAE including luxury apartments, villas, and off-plan properties. Discover top investment opportunities in Dubai.");
     updateMetaTag('og:url', "https://www.100acress.com/global/projects-in-dubai-uae/");
 
