@@ -389,6 +389,7 @@ const ProjectStatusSearchGlobal = () => {
         pageType="status"
         projects={memoizedProjectData || []}
         isLoading={isLoading}
+        pageConfig={currentConfig}
       />
     </>
   );

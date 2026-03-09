@@ -295,6 +295,9 @@ const ModernBlogView = () => {
     const extractedHeadings = [];
     let h1Count = 0;
     let h2Count = 0;
+    let h3Count = 0;
+    let currentH1 = 0;
+    let currentH2 = 0;
 
     headingElements.forEach((heading, index) => {
       const level = parseInt(heading.tagName[1]);
@@ -308,12 +311,17 @@ const ModernBlogView = () => {
       if (level === 1) {
         h1Count++;
         h2Count = 0;
+        h3Count = 0;
+        currentH1 = h1Count;
         number = `${h1Count}`;
       } else if (level === 2) {
         h2Count++;
-        number = `${h1Count}.${h2Count}`;
+        h3Count = 0;
+        currentH2 = h2Count;
+        number = `${h2Count}`;
       } else if (level === 3) {
-        number = `${h1Count}.${h2Count}.${index + 1}`;
+        h3Count++;
+        number = `${currentH2}.${h3Count}`;
       }
 
       extractedHeadings.push({
@@ -468,30 +476,20 @@ const ModernBlogView = () => {
             hasMore = false;
           }
         }
-        
-        console.log('Total blogs fetched from all pages:', allBlogs.length);
-        
-        // Count blogs by category - include all categories from database dynamically
+
+        // Count blogs per category
         const categoryCounts = {};
         allBlogs.forEach(blog => {
-          if (blog.blog_Category) {
-            categoryCounts[blog.blog_Category] = (categoryCounts[blog.blog_Category] || 0) + 1;
+          const category = blog.blog_Category || 'Uncategorized';
+          // Only count specified categories
+          if (['News', 'Lifestyle', 'Finance', 'Policies'].includes(category)) {
+            categoryCounts[category] = (categoryCounts[category] || 0) + 1;
           }
         });
-        
-        console.log('Raw category counts:', categoryCounts);
-        
-        // Specific check for Residential Flats
-        const residentialFlatsBlogs = allBlogs.filter(blog => blog.blog_Category === 'Residential Flats');
-        console.log('Residential Flats blogs found:', residentialFlatsBlogs.length);
-        console.log('First 5 Residential Flats blog details:', residentialFlatsBlogs.slice(0, 5).map(b => ({ id: b._id, title: b.blog_Title })));
-        
-        // Convert to array format for rendering and sort by count descending
+
+        // Convert to array format
         const categoriesWithCounts = Object.entries(categoryCounts)
-          .map(([name, count]) => ({
-            name,
-            count
-          }))
+          .map(([name, count]) => ({ name, count }))
           .sort((a, b) => b.count - a.count); // Sort by count descending
         
         setBlogCategories(categoriesWithCounts);
@@ -1054,22 +1052,31 @@ const ModernBlogView = () => {
                 <div className="overflow-y-auto max-h-64 pr-2">
                   {headings.length > 0 ? (
                     <nav className="space-y-3">
-                      {headings.map((heading, index) => (
-                        <a
-                          key={heading.id}
-                          href={`#${heading.id}`}
-                          onClick={(e) => scrollToHeading(e, heading.id)}
-                          className={`flex items-start transition-colors cursor-pointer ${activeHeading === heading.id
-                              ? 'text-gray-900 font-semibold'
-                              : 'text-gray-700 hover:text-gray-900'
-                            }`}
-                          style={{ fontFamily: "Georgia, 'Times New Roman', Times, serif" }}
-                          title={heading.text}
-                        >
-                          <span className="flex-shrink-0 mr-3 font-semibold text-gray-900">{index + 1}.</span>
-                          <span className="leading-relaxed hover:underline hover:underline-offset-4 hover:decoration-2 hover:decoration-blue-600">{heading.text}</span>
-                        </a>
-                      ))}
+                      {headings.map((heading, index) => {
+                        const isSubHeading = heading.level === 3; // Only H3 are sub-headings now
+                        return (
+                          <a
+                            key={heading.id}
+                            href={`#${heading.id}`}
+                            onClick={(e) => scrollToHeading(e, heading.id)}
+                            className={`flex items-start transition-colors cursor-pointer ${
+                              activeHeading === heading.id
+                                ? 'text-gray-900 font-semibold'
+                                : 'text-gray-700 hover:text-gray-900'
+                            } ${isSubHeading ? 'ml-4' : ''}`}
+                            style={{ 
+                              fontFamily: "Georgia, 'Times New Roman', Times, serif",
+                              fontSize: isSubHeading ? '0.875rem' : '1rem'
+                            }}
+                            title={heading.text}
+                          >
+                            <span className={`flex-shrink-0 mr-3 font-semibold text-gray-900 ${
+                              isSubHeading ? 'text-xs' : ''
+                            }`}>{heading.number}</span>
+                            <span className="leading-relaxed hover:underline hover:underline-offset-4 hover:decoration-2 hover:decoration-blue-600">{heading.text}</span>
+                          </a>
+                        );
+                      })}
                     </nav>
                   ) : (
                     <p className="text-sm text-gray-500">No headings found in this article.</p>
@@ -1150,7 +1157,7 @@ const ModernBlogView = () => {
               </Link>
 
               {/* Blog Categories */}
-              <div className="mt-6 bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+              {/* <div className="mt-6 bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
                 <h3
                   className="text-lg font-semibold text-orange-500 mb-4"
                   style={{ fontFamily: "'Open Sans', sans-serif" }}
@@ -1186,7 +1193,7 @@ const ModernBlogView = () => {
                     <p className="text-sm text-gray-500">Loading categories...</p>
                   )}
                 </div>
-              </div>
+              </div> */}
             </div>
           </aside>
 

@@ -143,7 +143,12 @@ const BhkFlatsGurgaon = ({ bhkType }) => {
     );
   }
 
-  const bhkConfig = staticData.bhk[bhkType] || staticData.bhk['2'];
+  const bhkConfig = staticData.bhk[bhkType] || staticData.bhk['1'];
+  
+  // Debug logging
+  console.log('bhkType prop:', bhkType);
+  console.log('bhkConfig:', bhkConfig);
+  console.log('metaTitle:', bhkConfig.metaTitle);
 
   const generateFAQData = () => {
     return {
@@ -162,6 +167,7 @@ const BhkFlatsGurgaon = ({ bhkType }) => {
   const customConfig = {
     ...config,
     title: bhkConfig.title,
+    metaTitle: bhkConfig.metaTitle,
     description: bhkConfig.description,
     h1: bhkConfig.h1,
     subtitle: bhkConfig.subtitle,

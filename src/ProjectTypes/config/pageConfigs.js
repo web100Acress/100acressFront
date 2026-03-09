@@ -258,8 +258,8 @@ export const projectTypeConfigs = {
     }
   },
   "senior-living": {
-    title: "Senior Living in Gurgaon",
-    description: "Explore senior living communities in Gurgaon with tailored amenities, comfort, and care-focused living.",
+    title: "Senior Living in Gurgaon with Safe Best Retirement Homes",
+    description: "Explore senior living in Gurgaon designed for safety, comfort, and independent lifestyles. Peaceful communities with healthcare access and daily support.",
     query: "seniorliving",
     reduxKey: "seniorliving",
     canonical: "https://www.100acress.com/projects/senior-living/",

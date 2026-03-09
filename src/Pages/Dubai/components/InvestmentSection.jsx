@@ -1,4 +1,4 @@
-import { TrendingUp, DollarSign, Award, Shield } from "lucide-react";
+import { TrendingUp, DollarSign, Award, Shield, Globe, CreditCard } from "lucide-react";
 import { Button } from "../../../Components/ui/button";
 
 export const InvestmentSection = () => {
@@ -6,34 +6,66 @@ export const InvestmentSection = () => {
     {
       icon: TrendingUp,
       title: "High ROI",
-      value: "15-20%",
-      description: "Average annual return on investment",
+      value: "15–20%",
+      description: "Average annual return on investment, higher than most global real estate markets.",
     },
     {
       icon: DollarSign,
       title: "Rental Yield",
-      value: "6-8%",
-      description: "Competitive rental income potential",
+      value: "5–8%",
+      description: "Competitive rental income potential, among the highest yields in the world.",
     },
     {
       icon: Award,
       title: "Capital Growth",
       value: "12%",
-      description: "Year-on-year property value increase",
+      description: "Year-on-year property value increase driven by consistent market demand.",
     },
     {
       icon: Shield,
       title: "Tax Benefits",
       value: "0%",
-      description: "No property tax or capital gains tax",
+      description: "No annual property tax, no capital gains tax, and no tax on rental income.",
+    },
+    {
+      icon: CreditCard,
+      title: "Golden Visa",
+      value: "10 Yr",
+      description: "Qualify for UAE long-term residency by investing in Dubai real estate.",
+    },
+    {
+      icon: Globe,
+      title: "Infrastructure",
+      value: "World-Class",
+      description: "Iconic architecture, luxury lifestyle, and excellent global connectivity.",
     },
   ];
 
   const hotspots = [
-    { name: "Downtown Dubai", growth: "+18%", avgPrice: "2,500 AED/sqft" },
-    { name: "Dubai Marina", growth: "+15%", avgPrice: "1,800 AED/sqft" },
-    { name: "Palm Jumeirah", growth: "+22%", avgPrice: "3,200 AED/sqft" },
-    { name: "Business Bay", growth: "+12%", avgPrice: "1,600 AED/sqft" },
+    { 
+      name: "Downtown Dubai", 
+      description: "Home to iconic landmarks and luxury residential towers, Downtown Dubai is one of the most sought-after real estate destinations.",
+      growth: "+18%", 
+      avgPrice: "2,500 AED/sqft" 
+    },
+    { 
+      name: "Dubai Marina", 
+      description: "Dubai Marina offers waterfront apartments, luxury residences, and vibrant lifestyle options.",
+      growth: "+15%", 
+      avgPrice: "1,800 AED/sqft" 
+    },
+    { 
+      name: "Palm Jumeirah", 
+      description: "Palm Jumeirah is one of the most prestigious residential destinations featuring ultra-luxury villas, beachfront properties, and branded residences.",
+      growth: "+22%", 
+      avgPrice: "3,200 AED/sqft" 
+    },
+    { 
+      name: "Business Bay", 
+      description: "Business Bay is a fast-growing commercial and residential hub with modern apartments and office spaces.",
+      growth: "+12%", 
+      avgPrice: "1,600 AED/sqft" 
+    },
   ];
 
   return (
@@ -52,51 +84,81 @@ export const InvestmentSection = () => {
             Market Intelligence
           </span>
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-display font-bold text-white leading-tight">
-            Best Investment Projects in Dubai
+            Best Investment Properties in Dubai
           </h2>
           <p className="text-sm sm:text-base lg:text-xl text-muted-foreground max-w-lg sm:max-w-2xl mx-auto">
-            Discover high-growth projects in Dubai offering tax benefits and superior capital growth.
+            Dubai has emerged as a global hotspot for real estate investment due to its strong economy and modern lifestyle. The city offers several advantages for property buyers and investors.
           </p>
         </div>
 
-        {/* Insights Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-12 lg:mb-16 px-4">
-          {insights.map((insight, index) => {
-            const Icon = insight.icon;
-            return (
-              <div
-                key={insight.title}
-                className="relative group glass-effect rounded-xl border border-white/10 hover:border-gold/50 transition-all duration-500 p-6 space-y-4 animate-fade-in-scale"
-                style={{ animationDelay: `${index * 0.1}s` }}
-              >
-                <div className="w-12 h-12 rounded-full bg-gold/10 flex items-center justify-center group-hover:bg-gold/20 transition-colors">
-                  <Icon className="h-6 w-6 text-gold" />
+        {/* Insights Grid - 3 items per row, 2 rows */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 mb-12 lg:mb-16 px-4">
+          <div className="md:col-span-3 grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+            {insights.slice(0, 3).map((insight, index) => {
+              const Icon = insight.icon;
+              return (
+                <div
+                  key={insight.title}
+                  className="relative group glass-effect rounded-xl border border-white/10 hover:border-gold/50 transition-all duration-500 p-6 space-y-4 animate-fade-in-scale"
+                  style={{ animationDelay: `${index * 0.1}s` }}
+                >
+                  <div className="w-12 h-12 rounded-full bg-gold/10 flex items-center justify-center group-hover:bg-gold/20 transition-colors">
+                    <Icon className="h-6 w-6 text-gold" />
+                  </div>
+                  <div>
+                    <p className="text-3xl font-bold text-gold mb-1">
+                      {insight.value}
+                    </p>
+                    <p className="text-lg font-semibold text-white mb-2">
+                      {insight.title}
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      {insight.description}
+                    </p>
+                  </div>
+                  <div className="absolute inset-0 bg-gradient-gold opacity-0 group-hover:opacity-5 transition-opacity rounded-xl" />
                 </div>
-                <div>
-                  <p className="text-3xl font-bold text-gold mb-1">
-                    {insight.value}
-                  </p>
-                  <p className="text-lg font-semibold text-white mb-2">
-                    {insight.title}
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    {insight.description}
-                  </p>
+              );
+            })}
+          </div>
+          <div className="md:col-span-3 grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+            {insights.slice(3).map((insight, index) => {
+              const Icon = insight.icon;
+              return (
+                <div
+                  key={insight.title}
+                  className="relative group glass-effect rounded-xl border border-white/10 hover:border-gold/50 transition-all duration-500 p-6 space-y-4 animate-fade-in-scale"
+                  style={{ animationDelay: `${(index + 3) * 0.1}s` }}
+                >
+                  <div className="w-12 h-12 rounded-full bg-gold/10 flex items-center justify-center group-hover:bg-gold/20 transition-colors">
+                    <Icon className="h-6 w-6 text-gold" />
+                  </div>
+                  <div>
+                    <p className="text-3xl font-bold text-gold mb-1">
+                      {insight.value}
+                    </p>
+                    <p className="text-lg font-semibold text-white mb-2">
+                      {insight.title}
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      {insight.description}
+                    </p>
+                  </div>
+                  <div className="absolute inset-0 bg-gradient-gold opacity-0 group-hover:opacity-5 transition-opacity rounded-xl" />
                 </div>
-                <div className="absolute inset-0 bg-gradient-gold opacity-0 group-hover:opacity-5 transition-opacity rounded-xl" />
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
 
         {/* Hotspots */}
         <div className="glass-effect rounded-2xl border border-white/10 p-8 md:p-12 animate-fade-in-scale">
           <div className="mb-8">
             <h3 className="text-3xl font-display font-bold text-white mb-2">
-              Property Hotspots
+              Popular Areas with Top Projects in Dubai
             </h3>
             <p className="text-muted-foreground">
-              Top performing areas with highest growth potential
+              Several locations in Dubai are known for high-quality real estate developments and strong investment potential.
             </p>
           </div>
 
@@ -107,22 +169,16 @@ export const InvestmentSection = () => {
                 className="space-y-3 p-6 rounded-xl bg-black/30 border border-white/5 hover:border-gold/30 transition-all duration-300"
                 style={{ animationDelay: `${0.4 + index * 0.1}s` }}
               >
-                <h4 className="text-lg font-semibold text-white">
-                  {hotspot.name}
-                </h4>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">Growth</span>
-                  <span className="text-lg font-bold text-gold">
-                    {hotspot.growth}
-                  </span>
+                  <h4 className="text-lg font-semibold text-white">{hotspot.name}</h4>
+                  <span className="text-gold font-bold">{hotspot.growth}</span>
                 </div>
-                <div className="flex items-center justify-between pt-3 border-t border-white/10">
-                  <span className="text-sm text-muted-foreground">
-                    Avg. Price
-                  </span>
-                  <span className="text-sm font-medium text-white">
-                    {hotspot.avgPrice}
-                  </span>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  {hotspot.description}
+                </p>
+                <div className="pt-2 border-t border-white/10">
+                  <p className="text-xs text-gold/80">Average Price</p>
+                  <p className="text-sm font-semibold text-white">{hotspot.avgPrice}</p>
                 </div>
               </div>
             ))}
@@ -193,16 +249,21 @@ export const InvestmentSection = () => {
           <div className="glass-effect rounded-2xl border border-white/10 p-8 md:p-12 animate-fade-in-scale">
             <div className="mb-4 text-center">
               <h2 className="text-2xl font-semibold text-white mb-2">
-                Explore Premium Projects in Dubai
+                Future of Real Estate Projects in Dubai
+
               </h2>
               <p className="text-muted-foreground text-lg leading-relaxed max-w-4xl mx-auto">
-                The future of urban living with our curated selection of the best real estate projects in Dubai, designed to offer an unmatched blend of luxury and strategic growth. Whether you are looking for the latest off-plan developments in prime locations like Dubai Marina and Downtown or seeking affordable new housing projects in Dubai with high rental yields, we provide expert insights into the most promising opportunities. Our portfolio features the best projects, including exclusive waterfront villas, branded residences, and smart-home apartments that guarantee a 100% tax-free environment and long-term capital appreciation. Stay ahead of the market by exploring the latest luxury projects in Dubai that redefine world-class infrastructure and offer a secure gateway to high-ROI investments and 
-                Golden Visa benefits
+                Dubai continues to launch new residential and commercial developments as part of its long-term growth strategy. With population growth and increasing global investment, the demand for real estate is expected to rise in the coming years.
               </p>
-            
-              {/* <p className="text-muted-foreground text-base leading-relaxed max-w-3xl mx-auto">
-                Find thoughtfully selected premium properties that match both your living goals and investment plans in Dubai. From residences to business spaces, every option is chosen for quality and growth potential.
-              </p> */}
+              <p className="text-muted-foreground text-lg leading-relaxed max-w-4xl mx-auto mt-4">
+                Major infrastructure projects, tourism growth, and business expansion are further strengthening Dubai's real estate sector. This makes projects in Dubai UAE a promising opportunity for both local and international investors.
+              </p>
+              <p className="text-muted-foreground text-lg leading-relaxed max-w-4xl mx-auto mt-4">
+                Residential Projects in Dubai offer excellent opportunities for buyers and investors looking for luxury living and high returns. With world-class infrastructure, tax-free investment benefits, and strong market growth, Dubai has become one of the most attractive real estate destinations globally.
+              </p>
+              <p className="text-muted-foreground text-lg leading-relaxed max-w-4xl mx-auto mt-4">
+                Whether you are looking for a luxury apartment, a waterfront villa, or a high-return investment property, the wide range of Dubai real estate projects ensures there is something for every buyer.
+              </p>
             </div> 
           </div>
           {/* jdbd*/}

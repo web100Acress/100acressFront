@@ -35,8 +35,7 @@ import 'react-quill/dist/quill.snow.css';
   'News',
   'Lifestyle', 
   'Finance',
-  'Policies',
-  'Blog'
+  'Policies'
  ];
 
  /** slugify helper */

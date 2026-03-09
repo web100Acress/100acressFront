@@ -107,10 +107,16 @@ export default function FAQAccordion({ projectStatus, customFAQs = null }) {
   };
 
   const currentFAQs = customFAQs || faqs[projectStatus] || [];
+  
+  // Normalize FAQs to handle both standard format and schema format
+  const normalizedFAQs = currentFAQs.map(faq => ({
+    question: faq.question || faq.name || "Question",
+    answer: faq.answer || (faq.acceptedAnswer && faq.acceptedAnswer.text) || "Answer"
+  }));
 
   return (
     <div className="space-y-0">
-      {currentFAQs.map((faq, index) => (
+      {normalizedFAQs.map((faq, index) => (
         <div key={index} className="border-b border-gray-200 last:border-b-0">
           <button
             onClick={() => toggleFAQ(index)}

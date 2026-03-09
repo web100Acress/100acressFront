@@ -3,9 +3,10 @@ export const staticData = {
   // BHK Pages Data
   bhk: {
     '1': {
-      title: '1 BHK Flats in Gurgaon | Affordable Apartments for Sale',
+      title: '1 BHK Flats in Gurgaon | Verified Listings ',
       description: 'Find budget-friendly 1 BHK flats in Gurgaon starting from ₹30 Lakhs. Perfect for bachelors and small families. Explore 1 bedroom apartments with modern amenities in prime locations.',
-      metaTitle: '1 BHK Flats in Gurgaon | Affordable Apartments for Sale - 100acress',
+      metaTitle: 'Buy 1BHK Flats in Gurgaon for Modern Lifestyle Living',
+      metaDescription: 'Explore verified 1 BHK flats in Gurgaon with RERA-approved projects, modern amenities, and prime locations. Book your dream home today.',
       h1: '1 BHK Flats in Gurgaon - Your Perfect Affordable Home',
       subtitle: 'Discover the best 1 BHK apartments in Gurgaon with modern amenities, strategic locations, and excellent connectivity. Ideal for first-time homebuyers and investors.',
       canonical: 'https://www.100acress.com/1-bhk-flats-in-gurgaon/',
@@ -14,31 +15,32 @@ export const staticData = {
       heroSubtitle: 'Discover the best 1 BHK apartments in Gurgaon with modern amenities, strategic locations, and excellent connectivity. Ideal for first-time homebuyers and investors.',
       faqs: [
         {
-          question: "What is the average price of 1 BHK flats in Gurgaon?",
-          answer: "1 BHK flats in Gurgaon typically range from ₹30 Lakhs to ₹1.2 Crore, depending on the location, amenities, and builder reputation. Budget options are available in developing sectors, while premium properties are found in established areas."
+          question: "What is the average price of a 1 BHK flat in Gurgaon in 2026?",
+          answer: "A 1 BHK flat in Gurgaon in 2026 is priced anywhere between ₹27 lakh and ₹1.3 crore. The price depends on the zone, builder, carpet area, and amenities. But for the majority of buyers salaried professionals, first-time homeowners, and mid-budget investors the sweet spot lies between ₹45 lakh and ₹75 lakh."
         },
         {
-          question: "Which are the best areas in Gurgaon for 1 BHK apartments?",
-          answer: "Popular areas for 1 BHK flats include Sector 56, Sector 57, Sector 45, Sector 23, New Gurgaon sectors 82-115, and areas near Rapid Metro. These locations offer good connectivity and infrastructure."
+          question: "What is the rental yield for a 1 BHK flat in Gurgaon?",
+          answer: "Gurgaon offers some of the best rental yields in the NCR residential market. A 1 BHK flat priced at ₹40–₹55 lakh in New Gurgaon or Sohna Road corridor can fetch monthly rentals of ₹12,000–₹20,000, which translates to a gross rental yield of 3–4.5% per annum. In high-demand rental zones like DLF Phase 1, Sushant Lok, and Sector 56 (near IT Park), rental yields can be higher. Proximity to employment hubs Cyber City, Udyog Vihar, and Manesar has a significant influence on rental demand and occupancy rates. Furnished or semi-furnished units command a 15–20% rental premium."
         },
         {
-          question: "Is 1 BHK a good investment in Gurgaon?",
-          answer: "Yes, 1 BHK flats in Gurgaon offer excellent ROI due to high demand from working professionals and students. They provide good rental yields and are easier to sell compared to larger configurations."
+          question: "Which are the best localities to buy a 1 BHK flat in Gurgaon?",
+          answer: "The best areas to buy a 1 BHK flat in Gurgaon include (1) Sohna Road, with a strong social setup, schools, hospitals, and upcoming metro connections; (2) Dwarka Expressway (NH-248BB), with high value growth potential and closeness to IGI Airport; (3) New Gurgaon (Sectors 82–95), self-sufficient township zones with organized growth; (4) Golf Course Extension Road, a premium mid-range choice; and (5) Sector 57 and Sector 67, established residential areas near IT hubs. Your choice should match your purpose, end-use, rental income, or capital growth."
         },
         {
-          question: "What amenities are typically included in 1 BHK flats in Gurgaon?",
-          answer: "Most 1 BHK apartments include 24/7 security, power backup, parking, gym, swimming pool, and community spaces. Premium projects offer additional amenities like clubhouses, landscaped gardens, and retail spaces."
+          question: "How do I verify if a 1 BHK flat project in Gurgaon is RERA-registered?",
+          answer: "Under the Real Estate (Regulation and Development) Act, 2016, all residential projects in Haryana with more than 8 units must be registered with Haryana RERA (HRERA). You can verify a project's RERA registration on the official HRERA portal (hrera.org.in). Key details to check include the HRERA registration number, project completion timeline, approved floor plans, declared carpet area vs. super built-up area, encumbrance certificate, and financial disclosures. Always insist on the HRERA number before you book."
         },
         {
-          question: "What is the average size of 1 BHK flats in Gurgaon?",
-          answer: "1 BHK flats in Gurgaon typically range from 450 to 650 sq. ft. Super built-up area, with carpet area ranging from 320 to 450 sq. ft. depending on the project and layout efficiency."
+          question: "Is it better to buy a ready-to-move 1 BHK flat or an under-construction one in Gurgaon?",
+          answer: "Both options have their advantages. Ready-to-move (RTM) properties offer zero GST liability (GST applies to under-construction units), immediate possession, zero construction risk, and verified OC/CC compliance, making them safer for end-users. Under-construction projects offer a 10–25% lower entry price, flexible payment plans (construction-linked or time-linked), and higher appreciation potential. If investing, ensure the under-construction project is HRERA-registered and backed by a reputable developer with a proven delivery track record."
         }
       ]
     },
     '2': {
       title: '2 BHK Flats in Gurgaon | Spacious Family Apartments',
-      description: 'Explore spacious 2 BHK flats in Gurgaon ideal for small families. Find 2 bedroom apartments with premium amenities in prime locations starting from ₹50 Lakhs.',
-      metaTitle: '2 BHK Flats in Gurgaon | Spacious Family Apartments - 100acress',
+      description: 'Looking for 2 BHK flats in Gurgaon? Explore budget and luxury apartments in top areas with modern facilities, great connectivity, and high ROI.',
+      metaTitle: '2 BHK Flats in Gurgaon for Comfortable living',
+      metaDescription: 'Looking for 2 BHK flats in Gurgaon? Explore budget and luxury apartments in top areas with modern facilities, great connectivity, and high ROI.',
       h1: '2 BHK Flats in Gurgaon - Perfect Family Living Spaces',
       subtitle: 'Find your ideal 2 BHK home in Gurgaon with modern layouts, excellent facilities, and great connectivity. Perfect for growing families seeking comfort and convenience.',
       canonical: 'https://www.100acress.com/2-bhk-flats-in-gurgaon/',
@@ -47,31 +49,32 @@ export const staticData = {
       heroSubtitle: 'Find your ideal 2 BHK home in Gurgaon with modern layouts, excellent facilities, and great connectivity. Perfect for growing families seeking comfort and convenience.',
       faqs: [
         {
-          question: "What is the average price of 2 BHK flats in Gurgaon?",
-          answer: "2 BHK flats in Gurgaon range from ₹50 Lakhs to ₹2.5 Crore, varying by location, builder, and amenities. Prime locations like Golf Course Road and Cyber Hub command premium prices, while emerging sectors offer more affordable options."
+          question: "What is the price of a 2 BHK flat in Gurgaon?",
+          answer: "A 2 BHK flat in Gurgaon is priced between ₹40 lakh and ₹2.5 crore+, depending on the locality, builder, and amenities. Affordable options start from ₹40–55 lakh in the Sohna and New Gurgaon sectors, while premium 2 BHK apartments on Golf Course Road or in DLF Phases can go above ₹2 crore."
         },
         {
-          question: "Which sectors are best for 2 BHK apartments in Gurgaon?",
-          answer: "Top sectors for 2 BHK include Sector 56, 57, 58, 59, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, and New Gurgaon sectors 82-115. These areas offer good schools, hospitals, and connectivity."
+          question: "Can I buy a 2 BHK flat in Gurgaon under 1 crore?",
+          answer: "Yes. Several 2 BHK flats in Gurgaon are available under ₹1 crore in New Gurgaon sectors (76–95); Dwarka Expressway corridors like Sector 99A and 107; and Sohna-based projects by Signature Global."
         },
         {
-          question: "Are 2 BHK flats in Gurgaon good for families?",
-          answer: "Absolutely! 2 BHK flats are ideal for small families, offering the perfect balance of space and affordability. They provide adequate room for couples with 1-2 children and are easier to maintain than larger apartments."
+          question: "Is Gurgaon a good place to invest in a 2 BHK flat?",
+          answer: "Gurgaon offers strong rental yields (3–4% in prime zones), consistent capital appreciation (11.9% year-on-year on the Dwarka Expressway), excellent infrastructure, and a strong job market, making it one of the best real estate investment destinations in North India."
         },
         {
-          question: "What is the typical carpet area for 2 BHK flats in Gurgaon?",
-          answer: "2 BHK flats typically have a carpet area of 550-850 sq. ft. with super built-up area ranging from 900-1,400 sq. ft. depending on the project's efficiency and included common areas."
+          question: "Which is the best area to buy a 2 BHK flat in Gurgaon?",
+          answer: "The best areas to buy a 2 BHK flat in Gurgaon in 2026 include Dwarka Expressway (Sectors 102–113) for investment and connectivity, Golf Course Extension Road for lifestyle, Sohna Road for affordability, and DLF Phases for prestige and capital growth."
         },
         {
-          question: "What financing options are available for 2 BHK flats in Gurgaon?",
-          answer: "Banks offer home loans up to 80-90% of the property value for 2 BHK flats. Interest rates start from 8.5% with tenure up to 30 years. Many developers also offer payment plans and subvention schemes."
+          question: "What is stamp duty for buying a flat in Gurgaon (Haryana)?",
+          answer: "In Haryana, stamp duty for property registration is 7% of the market value for male buyers and 5% for female buyers. Registration charges are an extra 50% of the stamp duty value. Always consult a legal advisor for the latest rates before you proceed."
         }
       ]
     },
     '3': {
       title: '3 BHK Flats in Gurgaon | Luxury Family Apartments',
-      description: 'Explore luxury 3 BHK flats in Gurgaon perfect for growing families. Find premium 3 bedroom apartments with world-class amenities starting from ₹80 Lakhs.',
-      metaTitle: '3 BHK Flats in Gurgaon | Luxury Family Apartments - 100acress',
+      description: 'Buy spacious 3 BHK flats in Gurgaon with modern amenities, secure gated societies, and great connectivity. Ideal homes for families and investors.',
+      metaTitle: '3 BHK Flats in Gurgaon | Buy Verified Apartments',
+      metaDescription: 'Buy spacious 3 BHK flats in Gurgaon with modern amenities, secure gated societies, and great connectivity. Ideal homes for families and investors.',
       h1: '3 BHK Flats in Gurgaon - Premium Family Living Experience',
       subtitle: 'Discover luxurious 3 BHK apartments in Gurgaon with spacious layouts, modern amenities, and excellent connectivity. Ideal for families seeking upscale living.',
       canonical: 'https://www.100acress.com/3-bhk-flats-in-gurgaon/',
@@ -80,31 +83,32 @@ export const staticData = {
       heroSubtitle: 'Discover luxurious 3 BHK apartments in Gurgaon with spacious layouts, modern amenities, and excellent connectivity. Ideal for families seeking upscale living.',
       faqs: [
         {
-          question: "What is the price range for 3 BHK flats in Gurgaon?",
-          answer: "3 BHK flats in Gurgaon typically cost between ₹80 Lakhs to ₹4 Crore. Premium locations like Golf Course Road, DLF Phase 5, and South City 1 command higher prices, while developing sectors offer more competitive rates."
+          question: "Are 3 BHK flats in Gurgaon RERA-registered?",
+          answer: "Yes, all reputable 3 BHK projects in Gurgaon have registration under Haryana RERA (HARERA). Buyers should always verify the HARERA registration number on the official HARERA website before they make a purchase. All projects listed on 100acress.com display their RERA numbers to ensure complete transparency."
         },
         {
-          question: "Which are the premium locations for 3 BHK apartments in Gurgaon?",
-          answer: "Prime locations include Golf Course Road, Golf Course Extension Road, DLF Phase 1-5, Sushant Lok 1-3, South City 1-2, Vipul Gardens, and sectors 56, 57, 58, 59 with excellent infrastructure and connectivity."
+          question: "What is the average price of a 3 BHK flat in Gurgaon?",
+          answer: "The average price of a 3 BHK flat in Gurgaon ranges from ₹1.18 crore to ₹11 crore depending on the location and project type. Budget-friendly options start at ₹72 lakh in sectors along Dwarka Expressway and New Gurgaon, while luxury 3 BHK apartments on Golf Course Road and DLF City phases can exceed ₹14 crore."
         },
         {
-          question: "What is the average size of 3 BHK flats in Gurgaon?",
-          answer: "3 BHK flats typically range from 1,200 to 2,200 sq. ft. super built-up area, with carpet area between 850-1,550 sq. ft. Luxury projects offer larger sizes up to 3,000 sq. ft. with additional servant rooms."
+          question: "What amenities are available in 3 BHK flats in Gurgaon?",
+          answer: "Modern 3 BHK flats in Gurgaon come with a full suite of amenities, including a clubhouse, swimming pool, gym, jogging track, landscaped gardens, children's play area, indoor games room, 24x7 security with CCTV, power backup, dedicated parking (including EV charging in newer projects), and smart home systems in premium segments."
         },
         {
-          question: "Are 3 BHK flats in Gurgaon good for investment?",
-          answer: "Yes, 3 BHK flats offer excellent investment potential with steady appreciation and good rental demand. They attract high-income tenants and families, ensuring consistent rental income and long-term value growth."
+          question: "What are the top builders for 3 BHK flats in Gurgaon?",
+          answer: "Some of the most trusted builders offering 3 BHK flats in Gurgaon include DLF, M3M, Godrej Properties, Emaar, Signature Global, SOBHA, BPTP, Tata Housing, and Elan Group. Each brand is known for quality construction, timely delivery, and strong after-sales service."
         },
         {
-          question: "What amenities do luxury 3 BHK apartments in Gurgaon offer?",
-          answer: "Premium 3 BHK apartments feature world-class amenities including swimming pools, gyms, clubhouses, sports facilities, landscaped gardens, 24/7 security, power backup, parking, and concierge services. Many offer smart home features and high-end finishes."
+          question: "Is buying a 3 BHK flat in Gurgaon a good investment in 2025?",
+          answer: "Yes. Gurgaon's real estate market has shown consistent appreciation of 18–25% in emerging sectors driven by infrastructure development (Dwarka Expressway, metro expansion), growing demand from corporate professionals, and limited inventory of quality housing. Rental yields of 3–5% p.a. Make it attractive for investors as well."
         }
       ]
     },
     '4': {
-      title: '4 BHK Flats in Gurgaon | Ultra-Luxury Apartments',
-      description: 'Discover ultra-luxury 4 BHK flats in Gurgaon for premium living. Find spacious 4 bedroom apartments with exclusive amenities and prime locations starting from ₹1.5 Crore.',
-      metaTitle: '4 BHK Flats in Gurgaon | Ultra-Luxury Apartments - 100acress',
+      title: '4 BHK Flats in Gurgaon | Premium Apartments',
+      description: 'Find exclusive 4 BHK flats in Gurgaon offering large spaces, premium amenities, and prime locations for comfortable and luxurious family living.',
+      metaTitle: '4 BHK Flats in Gurgaon | Luxury Apartments',
+      metaDescription: 'Find exclusive 4 BHK flats in Gurgaon offering large spaces, premium amenities, and prime locations for comfortable and luxurious family living.',
       h1: '4 BHK Flats in Gurgaon - Exclusive Luxury Residences',
       subtitle: 'Experience ultra-luxury living with 4 BHK apartments in Gurgaon featuring expansive spaces, premium amenities, and exclusive locations for discerning homeowners.',
       canonical: 'https://www.100acress.com/4-bhk-flats-in-gurgaon/',
@@ -113,31 +117,32 @@ export const staticData = {
       heroSubtitle: 'Experience ultra-luxury living with 4 BHK apartments in Gurgaon featuring expansive spaces, premium amenities, and exclusive locations for discerning homeowners.',
       faqs: [
         {
-          question: "What is the price range for 4 BHK flats in Gurgaon?",
-          answer: "4 BHK flats in Gurgaon range from ₹1.5 Crore to ₹8 Crore, depending on location, luxury level, and builder reputation. Ultra-luxury projects on Golf Course Road and premium sectors command the highest prices."
+          question: "Are 4 BHK flats in Gurgaon a good investment in 2026?",
+          answer: "Yes. 4 BHK flats in Gurgaon are among the strongest real estate investments in India in 2025. Property prices on Dwarka Expressway have appreciated 35–40% in the last three years, and experts project 20–30% further appreciation by 2026. Rental yields in prime sectors range from 3 to 4%. Proximity to 250+ MNC offices, IGI Airport, and the upcoming metro expansion makes Gurgaon 4 BHK apartments attractive for both end-use and rental income."
         },
         {
-          question: "Which are the most prestigious locations for 4 BHK apartments?",
-          answer: "Elite locations include Golf Course Road, DLF Phase 5, Sushant Lok, Aralias, The Close, South City 1, and premium sectors 56-59. These areas offer exclusive neighborhoods with high-end infrastructure and proximity to business hubs."
+          question: "What amenities are offered in 4 BHK apartments in Gurgaon?",
+          answer: "Premium 4 BHK apartments in Gurgaon include a clubhouse with a gymnasium and spa; a resort-style swimming pool; landscaped gardens and jogging tracks; children's play zones; sports courts (tennis, badminton, and basketball); co-working spaces; rooftop lounges; 24x7 security with CCTV smart home systems; EV charging stations; and dedicated basement parking."
         },
         {
-          question: "What is the typical size of 4 BHK flats in Gurgaon?",
-          answer: "4 BHK flats typically range from 2,000 to 4,500 sq. ft. super built-up area, with carpet area between 1,400-3,200 sq. ft. Ultra-luxury projects offer even larger sizes up to 6,000 sq. ft. with multiple servant rooms and study areas."
+          question: "What is the difference between ready-to-move and under-construction 4 BHK flats in Gurgaon?",
+          answer: "Ready-to-move 4 BHK flats in Gurgaon allow immediate possession, are exempt from GST (saving 5% on value), and carry no construction risk. Under-construction properties, however, are priced 10–20% lower, allow flexible payment plans, and enable some degree of customization. For buyers with urgent housing needs or those seeking rental income, ready-to-move flats are preferred. Investors willing to wait 2–3 years for higher appreciation often opt for under-construction new launches."
         },
         {
-          question: "What luxury amenities are included in 4 BHK apartments?",
-          answer: "4 BHK luxury apartments offer premium amenities including private elevators, personal terraces, swimming pools, gyms, spa facilities, clubhouses, sports courts, 24/7 concierge, smart home automation, high security, and premium finishes."
+          question: "What is the price of a 4 BHK flat in Gurgaon in 2026?",
+          answer: "4 BHK flat prices in Gurgaon in 2025 range from ₹1.70 crore in upcoming sectors like Sector 86 and 92 up to ₹17 crore+ on premium Golf Course Road and DLF City addresses. On Dwarka Expressway standard 4 BHK units start at ₹4–5 crore, while ultra-luxury projects in Sector 106 can reach ₹7–8 crore. The average price per sq. ft. for new launches is ₹20,000–₹25,000 and ₹18,000 for resale properties."
         },
         {
-          question: "Are 4 BHK flats good for long-term investment in Gurgaon?",
-          answer: "Absolutely! 4 BHK flats in prime Gurgaon locations show excellent appreciation potential and attract high-net-worth individuals and expatriates. They offer lower supply but high demand, ensuring strong value growth and premium rental yields."
+          question: "Which are the best areas to buy a 4 BHK flat in Gurgaon?",
+          answer: "The top locations for 4 BHK flats in Gurgaon are Golf Course Road (ultra-luxury), Dwarka Expressway (high-growth investment), Sohna Road (family-friendly), Golf Course Extension Road (professional hub), and DLF City Phases 1–5 (premium legacy zones). For value buyers, Sectors 86, 92, 95, and 104 provide RERA-registered 4 BHK apartments from ₹2.5 crore with strong connectivity."
         }
       ]
     },
     '5': {
-      title: '5 BHK Flats in Gurgaon | Ultimate Luxury Living',
-      description: 'Find exclusive 5 BHK flats in Gurgaon offering ultimate luxury and space. Discover premium 5 bedroom apartments with world-class amenities starting from ₹2.5 Crore.',
-      metaTitle: '5 BHK Flats in Gurgaon | Ultimate Luxury Living - 100acress',
+      title: '5 BHK Flats in Gurgaon | Modern Family Living',
+      description: 'Browse the best 5 BHK flats in Gurgaon with spacious design, premium amenities, and excellent connectivity to business hubs and major highways.',
+      metaTitle: '5 BHK Flats in Gurgaon | Luxury Homes in Prime Locations',
+      metaDescription: 'Browse the best 5 BHK flats in Gurgaon with spacious design, premium amenities, and excellent connectivity to business hubs and major highways.',
       h1: '5 BHK Flats in Gurgaon - The Pinnacle of Luxury Living',
       subtitle: 'Indulge in the ultimate luxury with 5 BHK apartments in Gurgaon offering expansive living spaces, premium amenities, and exclusive locations for the elite lifestyle.',
       canonical: 'https://www.100acress.com/5-bhk-flats-in-gurgaon/',
@@ -146,28 +151,24 @@ export const staticData = {
       heroSubtitle: 'Indulge in the ultimate luxury with 5 BHK apartments in Gurgaon offering expansive living spaces, premium amenities, and exclusive locations for the elite lifestyle.',
       faqs: [
         {
-          question: "What is the price range for 5 BHK flats in Gurgaon?",
-          answer: "5 BHK flats in Gurgaon range from ₹2.5 Crore to ₹15 Crore, with ultra-luxury penthouses and villas reaching even higher prices. Prices vary significantly based on location, exclusivity, and luxury amenities offered."
+          question: "What is the price of a 5 BHK flat in Gurgaon in 2025?",
+          answer: "5 BHK flats in Gurgaon are priced between ₹3.5 crore and ₹50 crore depending on location, builder, and amenities. On Sohna Road and Dwarka Expressway, prices start around ₹3.5–5 crore for 2,200–3,500 sq ft units. Premium options on Golf Course Road and in DLF Phases range from ₹15 crore to well above ₹34 crore for ultra-luxury developments like DLF The Aralias. The average price per sq ft across Gurgaon's 5 BHK segment runs from ₹25,000 to ₹102,000 per sq ft."
         },
         {
-          question: "Which are the most exclusive locations for 5 BHK apartments?",
-          answer: "Ultra-premium locations include Golf Course Road, DLF Phase 5, The Aralias, The Magnolias, The Close, Sushant Lok, and premium low-density sectors. These areas offer privacy, exclusivity, and proximity to business districts and international schools."
+          question: "What amenities do 5 BHK apartments in Gurgaon offer?",
+          answer: "Premium 5 BHK apartments in Gurgaon include a clubhouse with lounge areas, infinity or Olympic-sized swimming pools, a state-of-the-art gymnasium, a spa and sauna, landscaped gardens and walking tracks, multi-sport courts (tennis, badminton, squash, and basketball), children's play zones, co-working spaces, banquet and multipurpose halls, EV charging stations, basement parking, smart home automation, and 24x7 multi-tier CCTV security. Some ultra-luxury projects also offer valet parking, concierge services, and private elevators."
         },
         {
-          question: "What is the typical size of 5 BHK flats in Gurgaon?",
-          answer: "5 BHK flats typically range from 3,500 to 7,000 sq. ft. super built-up area, with carpet area between 2,500-5,000 sq. ft. Ultra-luxury penthouses can exceed 10,000 sq. ft. with multiple terraces, private pools, and servant quarters."
+          question: "Is a 5 BHK flat in Gurgaon a good investment in 2026?",
+          answer: "Yes, a 5 BHK flat in Gurgaon is considered a strong investment in 2026. The city hosts over 250 Fortune 500 companies, which creates sustained housing demand from senior professionals and expats. Ready-to-move 5 BHK units in prime sectors generate monthly rentals of ₹1.5–4 lakh. Property values in corridors like Dwarka Expressway and Golf Course Extension Road have appreciated 30–45% over the last three years."
         },
         {
-          question: "What ultra-luxury amenities do 5 BHK apartments offer?",
-          answer: "5 BHK ultra-luxury apartments feature exclusive amenities including private elevators, personal swimming pools, rooftop terraces, home theaters, wine cellars, smart home systems, 24/7 butler service, high-security systems, and premium Italian marble and designer finishes."
+          question: "Which are the best areas to purchase a 5 BHK flat in Gurgaon?",
+          answer: "The best areas to find 5 BHK flats in Gurgaon are Golf Course Road (ultra-luxury, DLF projects), Golf Course Extension Road (high-end, M3M and Salcon), Dwarka Expressway (new launches, value-for-money), Sohna Road (BPTP, Emaar, Tulip projects), and DLF Phase 1–5 (established luxury). Each corridor offers different price points, connectivity advantages, and lifestyle profiles. Golf Course Road is the right choice for buyers who prioritize prestige and resale value; Dwarka Expressway suits those who seek newer projects with airport connectivity."
         },
         {
-          question: "Who typically buys 5 BHK flats in Gurgaon?",
-          answer: "5 BHK flats attract ultra-high-net-worth individuals, business tycoons, NRIs, expatriates, and multinational executives. These buyers seek exclusivity, privacy, premium amenities, and locations that reflect their status and lifestyle requirements."
-        },
-        {
-          question: "What is the rental yield for 5 BHK flats in Gurgaon?",
-          answer: "5 BHK flats typically generate rental yields of 2-3% annually, with monthly rentals ranging from ₹1.5 Lakhs to ₹5 Lakhs depending on location and luxury level. While yields may be lower, capital appreciation is significantly higher."
+          question: "What is the typical size (sq ft) of a 5 BHK flat in Gurgaon?",
+          answer: "5 BHK apartments in Gurgaon range from 2,200 sq ft to over 11,000 sq ft in built-up area or super area. Budget-segment 5 BHK units on Sohna Road and Dwarka Expressway start around 2,200–3,500 sq ft of super area. Mid-luxury options on Golf Course Extension Road offer 3,500–6,000 sq ft. Ultra-premium properties like DLF The Dahlias in Sector 54 offer built-up areas of 9,500–11,000 sq ft per unit."
         }
       ]
     }
@@ -2175,10 +2176,36 @@ export const staticData = {
     keywords: "industrial plots gurgaon, manufacturing land gurgaon, warehouse plots gurgaon, industrial property"
   },
   'senior-living': {
-    metaTitle: "Senior Living in Gurgaon | Safe & Comfortable Retirement Homes",
+    metaTitle: "Senior Living in Gurgaon with Safe Best Retirement Homes",
     metaDescription: "Explore senior living in Gurgaon designed for safety, comfort, and independent lifestyles. Peaceful communities with healthcare access and daily support.",
     canonical: "https://www.100acress.com/projects/senior-living/",
-    keywords: "senior living gurgaon, retirement homes gurgaon, elderly care gurgaon, senior communities"
+    keywords: "Senior Living In Gurgaon, senior living projects in gurgaon, senior living apartments in gurgaon, antara senior living in gurgaon, senior citizen assisted living in gurgaon, senior living in gurgaon india, luxury senior living in gurgaon, senior citizen living in gurgaon, senior citizen assisted living in gurgaon, luxury senior living in gurgaon, antara senior living in gurgaon, Best senior living communities in Gurgaon with healthcare facilities, What are the different types of senior living options available in Gurgaon?, Affordable senior living options in Gurgaon with meal services, How much does independent senior living typically cost in Gurgaon?, Top-rated assisted living services for elderly in Gurgaon, Compare top-rated assisted living facilities in Gurgaon., How to choose a senior living home in Gurgaon based on amenities, List senior care homes in Sector 57 Gurgaon with medical support., Senior living complexes in Gurgaon offering recreational activities, What amenities should I look for in a retirement community in Gurgaon?",
+    faqs: [
+      {
+        question: "What types of senior living options are available in Gurgaon?",
+        answer: "Gurgaon offers diverse models like Independent Living for active seniors, Assisted Living for daily support, and Memory Care. Leading projects like Antara and Silverglades provide tailored amenities ranging from luxury apartments to specialized care units."
+      },
+      {
+        question: "Do senior living communities in Gurgaon provide 24/7 medical facilities?",
+        answer: "Yes, premium senior living homes in Gurgaon feature 24/7 medical support, including on-call doctors, nursing staff, and emergency panic buttons. Most projects have direct tie-ups with top multi-specialty hospitals for immediate ambulance assistance."
+      },
+      {
+        question: "What is the average cost of retirement homes in Gurgaon?",
+        answer: "The cost of senior living in Gurgaon varies by luxury levels. While independent living options start around ₹33,399 - ₹1,13,000 monthly, premium projects like Antara Senior Living involve a property investment starting from ₹5.17Cr to ₹7.84Cr+ depending on the configuration."
+      },
+      {
+        question: "What safety features are essential in a safe retirement home?",
+        answer: "A safe retirement home must include senior-friendly architecture like anti-skid flooring, grab rails, and wide doorways. Key security features include 24/7 CCTV surveillance, gated entry, and rapid emergency response systems to ensure total peace of mind."
+      },
+      {
+        question: "Are meals and housekeeping included in Gurgaon senior living?",
+        answer: "Most senior living communities in Gurgaon offer all-inclusive packages. This covers nutritious dietician-approved meals, professional housekeeping, and laundry services, ensuring a hassle-free and comfortable lifestyle for all residents."
+      },
+      {
+        question: "How to choose the best senior living home in Gurgaon?",
+        answer: "To find the best senior living in Gurgaon, prioritize healthcare quality, staff-to-resident ratio, and proximity to hospitals. Explore projects like Pioneer Advait or Aura The Aerth 79 and schedule a site visit to check the community vibe firsthand."
+      }
+    ]
   },
   'affordable-homes': {
     metaTitle: "Affordable Homes in Gurgaon | Budget-Friendly Housing Options",
