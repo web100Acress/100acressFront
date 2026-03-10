@@ -77,6 +77,7 @@ const GurugramPrimeLocation = lazy(() => import("./Pages/GurugramPrimeLocation")
 // const PanipatProject = lazy(() => import("./Pages/ProjectCities/PanipatProject"));
 // const Pushkar = lazy(() => import("./Pages/ProjectCities/Pushkar"));
 const QRGeneratorPage = lazy(() => import("./Pages/QRGeneratorPage"));
+const TestimonialsPage = lazy(() => import("./Pages/TestimonialsPage"));
 const BudgetPrice = lazy(() => import("./Pages/BudgetPrice"));
 const PossessionAfter2028 = lazy(() => import("./Pages/PossessionAfter2028"));
 // New dynamic project type route
@@ -220,7 +221,6 @@ const EditProperty = lazy(() => import("./SalesHeadPage/EditProperty"));
 // Test Component
 const TestSalesHead = lazy(() => import("./Components/TestSalesHead"));
 const ProjectRouter = lazy(() => import("./aadharhomes/BannerPage/updatedbannerpage/components/Project/ProjectRouter"));
-const Testimonial = lazy(() => import("./Home/Testimonial"));
 import DubaiPage from "./Pages/Dubai/DubaiPage";
 import BlogView from "./Insight/components/InsightBlog/BlogView";
 
@@ -362,7 +362,7 @@ function App() {
                       />
                       <Route
                         path="/projects-in-gurugram/property-possession-after-2026/"
-                        element={<PossessionAfter2028 />}
+                        element={<Navigate to="/" replace />}
                       />
                       <Route
                         path="/projects-in-gurugram/property-possession-in-2024/"
@@ -376,14 +376,18 @@ function App() {
                         path="/developers/:builderName"
                         element={<BuilderPage />}
                       />
-                      <Route path="/max-estates/" element={<BuilderPage />} />
+                      <Route path="/max-estates/" element={<Navigate to="/" replace />} />
                       <Route
                         path="/projects-in-gurugram/property-possession-in-2025/"
-                        element={<Possessionin2025 />}
+                        element={<Navigate to="/" replace />}
+                      />
+                      <Route
+                        path="/projects-in-gurugram/property-possession-after-2025/"
+                        element={<Navigate to="/" replace />}
                       />
                       <Route
                         path="/projects-in-gurugram/property-possession-in-2026/"
-                        element={<Possessionin2026 />}
+                        element={<Navigate to="/" replace />}
                       />
                       {/* Redirects to home page */}
                       <Route path="/property/residential/" element={<Navigate to="/" replace />} />
@@ -401,7 +405,6 @@ function App() {
                         element={<BuyPropViewCard />}
                       />
                       <Route path="/about-us/" element={<AboutModern />} />
-                      <Route path="/testimonials/" element={<Testimonial />} />
                       <Route
                         path="/rental-properties/:pUrl/:id/"
                         element={<RentViewDetails />}
@@ -426,13 +429,23 @@ function App() {
                         element={<ProjectTypeGlobal />}
                       />
                       <Route path="/projects-in-delhi/" element={<CityProjectsGlobal />} />
-                      <Route path="/united-arab-emirates/" element={<DubaiPage />} />
+                      <Route path="/global/projects-in-dubai-uae/" element={<DubaiPage />} />
+                      {/* Redirect old UAE routes to new URL */}
+                      <Route path="/united-arab-emirates" element={<Navigate to="/global/projects-in-dubai-uae/" replace />} />
+                      <Route path="/united-arab-emirates/" element={<Navigate to="/global/projects-in-dubai-uae/" replace />} />
                       {/* Redirect deleted Dubai routes to home */}
                       <Route path="/projects-in-dubai" element={<Navigate to="/" replace />} />
                       <Route path="/dubai/insights" element={<Navigate to="/" replace />} />
                       <Route path="/dubai/developers" element={<Navigate to="/" replace />} />
                       <Route path="/dubai/contact" element={<Navigate to="/" replace />} />
+                      {/* Redirect developer pages to home */}
+                      <Route path="/developers/experion" element={<Navigate to="/" replace />} />
+                      <Route path="/developers/experion/" element={<Navigate to="/" replace />} />
+                      {/* Redirect luxury project page to home */}
+                      <Route path="/project/luxury" element={<Navigate to="/" replace />} />
+                      <Route path="/project/luxury/" element={<Navigate to="/" replace />} />
                       <Route path="/projects-in-goa/" element={<CityProjectsGlobal />} />
+                      <Route path="/testimonials" element={<TestimonialsPage />} />
                       <Route path="/projects-in-noida/" element={<CityProjectsGlobal />} />
                       <Route path="/projects-in-panipat/" element={<CityProjectsGlobal />} />
                       <Route path="/projects-in-panchkula/" element={<CityProjectsGlobal />} />
@@ -573,7 +586,7 @@ function App() {
                       <Route path="/searchdata/:key" element={<SearchData />} />
                       <Route path="*" element={<PageNotFound />} />
                       <Route path="/contactmainpage" element={<ContactPage />} />
-                      <Route path="/bptp-plots-gurugram/" element={<Bptp />} />
+                      <Route path="/bptp-plots-gurugram/" element={<Navigate to="/" replace />} />
                       {/* <Route path="/orris-plots-gurugram/" element={<Orris />} /> */}
                       <Route path="/top-luxury-projects/" element={<LuxuryProject />} />
                       <Route path="/onboarding/upload" element={<OnboardingUpload />} />
@@ -869,11 +882,11 @@ function MobileBottomNav() {
             </Link>
 
             {/* UAE */}
-            <Link to="/united-arab-emirates/" className="flex flex-col items-center gap-1 py-2">
-              <span className={`text-xl ${isActive("/united-arab-emirates") ? "text-red-600" : "text-gray-500"}`}>
-                <img src="/icons/noun-burj-khalifa-3945.svg" width="20" height="20" alt="UAE" style={{ filter: isActive("/united-arab-emirates") ? 'brightness(0) saturate(100%) invert(27%) sepia(51%) saturate(2878%) hue-rotate(346deg) brightness(104%) contrast(97%)' : 'brightness(0) saturate(100%) invert(60%) sepia(8%) saturate(872%) hue-rotate(169deg) brightness(99%) contrast(86%)' }} />
+            <Link to="/global/projects-in-dubai-uae/" className="flex flex-col items-center gap-1 py-2">
+              <span className={`text-xl ${isActive("/global/projects-in-dubai-uae") ? "text-red-600" : "text-gray-500"}`}>
+                <img src="/icons/noun-burj-khalifa-3945.svg" width="20" height="20" alt="UAE" style={{ filter: isActive("/global/projects-in-dubai-uae") ? 'brightness(0) saturate(100%) invert(27%) sepia(51%) saturate(2878%) hue-rotate(346deg) brightness(104%) contrast(97%)' : 'brightness(0) saturate(100%) invert(60%) sepia(8%) saturate(872%) hue-rotate(169deg) brightness(99%) contrast(86%)' }} />
               </span>
-              <span className={`${isActive("/united-arab-emirates") ? "text-gray-900 font-semibold" : ""}`}>UAE</span>
+              <span className={`${isActive("/global/projects-in-dubai-uae") ? "text-gray-900 font-semibold" : ""}`}>UAE</span>
             </Link>
 
             {/* Center CTA: Contact (call by phone) */}

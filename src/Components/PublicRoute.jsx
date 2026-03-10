@@ -42,9 +42,9 @@ const PublicRoute = () => {
     path === '/dubai' ||
     path === '/dubai/' ||
     path.startsWith('/dubai/') ||
-    path === '/united-arab-emirates' ||
-    path === '/united-arab-emirates/' ||
-    path.startsWith('/united-arab-emirates/')
+    path === '/global/projects-in-dubai-uae' ||
+    path === '/global/projects-in-dubai-uae/' ||
+    path.startsWith('/global/projects-in-dubai-uae/')
   ) {
     hideNavbar = true;
   }
@@ -79,7 +79,7 @@ const PublicRoute = () => {
       "projects-in-jalandhar",
       "project-in-ayodhya",
       "project-in-mumbai",
-      "united-arab-emirates",
+      "global/projects-in-dubai-uae",
       "projects-in-pushkar",
       "project-in-pune",
       "qr-generator",

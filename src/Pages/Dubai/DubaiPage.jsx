@@ -37,12 +37,12 @@ const DubaiPageContent = () => {
       canonicalLink.rel = 'canonical';
       document.head.appendChild(canonicalLink);
     }
-    canonicalLink.href = "https://www.100acress.com/united-arab-emirates/";
+    canonicalLink.href = "https://www.100acress.com/global/projects-in-dubai-uae/";
     
     // Update Open Graph meta tags for social sharing
     updateMetaTag('og:title', "New & Upcoming Real Estate Projects in Dubai 2026 | 100Acress");
     updateMetaTag('og:description', "Explore 100+ verified New & upcoming real estate projects in Dubai 2026, from affordable JVC apartments to luxury waterfront villas. View Prices & Payment Plans Now.");
-    updateMetaTag('og:url', "https://www.100acress.com/united-arab-emirates/");
+    updateMetaTag('og:url', "https://www.100acress.com/global/projects-in-dubai-uae/");
 
     // Add JSON-LD Schema (Breadcrumb and FAQ)
     let schemaScript = document.getElementById('dubai-schema');
@@ -57,7 +57,7 @@ const DubaiPageContent = () => {
       "@graph": [
         {
           "@type": "BreadcrumbList",
-          "@id": "https://www.100acress.com/united-arab-emirates/#breadcrumb",
+          "@id": "https://www.100acress.com/global/projects-in-dubai-uae/#breadcrumb",
           "itemListElement": [
             {
               "@type": "ListItem",
@@ -69,13 +69,13 @@ const DubaiPageContent = () => {
               "@type": "ListItem",
               "position": 2,
               "name": "Dubai Real Estate",
-              "item": "https://www.100acress.com/united-arab-emirates/"
+              "item": "https://www.100acress.com/global/projects-in-dubai-uae/"
             }
           ]
         },
         {
           "@type": "FAQPage",
-          "@id": "https://www.100acress.com/united-arab-emirates/#faq",
+          "@id": "https://www.100acress.com/global/projects-in-dubai-uae/#faq",
           "mainEntity": [
             {
               "@type": "Question",

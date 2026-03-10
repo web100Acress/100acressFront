@@ -927,7 +927,7 @@ export default function NavbarDesktop({
             NEW
           </motion.div>
           <button
-            onClick={() => handleNavigation("/united-arab-emirates/")}
+            onClick={() => handleNavigation("/global/projects-in-dubai-uae/")}
             style={{
               background: "linear-gradient(to right, rgb(212, 162, 53), rgb(184, 134, 11))",
               color: "white",
@@ -969,7 +969,7 @@ export default function NavbarDesktop({
               animate={{ x: "-110%" }}
               transition={{ duration: 3, ease: "linear", repeat: Infinity }}
             />
-            <span style={{ position: 'relative', zIndex: 4 }}>DUBAI</span>
+            <span style={{ position: 'relative', zIndex: 4 }}>Global</span>
           </button>
         </div>
       )}

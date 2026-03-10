@@ -3,7 +3,7 @@ export const staticData = {
   // BHK Pages Data
   bhk: {
     '1': {
-      title: '1 BHK Flats in Gurgaon | Affordable Apartments for Sale',
+      title: '1 BHK Flats in Gurgaon | Verified Listings',
       description: 'Find budget-friendly 1 BHK flats in Gurgaon starting from ₹30 Lakhs. Perfect for bachelors and small families. Explore 1 bedroom apartments with modern amenities in prime locations.',
       metaTitle: '1 BHK Flats in Gurgaon | Affordable Apartments for Sale - 100acress',
       h1: '1 BHK Flats in Gurgaon - Your Perfect Affordable Home',
@@ -36,9 +36,9 @@ export const staticData = {
       ]
     },
     '2': {
-      title: '2 BHK Flats in Gurgaon | Spacious Family Apartments',
+      title: '2 BHK Flats in Gurgaon | Find Your Perfect Home',
       description: 'Explore spacious 2 BHK flats in Gurgaon ideal for small families. Find 2 bedroom apartments with premium amenities in prime locations starting from ₹50 Lakhs.',
-      metaTitle: '2 BHK Flats in Gurgaon | Spacious Family Apartments - 100acress',
+      metaTitle: '2 BHK Flats in Gurgaon | Find Your Perfect Home - 100acress',
       h1: '2 BHK Flats in Gurgaon - Perfect Family Living Spaces',
       subtitle: 'Find your ideal 2 BHK home in Gurgaon with modern layouts, excellent facilities, and great connectivity. Perfect for growing families seeking comfort and convenience.',
       canonical: 'https://www.100acress.com/2-bhk-flats-in-gurgaon/',

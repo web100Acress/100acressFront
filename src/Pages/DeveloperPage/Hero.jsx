@@ -19,7 +19,7 @@ export default function Hero({ onExplore, onContact, onSearch, title = 'Develope
   }, [text, onSearch]);
 
   return (
-    <section className="relative w-full" style={bgStyle}>
+    <section className="relative w-full mt-20" style={bgStyle}>
       <div className="absolute inset-0" style={{backdropFilter: 'blur(2px)'}} />
       <div className="relative max-w-screen-xl mx-auto px-4 md:px-6 pt-24 md:pt-28 pb-8 md:pb-10 text-white">
         <div className="mx-auto text-center">
