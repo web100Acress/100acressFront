@@ -114,12 +114,19 @@ const BudgetPlotsInGurugraon = () => {
     return (
       <Wrapper className="section">
         <div data-aos="zoom-in-up" className="container" style={{ boxShadow: "0px 0px 0px 0px #0000001a" }}>
-          <div className="relative flex flex-col items-center justify-center text-center mb-4 mt-6 px-4">
-            <h2 className="text-3xl xl:text-4xl lg:text-3xl md:text-2xl font-extrabold mb-3 text-neutral-900">
+          <div className="flex items-center justify-between mb-4 mt-6">
+            <h2 className="text-3xl xl:text-4xl lg:text-3xl md:text-2xl font-extrabold mb-3 text-neutral-900 pl-4 text-left">
                       <span className="bg-gradient-to-r from-[#f43f5e] to-[#dc2626] bg-clip-text text-transparent">Best Budget</span>
                       <span> Plots in Gurugram</span>
             </h2>
-            <div className="h-1.5 w-32 bg-gradient-to-r from-red-500 to-red-600 rounded-full"></div>
+            <div className="hidden sm:block pr-4">
+              <Link to="/projects-in-gurugram/">
+                <span className="flex items-center text-white text-sm px-3 py-1.5 rounded-full bg-red-600 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300">
+                  <EyeIcon size={16} />
+                  <span className="ml-2">View All Projects</span>
+                </span>
+              </Link>
+            </div>
           </div>
           <div className="grid  lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-1 grid-cols-1 mx-0 gap-3 lg:gap-4 pb-2 pt-3">
             {budgetPlots.length === 0 ? (
