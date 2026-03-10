@@ -9,6 +9,7 @@ import 'quill-emoji/dist/quill-emoji.css';
 import 'quill-emoji';
 import { useParams, useNavigate } from 'react-router-dom';
 import showToast from "../../../../../Utils/toastUtils";
+import TableBuilder from './TableBuilder';
 
 import {
   FileText,
@@ -100,6 +101,11 @@ const BlogWriteModal = () => {
   // FAQ state (no UI changes)
   const [enableFAQ, setEnableFAQ] = useState(false);
   const [faqs, setFaqs] = useState([{ question: '', answer: '' }]);
+
+  // Table blocks state for JSON table storage
+  const [tableBlocks, setTableBlocks] = useState([]);
+  const [showTableBuilder, setShowTableBuilder] = useState(false);
+  const [currentTableData, setCurrentTableData] = useState(null);
 
   // Schema/Structured Data state
   const [enableSchema, setEnableSchema] = useState(false);
@@ -327,7 +333,11 @@ const BlogWriteModal = () => {
 
   // Initialize Quill instance
   const handleQuillChange = (content/*, delta, source, editor */) => {
-    setDescription(content);
+    // If the content change was just normal typing, update state
+    // Don't update if we are in the middle of a submission finalization
+    if (!isSubmitting) {
+      setDescription(content);
+    }
     // Always cache the real Quill instance from the ref (editor param is UnprivilegedEditor)
     try {
       if (quillRef.current && typeof quillRef.current.getEditor === 'function') {
@@ -841,8 +851,39 @@ const BlogWriteModal = () => {
             setEnableFAQ(!!b.enableFAQ);
             setFaqs(Array.isArray(b.faqs) && b.faqs.length
               ? b.faqs.map(x => ({ question: x.question || '', answer: x.answer || '' }))
-              : [{ question: '', answer: '' }]
-            );
+              : [{ question: '', answer: '' }]);
+
+            // Load Table Blocks
+            setTableBlocks(Array.isArray(b.tableBlocks) ? b.tableBlocks : []);
+
+            // Load Table Data from dedicated field if available
+            if (b.tableData) {
+              try {
+                const parsed = JSON.parse(b.tableData);
+                setCurrentTableData(parsed);
+                setShowTableBuilder(true);
+                // The placeholder should be in the description already if saved correctly
+              } catch (e) {
+                console.error("Failed to parse tableData field:", e);
+              }
+            } else if (b.blog_Description && b.blog_Description.includes('<table')) {
+              // Fallback to recovery from HTML metadata
+              const tempDiv = document.createElement('div');
+              tempDiv.innerHTML = b.blog_Description;
+              const table = tempDiv.querySelector('table');
+              if (table) {
+                const configData = table.getAttribute('data-table-config');
+                if (configData) {
+                  try {
+                    const parsed = JSON.parse(decodeURIComponent(configData));
+                    setCurrentTableData(parsed);
+                    setShowTableBuilder(true);
+                  } catch (e) {
+                    console.error("Failed to recover table from attribute:", e);
+                  }
+                }
+              }
+            }
 
             // Load Schema/Structured Data
             setEnableSchema(!!b.enableSchema);
@@ -861,6 +902,40 @@ const BlogWriteModal = () => {
               }
             } else {
               setCustomSchema('');
+            }
+
+            // Extract table data if it exists in description
+            if (b.blog_Description && b.blog_Description.includes('<table')) {
+              const tempDiv = document.createElement('div');
+              tempDiv.innerHTML = b.blog_Description;
+              const table = tempDiv.querySelector('table');
+              
+              if (table) {
+                // Try to get data from metadata first
+                const configData = table.getAttribute('data-table-config');
+                if (configData) {
+                  try {
+                    const parsed = JSON.parse(decodeURIComponent(configData));
+                    setCurrentTableData(parsed);
+                    setShowTableBuilder(true);
+                  } catch (e) {
+                    console.error("Failed to parse table config:", e);
+                  }
+                } else {
+                  // Fallback to manual extraction
+                  const heading = tempDiv.querySelector('h3')?.textContent || '';
+                  const rows = Array.from(table.querySelectorAll('tr')).map(tr => 
+                    Array.from(tr.querySelectorAll('th, td')).map(td => td.textContent)
+                  );
+                  setCurrentTableData({ heading, rows });
+                  setShowTableBuilder(true);
+                }
+                
+                // Replace table with placeholder for editing
+                const placeholder = `[TABLE_PLACEHOLDER_${Date.now()}]`;
+                const cleanContent = b.blog_Description.replace(/<div class="my-6 overflow-x-auto table-wrapper">[\s\S]*?<\/div>/, `<p>${placeholder}</p>`);
+                setDescription(cleanContent);
+              }
             }
           } else {
             console.log('Blog not found');
@@ -906,11 +981,12 @@ const BlogWriteModal = () => {
   useEffect(() => {
     const t = setTimeout(() => {
       try {
+        const finalContentForDraft = finalizeContent(description);
         const snapshot = {
           ts: Date.now(),
-          title, description, frontImagePreview, categories,
+          title, description: finalContentForDraft, frontImagePreview, categories,
           metaTitle, metaDescription, slug, relatedProjects, enableFAQ, faqs,
-          author
+          author, tableBlocks
         };
         localStorage.setItem(draftKey, JSON.stringify(snapshot));
         // Append to history (max 10)
@@ -923,7 +999,7 @@ const BlogWriteModal = () => {
       } catch { }
     }, 1200);
     return () => clearTimeout(t);
-  }, [draftKey, historyKey, title, description, frontImagePreview, categories, metaTitle, metaDescription, slug, relatedProjects, enableFAQ, faqs, author]);
+  }, [draftKey, historyKey, title, description, frontImagePreview, categories, metaTitle, metaDescription, slug, relatedProjects, enableFAQ, faqs, author, tableBlocks]);
 
   // Convert the next 4 standalone images (from cursor) into a grid with inline styles
   const convertNextImagesToGrid = () => {
@@ -1544,6 +1620,73 @@ const BlogWriteModal = () => {
     }
   };
 
+  const handleTableChange = (data) => {
+    console.log("Table data changed in Modal:", data);
+    setCurrentTableData(data);
+    
+    // CRITICAL: Update the description whenever the table changes
+    // This ensures that the finalized content (with the table) is correctly
+    // generated during autosave or submission even if the user hasn't typed in Quill.
+    const quill = safeGetQuill();
+    if (quill) {
+      const currentHTML = quill.root.innerHTML;
+      if (currentHTML.includes('[TABLE_PLACEHOLDER_')) {
+        // Just trigger a state update to ensure components re-render with new table data
+        setDescription(currentHTML);
+      }
+    } else {
+      // Fallback if quill is not available
+      setDescription(prev => prev + ' '); 
+      setTimeout(() => setDescription(prev => prev.trim()), 0);
+    }
+  };
+
+  const generateTableHTML = (data) => {
+    if (!data || !data.rows) return '';
+    console.log("Generating Table HTML for:", data);
+    let html = '<div class="my-6 overflow-x-auto table-wrapper">';
+    if (data.heading) {
+      html += `<h3 class="text-xl font-bold mb-3 table-heading">${data.heading}</h3>`;
+    }
+    html += '<table style="min-width: 100%; border-collapse: collapse; border: 1px solid #d1d5db; margin-bottom: 1rem;">';
+    data.rows.forEach((row, rowIndex) => {
+      html += '<tr>';
+      row.forEach(cell => {
+        if (rowIndex === 0) {
+          html += `<th style="border: 1px solid #d1d5db; padding: 12px; background-color: #f3f4f6; font-weight: bold; text-align: left;">${cell || ''}</th>`;
+        } else {
+          html += `<td style="border: 1px solid #d1d5db; padding: 12px; text-align: left;">${cell || ''}</td>`;
+        }
+      });
+      html += '</tr>';
+    });
+    html += '</table></div>';
+    return html;
+  };
+
+  const finalizeContent = (rawContent) => {
+    if (!rawContent) return '';
+    
+    // Check if there's table data to process
+    // Improved regex to handle various ways the placeholder might be wrapped by Quill (e.g. <p>[...]</p>)
+    const placeholderRegex = /\[TABLE_PLACEHOLDER_\d+\]/;
+    const hasPlaceholder = placeholderRegex.test(rawContent);
+    
+    if (currentTableData && currentTableData.rows && hasPlaceholder) {
+      console.log("Replacing placeholder in real-time...");
+      const tableHTML = generateTableHTML(currentTableData);
+      // Store currentTableData in a data attribute within the HTML 
+      const tableDataJSON = encodeURIComponent(JSON.stringify(currentTableData));
+      const tableWithMetadata = tableHTML.replace('<table ', `<table data-table-config="${tableDataJSON}" `);
+      
+      // Use global replace to catch any duplicates
+      const finalized = rawContent.replace(new RegExp('\\[TABLE_PLACEHOLDER_\\d+\\]', 'g'), tableWithMetadata);
+      return finalized;
+    }
+    
+    return rawContent;
+  };
+
   /** Submit (draft/publish) */
   const handleSubmit = async (e, publishStatus) => {
     const willPublish = publishStatus === true;
@@ -1574,6 +1717,15 @@ const BlogWriteModal = () => {
       return showToast.error('Please select a featured image');
     }
 
+    // Check if table data exists but no placeholder in content
+    if (currentTableData && currentTableData.rows && !description.includes('[TABLE_PLACEHOLDER_')) {
+      console.warn("Table data detected without placeholder. Inserting at end.");
+      const placeholder = `[TABLE_PLACEHOLDER_${Date.now()}]`;
+      const updatedDescription = description + `<p>${placeholder}</p>`;
+      setDescription(updatedDescription);
+      // We'll use the updated content for submission
+    }
+
     // File size validation (10MB limit)
     const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
     if (frontImage && frontImage.size > MAX_FILE_SIZE) {
@@ -1589,7 +1741,21 @@ const BlogWriteModal = () => {
 
       // Basic blog data
       formDataAPI.append('blog_Title', title.trim());
-      formDataAPI.append('blog_Description', description);
+      
+      // CRITICAL: Re-read from Quill root to ensure we have latest content
+      const quill = safeGetQuill();
+      // If we just appended a placeholder because it was missing, description state might be fresher than quill root
+      const currentRaw = quill ? quill.root.innerHTML : description;
+      const latestRawContent = (!currentRaw.includes('[TABLE_PLACEHOLDER_') && description.includes('[TABLE_PLACEHOLDER_')) 
+        ? description 
+        : currentRaw;
+        
+      const finalContent = finalizeContent(latestRawContent);
+      
+      console.log("FINAL CONTENT BEING SENT TO DB:", finalContent);
+      console.log("TABLE DATA BEING SENT:", currentTableData);
+      formDataAPI.append('blog_Description', finalContent);
+      formDataAPI.append('blog_Content', finalContent); // Also send to blog_Content just in case
       formDataAPI.append('blog_Category', categories);
       formDataAPI.append('author', author || 'Admin');
       formDataAPI.append('isPublished', willPublish);
@@ -1607,10 +1773,17 @@ const BlogWriteModal = () => {
       // FAQs
       formDataAPI.append('enableFAQ', enableFAQ);
       if (faqs && faqs.some(f => (f.question || '').trim() && (f.answer || '').trim())) {
-        const cleaned = faqs
-          .map(f => ({ question: (f.question || '').trim(), answer: (f.answer || '').trim() }))
-          .filter(f => f.question && f.answer);
-        if (cleaned.length) formDataAPI.append('faqs', JSON.stringify(cleaned));
+        formDataAPI.append('faqs', JSON.stringify(faqs.filter(f => (f.question || '').trim() && (f.answer || '').trim())));
+      }
+
+      // Table Blocks (JSON structure)
+      if (tableBlocks.length > 0) {
+        formDataAPI.append('tableBlocks', JSON.stringify(tableBlocks));
+      }
+      
+      // CRITICAL: If we have real-time table builder data, also send it specifically
+      if (currentTableData) {
+        formDataAPI.append('tableData', JSON.stringify(currentTableData));
       }
 
       // Schema/Structured Data
@@ -1654,10 +1827,16 @@ const BlogWriteModal = () => {
         }
       }
 
+      const config = {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token') || ''}`
+        }
+      };
+
       if (blogToEdit) {
         showToast.loading('Updating the blog...', { id: 'updateloading' });
 
-        const res = await api.put(`/blog/update/${blogId}`, formDataAPI);
+        const res = await api.put(`/blog/update/${blogId}`, formDataAPI, config);
 
         showToast.dismiss('updateloading');
         if (res.status === 200) {
@@ -1670,7 +1849,7 @@ const BlogWriteModal = () => {
       } else {
         showToast.loading('Adding New Blog...', { id: 'loadingNewBlog' });
 
-        const res = await api.post(`/blog/insert`, formDataAPI);
+        const res = await api.post(`/blog/insert`, formDataAPI, config);
 
         showToast.dismiss('loadingNewBlog');
         if (res.status === 200) {
@@ -1739,27 +1918,53 @@ const BlogWriteModal = () => {
     setCollapsedFaqs([false]);
   };
 
+  // Add custom icon to Quill toolbar
+  useEffect(() => {
+    const icon = document.querySelector('.ql-table-icon');
+    if (icon && !icon.innerHTML) {
+      icon.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="3" y1="15" x2="21" y2="15"></line><line x1="9" y1="3" x2="9" y2="21"></line><line x1="15" y1="3" x2="15" y2="21"></line></svg>`;
+    }
+  }, []);
+
   // Quill toolbar config (no default image button; we add our own handlers)
-  const quillModules = {
+  const quillModules = useMemo(() => ({
     toolbar: {
       container: [
         [{ header: [1, 2, 3, 4, false] }],
-        // [{ font: fontWhitelist }],
         [{ size: ['small', false, 'large', 'huge'] }],
         ['bold', 'italic', 'underline', 'strike'],
         [{ color: [] }, { background: [] }],
         [{ list: 'ordered' }, { list: 'bullet' }],
         ['blockquote', 'code-block'],
         ['link', 'emoji'],
+        ['table-icon'],
         [{ align: [] }],
         ['clean'],
       ],
+      handlers: {
+        'table-icon': () => {
+          const quill = safeGetQuill();
+          if (quill) {
+            const range = quill.getSelection(true);
+            const placeholder = `[TABLE_PLACEHOLDER_${Date.now()}]`;
+            // Add extra space around placeholder to ensure it's not merged with other text
+            quill.insertText(range.index, `\n${placeholder}\n`);
+            quill.setSelection(range.index + placeholder.length + 2);
+            
+            // CRITICAL: Immediately update state with the new content containing the placeholder
+            const newHTML = quill.root.innerHTML;
+            console.log("TABLE ICON CLICKED - New HTML with placeholder:", newHTML);
+            setDescription(newHTML);
+            setShowTableBuilder(true);
+          }
+        }
+      }
     },
     clipboard: { matchVisual: false },
     'emoji-toolbar': true,
     'emoji-textarea': false,
     'emoji-shortname': true,
-  };
+  }), []);
 
   // Explicit formats so custom fonts and toolbar options are honored
   const quillFormats = [
@@ -2192,6 +2397,35 @@ const BlogWriteModal = () => {
 
           /* User-resizable area for the normal editor */
           .editor-resize{ resize: vertical; overflow:auto; min-height:16rem; max-height:75vh; }
+
+          /* Global table styles for blog content */
+          .blog-content-area table {
+            width: 100% !important;
+            border-collapse: collapse !important;
+            margin: 20px 0 !important;
+            border: 1px solid #d1d5db !important;
+            display: table !important;
+          }
+          .blog-content-area thead {
+            display: table-header-group !important;
+          }
+          .blog-content-area tbody {
+            display: table-row-group !important;
+          }
+          .blog-content-area tr {
+            display: table-row !important;
+            border: 1px solid #d1d5db !important;
+          }
+          .blog-content-area th, .blog-content-area td {
+            border: 1px solid #d1d5db !important;
+            padding: 12px !important;
+            text-align: left !important;
+            display: table-cell !important;
+          }
+          .blog-content-area th {
+            background-color: #f3f4f6 !important;
+            font-weight: bold !important;
+          }
         `}</style>
         {/* Top bar: SEO score, preview toggle, restore */}
         <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
@@ -2249,6 +2483,7 @@ const BlogWriteModal = () => {
                     setEnableFAQ(!!s.enableFAQ);
                     setFaqs(Array.isArray(s.faqs) && s.faqs.length ? s.faqs : [{ question: '', answer: '' }]);
                     setAuthor(s.author || author);
+                    setTableBlocks(Array.isArray(s.tableBlocks) ? s.tableBlocks : []);
                     showToast.success('Draft restored');
                   } catch { }
                 }} className="px-3 py-2 rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50 flex items-center gap-2">
@@ -2923,6 +3158,23 @@ const BlogWriteModal = () => {
               >
                 {bwMode ? 'Color Mode' : 'B/W Mode'}
               </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  const newTable = {
+                    type: 'table',
+                    rows: [['Header 1', 'Header 2', 'Header 3'], ['', '', '']]
+                  };
+                  setTableBlocks([...tableBlocks, newTable]);
+                  showToast.success('Table builder added');
+                }}
+                className="px-3 py-1.5 text-xs rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 flex items-center gap-1.5"
+                title="Add Table Builder"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                Add Table
+              </button>
             </div>
 
             {/* Content Editor */}
@@ -2945,22 +3197,75 @@ const BlogWriteModal = () => {
                 </button>
               </div>
 
-              {!editorFullscreen && (
-                <div className="quill-box border border-gray-200 rounded-xl mb-4 bg-white shadow-sm">
-                  <div className="quill-editor-container editor-resize">
-                    <ReactQuill
-                      ref={quillRef}
-                      theme="snow"
-                      value={description}
-                      onChange={handleQuillChange}
-                      className=""
-                      modules={quillModules}
-                      formats={quillFormats}
-                    />
-                  </div>
+              {/* Table Blocks Section */}
+              {tableBlocks.length > 0 && (
+                <div className="space-y-6 mb-4">
+                  {tableBlocks.map((block, index) => (
+                    <div key={index} className="relative group">
+                      <TableBuilder
+                        initialData={block.rows}
+                        onChange={(updatedTable) => {
+                          const updatedBlocks = [...tableBlocks];
+                          updatedBlocks[index] = updatedTable;
+                          setTableBlocks(updatedBlocks);
+                        }}
+                        onRemove={() => {
+                          const updatedBlocks = tableBlocks.filter((_, i) => i !== index);
+                          setTableBlocks(updatedBlocks);
+                        }}
+                      />
+                    </div>
+                  ))}
                 </div>
               )}
 
+                {!editorFullscreen && (
+                  <div className="relative">
+                    <div className="quill-box border border-gray-200 rounded-xl mb-4 bg-white shadow-sm">
+                      <div className="quill-editor-container editor-resize">
+                        <ReactQuill
+                          ref={quillRef}
+                          theme="snow"
+                          value={description}
+                          onChange={handleQuillChange}
+                          className=""
+                          modules={quillModules}
+                          formats={quillFormats}
+                          placeholder="Write something amazing..."
+                        />
+                      </div>
+                    </div>
+
+                    {showTableBuilder && (
+                      <div className="mt-6 mb-8 border-2 border-indigo-100 rounded-xl p-4 bg-indigo-50 shadow-md">
+                        <div className="flex justify-between items-center mb-4">
+                          <div className="flex items-center gap-2">
+                            <div className="w-8 h-8 bg-indigo-600 text-white rounded-lg flex items-center justify-center">
+                              <Monitor className="w-4 h-4" />
+                            </div>
+                            <h3 className="text-lg font-bold text-indigo-900">Table Configuration</h3>
+                          </div>
+                          <button 
+                            type="button"
+                            onClick={() => setShowTableBuilder(false)}
+                            className="p-2 text-gray-400 hover:text-gray-600 hover:bg-white rounded-full transition-all"
+                          >
+                            <X className="w-5 h-5" />
+                          </button>
+                        </div>
+                        <TableBuilder 
+                          initialData={currentTableData}
+                          onChange={handleTableChange}
+                          onRemove={() => {
+                            setShowTableBuilder(false);
+                            setCurrentTableData(null);
+                            setDescription(description.replace(/\[TABLE_PLACEHOLDER_\d+\]/g, ''));
+                          }}
+                        />
+                      </div>
+                    )}
+                  </div>
+                )}
             </div>
 
             {editorFullscreen && (
@@ -3018,7 +3323,12 @@ const BlogWriteModal = () => {
                     <div className="p-4 sm:p-6">
                       <h1 className="text-2xl sm:text-3xl font-bold mb-2">{title || 'Your blog title'}</h1>
                       <div className="text-gray-500 text-sm mb-4">/{slug || 'my-custom-slug'}</div>
-                      <article className="prose max-w-none prose-img:rounded-lg prose-headings:scroll-mt-24" dangerouslySetInnerHTML={{ __html: description || '<p>Start writing content...</p>' }} />
+                      <article 
+                        className="prose max-w-none prose-img:rounded-lg prose-headings:scroll-mt-24 blog-content-area" 
+                        dangerouslySetInnerHTML={{ 
+                          __html: finalizeContent(description) || '<p>Start writing content...</p>' 
+                        }} 
+                      />
                     </div>
                   </div>
                 </div>
@@ -3336,6 +3646,7 @@ const BlogWriteModal = () => {
                           setEnableFAQ(!!s.enableFAQ);
                           setFaqs(Array.isArray(s.faqs) && s.faqs.length ? s.faqs : [{ question: '', answer: '' }]);
                           setAuthor(s.author || author);
+                          setTableBlocks(Array.isArray(s.tableBlocks) ? s.tableBlocks : []);
                           showToast.success('Draft restored');
                           setShowHistory(false);
                         } catch { }

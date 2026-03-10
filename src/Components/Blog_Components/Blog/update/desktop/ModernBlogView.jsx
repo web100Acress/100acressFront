@@ -29,6 +29,7 @@ const ModernBlogView = () => {
   const [isCountryDropdownOpen, setIsCountryDropdownOpen] = useState(false);
   const [activeHeading, setActiveHeading] = useState(null);
   const [blogCategories, setBlogCategories] = useState([]);
+  const [tableBlocks, setTableBlocks] = useState([]);
   const countryDropdownRef = useRef(null);
   const { id, slug } = useParams();
 
@@ -406,6 +407,7 @@ const ModernBlogView = () => {
         if (b) {
           setData(b);
           setHeadings(extractHeadings(b.blog_Content || b.blog_Description));
+          setTableBlocks(Array.isArray(b.tableBlocks) ? b.tableBlocks : []);
 
           // Check if schema exists
           if (b.schema) {
@@ -1197,13 +1199,74 @@ const ModernBlogView = () => {
 
           {/* Main Content */}
           <div className="lg:col-span-6">
+            <style>{`
+              .blog-content-area table {
+                width: 100% !important;
+                border-collapse: collapse !important;
+                margin: 20px 0 !important;
+                border: 1px solid #d1d5db !important;
+                display: table !important;
+              }
+              .blog-content-area tr {
+                display: table-row !important;
+                border: 1px solid #d1d5db !important;
+              }
+              .blog-content-area th, .blog-content-area td {
+                border: 1px solid #d1d5db !important;
+                padding: 12px !important;
+                text-align: left !important;
+                display: table-cell !important;
+              }
+              .blog-content-area th {
+                background-color: #f3f4f6 !important;
+                font-weight: bold !important;
+              }
+            `}</style>
             <article className="prose prose-lg max-w-none">
               <div
-                className="text-gray-800 leading-relaxed space-y-6"
+                className="text-gray-800 leading-relaxed space-y-6 blog-content-area"
                 dangerouslySetInnerHTML={{
-                  __html: DOMPurify.sanitize(addHeadingIds(data.blog_Content || data.blog_Description))
+                  __html: DOMPurify.sanitize(addHeadingIds(data.blog_Content || data.blog_Description), {
+                    ADD_TAGS: ['table', 'thead', 'tbody', 'tr', 'th', 'td', 'div', 'h3', 'section', 'figure', 'figcaption'],
+                    ADD_ATTR: ['class', 'id', 'style', 'contenteditable', 'src', 'alt']
+                  })
                 }}
               />
+              
+              {/* Render Table Blocks */}
+              {tableBlocks.length > 0 && (
+                <div className="mt-12 space-y-8">
+                  {tableBlocks.map((block, index) => (
+                    <div key={index} className="overflow-x-auto my-8 shadow-sm border border-gray-200 rounded-xl">
+                      <table className="min-w-full divide-y divide-gray-200">
+                        <thead className="bg-gray-50">
+                          <tr>
+                            {block.rows[0].map((header, hIdx) => (
+                              <th 
+                                key={hIdx} 
+                                className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider border-b border-gray-200"
+                              >
+                                {header}
+                              </th>
+                            ))}
+                          </tr>
+                        </thead>
+                        <tbody className="bg-white divide-y divide-gray-200">
+                          {block.rows.slice(1).map((row, rIdx) => (
+                            <tr key={rIdx} className={rIdx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                              {row.map((cell, cIdx) => (
+                                <td key={cIdx} className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 border-b border-gray-100">
+                                  {cell}
+                                </td>
+                              ))}
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  ))}
+                </div>
+              )}
             </article>
 
             {/* FAQs Section */}
