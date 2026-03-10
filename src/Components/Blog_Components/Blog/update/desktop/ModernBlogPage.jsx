@@ -63,7 +63,7 @@ const ModernBlogPage = () => {
         const categoriesWithCounts = Object.entries(categoryCounts)
           .map(([name, count]) => ({ name, count }))
           .sort((a, b) => b.count - a.count); // Sort by count descending
-        
+
         setBlogCategories(categoriesWithCounts);
       } catch (error) {
         console.error('Failed to load blog categories:', error);
@@ -101,15 +101,15 @@ const ModernBlogPage = () => {
 
           if (response?.data?.data && Array.isArray(response.data.data)) {
             const blogs = response.data.data;
-            
+
             // If API doesn't support category filtering, filter manually
             let filteredBlogs = blogs;
             if (activeCategory && activeCategory.trim()) {
               filteredBlogs = blogs.filter(blog => blog.blog_Category === activeCategory);
             }
-            
+
             allBlogsData = [...allBlogsData, ...filteredBlogs];
-            
+
             // If we got fewer blogs than the limit, we've reached the end
             if (blogs.length < limit) {
               hasMoreData = false;
@@ -120,7 +120,7 @@ const ModernBlogPage = () => {
             hasMoreData = false;
           }
         }
-        
+
         setAllBlogs(allBlogsData);
       } catch (error) {
         console.error('Error fetching blogs:', error);
@@ -143,34 +143,34 @@ const ModernBlogPage = () => {
   // Filter and sort blogs
   const filteredBlogs = useMemo(() => {
     let blogs = allBlogs;
-    
+
     // Apply search filter
     if (search && search.trim()) {
       const searchTerm = search.toLowerCase().trim();
-      blogs = blogs.filter(blog => 
+      blogs = blogs.filter(blog =>
         (blog.blog_Title && blog.blog_Title.toLowerCase().includes(searchTerm)) ||
         (blog.blog_Content && blog.blog_Content.toLowerCase().includes(searchTerm)) ||
         (blog.blog_Description && blog.blog_Description.toLowerCase().includes(searchTerm)) ||
         (blog.blog_Category && blog.blog_Category.toLowerCase().includes(searchTerm))
       );
     }
-    
+
     // Only remove featured blog when no category filter is active and no search
     if (!activeCategory && !search && featuredBlog) {
       blogs = blogs.filter((b) => b !== featuredBlog);
     }
-    
+
     if (sort === "latest")
       blogs = blogs.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     if (sort === "oldest")
       blogs = blogs.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
-    
+
     return blogs;
   }, [allBlogs, featuredBlog, sort, activeCategory, search]);
 
   // Blog link helper
   const blogLink = (blog) => {
-    if (blog?.slug) return `/blog/${blog.slug}`;
+    if (blog?.slug) return `/blog/${blog.slug}/`;
     const slug = (blog.blog_Title || '')
       .toString()
       .toLowerCase()
@@ -179,7 +179,7 @@ const ModernBlogPage = () => {
       .replace(/\s+/g, '-')
       .replace(/-+/g, '-')
       .replace(/^-+|-+$/g, '');
-    return `/blog/${slug}/${blog._id}`;
+    return `/blog/${slug}/${blog._id}/`;
   };
 
 
@@ -199,8 +199,8 @@ const ModernBlogPage = () => {
 
       {/* Hero Section */}
       {featuredBlog && (
-        <HeroSection 
-          blog={featuredBlog} 
+        <HeroSection
+          blog={featuredBlog}
           blogLink={blogLink(featuredBlog)}
           FALLBACK_IMG={FALLBACK_IMG}
         />
@@ -221,32 +221,32 @@ const ModernBlogPage = () => {
           {/* Blog Categories - Left Side */}
           <div className="lg:w-1/5">
             <div className="mb-2">
-                <div className="relative">
-                  <input
-                    type="text"
-                    placeholder="Search blogs..."
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                    className="w-full px-4 py-2 pr-10 text-sm border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Search blogs..."
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  className="w-full px-4 py-2 pr-10 text-sm border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+                <svg
+                  className="absolute right-3 top-2.5 h-4 w-4 text-gray-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
                   />
-                  <svg
-                    className="absolute right-3 top-2.5 h-4 w-4 text-gray-400"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                    />
-                  </svg>
-                </div>
+                </svg>
               </div>
+            </div>
             <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
               {/* Search Box */}
-            
+
 
               <div className="mb-4 text-center">
                 <h3
@@ -265,30 +265,26 @@ const ModernBlogPage = () => {
                     setActiveCategory(null);
                     navigate('/blog');
                   }}
-                  className={`flex items-center justify-between w-full px-3 py-2 rounded-full border-2 transition-all duration-300 transform hover:scale-105 shadow-sm ${
-                    !activeCategory
+                  className={`flex items-center justify-between w-full px-3 py-2 rounded-full border-2 transition-all duration-300 transform hover:scale-105 shadow-sm ${!activeCategory
                       ? 'bg-blue-600 border-blue-600 text-white shadow-md'
                       : 'border-blue-400 bg-blue-50 hover:bg-blue-500 hover:text-white hover:shadow-md'
-                  }`}
+                    }`}
                 >
                   <div className="flex items-center gap-2">
-                    <span className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                      !activeCategory
+                    <span className={`w-2 h-2 rounded-full transition-all duration-300 ${!activeCategory
                         ? 'bg-white border-2 border-white'
                         : 'border-2 border-blue-400 group-hover:bg-white'
-                    }`}></span>
-                    <span className={`text-xs font-medium transition-colors duration-300 ${
-                      !activeCategory ? 'text-white' : 'text-gray-700 group-hover:text-white'
-                    }`}>
+                      }`}></span>
+                    <span className={`text-xs font-medium transition-colors duration-300 ${!activeCategory ? 'text-white' : 'text-gray-700 group-hover:text-white'
+                      }`}>
                       All Categories
                     </span>
                   </div>
 
-                  <span className={`text-xs px-1.5 py-0.5 rounded-full font-semibold transition-all duration-300 ${
-                    !activeCategory
+                  <span className={`text-xs px-1.5 py-0.5 rounded-full font-semibold transition-all duration-300 ${!activeCategory
                       ? 'bg-white text-blue-600'
                       : 'bg-blue-100 text-blue-600'
-                  }`}>
+                    }`}>
                     {allBlogs.length}
                   </span>
                 </button>
@@ -305,30 +301,26 @@ const ModernBlogPage = () => {
                           setActiveCategory(categoryName);
                           navigate(`/blog?category=${encodeURIComponent(categoryName)}`);
                         }}
-                        className={`flex items-center justify-between w-full px-3 py-2 rounded-full border-2 transition-all duration-300 transform hover:scale-105 shadow-sm ${
-                          isActive
+                        className={`flex items-center justify-between w-full px-3 py-2 rounded-full border-2 transition-all duration-300 transform hover:scale-105 shadow-sm ${isActive
                             ? 'bg-blue-600 border-blue-600 text-white shadow-md'
                             : 'border-blue-400 bg-blue-50 hover:bg-blue-500 hover:text-white hover:shadow-md'
-                        }`}
+                          }`}
                       >
                         <div className="flex items-center gap-2">
-                          <span className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                            isActive
+                          <span className={`w-2 h-2 rounded-full transition-all duration-300 ${isActive
                               ? 'bg-white border-2 border-white'
                               : 'border-2 border-blue-400 group-hover:bg-white'
-                          }`}></span>
-                          <span className={`text-xs font-medium transition-colors duration-300 ${
-                            isActive ? 'text-white' : 'text-gray-700 group-hover:text-white'
-                          }`}>
+                            }`}></span>
+                          <span className={`text-xs font-medium transition-colors duration-300 ${isActive ? 'text-white' : 'text-gray-700 group-hover:text-white'
+                            }`}>
                             {category.name || category}
                           </span>
                         </div>
 
-                        <span className={`text-xs px-1.5 py-0.5 rounded-full font-semibold transition-all duration-300 ${
-                          isActive
+                        <span className={`text-xs px-1.5 py-0.5 rounded-full font-semibold transition-all duration-300 ${isActive
                             ? 'bg-white text-blue-600'
                             : 'bg-blue-100 text-blue-600'
-                        }`}>
+                          }`}>
                           {category.count}
                         </span>
                       </button>
@@ -380,18 +372,18 @@ const ModernBlogPage = () => {
                   <div
                     key={blog._id}
                   >
-                <BlogCard 
-                  blog={blog} 
-                  blogLink={blogLink(blog)}
-                  FALLBACK_IMG={FALLBACK_IMG}
-                />
+                    <BlogCard
+                      blog={blog}
+                      blogLink={blogLink(blog)}
+                      FALLBACK_IMG={FALLBACK_IMG}
+                    />
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-        )}
+            )}
 
+          </div>
         </div>
-      </div>
       </section>
 
       {/* Footer */}

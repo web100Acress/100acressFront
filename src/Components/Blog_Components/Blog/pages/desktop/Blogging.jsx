@@ -32,8 +32,8 @@ const getSlug = (title) =>
 
 // Prefer slug-based blog link with fallback to legacy title/id route
 const blogLink = (blog) => {
-  if (blog?.slug) return `/blog/${blog.slug}`;
-  return `/blog/${getSlug(blog.blog_Title)}/${blog._id}`;
+  if (blog?.slug) return `/blog/${blog.slug}/`;
+  return `/blog/${getSlug(blog.blog_Title)}/${blog._id}/`;
 };
 
 // Funnel SVG icon
@@ -103,14 +103,14 @@ const Blogging = () => {
           const { data: blogs, totalPages: total } = response.data;
           console.log('API response blogs count:', blogs?.length || 0);
           console.log('Sample blog categories:', blogs?.slice(0, 3).map(b => ({ title: b.blog_Title, category: b.blog_Category })));
-          
+
           // If API doesn't support category filtering, filter manually
           let filteredBlogs = Array.isArray(blogs) ? blogs : [];
           if (activeCategory && activeCategory.trim()) {
             filteredBlogs = filteredBlogs.filter(blog => blog.blog_Category === activeCategory);
             console.log('Manual filtered blogs count:', filteredBlogs.length);
           }
-          
+
           setAllBlogs(filteredBlogs);
           setTotalPages(total || 1);
         } else {

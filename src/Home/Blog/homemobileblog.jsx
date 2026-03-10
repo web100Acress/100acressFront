@@ -13,7 +13,7 @@ const HomeMobileBlog = () => {
 
   const FALLBACK_IMG = "/Images/blog.avif";
   const BRAND_RED = "#E63946";
-  
+
   const onImgError = (e) => {
     if (e?.target && e.target.src !== window.location.origin + FALLBACK_IMG && !e.target.dataset.fallback) {
       e.target.dataset.fallback = "1";
@@ -33,8 +33,8 @@ const HomeMobileBlog = () => {
       .replace(/^-+|-+$/g, '');       // Trim leading/trailing hyphens
 
   const blogLink = (blog) => {
-    if (blog?.slug) return `/blog/${blog.slug}`;
-    return `/blog/${getSlug(blog.blog_Title)}/${blog._id}`;
+    if (blog?.slug) return `/blog/${blog.slug}/`;
+    return `/blog/${getSlug(blog.blog_Title)}/${blog._id}/`;
   };
 
   useEffect(() => {
@@ -70,7 +70,7 @@ const HomeMobileBlog = () => {
     autoScrollRef.current = setInterval(() => {
       setCurrentIndex((prevIndex) => {
         const nextIndex = (prevIndex + 1) % blogs.length;
-        
+
         // Scroll to the next blog
         if (scrollRef.current) {
           const scrollAmount = nextIndex * (window.innerWidth * 0.85 + 16); // 85vw + gap
@@ -79,7 +79,7 @@ const HomeMobileBlog = () => {
             behavior: 'smooth'
           });
         }
-        
+
         return nextIndex;
       });
     }, 4000); // Change blog every 4 seconds
@@ -97,13 +97,13 @@ const HomeMobileBlog = () => {
     if (autoScrollRef.current) {
       clearInterval(autoScrollRef.current);
     }
-    
+
     // Resume auto-scroll after 5 seconds of inactivity
     setTimeout(() => {
       autoScrollRef.current = setInterval(() => {
         setCurrentIndex((prevIndex) => {
           const nextIndex = (prevIndex + 1) % blogs.length;
-          
+
           if (scrollRef.current) {
             const scrollAmount = nextIndex * (window.innerWidth * 0.85 + 16);
             scrollRef.current.scrollTo({
@@ -111,7 +111,7 @@ const HomeMobileBlog = () => {
               behavior: 'smooth'
             });
           }
-          
+
           return nextIndex;
         });
       }, 4000);
@@ -123,12 +123,12 @@ const HomeMobileBlog = () => {
       clearInterval(autoScrollRef.current);
     }
 
-    const newIndex = direction === 'next' 
-      ? (currentIndex + 1) % blogs.length 
+    const newIndex = direction === 'next'
+      ? (currentIndex + 1) % blogs.length
       : (currentIndex - 1 + blogs.length) % blogs.length;
-    
+
     setCurrentIndex(newIndex);
-    
+
     if (scrollRef.current) {
       const scrollAmount = newIndex * (window.innerWidth * 0.85 + 16);
       scrollRef.current.scrollTo({
@@ -142,7 +142,7 @@ const HomeMobileBlog = () => {
       autoScrollRef.current = setInterval(() => {
         setCurrentIndex((prevIndex) => {
           const nextIndex = (prevIndex + 1) % blogs.length;
-          
+
           if (scrollRef.current) {
             const scrollAmount = nextIndex * (window.innerWidth * 0.85 + 16);
             scrollRef.current.scrollTo({
@@ -150,7 +150,7 @@ const HomeMobileBlog = () => {
               behavior: 'smooth'
             });
           }
-          
+
           return nextIndex;
         });
       }, 4000);
@@ -175,7 +175,7 @@ const HomeMobileBlog = () => {
     <section className="bg-white py-12 px-4 font-['Poppins','Inter',sans-serif]">
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
-        <motion.div 
+        <motion.div
           className="text-center mb-6"
           initial={{ opacity: 0, y: -20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -186,13 +186,13 @@ const HomeMobileBlog = () => {
             <span className="text-black">Latest </span>
             <span style={{ color: BRAND_RED }}>Blogs</span>
           </h2>
-          
+
           <p className="text-gray-600 text-sm md:text-base max-w-2xl mx-auto mb-3">
             Stay updated with latest insights, trends, and expert advice in real estate
           </p>
-          
+
           {/* Animated Red Underline */}
-          <motion.div 
+          <motion.div
             className="w-20 h-1 mx-auto rounded-full"
             style={{ background: `linear-gradient(90deg, ${BRAND_RED} 0%, #DC2626 100%)` }}
             initial={{ width: 0 }}
@@ -240,7 +240,7 @@ const HomeMobileBlog = () => {
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
-                whileHover={{ 
+                whileHover={{
                   y: -3,
                   transition: { duration: 0.3, ease: "easeOut" }
                 }}
@@ -257,10 +257,10 @@ const HomeMobileBlog = () => {
                       decoding="async"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                    
+
                     {/* Category Badge */}
                     {blog.blog_Category && (
-                      <span 
+                      <span
                         className="absolute top-3 left-3 px-3 py-1 text-white rounded-full font-medium text-xs"
                         style={{ backgroundColor: BRAND_RED }}
                       >
@@ -297,7 +297,7 @@ const HomeMobileBlog = () => {
                     </p>
 
                     {/* Read More Button */}
-                    <div 
+                    <div
                       className="inline-flex items-center gap-2 font-bold text-sm group-hover:gap-3 transition-all duration-300"
                       style={{ color: BRAND_RED }}
                     >
@@ -325,7 +325,7 @@ const HomeMobileBlog = () => {
         </div>
 
         {/* View All Blogs Button */}
-        <motion.div 
+        <motion.div
           className="text-center mt-8"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -333,10 +333,10 @@ const HomeMobileBlog = () => {
           transition={{ duration: 0.5, delay: 0.4 }}
         >
           <Link to="/blog/">
-            <motion.button 
+            <motion.button
               className="inline-flex items-center gap-3 px-6 py-3 text-white font-bold rounded-full shadow-lg transition-all duration-300 text-sm"
               style={{ backgroundColor: BRAND_RED }}
-              whileHover={{ 
+              whileHover={{
                 scale: 1.05,
                 boxShadow: "0 20px 25px -5px rgba(230, 57, 70, 0.3), 0 10px 10px -5px rgba(230, 57, 70, 0.2)"
               }}

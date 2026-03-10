@@ -29,6 +29,7 @@ const ModernBlogView = () => {
   const [isCountryDropdownOpen, setIsCountryDropdownOpen] = useState(false);
   const [activeHeading, setActiveHeading] = useState(null);
   const [blogCategories, setBlogCategories] = useState([]);
+  const [tableBlocks, setTableBlocks] = useState([]);
   const countryDropdownRef = useRef(null);
   const { id, slug } = useParams();
 
@@ -350,7 +351,7 @@ const ModernBlogView = () => {
     return tempDiv.innerHTML;
   };
 
-  
+
 
   // Fetch blog data
   useEffect(() => {
@@ -364,12 +365,12 @@ const ModernBlogView = () => {
         // Determine if the parameter is a slug or ID
         let isSlug = false;
         let isId = false;
-        
+
         if (slug) {
           // Check if slug looks like a MongoDB ObjectId (24 hex chars)
           isSlug = !/^[0-9a-fA-F]{24}$/.test(slug);
         }
-        
+
         if (id) {
           // Check if id looks like a MongoDB ObjectId
           isId = /^[0-9a-fA-F]{24}$/.test(id);
@@ -402,11 +403,12 @@ const ModernBlogView = () => {
 
         const b = response?.data?.data;
         console.log('Blog response:', b);
-        
+
         if (b) {
           setData(b);
           setHeadings(extractHeadings(b.blog_Content || b.blog_Description));
-          
+          setTableBlocks(Array.isArray(b.tableBlocks) ? b.tableBlocks : []);
+
           // Check if schema exists
           if (b.schema) {
             console.log('Schema found:', b.schema);
@@ -457,15 +459,15 @@ const ModernBlogView = () => {
         let page = 1;
         const limit = 100;
         let hasMore = true;
-        
+
         while (hasMore) {
           const response = await api.get('blog/view', {
             params: { page, limit }
           });
-          
+
           if (response.data?.data && response.data.data.length > 0) {
             allBlogs = [...allBlogs, ...response.data.data];
-            
+
             // If we got less than limit, we're done
             if (response.data.data.length < limit) {
               hasMore = false;
@@ -491,7 +493,7 @@ const ModernBlogView = () => {
         const categoriesWithCounts = Object.entries(categoryCounts)
           .map(([name, count]) => ({ name, count }))
           .sort((a, b) => b.count - a.count); // Sort by count descending
-        
+
         setBlogCategories(categoriesWithCounts);
       } catch (error) {
         console.error('Failed to load blog categories:', error);
@@ -636,7 +638,7 @@ const ModernBlogView = () => {
     }
   };
   const blogLink = (blog) => {
-    if (blog?.slug) return `/blog/${blog.slug}`;
+    if (blog?.slug) return `/blog/${blog.slug}/`;
     const slug = (blog.blog_Title || '')
       .toString()
       .toLowerCase()
@@ -645,7 +647,7 @@ const ModernBlogView = () => {
       .replace(/\s+/g, '-')
       .replace(/-+/g, '-')
       .replace(/^-+|-+$/g, '');
-    return `/blog/${slug}/${blog._id}`;
+    return `/blog/${slug}/${blog._id}/`;
   };
 
   const handleEnquirySubmit = async (e) => {
@@ -859,8 +861,8 @@ const ModernBlogView = () => {
       )}
       {/* Blog Schema - Inject as first schema tag */}
       {data?.schema && (
-        <script 
-          type="application/ld+json" 
+        <script
+          type="application/ld+json"
           dangerouslySetInnerHTML={{
             __html: JSON.stringify(data.schema)
           }}
@@ -872,7 +874,7 @@ const ModernBlogView = () => {
         <div className="fixed bottom-4 right-4 bg-gray-900 text-green-400 p-4 rounded-lg max-w-sm max-h-64 overflow-auto text-xs z-50">
           <div className="flex justify-between items-center mb-2">
             <span className="text-white font-bold">Blog Schema Debug</span>
-            <button 
+            <button
               onClick={() => {
                 console.log('Blog Schema:', data.schema);
                 // Also check all schema tags on page
@@ -1059,20 +1061,18 @@ const ModernBlogView = () => {
                             key={heading.id}
                             href={`#${heading.id}`}
                             onClick={(e) => scrollToHeading(e, heading.id)}
-                            className={`flex items-start transition-colors cursor-pointer ${
-                              activeHeading === heading.id
+                            className={`flex items-start transition-colors cursor-pointer ${activeHeading === heading.id
                                 ? 'text-gray-900 font-semibold'
                                 : 'text-gray-700 hover:text-gray-900'
-                            } ${isSubHeading ? 'ml-4' : ''}`}
-                            style={{ 
+                              } ${isSubHeading ? 'ml-4' : ''}`}
+                            style={{
                               fontFamily: "Georgia, 'Times New Roman', Times, serif",
                               fontSize: isSubHeading ? '0.875rem' : '1rem'
                             }}
                             title={heading.text}
                           >
-                            <span className={`flex-shrink-0 mr-3 font-semibold text-gray-900 ${
-                              isSubHeading ? 'text-xs' : ''
-                            }`}>{heading.number}</span>
+                            <span className={`flex-shrink-0 mr-3 font-semibold text-gray-900 ${isSubHeading ? 'text-xs' : ''
+                              }`}>{heading.number}</span>
                             <span className="leading-relaxed hover:underline hover:underline-offset-4 hover:decoration-2 hover:decoration-blue-600">{heading.text}</span>
                           </a>
                         );
@@ -1199,13 +1199,74 @@ const ModernBlogView = () => {
 
           {/* Main Content */}
           <div className="lg:col-span-6">
+            <style>{`
+              .blog-content-area table {
+                width: 100% !important;
+                border-collapse: collapse !important;
+                margin: 20px 0 !important;
+                border: 1px solid #d1d5db !important;
+                display: table !important;
+              }
+              .blog-content-area tr {
+                display: table-row !important;
+                border: 1px solid #d1d5db !important;
+              }
+              .blog-content-area th, .blog-content-area td {
+                border: 1px solid #d1d5db !important;
+                padding: 12px !important;
+                text-align: left !important;
+                display: table-cell !important;
+              }
+              .blog-content-area th {
+                background-color: #f3f4f6 !important;
+                font-weight: bold !important;
+              }
+            `}</style>
             <article className="prose prose-lg max-w-none">
               <div
-                className="text-gray-800 leading-relaxed space-y-6"
+                className="text-gray-800 leading-relaxed space-y-6 blog-content-area"
                 dangerouslySetInnerHTML={{
-                  __html: DOMPurify.sanitize(addHeadingIds(data.blog_Content || data.blog_Description))
+                  __html: DOMPurify.sanitize(addHeadingIds(data.blog_Content || data.blog_Description), {
+                    ADD_TAGS: ['table', 'thead', 'tbody', 'tr', 'th', 'td', 'div', 'h3', 'section', 'figure', 'figcaption'],
+                    ADD_ATTR: ['class', 'id', 'style', 'contenteditable', 'src', 'alt']
+                  })
                 }}
               />
+              
+              {/* Render Table Blocks */}
+              {tableBlocks.length > 0 && (
+                <div className="mt-12 space-y-8">
+                  {tableBlocks.map((block, index) => (
+                    <div key={index} className="overflow-x-auto my-8 shadow-sm border border-gray-200 rounded-xl">
+                      <table className="min-w-full divide-y divide-gray-200">
+                        <thead className="bg-gray-50">
+                          <tr>
+                            {block.rows[0].map((header, hIdx) => (
+                              <th 
+                                key={hIdx} 
+                                className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider border-b border-gray-200"
+                              >
+                                {header}
+                              </th>
+                            ))}
+                          </tr>
+                        </thead>
+                        <tbody className="bg-white divide-y divide-gray-200">
+                          {block.rows.slice(1).map((row, rIdx) => (
+                            <tr key={rIdx} className={rIdx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                              {row.map((cell, cIdx) => (
+                                <td key={cIdx} className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 border-b border-gray-100">
+                                  {cell}
+                                </td>
+                              ))}
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  ))}
+                </div>
+              )}
             </article>
 
             {/* FAQs Section */}
@@ -1291,7 +1352,7 @@ const ModernBlogView = () => {
                     className="block px-2 py-1 text-sm text-gray-700 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
                     style={{ fontFamily: "'Poppins', sans-serif" }}
                   >
-                    Projects in Delhi 
+                    Projects in Delhi
                   </Link>
                   <Link
                     to="/projects-in-noida/"

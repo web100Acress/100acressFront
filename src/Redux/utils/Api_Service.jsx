@@ -595,6 +595,7 @@ const Api_service = () => {
           dispatch(satya(BuilderbyQuery));
           console.log('✅ Satya Group data dispatched to Redux');
           break;
+        case 'bptp limited':
         case 'bptp ltd':
         case 'bptp':
           dispatch(bptp(BuilderbyQuery));
@@ -608,6 +609,7 @@ const Api_service = () => {
         case 'trevoc group':
           dispatch(trevoc(BuilderbyQuery));
           break;
+        case 'indiabulls real estate':
         case 'indiabulls':
           dispatch(indiabulls(BuilderbyQuery));
           break;
@@ -629,18 +631,22 @@ const Api_service = () => {
           dispatch(aipl(BuilderbyQuery));
           break;
         case 'birla estate':
+        case 'birla estates':
           dispatch(birla(BuilderbyQuery));
           break;
         case 'sobha developers':
+        case 'sobha':
           dispatch(sobha(BuilderbyQuery));
           break;
         case 'trump towers':
           dispatch(trump(BuilderbyQuery));
           break;
         case 'puri developers':
+        case 'puri constructions':
           dispatch(puri(BuilderbyQuery));
           break;
         case 'aarize developers':
+        case 'aarize group':
           dispatch(aarize(BuilderbyQuery));
           break;
         case 'max estates':

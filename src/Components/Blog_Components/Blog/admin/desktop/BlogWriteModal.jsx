@@ -1,19 +1,20 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import Quill from 'quill';
 import api from '../../../../../config/apiClient';
-  import ReactQuill from 'react-quill';
+import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
- import ReactCrop from 'react-image-crop';
- import 'react-image-crop/dist/ReactCrop.css';
- import 'quill-emoji/dist/quill-emoji.css';
- import 'quill-emoji';
- import { useParams, useNavigate } from 'react-router-dom';
- import showToast from "../../../../../Utils/toastUtils";
- 
- import {
-   FileText,
-   Image as ImageIcon,
-   Edit3,
+import ReactCrop from 'react-image-crop';
+import 'react-image-crop/dist/ReactCrop.css';
+import 'quill-emoji/dist/quill-emoji.css';
+import 'quill-emoji';
+import { useParams, useNavigate } from 'react-router-dom';
+import showToast from "../../../../../Utils/toastUtils";
+import TableBuilder from './TableBuilder';
+
+import {
+  FileText,
+  Image as ImageIcon,
+  Edit3,
   Save,
   Upload,
   UploadCloud,
@@ -29,17 +30,17 @@ import 'react-quill/dist/quill.snow.css';
   History,
   Maximize2,
   Minimize2
- } from 'lucide-react';
+} from 'lucide-react';
 
- const initialCategories = [
+const initialCategories = [
   'News',
-  'Lifestyle', 
+  'Lifestyle',
   'Finance',
   'Policies'
- ];
+];
 
- /** slugify helper */
- const slugify = (text = '') =>
+/** slugify helper */
+const slugify = (text = '') =>
   text
     .toString()
     .toLowerCase()
@@ -49,7 +50,7 @@ import 'react-quill/dist/quill.snow.css';
     .replace(/^-+|-+$/g, '')
     .slice(0, 100);
 
- const BlogWriteModal = () => {
+const BlogWriteModal = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   // Auth is handled by the shared axios client interceptor
@@ -96,10 +97,15 @@ import 'react-quill/dist/quill.snow.css';
   const [autoSuggestEnabled, setAutoSuggestEnabled] = useState(true);
   const [suggestedProjects, setSuggestedProjects] = useState([]);
   const [contentKeywords, setContentKeywords] = useState([]);
-  
+
   // FAQ state (no UI changes)
   const [enableFAQ, setEnableFAQ] = useState(false);
   const [faqs, setFaqs] = useState([{ question: '', answer: '' }]);
+
+  // Table blocks state for JSON table storage
+  const [tableBlocks, setTableBlocks] = useState([]);
+  const [showTableBuilder, setShowTableBuilder] = useState(false);
+  const [currentTableData, setCurrentTableData] = useState(null);
 
   // Schema/Structured Data state
   const [enableSchema, setEnableSchema] = useState(false);
@@ -127,14 +133,14 @@ import 'react-quill/dist/quill.snow.css';
   // Helper to generate schema/structured data
   const generateSchema = () => {
     if (!enableSchema) return null;
-    
+
     // Dynamic values from blog data
     const currentDate = new Date();
     const dynamicDescription = metaDescription || description.replace(/<[^>]*>/g, '').substring(0, 160);
     const dynamicTitle = title || 'Untitled Blog';
     const dynamicAuthor = author || '100acress.com';
     const dynamicImage = frontImagePreview || '';
-    
+
     const baseSchema = {
       "@context": "https://schema.org",
       "@type": schemaType,
@@ -177,8 +183,8 @@ import 'react-quill/dist/quill.snow.css';
     }
 
     if (slug) {
-      baseSchema.url = `https://www.100acress.com/blog/${slug}`;
-      baseSchema.identifier = `https://www.100acress.com/blog/${slug}`;
+      baseSchema.url = `https://www.100acress.com/blog/${slug}/`;
+      baseSchema.identifier = `https://www.100acress.com/blog/${slug}/`;
     } else if (id) {
       baseSchema.url = `https://www.100acress.com/blog/view/${id}`;
       baseSchema.identifier = `https://www.100acress.com/blog/view/${id}`;
@@ -251,7 +257,7 @@ import 'react-quill/dist/quill.snow.css';
       formData.append('enableSchema', enableSchema);
       formData.append('schemaType', schemaType);
       formData.append('schema', JSON.stringify(schemaData));
-      
+
       // Add required fields
       formData.append('blog_Title', title || 'Schema Update');
       formData.append('blog_Description', description || 'Schema Update');
@@ -265,16 +271,16 @@ import 'react-quill/dist/quill.snow.css';
 
       console.log('Sending API request to:', `/blog/update/${id}`);
       const response = await api.put(`/blog/update/${id}`, formData);
-      
+
       console.log('API Response:', response);
       console.log('Response status:', response.status);
       console.log('Response data:', response.data);
-      
+
       if (response.status === 200) {
         setSchemaLastSaved(new Date());
         console.log('Schema manually saved successfully!');
         showToast.success('Schema saved to backend successfully!');
-        
+
         // Refresh blog data to verify
         setTimeout(() => {
           console.log('Refreshing page to verify schema...');
@@ -324,16 +330,20 @@ import 'react-quill/dist/quill.snow.css';
       return '';
     } catch { return ''; }
   };
-  
+
   // Initialize Quill instance
   const handleQuillChange = (content/*, delta, source, editor */) => {
-    setDescription(content);
+    // If the content change was just normal typing, update state
+    // Don't update if we are in the middle of a submission finalization
+    if (!isSubmitting) {
+      setDescription(content);
+    }
     // Always cache the real Quill instance from the ref (editor param is UnprivilegedEditor)
     try {
       if (quillRef.current && typeof quillRef.current.getEditor === 'function') {
         quillInstance.current = quillRef.current.getEditor();
       }
-    } catch {}
+    } catch { }
   };
 
   // Drag & Drop Featured Image
@@ -351,17 +361,17 @@ import 'react-quill/dist/quill.snow.css';
     }
   };
   const onFeaturedDragOver = (e) => { e.preventDefault(); };
-  
+
   // Safe accessor for Quill instance
   const safeGetQuill = () => {
     try {
       if (quillRef.current && typeof quillRef.current.getEditor === 'function') {
         return quillRef.current.getEditor();
       }
-    } catch {}
+    } catch { }
     return quillInstance.current || null;
   };
-  
+
   // Lightbox & preview helpers
   const [lightboxUrl, setLightboxUrl] = useState('');
   const [frontPreviewObjUrl, setFrontPreviewObjUrl] = useState('');
@@ -451,7 +461,7 @@ import 'react-quill/dist/quill.snow.css';
         formData.append('enableSchema', enableSchema);
         formData.append('schemaType', schemaType);
         formData.append('schema', JSON.stringify(schemaData));
-        
+
         // Add minimal required fields to avoid validation errors
         if (!title) formData.append('blog_Title', 'Auto-saving schema...');
         if (!description) formData.append('blog_Description', 'Auto-saving schema...');
@@ -465,10 +475,10 @@ import 'react-quill/dist/quill.snow.css';
 
         console.log('Auto-saving to endpoint:', `/blog/update/${id}`);
         const response = await api.put(`/blog/update/${id}`, formData);
-        
+
         console.log('Auto-save Response:', response);
         console.log('Auto-save Status:', response.status);
-        
+
         setSchemaLastSaved(new Date());
         console.log('Schema auto-saved to backend via main endpoint');
         showToast.success('Schema auto-saved successfully!');
@@ -496,7 +506,7 @@ import 'react-quill/dist/quill.snow.css';
 
   // Register extra fonts in Quill
   const fontWhitelist = [
-    'inter','roboto','poppins','montserrat','lato','open-sans','raleway','nunito','merriweather','playfair','source-sans','ubuntu','work-sans','rubik','mulish','josefin','quicksand','dm-sans','pt-serif','arimo'
+    'inter', 'roboto', 'poppins', 'montserrat', 'lato', 'open-sans', 'raleway', 'nunito', 'merriweather', 'playfair', 'source-sans', 'ubuntu', 'work-sans', 'rubik', 'mulish', 'josefin', 'quicksand', 'dm-sans', 'pt-serif', 'arimo'
   ];
   const Font = Quill.import('formats/font');
   Font.whitelist = fontWhitelist;
@@ -528,81 +538,81 @@ import 'react-quill/dist/quill.snow.css';
       const details = {};
 
       // Title length
-      if (title.length >= 30 && title.length <= 65) { score += 10; details.title = 'Good'; insights.push({severity:'good', text:`Title length is optimal (${title.length} chars)`, section:'Title'}); }
-      else if (title.length > 0) { score += 6; details.title = 'Ok'; insights.push({severity:'warn', text:`Title length ${title.length}. Aim for 30–65 chars.`, section:'Title'}); }
-      else { insights.push({severity:'error', text:'Title is missing', section:'Title'}); }
+      if (title.length >= 30 && title.length <= 65) { score += 10; details.title = 'Good'; insights.push({ severity: 'good', text: `Title length is optimal (${title.length} chars)`, section: 'Title' }); }
+      else if (title.length > 0) { score += 6; details.title = 'Ok'; insights.push({ severity: 'warn', text: `Title length ${title.length}. Aim for 30–65 chars.`, section: 'Title' }); }
+      else { insights.push({ severity: 'error', text: 'Title is missing', section: 'Title' }); }
 
       // Meta Title presence (using same metaTitle as title if needed)
-      if (metaTitle && metaTitle.length) { score += 4; insights.push({severity:'good', text:'Meta title present', section:'Meta'}); }
-      else insights.push({severity:'warn', text:'Meta title missing (recommended)', section:'Meta'});
+      if (metaTitle && metaTitle.length) { score += 4; insights.push({ severity: 'good', text: 'Meta title present', section: 'Meta' }); }
+      else insights.push({ severity: 'warn', text: 'Meta title missing (recommended)', section: 'Meta' });
 
       // Meta Description length
-      if (metaDescription.length >= 120 && metaDescription.length <= 165) { score += 14; details.meta = 'Optimal'; insights.push({severity:'good', text:`Meta description optimal (${metaDescription.length}/160)`, section:'Meta'}); }
-      else if (metaDescription.length >= 80) { score += 9; details.meta = 'Ok'; insights.push({severity:'warn', text:`Meta description ${metaDescription.length}. Aim for 120–165 chars.`, section:'Meta'}); }
-      else { insights.push({severity:'error', text:'Meta description too short or missing', section:'Meta'}); }
+      if (metaDescription.length >= 120 && metaDescription.length <= 165) { score += 14; details.meta = 'Optimal'; insights.push({ severity: 'good', text: `Meta description optimal (${metaDescription.length}/160)`, section: 'Meta' }); }
+      else if (metaDescription.length >= 80) { score += 9; details.meta = 'Ok'; insights.push({ severity: 'warn', text: `Meta description ${metaDescription.length}. Aim for 120–165 chars.`, section: 'Meta' }); }
+      else { insights.push({ severity: 'error', text: 'Meta description too short or missing', section: 'Meta' }); }
 
       // Slug
       if (slug && slugAvailable !== false) { score += 6; details.slug = 'Ok'; }
-      else insights.push({severity:'error', text:'Slug is invalid or taken', section:'Slug'});
+      else insights.push({ severity: 'error', text: 'Slug is invalid or taken', section: 'Slug' });
 
       // Headings
-      if (h1s.length === 1) { score += 8; details.h1 = '1 H1'; insights.push({severity:'good', text:'Exactly one H1 found', section:'Headings'}); }
-      else if (h1s.length > 1) { score += 3; insights.push({severity:'warn', text:`${h1s.length} H1s found. Use only one.`, section:'Headings'}); }
-      else { insights.push({severity:'warn', text:'No H1 found. Add a primary heading.', section:'Headings'}); }
-      if (h2s.length >= 2) { score += 6; details.h2 = 'Has H2s'; insights.push({severity:'good', text:`${h2s.length} H2s found`, section:'Headings'}); }
-      else { insights.push({severity:'warn', text:'Add at least two H2 subheadings', section:'Headings'}); }
+      if (h1s.length === 1) { score += 8; details.h1 = '1 H1'; insights.push({ severity: 'good', text: 'Exactly one H1 found', section: 'Headings' }); }
+      else if (h1s.length > 1) { score += 3; insights.push({ severity: 'warn', text: `${h1s.length} H1s found. Use only one.`, section: 'Headings' }); }
+      else { insights.push({ severity: 'warn', text: 'No H1 found. Add a primary heading.', section: 'Headings' }); }
+      if (h2s.length >= 2) { score += 6; details.h2 = 'Has H2s'; insights.push({ severity: 'good', text: `${h2s.length} H2s found`, section: 'Headings' }); }
+      else { insights.push({ severity: 'warn', text: 'Add at least two H2 subheadings', section: 'Headings' }); }
 
       // Content length
-      if (wordCount >= 1000) { score += 14; details.length = '1000+'; insights.push({severity:'good', text:`Strong content length (${wordCount} words)`, section:'Content'}); }
-      else if (wordCount >= 600) { score += 10; details.length = '600+'; insights.push({severity:'good', text:`Good content length (${wordCount} words)`, section:'Content'}); }
-      else if (wordCount >= 300) { score += 6; details.length = '300+'; insights.push({severity:'warn', text:`Consider writing more content (currently ${wordCount} words)`, section:'Content'}); }
-      else { insights.push({severity:'error', text:'Very low content length (<300 words)', section:'Content'}); }
+      if (wordCount >= 1000) { score += 14; details.length = '1000+'; insights.push({ severity: 'good', text: `Strong content length (${wordCount} words)`, section: 'Content' }); }
+      else if (wordCount >= 600) { score += 10; details.length = '600+'; insights.push({ severity: 'good', text: `Good content length (${wordCount} words)`, section: 'Content' }); }
+      else if (wordCount >= 300) { score += 6; details.length = '300+'; insights.push({ severity: 'warn', text: `Consider writing more content (currently ${wordCount} words)`, section: 'Content' }); }
+      else { insights.push({ severity: 'error', text: 'Very low content length (<300 words)', section: 'Content' }); }
 
       // Readability (avg sentence length)
       const sentences = textNorm.split(/[.!?]+\s/).filter(Boolean);
       const avgWords = sentences.length ? Math.round(wordCount / sentences.length) : 0;
-      if (avgWords >= 10 && avgWords <= 24) { score += 10; details.readability = 'Good'; insights.push({severity:'good', text:`Readable sentence length (avg ${avgWords} words)`, section:'Readability'}); }
-      else if (avgWords > 0) { score += 5; details.readability = 'Ok'; insights.push({severity:'warn', text:`Average sentence length ${avgWords}. Aim for 10–24.`, section:'Readability'}); }
+      if (avgWords >= 10 && avgWords <= 24) { score += 10; details.readability = 'Good'; insights.push({ severity: 'good', text: `Readable sentence length (avg ${avgWords} words)`, section: 'Readability' }); }
+      else if (avgWords > 0) { score += 5; details.readability = 'Ok'; insights.push({ severity: 'warn', text: `Average sentence length ${avgWords}. Aim for 10–24.`, section: 'Readability' }); }
 
       // Images: count + alt attributes (content images)
-      if (imgs.length > 0) { score += 4; insights.push({severity:'good', text:`${imgs.length} images in content`, section:'Images'}); }
+      if (imgs.length > 0) { score += 4; insights.push({ severity: 'good', text: `${imgs.length} images in content`, section: 'Images' }); }
       const missingAlt = imgs.filter(im => !(im.getAttribute('alt') || '').trim()).length;
-      if (missingAlt > 0) insights.push({severity:'warn', text:`${missingAlt}/${imgs.length} images missing alt text`, section:'Images'});
+      if (missingAlt > 0) insights.push({ severity: 'warn', text: `${missingAlt}/${imgs.length} images missing alt text`, section: 'Images' });
       // Width/height attributes hint
       const missingDims = imgs.filter(im => !im.getAttribute('width') || !im.getAttribute('height')).length;
-      if (missingDims > 0) insights.push({severity:'warn', text:`${missingDims}/${imgs.length} images missing width/height attributes (CLS hint)`, section:'Images'});
+      if (missingDims > 0) insights.push({ severity: 'warn', text: `${missingDims}/${imgs.length} images missing width/height attributes (CLS hint)`, section: 'Images' });
       // Featured image presence
-      if (frontImagePreview) { score += 4; insights.push({severity:'good', text:'Featured image set', section:'Images'}); }
+      if (frontImagePreview) { score += 4; insights.push({ severity: 'good', text: 'Featured image set', section: 'Images' }); }
 
       // Links: internal/external
       const linkCount = links.length;
-      if (linkCount === 0) insights.push({severity:'warn', text:'No links in content. Add internal/external references.', section:'Links'});
-      else if (linkCount < 3) insights.push({severity:'warn', text:`Only ${linkCount} link(s) found. Consider adding more.`, section:'Links'});
-      else { score += 4; insights.push({severity:'good', text:`Good linking (${linkCount} links)`, section:'Links'}); }
+      if (linkCount === 0) insights.push({ severity: 'warn', text: 'No links in content. Add internal/external references.', section: 'Links' });
+      else if (linkCount < 3) insights.push({ severity: 'warn', text: `Only ${linkCount} link(s) found. Consider adding more.`, section: 'Links' });
+      else { score += 4; insights.push({ severity: 'good', text: `Good linking (${linkCount} links)`, section: 'Links' }); }
 
       // FAQs quality
       if (enableFAQ) {
-        const validFaqs = (faqs || []).filter(f => (f.question||'').trim() && (f.answer||'').trim());
-        if (validFaqs.length >= 2) { score += 6; insights.push({severity:'good', text:`${validFaqs.length} valid FAQs`, section:'FAQ'}); }
-        else insights.push({severity:'warn', text:'Add at least 2 well-formed FAQs (Q & A)', section:'FAQ'});
+        const validFaqs = (faqs || []).filter(f => (f.question || '').trim() && (f.answer || '').trim());
+        if (validFaqs.length >= 2) { score += 6; insights.push({ severity: 'good', text: `${validFaqs.length} valid FAQs`, section: 'FAQ' }); }
+        else insights.push({ severity: 'warn', text: 'Add at least 2 well-formed FAQs (Q & A)', section: 'FAQ' });
       }
 
       // Keyword presence in H1/H2/intro/alt
       const kMain = titleKeywords[0];
       if (kMain) {
         const intro = textNorm.slice(0, 150).toLowerCase();
-        const hasKInH1 = h1s.some(h => (h.textContent||'').toLowerCase().includes(kMain));
-        const hasKInH2 = h2s.some(h => (h.textContent||'').toLowerCase().includes(kMain));
+        const hasKInH1 = h1s.some(h => (h.textContent || '').toLowerCase().includes(kMain));
+        const hasKInH2 = h2s.some(h => (h.textContent || '').toLowerCase().includes(kMain));
         const hasKInIntro = intro.includes(kMain);
-        const hasKInAlts = imgs.some(im => (im.getAttribute('alt')||'').toLowerCase().includes(kMain));
+        const hasKInAlts = imgs.some(im => (im.getAttribute('alt') || '').toLowerCase().includes(kMain));
         let kwScore = 0;
         if (hasKInH1) kwScore += 3;
         if (hasKInH2) kwScore += 2;
         if (hasKInIntro) kwScore += 3;
         if (hasKInAlts) kwScore += 2;
         score += kwScore;
-        if (kwScore >= 6) insights.push({severity:'good', text:`Primary keyword appears in key places (H1/H2/intro/images)`, section:'Keywords'});
-        else insights.push({severity:'warn', text:`Use primary keyword in H1/H2/intro/image alts for better relevance`, section:'Keywords'});
+        if (kwScore >= 6) insights.push({ severity: 'good', text: `Primary keyword appears in key places (H1/H2/intro/images)`, section: 'Keywords' });
+        else insights.push({ severity: 'warn', text: `Use primary keyword in H1/H2/intro/image alts for better relevance`, section: 'Keywords' });
       }
 
       // Cap to 100 and set color/label
@@ -632,18 +642,18 @@ import 'react-quill/dist/quill.snow.css';
     const diversity = unique.size / tokenCount; // lower -> more AI-like
     const sentences = plain.split(/[.!?]+\s/).filter(Boolean);
     const lens = sentences.map(s => s.split(/\s+/).filter(Boolean).length);
-    const avg = lens.reduce((a,b)=>a+b,0) / (lens.length || 1);
-    const variance = lens.reduce((a,b)=>a + Math.pow(b-avg,2), 0) / (lens.length || 1);
+    const avg = lens.reduce((a, b) => a + b, 0) / (lens.length || 1);
+    const variance = lens.reduce((a, b) => a + Math.pow(b - avg, 2), 0) / (lens.length || 1);
     const burstiness = Math.sqrt(variance); // lower -> more uniform -> AI-like
     // Function words ratio
-    const functionWords = new Set(['the','is','are','was','were','of','and','to','in','for','with','on','that','this','as','by','at','from','it','an','a','or','be','can','will','has','have']);
+    const functionWords = new Set(['the', 'is', 'are', 'was', 'were', 'of', 'and', 'to', 'in', 'for', 'with', 'on', 'that', 'this', 'as', 'by', 'at', 'from', 'it', 'an', 'a', 'or', 'be', 'can', 'will', 'has', 'have']);
     const funcCount = tokens.filter(t => functionWords.has(t)).length;
     const funcRatio = funcCount / (tokenCount || 1);
     // Repetition via bigram frequency
     const bigrams = [];
-    for (let i=0;i<tokens.length-1;i++) bigrams.push(tokens[i] + ' ' + tokens[i+1]);
+    for (let i = 0; i < tokens.length - 1; i++) bigrams.push(tokens[i] + ' ' + tokens[i + 1]);
     const bgFreq = new Map();
-    for (const bg of bigrams) bgFreq.set(bg, (bgFreq.get(bg)||0)+1);
+    for (const bg of bigrams) bgFreq.set(bg, (bgFreq.get(bg) || 0) + 1);
     const maxBg = Math.max(0, ...Array.from(bgFreq.values()));
     // Punctuation variety (more variety tends to human)
     const puncts = (description.match(/[,:;()\-—]/g) || []).length;
@@ -669,7 +679,7 @@ import 'react-quill/dist/quill.snow.css';
     signals.push({ label: 'Avg sentence length', value: Math.round(avg), hint: avg >= 14 ? 'Longer sentences' : 'Short sentences' });
     signals.push({ label: 'Sentence burstiness', value: burstiness.toFixed(1), hint: burstiness <= 6 ? 'Uniform (AI-like)' : 'Varied (human-like)' });
     signals.push({ label: 'Max bigram freq', value: maxBg, hint: maxBg >= 4 ? 'Repetitive phrases' : 'OK' });
-    signals.push({ label: 'Function word ratio', value: (funcRatio*100).toFixed(1)+'%', hint: funcRatio >= 0.28 ? 'High (generic style)' : 'OK' });
+    signals.push({ label: 'Function word ratio', value: (funcRatio * 100).toFixed(1) + '%', hint: funcRatio >= 0.28 ? 'High (generic style)' : 'OK' });
     setAiSignals(signals);
   }, [title, description]);
 
@@ -695,10 +705,10 @@ import 'react-quill/dist/quill.snow.css';
         setPlagLoading(true);
         setPlagError('');
         // build shingles for current text
-        const toShingles = (t, n=3) => {
+        const toShingles = (t, n = 3) => {
           const tokens = t.split(/[^a-z0-9]+/).filter(Boolean).slice(0, 1200);
           const out = new Set();
-          for (let i=0;i<=tokens.length-n;i++) out.add(tokens.slice(i,i+n).join(' '));
+          for (let i = 0; i <= tokens.length - n; i++) out.add(tokens.slice(i, i + n).join(' '));
           return out;
         };
         const curSet = toShingles(text, 3);
@@ -713,7 +723,7 @@ import 'react-quill/dist/quill.snow.css';
         const topTokens = Array.from(curSet).slice(0, 50); // sample shingles
         const quickHas = (s) => {
           let c = 0;
-          for (let i=0;i<topTokens.length;i+=5) { // stride to reduce ops
+          for (let i = 0; i < topTokens.length; i += 5) { // stride to reduce ops
             if (s.includes(topTokens[i])) c++;
             if (c >= 2) return true;
           }
@@ -736,12 +746,12 @@ import 'react-quill/dist/quill.snow.css';
             matches.push({ id: b.id, title: b.title, slug: b.slug, score: sim });
           }
         }
-        matches.sort((a,b)=>b.score-a.score);
+        matches.sort((a, b) => b.score - a.score);
         const top = matches.slice(0, 5);
         const best = top[0]?.score || 0;
         if (!cancel) {
-          setPlagMatches(top.map(x => ({...x, percent: Math.round(x.score*100)})));
-          setPlagScore(Math.round(best*100));
+          setPlagMatches(top.map(x => ({ ...x, percent: Math.round(x.score * 100) })));
+          setPlagScore(Math.round(best * 100));
         }
       } catch (err) {
         if (!cancel) {
@@ -826,17 +836,54 @@ import 'react-quill/dist/quill.snow.css';
             // map SEO fields if your backend returns them with these keys
             setMetaTitle(b.metaTitle || '');
             setMetaDescription(b.metaDescription || '');
-            setSlug(b.slug || slugify(b.blog_Title || ''));
-            
+            // If blog has a saved slug, mark as touched so auto-slug doesn't overwrite it
+            if (b.slug) {
+              setSlugTouched(true);
+              setSlug(b.slug);
+            } else {
+              setSlug(slugify(b.blog_Title || ''));
+            }
+
             // Load related projects if they exist
             setRelatedProjects(Array.isArray(b.relatedProjects) ? b.relatedProjects : []);
-            
+
             // Load FAQs
             setEnableFAQ(!!b.enableFAQ);
             setFaqs(Array.isArray(b.faqs) && b.faqs.length
               ? b.faqs.map(x => ({ question: x.question || '', answer: x.answer || '' }))
-              : [{ question: '', answer: '' }]
-            );
+              : [{ question: '', answer: '' }]);
+
+            // Load Table Blocks
+            setTableBlocks(Array.isArray(b.tableBlocks) ? b.tableBlocks : []);
+
+            // Load Table Data from dedicated field if available
+            if (b.tableData) {
+              try {
+                const parsed = JSON.parse(b.tableData);
+                setCurrentTableData(parsed);
+                setShowTableBuilder(true);
+                // The placeholder should be in the description already if saved correctly
+              } catch (e) {
+                console.error("Failed to parse tableData field:", e);
+              }
+            } else if (b.blog_Description && b.blog_Description.includes('<table')) {
+              // Fallback to recovery from HTML metadata
+              const tempDiv = document.createElement('div');
+              tempDiv.innerHTML = b.blog_Description;
+              const table = tempDiv.querySelector('table');
+              if (table) {
+                const configData = table.getAttribute('data-table-config');
+                if (configData) {
+                  try {
+                    const parsed = JSON.parse(decodeURIComponent(configData));
+                    setCurrentTableData(parsed);
+                    setShowTableBuilder(true);
+                  } catch (e) {
+                    console.error("Failed to recover table from attribute:", e);
+                  }
+                }
+              }
+            }
 
             // Load Schema/Structured Data
             setEnableSchema(!!b.enableSchema);
@@ -855,6 +902,40 @@ import 'react-quill/dist/quill.snow.css';
               }
             } else {
               setCustomSchema('');
+            }
+
+            // Extract table data if it exists in description
+            if (b.blog_Description && b.blog_Description.includes('<table')) {
+              const tempDiv = document.createElement('div');
+              tempDiv.innerHTML = b.blog_Description;
+              const table = tempDiv.querySelector('table');
+              
+              if (table) {
+                // Try to get data from metadata first
+                const configData = table.getAttribute('data-table-config');
+                if (configData) {
+                  try {
+                    const parsed = JSON.parse(decodeURIComponent(configData));
+                    setCurrentTableData(parsed);
+                    setShowTableBuilder(true);
+                  } catch (e) {
+                    console.error("Failed to parse table config:", e);
+                  }
+                } else {
+                  // Fallback to manual extraction
+                  const heading = tempDiv.querySelector('h3')?.textContent || '';
+                  const rows = Array.from(table.querySelectorAll('tr')).map(tr => 
+                    Array.from(tr.querySelectorAll('th, td')).map(td => td.textContent)
+                  );
+                  setCurrentTableData({ heading, rows });
+                  setShowTableBuilder(true);
+                }
+                
+                // Replace table with placeholder for editing
+                const placeholder = `[TABLE_PLACEHOLDER_${Date.now()}]`;
+                const cleanContent = b.blog_Description.replace(/<div class="my-6 overflow-x-auto table-wrapper">[\s\S]*?<\/div>/, `<p>${placeholder}</p>`);
+                setDescription(cleanContent);
+              }
             }
           } else {
             console.log('Blog not found');
@@ -881,7 +962,7 @@ import 'react-quill/dist/quill.snow.css';
       }
     };
 
-  
+
     fetchBlog();
   }, [id]);
 
@@ -892,7 +973,7 @@ import 'react-quill/dist/quill.snow.css';
       setHasRestorable(!!raw);
       const histRaw = localStorage.getItem(historyKey);
       if (histRaw) setHistoryList(JSON.parse(histRaw));
-    } catch {}
+    } catch { }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -900,11 +981,12 @@ import 'react-quill/dist/quill.snow.css';
   useEffect(() => {
     const t = setTimeout(() => {
       try {
+        const finalContentForDraft = finalizeContent(description);
         const snapshot = {
           ts: Date.now(),
-          title, description, frontImagePreview, categories,
+          title, description: finalContentForDraft, frontImagePreview, categories,
           metaTitle, metaDescription, slug, relatedProjects, enableFAQ, faqs,
-          author
+          author, tableBlocks
         };
         localStorage.setItem(draftKey, JSON.stringify(snapshot));
         // Append to history (max 10)
@@ -914,10 +996,10 @@ import 'react-quill/dist/quill.snow.css';
         localStorage.setItem(historyKey, JSON.stringify(hist));
         setHistoryList(hist);
         setHasRestorable(true);
-      } catch {}
+      } catch { }
     }, 1200);
     return () => clearTimeout(t);
-  }, [draftKey, historyKey, title, description, frontImagePreview, categories, metaTitle, metaDescription, slug, relatedProjects, enableFAQ, faqs, author]);
+  }, [draftKey, historyKey, title, description, frontImagePreview, categories, metaTitle, metaDescription, slug, relatedProjects, enableFAQ, faqs, author, tableBlocks]);
 
   // Convert the next 4 standalone images (from cursor) into a grid with inline styles
   const convertNextImagesToGrid = () => {
@@ -948,7 +1030,7 @@ import 'react-quill/dist/quill.snow.css';
     const imgStyle = `width:100%;height:${gridSizeToPx[gridImgSize]}px;object-fit:cover;display:block;`;
     const capStyle = 'padding:8px 10px;font-size:14px;color:#111;text-align:center;';
     const cards = urls.map((u, idx) => gridWithTitles
-      ? `<figure class=\"grid-card\" style=\"${cardStyle}\"><img style=\"${imgStyle}\" src=\"${u}\" alt=\"\" /><figcaption style=\"${capStyle}\" contenteditable=\"true\">Title ${idx+1}</figcaption></figure>`
+      ? `<figure class=\"grid-card\" style=\"${cardStyle}\"><img style=\"${imgStyle}\" src=\"${u}\" alt=\"\" /><figcaption style=\"${capStyle}\" contenteditable=\"true\">Title ${idx + 1}</figcaption></figure>`
       : `<figure class=\"grid-card\" style=\"${cardStyle}\"><img style=\"${imgStyle}\" src=\"${u}\" alt=\"\" /></figure>`
     ).join('');
     const gridCols = gridLayout === 'lastLarge' ? '1fr 1fr 1fr 1.6fr' : 'repeat(4, 1fr)';
@@ -1039,7 +1121,7 @@ import 'react-quill/dist/quill.snow.css';
         return showToast.warning('Please select a crop area');
       }
       showToast.loading('Uploading cropped image...', { id: 'cropUpload' });
-      
+
       // Get the cropped blob
       const blob = await getCroppedBlob();
       const filename = (rawImageFile?.name || 'image.png').replace(/\.[^.]*$/, '') + '-cropped.png';
@@ -1060,13 +1142,13 @@ import 'react-quill/dist/quill.snow.css';
 
       try {
         const res = await api.post(`/blog/upload-image`, fd, config);
-        
+
         // Handle different response formats
-        const imageUrl = res?.data?.url || 
-                        res?.data?.data?.url || 
-                        (typeof res?.data === 'string' ? res.data : '') || 
-                        '';
-                        
+        const imageUrl = res?.data?.url ||
+          res?.data?.data?.url ||
+          (typeof res?.data === 'string' ? res.data : '') ||
+          '';
+
         if (!imageUrl) {
           console.error('Unexpected response format:', res?.data);
           throw new Error('Upload succeeded but no URL was returned in the response');
@@ -1207,7 +1289,7 @@ import 'react-quill/dist/quill.snow.css';
     const plain = (description || '').replace(/<[^>]+>/g, ' ').toLowerCase();
     const text = `${title || ''} ${categories || ''} ${plain}`.toLowerCase();
     const tokens = text.split(/[^a-z0-9]+/).filter(Boolean);
-    const stop = new Set(['the','and','for','with','from','that','this','your','you','are','our','was','were','have','has','had','in','on','of','to','a','an','by','is','it','as','or','at','be','can','will','we','us','they','their','them']);
+    const stop = new Set(['the', 'and', 'for', 'with', 'from', 'that', 'this', 'your', 'you', 'are', 'our', 'was', 'were', 'have', 'has', 'had', 'in', 'on', 'of', 'to', 'a', 'an', 'by', 'is', 'it', 'as', 'or', 'at', 'be', 'can', 'will', 'we', 'us', 'they', 'their', 'them']);
     const freq = new Map();
     for (const t of tokens) {
       if (t.length < 3) continue;
@@ -1215,7 +1297,7 @@ import 'react-quill/dist/quill.snow.css';
       freq.set(t, (freq.get(t) || 0) + 1);
     }
     // Sort by frequency and keep top 15
-    const top = Array.from(freq.entries()).sort((a,b) => b[1]-a[1]).slice(0, 15).map(([w]) => w);
+    const top = Array.from(freq.entries()).sort((a, b) => b[1] - a[1]).slice(0, 15).map(([w]) => w);
     setContentKeywords(top);
   }, [title, description, categories]);
 
@@ -1293,7 +1375,7 @@ import 'react-quill/dist/quill.snow.css';
       .filter(p => !selectedSet.has(p.project_url))
       .map(p => ({ p, s: scoreProject(p) }))
       .filter(x => x.s > 0)
-      .sort((a,b) => b.s - a.s)
+      .sort((a, b) => b.s - a.s)
       .slice(0, 10)
       .map(x => x.p);
     setSuggestedProjects(ranked);
@@ -1325,7 +1407,7 @@ import 'react-quill/dist/quill.snow.css';
   const handleImageUrlChange = (e) => {
     const url = e.target.value;
     setFrontImage(url);
-    
+
     // Basic URL validation
     if (url && url.trim() !== '') {
       try {
@@ -1374,37 +1456,37 @@ import 'react-quill/dist/quill.snow.css';
 
     // Check image dimensions and aspect ratio (1200x628 = 300:157)
     const img = new Image();
-    img.onload = function() {
+    img.onload = function () {
       const expectedWidth = 1200;
       const expectedHeight = 628;
       const tolerance = 5; // Allow 5px tolerance
-      
+
       if (Math.abs(this.width - expectedWidth) > tolerance || Math.abs(this.height - expectedHeight) > tolerance) {
         showToast.error(`Image must be exactly ${expectedWidth} × ${expectedHeight} pixels (Current: ${this.width} × ${this.height})`);
         e.target.value = '';
         return;
       }
-      
+
       // Calculate aspect ratio
       const expectedRatio = expectedWidth / expectedHeight;
       const actualRatio = this.width / this.height;
       const ratioTolerance = 0.01; // 1% tolerance
-      
+
       if (Math.abs(actualRatio - expectedRatio) > ratioTolerance) {
         showToast.error(`Image aspect ratio must be ${expectedWidth}:${expectedHeight} (300:157). Current ratio is ${this.width}:${this.height}`);
         e.target.value = '';
         return;
       }
-      
+
       // If all validations pass, proceed with file processing
       processValidFile(file);
     };
-    
-    img.onerror = function() {
+
+    img.onerror = function () {
       showToast.error('Failed to load image. Please try a different file.');
       e.target.value = '';
     };
-    
+
     // Create object URL for validation
     const objUrl = URL.createObjectURL(file);
     img.src = objUrl;
@@ -1418,12 +1500,12 @@ import 'react-quill/dist/quill.snow.css';
 
     // Create object URL for preview
     const objUrl = URL.createObjectURL(file);
-    
+
     // Set states
     setFrontImage(file);
     setFrontPreviewObjUrl(objUrl);
     setFrontImagePreview(objUrl);
-    
+
     // Auto-set meta title from filename if empty
     if (!metaTitle) {
       const fileName = file.name.replace(/\.[^/.]+$/, ''); // Remove extension
@@ -1458,13 +1540,13 @@ import 'react-quill/dist/quill.snow.css';
     input.onchange = async () => {
       const file = input.files?.[0];
       if (!file) return;
-      
+
       // STRICT: Only WebP images allowed
       if (file.type !== 'image/webp') {
         showToast.error('Jab bola hai WebP me karne ko to karona aalsii WebP me karke wapis dalo.');
         return;
       }
-      
+
       // If SVG, bypass cropper to preserve vector quality
       if (file.type === 'image/svg+xml') {
         try {
@@ -1538,6 +1620,73 @@ import 'react-quill/dist/quill.snow.css';
     }
   };
 
+  const handleTableChange = (data) => {
+    console.log("Table data changed in Modal:", data);
+    setCurrentTableData(data);
+    
+    // CRITICAL: Update the description whenever the table changes
+    // This ensures that the finalized content (with the table) is correctly
+    // generated during autosave or submission even if the user hasn't typed in Quill.
+    const quill = safeGetQuill();
+    if (quill) {
+      const currentHTML = quill.root.innerHTML;
+      if (currentHTML.includes('[TABLE_PLACEHOLDER_')) {
+        // Just trigger a state update to ensure components re-render with new table data
+        setDescription(currentHTML);
+      }
+    } else {
+      // Fallback if quill is not available
+      setDescription(prev => prev + ' '); 
+      setTimeout(() => setDescription(prev => prev.trim()), 0);
+    }
+  };
+
+  const generateTableHTML = (data) => {
+    if (!data || !data.rows) return '';
+    console.log("Generating Table HTML for:", data);
+    let html = '<div class="my-6 overflow-x-auto table-wrapper">';
+    if (data.heading) {
+      html += `<h3 class="text-xl font-bold mb-3 table-heading">${data.heading}</h3>`;
+    }
+    html += '<table style="min-width: 100%; border-collapse: collapse; border: 1px solid #d1d5db; margin-bottom: 1rem;">';
+    data.rows.forEach((row, rowIndex) => {
+      html += '<tr>';
+      row.forEach(cell => {
+        if (rowIndex === 0) {
+          html += `<th style="border: 1px solid #d1d5db; padding: 12px; background-color: #f3f4f6; font-weight: bold; text-align: left;">${cell || ''}</th>`;
+        } else {
+          html += `<td style="border: 1px solid #d1d5db; padding: 12px; text-align: left;">${cell || ''}</td>`;
+        }
+      });
+      html += '</tr>';
+    });
+    html += '</table></div>';
+    return html;
+  };
+
+  const finalizeContent = (rawContent) => {
+    if (!rawContent) return '';
+    
+    // Check if there's table data to process
+    // Improved regex to handle various ways the placeholder might be wrapped by Quill (e.g. <p>[...]</p>)
+    const placeholderRegex = /\[TABLE_PLACEHOLDER_\d+\]/;
+    const hasPlaceholder = placeholderRegex.test(rawContent);
+    
+    if (currentTableData && currentTableData.rows && hasPlaceholder) {
+      console.log("Replacing placeholder in real-time...");
+      const tableHTML = generateTableHTML(currentTableData);
+      // Store currentTableData in a data attribute within the HTML 
+      const tableDataJSON = encodeURIComponent(JSON.stringify(currentTableData));
+      const tableWithMetadata = tableHTML.replace('<table ', `<table data-table-config="${tableDataJSON}" `);
+      
+      // Use global replace to catch any duplicates
+      const finalized = rawContent.replace(new RegExp('\\[TABLE_PLACEHOLDER_\\d+\\]', 'g'), tableWithMetadata);
+      return finalized;
+    }
+    
+    return rawContent;
+  };
+
   /** Submit (draft/publish) */
   const handleSubmit = async (e, publishStatus) => {
     const willPublish = publishStatus === true;
@@ -1568,6 +1717,15 @@ import 'react-quill/dist/quill.snow.css';
       return showToast.error('Please select a featured image');
     }
 
+    // Check if table data exists but no placeholder in content
+    if (currentTableData && currentTableData.rows && !description.includes('[TABLE_PLACEHOLDER_')) {
+      console.warn("Table data detected without placeholder. Inserting at end.");
+      const placeholder = `[TABLE_PLACEHOLDER_${Date.now()}]`;
+      const updatedDescription = description + `<p>${placeholder}</p>`;
+      setDescription(updatedDescription);
+      // We'll use the updated content for submission
+    }
+
     // File size validation (10MB limit)
     const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
     if (frontImage && frontImage.size > MAX_FILE_SIZE) {
@@ -1580,10 +1738,24 @@ import 'react-quill/dist/quill.snow.css';
 
     try {
       const formDataAPI = new FormData();
-      
+
       // Basic blog data
       formDataAPI.append('blog_Title', title.trim());
-      formDataAPI.append('blog_Description', description);
+      
+      // CRITICAL: Re-read from Quill root to ensure we have latest content
+      const quill = safeGetQuill();
+      // If we just appended a placeholder because it was missing, description state might be fresher than quill root
+      const currentRaw = quill ? quill.root.innerHTML : description;
+      const latestRawContent = (!currentRaw.includes('[TABLE_PLACEHOLDER_') && description.includes('[TABLE_PLACEHOLDER_')) 
+        ? description 
+        : currentRaw;
+        
+      const finalContent = finalizeContent(latestRawContent);
+      
+      console.log("FINAL CONTENT BEING SENT TO DB:", finalContent);
+      console.log("TABLE DATA BEING SENT:", currentTableData);
+      formDataAPI.append('blog_Description', finalContent);
+      formDataAPI.append('blog_Content', finalContent); // Also send to blog_Content just in case
       formDataAPI.append('blog_Category', categories);
       formDataAPI.append('author', author || 'Admin');
       formDataAPI.append('isPublished', willPublish);
@@ -1597,14 +1769,21 @@ import 'react-quill/dist/quill.snow.css';
       if (relatedProjects.length > 0) {
         formDataAPI.append('relatedProjects', JSON.stringify(relatedProjects));
       }
-      
+
       // FAQs
       formDataAPI.append('enableFAQ', enableFAQ);
       if (faqs && faqs.some(f => (f.question || '').trim() && (f.answer || '').trim())) {
-        const cleaned = faqs
-          .map(f => ({ question: (f.question || '').trim(), answer: (f.answer || '').trim() }))
-          .filter(f => f.question && f.answer);
-        if (cleaned.length) formDataAPI.append('faqs', JSON.stringify(cleaned));
+        formDataAPI.append('faqs', JSON.stringify(faqs.filter(f => (f.question || '').trim() && (f.answer || '').trim())));
+      }
+
+      // Table Blocks (JSON structure)
+      if (tableBlocks.length > 0) {
+        formDataAPI.append('tableBlocks', JSON.stringify(tableBlocks));
+      }
+      
+      // CRITICAL: If we have real-time table builder data, also send it specifically
+      if (currentTableData) {
+        formDataAPI.append('tableData', JSON.stringify(currentTableData));
       }
 
       // Schema/Structured Data
@@ -1624,13 +1803,13 @@ import 'react-quill/dist/quill.snow.css';
           if (frontImage.type !== 'image/webp') {
             throw new Error('Jab bola hai WebP me karne ko to karona aalsii WebP me karke wapis dalo.');
           }
-          
+
           // Validate file size (10MB limit)
           const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
           if (frontImage.size > MAX_FILE_SIZE) {
             throw new Error('File size exceeds 10MB limit. Please choose a smaller image.');
           }
-          
+
           // Process image if needed (compression/resizing)
           let processedFile;
           try {
@@ -1640,7 +1819,7 @@ import 'react-quill/dist/quill.snow.css';
             // Fallback to original file if processing fails
             processedFile = frontImage;
           }
-          
+
           formDataAPI.append('blog_Image', processedFile);
         } catch (fileError) {
           console.error('File processing error:', fileError);
@@ -1648,10 +1827,16 @@ import 'react-quill/dist/quill.snow.css';
         }
       }
 
+      const config = {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token') || ''}`
+        }
+      };
+
       if (blogToEdit) {
         showToast.loading('Updating the blog...', { id: 'updateloading' });
 
-        const res = await api.put(`/blog/update/${blogId}`, formDataAPI);
+        const res = await api.put(`/blog/update/${blogId}`, formDataAPI, config);
 
         showToast.dismiss('updateloading');
         if (res.status === 200) {
@@ -1664,7 +1849,7 @@ import 'react-quill/dist/quill.snow.css';
       } else {
         showToast.loading('Adding New Blog...', { id: 'loadingNewBlog' });
 
-        const res = await api.post(`/blog/insert`, formDataAPI);
+        const res = await api.post(`/blog/insert`, formDataAPI, config);
 
         showToast.dismiss('loadingNewBlog');
         if (res.status === 200) {
@@ -1681,13 +1866,13 @@ import 'react-quill/dist/quill.snow.css';
       showToast.dismiss('loadingNewBlog');
 
       let errorMessage = 'Error saving blog';
-      
+
       // More detailed error handling
       if (error.response) {
         // Server responded with error status code
         const { status, data } = error.response;
         console.error('Server error response:', { status, data });
-        
+
         if (status === 413) {
           errorMessage = 'File too large. Please upload an image smaller than 10MB.';
         } else if (status === 415) {
@@ -1705,7 +1890,7 @@ import 'react-quill/dist/quill.snow.css';
         // Other errors
         errorMessage = error.message;
       }
-      
+
       showToast.error(errorMessage);
     } finally {
       setIsSubmitting(false);
@@ -1733,27 +1918,53 @@ import 'react-quill/dist/quill.snow.css';
     setCollapsedFaqs([false]);
   };
 
+  // Add custom icon to Quill toolbar
+  useEffect(() => {
+    const icon = document.querySelector('.ql-table-icon');
+    if (icon && !icon.innerHTML) {
+      icon.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="3" y1="15" x2="21" y2="15"></line><line x1="9" y1="3" x2="9" y2="21"></line><line x1="15" y1="3" x2="15" y2="21"></line></svg>`;
+    }
+  }, []);
+
   // Quill toolbar config (no default image button; we add our own handlers)
-  const quillModules = {
+  const quillModules = useMemo(() => ({
     toolbar: {
       container: [
         [{ header: [1, 2, 3, 4, false] }],
-        // [{ font: fontWhitelist }],
         [{ size: ['small', false, 'large', 'huge'] }],
         ['bold', 'italic', 'underline', 'strike'],
         [{ color: [] }, { background: [] }],
         [{ list: 'ordered' }, { list: 'bullet' }],
         ['blockquote', 'code-block'],
         ['link', 'emoji'],
+        ['table-icon'],
         [{ align: [] }],
         ['clean'],
       ],
+      handlers: {
+        'table-icon': () => {
+          const quill = safeGetQuill();
+          if (quill) {
+            const range = quill.getSelection(true);
+            const placeholder = `[TABLE_PLACEHOLDER_${Date.now()}]`;
+            // Add extra space around placeholder to ensure it's not merged with other text
+            quill.insertText(range.index, `\n${placeholder}\n`);
+            quill.setSelection(range.index + placeholder.length + 2);
+            
+            // CRITICAL: Immediately update state with the new content containing the placeholder
+            const newHTML = quill.root.innerHTML;
+            console.log("TABLE ICON CLICKED - New HTML with placeholder:", newHTML);
+            setDescription(newHTML);
+            setShowTableBuilder(true);
+          }
+        }
+      }
     },
     clipboard: { matchVisual: false },
     'emoji-toolbar': true,
     'emoji-textarea': false,
     'emoji-shortname': true,
-  };
+  }), []);
 
   // Explicit formats so custom fonts and toolbar options are honored
   const quillFormats = [
@@ -1840,7 +2051,7 @@ import 'react-quill/dist/quill.snow.css';
                 const MAX_DIMENSION = 2000;
                 let width = img.width;
                 let height = img.height;
-                
+
                 if (width > height && width > MAX_DIMENSION) {
                   height = Math.round((height * MAX_DIMENSION) / width);
                   width = MAX_DIMENSION;
@@ -1854,22 +2065,22 @@ import 'react-quill/dist/quill.snow.css';
                 canvas.width = width;
                 canvas.height = height;
                 const ctx = canvas.getContext('2d');
-                
+
                 if (!ctx) {
                   return reject(new Error('Canvas context not available'));
                 }
-                
+
                 // Set canvas properties for better quality
                 ctx.imageSmoothingEnabled = true;
                 ctx.imageSmoothingQuality = 'high';
-                
+
                 // Draw image with new dimensions
                 ctx.drawImage(img, 0, 0, width, height);
-                
+
                 // Convert to blob with quality based on file type
                 let quality = 0.8; // Default quality
                 let outputType = file.type;
-                
+
                 // Adjust quality and type based on file type
                 if (file.type === 'image/jpeg' || file.type === 'image/jpg') {
                   quality = 0.85;
@@ -1885,7 +2096,7 @@ import 'react-quill/dist/quill.snow.css';
                   quality = 0.85;
                   outputType = 'image/jpeg';
                 }
-                
+
                 // Convert to blob
                 canvas.toBlob(
                   (blob) => {
@@ -1893,17 +2104,17 @@ import 'react-quill/dist/quill.snow.css';
                       if (!blob) {
                         return reject(new Error('Canvas to blob conversion failed'));
                       }
-                      
+
                       // Create new file with original name but new content
-                      const fileExtension = outputType === 'image/png' ? '.png' : 
-                                          outputType === 'image/webp' ? '.webp' : '.jpg';
+                      const fileExtension = outputType === 'image/png' ? '.png' :
+                        outputType === 'image/webp' ? '.webp' : '.jpg';
                       const baseName = file.name.replace(/\.[^.]+$/, '');
                       const processedFile = new File(
                         [blob],
                         baseName + fileExtension,
                         { type: outputType }
                       );
-                      
+
                       console.log(`Image compressed from ${(file.size / 1024 / 1024).toFixed(2)}MB to ${(blob.size / 1024 / 1024).toFixed(2)}MB`);
                       resolve(processedFile);
                     } catch (blobError) {
@@ -2186,6 +2397,35 @@ import 'react-quill/dist/quill.snow.css';
 
           /* User-resizable area for the normal editor */
           .editor-resize{ resize: vertical; overflow:auto; min-height:16rem; max-height:75vh; }
+
+          /* Global table styles for blog content */
+          .blog-content-area table {
+            width: 100% !important;
+            border-collapse: collapse !important;
+            margin: 20px 0 !important;
+            border: 1px solid #d1d5db !important;
+            display: table !important;
+          }
+          .blog-content-area thead {
+            display: table-header-group !important;
+          }
+          .blog-content-area tbody {
+            display: table-row-group !important;
+          }
+          .blog-content-area tr {
+            display: table-row !important;
+            border: 1px solid #d1d5db !important;
+          }
+          .blog-content-area th, .blog-content-area td {
+            border: 1px solid #d1d5db !important;
+            padding: 12px !important;
+            text-align: left !important;
+            display: table-cell !important;
+          }
+          .blog-content-area th {
+            background-color: #f3f4f6 !important;
+            font-weight: bold !important;
+          }
         `}</style>
         {/* Top bar: SEO score, preview toggle, restore */}
         <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
@@ -2195,67 +2435,68 @@ import 'react-quill/dist/quill.snow.css';
               {seoScore.score} · {seoScore.label}
             </span>
           </div>
-        {/* Two-column section: left = SEO Insights, right = actions */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
-          <div>
-            {seoInsights?.length > 0 && (
-              <div className="bg-white rounded-xl border border-gray-100 shadow p-4 h-full">
-                <div className="flex items-center justify-between mb-2">
-                  <div className="font-semibold text-gray-900">SEO Insights</div>
-                  <button type="button" className="text-sm text-gray-600 hover:text-gray-800" onClick={()=>setShowSeoDetails(v=>!v)}>
-                    {showSeoDetails ? 'Hide' : 'Show'} details
-                  </button>
+          {/* Two-column section: left = SEO Insights, right = actions */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
+            <div>
+              {seoInsights?.length > 0 && (
+                <div className="bg-white rounded-xl border border-gray-100 shadow p-4 h-full">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="font-semibold text-gray-900">SEO Insights</div>
+                    <button type="button" className="text-sm text-gray-600 hover:text-gray-800" onClick={() => setShowSeoDetails(v => !v)}>
+                      {showSeoDetails ? 'Hide' : 'Show'} details
+                    </button>
+                  </div>
+                  {showSeoDetails && (
+                    <ul className="space-y-1 max-h-56 overflow-auto pr-1">
+                      {seoInsights.map((it, i) => (
+                        <li key={i} className="text-sm flex items-start gap-2">
+                          <span className={`mt-1 inline-block w-2 h-2 rounded-full ${it.severity === 'good' ? 'bg-emerald-500' : it.severity === 'warn' ? 'bg-yellow-500' : 'bg-red-500'}`}></span>
+                          <span className="text-gray-800">
+                            {it.text}
+                            {it.section && <span className="ml-2 text-xs text-gray-500">[{it.section}]</span>}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </div>
-                {showSeoDetails && (
-                  <ul className="space-y-1 max-h-56 overflow-auto pr-1">
-                    {seoInsights.map((it, i) => (
-                      <li key={i} className="text-sm flex items-start gap-2">
-                        <span className={`mt-1 inline-block w-2 h-2 rounded-full ${it.severity==='good'?'bg-emerald-500':it.severity==='warn'?'bg-yellow-500':'bg-red-500'}`}></span>
-                        <span className="text-gray-800">
-                          {it.text}
-                          {it.section && <span className="ml-2 text-xs text-gray-500">[{it.section}]</span>}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-            )}
-          </div>
-          <div className="bg-white rounded-xl border border-gray-100 shadow p-4 flex flex-wrap items-center gap-2 justify-end lg:justify-start">
-            <button type="button" onClick={() => setShowPreview(v=>!v)} className="px-3 py-2 rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50">
-              {showPreview ? 'Hide Preview' : 'Show Preview'}
-            </button>
-            {hasRestorable && (
-              <button type="button" onClick={() => {
-                try {
-                  const raw = localStorage.getItem(draftKey);
-                  if (!raw) return;
-                  const s = JSON.parse(raw);
-                  setTitle(s.title || '');
-                  setDescription(s.description || '');
-                  setFrontImagePreview(s.frontImagePreview || '');
-                  setCategories(s.categories || '');
-                  setMetaTitle(s.metaTitle || '');
-                  setMetaDescription(s.metaDescription || '');
-                  setSlug(s.slug || '');
-                  setRelatedProjects(Array.isArray(s.relatedProjects) ? s.relatedProjects : []);
-                  setEnableFAQ(!!s.enableFAQ);
-                  setFaqs(Array.isArray(s.faqs) && s.faqs.length ? s.faqs : [{question:'',answer:''}]);
-                  setAuthor(s.author || author);
-                  showToast.success('Draft restored');
-                } catch {}
-              }} className="px-3 py-2 rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50 flex items-center gap-2">
-                <History className="w-4 h-4" /> Restore Draft
+              )}
+            </div>
+            <div className="bg-white rounded-xl border border-gray-100 shadow p-4 flex flex-wrap items-center gap-2 justify-end lg:justify-start">
+              <button type="button" onClick={() => setShowPreview(v => !v)} className="px-3 py-2 rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50">
+                {showPreview ? 'Hide Preview' : 'Show Preview'}
               </button>
-            )}
-            {historyList?.length > 0 && (
-              <button type="button" onClick={() => setShowHistory(true)} className="px-3 py-2 rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50 flex items-center gap-2">
-                <History className="w-4 h-4" /> History
-              </button>
-            )}
+              {hasRestorable && (
+                <button type="button" onClick={() => {
+                  try {
+                    const raw = localStorage.getItem(draftKey);
+                    if (!raw) return;
+                    const s = JSON.parse(raw);
+                    setTitle(s.title || '');
+                    setDescription(s.description || '');
+                    setFrontImagePreview(s.frontImagePreview || '');
+                    setCategories(s.categories || '');
+                    setMetaTitle(s.metaTitle || '');
+                    setMetaDescription(s.metaDescription || '');
+                    setSlug(s.slug || '');
+                    setRelatedProjects(Array.isArray(s.relatedProjects) ? s.relatedProjects : []);
+                    setEnableFAQ(!!s.enableFAQ);
+                    setFaqs(Array.isArray(s.faqs) && s.faqs.length ? s.faqs : [{ question: '', answer: '' }]);
+                    setAuthor(s.author || author);
+                    setTableBlocks(Array.isArray(s.tableBlocks) ? s.tableBlocks : []);
+                    showToast.success('Draft restored');
+                  } catch { }
+                }} className="px-3 py-2 rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50 flex items-center gap-2">
+                  <History className="w-4 h-4" /> Restore Draft
+                </button>
+              )}
+              {historyList?.length > 0 && (
+                <button type="button" onClick={() => setShowHistory(true)} className="px-3 py-2 rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50 flex items-center gap-2">
+                  <History className="w-4 h-4" /> History
+                </button>
+              )}
+            </div>
           </div>
-        </div>
         </div>
         {/* Load fonts */}
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Roboto:wght@300;400;700&family=Poppins:wght@300;400;600;700&family=Montserrat:wght@300;400;600;700&family=Lato:wght@300;400;700&family=Open+Sans:wght@300;400;700&family=Raleway:wght@300;400;700&family=Nunito:wght@300;400;700&family=Merriweather:wght@300;400;700&family=Playfair+Display:wght@400;700&family=Source+Sans+3:wght@300;400;700&family=Ubuntu:wght@300;400;700&family=Work+Sans:wght@300;400;700&family=Rubik:wght@300;400;700&family=Mulish:wght@300;400;700&family=Josefin+Sans:wght@300;400;700&family=Quicksand:wght@300;400;700&family=DM+Sans:wght@300;400;700&family=PT+Serif:wght@400;700&family=Arimo:wght@400;700&display=swap" />
@@ -2347,561 +2588,594 @@ import 'react-quill/dist/quill.snow.css';
         <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
           <form className="p-6 space-y-8">
             {/* Title */}
-           <div className="space-y-2">
-  <div className="flex items-center justify-between">
-    <div className="flex items-center gap-2">
-      <FileText className="w-4 h-4 text-blue-600" />
-      <label htmlFor="title" className="text-sm font-medium text-gray-900">
-        Blog Title
-      </label>
-    </div>
-    {title && (
-      <div className="text-xs text-gray-500">
-        {title.length}/100
-      </div>
-    )}
-  </div>
-  <input
-    type="text"
-    id="title"
-    value={title}
-    onChange={(e) => setTitle(e.target.value.slice(0, 100))}
-    className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 transition-colors"
-    placeholder="Enter your blog title..."
-    required
-  />
-  {titleKeywords.length > 0 && (
-    <div className="flex flex-wrap gap-1.5 mt-1">
-      <span className="text-[10px] text-gray-500 self-center">Keywords:</span>
-      {titleKeywords.slice(0, 4).map((k, i) => (
-        <span
-          key={k + i}
-          className="px-1.5 py-0.5 rounded bg-blue-50 text-blue-700 text-[10px] border border-blue-100"
-        >
-          {k}
-        </span>
-      ))}
-      {titleKeywords.length > 4 && (
-        <span className="text-[10px] text-gray-400 self-center">
-          +{titleKeywords.length - 4} more
-        </span>
-      )}
-    </div>
-  )}
-</div>
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <FileText className="w-4 h-4 text-blue-600" />
+                  <label htmlFor="title" className="text-sm font-medium text-gray-900">
+                    Blog Title
+                  </label>
+                </div>
+                {title && (
+                  <div className="text-xs text-gray-500">
+                    {title.length}/100
+                  </div>
+                )}
+              </div>
+              <input
+                type="text"
+                id="title"
+                value={title}
+                onChange={(e) => setTitle(e.target.value.slice(0, 100))}
+                className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 transition-colors"
+                placeholder="Enter your blog title..."
+                required
+              />
+              {titleKeywords.length > 0 && (
+                <div className="flex flex-wrap gap-1.5 mt-1">
+                  <span className="text-[10px] text-gray-500 self-center">Keywords:</span>
+                  {titleKeywords.slice(0, 4).map((k, i) => (
+                    <span
+                      key={k + i}
+                      className="px-1.5 py-0.5 rounded bg-blue-50 text-blue-700 text-[10px] border border-blue-100"
+                    >
+                      {k}
+                    </span>
+                  ))}
+                  {titleKeywords.length > 4 && (
+                    <span className="text-[10px] text-gray-400 self-center">
+                      +{titleKeywords.length - 4} more
+                    </span>
+                  )}
+                </div>
+              )}
+            </div>
 
             {/* Slug + Meta */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-  {/* Slug URL */}
-  <div className="space-y-1.5">
-    <label className="text-xs font-medium text-gray-700">Slug URL</label>
-    <div className="flex rounded-lg border border-gray-200 overflow-hidden text-sm">
-      <span className="px-2 py-2 flex items-center text-gray-500 bg-gray-50 border-r border-gray-200 text-xs">
-        <LinkIcon className="w-3.5 h-3.5 mr-1.5" />
-        /blog/
-      </span>
-      <input
-        type="text"
-        value={slug}
-        onChange={(e) => {
-          setSlugTouched(true);
-          setSlug(slugify(e.target.value));
-        }}
-        className="flex-1 px-2 py-2 min-w-0 text-sm focus:outline-none"
-        placeholder="my-custom-slug"
-      />
-      <div className="flex">
-        <button
-          type="button"
-          onClick={() => {
-            setSlugTouched(false);
-            setSlug(slugify(title));
-          }}
-          className="px-2 text-xs bg-gray-50 hover:bg-gray-100 border-l border-gray-200 h-full"
-          title="Reset slug to match title"
-        >
-          ⟲
-        </button>
-        <button
-          type="button"
-          onClick={async () => {
-            try {
-              await navigator.clipboard.writeText(`/blog/${slug}`);
-              setSlugCopied(true);
-              setTimeout(() => setSlugCopied(false), 1200);
-            } catch {}
-          }}
-          className="px-2 text-xs bg-gray-50 hover:bg-gray-100 border-l border-gray-200 h-full flex items-center"
-          title="Copy full slug URL"
-        >
-          {slugCopied ? <Check className="w-3.5 h-3.5 text-green-600" /> : <Copy className="w-3.5 h-3.5" />}
-        </button>
-      </div>
-    </div>
-    <p className="text-[11px] text-gray-500">
-      Auto-generates from title
-    </p>
-    {slug && (
-      <div className="text-[11px] mt-0.5">
-        {slugChecking ? (
-          <span className="text-gray-500">{slugCheckMsg}</span>
-        ) : (
-          <span className={slugAvailable ? 'text-green-600' : 'text-red-600'}>
-            {slugCheckMsg || (slugAvailable ? 'Slug available' : 'Slug taken')}
-          </span>
-        )}
-      </div>
-    )}
-  </div>
+              {/* Slug URL */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-medium text-gray-700">Slug URL</label>
+                <div className="flex rounded-lg border border-gray-200 overflow-hidden text-sm">
+                  <span className="px-2 py-2 flex items-center text-gray-500 bg-gray-50 border-r border-gray-200 text-xs">
+                    <LinkIcon className="w-3.5 h-3.5 mr-1.5" />
+                    /blog/
+                  </span>
+                  <input
+                    type="text"
+                    value={slug}
+                    onChange={(e) => {
+                      setSlugTouched(true);
+                      // Allow raw input — only replace spaces with hyphens for UX
+                      const raw = e.target.value.toLowerCase().replace(/\s+/g, '-');
+                      setSlug(raw);
+                    }}
+                    onBlur={() => {
+                      // Clean up on blur: remove trailing/leading hyphens and collapse multiples
+                      setSlug(prev => prev.replace(/-+/g, '-').replace(/^-+|-+$/g, ''));
+                    }}
+                    className="flex-1 px-2 py-2 min-w-0 text-sm focus:outline-none"
+                    placeholder="my-custom-slug"
+                  />
+                  <div className="flex">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSlug(slugify(slug));
+                        setSlugTouched(true);
+                      }}
+                      className="px-2 text-xs bg-gray-50 hover:bg-gray-100 border-l border-gray-200 h-full"
+                      title="Slugify current value (clean special chars)"
+                    >
+                      ✓
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSlugTouched(false);
+                        setSlug(slugify(title));
+                      }}
+                      className="px-2 text-xs bg-gray-50 hover:bg-gray-100 border-l border-gray-200 h-full"
+                      title="Reset slug to match title"
+                    >
+                      ⟲
+                    </button>
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        try {
+                          await navigator.clipboard.writeText(`/blog/${slug}/`);
+                          setSlugCopied(true);
+                          setTimeout(() => setSlugCopied(false), 1200);
+                        } catch { }
+                      }}
+                      className="px-2 text-xs bg-gray-50 hover:bg-gray-100 border-l border-gray-200 h-full flex items-center"
+                      title="Copy full slug URL"
+                    >
+                      {slugCopied ? <Check className="w-3.5 h-3.5 text-green-600" /> : <Copy className="w-3.5 h-3.5" />}
+                    </button>
+                  </div>
+                </div>
+                <p className="text-[11px] text-gray-500">
+                  Type your own slug or auto-generates from title • <span className="text-blue-500 cursor-pointer hover:underline" onClick={() => { setSlugTouched(false); setSlug(slugify(title)); }}>Auto-generate</span>
+                </p>
+                {slug && (
+                  <div className="text-[11px] mt-0.5">
+                    {slugChecking ? (
+                      <span className="text-gray-500">{slugCheckMsg}</span>
+                    ) : (
+                      <span className={slugAvailable ? 'text-green-600' : 'text-red-600'}>
+                        {slugCheckMsg || (slugAvailable ? 'Slug available' : 'Slug taken')}
+                      </span>
+                    )}
+                  </div>
+                )}
+              </div>
 
-  {/* Meta Title */}
-  <div className="space-y-1.5">
-    <label className="text-xs font-medium text-gray-700">Meta Title</label>
-    <div className="relative">
-      <input
-        type="text"
-        value={metaTitle}
-        onChange={(e) => setMetaTitle(e.target.value.slice(0, 60))}
-        className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500"
-        placeholder="Up to 60 characters"
-      />
-      <div className="absolute right-2 bottom-1.5 text-[11px] text-gray-500">
-        {metaTitle.length}/60
-      </div>
-    </div>
-  </div>
+              {/* Meta Title */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-medium text-gray-700">Meta Title</label>
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={metaTitle}
+                    onChange={(e) => setMetaTitle(e.target.value.slice(0, 60))}
+                    className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                    placeholder="Up to 60 characters"
+                  />
+                  <div className="absolute right-2 bottom-1.5 text-[11px] text-gray-500">
+                    {metaTitle.length}/60
+                  </div>
+                </div>
+              </div>
 
-  {/* Meta Description */}
-  <div className="space-y-1.5">
-  <div className="flex items-center justify-between">
-    <label className="text-xs font-medium text-gray-700">Meta Description</label>
-    <div className={`text-[10px] font-medium ${
-      metaDescription.length >= 120 && metaDescription.length <= 160
-        ? 'text-green-600'
-        : metaDescription.length >= 80
-        ? 'text-yellow-600'
-        : 'text-red-600'
-    }`}>
-      {metaDescription.length}/160
-    </div>
-  </div>
-  <div className="relative">
-    <textarea
-      value={metaDescription}
-      onChange={(e) => setMetaDescription(e.target.value.slice(0, 160))}
-      className="w-full px-3 py-2 text-xs border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500"
-      placeholder="Up to 160 characters"
-      rows={2}
-    />
-    {titleKeywords.length > 0 && (
-      <div className="mt-1 flex flex-wrap gap-1.5">
-        <span className="text-[10px] text-gray-500 self-center">Keywords:</span>
-        {titleKeywords.slice(0, 3).map((k, i) => (
-          <button
-            key={k + i}
-            type="button"
-            className="px-1.5 py-0.5 rounded bg-gray-50 hover:bg-gray-100 text-[10px] border border-gray-200 text-gray-700"
-            onClick={() => setMetaDescription((v) => (v ? `${v} ${k}` : k).slice(0, 160))}
-          >
-            {k}
-          </button>
-        ))}
-        {titleKeywords.length > 3 && (
-          <span 
-            className="text-[10px] text-gray-400 self-center"
-            title={titleKeywords.slice(3).join(', ')}
-          >
-            +{titleKeywords.length - 3} more
-          </span>
-        )}
-      </div>
-    )}
-  </div>
-</div>
-</div>
+              {/* Meta Description */}
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-medium text-gray-700">Meta Description</label>
+                  <div className={`text-[10px] font-medium ${metaDescription.length >= 120 && metaDescription.length <= 160
+                    ? 'text-green-600'
+                    : metaDescription.length >= 80
+                      ? 'text-yellow-600'
+                      : 'text-red-600'
+                    }`}>
+                    {metaDescription.length}/160
+                  </div>
+                </div>
+                <div className="relative">
+                  <textarea
+                    value={metaDescription}
+                    onChange={(e) => setMetaDescription(e.target.value.slice(0, 160))}
+                    className="w-full px-3 py-2 text-xs border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                    placeholder="Up to 160 characters"
+                    rows={2}
+                  />
+                  {titleKeywords.length > 0 && (
+                    <div className="mt-1 flex flex-wrap gap-1.5">
+                      <span className="text-[10px] text-gray-500 self-center">Keywords:</span>
+                      {titleKeywords.slice(0, 3).map((k, i) => (
+                        <button
+                          key={k + i}
+                          type="button"
+                          className="px-1.5 py-0.5 rounded bg-gray-50 hover:bg-gray-100 text-[10px] border border-gray-200 text-gray-700"
+                          onClick={() => setMetaDescription((v) => (v ? `${v} ${k}` : k).slice(0, 160))}
+                        >
+                          {k}
+                        </button>
+                      ))}
+                      {titleKeywords.length > 3 && (
+                        <span
+                          className="text-[10px] text-gray-400 self-center"
+                          title={titleKeywords.slice(3).join(', ')}
+                        >
+                          +{titleKeywords.length - 3} more
+                        </span>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
 
             {/* Featured Image */}
-          <div className="space-y-4">
-  {/* Featured Image Section */}
-  <div className="space-y-2">
-    <div className="flex items-center gap-2">
-      <ImageIcon className="w-4 h-4 text-green-600" />
-      <label className="text-sm font-medium text-gray-900">Featured Image </label>
-    </div>
+            <div className="space-y-4">
+              {/* Featured Image Section */}
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <ImageIcon className="w-4 h-4 text-green-600" />
+                  <label className="text-sm font-medium text-gray-900">Featured Image </label>
+                </div>
 
-    {/* Two-column layout */}
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
-      {/* Image Preview */}
-      <div className="relative rounded-lg overflow-hidden border border-gray-200 bg-white">
-        {frontImagePreview ? (
-          <div className="relative">
-            <img
-              src={frontImagePreview}
-              alt="Featured preview"
-              className="w-full h-48 object-cover"
-              onError={(e) => {
-                if (!frontTriedProxy) {
-                  const src = originalFrontUrlRef.current || frontImagePreview;
-                  const stripProto = (u) => (u || '').replace(/^https?:\/\//i, '');
-                  const proxied = `https://images.weserv.nl/?url=${encodeURIComponent(stripProto(src))}`;
-                  setFrontImagePreview(proxied);
-                  setFrontTriedProxy(true);
-                } else {
-                  setFrontImageError(true);
-                }
-              }}
-            />
-            {frontImageError && (
-              <div className="absolute bottom-1 left-1 right-1 bg-white/90 backdrop-blur rounded p-1 border border-amber-200 text-xs flex flex-wrap gap-1">
-                <span className="text-amber-800 text-[10px]">Image failed to load</span>
-                <button 
-                  type="button" 
-                  className="px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 hover:bg-amber-200 text-[10px]"
-                  onClick={() => {
-                    setFrontImageError(false);
-                    setFrontImagePreview(originalFrontUrlRef.current || frontImagePreview);
-                  }}
-                >
-                  Retry
-                </button>
+                {/* Two-column layout */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+                  {/* Image Preview */}
+                  <div className="relative rounded-lg overflow-hidden border border-gray-200 bg-white">
+                    {frontImagePreview ? (
+                      <div className="relative">
+                        <img
+                          src={frontImagePreview}
+                          alt="Featured preview"
+                          className="w-full h-48 object-cover"
+                          onError={(e) => {
+                            if (!frontTriedProxy) {
+                              const src = originalFrontUrlRef.current || frontImagePreview;
+                              const stripProto = (u) => (u || '').replace(/^https?:\/\//i, '');
+                              const proxied = `https://images.weserv.nl/?url=${encodeURIComponent(stripProto(src))}`;
+                              setFrontImagePreview(proxied);
+                              setFrontTriedProxy(true);
+                            } else {
+                              setFrontImageError(true);
+                            }
+                          }}
+                        />
+                        {frontImageError && (
+                          <div className="absolute bottom-1 left-1 right-1 bg-white/90 backdrop-blur rounded p-1 border border-amber-200 text-xs flex flex-wrap gap-1">
+                            <span className="text-amber-800 text-[10px]">Image failed to load</span>
+                            <button
+                              type="button"
+                              className="px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 hover:bg-amber-200 text-[10px]"
+                              onClick={() => {
+                                setFrontImageError(false);
+                                setFrontImagePreview(originalFrontUrlRef.current || frontImagePreview);
+                              }}
+                            >
+                              Retry
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      <div className="h-32 flex items-center justify-center text-gray-400 text-sm">
+                        No image selected
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Upload Controls */}
+                  <div className="space-y-2">
+                    <div
+                      className="relative border-2 border-dashed border-gray-200 rounded-lg p-3 text-center hover:border-blue-300 transition-colors"
+                      onDragOver={onFeaturedDragOver}
+                      onDrop={onFeaturedDrop}
+                    >
+                      <input
+                        type="file"
+                        id="featured-image-upload"
+                        accept="image/webp"
+                        onChange={handleFileChange}
+                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                      />
+                      <div className="space-y-1">
+                        <UploadCloud className="w-6 h-6 mx-auto text-gray-400" />
+                        <p className="text-xs font-medium text-gray-700">
+                          {frontImagePreview ? 'Click to change' : 'Upload WebP image'}
+                        </p>
+                        <p className="text-[10px] text-gray-500">
+                          {frontImagePreview ? 'or drag & drop' : 'or paste URL below'}
+                        </p>
+                      </div>
+                    </div>
+
+                    <input
+                      type="text"
+                      className="w-full px-3 py-1.5 text-xs border border-gray-200 rounded-lg focus:ring-1 focus:ring-blue-500"
+                      placeholder="Paste WebP URL"
+                      onPaste={async (e) => {
+                        try {
+                          const pastedText = e.clipboardData.getData('text/plain');
+                          if (pastedText) {
+                            e.preventDefault();
+                            handleImageUrlChange({ target: { value: pastedText } });
+                          }
+                        } catch (err) {
+                          console.error('Error handling paste:', err);
+                        }
+                      }}
+                      onChange={handleImageUrlChange}
+                      value={frontImage || ''}
+                    />
+                  </div>
+                </div>
               </div>
-            )}
-          </div>
-        ) : (
-          <div className="h-32 flex items-center justify-center text-gray-400 text-sm">
-            No image selected
-          </div>
-        )}
-      </div>
 
-      {/* Upload Controls */}
-      <div className="space-y-2">
-        <div 
-          className="relative border-2 border-dashed border-gray-200 rounded-lg p-3 text-center hover:border-blue-300 transition-colors"
-          onDragOver={onFeaturedDragOver}
-          onDrop={onFeaturedDrop}
-        >
-          <input
-            type="file"
-            id="featured-image-upload"
-            accept="image/webp"
-            onChange={handleFileChange}
-            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-          />
-          <div className="space-y-1">
-            <UploadCloud className="w-6 h-6 mx-auto text-gray-400" />
-            <p className="text-xs font-medium text-gray-700">
-              {frontImagePreview ? 'Click to change' : 'Upload WebP image'}
-            </p>
-            <p className="text-[10px] text-gray-500">
-              {frontImagePreview ? 'or drag & drop' : 'or paste URL below'}
-            </p>
-          </div>
-        </div>
+              {/* Blog Category Section */}
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <Tag className="w-4 h-4 text-purple-600" />
+                  <label className="text-sm font-medium text-gray-900">Category</label>
+                </div>
 
-        <input
-          type="text"
-          className="w-full px-3 py-1.5 text-xs border border-gray-200 rounded-lg focus:ring-1 focus:ring-blue-500"
-          placeholder="Paste WebP URL"
-          onPaste={async (e) => {
-            try {
-              const pastedText = e.clipboardData.getData('text/plain');
-              if (pastedText) {
-                e.preventDefault();
-                handleImageUrlChange({ target: { value: pastedText } });
-              }
-            } catch (err) {
-              console.error('Error handling paste:', err);
-            }
-          }}
-          onChange={handleImageUrlChange}
-          value={frontImage || ''}
-        />
-      </div>
-    </div>
-  </div>
-
-  {/* Blog Category Section */}
-  <div className="space-y-2">
-    <div className="flex items-center gap-2">
-      <Tag className="w-4 h-4 text-purple-600" />
-      <label className="text-sm font-medium text-gray-900">Category</label>
-    </div>
-    
-    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-      <select
-        className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:ring-1 focus:ring-purple-500"
-        value={categories}
-        onChange={handleEditCategory}
-      >
-        <option value="">Select category</option>
-        {categoryList.map((c) => (
-          <option key={c} value={c}>{c}</option>
-        ))}
-      </select>
-    </div>
-  </div>
-</div>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                  <select
+                    className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:ring-1 focus:ring-purple-500"
+                    value={categories}
+                    onChange={handleEditCategory}
+                  >
+                    <option value="">Select category</option>
+                    {categoryList.map((c) => (
+                      <option key={c} value={c}>{c}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            </div>
 
             {/* Related Projects Section */}
             <div className="space-y-3">
-  <div className="flex items-center justify-between">
-    <div className="flex items-center gap-2">
-      <LinkIcon className="w-4 h-4 text-indigo-600" />
-      <span className="text-sm font-medium text-gray-900">Related Projects</span>
-      <span className="text-xs text-gray-500">({relatedProjects.length}/5)</span>
-    </div>
-    {autoSuggestEnabled && suggestedProjects.length > 0 && (
-      <button
-        type="button"
-        className="px-2 py-1 text-xs rounded-lg bg-emerald-600 text-white hover:bg-emerald-700"
-        onClick={() => {
-          const toAdd = suggestedProjects.slice(0, Math.max(0, 5 - relatedProjects.length));
-          toAdd.forEach(addRelatedProject);
-        }}
-        disabled={relatedProjects.length >= 5}
-      >
-        Add Top {Math.min(3, suggestedProjects.length)} Suggested
-      </button>
-    )}
-  </div>
-
-  {/* Suggestions grid */}
-  {autoSuggestEnabled && suggestedProjects.length > 0 && (
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-      {suggestedProjects.slice(0, 4).map((p, idx) => (
-        <div key={`${p.project_url}-${idx}`} className="flex items-center justify-between p-2 bg-white border border-gray-100 rounded-lg">
-          <div className="flex items-center gap-2 min-w-0">
-            {p.thumbnail && (
-              <img 
-                src={p.thumbnail} 
-                alt="" 
-                className="w-8 h-8 rounded object-cover" 
-                onError={(e) => e.target.style.display='none'} 
-              />
-            )}
-            <div className="min-w-0">
-              <div className="text-xs font-medium text-gray-900 truncate">{p.projectName || 'Project'}</div>
-              <div className="text-[10px] text-gray-500 truncate">{p.builderName || p.city || ''}</div>
-            </div>
-          </div>
-          <button 
-            type="button" 
-            className="px-2 py-0.5 text-xs rounded bg-indigo-600 text-white hover:bg-indigo-700"
-            onClick={() => addRelatedProject(p)} 
-            disabled={relatedProjects.length >= 5}
-          >
-            Add
-          </button>
-        </div>
-      ))}
-    </div>
-  )}
-
-  {/* Project search */}
-  <div className="relative">
-    <input
-      type="text"
-      value={projectSearchTerm}
-      onChange={(e) => setProjectSearchTerm(e.target.value)}
-      placeholder="Search projects..."
-      className="w-full px-3 py-1.5 text-sm border border-gray-200 rounded-lg focus:ring-1 focus:ring-indigo-500"
-    />
-    {projectSearchTerm && (
-      <button
-        type="button"
-        onClick={() => setProjectSearchTerm('')}
-        className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-        title="Clear"
-      >
-        ×
-      </button>
-    )}
-  </div>
-
-  {/* Project dropdown */}
-  <div className="relative">
-    <select
-      className="w-full px-3 py-1.5 text-sm border border-gray-200 rounded-lg focus:ring-1 focus:ring-indigo-500"
-      onChange={(e) => {
-        const idx = Number(e.target.value);
-        const source = projectSearchTerm.trim().length >= 2 ? projectSearchResults : allProjects;
-        const list = source
-          .filter(project => !relatedProjects.find(rp => rp.project_url === project.project_url))
-          .filter(p => {
-            const q = (projectSearchTerm || '').trim().toLowerCase();
-            if (!q) return true;
-            const hay = `${p.projectName || ''} ${p.builderName || ''} ${p.location || ''} ${p.city || ''}`.toLowerCase();
-            return hay.includes(q);
-          });
-        if (!Number.isNaN(idx) && list[idx]) addRelatedProject(list[idx]);
-        e.target.value = '';
-      }}
-      defaultValue=""
-    >
-      <option value="" disabled>{isLoadingProjects ? 'Loading...' : 'Select a project to add'}</option>
-      {(projectSearchTerm.trim().length >= 2 ? projectSearchResults : allProjects)
-        .filter(project => !relatedProjects.find(rp => rp.project_url === project.project_url))
-        .filter(p => {
-          const q = (projectSearchTerm || '').trim().toLowerCase();
-          if (!q) return true;
-          const hay = `${p.projectName || ''} ${p.builderName || ''} ${p.location || ''} ${p.city || ''}`.toLowerCase();
-          return hay.includes(q);
-        })
-        .map((p, idx) => (
-          <option key={p.project_url || `${p.projectName}-${idx}`} value={idx}>
-            {p.projectName || `Project ${idx+1}`}
-            {p.builderName ? ` — ${p.builderName}` : ''}
-          </option>
-        ))}
-    </select>
-    {isLoadingProjects && (
-      <div className="absolute right-2 top-1/2 -translate-y-1/2">
-        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-indigo-600"></div>
-      </div>
-    )}
-  </div>
-
-  {/* Selected projects */}
-  {relatedProjects.length > 0 && (
-    <div className="space-y-1.5 mt-2">
-      <div className="text-xs font-medium text-gray-700">Selected Projects ({relatedProjects.length}/5):</div>
-      <div className="space-y-1.5">
-        {relatedProjects.map((project, index) => (
-          <div
-            key={index}
-            className="flex items-center justify-between p-2 bg-white border border-gray-100 rounded-lg"
-          >
-            <div className="flex items-center gap-2 min-w-0">
-              {project.thumbnail && (
-                <img
-                  src={project.thumbnail}
-                  alt=""
-                  className="w-6 h-6 object-cover rounded"
-                  onError={(e) => e.target.style.display = 'none'}
-                />
-              )}
-              <div className="min-w-0">
-                <p className="text-xs font-medium text-gray-900 truncate">
-                  {project.projectName || 'Project'}
-                </p>
-                <p className="text-[10px] text-indigo-600 truncate">
-                  {project.project_url?.replace(/^https?:\/\//, '')}
-                </p>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <LinkIcon className="w-4 h-4 text-indigo-600" />
+                  <span className="text-sm font-medium text-gray-900">Related Projects</span>
+                  <span className="text-xs text-gray-500">({relatedProjects.length}/5)</span>
+                </div>
+                {autoSuggestEnabled && suggestedProjects.length > 0 && (
+                  <button
+                    type="button"
+                    className="px-2 py-1 text-xs rounded-lg bg-emerald-600 text-white hover:bg-emerald-700"
+                    onClick={() => {
+                      const toAdd = suggestedProjects.slice(0, Math.max(0, 5 - relatedProjects.length));
+                      toAdd.forEach(addRelatedProject);
+                    }}
+                    disabled={relatedProjects.length >= 5}
+                  >
+                    Add Top {Math.min(3, suggestedProjects.length)} Suggested
+                  </button>
+                )}
               </div>
+
+              {/* Suggestions grid */}
+              {autoSuggestEnabled && suggestedProjects.length > 0 && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {suggestedProjects.slice(0, 4).map((p, idx) => (
+                    <div key={`${p.project_url}-${idx}`} className="flex items-center justify-between p-2 bg-white border border-gray-100 rounded-lg">
+                      <div className="flex items-center gap-2 min-w-0">
+                        {p.thumbnail && (
+                          <img
+                            src={p.thumbnail}
+                            alt=""
+                            className="w-8 h-8 rounded object-cover"
+                            onError={(e) => e.target.style.display = 'none'}
+                          />
+                        )}
+                        <div className="min-w-0">
+                          <div className="text-xs font-medium text-gray-900 truncate">{p.projectName || 'Project'}</div>
+                          <div className="text-[10px] text-gray-500 truncate">{p.builderName || p.city || ''}</div>
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        className="px-2 py-0.5 text-xs rounded bg-indigo-600 text-white hover:bg-indigo-700"
+                        onClick={() => addRelatedProject(p)}
+                        disabled={relatedProjects.length >= 5}
+                      >
+                        Add
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Project search */}
+              <div className="relative">
+                <input
+                  type="text"
+                  value={projectSearchTerm}
+                  onChange={(e) => setProjectSearchTerm(e.target.value)}
+                  placeholder="Search projects..."
+                  className="w-full px-3 py-1.5 text-sm border border-gray-200 rounded-lg focus:ring-1 focus:ring-indigo-500"
+                />
+                {projectSearchTerm && (
+                  <button
+                    type="button"
+                    onClick={() => setProjectSearchTerm('')}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                    title="Clear"
+                  >
+                    ×
+                  </button>
+                )}
+              </div>
+
+              {/* Project dropdown */}
+              <div className="relative">
+                <select
+                  className="w-full px-3 py-1.5 text-sm border border-gray-200 rounded-lg focus:ring-1 focus:ring-indigo-500"
+                  onChange={(e) => {
+                    const idx = Number(e.target.value);
+                    const source = projectSearchTerm.trim().length >= 2 ? projectSearchResults : allProjects;
+                    const list = source
+                      .filter(project => !relatedProjects.find(rp => rp.project_url === project.project_url))
+                      .filter(p => {
+                        const q = (projectSearchTerm || '').trim().toLowerCase();
+                        if (!q) return true;
+                        const hay = `${p.projectName || ''} ${p.builderName || ''} ${p.location || ''} ${p.city || ''}`.toLowerCase();
+                        return hay.includes(q);
+                      });
+                    if (!Number.isNaN(idx) && list[idx]) addRelatedProject(list[idx]);
+                    e.target.value = '';
+                  }}
+                  defaultValue=""
+                >
+                  <option value="" disabled>{isLoadingProjects ? 'Loading...' : 'Select a project to add'}</option>
+                  {(projectSearchTerm.trim().length >= 2 ? projectSearchResults : allProjects)
+                    .filter(project => !relatedProjects.find(rp => rp.project_url === project.project_url))
+                    .filter(p => {
+                      const q = (projectSearchTerm || '').trim().toLowerCase();
+                      if (!q) return true;
+                      const hay = `${p.projectName || ''} ${p.builderName || ''} ${p.location || ''} ${p.city || ''}`.toLowerCase();
+                      return hay.includes(q);
+                    })
+                    .map((p, idx) => (
+                      <option key={p.project_url || `${p.projectName}-${idx}`} value={idx}>
+                        {p.projectName || `Project ${idx + 1}`}
+                        {p.builderName ? ` — ${p.builderName}` : ''}
+                      </option>
+                    ))}
+                </select>
+                {isLoadingProjects && (
+                  <div className="absolute right-2 top-1/2 -translate-y-1/2">
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-indigo-600"></div>
+                  </div>
+                )}
+              </div>
+
+              {/* Selected projects */}
+              {relatedProjects.length > 0 && (
+                <div className="space-y-1.5 mt-2">
+                  <div className="text-xs font-medium text-gray-700">Selected Projects ({relatedProjects.length}/5):</div>
+                  <div className="space-y-1.5">
+                    {relatedProjects.map((project, index) => (
+                      <div
+                        key={index}
+                        className="flex items-center justify-between p-2 bg-white border border-gray-100 rounded-lg"
+                      >
+                        <div className="flex items-center gap-2 min-w-0">
+                          {project.thumbnail && (
+                            <img
+                              src={project.thumbnail}
+                              alt=""
+                              className="w-6 h-6 object-cover rounded"
+                              onError={(e) => e.target.style.display = 'none'}
+                            />
+                          )}
+                          <div className="min-w-0">
+                            <p className="text-xs font-medium text-gray-900 truncate">
+                              {project.projectName || 'Project'}
+                            </p>
+                            <p className="text-[10px] text-indigo-600 truncate">
+                              {project.project_url?.replace(/^https?:\/\//, '')}
+                            </p>
+                          </div>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => removeRelatedProject(project.project_url)}
+                          className="p-0.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded"
+                          title="Remove"
+                        >
+                          <X className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
-            <button
-              type="button"
-              onClick={() => removeRelatedProject(project.project_url)}
-              className="p-0.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded"
-              title="Remove"
-            >
-              <X className="w-3.5 h-3.5" />
-            </button>
-          </div>
-        ))}
-      </div>
-    </div>
-  )}
-</div>
 
             {/* Editor Controls */}
-          <div className="flex flex-wrap items-center gap-2">
-  <button
-    type="button"
-    onClick={uploadInlineImage}
-    className="px-3 py-1.5 text-xs rounded-lg bg-emerald-600 text-white hover:bg-emerald-700 flex items-center gap-1.5"
-    title="Upload image and insert at cursor"
-  >
-    <Upload className="w-3.5 h-3.5" />
-    Insert Image
-  </button>
-  
-  <button
-    type="button"
-    onClick={insertImageByUrl}
-    className="px-3 py-1.5 text-xs rounded-lg bg-sky-600 text-white hover:bg-sky-700 flex items-center gap-1.5"
-    title="Insert image by URL at cursor"
-  >
-    <ImageIcon className="w-3.5 h-3.5" />
-    Insert from URL
-  </button>
-  
-  <button
-    type="button"
-    onClick={async () => {
-      const input = document.createElement('input');
-      input.type = 'file';
-      input.accept = 'image/webp';
-      input.multiple = true;
-      input.onchange = async () => {
-        const files = Array.from(input.files || []).slice(0, 4);
-        if (!files.length) return;
-        
-        // STRICT: Check all files are WebP
-        const nonWebpFiles = files.filter(file => file.type !== 'image/webp');
-        if (nonWebpFiles.length > 0) {
-          showToast.error('Only WebP images are allowed');
-          return;
-        }
-        
-        showToast.loading('Uploading...', { id: 'gridUpload' });
-        try {
-          const urls = [];
-          for (const f of files) {
-            const fd = new FormData();
-            fd.append('image', f);
-            const r = await api.post(`/blog/upload-image`, fd);
-            const u = r?.data?.url || r?.data?.data?.url || r?.data?.imageUrl || '';
-            if (u) urls.push(u);
-          }
-          const cardStyle = 'background:#fff;border:1px solid #e5e7eb;border-radius:8px;overflow:hidden;display:flex;flex-direction:column;';
-          const imgStyle = `width:100%;height:${gridSizeToPx[gridImgSize]}px;object-fit:cover;display:block;`;
-          const cards = urls.map((u, idx) => 
-            `<figure class="grid-card" style="${cardStyle}">
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                onClick={uploadInlineImage}
+                className="px-3 py-1.5 text-xs rounded-lg bg-emerald-600 text-white hover:bg-emerald-700 flex items-center gap-1.5"
+                title="Upload image and insert at cursor"
+              >
+                <Upload className="w-3.5 h-3.5" />
+                Insert Image
+              </button>
+
+              <button
+                type="button"
+                onClick={insertImageByUrl}
+                className="px-3 py-1.5 text-xs rounded-lg bg-sky-600 text-white hover:bg-sky-700 flex items-center gap-1.5"
+                title="Insert image by URL at cursor"
+              >
+                <ImageIcon className="w-3.5 h-3.5" />
+                Insert from URL
+              </button>
+
+              <button
+                type="button"
+                onClick={async () => {
+                  const input = document.createElement('input');
+                  input.type = 'file';
+                  input.accept = 'image/webp';
+                  input.multiple = true;
+                  input.onchange = async () => {
+                    const files = Array.from(input.files || []).slice(0, 4);
+                    if (!files.length) return;
+
+                    // STRICT: Check all files are WebP
+                    const nonWebpFiles = files.filter(file => file.type !== 'image/webp');
+                    if (nonWebpFiles.length > 0) {
+                      showToast.error('Only WebP images are allowed');
+                      return;
+                    }
+
+                    showToast.loading('Uploading...', { id: 'gridUpload' });
+                    try {
+                      const urls = [];
+                      for (const f of files) {
+                        const fd = new FormData();
+                        fd.append('image', f);
+                        const r = await api.post(`/blog/upload-image`, fd);
+                        const u = r?.data?.url || r?.data?.data?.url || r?.data?.imageUrl || '';
+                        if (u) urls.push(u);
+                      }
+                      const cardStyle = 'background:#fff;border:1px solid #e5e7eb;border-radius:8px;overflow:hidden;display:flex;flex-direction:column;';
+                      const imgStyle = `width:100%;height:${gridSizeToPx[gridImgSize]}px;object-fit:cover;display:block;`;
+                      const cards = urls.map((u, idx) =>
+                        `<figure class="grid-card" style="${cardStyle}">
               <img style="${imgStyle}" src="${u}" alt="" />
-              ${gridWithTitles ? `<figcaption style="padding:4px 6px;font-size:12px;color:#4b5563;text-align:center;" contenteditable="true">Title ${idx+1}</figcaption>` : ''}
+              ${gridWithTitles ? `<figcaption style="padding:4px 6px;font-size:12px;color:#4b5563;text-align:center;" contenteditable="true">Title ${idx + 1}</figcaption>` : ''}
             </figure>`
-          ).join('');
-          const gridCols = gridLayout === 'lastLarge' ? '1fr 1fr 1fr 1.6fr' : 'repeat(4, 1fr)';
-          const inner = `<div class="img-grid-4 layout-${gridLayout}" style="display:grid;grid-template-columns:${gridCols};gap:8px;margin:8px 0;">${cards}</div>`;
-          const html = gridWithTitles
-            ? `<section class="img-grid-4-frame" style="border:1px solid #e5e7eb;border-radius:8px;padding:8px;background:#f9fafb;">
+                      ).join('');
+                      const gridCols = gridLayout === 'lastLarge' ? '1fr 1fr 1fr 1.6fr' : 'repeat(4, 1fr)';
+                      const inner = `<div class="img-grid-4 layout-${gridLayout}" style="display:grid;grid-template-columns:${gridCols};gap:8px;margin:8px 0;">${cards}</div>`;
+                      const html = gridWithTitles
+                        ? `<section class="img-grid-4-frame" style="border:1px solid #e5e7eb;border-radius:8px;padding:8px;background:#f9fafb;">
                 <div class="grid-title" style="text-align:center;font-weight:600;margin:0 0 8px;font-size:13px;color:#374151;" contenteditable="true">Grid Title</div>
                 ${inner}
-              </section>` 
-            : `${inner}<p><br/></p>`;
-          const quill = safeGetQuill();
-          if (quill) {
-            const sel = quill.getSelection(true) || { index: quill.getLength(), length: 0 };
-            quill.clipboard.dangerouslyPasteHTML(sel.index, html, 'user');
-            quill.setSelection(sel.index + 1, 0);
-          }
-          showToast.success('Inserted image grid');
-        } catch (err) {
-          console.error(err);
-          showToast.error('Failed to insert grid');
-        } finally {
-          showToast.dismiss('gridUpload');
-        }
-      };
-      input.click();
-    }}
-    className="px-3 py-1.5 text-xs rounded-lg bg-purple-600 text-white hover:bg-purple-700"
-    title="Insert 4 images as a grid"
-  >
-    Insert 4-Image Grid
-  </button>
-  
-  <button
-    type="button"
-    onClick={() => setBwMode(v => !v)}
-    className="px-2.5 py-1.5 text-xs rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50"
-    title="Toggle Black & White mode for images"
-  >
-    {bwMode ? 'Color Mode' : 'B/W Mode'}
-  </button>
-</div>
+              </section>`
+                        : `${inner}<p><br/></p>`;
+                      const quill = safeGetQuill();
+                      if (quill) {
+                        const sel = quill.getSelection(true) || { index: quill.getLength(), length: 0 };
+                        quill.clipboard.dangerouslyPasteHTML(sel.index, html, 'user');
+                        quill.setSelection(sel.index + 1, 0);
+                      }
+                      showToast.success('Inserted image grid');
+                    } catch (err) {
+                      console.error(err);
+                      showToast.error('Failed to insert grid');
+                    } finally {
+                      showToast.dismiss('gridUpload');
+                    }
+                  };
+                  input.click();
+                }}
+                className="px-3 py-1.5 text-xs rounded-lg bg-purple-600 text-white hover:bg-purple-700"
+                title="Insert 4 images as a grid"
+              >
+                Insert 4-Image Grid
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setBwMode(v => !v)}
+                className="px-2.5 py-1.5 text-xs rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50"
+                title="Toggle Black & White mode for images"
+              >
+                {bwMode ? 'Color Mode' : 'B/W Mode'}
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  const newTable = {
+                    type: 'table',
+                    rows: [['Header 1', 'Header 2', 'Header 3'], ['', '', '']]
+                  };
+                  setTableBlocks([...tableBlocks, newTable]);
+                  showToast.success('Table builder added');
+                }}
+                className="px-3 py-1.5 text-xs rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 flex items-center gap-1.5"
+                title="Add Table Builder"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                Add Table
+              </button>
+            </div>
 
             {/* Content Editor */}
             <div className="space-y-3">
@@ -2923,22 +3197,75 @@ import 'react-quill/dist/quill.snow.css';
                 </button>
               </div>
 
-              {!editorFullscreen && (
-                <div className="quill-box border border-gray-200 rounded-xl mb-4 bg-white shadow-sm">
-                  <div className="quill-editor-container editor-resize">
-                    <ReactQuill
-                      ref={quillRef}
-                      theme="snow"
-                      value={description}
-                      onChange={handleQuillChange}
-                      className=""
-                      modules={quillModules}
-                      formats={quillFormats}
-                    />
-                  </div>
+              {/* Table Blocks Section */}
+              {tableBlocks.length > 0 && (
+                <div className="space-y-6 mb-4">
+                  {tableBlocks.map((block, index) => (
+                    <div key={index} className="relative group">
+                      <TableBuilder
+                        initialData={block.rows}
+                        onChange={(updatedTable) => {
+                          const updatedBlocks = [...tableBlocks];
+                          updatedBlocks[index] = updatedTable;
+                          setTableBlocks(updatedBlocks);
+                        }}
+                        onRemove={() => {
+                          const updatedBlocks = tableBlocks.filter((_, i) => i !== index);
+                          setTableBlocks(updatedBlocks);
+                        }}
+                      />
+                    </div>
+                  ))}
                 </div>
               )}
-              
+
+                {!editorFullscreen && (
+                  <div className="relative">
+                    <div className="quill-box border border-gray-200 rounded-xl mb-4 bg-white shadow-sm">
+                      <div className="quill-editor-container editor-resize">
+                        <ReactQuill
+                          ref={quillRef}
+                          theme="snow"
+                          value={description}
+                          onChange={handleQuillChange}
+                          className=""
+                          modules={quillModules}
+                          formats={quillFormats}
+                          placeholder="Write something amazing..."
+                        />
+                      </div>
+                    </div>
+
+                    {showTableBuilder && (
+                      <div className="mt-6 mb-8 border-2 border-indigo-100 rounded-xl p-4 bg-indigo-50 shadow-md">
+                        <div className="flex justify-between items-center mb-4">
+                          <div className="flex items-center gap-2">
+                            <div className="w-8 h-8 bg-indigo-600 text-white rounded-lg flex items-center justify-center">
+                              <Monitor className="w-4 h-4" />
+                            </div>
+                            <h3 className="text-lg font-bold text-indigo-900">Table Configuration</h3>
+                          </div>
+                          <button 
+                            type="button"
+                            onClick={() => setShowTableBuilder(false)}
+                            className="p-2 text-gray-400 hover:text-gray-600 hover:bg-white rounded-full transition-all"
+                          >
+                            <X className="w-5 h-5" />
+                          </button>
+                        </div>
+                        <TableBuilder 
+                          initialData={currentTableData}
+                          onChange={handleTableChange}
+                          onRemove={() => {
+                            setShowTableBuilder(false);
+                            setCurrentTableData(null);
+                            setDescription(description.replace(/\[TABLE_PLACEHOLDER_\d+\]/g, ''));
+                          }}
+                        />
+                      </div>
+                    )}
+                  </div>
+                )}
             </div>
 
             {editorFullscreen && (
@@ -2979,16 +3306,16 @@ import 'react-quill/dist/quill.snow.css';
                     <span className="text-gray-400">(updates in real-time)</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <button type="button" onClick={() => setPreviewMode('desktop')} className={`px-2.5 py-1.5 rounded-lg border ${previewMode==='desktop' ? 'bg-gray-900 text-white border-gray-900' : 'border-gray-300 text-gray-700'}`}>
+                    <button type="button" onClick={() => setPreviewMode('desktop')} className={`px-2.5 py-1.5 rounded-lg border ${previewMode === 'desktop' ? 'bg-gray-900 text-white border-gray-900' : 'border-gray-300 text-gray-700'}`}>
                       <Monitor className="w-4 h-4 inline mr-1" /> Desktop
                     </button>
-                    <button type="button" onClick={() => setPreviewMode('mobile')} className={`px-2.5 py-1.5 rounded-lg border ${previewMode==='mobile' ? 'bg-gray-900 text-white border-gray-900' : 'border-gray-300 text-gray-700'}`}>
+                    <button type="button" onClick={() => setPreviewMode('mobile')} className={`px-2.5 py-1.5 rounded-lg border ${previewMode === 'mobile' ? 'bg-gray-900 text-white border-gray-900' : 'border-gray-300 text-gray-700'}`}>
                       <Smartphone className="w-4 h-4 inline mr-1" /> Mobile
                     </button>
                   </div>
                 </div>
                 <div className="flex justify-center">
-                  <div className={`rounded-xl border border-gray-200 shadow-sm overflow-hidden ${previewMode==='mobile' ? 'w-[390px]' : 'w-full'} max-w-[1024px]`}>
+                  <div className={`rounded-xl border border-gray-200 shadow-sm overflow-hidden ${previewMode === 'mobile' ? 'w-[390px]' : 'w-full'} max-w-[1024px]`}>
                     {/* Featured image */}
                     {frontImagePreview && (
                       <img src={frontImagePreview} alt="preview" className="w-full max-h-72 object-cover" />
@@ -2996,7 +3323,12 @@ import 'react-quill/dist/quill.snow.css';
                     <div className="p-4 sm:p-6">
                       <h1 className="text-2xl sm:text-3xl font-bold mb-2">{title || 'Your blog title'}</h1>
                       <div className="text-gray-500 text-sm mb-4">/{slug || 'my-custom-slug'}</div>
-                      <article className="prose max-w-none prose-img:rounded-lg prose-headings:scroll-mt-24" dangerouslySetInnerHTML={{ __html: description || '<p>Start writing content...</p>' }} />
+                      <article 
+                        className="prose max-w-none prose-img:rounded-lg prose-headings:scroll-mt-24 blog-content-area" 
+                        dangerouslySetInnerHTML={{ 
+                          __html: finalizeContent(description) || '<p>Start writing content...</p>' 
+                        }} 
+                      />
                     </div>
                   </div>
                 </div>
@@ -3014,7 +3346,7 @@ import 'react-quill/dist/quill.snow.css';
                   <input
                     type="checkbox"
                     checked={enableFAQ}
-                    onChange={(e)=>setEnableFAQ(e.target.checked)}
+                    onChange={(e) => setEnableFAQ(e.target.checked)}
                   />
                   Enable FAQ section
                 </label>
@@ -3024,30 +3356,30 @@ import 'react-quill/dist/quill.snow.css';
                 <div className="space-y-3">
                   {faqs.map((f, idx) => (
                     <div key={idx} className="bg-gray-50 border border-gray-200 rounded-xl"
-                         draggable
-                         onDragStart={() => { dragIndexRef.current = idx; }}
-                         onDragOver={(e) => e.preventDefault()}
-                         onDrop={() => {
-                           const from = dragIndexRef.current;
-                           const to = idx;
-                           if (from === null || from === to) return;
-                           setFaqs(prev => {
-                             const arr = [...prev];
-                             const [m] = arr.splice(from, 1);
-                             arr.splice(to, 0, m);
-                             return arr;
-                           });
-                           setCollapsedFaqs(prev => {
-                             const arr = [...prev];
-                             const [m] = arr.splice(from, 1);
-                             arr.splice(to, 0, m);
-                             return arr;
-                           });
-                         }}>
+                      draggable
+                      onDragStart={() => { dragIndexRef.current = idx; }}
+                      onDragOver={(e) => e.preventDefault()}
+                      onDrop={() => {
+                        const from = dragIndexRef.current;
+                        const to = idx;
+                        if (from === null || from === to) return;
+                        setFaqs(prev => {
+                          const arr = [...prev];
+                          const [m] = arr.splice(from, 1);
+                          arr.splice(to, 0, m);
+                          return arr;
+                        });
+                        setCollapsedFaqs(prev => {
+                          const arr = [...prev];
+                          const [m] = arr.splice(from, 1);
+                          arr.splice(to, 0, m);
+                          return arr;
+                        });
+                      }}>
                       <div className="flex items-center justify-between p-3 border-b border-gray-200">
                         <div className="flex items-center gap-2">
                           <span className="cursor-move text-gray-400" title="Drag to reorder">⋮⋮</span>
-                          <span className="text-sm font-medium text-gray-800">FAQ #{idx+1}</span>
+                          <span className="text-sm font-medium text-gray-800">FAQ #{idx + 1}</span>
                         </div>
                         <div className="flex items-center gap-2">
                           <button type="button" className="text-gray-600 text-sm" onClick={() => setCollapsedFaqs(prev => {
@@ -3057,9 +3389,9 @@ import 'react-quill/dist/quill.snow.css';
                           })}>{collapsedFaqs[idx] ? 'Expand' : 'Collapse'}</button>
                           <button
                             type="button"
-                            onClick={()=>{
-                              setFaqs(prev=>prev.filter((_,i)=>i!==idx));
-                              setCollapsedFaqs(prev=>prev.filter((_,i)=>i!==idx));
+                            onClick={() => {
+                              setFaqs(prev => prev.filter((_, i) => i !== idx));
+                              setCollapsedFaqs(prev => prev.filter((_, i) => i !== idx));
                             }}
                             className="px-3 py-1 text-sm rounded-lg border border-red-200 text-red-600 hover:bg-red-50"
                             title="Remove FAQ"
@@ -3076,7 +3408,7 @@ import 'react-quill/dist/quill.snow.css';
                               <input
                                 type="text"
                                 value={f.question}
-                                onChange={(e)=>setFaqs(prev=>prev.map((x,i)=> i===idx ? { ...x, question:e.target.value } : x))}
+                                onChange={(e) => setFaqs(prev => prev.map((x, i) => i === idx ? { ...x, question: e.target.value } : x))}
                                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                                 placeholder="Enter question"
                               />
@@ -3086,7 +3418,7 @@ import 'react-quill/dist/quill.snow.css';
                               <textarea
                                 rows={3}
                                 value={f.answer}
-                                onChange={(e)=>setFaqs(prev=>prev.map((x,i)=> i===idx ? { ...x, answer:e.target.value } : x))}
+                                onChange={(e) => setFaqs(prev => prev.map((x, i) => i === idx ? { ...x, answer: e.target.value } : x))}
                                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                                 placeholder="Enter answer"
                               />
@@ -3100,14 +3432,14 @@ import 'react-quill/dist/quill.snow.css';
                   <div className="flex justify-between">
                     <button
                       type="button"
-                      onClick={()=>setFaqs(prev=>[...prev, { question:'', answer:'' }])}
+                      onClick={() => setFaqs(prev => [...prev, { question: '', answer: '' }])}
                       className="px-4 py-2 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700"
                     >
                       Add FAQ
                     </button>
                     <button
                       type="button"
-                      onClick={()=>{
+                      onClick={() => {
                         const topic = (title || categories || 'real estate').toLowerCase();
                         const base = [
                           { q: `What is ${topic}?`, a: `An overview of ${topic} and why it matters.` },
@@ -3151,7 +3483,7 @@ import 'react-quill/dist/quill.snow.css';
                   <input
                     type="checkbox"
                     checked={enableSchema}
-                    onChange={(e)=>setEnableSchema(e.target.checked)}
+                    onChange={(e) => setEnableSchema(e.target.checked)}
                   />
                   Enable Schema
                 </label>
@@ -3163,7 +3495,7 @@ import 'react-quill/dist/quill.snow.css';
                     <label className="block text-sm font-medium text-gray-700 mb-2">Schema Type</label>
                     <select
                       value={schemaType}
-                      onChange={(e)=>setSchemaType(e.target.value)}
+                      onChange={(e) => setSchemaType(e.target.value)}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     >
                       <option value="BlogPosting">Blog Posting</option>
@@ -3179,7 +3511,7 @@ import 'react-quill/dist/quill.snow.css';
                     </label>
                     <textarea
                       value={customSchema}
-                      onChange={(e)=>setCustomSchema(e.target.value)}
+                      onChange={(e) => setCustomSchema(e.target.value)}
                       placeholder='{"additionalProperty": "value"}'
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-mono text-sm"
                       rows={4}
@@ -3242,20 +3574,20 @@ import 'react-quill/dist/quill.snow.css';
             <div className="flex justify-end space-x-4 pt-6 border-t border-gray-200">
               {!blogToEdit && (
                 <button
-                type="button"
-                className="px-6 py-3 text-gray-700 bg-gray-100 rounded-xl hover:bg-gray-200 transition-all duration-200 font-medium flex items-center space-x-2"
-                disabled={isSubmitting}
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleSubmit(e, false);
-                }}
-              >
-                <Save className="w-4 h-4" />
-                <span>{
-                  isSubmitting && !isPublished ? 'Saving...' : 
-                  isPublished ? 'Save as Draft' : 'Save as Draft'
-                }</span>
-              </button>
+                  type="button"
+                  className="px-6 py-3 text-gray-700 bg-gray-100 rounded-xl hover:bg-gray-200 transition-all duration-200 font-medium flex items-center space-x-2"
+                  disabled={isSubmitting}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleSubmit(e, false);
+                  }}
+                >
+                  <Save className="w-4 h-4" />
+                  <span>{
+                    isSubmitting && !isPublished ? 'Saving...' :
+                      isPublished ? 'Save as Draft' : 'Save as Draft'
+                  }</span>
+                </button>
               )}
 
               <button
@@ -3284,11 +3616,11 @@ import 'react-quill/dist/quill.snow.css';
         </div>
         {/* History modal */}
         {showHistory && (
-          <div className="fixed inset-0 bg-black/50 z-[4000] flex items-center justify-center" onClick={()=>setShowHistory(false)}>
-            <div className="bg-white rounded-xl shadow-xl p-4 w-[92vw] max-w-[520px]" onClick={(e)=>e.stopPropagation()}>
+          <div className="fixed inset-0 bg-black/50 z-[4000] flex items-center justify-center" onClick={() => setShowHistory(false)}>
+            <div className="bg-white rounded-xl shadow-xl p-4 w-[92vw] max-w-[520px]" onClick={(e) => e.stopPropagation()}>
               <div className="flex items-center justify-between mb-2">
                 <div className="font-semibold">Draft History</div>
-                <button className="text-gray-600" onClick={()=>setShowHistory(false)}><X className="w-5 h-5"/></button>
+                <button className="text-gray-600" onClick={() => setShowHistory(false)}><X className="w-5 h-5" /></button>
               </div>
               {historyList?.length ? (
                 <div className="max-h-[60vh] overflow-auto divide-y">
@@ -3298,7 +3630,7 @@ import 'react-quill/dist/quill.snow.css';
                         <div className="font-medium">{h.title || 'Untitled'}</div>
                         <div className="text-gray-500">{new Date(h.ts).toLocaleString()}</div>
                       </div>
-                      <button className="px-3 py-1.5 rounded-lg border border-gray-300 hover:bg-gray-50" onClick={()=>{
+                      <button className="px-3 py-1.5 rounded-lg border border-gray-300 hover:bg-gray-50" onClick={() => {
                         try {
                           const raw = localStorage.getItem(draftKey);
                           if (!raw) return;
@@ -3312,11 +3644,12 @@ import 'react-quill/dist/quill.snow.css';
                           setSlug(s.slug || '');
                           setRelatedProjects(Array.isArray(s.relatedProjects) ? s.relatedProjects : []);
                           setEnableFAQ(!!s.enableFAQ);
-                          setFaqs(Array.isArray(s.faqs) && s.faqs.length ? s.faqs : [{question:'',answer:''}]);
+                          setFaqs(Array.isArray(s.faqs) && s.faqs.length ? s.faqs : [{ question: '', answer: '' }]);
                           setAuthor(s.author || author);
+                          setTableBlocks(Array.isArray(s.tableBlocks) ? s.tableBlocks : []);
                           showToast.success('Draft restored');
                           setShowHistory(false);
-                        } catch {}
+                        } catch { }
                       }}>Restore</button>
                     </div>
                   ))}
