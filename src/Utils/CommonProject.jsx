@@ -389,7 +389,7 @@ const CommonProject = ({
                     <Link to={path} target="_top">
                       <span className="relative overflow-hidden flex items-center text-white text-sm px-3 py-1.5 rounded-full bg-red-600 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 before:absolute before:left-0 before:top-0 before:h-full before:w-0 before:bg-red-700 before:transition-all before:duration-300 before:rounded-full before:-z-10 hover:before:w-full">
                         <EyeIcon size={16} />
-                        <span className="ml-2">View All Project</span>
+                        <span className="ml-2">View All Projects</span>
                       </span>
                     </Link>
                   </div>
