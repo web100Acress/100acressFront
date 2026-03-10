@@ -188,7 +188,7 @@ const DesktopInsightBlog = () => {
   };
 
   const blogLink = (blog) => {
-    if (blog?.slug) return `/blog/${blog.slug}`;
+    if (blog?.slug) return `/blog/${blog.slug}/`;
     const slug = (blog.title || '')
       .toString()
       .toLowerCase()
@@ -197,7 +197,7 @@ const DesktopInsightBlog = () => {
       .replace(/\s+/g, '-')
       .replace(/-+/g, '-')
       .replace(/^-+|-+$/g, '');
-    return `/blog/${slug}/${blog.id}`;
+    return `/blog/${slug}/${blog.id}/`;
   };
 
   return (
@@ -331,7 +331,7 @@ const DesktopInsightBlog = () => {
                       <span>{formatDate(featured.date)}</span>
                     </div>
                     <button
-                      onClick={() => navigate(`/insights/blog/${featured.id}`)}
+                      onClick={() => navigate(`/insights/blog/${featured.id}/`)}
                       className="inline-flex items-center gap-2 text-sm font-bold text-white hover:text-white/90"
                     >
                       Read article
@@ -374,7 +374,7 @@ const DesktopInsightBlog = () => {
                         </span>
                       </div>
                       <button
-                        onClick={() => navigate(`/insights/blog/${p.id}`)}
+                        onClick={() => navigate(`/insights/blog/${p.id}/`)}
                         className="inline-flex items-center gap-1 text-sm font-bold text-gray-900 hover:text-red-600"
                       >
                         Read
@@ -452,7 +452,7 @@ const DesktopInsightBlog = () => {
                 {trending.map((p, idx) => (
                   <button
                     key={p.id}
-                    onClick={() => navigate(`/insights/blog/${p.id}`)}
+                    onClick={() => navigate(`/insights/blog/${p.id}/`)}
                     className="w-full text-left p-4 hover:bg-gray-50 transition-colors"
                   >
                     <div className="flex gap-3">

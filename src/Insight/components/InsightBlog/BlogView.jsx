@@ -173,7 +173,7 @@ const BlogView = () => {
             {loadError || "We couldn't find the article you're looking for. It may have been removed or moved."}
           </p>
           <button
-            onClick={() => navigate('/insights/blog')}
+            onClick={() => navigate('/insights/blog/')}
             className="w-full sm:w-auto px-8 py-3.5 bg-gradient-to-r from-red-600 to-red-700 text-white font-semibold rounded-2xl hover:shadow-lg hover:shadow-red-200 transition-all duration-300 transform hover:-translate-y-0.5 active:translate-y-0"
           >
             Explore Our Library
@@ -200,7 +200,7 @@ const BlogView = () => {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
           {/* Back Button */}
           <button
-            onClick={() => navigate('/insights/blog')}
+            onClick={() => navigate('/insights/blog/')}
             className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 hover:text-slate-900 font-semibold transition-all duration-300 group active:scale-95"
           >
             <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
@@ -415,7 +415,7 @@ const BlogView = () => {
                 <article
                   key={blog._id}
                   onClick={() => {
-                    navigate(`/insights/blog/${blog._id}`);
+                    navigate(`/insights/blog/${blog._id}/`);
                     window.scrollTo(0, 0);
                   }}
                   className="group cursor-pointer flex flex-col h-full rounded-2xl overflow-hidden bg-white border border-slate-200 hover:border-slate-300 shadow-sm hover:shadow-xl transition-all duration-300"
@@ -460,7 +460,7 @@ const BlogView = () => {
             {/* View All Button */}
             <div className="mt-16 flex justify-center">
               <button
-                onClick={() => navigate('/insights/blog')}
+                onClick={() => navigate('/insights/blog/')}
                 className="px-8 py-4 bg-gradient-to-r from-red-600 to-red-700 text-white font-bold rounded-2xl hover:shadow-lg hover:shadow-red-200 transition-all duration-300 transform hover:-translate-y-0.5 active:translate-y-0 text-lg"
               >
                 Explore Full Library
