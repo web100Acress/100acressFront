@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import './VideoSection.css';
 
 const VideoSection = ({ 
   projectName, 
@@ -37,68 +38,68 @@ const VideoSection = ({
   const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
 
   return (
-    <section className="py-16 bg-gradient-to-br from-gray-900 via-black to-gray-900">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <section className="video-section">
+      <div className="video-section-content">
         {/* Section Header */}
         <motion.div 
-          className="text-center mb-6"
+          className="video-section-header"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           viewport={{ once: true }}
         >
-          <div className="inline-flex items-center bg-gradient-to-r from-amber-500/10 to-orange-500/10 backdrop-blur-sm border border-amber-400/20 rounded-full px-4 py-2 mb-3">
-            <svg className="w-4 h-4 text-amber-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="video-section-badge">
+            <svg className="video-section-badge-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/>
             </svg>
-            <span className="text-amber-300 text-xs font-semibold tracking-wide uppercase">Video Gallery</span>
+            <span className="video-section-badge-text">Video Gallery</span>
           </div>
 
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-2 tracking-tight">
-            <span className="bg-gradient-to-r from-white via-gray-100 to-white bg-clip-text text-transparent">
+          <h2 className="video-section-title">
+            <span className="video-section-title-gradient">
               {projectName ? `${projectName} Walkthrough` : 'Project Walkthrough'}
             </span>
           </h2>
 
-          <div className="flex items-center justify-center mb-2">
-            <div className="h-0.5 w-20 bg-gradient-to-r from-transparent via-amber-400 to-transparent"></div>
+          <div className="video-section-divider">
+            <div className="video-section-divider-line"></div>
           </div>
 
           {youtubeVideoDescription && (
             <motion.div
-              className="max-w-4xl mx-auto mb-4"
+              className="video-section-description"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
               viewport={{ once: true }}
             >
-              <p className="text-gray-300 text-sm leading-relaxed text-center">
+              <p className="video-section-description-text">
                 {youtubeVideoDescription}
               </p>
             </motion.div>
           )}
 
           <motion.div 
-            className="flex items-center justify-center space-x-4 text-xs text-gray-400"
+            className="video-section-meta"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.4 }}
             viewport={{ once: true }}
           >
-            <div className="flex items-center">
-              <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="video-section-meta-item">
+              <svg className="video-section-meta-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
               </svg>
               <span>Verified</span>
             </div>
-            <div className="flex items-center">
-              <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="video-section-meta-item">
+              <svg className="video-section-meta-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z"/>
               </svg>
               <span>HD</span>
             </div>
-            <div className="flex items-center">
-              <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="video-section-meta-item">
+              <svg className="video-section-meta-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
               </svg>
               <span>Tour</span>
@@ -108,18 +109,18 @@ const VideoSection = ({
 
         {/* Video Container */}
         <motion.div 
-          className="relative max-w-5xl mx-auto"
+          className="video-section-video-container"
           initial={{ opacity: 0, scale: 0.95 }}
           whileInView={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8, delay: 0.2 }}
           viewport={{ once: true }}
         >
-          <div className="relative overflow-hidden rounded-2xl shadow-2xl bg-gray-800 border border-gray-700">
+          <div className="video-section-video-wrapper">
             {/* Video Embed */}
-            <div className="relative aspect-video">
+            <div className="video-section-video-frame">
               {!isVideoLoaded && (
                 <div 
-                  className="absolute inset-0 cursor-pointer group"
+                  className="video-section-thumbnail"
                   onClick={() => setIsVideoLoaded(true)}
                 >
                   <img 
@@ -127,15 +128,15 @@ const VideoSection = ({
                     alt="Video thumbnail"
                     loading="lazy"
                     decoding="async"
-                    className="absolute inset-0 w-full h-full object-cover"
+                    className="video-section-thumbnail-img"
                   />
                   {/* Dark overlay */}
-                  <div className="absolute inset-0 bg-black/40 group-hover:bg-black/30 transition-all duration-300"></div>
+                  <div className="video-section-thumbnail-overlay"></div>
                   
                   {/* Play button */}
-                  <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="video-section-play-wrapper">
                     <motion.div
-                      className="bg-red-600 hover:bg-red-700 rounded-full p-4 sm:p-6 shadow-2xl cursor-pointer transform transition-all duration-300 group-hover:scale-110 flex items-center justify-center"
+                      className="video-section-play-btn"
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.95 }}
                       style={{
@@ -150,7 +151,7 @@ const VideoSection = ({
                         height="40" 
                         viewBox="0 0 24 24" 
                         fill="white"
-                        className="ml-1"
+                        className="video-section-play-btn-icon"
                       >
                         <path d="M8 5v14l11-7z"/>
                       </svg>
@@ -158,40 +159,40 @@ const VideoSection = ({
                   </div>
 
                   {/* Video title overlay - hidden on mobile */}
-                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent p-4 sm:p-8 hidden sm:block">
+                  <div className="video-section-title-overlay">
                     <motion.div
-                      className="max-w-4xl mx-auto"
+                      className="video-section-title-overlay-inner"
                       initial={{ opacity: 0, y: 20 }}
                       whileInView={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.8, delay: 0.3 }}
                     >
                       {/* Project badge */}
-                      <div className="inline-flex items-center bg-amber-500/20 backdrop-blur-sm border border-amber-400/30 rounded-full px-4 py-2 mb-4">
-                        <svg className="w-4 h-4 text-amber-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                      <div className="video-section-project-badge">
+                        <svg className="video-section-project-badge-icon" fill="currentColor" viewBox="0 0 20 20">
                           <path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"/>
                         </svg>
-                        <span className="text-amber-300 text-sm font-medium">Featured Project</span>
+                        <span className="video-section-project-badge-text">Featured Project</span>
                       </div>
 
                       {/* Main title */}
-                      <h3 className="text-white text-2xl md:text-3xl font-bold mb-3 leading-tight">
+                      <h3 className="video-section-video-title">
                         {youtubeVideoTitle || `${projectName} - Project Walkthrough`}
                       </h3>
 
                       {/* Subtitle with icon */}
-                      <div className="flex items-center text-gray-200">
-                        <svg className="w-5 h-5 text-amber-400 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <div className="video-section-video-subtitle">
+                        <svg className="video-section-video-subtitle-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
                         </svg>
-                        <p className="text-lg font-medium">
+                        <p className="video-section-video-subtitle-text">
                           Click to watch the complete project tour
                         </p>
                       </div>
 
                       {/* Duration indicator */}
-                      <div className="flex items-center mt-4 text-sm text-gray-300">
-                        <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <div className="video-section-duration">
+                        <svg className="video-section-duration-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                         </svg>
                         <span>Full project walkthrough • HD Quality</span>
@@ -205,7 +206,7 @@ const VideoSection = ({
                 <iframe
                   src={embedUrl}
                   title={youtubeVideoTitle || `${projectName} Video`}
-                  className="w-full h-full"
+                  className="video-section-iframe"
                   frameBorder="0"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
@@ -213,37 +214,20 @@ const VideoSection = ({
               )}
             </div>
           </div>
-
-          {/* Video Description */}
-          {/* {youtubeVideoDescription && (
-            <motion.div 
-              className="mt-8 text-center"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-              viewport={{ once: true }}
-            >
-              <div className="bg-gradient-to-br from-gray-900/50 to-gray-800/30 backdrop-blur-sm rounded-xl p-6 border border-gray-700/30">
-                <p className="text-gray-300 text-lg leading-relaxed max-w-4xl mx-auto">
-                  {youtubeVideoDescription}
-                </p>
-              </div>
-            </motion.div>
-          )} */}
         </motion.div>
 
         {/* Call to Action */}
         <motion.div 
-          className="text-center mt-12"
+          className="video-section-cta"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.6 }}
           viewport={{ once: true }}
         >
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+          <div className="video-section-cta-buttons">
             <motion.button
               onClick={() => onShowCallback && onShowCallback()}
-              className="bg-gradient-to-r from-amber-500 to-orange-600 text-white px-8 py-3 rounded-full font-semibold text-lg flex items-center space-x-2 hover:from-amber-600 hover:to-orange-700 transition-all duration-300 shadow-xl hover:shadow-2xl"
+              className="video-section-cta-primary"
               whileHover={{ 
                 scale: 1.05,
                 boxShadow: "0 20px 40px rgba(245, 158, 11, 0.4)"
@@ -269,7 +253,7 @@ const VideoSection = ({
               href={youtubeVideoUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-transparent border-2 border-gray-600 text-gray-300 px-8 py-3 rounded-full font-semibold text-lg flex items-center space-x-2 hover:border-gray-500 hover:text-white transition-all duration-300"
+              className="video-section-cta-secondary"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >

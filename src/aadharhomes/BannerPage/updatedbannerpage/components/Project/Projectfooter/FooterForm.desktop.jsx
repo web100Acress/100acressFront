@@ -3,6 +3,7 @@ import api from '../../../../../../config/apiClient';
 import { showToast } from '../../../../../../Utils/toastUtils';
 import CountryCodeSelector from '../../../../../../Components/Actual_Components/CountryCodeSelector';
 import { motion } from 'framer-motion';
+import './FooterForm.desktop.css';
 
 const FooterFormDesktop = ({ builderName = "Premium", projectViewDetails = {}, projectTitle = "", location = "" }) => {
   // Footer form state
@@ -91,30 +92,30 @@ const FooterFormDesktop = ({ builderName = "Premium", projectViewDetails = {}, p
   const { dialNumber, displayNumber } = getFooterPhoneNumbers();
 
   return (
-    <div className="bg-gradient-to-b from-gray-900 to-black py-12 md:py-16 border-t border-gray-800">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start lg:items-center">
+    <div className="footer-form-desktop">
+      <div className="footer-form-desktop-content">
+        <div className="footer-form-desktop-main-grid">
           
           {/* Left Side - Credible Text Content */}
           <motion.div 
             initial={{ opacity: 0, x: -30 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
-            className="space-y-8"
+            className="footer-form-desktop-left-content"
           >
             <div className="space-y-6">
               <motion.div 
-                className="inline-flex items-center px-4 py-2 bg-amber-500/10 rounded-full border border-amber-500/20"
+                className="footer-form-desktop-trust-badge"
                 whileHover={{ scale: 1.05 }}
               >
-                <svg className="w-4 h-4 text-amber-400 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                <svg className="footer-form-desktop-trust-badge-icon" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
                 </svg>
-                <span className="text-amber-300 text-sm font-medium">Trusted by 10,000+ Customers</span>
+                <span className="footer-form-desktop-trust-badge-text">Trusted by 10,000+ Customers</span>
               </motion.div>
               
               <motion.h2 
-                className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight"
+                className="footer-form-desktop-title"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
@@ -126,35 +127,35 @@ const FooterFormDesktop = ({ builderName = "Premium", projectViewDetails = {}, p
 
             {/* Call Now Section - Desktop */}
             <motion.div 
-              className="p-6 bg-gradient-to-r from-amber-500/10 to-amber-600/5 rounded-2xl border border-amber-500/20"
+              className="footer-form-desktop-call-section"
               whileHover={{ scale: 1.02 }}
               transition={{ duration: 0.3 }}
             >
-              <div className="flex items-center gap-4">
+              <div className="footer-form-desktop-call-content">
                 <motion.div 
-                  className="flex-shrink-0"
+                  className="footer-form-desktop-call-icon-container"
                   whileHover={{ scale: 1.1, rotate: 5 }}
                 >
-                  <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-amber-600 rounded-full flex items-center justify-center">
-                    <svg className="w-6 h-6 text-black" fill="currentColor" viewBox="0 0 24 24">
+                  <div className="footer-form-desktop-call-icon">
+                    <svg className="footer-form-desktop-call-icon-svg" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M6.62 10.79a15.05 15.05 0 006.59 6.59l2.2-2.2a1 1 0 011.01-.24 11.36 11.36 0 003.55.57 1 1 0 011 1v3.61a1 1 0 01-.91 1A16 16 0 014 5.92 1 1 0 015 5h3.61a1 1 0 011 1 11.36 11.36 0 00.57 3.55 1 1 0 01-.24 1.01l-2.32 2.23z"/>
                     </svg>
                   </div>
                 </motion.div>
                 <motion.a
                   href={`tel:+91${dialNumber}`}
-                  className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-amber-400 font-bold hover:text-amber-300 transition-all duration-300 transform hover:scale-105 text-3xl md:text-4xl"
+                  className="footer-form-desktop-call-link"
                   aria-label={`Call +91${displayNumber}`}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  <span className="font-extrabold tracking-wide leading-none">{displayNumber.replace('+91 ', '')}</span>
+                  <span className="footer-form-desktop-call-number">{displayNumber.replace('+91 ', '')}</span>
                 </motion.a>
               </div>
             </motion.div>
 
             {/* Trust Indicators - Desktop */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <div className="footer-form-desktop-trust-indicators">
               {[
                 {
                   icon: "M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z",
@@ -183,20 +184,20 @@ const FooterFormDesktop = ({ builderName = "Premium", projectViewDetails = {}, p
               ].map((item, index) => (
                 <motion.div 
                   key={index}
-                  className="flex items-start space-x-4 p-2.5 bg-gray-800/30 rounded-xl border border-gray-700/50"
+                  className="footer-form-desktop-trust-item"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.1 * index }}
                   whileHover={{ scale: 1.02 }}
                 >
-                  <div className={`flex-shrink-0 w-12 h-12 bg-${item.color}-500/10 rounded-lg flex items-center justify-center`}>
-                    <svg className={`w-6 h-6 text-${item.color}-400`} fill="currentColor" viewBox="0 0 24 24">
+                  <div className={`footer-form-desktop-trust-icon-container ${item.color}`}>
+                    <svg className={`footer-form-desktop-trust-icon ${item.color}`} fill="currentColor" viewBox="0 0 24 24">
                       <path d={item.icon}/>
                     </svg>
                   </div>
-                  <div>
-                    <h4 className="text-white font-semibold mb-1">{item.title}</h4>
-                    <p className="text-gray-400 text-sm">{item.description}</p>
+                  <div className="footer-form-desktop-trust-content">
+                    <h4 className="footer-form-desktop-trust-title">{item.title}</h4>
+                    <p className="footer-form-desktop-trust-description">{item.description}</p>
                   </div>
                 </motion.div>
               ))}
@@ -208,30 +209,30 @@ const FooterFormDesktop = ({ builderName = "Premium", projectViewDetails = {}, p
             initial={{ opacity: 0, x: 30 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="space-y-6"
+            className="footer-form-desktop-right-content"
           >
             <motion.div 
-              className="p-8 bg-gradient-to-br from-gray-800/50 to-gray-900/50 rounded-2xl border border-gray-700/50 backdrop-blur-sm"
+              className="footer-form-desktop-form-container"
               whileHover={{ scale: 1.02 }}
             >
-              <h3 className="text-2xl font-bold text-white mb-6">Get Property Details</h3>
+              <h3 className="footer-form-desktop-form-title">Get Property Details</h3>
               
-              <form onSubmit={handleFormSubmit} className="space-y-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Your Name</label>
+              <form onSubmit={handleFormSubmit} className="footer-form-desktop-form">
+                <div className="footer-form-desktop-form-group">
+                  <label className="footer-form-desktop-form-label">Your Name</label>
                   <input
                     type="text"
                     name="name"
                     value={footerFormData.name}
                     onChange={handleFormChange}
                     placeholder="Enter your name"
-                    className="w-full px-4 py-3 bg-gray-800/50 border border-gray-600/50 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all duration-300"
+                    className="footer-form-desktop-form-input"
                     required
                   />
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Mobile Number</label>
+                <div className="footer-form-desktop-form-group">
+                  <label className="footer-form-desktop-form-label">Mobile Number</label>
                   <CountryCodeSelector
                     selectedCountryCode={footerFormData.countryCode}
                     onCountryCodeChange={handleCountryCodeChange}
@@ -245,13 +246,13 @@ const FooterFormDesktop = ({ builderName = "Premium", projectViewDetails = {}, p
                 <motion.button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full bg-gradient-to-r from-amber-600 to-amber-500 text-black font-bold py-4 px-6 rounded-lg hover:from-amber-500 hover:to-amber-400 transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                  className="footer-form-desktop-submit-button"
                   whileHover={{ scale: isSubmitting ? 1 : 1.02 }}
                   whileTap={{ scale: isSubmitting ? 1 : 0.98 }}
                 >
                   {isSubmitting ? (
-                    <span className="flex items-center justify-center">
-                      <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <span className="footer-form-desktop-submit-button-content">
+                      <svg className="footer-form-desktop-submit-spinner" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                       </svg>
@@ -263,8 +264,8 @@ const FooterFormDesktop = ({ builderName = "Premium", projectViewDetails = {}, p
                 </motion.button>
               </form>
 
-              <div className="mt-6 pt-6 border-t border-gray-700/50">
-                <p className="text-center text-gray-400 text-sm">
+              <div className="footer-form-desktop-form-footer">
+                <p className="footer-form-desktop-form-footer-text">
                   By submitting, you agree to our Terms & Conditions
                 </p>
               </div>
@@ -273,11 +274,11 @@ const FooterFormDesktop = ({ builderName = "Premium", projectViewDetails = {}, p
         </div>
 
         {/* Disclaimer Section */}
-        <div className="mt-12">
-          <div className="w-full px-0 py-6">
-            <div className="bg-gray-800/30 rounded-xl p-6">
-              <h4 className="text-amber-400 font-semibold text-sm uppercase tracking-[0.1em] mb-3">Disclaimer</h4>
-              <p className="text-gray-400 text-sm leading-relaxed">
+        <div className="footer-form-desktop-disclaimer-section">
+          <div className="footer-form-desktop-disclaimer-container">
+            <div className="footer-form-desktop-disclaimer-content">
+              <h4 className="footer-form-desktop-disclaimer-title">Disclaimer</h4>
+              <p className="footer-form-desktop-disclaimer-text">
                 The information provided on this project page is shared only for general awareness and user understanding. It does not represent any offer, commitment, warranty, or endorsement. Project details are gathered from publicly available sources such as State RERA websites, official builder portals, and documents shared by authorized channel partners, including brochures, price lists, and payment plans. The platform presents this information in a simplified format to help users with research and comparison. It does not own or control the content. Buyers are strongly advised to verify all project details, approvals, pricing, and terms directly with the builder or promoter before making any purchase decision.
               </p>
             </div>
@@ -285,20 +286,20 @@ const FooterFormDesktop = ({ builderName = "Premium", projectViewDetails = {}, p
         </div>
 
         {/* Copyright Section */}
-        <div className="border-t border-white/20">
-          <div className="max-w-6xl mx-auto px-4 py-6">
-            <p className="text-center text-gray-400 text-sm">
+        <div className="footer-form-desktop-copyright-section">
+          <div className="footer-form-desktop-copyright-content">
+            <p className="footer-form-desktop-copyright-text">
               Copyright 2026. {projectViewDetails?.projectName || projectTitle || "100acress"}
-              <span className="mx-2">|</span>
-              <a href="/" className="hover:text-white transition-colors">Home</a>
-              <span className="mx-2">|</span>
-              <a href="/privacy-policy/" className="hover:text-white transition-colors">Privacy Policy</a>
-              <span className="mx-2">|</span>
-              <a href="/terms-and-conditions/" className="hover:text-white transition-colors">Terms & Conditions</a>
-              <span className="mx-2">|</span>
-              <a href="/disclaimer/" className="hover:text-white transition-colors">Disclaimer</a>
-              <span className="mx-2">|</span>
-              <a href="/blog/" className="hover:text-white transition-colors">Blog</a>
+              <span className="footer-form-desktop-copyright-separator">|</span>
+              <a href="/" className="footer-form-desktop-copyright-link">Home</a>
+              <span className="footer-form-desktop-copyright-separator">|</span>
+              <a href="/privacy-policy/" className="footer-form-desktop-copyright-link">Privacy Policy</a>
+              <span className="footer-form-desktop-copyright-separator">|</span>
+              <a href="/terms-and-conditions/" className="footer-form-desktop-copyright-link">Terms & Conditions</a>
+              <span className="footer-form-desktop-copyright-separator">|</span>
+              <a href="/disclaimer/" className="footer-form-desktop-copyright-link">Disclaimer</a>
+              <span className="footer-form-desktop-copyright-separator">|</span>
+              <a href="/blog/" className="footer-form-desktop-copyright-link">Blog</a>
             </p>
           </div>
         </div>

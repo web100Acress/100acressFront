@@ -29,7 +29,8 @@ import {
   MessageSquare,
   History,
   Maximize2,
-  Minimize2
+  Minimize2,
+  ChevronDown
 } from 'lucide-react';
 
 const initialCategories = [
@@ -909,7 +910,7 @@ const BlogWriteModal = () => {
               const tempDiv = document.createElement('div');
               tempDiv.innerHTML = b.blog_Description;
               const table = tempDiv.querySelector('table');
-              
+
               if (table) {
                 // Try to get data from metadata first
                 const configData = table.getAttribute('data-table-config');
@@ -924,13 +925,13 @@ const BlogWriteModal = () => {
                 } else {
                   // Fallback to manual extraction
                   const heading = tempDiv.querySelector('h3')?.textContent || '';
-                  const rows = Array.from(table.querySelectorAll('tr')).map(tr => 
+                  const rows = Array.from(table.querySelectorAll('tr')).map(tr =>
                     Array.from(tr.querySelectorAll('th, td')).map(td => td.textContent)
                   );
                   setCurrentTableData({ heading, rows });
                   setShowTableBuilder(true);
                 }
-                
+
                 // Replace table with placeholder for editing
                 const placeholder = `[TABLE_PLACEHOLDER_${Date.now()}]`;
                 const cleanContent = b.blog_Description.replace(/<div class="my-6 overflow-x-auto table-wrapper">[\s\S]*?<\/div>/, `<p>${placeholder}</p>`);
@@ -1623,7 +1624,7 @@ const BlogWriteModal = () => {
   const handleTableChange = (data) => {
     console.log("Table data changed in Modal:", data);
     setCurrentTableData(data);
-    
+
     // CRITICAL: Update the description whenever the table changes
     // This ensures that the finalized content (with the table) is correctly
     // generated during autosave or submission even if the user hasn't typed in Quill.
@@ -1636,7 +1637,7 @@ const BlogWriteModal = () => {
       }
     } else {
       // Fallback if quill is not available
-      setDescription(prev => prev + ' '); 
+      setDescription(prev => prev + ' ');
       setTimeout(() => setDescription(prev => prev.trim()), 0);
     }
   };
@@ -1666,24 +1667,24 @@ const BlogWriteModal = () => {
 
   const finalizeContent = (rawContent) => {
     if (!rawContent) return '';
-    
+
     // Check if there's table data to process
     // Improved regex to handle various ways the placeholder might be wrapped by Quill (e.g. <p>[...]</p>)
     const placeholderRegex = /\[TABLE_PLACEHOLDER_\d+\]/;
     const hasPlaceholder = placeholderRegex.test(rawContent);
-    
+
     if (currentTableData && currentTableData.rows && hasPlaceholder) {
       console.log("Replacing placeholder in real-time...");
       const tableHTML = generateTableHTML(currentTableData);
       // Store currentTableData in a data attribute within the HTML 
       const tableDataJSON = encodeURIComponent(JSON.stringify(currentTableData));
       const tableWithMetadata = tableHTML.replace('<table ', `<table data-table-config="${tableDataJSON}" `);
-      
+
       // Use global replace to catch any duplicates
       const finalized = rawContent.replace(new RegExp('\\[TABLE_PLACEHOLDER_\\d+\\]', 'g'), tableWithMetadata);
       return finalized;
     }
-    
+
     return rawContent;
   };
 
@@ -1741,17 +1742,17 @@ const BlogWriteModal = () => {
 
       // Basic blog data
       formDataAPI.append('blog_Title', title.trim());
-      
+
       // CRITICAL: Re-read from Quill root to ensure we have latest content
       const quill = safeGetQuill();
       // If we just appended a placeholder because it was missing, description state might be fresher than quill root
       const currentRaw = quill ? quill.root.innerHTML : description;
-      const latestRawContent = (!currentRaw.includes('[TABLE_PLACEHOLDER_') && description.includes('[TABLE_PLACEHOLDER_')) 
-        ? description 
+      const latestRawContent = (!currentRaw.includes('[TABLE_PLACEHOLDER_') && description.includes('[TABLE_PLACEHOLDER_'))
+        ? description
         : currentRaw;
-        
+
       const finalContent = finalizeContent(latestRawContent);
-      
+
       console.log("FINAL CONTENT BEING SENT TO DB:", finalContent);
       console.log("TABLE DATA BEING SENT:", currentTableData);
       formDataAPI.append('blog_Description', finalContent);
@@ -1780,7 +1781,7 @@ const BlogWriteModal = () => {
       if (tableBlocks.length > 0) {
         formDataAPI.append('tableBlocks', JSON.stringify(tableBlocks));
       }
-      
+
       // CRITICAL: If we have real-time table builder data, also send it specifically
       if (currentTableData) {
         formDataAPI.append('tableData', JSON.stringify(currentTableData));
@@ -1950,7 +1951,7 @@ const BlogWriteModal = () => {
             // Add extra space around placeholder to ensure it's not merged with other text
             quill.insertText(range.index, `\n${placeholder}\n`);
             quill.setSelection(range.index + placeholder.length + 2);
-            
+
             // CRITICAL: Immediately update state with the new content containing the placeholder
             const newHTML = quill.root.innerHTML;
             console.log("TABLE ICON CLICKED - New HTML with placeholder:", newHTML);
@@ -2430,1246 +2431,1309 @@ const BlogWriteModal = () => {
         {/* Top bar: SEO score, preview toggle, restore */}
         <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
           <div className="flex items-center gap-2">
-            <span className="text-sm font-medium">SEO Score:</span>
-            <span className="px-2.5 py-1 rounded-full text-white text-sm" style={{ backgroundColor: seoScore.color }}>
+            <span className="text-sm font-medium text-foreground">SEO Score:</span>
+            <span className="px-2.5 py-1 rounded-full text-white text-xs font-semibold" style={{ backgroundColor: seoScore.color }}>
               {seoScore.score} · {seoScore.label}
             </span>
           </div>
-          {/* Two-column section: left = SEO Insights, right = actions */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
-            <div>
-              {seoInsights?.length > 0 && (
-                <div className="bg-white rounded-xl border border-gray-100 shadow p-4 h-full">
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="font-semibold text-gray-900">SEO Insights</div>
-                    <button type="button" className="text-sm text-gray-600 hover:text-gray-800" onClick={() => setShowSeoDetails(v => !v)}>
-                      {showSeoDetails ? 'Hide' : 'Show'} details
-                    </button>
-                  </div>
-                  {showSeoDetails && (
-                    <ul className="space-y-1 max-h-56 overflow-auto pr-1">
-                      {seoInsights.map((it, i) => (
-                        <li key={i} className="text-sm flex items-start gap-2">
-                          <span className={`mt-1 inline-block w-2 h-2 rounded-full ${it.severity === 'good' ? 'bg-emerald-500' : it.severity === 'warn' ? 'bg-yellow-500' : 'bg-red-500'}`}></span>
-                          <span className="text-gray-800">
-                            {it.text}
-                            {it.section && <span className="ml-2 text-xs text-gray-500">[{it.section}]</span>}
-                          </span>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
-              )}
-            </div>
-            <div className="bg-white rounded-xl border border-gray-100 shadow p-4 flex flex-wrap items-center gap-2 justify-end lg:justify-start">
-              <button type="button" onClick={() => setShowPreview(v => !v)} className="px-3 py-2 rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50">
-                {showPreview ? 'Hide Preview' : 'Show Preview'}
-              </button>
-              {hasRestorable && (
-                <button type="button" onClick={() => {
-                  try {
-                    const raw = localStorage.getItem(draftKey);
-                    if (!raw) return;
-                    const s = JSON.parse(raw);
-                    setTitle(s.title || '');
-                    setDescription(s.description || '');
-                    setFrontImagePreview(s.frontImagePreview || '');
-                    setCategories(s.categories || '');
-                    setMetaTitle(s.metaTitle || '');
-                    setMetaDescription(s.metaDescription || '');
-                    setSlug(s.slug || '');
-                    setRelatedProjects(Array.isArray(s.relatedProjects) ? s.relatedProjects : []);
-                    setEnableFAQ(!!s.enableFAQ);
-                    setFaqs(Array.isArray(s.faqs) && s.faqs.length ? s.faqs : [{ question: '', answer: '' }]);
-                    setAuthor(s.author || author);
-                    setTableBlocks(Array.isArray(s.tableBlocks) ? s.tableBlocks : []);
-                    showToast.success('Draft restored');
-                  } catch { }
-                }} className="px-3 py-2 rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50 flex items-center gap-2">
-                  <History className="w-4 h-4" /> Restore Draft
-                </button>
-              )}
-              {historyList?.length > 0 && (
-                <button type="button" onClick={() => setShowHistory(true)} className="px-3 py-2 rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50 flex items-center gap-2">
-                  <History className="w-4 h-4" /> History
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
-        {/* Load fonts */}
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Roboto:wght@300;400;700&family=Poppins:wght@300;400;600;700&family=Montserrat:wght@300;400;600;700&family=Lato:wght@300;400;700&family=Open+Sans:wght@300;400;700&family=Raleway:wght@300;400;700&family=Nunito:wght@300;400;700&family=Merriweather:wght@300;400;700&family=Playfair+Display:wght@400;700&family=Source+Sans+3:wght@300;400;700&family=Ubuntu:wght@300;400;700&family=Work+Sans:wght@300;400;700&family=Rubik:wght@300;400;700&family=Mulish:wght@300;400;700&family=Josefin+Sans:wght@300;400;700&family=Quicksand:wght@300;400;700&family=DM+Sans:wght@300;400;700&family=PT+Serif:wght@400;700&family=Arimo:wght@400;700&display=swap" />
-        {/* Header */}
-        <div className="bg-white rounded-2xl shadow-xl p-6 mb-6 border border-gray-100">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
-                {blogToEdit ? (
-                  <Edit3 className="w-6 h-6 text-white" />
-                ) : (
-                  <Plus className="w-6 h-6 text-white" />
-                )}
-              </div>
-              <div>
-                <h2 className="text-3xl font-bold text-gray-900">
-                  {blogToEdit ? 'Edit Blog Post ' : 'Create New Blog'}
-                </h2>
-                <p className="text-gray-600 mt-1">
-                  {blogToEdit
-                    ? 'Update your blog content, SEO and settings'
-                    : 'Write and publish your next blog post'}
-                </p>
-              </div>
-            </div>
-            {blogToEdit && (
-              <div className="flex items-center gap-3">
-                <span className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-gray-100 text-gray-700 border border-gray-200" title="Total views (all time)">Views: {views}</span>
-              </div>
-            )}
-            <button
-              onClick={() => navigate('/seo/blogs')}
-              className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-all duration-200"
-            >
-              <X className="w-6 h-6" />
+
+          <div className="flex flex-wrap items-center gap-2 justify-end">
+            <button type="button" onClick={() => setShowPreview(v => !v)} className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2">
+              {showPreview ? 'Hide Preview' : 'Show Preview'}
             </button>
+            {hasRestorable && (
+              <button type="button" onClick={() => {
+                try {
+                  const raw = localStorage.getItem(draftKey);
+                  if (!raw) return;
+                  const s = JSON.parse(raw);
+                  setTitle(s.title || '');
+                  setDescription(s.description || '');
+                  setFrontImagePreview(s.frontImagePreview || '');
+                  setCategories(s.categories || '');
+                  setMetaTitle(s.metaTitle || '');
+                  setMetaDescription(s.metaDescription || '');
+                  setSlug(s.slug || '');
+                  setRelatedProjects(Array.isArray(s.relatedProjects) ? s.relatedProjects : []);
+                  setEnableFAQ(!!s.enableFAQ);
+                  setFaqs(Array.isArray(s.faqs) && s.faqs.length ? s.faqs : [{ question: '', answer: '' }]);
+                  setAuthor(s.author || author);
+                  setTableBlocks(Array.isArray(s.tableBlocks) ? s.tableBlocks : []);
+                  showToast.success('Draft restored');
+                } catch { }
+              }} className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2 gap-2">
+                <History className="w-4 h-4" /> Restore Draft
+              </button>
+            )}
+            {historyList?.length > 0 && (
+              <button type="button" onClick={() => setShowHistory(true)} className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2 gap-2">
+                <History className="w-4 h-4" /> History
+              </button>
+            )}
           </div>
         </div>
 
-        {/* Cropper Modal */}
-        {showCropper && (
-          <div
-            style={{
-              position: 'fixed',
-              inset: 0,
-              background: 'rgba(0,0,0,0.55)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              zIndex: 2000,
-            }}
-          >
-            <div style={{ background: '#fff', padding: 16, borderRadius: 8, width: 'min(95vw, 900px)' }}>
-              <h3 style={{ margin: '0 0 8px' }}>Crop Image</h3>
-              <div style={{ maxHeight: '70vh', overflow: 'auto' }}>
-                {rawImageUrl && (
-                  <ReactCrop crop={crop} onChange={(c) => setCrop(c)} onComplete={(c) => setCompletedCrop(c)} aspect={crop.aspect}>
-                    {/* eslint-disable-next-line jsx-a11y/alt-text */}
-                    <img
-                      ref={cropImgRef}
-                      src={rawImageUrl}
-                      onLoad={() => {
-                        if (!completedCrop) {
-                          setCrop((prev) => ({ ...prev }));
-                        }
-                      }}
-                      style={{ maxWidth: '100%' }}
-                    />
-                  </ReactCrop>
-                )}
-              </div>
-              <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end', marginTop: 12 }}>
-                <button type="button" onClick={closeCropper} style={{ padding: '6px 12px' }}>
-                  Cancel
-                </button>
-                <button
-                  type="button"
-                  onClick={confirmCropAndInsert}
-                  style={{ padding: '6px 12px', background: '#1677ff', color: '#fff', border: 'none', borderRadius: 4 }}
-                >
-                  Crop & Insert
-                </button>
-              </div>
+        {seoInsights?.length > 0 && (
+          <div className="bg-card text-card-foreground rounded-lg border shadow-sm p-4 mb-4">
+            <div className="flex items-center justify-between mb-2">
+              <div className="font-semibold text-sm">SEO Insights</div>
+              <button type="button" className="text-xs text-muted-foreground hover:text-foreground transition-colors" onClick={() => setShowSeoDetails(v => !v)}>
+                {showSeoDetails ? 'Hide' : 'Show'} details
+              </button>
             </div>
+            {showSeoDetails && (
+              <ul className="space-y-1.5 max-h-56 overflow-auto pr-1">
+                {seoInsights.map((it, i) => (
+                  <li key={i} className="text-[13px] flex items-start gap-2">
+                    <span className={`mt-1 inline-block w-2 h-2 rounded-full shrink-0 ${it.severity === 'good' ? 'bg-emerald-500' : it.severity === 'warn' ? 'bg-yellow-500' : 'bg-red-500'}`}></span>
+                    <span className="text-muted-foreground leading-snug">
+                      {it.text}
+                      {it.section && <span className="ml-2 text-[11px] text-muted-foreground/70">[{it.section}]</span>}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
         )}
+        {/* Load fonts */}
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" />
 
-        {/* Form */}
-        <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
-          <form className="p-6 space-y-8">
-            {/* Title */}
-            <div className="space-y-2">
+        {/* Main Layout Container matching Shadcn style */}
+        <div className="bg-background text-foreground min-h-screen">
+
+          {/* Main Content Area */}
+          <div className="max-w-7xl mx-auto py-6">
+
+            {/* Header */}
+            <div className="mb-6">
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <FileText className="w-4 h-4 text-blue-600" />
-                  <label htmlFor="title" className="text-sm font-medium text-gray-900">
-                    Blog Title
-                  </label>
-                </div>
-                {title && (
-                  <div className="text-xs text-gray-500">
-                    {title.length}/100
-                  </div>
-                )}
-              </div>
-              <input
-                type="text"
-                id="title"
-                value={title}
-                onChange={(e) => setTitle(e.target.value.slice(0, 100))}
-                className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 transition-colors"
-                placeholder="Enter your blog title..."
-                required
-              />
-              {titleKeywords.length > 0 && (
-                <div className="flex flex-wrap gap-1.5 mt-1">
-                  <span className="text-[10px] text-gray-500 self-center">Keywords:</span>
-                  {titleKeywords.slice(0, 4).map((k, i) => (
-                    <span
-                      key={k + i}
-                      className="px-1.5 py-0.5 rounded bg-blue-50 text-blue-700 text-[10px] border border-blue-100"
-                    >
-                      {k}
-                    </span>
-                  ))}
-                  {titleKeywords.length > 4 && (
-                    <span className="text-[10px] text-gray-400 self-center">
-                      +{titleKeywords.length - 4} more
-                    </span>
-                  )}
-                </div>
-              )}
-            </div>
-
-            {/* Slug + Meta */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {/* Slug URL */}
-              <div className="space-y-1.5">
-                <label className="text-xs font-medium text-gray-700">Slug URL</label>
-                <div className="flex rounded-lg border border-gray-200 overflow-hidden text-sm">
-                  <span className="px-2 py-2 flex items-center text-gray-500 bg-gray-50 border-r border-gray-200 text-xs">
-                    <LinkIcon className="w-3.5 h-3.5 mr-1.5" />
-                    /blog/
-                  </span>
-                  <input
-                    type="text"
-                    value={slug}
-                    onChange={(e) => {
-                      setSlugTouched(true);
-                      // Allow raw input — only replace spaces with hyphens for UX
-                      const raw = e.target.value.toLowerCase().replace(/\s+/g, '-');
-                      setSlug(raw);
-                    }}
-                    onBlur={() => {
-                      // Clean up on blur: remove trailing/leading hyphens and collapse multiples
-                      setSlug(prev => prev.replace(/-+/g, '-').replace(/^-+|-+$/g, ''));
-                    }}
-                    className="flex-1 px-2 py-2 min-w-0 text-sm focus:outline-none"
-                    placeholder="my-custom-slug"
-                  />
-                  <div className="flex">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setSlug(slugify(slug));
-                        setSlugTouched(true);
-                      }}
-                      className="px-2 text-xs bg-gray-50 hover:bg-gray-100 border-l border-gray-200 h-full"
-                      title="Slugify current value (clean special chars)"
-                    >
-                      ✓
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setSlugTouched(false);
-                        setSlug(slugify(title));
-                      }}
-                      className="px-2 text-xs bg-gray-50 hover:bg-gray-100 border-l border-gray-200 h-full"
-                      title="Reset slug to match title"
-                    >
-                      ⟲
-                    </button>
-                    <button
-                      type="button"
-                      onClick={async () => {
-                        try {
-                          await navigator.clipboard.writeText(`/blog/${slug}/`);
-                          setSlugCopied(true);
-                          setTimeout(() => setSlugCopied(false), 1200);
-                        } catch { }
-                      }}
-                      className="px-2 text-xs bg-gray-50 hover:bg-gray-100 border-l border-gray-200 h-full flex items-center"
-                      title="Copy full slug URL"
-                    >
-                      {slugCopied ? <Check className="w-3.5 h-3.5 text-green-600" /> : <Copy className="w-3.5 h-3.5" />}
-                    </button>
-                  </div>
-                </div>
-                <p className="text-[11px] text-gray-500">
-                  Type your own slug or auto-generates from title • <span className="text-blue-500 cursor-pointer hover:underline" onClick={() => { setSlugTouched(false); setSlug(slugify(title)); }}>Auto-generate</span>
-                </p>
-                {slug && (
-                  <div className="text-[11px] mt-0.5">
-                    {slugChecking ? (
-                      <span className="text-gray-500">{slugCheckMsg}</span>
+                <div className="flex items-center space-x-4">
+                  <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center shadow-sm">
+                    {blogToEdit ? (
+                      <Edit3 className="w-6 h-6 text-primary-foreground" />
                     ) : (
-                      <span className={slugAvailable ? 'text-green-600' : 'text-red-600'}>
-                        {slugCheckMsg || (slugAvailable ? 'Slug available' : 'Slug taken')}
-                      </span>
+                      <Plus className="w-6 h-6 text-primary-foreground" />
                     )}
                   </div>
+                  <div>
+                    <h2 className="text-2xl font-semibold tracking-tight">
+                      {blogToEdit ? 'Edit Blog Post ' : 'Create New Blog'}
+                    </h2>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      {blogToEdit
+                        ? 'Update your blog content, SEO and settings'
+                        : 'Write and publish your next blog post'}
+                    </p>
+                  </div>
+                </div>
+                {blogToEdit && (
+                  <div className="flex items-center gap-3">
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80" title="Total views (all time)">Views: {views}</span>
+                  </div>
                 )}
+                <button
+                  onClick={() => navigate('/seo/blogs')}
+                  className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground h-9 w-9"
+                >
+                  <X className="w-5 h-5" />
+                </button>
               </div>
+            </div>
 
-              {/* Meta Title */}
-              <div className="space-y-1.5">
-                <label className="text-xs font-medium text-gray-700">Meta Title</label>
-                <div className="relative">
+            {/* Cropper Modal */}
+            {showCropper && (
+              <div
+                style={{
+                  position: 'fixed',
+                  inset: 0,
+                  background: 'rgba(0,0,0,0.55)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  zIndex: 2000,
+                }}
+              >
+                <div style={{ background: '#fff', padding: 16, borderRadius: 8, width: 'min(95vw, 900px)' }}>
+                  <h3 style={{ margin: '0 0 8px' }}>Crop Image</h3>
+                  <div style={{ maxHeight: '70vh', overflow: 'auto' }}>
+                    {rawImageUrl && (
+                      <ReactCrop crop={crop} onChange={(c) => setCrop(c)} onComplete={(c) => setCompletedCrop(c)} aspect={crop.aspect}>
+                        {/* eslint-disable-next-line jsx-a11y/alt-text */}
+                        <img
+                          ref={cropImgRef}
+                          src={rawImageUrl}
+                          onLoad={() => {
+                            if (!completedCrop) {
+                              setCrop((prev) => ({ ...prev }));
+                            }
+                          }}
+                          style={{ maxWidth: '100%' }}
+                        />
+                      </ReactCrop>
+                    )}
+                  </div>
+                  <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end', marginTop: 12 }}>
+                    <button type="button" onClick={closeCropper} style={{ padding: '6px 12px' }}>
+                      Cancel
+                    </button>
+                    <button
+                      type="button"
+                      onClick={confirmCropAndInsert}
+                      style={{ padding: '6px 12px', background: '#1677ff', color: '#fff', border: 'none', borderRadius: 4 }}
+                    >
+                      Crop & Insert
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Form */}
+            <div className="bg-card text-card-foreground rounded-xl shadow-sm border overflow-hidden">
+              <form className="p-6 space-y-8">
+                {/* Title */}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2 text-foreground">
+                      <FileText className="w-5 h-5 text-primary" />
+                      <label htmlFor="title" className="text-base font-semibold leading-none tracking-tight">
+                        Blog Title
+                      </label>
+                    </div>
+                    {title && (
+                      <div className="text-xs text-muted-foreground">
+                        {title.length}/100
+                      </div>
+                    )}
+                  </div>
                   <input
                     type="text"
-                    value={metaTitle}
-                    onChange={(e) => setMetaTitle(e.target.value.slice(0, 60))}
-                    className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500"
-                    placeholder="Up to 60 characters"
-                  />
-                  <div className="absolute right-2 bottom-1.5 text-[11px] text-gray-500">
-                    {metaTitle.length}/60
-                  </div>
-                </div>
-              </div>
-
-              {/* Meta Description */}
-              <div className="space-y-1.5">
-                <div className="flex items-center justify-between">
-                  <label className="text-xs font-medium text-gray-700">Meta Description</label>
-                  <div className={`text-[10px] font-medium ${metaDescription.length >= 120 && metaDescription.length <= 160
-                    ? 'text-green-600'
-                    : metaDescription.length >= 80
-                      ? 'text-yellow-600'
-                      : 'text-red-600'
-                    }`}>
-                    {metaDescription.length}/160
-                  </div>
-                </div>
-                <div className="relative">
-                  <textarea
-                    value={metaDescription}
-                    onChange={(e) => setMetaDescription(e.target.value.slice(0, 160))}
-                    className="w-full px-3 py-2 text-xs border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500"
-                    placeholder="Up to 160 characters"
-                    rows={2}
+                    id="title"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value.slice(0, 100))}
+                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                    placeholder="Enter your blog title..."
+                    required
                   />
                   {titleKeywords.length > 0 && (
-                    <div className="mt-1 flex flex-wrap gap-1.5">
-                      <span className="text-[10px] text-gray-500 self-center">Keywords:</span>
-                      {titleKeywords.slice(0, 3).map((k, i) => (
-                        <button
+                    <div className="flex flex-wrap gap-1.5 mt-1">
+                      <span className="text-[10px] text-muted-foreground self-center">Keywords:</span>
+                      {titleKeywords.slice(0, 4).map((k, i) => (
+                        <span
                           key={k + i}
-                          type="button"
-                          className="px-1.5 py-0.5 rounded bg-gray-50 hover:bg-gray-100 text-[10px] border border-gray-200 text-gray-700"
-                          onClick={() => setMetaDescription((v) => (v ? `${v} ${k}` : k).slice(0, 160))}
+                          className="inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80"
                         >
                           {k}
-                        </button>
+                        </span>
                       ))}
-                      {titleKeywords.length > 3 && (
-                        <span
-                          className="text-[10px] text-gray-400 self-center"
-                          title={titleKeywords.slice(3).join(', ')}
-                        >
-                          +{titleKeywords.length - 3} more
+                      {titleKeywords.length > 4 && (
+                        <span className="text-[10px] text-muted-foreground self-center">
+                          +{titleKeywords.length - 4} more
                         </span>
                       )}
                     </div>
                   )}
                 </div>
-              </div>
-            </div>
 
-            {/* Featured Image */}
-            <div className="space-y-4">
-              {/* Featured Image Section */}
-              <div className="space-y-2">
-                <div className="flex items-center gap-2">
-                  <ImageIcon className="w-4 h-4 text-green-600" />
-                  <label className="text-sm font-medium text-gray-900">Featured Image </label>
-                </div>
-
-                {/* Two-column layout */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
-                  {/* Image Preview */}
-                  <div className="relative rounded-lg overflow-hidden border border-gray-200 bg-white">
-                    {frontImagePreview ? (
-                      <div className="relative">
-                        <img
-                          src={frontImagePreview}
-                          alt="Featured preview"
-                          className="w-full h-48 object-cover"
-                          onError={(e) => {
-                            if (!frontTriedProxy) {
-                              const src = originalFrontUrlRef.current || frontImagePreview;
-                              const stripProto = (u) => (u || '').replace(/^https?:\/\//i, '');
-                              const proxied = `https://images.weserv.nl/?url=${encodeURIComponent(stripProto(src))}`;
-                              setFrontImagePreview(proxied);
-                              setFrontTriedProxy(true);
-                            } else {
-                              setFrontImageError(true);
-                            }
+                {/* Slug + Meta */}
+                <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+                  {/* Slug URL */}
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Slug URL</label>
+                    <div className="flex rounded-md border border-input bg-background overflow-hidden text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
+                      <span className="px-3 py-2 flex items-center text-muted-foreground bg-muted border-r border-input text-sm">
+                        <LinkIcon className="w-4 h-4 mr-2" />
+                        /blog/
+                      </span>
+                      <input
+                        type="text"
+                        value={slug}
+                        onChange={(e) => {
+                          setSlugTouched(true);
+                          // Allow raw input — only replace spaces with hyphens for UX
+                          const raw = e.target.value.toLowerCase().replace(/\s+/g, '-');
+                          setSlug(raw);
+                        }}
+                        onBlur={() => {
+                          // Clean up on blur: remove trailing/leading hyphens and collapse multiples
+                          setSlug(prev => prev.replace(/-+/g, '-').replace(/^-+|-+$/g, ''));
+                        }}
+                        className="flex-1 px-3 py-2 min-w-0 text-sm focus:outline-none bg-transparent"
+                        placeholder="my-custom-slug"
+                      />
+                      <div className="flex items-stretch">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setSlug(slugify(slug));
+                            setSlugTouched(true);
                           }}
-                        />
-                        {frontImageError && (
-                          <div className="absolute bottom-1 left-1 right-1 bg-white/90 backdrop-blur rounded p-1 border border-amber-200 text-xs flex flex-wrap gap-1">
-                            <span className="text-amber-800 text-[10px]">Image failed to load</span>
-                            <button
-                              type="button"
-                              className="px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 hover:bg-amber-200 text-[10px]"
-                              onClick={() => {
-                                setFrontImageError(false);
-                                setFrontImagePreview(originalFrontUrlRef.current || frontImagePreview);
-                              }}
-                            >
-                              Retry
-                            </button>
-                          </div>
-                        )}
+                          className="px-3 py-2 text-xs bg-muted hover:bg-muted/80 border-l border-input transition-colors"
+                          title="Slugify current value (clean special chars)"
+                        >
+                          ✓
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setSlugTouched(false);
+                            setSlug(slugify(title));
+                          }}
+                          className="px-3 py-2 text-xs bg-muted hover:bg-muted/80 border-l border-input transition-colors"
+                          title="Reset slug to match title"
+                        >
+                          ⟲
+                        </button>
+                        <button
+                          type="button"
+                          onClick={async () => {
+                            try {
+                              await navigator.clipboard.writeText(`/blog/${slug}/`);
+                              setSlugCopied(true);
+                              setTimeout(() => setSlugCopied(false), 1200);
+                            } catch { }
+                          }}
+                          className="px-3 py-2 text-xs bg-muted hover:bg-muted/80 border-l border-input transition-colors flex items-center"
+                          title="Copy full slug URL"
+                        >
+                          {slugCopied ? <Check className="w-4 h-4 text-green-600" /> : <Copy className="w-4 h-4" />}
+                        </button>
                       </div>
-                    ) : (
-                      <div className="h-32 flex items-center justify-center text-gray-400 text-sm">
-                        No image selected
+                    </div>
+                    <p className="text-[11px] text-muted-foreground">
+                      Type your own slug or auto-generates from title • <span className="text-primary cursor-pointer hover:underline" onClick={() => { setSlugTouched(false); setSlug(slugify(title)); }}>Auto-generate</span>
+                    </p>
+                    {slug && (
+                      <div className="text-[11px] mt-1 font-medium">
+                        {slugChecking ? (
+                          <span className="text-muted-foreground">{slugCheckMsg}</span>
+                        ) : (
+                          <span className={slugAvailable ? 'text-green-600 dark:text-green-500' : 'text-destructive'}>
+                            {slugCheckMsg || (slugAvailable ? 'Slug available' : 'Slug taken')}
+                          </span>
+                        )}
                       </div>
                     )}
                   </div>
 
-                  {/* Upload Controls */}
+                  {/* Meta Title */}
                   <div className="space-y-2">
-                    <div
-                      className="relative border-2 border-dashed border-gray-200 rounded-lg p-3 text-center hover:border-blue-300 transition-colors"
-                      onDragOver={onFeaturedDragOver}
-                      onDrop={onFeaturedDrop}
-                    >
+                    <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Meta Title</label>
+                    <div className="relative">
                       <input
-                        type="file"
-                        id="featured-image-upload"
-                        accept="image/webp"
-                        onChange={handleFileChange}
-                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                        type="text"
+                        value={metaTitle}
+                        onChange={(e) => setMetaTitle(e.target.value.slice(0, 60))}
+                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                        placeholder="Up to 60 characters"
                       />
-                      <div className="space-y-1">
-                        <UploadCloud className="w-6 h-6 mx-auto text-gray-400" />
-                        <p className="text-xs font-medium text-gray-700">
-                          {frontImagePreview ? 'Click to change' : 'Upload WebP image'}
-                        </p>
-                        <p className="text-[10px] text-gray-500">
-                          {frontImagePreview ? 'or drag & drop' : 'or paste URL below'}
-                        </p>
+                      <div className="absolute right-3 bottom-2.5 text-xs text-muted-foreground">
+                        {metaTitle.length}/60
                       </div>
                     </div>
+                  </div>
 
-                    <input
-                      type="text"
-                      className="w-full px-3 py-1.5 text-xs border border-gray-200 rounded-lg focus:ring-1 focus:ring-blue-500"
-                      placeholder="Paste WebP URL"
-                      onPaste={async (e) => {
-                        try {
-                          const pastedText = e.clipboardData.getData('text/plain');
-                          if (pastedText) {
-                            e.preventDefault();
-                            handleImageUrlChange({ target: { value: pastedText } });
-                          }
-                        } catch (err) {
-                          console.error('Error handling paste:', err);
-                        }
-                      }}
-                      onChange={handleImageUrlChange}
-                      value={frontImage || ''}
-                    />
+                  {/* Meta Description */}
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Meta Description</label>
+                      <div className={`text-[11px] font-medium ${metaDescription.length >= 120 && metaDescription.length <= 160
+                        ? 'text-green-600 dark:text-green-500'
+                        : metaDescription.length >= 80
+                          ? 'text-yellow-600 dark:text-yellow-500'
+                          : 'text-destructive'
+                        }`}>
+                        {metaDescription.length}/160
+                      </div>
+                    </div>
+                    <div className="relative">
+                      <textarea
+                        value={metaDescription}
+                        onChange={(e) => setMetaDescription(e.target.value.slice(0, 160))}
+                        className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                        placeholder="Up to 160 characters"
+                        rows={3}
+                      />
+                      {titleKeywords.length > 0 && (
+                        <div className="mt-2 flex flex-wrap gap-1.5">
+                          <span className="text-[10px] text-muted-foreground self-center">Keywords:</span>
+                          {titleKeywords.slice(0, 3).map((k, i) => (
+                            <button
+                              key={k + i}
+                              type="button"
+                              className="inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80"
+                              onClick={() => setMetaDescription((v) => (v ? `${v} ${k}` : k).slice(0, 160))}
+                            >
+                              {k}
+                            </button>
+                          ))}
+                          {titleKeywords.length > 3 && (
+                            <span
+                              className="text-[10px] text-muted-foreground self-center"
+                              title={titleKeywords.slice(3).join(', ')}
+                            >
+                              +{titleKeywords.length - 3} more
+                            </span>
+                          )}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              {/* Blog Category Section */}
-              <div className="space-y-2">
-                <div className="flex items-center gap-2">
-                  <Tag className="w-4 h-4 text-purple-600" />
-                  <label className="text-sm font-medium text-gray-900">Category</label>
-                </div>
+                {/* Featured Image */}
+                <div className="space-y-6 pt-4 border-t">
+                  {/* Featured Image Section */}
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2">
+                      <ImageIcon className="w-5 h-5 text-primary" />
+                      <label className="text-base font-semibold leading-none tracking-tight">Featured Image </label>
+                    </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                  <select
-                    className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:ring-1 focus:ring-purple-500"
-                    value={categories}
-                    onChange={handleEditCategory}
-                  >
-                    <option value="">Select category</option>
-                    {categoryList.map((c) => (
-                      <option key={c} value={c}>{c}</option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-            </div>
-
-            {/* Related Projects Section */}
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <LinkIcon className="w-4 h-4 text-indigo-600" />
-                  <span className="text-sm font-medium text-gray-900">Related Projects</span>
-                  <span className="text-xs text-gray-500">({relatedProjects.length}/5)</span>
-                </div>
-                {autoSuggestEnabled && suggestedProjects.length > 0 && (
-                  <button
-                    type="button"
-                    className="px-2 py-1 text-xs rounded-lg bg-emerald-600 text-white hover:bg-emerald-700"
-                    onClick={() => {
-                      const toAdd = suggestedProjects.slice(0, Math.max(0, 5 - relatedProjects.length));
-                      toAdd.forEach(addRelatedProject);
-                    }}
-                    disabled={relatedProjects.length >= 5}
-                  >
-                    Add Top {Math.min(3, suggestedProjects.length)} Suggested
-                  </button>
-                )}
-              </div>
-
-              {/* Suggestions grid */}
-              {autoSuggestEnabled && suggestedProjects.length > 0 && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  {suggestedProjects.slice(0, 4).map((p, idx) => (
-                    <div key={`${p.project_url}-${idx}`} className="flex items-center justify-between p-2 bg-white border border-gray-100 rounded-lg">
-                      <div className="flex items-center gap-2 min-w-0">
-                        {p.thumbnail && (
-                          <img
-                            src={p.thumbnail}
-                            alt=""
-                            className="w-8 h-8 rounded object-cover"
-                            onError={(e) => e.target.style.display = 'none'}
-                          />
+                    {/* Two-column layout */}
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                      {/* Image Preview */}
+                      <div className="relative rounded-md overflow-hidden border border-input bg-background shadow-sm">
+                        {frontImagePreview ? (
+                          <div className="relative group h-full">
+                            <img
+                              src={frontImagePreview}
+                              alt="Featured preview"
+                              className="w-full h-48 object-cover transition-opacity"
+                              onError={(e) => {
+                                if (!frontTriedProxy) {
+                                  const src = originalFrontUrlRef.current || frontImagePreview;
+                                  const stripProto = (u) => (u || '').replace(/^https?:\/\//i, '');
+                                  const proxied = `https://images.weserv.nl/?url=${encodeURIComponent(stripProto(src))}`;
+                                  setFrontImagePreview(proxied);
+                                  setFrontTriedProxy(true);
+                                } else {
+                                  setFrontImageError(true);
+                                }
+                              }}
+                            />
+                            {frontImageError && (
+                              <div className="absolute bottom-2 left-2 right-2 bg-background/95 backdrop-blur rounded p-2 border border-destructive/20 text-xs flex flex-wrap gap-2 items-center justify-between shadow-sm">
+                                <span className="text-destructive font-medium">Image failed to load</span>
+                                <button
+                                  type="button"
+                                  className="px-2 py-1 rounded-md bg-destructive/10 text-destructive hover:bg-destructive/20 transition-colors text-xs font-semibold"
+                                  onClick={() => {
+                                    setFrontImageError(false);
+                                    setFrontImagePreview(originalFrontUrlRef.current || frontImagePreview);
+                                  }}
+                                >
+                                  Retry
+                                </button>
+                              </div>
+                            )}
+                          </div>
+                        ) : (
+                          <div className="h-48 flex items-center justify-center text-muted-foreground text-sm bg-muted/30">
+                            No image selected
+                          </div>
                         )}
-                        <div className="min-w-0">
-                          <div className="text-xs font-medium text-gray-900 truncate">{p.projectName || 'Project'}</div>
-                          <div className="text-[10px] text-gray-500 truncate">{p.builderName || p.city || ''}</div>
+                      </div>
+
+                      {/* Upload Controls */}
+                      <div className="space-y-3">
+                        <div
+                          className="relative flex flex-col items-center justify-center border-2 border-dashed border-muted-foreground/25 rounded-lg p-6 text-center hover:bg-muted/50 hover:border-primary/50 transition-colors h-[134px]"
+                          onDragOver={onFeaturedDragOver}
+                          onDrop={onFeaturedDrop}
+                        >
+                          <input
+                            type="file"
+                            id="featured-image-upload"
+                            accept="image/webp"
+                            onChange={handleFileChange}
+                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                          />
+                          <div className="space-y-2">
+                            <UploadCloud className="w-8 h-8 mx-auto text-muted-foreground/70" />
+                            <div className="text-sm font-medium">
+                              {frontImagePreview ? 'Click to change image' : 'Upload WebP image'}
+                            </div>
+                            <div className="text-xs text-muted-foreground">
+                              {frontImagePreview ? 'or drag & drop here' : 'or paste URL below'}
+                            </div>
+                          </div>
                         </div>
+
+                        <input
+                          type="text"
+                          className="flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                          placeholder="Paste WebP URL"
+                          onPaste={async (e) => {
+                            try {
+                              const pastedText = e.clipboardData.getData('text/plain');
+                              if (pastedText) {
+                                e.preventDefault();
+                                handleImageUrlChange({ target: { value: pastedText } });
+                              }
+                            } catch (err) {
+                              console.error('Error handling paste:', err);
+                            }
+                          }}
+                          onChange={handleImageUrlChange}
+                          value={frontImage || ''}
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Blog Category Section */}
+                  <div className="space-y-3 pt-4 border-t">
+                    <div className="flex items-center gap-2">
+                      <Tag className="w-5 h-5 text-primary" />
+                      <label className="text-base font-semibold leading-none tracking-tight">Category</label>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                      <select
+                        className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                        value={categories}
+                        onChange={handleEditCategory}
+                      >
+                        <option value="" disabled className="text-muted-foreground">Select category</option>
+                        {categoryList.map((c) => (
+                          <option key={c} value={c}>{c}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* Related Projects Section */}
+                  <div className="space-y-4 pt-4 border-t">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <LinkIcon className="w-5 h-5 text-primary" />
+                        <span className="text-base font-semibold leading-none tracking-tight">Related Projects</span>
+                        <span className="text-xs text-muted-foreground">({relatedProjects.length}/5)</span>
+                      </div>
+                      {autoSuggestEnabled && suggestedProjects.length > 0 && (
+                        <button
+                          type="button"
+                          className="inline-flex items-center justify-center rounded-md text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80 h-7 px-3"
+                          onClick={() => {
+                            const toAdd = suggestedProjects.slice(0, Math.max(0, 5 - relatedProjects.length));
+                            toAdd.forEach(addRelatedProject);
+                          }}
+                          disabled={relatedProjects.length >= 5}
+                        >
+                          Add Top {Math.min(3, suggestedProjects.length)} Suggested
+                        </button>
+                      )}
+                    </div>
+
+                    {/* Suggestions grid */}
+                    {autoSuggestEnabled && suggestedProjects.length > 0 && (
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        {suggestedProjects.slice(0, 4).map((p, idx) => (
+                          <div key={`${p.project_url}-${idx}`} className="flex items-center justify-between p-2.5 bg-background border border-input rounded-md shadow-sm">
+                            <div className="flex items-center gap-3 min-w-0">
+                              {p.thumbnail && (
+                                <img
+                                  src={p.thumbnail}
+                                  alt=""
+                                  className="w-10 h-10 rounded-sm object-cover"
+                                  onError={(e) => e.target.style.display = 'none'}
+                                />
+                              )}
+                              <div className="min-w-0">
+                                <div className="text-sm font-medium text-foreground truncate">{p.projectName || 'Project'}</div>
+                                <div className="text-xs text-muted-foreground truncate">{p.builderName || p.city || ''}</div>
+                              </div>
+                            </div>
+                            <button
+                              type="button"
+                              className="inline-flex items-center justify-center rounded-md text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-7 px-3 ml-2 shrink-0"
+                              onClick={() => addRelatedProject(p)}
+                              disabled={relatedProjects.length >= 5}
+                            >
+                              Add
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Project search */}
+                    <div className="relative">
+                      <input
+                        type="text"
+                        value={projectSearchTerm}
+                        onChange={(e) => setProjectSearchTerm(e.target.value)}
+                        placeholder="Search projects..."
+                        className="flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                      />
+                      {projectSearchTerm && (
+                        <button
+                          type="button"
+                          onClick={() => setProjectSearchTerm('')}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                          title="Clear"
+                        >
+                          <X className="w-4 h-4" />
+                        </button>
+                      )}
+                    </div>
+
+                    {/* Project dropdown */}
+                    <div className="relative">
+                      <select
+                        className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 appearance-none"
+                        onChange={(e) => {
+                          const idx = Number(e.target.value);
+                          const source = projectSearchTerm.trim().length >= 2 ? projectSearchResults : allProjects;
+                          const list = source
+                            .filter(project => !relatedProjects.find(rp => rp.project_url === project.project_url))
+                            .filter(p => {
+                              const q = (projectSearchTerm || '').trim().toLowerCase();
+                              if (!q) return true;
+                              const hay = `${p.projectName || ''} ${p.builderName || ''} ${p.location || ''} ${p.city || ''}`.toLowerCase();
+                              return hay.includes(q);
+                            });
+                          if (!Number.isNaN(idx) && list[idx]) addRelatedProject(list[idx]);
+                          e.target.value = '';
+                        }}
+                        defaultValue=""
+                      >
+                        <option value="" disabled className="text-muted-foreground">{isLoadingProjects ? 'Loading...' : 'Select a project to add'}</option>
+                        {(projectSearchTerm.trim().length >= 2 ? projectSearchResults : allProjects)
+                          .filter(project => !relatedProjects.find(rp => rp.project_url === project.project_url))
+                          .filter(p => {
+                            const q = (projectSearchTerm || '').trim().toLowerCase();
+                            if (!q) return true;
+                            const hay = `${p.projectName || ''} ${p.builderName || ''} ${p.location || ''} ${p.city || ''}`.toLowerCase();
+                            return hay.includes(q);
+                          })
+                          .map((p, idx) => (
+                            <option key={p.project_url || `${p.projectName}-${idx}`} value={idx}>
+                              {p.projectName || `Project ${idx + 1}`}
+                              {p.builderName ? ` — ${p.builderName}` : ''}
+                            </option>
+                          ))}
+                      </select>
+                      <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground">
+                        <ChevronDown className="w-4 h-4 opacity-50" />
+                      </div>
+                      {isLoadingProjects && (
+                        <div className="absolute right-10 top-1/2 -translate-y-1/2">
+                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Selected projects */}
+                    {relatedProjects.length > 0 && (
+                      <div className="space-y-2 mt-4">
+                        <div className="text-sm font-medium leading-none">Selected Projects ({relatedProjects.length}/5):</div>
+                        <div className="space-y-2">
+                          {relatedProjects.map((project, index) => (
+                            <div
+                              key={index}
+                              className="flex items-center justify-between p-3 bg-muted/30 border border-input rounded-md shadow-sm"
+                            >
+                              <div className="flex items-center gap-3 min-w-0">
+                                {project.thumbnail && (
+                                  <img
+                                    src={project.thumbnail}
+                                    alt=""
+                                    className="w-10 h-10 object-cover rounded-sm"
+                                    onError={(e) => e.target.style.display = 'none'}
+                                  />
+                                )}
+                                <div className="min-w-0">
+                                  <p className="text-sm font-medium text-foreground truncate">
+                                    {project.projectName || 'Project'}
+                                  </p>
+                                  <p className="text-xs text-muted-foreground truncate font-mono">
+                                    {project.project_url?.replace(/^https?:\/\//, '')}
+                                  </p>
+                                </div>
+                              </div>
+                              <button
+                                type="button"
+                                onClick={() => removeRelatedProject(project.project_url)}
+                                className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors hover:bg-destructive/10 hover:text-destructive h-8 w-8 ml-2 shrink-0"
+                                title="Remove"
+                              >
+                                <X className="w-4 h-4" />
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Editor Controls */}
+                  <div className="flex flex-wrap items-center gap-2 pt-4 border-t">
+                    <button
+                      type="button"
+                      onClick={uploadInlineImage}
+                      className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-9 px-4 gap-1.5"
+                      title="Upload image and insert at cursor"
+                    >
+                      <Upload className="w-4 h-4" />
+                      Insert Image
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={insertImageByUrl}
+                      className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-9 px-4 gap-1.5"
+                      title="Insert image by URL at cursor"
+                    >
+                      <ImageIcon className="w-4 h-4" />
+                      Insert from URL
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        const input = document.createElement('input');
+                        input.type = 'file';
+                        input.accept = 'image/webp';
+                        input.multiple = true;
+                        input.onchange = async () => {
+                          const files = Array.from(input.files || []).slice(0, 4);
+                          if (!files.length) return;
+
+                          // STRICT: Check all files are WebP
+                          const nonWebpFiles = files.filter(file => file.type !== 'image/webp');
+                          if (nonWebpFiles.length > 0) {
+                            showToast.error('Only WebP images are allowed');
+                            return;
+                          }
+
+                          showToast.loading('Uploading...', { id: 'gridUpload' });
+                          try {
+                            const urls = [];
+                            for (const f of files) {
+                              const fd = new FormData();
+                              fd.append('image', f);
+                              const r = await api.post(`/blog/upload-image`, fd);
+                              const u = r?.data?.url || r?.data?.data?.url || r?.data?.imageUrl || '';
+                              if (u) urls.push(u);
+                            }
+                            const cardStyle = 'background:hsl(var(--background));border:1px solid hsl(var(--border));border-radius:var(--radius);overflow:hidden;display:flex;flex-direction:column;';
+                            const imgStyle = `width:100%;height:${gridSizeToPx[gridImgSize]}px;object-fit:cover;display:block;`;
+                            const cards = urls.map((u, idx) =>
+                              `<figure class="grid-card" style="${cardStyle}">
+              <img style="${imgStyle}" src="${u}" alt="" />
+              ${gridWithTitles ? `<figcaption style="padding:4px 6px;font-size:12px;color:hsl(var(--muted-foreground));text-align:center;" contenteditable="true">Title ${idx + 1}</figcaption>` : ''}
+            </figure>`
+                            ).join('');
+                            const gridCols = gridLayout === 'lastLarge' ? '1fr 1fr 1fr 1.6fr' : 'repeat(4, 1fr)';
+                            const inner = `<div class="img-grid-4 layout-${gridLayout}" style="display:grid;grid-template-columns:${gridCols};gap:8px;margin:8px 0;">${cards}</div>`;
+                            const html = gridWithTitles
+                              ? `<section class="img-grid-4-frame" style="border:1px solid hsl(var(--border));border-radius:var(--radius);padding:8px;background:hsl(var(--muted)/0.3);">
+                <div class="grid-title" style="text-align:center;font-weight:600;margin:0 0 8px;font-size:13px;color:hsl(var(--foreground));" contenteditable="true">Grid Title</div>
+                ${inner}
+              </section>`
+                              : `${inner}<p><br/></p>`;
+                            const quill = safeGetQuill();
+                            if (quill) {
+                              const sel = quill.getSelection(true) || { index: quill.getLength(), length: 0 };
+                              quill.clipboard.dangerouslyPasteHTML(sel.index, html, 'user');
+                              quill.setSelection(sel.index + 1, 0);
+                            }
+                            showToast.success('Inserted image grid');
+                          } catch (err) {
+                            console.error(err);
+                            showToast.error('Failed to insert grid');
+                          } finally {
+                            showToast.dismiss('gridUpload');
+                          }
+                        };
+                        input.click();
+                      }}
+                      className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-9 px-4"
+                      title="Insert 4 images as a grid"
+                    >
+                      Insert 4-Image Grid
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setBwMode(v => !v)}
+                      className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 px-4 border border-input bg-background shadow-sm"
+                      title="Toggle Black & White mode for images"
+                    >
+                      {bwMode ? 'Color Mode' : 'B/W Mode'}
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const makeCell = (text = '') => ({ text, link: '', bgColor: '', textColor: '' });
+                        const newTable = {
+                          type: 'table',
+                          heading: '',
+                          rows: [
+                            [makeCell('Header 1'), makeCell('Header 2'), makeCell('Header 3')],
+                            [makeCell(''), makeCell(''), makeCell('')],
+                          ]
+                        };
+                        setTableBlocks([...tableBlocks, newTable]);
+                        showToast.success('Table builder added');
+                      }}
+                      className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-9 px-4 gap-1.5 ml-auto"
+                      title="Add Table Builder"
+                    >
+                      <Plus className="w-4 h-4" />
+                      Add Table
+                    </button>
+                  </div>
+
+                  {/* Content Editor */}
+                  <div className="space-y-4 pt-4 border-t">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-2">
+                        <Edit3 className="w-5 h-5 text-primary" />
+                        <label className="text-base font-semibold leading-none tracking-tight">
+                          Blog Content
+                        </label>
                       </div>
                       <button
                         type="button"
-                        className="px-2 py-0.5 text-xs rounded bg-indigo-600 text-white hover:bg-indigo-700"
-                        onClick={() => addRelatedProject(p)}
-                        disabled={relatedProjects.length >= 5}
+                        onClick={() => setEditorFullscreen(true)}
+                        className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-8 px-3 gap-1.5"
+                        title="Open editor in full screen"
                       >
-                        Add
+                        <Maximize2 className="w-3.5 h-3.5" />
+                        <span className="hidden sm:inline">Full screen</span>
                       </button>
                     </div>
-                  ))}
-                </div>
-              )}
 
-              {/* Project search */}
-              <div className="relative">
-                <input
-                  type="text"
-                  value={projectSearchTerm}
-                  onChange={(e) => setProjectSearchTerm(e.target.value)}
-                  placeholder="Search projects..."
-                  className="w-full px-3 py-1.5 text-sm border border-gray-200 rounded-lg focus:ring-1 focus:ring-indigo-500"
-                />
-                {projectSearchTerm && (
-                  <button
-                    type="button"
-                    onClick={() => setProjectSearchTerm('')}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                    title="Clear"
-                  >
-                    ×
-                  </button>
-                )}
-              </div>
+                    {/* Table Blocks Section */}
+                    {tableBlocks.length > 0 && (
+                      <div className="space-y-6 mb-4">
+                        {tableBlocks.map((block, index) => (
+                          <div key={index} className="relative group">
+                            <TableBuilder
+                              initialData={block}
+                              onChange={(updatedTables) => {
+                                const updatedBlocks = [...tableBlocks];
+                                updatedBlocks[index] = { ...block, ...updatedTables[0] };
+                                setTableBlocks(updatedBlocks);
+                              }}
+                              onRemove={() => {
+                                const updatedBlocks = tableBlocks.filter((_, i) => i !== index);
+                                setTableBlocks(updatedBlocks);
+                              }}
+                              onInsert={(tableData) => {
+                                const quill = safeGetQuill();
+                                if (quill) {
+                                  const sel = quill.getSelection(true) || { index: quill.getLength(), length: 0 };
+                                  const insertAt = sel.index;
+                                  const html = generateTableHTML(tableData);
 
-              {/* Project dropdown */}
-              <div className="relative">
-                <select
-                  className="w-full px-3 py-1.5 text-sm border border-gray-200 rounded-lg focus:ring-1 focus:ring-indigo-500"
-                  onChange={(e) => {
-                    const idx = Number(e.target.value);
-                    const source = projectSearchTerm.trim().length >= 2 ? projectSearchResults : allProjects;
-                    const list = source
-                      .filter(project => !relatedProjects.find(rp => rp.project_url === project.project_url))
-                      .filter(p => {
-                        const q = (projectSearchTerm || '').trim().toLowerCase();
-                        if (!q) return true;
-                        const hay = `${p.projectName || ''} ${p.builderName || ''} ${p.location || ''} ${p.city || ''}`.toLowerCase();
-                        return hay.includes(q);
-                      });
-                    if (!Number.isNaN(idx) && list[idx]) addRelatedProject(list[idx]);
-                    e.target.value = '';
-                  }}
-                  defaultValue=""
-                >
-                  <option value="" disabled>{isLoadingProjects ? 'Loading...' : 'Select a project to add'}</option>
-                  {(projectSearchTerm.trim().length >= 2 ? projectSearchResults : allProjects)
-                    .filter(project => !relatedProjects.find(rp => rp.project_url === project.project_url))
-                    .filter(p => {
-                      const q = (projectSearchTerm || '').trim().toLowerCase();
-                      if (!q) return true;
-                      const hay = `${p.projectName || ''} ${p.builderName || ''} ${p.location || ''} ${p.city || ''}`.toLowerCase();
-                      return hay.includes(q);
-                    })
-                    .map((p, idx) => (
-                      <option key={p.project_url || `${p.projectName}-${idx}`} value={idx}>
-                        {p.projectName || `Project ${idx + 1}`}
-                        {p.builderName ? ` — ${p.builderName}` : ''}
-                      </option>
-                    ))}
-                </select>
-                {isLoadingProjects && (
-                  <div className="absolute right-2 top-1/2 -translate-y-1/2">
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-indigo-600"></div>
-                  </div>
-                )}
-              </div>
+                                  // Insert padding newlines and paste HTML
+                                  quill.insertText(insertAt, '\n', 'user');
+                                  quill.clipboard.dangerouslyPasteHTML(insertAt + 1, html);
+                                  quill.insertText(insertAt + 2, '\n', 'user');
+                                  quill.setSelection(insertAt + 3, 0);
 
-              {/* Selected projects */}
-              {relatedProjects.length > 0 && (
-                <div className="space-y-1.5 mt-2">
-                  <div className="text-xs font-medium text-gray-700">Selected Projects ({relatedProjects.length}/5):</div>
-                  <div className="space-y-1.5">
-                    {relatedProjects.map((project, index) => (
-                      <div
-                        key={index}
-                        className="flex items-center justify-between p-2 bg-white border border-gray-100 rounded-lg"
-                      >
-                        <div className="flex items-center gap-2 min-w-0">
-                          {project.thumbnail && (
-                            <img
-                              src={project.thumbnail}
-                              alt=""
-                              className="w-6 h-6 object-cover rounded"
-                              onError={(e) => e.target.style.display = 'none'}
+                                  showToast.success('Table inserted into editor!');
+                                } else {
+                                  showToast.error('Editor not ready');
+                                }
+                              }}
                             />
-                          )}
-                          <div className="min-w-0">
-                            <p className="text-xs font-medium text-gray-900 truncate">
-                              {project.projectName || 'Project'}
-                            </p>
-                            <p className="text-[10px] text-indigo-600 truncate">
-                              {project.project_url?.replace(/^https?:\/\//, '')}
-                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {!editorFullscreen && (
+                      <div className="relative">
+                        <div className="quill-box border border-input rounded-md mb-4 bg-background shadow-sm overflow-hidden">
+                          <div className="quill-editor-container editor-resize">
+                            <ReactQuill
+                              ref={quillRef}
+                              theme="snow"
+                              value={description}
+                              onChange={handleQuillChange}
+                              className=""
+                              modules={quillModules}
+                              formats={quillFormats}
+                              placeholder="Write something amazing..."
+                            />
                           </div>
                         </div>
-                        <button
-                          type="button"
-                          onClick={() => removeRelatedProject(project.project_url)}
-                          className="p-0.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded"
-                          title="Remove"
-                        >
-                          <X className="w-3.5 h-3.5" />
-                        </button>
+
+                        {showTableBuilder && (
+                          <div className="mt-6 mb-8 border border-primary/20 rounded-xl p-4 bg-primary/5 shadow-md">
+                            <div className="flex justify-between items-center mb-4">
+                              <div className="flex items-center gap-2">
+                                <div className="w-8 h-8 bg-primary text-primary-foreground rounded-lg flex items-center justify-center">
+                                  <Monitor className="w-4 h-4" />
+                                </div>
+                                <h3 className="text-lg font-semibold tracking-tight text-foreground">Table Configuration</h3>
+                              </div>
+                              <button
+                                type="button"
+                                onClick={() => setShowTableBuilder(false)}
+                                className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground h-8 w-8"
+                              >
+                                <X className="w-4 h-4" />
+                              </button>
+                            </div>
+                            <TableBuilder
+                              initialData={currentTableData}
+                              onChange={(updatedTables) => handleTableChange(updatedTables?.[0] || updatedTables)}
+                              onRemove={() => {
+                                setShowTableBuilder(false);
+                                setCurrentTableData(null);
+                                setDescription(description.replace(/\[TABLE_PLACEHOLDER_\d+\]/g, ''));
+                              }}
+                              onInsert={(tableData) => {
+                                const quill = safeGetQuill();
+                                if (quill) {
+                                  const sel = quill.getSelection(true) || { index: quill.getLength(), length: 0 };
+                                  const insertAt = sel.index;
+                                  const html = generateTableHTML(tableData);
+
+                                  // Insert padding newlines and paste HTML
+                                  quill.insertText(insertAt, '\n', 'user');
+                                  quill.clipboard.dangerouslyPasteHTML(insertAt + 1, html);
+                                  quill.insertText(insertAt + 2, '\n', 'user');
+                                  quill.setSelection(insertAt + 3, 0);
+
+                                  // Remove placeholder to avoid double insertion on save
+                                  setDescription(prev => prev.replace(/\[TABLE_PLACEHOLDER_\d+\]/g, ''));
+                                  setShowTableBuilder(false);
+                                  setCurrentTableData(null);
+
+                                  showToast.success('Table inserted into editor!');
+                                }
+                              }}
+                            />
+                          </div>
+                        )}
                       </div>
-                    ))}
+                    )}
                   </div>
-                </div>
-              )}
-            </div>
 
-            {/* Editor Controls */}
-            <div className="flex flex-wrap items-center gap-2">
-              <button
-                type="button"
-                onClick={uploadInlineImage}
-                className="px-3 py-1.5 text-xs rounded-lg bg-emerald-600 text-white hover:bg-emerald-700 flex items-center gap-1.5"
-                title="Upload image and insert at cursor"
-              >
-                <Upload className="w-3.5 h-3.5" />
-                Insert Image
-              </button>
-
-              <button
-                type="button"
-                onClick={insertImageByUrl}
-                className="px-3 py-1.5 text-xs rounded-lg bg-sky-600 text-white hover:bg-sky-700 flex items-center gap-1.5"
-                title="Insert image by URL at cursor"
-              >
-                <ImageIcon className="w-3.5 h-3.5" />
-                Insert from URL
-              </button>
-
-              <button
-                type="button"
-                onClick={async () => {
-                  const input = document.createElement('input');
-                  input.type = 'file';
-                  input.accept = 'image/webp';
-                  input.multiple = true;
-                  input.onchange = async () => {
-                    const files = Array.from(input.files || []).slice(0, 4);
-                    if (!files.length) return;
-
-                    // STRICT: Check all files are WebP
-                    const nonWebpFiles = files.filter(file => file.type !== 'image/webp');
-                    if (nonWebpFiles.length > 0) {
-                      showToast.error('Only WebP images are allowed');
-                      return;
-                    }
-
-                    showToast.loading('Uploading...', { id: 'gridUpload' });
-                    try {
-                      const urls = [];
-                      for (const f of files) {
-                        const fd = new FormData();
-                        fd.append('image', f);
-                        const r = await api.post(`/blog/upload-image`, fd);
-                        const u = r?.data?.url || r?.data?.data?.url || r?.data?.imageUrl || '';
-                        if (u) urls.push(u);
-                      }
-                      const cardStyle = 'background:#fff;border:1px solid #e5e7eb;border-radius:8px;overflow:hidden;display:flex;flex-direction:column;';
-                      const imgStyle = `width:100%;height:${gridSizeToPx[gridImgSize]}px;object-fit:cover;display:block;`;
-                      const cards = urls.map((u, idx) =>
-                        `<figure class="grid-card" style="${cardStyle}">
-              <img style="${imgStyle}" src="${u}" alt="" />
-              ${gridWithTitles ? `<figcaption style="padding:4px 6px;font-size:12px;color:#4b5563;text-align:center;" contenteditable="true">Title ${idx + 1}</figcaption>` : ''}
-            </figure>`
-                      ).join('');
-                      const gridCols = gridLayout === 'lastLarge' ? '1fr 1fr 1fr 1.6fr' : 'repeat(4, 1fr)';
-                      const inner = `<div class="img-grid-4 layout-${gridLayout}" style="display:grid;grid-template-columns:${gridCols};gap:8px;margin:8px 0;">${cards}</div>`;
-                      const html = gridWithTitles
-                        ? `<section class="img-grid-4-frame" style="border:1px solid #e5e7eb;border-radius:8px;padding:8px;background:#f9fafb;">
-                <div class="grid-title" style="text-align:center;font-weight:600;margin:0 0 8px;font-size:13px;color:#374151;" contenteditable="true">Grid Title</div>
-                ${inner}
-              </section>`
-                        : `${inner}<p><br/></p>`;
-                      const quill = safeGetQuill();
-                      if (quill) {
-                        const sel = quill.getSelection(true) || { index: quill.getLength(), length: 0 };
-                        quill.clipboard.dangerouslyPasteHTML(sel.index, html, 'user');
-                        quill.setSelection(sel.index + 1, 0);
-                      }
-                      showToast.success('Inserted image grid');
-                    } catch (err) {
-                      console.error(err);
-                      showToast.error('Failed to insert grid');
-                    } finally {
-                      showToast.dismiss('gridUpload');
-                    }
-                  };
-                  input.click();
-                }}
-                className="px-3 py-1.5 text-xs rounded-lg bg-purple-600 text-white hover:bg-purple-700"
-                title="Insert 4 images as a grid"
-              >
-                Insert 4-Image Grid
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setBwMode(v => !v)}
-                className="px-2.5 py-1.5 text-xs rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50"
-                title="Toggle Black & White mode for images"
-              >
-                {bwMode ? 'Color Mode' : 'B/W Mode'}
-              </button>
-
-              <button
-                type="button"
-                onClick={() => {
-                  const newTable = {
-                    type: 'table',
-                    rows: [['Header 1', 'Header 2', 'Header 3'], ['', '', '']]
-                  };
-                  setTableBlocks([...tableBlocks, newTable]);
-                  showToast.success('Table builder added');
-                }}
-                className="px-3 py-1.5 text-xs rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 flex items-center gap-1.5"
-                title="Add Table Builder"
-              >
-                <Plus className="w-3.5 h-3.5" />
-                Add Table
-              </button>
-            </div>
-
-            {/* Content Editor */}
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <Edit3 className="w-5 h-5 text-orange-600" />
-                  <label className="text-lg font-semibold text-gray-900">
-                    Blog Content
-                  </label>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setEditorFullscreen(true)}
-                  className="px-2 py-1 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 flex items-center gap-1"
-                  title="Open editor in full screen"
-                >
-                  <Maximize2 className="w-4 h-4" />
-                  <span className="hidden sm:inline">Full screen</span>
-                </button>
-              </div>
-
-              {/* Table Blocks Section */}
-              {tableBlocks.length > 0 && (
-                <div className="space-y-6 mb-4">
-                  {tableBlocks.map((block, index) => (
-                    <div key={index} className="relative group">
-                      <TableBuilder
-                        initialData={block.rows}
-                        onChange={(updatedTable) => {
-                          const updatedBlocks = [...tableBlocks];
-                          updatedBlocks[index] = updatedTable;
-                          setTableBlocks(updatedBlocks);
-                        }}
-                        onRemove={() => {
-                          const updatedBlocks = tableBlocks.filter((_, i) => i !== index);
-                          setTableBlocks(updatedBlocks);
-                        }}
-                      />
-                    </div>
-                  ))}
-                </div>
-              )}
-
-                {!editorFullscreen && (
-                  <div className="relative">
-                    <div className="quill-box border border-gray-200 rounded-xl mb-4 bg-white shadow-sm">
-                      <div className="quill-editor-container editor-resize">
+                  {editorFullscreen && (
+                    <div className="fixed inset-0 z-[5000] bg-background editor-fs-wrap">
+                      <div className="flex items-center justify-between px-4 py-3 border-b border-border bg-card text-card-foreground shadow-sm">
+                        <div className="font-semibold tracking-tight truncate">Editing: {title || 'Untitled'}</div>
+                        <div className="flex items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={() => setEditorFullscreen(false)}
+                            className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-9 px-4 gap-2"
+                            title="Exit full screen"
+                          >
+                            <Minimize2 className="w-4 h-4" />
+                            <span className="hidden sm:inline">Exit Full Screen</span>
+                          </button>
+                        </div>
+                      </div>
+                      <div className="editor-fs bg-background">
                         <ReactQuill
-                          ref={quillRef}
                           theme="snow"
                           value={description}
                           onChange={handleQuillChange}
                           className=""
                           modules={quillModules}
                           formats={quillFormats}
-                          placeholder="Write something amazing..."
                         />
                       </div>
                     </div>
+                  )}
 
-                    {showTableBuilder && (
-                      <div className="mt-6 mb-8 border-2 border-indigo-100 rounded-xl p-4 bg-indigo-50 shadow-md">
-                        <div className="flex justify-between items-center mb-4">
-                          <div className="flex items-center gap-2">
-                            <div className="w-8 h-8 bg-indigo-600 text-white rounded-lg flex items-center justify-center">
-                              <Monitor className="w-4 h-4" />
-                            </div>
-                            <h3 className="text-lg font-bold text-indigo-900">Table Configuration</h3>
-                          </div>
-                          <button 
-                            type="button"
-                            onClick={() => setShowTableBuilder(false)}
-                            className="p-2 text-gray-400 hover:text-gray-600 hover:bg-white rounded-full transition-all"
-                          >
-                            <X className="w-5 h-5" />
+                  {/* Live Preview */}
+                  {showPreview && (
+                    <div className="bg-card text-card-foreground border border-border rounded-xl p-4 md:p-6 shadow-sm mt-6">
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center gap-2">
+                          <span className="text-base font-semibold leading-none tracking-tight">Live Preview</span>
+                          <span className="text-xs text-muted-foreground hidden sm:inline-block">(updates in real-time)</span>
+                        </div>
+                        <div className="flex items-center gap-2 bg-muted/50 p-1 rounded-lg">
+                          <button type="button" onClick={() => setPreviewMode('desktop')} className={`inline-flex items-center justify-center rounded-md text-sm font-medium transition-all h-8 px-3 ${previewMode === 'desktop' ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}>
+                            <Monitor className="w-4 h-4 sm:mr-1.5" /> <span className="hidden sm:inline">Desktop</span>
+                          </button>
+                          <button type="button" onClick={() => setPreviewMode('mobile')} className={`inline-flex items-center justify-center rounded-md text-sm font-medium transition-all h-8 px-3 ${previewMode === 'mobile' ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}>
+                            <Smartphone className="w-4 h-4 sm:mr-1.5" /> <span className="hidden sm:inline">Mobile</span>
                           </button>
                         </div>
-                        <TableBuilder 
-                          initialData={currentTableData}
-                          onChange={handleTableChange}
-                          onRemove={() => {
-                            setShowTableBuilder(false);
-                            setCurrentTableData(null);
-                            setDescription(description.replace(/\[TABLE_PLACEHOLDER_\d+\]/g, ''));
-                          }}
-                        />
                       </div>
-                    )}
-                  </div>
-                )}
-            </div>
-
-            {editorFullscreen && (
-              <div className="fixed inset-0 z-[5000] bg-white editor-fs-wrap">
-                <div className="flex items-center justify-between px-3 py-2 border-b">
-                  <div className="font-medium text-gray-800 truncate">Editing: {title || 'Untitled'}</div>
-                  <div className="flex items-center gap-2">
-                    <button
-                      type="button"
-                      onClick={() => setEditorFullscreen(false)}
-                      className="px-2 py-1 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 flex items-center gap-1"
-                      title="Exit full screen"
-                    >
-                      <Minimize2 className="w-4 h-4" />
-                      <span className="hidden sm:inline">Exit</span>
-                    </button>
-                  </div>
-                </div>
-                <div className="editor-fs">
-                  <ReactQuill
-                    theme="snow"
-                    value={description}
-                    onChange={handleQuillChange}
-                    className=""
-                    modules={quillModules}
-                    formats={quillFormats}
-                  />
-                </div>
-              </div>
-            )}
-
-            {/* Live Preview */}
-            {showPreview && (
-              <div className="bg-white border border-gray-200 rounded-xl p-4">
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-2 text-sm text-gray-700">
-                    <span className="font-medium">Preview</span>
-                    <span className="text-gray-400">(updates in real-time)</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <button type="button" onClick={() => setPreviewMode('desktop')} className={`px-2.5 py-1.5 rounded-lg border ${previewMode === 'desktop' ? 'bg-gray-900 text-white border-gray-900' : 'border-gray-300 text-gray-700'}`}>
-                      <Monitor className="w-4 h-4 inline mr-1" /> Desktop
-                    </button>
-                    <button type="button" onClick={() => setPreviewMode('mobile')} className={`px-2.5 py-1.5 rounded-lg border ${previewMode === 'mobile' ? 'bg-gray-900 text-white border-gray-900' : 'border-gray-300 text-gray-700'}`}>
-                      <Smartphone className="w-4 h-4 inline mr-1" /> Mobile
-                    </button>
-                  </div>
-                </div>
-                <div className="flex justify-center">
-                  <div className={`rounded-xl border border-gray-200 shadow-sm overflow-hidden ${previewMode === 'mobile' ? 'w-[390px]' : 'w-full'} max-w-[1024px]`}>
-                    {/* Featured image */}
-                    {frontImagePreview && (
-                      <img src={frontImagePreview} alt="preview" className="w-full max-h-72 object-cover" />
-                    )}
-                    <div className="p-4 sm:p-6">
-                      <h1 className="text-2xl sm:text-3xl font-bold mb-2">{title || 'Your blog title'}</h1>
-                      <div className="text-gray-500 text-sm mb-4">/{slug || 'my-custom-slug'}</div>
-                      <article 
-                        className="prose max-w-none prose-img:rounded-lg prose-headings:scroll-mt-24 blog-content-area" 
-                        dangerouslySetInnerHTML={{ 
-                          __html: finalizeContent(description) || '<p>Start writing content...</p>' 
-                        }} 
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* FAQ Section (collapsible + drag reorder) */}
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <label className="text-lg font-semibold text-gray-900">FAQs</label>
-                  <span className="text-sm text-gray-500">(Optional)</span>
-                </div>
-                <label className="inline-flex items-center gap-2 text-sm text-gray-700">
-                  <input
-                    type="checkbox"
-                    checked={enableFAQ}
-                    onChange={(e) => setEnableFAQ(e.target.checked)}
-                  />
-                  Enable FAQ section
-                </label>
-              </div>
-
-              {enableFAQ && (
-                <div className="space-y-3">
-                  {faqs.map((f, idx) => (
-                    <div key={idx} className="bg-gray-50 border border-gray-200 rounded-xl"
-                      draggable
-                      onDragStart={() => { dragIndexRef.current = idx; }}
-                      onDragOver={(e) => e.preventDefault()}
-                      onDrop={() => {
-                        const from = dragIndexRef.current;
-                        const to = idx;
-                        if (from === null || from === to) return;
-                        setFaqs(prev => {
-                          const arr = [...prev];
-                          const [m] = arr.splice(from, 1);
-                          arr.splice(to, 0, m);
-                          return arr;
-                        });
-                        setCollapsedFaqs(prev => {
-                          const arr = [...prev];
-                          const [m] = arr.splice(from, 1);
-                          arr.splice(to, 0, m);
-                          return arr;
-                        });
-                      }}>
-                      <div className="flex items-center justify-between p-3 border-b border-gray-200">
-                        <div className="flex items-center gap-2">
-                          <span className="cursor-move text-gray-400" title="Drag to reorder">⋮⋮</span>
-                          <span className="text-sm font-medium text-gray-800">FAQ #{idx + 1}</span>
+                      <div className="flex justify-center bg-muted/30 rounded-lg p-4 sm:p-8 min-h-[400px]">
+                        <div className={`bg-background rounded-xl border border-input shadow-sm overflow-hidden transition-all duration-300 w-full ${previewMode === 'mobile' ? 'max-w-[390px] ring-8 ring-muted' : 'max-w-[1024px]'}`}>
+                          {/* Featured image */}
+                          {frontImagePreview && (
+                            <img src={frontImagePreview} alt="preview" className="w-full h-48 sm:h-72 object-cover" />
+                          )}
+                          <div className="p-5 sm:p-8">
+                            <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight lg:text-5xl mb-3 text-foreground">{title || 'Your blog title'}</h1>
+                            <div className="text-muted-foreground text-sm mb-8 font-medium">/{slug || 'my-custom-slug'}</div>
+                            <article
+                              className="prose prose-slate dark:prose-invert max-w-none prose-img:rounded-lg prose-headings:scroll-mt-24 blog-content-area"
+                              dangerouslySetInnerHTML={{
+                                __html: finalizeContent(description) || '<p class="text-muted-foreground">Start writing content...</p>'
+                              }}
+                            />
+                          </div>
                         </div>
-                        <div className="flex items-center gap-2">
-                          <button type="button" className="text-gray-600 text-sm" onClick={() => setCollapsedFaqs(prev => {
-                            const arr = [...prev];
-                            arr[idx] = !arr[idx];
-                            return arr;
-                          })}>{collapsedFaqs[idx] ? 'Expand' : 'Collapse'}</button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* FAQ Section (collapsible + drag reorder) */}
+                  <div className="space-y-4 pt-4 border-t">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-2">
+                        <label className="text-base font-semibold leading-none tracking-tight">FAQs</label>
+                        <span className="text-xs text-muted-foreground">(Optional)</span>
+                      </div>
+                      <label className="inline-flex items-center gap-2 text-sm font-medium leading-none cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={enableFAQ}
+                          onChange={(e) => setEnableFAQ(e.target.checked)}
+                          className="rounded border-input text-primary focus:ring-ring shrink-0 h-4 w-4"
+                        />
+                        Enable FAQ section
+                      </label>
+                    </div>
+
+                    {enableFAQ && (
+                      <div className="space-y-4">
+                        {faqs.map((f, idx) => (
+                          <div key={idx} className="bg-background border border-input rounded-xl shadow-sm overflow-hidden"
+                            draggable
+                            onDragStart={() => { dragIndexRef.current = idx; }}
+                            onDragOver={(e) => e.preventDefault()}
+                            onDrop={() => {
+                              const from = dragIndexRef.current;
+                              const to = idx;
+                              if (from === null || from === to) return;
+                              setFaqs(prev => {
+                                const arr = [...prev];
+                                const [m] = arr.splice(from, 1);
+                                arr.splice(to, 0, m);
+                                return arr;
+                              });
+                              setCollapsedFaqs(prev => {
+                                const arr = [...prev];
+                                const [m] = arr.splice(from, 1);
+                                arr.splice(to, 0, m);
+                                return arr;
+                              });
+                            }}>
+                            <div className="flex items-center justify-between p-3 border-b border-border bg-muted/20">
+                              <div className="flex items-center gap-2">
+                                <span className="cursor-move text-muted-foreground hover:text-foreground transition-colors px-1" title="Drag to reorder">⋮⋮</span>
+                                <span className="text-sm font-semibold tracking-tight">FAQ #{idx + 1}</span>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <button type="button" className="text-xs font-medium text-muted-foreground hover:text-foreground transition-colors" onClick={() => setCollapsedFaqs(prev => {
+                                  const arr = [...prev];
+                                  arr[idx] = !arr[idx];
+                                  return arr;
+                                })}>{collapsedFaqs[idx] ? 'Expand' : 'Collapse'}</button>
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    setFaqs(prev => prev.filter((_, i) => i !== idx));
+                                    setCollapsedFaqs(prev => prev.filter((_, i) => i !== idx));
+                                  }}
+                                  className="inline-flex items-center justify-center rounded-md text-xs font-medium transition-colors hover:bg-destructive/10 hover:text-destructive h-7 px-2"
+                                  title="Remove FAQ"
+                                >
+                                  Remove
+                                </button>
+                              </div>
+                            </div>
+                            {!collapsedFaqs[idx] && (
+                              <div className="p-4 bg-card text-card-foreground">
+                                <div className="grid grid-cols-1 lg:grid-cols-10 gap-4 items-start">
+                                  <div className="lg:col-span-4 space-y-1.5">
+                                    <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Question</label>
+                                    <input
+                                      type="text"
+                                      value={f.question}
+                                      onChange={(e) => setFaqs(prev => prev.map((x, i) => i === idx ? { ...x, question: e.target.value } : x))}
+                                      className="flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                                      placeholder="Enter question"
+                                    />
+                                  </div>
+                                  <div className="lg:col-span-6 space-y-1.5">
+                                    <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Answer</label>
+                                    <textarea
+                                      rows={3}
+                                      value={f.answer}
+                                      onChange={(e) => setFaqs(prev => prev.map((x, i) => i === idx ? { ...x, answer: e.target.value } : x))}
+                                      className="flex min-h-[80px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                                      placeholder="Enter answer"
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        ))}
+
+                        <div className="flex justify-between">
+                          <button
+                            type="button"
+                            onClick={() => setFaqs(prev => [...prev, { question: '', answer: '' }])}
+                            className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80 h-9 px-4"
+                          >
+                            <Plus className="w-4 h-4 mr-2" /> Add FAQ
+                          </button>
                           <button
                             type="button"
                             onClick={() => {
-                              setFaqs(prev => prev.filter((_, i) => i !== idx));
-                              setCollapsedFaqs(prev => prev.filter((_, i) => i !== idx));
+                              const topic = (title || categories || 'real estate').toLowerCase();
+                              const base = [
+                                { q: `What is ${topic}?`, a: `An overview of ${topic} and why it matters.` },
+                                { q: `How to choose the best ${topic}?`, a: `Key factors to consider when selecting ${topic}.` },
+                                { q: `Common mistakes in ${topic}`, a: `Avoid these pitfalls when dealing with ${topic}.` },
+                              ];
+                              setFaqs(prev => [...prev, ...base]);
+                              setCollapsedFaqs(prev => [...prev, false, false, false]);
                             }}
-                            className="px-3 py-1 text-sm rounded-lg border border-red-200 text-red-600 hover:bg-red-50"
-                            title="Remove FAQ"
+                            className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80 h-9 px-4"
                           >
-                            Remove
+                            <MessageSquare className="w-4 h-4 mr-2" /> Add Suggested FAQs
                           </button>
                         </div>
                       </div>
-                      {!collapsedFaqs[idx] && (
-                        <div className="p-4">
-                          <div className="grid grid-cols-1 lg:grid-cols-10 gap-3 items-start">
-                            <div className="lg:col-span-4">
-                              <label className="block text-sm font-medium text-gray-700 mb-1">Question</label>
-                              <input
-                                type="text"
-                                value={f.question}
-                                onChange={(e) => setFaqs(prev => prev.map((x, i) => i === idx ? { ...x, question: e.target.value } : x))}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                                placeholder="Enter question"
-                              />
-                            </div>
-                            <div className="lg:col-span-6">
-                              <label className="block text-sm font-medium text-gray-700 mb-1">Answer</label>
-                              <textarea
-                                rows={3}
-                                value={f.answer}
-                                onChange={(e) => setFaqs(prev => prev.map((x, i) => i === idx ? { ...x, answer: e.target.value } : x))}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                                placeholder="Enter answer"
-                              />
+                    )}
+                  </div>
+
+                  {/* Schema/Structured Data Section */}
+                  <div className="space-y-4 pt-4 border-t">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-2">
+                        <label className="text-base font-semibold leading-none tracking-tight">Schema / Structured Data</label>
+                        <span className="text-xs text-muted-foreground">(Optional)</span>
+                        {enableSchema && (
+                          <div className="flex items-center space-x-2">
+                            {schemaSaving ? (
+                              <span className="flex items-center text-xs text-primary animate-pulse">
+                                <div className="w-3 h-3 border-2 border-primary border-t-transparent rounded-full animate-spin mr-1.5"></div>
+                                Auto-saving...
+                              </span>
+                            ) : schemaLastSaved ? (
+                              <span className="text-xs text-green-600 dark:text-green-500 flex items-center gap-1">
+                                <Check className="w-3 h-3" /> Saved {schemaLastSaved.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                              </span>
+                            ) : null}
+                          </div>
+                        )}
+                      </div>
+                      <label className="inline-flex items-center gap-2 text-sm font-medium leading-none cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={enableSchema}
+                          onChange={(e) => setEnableSchema(e.target.checked)}
+                          className="rounded border-input text-primary focus:ring-ring shrink-0 h-4 w-4"
+                        />
+                        Enable Schema
+                      </label>
+                    </div>
+
+                    {enableSchema && (
+                      <div className="space-y-4 bg-muted/40 border border-border rounded-xl p-4 shadow-sm">
+                        <div className="space-y-2">
+                          <label className="text-sm font-medium leading-none">Schema Type</label>
+                          <select
+                            value={schemaType}
+                            onChange={(e) => setSchemaType(e.target.value)}
+                            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                          >
+                            <option value="BlogPosting">Blog Posting</option>
+                            <option value="Article">Article</option>
+                            <option value="NewsArticle">News Article</option>
+                          </select>
+                        </div>
+
+                        <div className="space-y-2">
+                          <label className="text-sm font-medium leading-none">
+                            Custom JSON Properties
+                            <span className="text-[10px] text-muted-foreground ml-2 font-normal">(Advanced)</span>
+                          </label>
+                          <textarea
+                            value={customSchema}
+                            onChange={(e) => setCustomSchema(e.target.value)}
+                            placeholder='{"additionalProperty": "value"}'
+                            className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 font-mono"
+                            rows={3}
+                          />
+                          <p className="text-[11px] text-muted-foreground">
+                            Merge extra properties with the base JSON-LD schema.
+                          </p>
+                        </div>
+
+                        <div className="bg-primary/5 border border-primary/10 rounded-lg p-3">
+                          <p className="text-xs text-foreground/80 leading-relaxed">
+                            <strong className="text-primary">SEO Tip:</strong> Schema helps search engines understand your content.
+                            {enableSchema && (
+                              <span className="block mt-1 font-medium text-primary/70">
+                                This will auto-generate title, description, image, author, and dates.
+                              </span>
+                            )}
+                          </p>
+                        </div>
+
+                        {/* Real-time Schema Preview */}
+                        <div className="border border-input rounded-lg overflow-hidden bg-zinc-950 shadow-inner">
+                          <div className="flex items-center justify-between px-3 py-2 bg-zinc-900 border-b border-zinc-800">
+                            <h4 className="text-[11px] font-bold uppercase tracking-wider text-zinc-400">JSON-LD Output</h4>
+                            <div className="flex gap-2">
+                              <button
+                                type="button"
+                                onClick={manualSaveSchema}
+                                disabled={schemaSaving}
+                                className="inline-flex items-center justify-center rounded-md text-[10px] font-bold uppercase tracking-tight transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80 h-6 px-2.5"
+                              >
+                                {schemaSaving ? 'Saving...' : 'Save Draft'}
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const schema = generateSchema();
+                                  if (schema) {
+                                    navigator.clipboard.writeText(JSON.stringify(schema, null, 2));
+                                    showToast.success('Schema copied to clipboard!');
+                                  }
+                                }}
+                                className="inline-flex items-center justify-center rounded-md text-[10px] font-bold uppercase tracking-tight transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring bg-primary text-primary-foreground shadow hover:bg-primary/90 h-6 px-2.5"
+                              >
+                                Copy JSON
+                              </button>
                             </div>
                           </div>
+                          <div className="p-3 max-h-64 overflow-auto custom-scrollbar">
+                            <pre className="text-[11px] font-mono text-emerald-400/90 leading-relaxed">
+                              {JSON.stringify(generateSchema(), null, 2)}
+                            </pre>
+                          </div>
                         </div>
-                      )}
-                    </div>
-                  ))}
+                      </div>
+                    )}
+                  </div>
 
-                  <div className="flex justify-between">
+                  {/* Submit Area */}
+                  <div className="flex flex-col sm:flex-row justify-end items-center gap-3 pt-6 border-t mt-8">
                     <button
                       type="button"
-                      onClick={() => setFaqs(prev => [...prev, { question: '', answer: '' }])}
-                      className="px-4 py-2 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700"
+                      className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-10 px-4 w-full sm:w-auto"
+                      onClick={() => navigate('/blog/admin/list')}
                     >
-                      Add FAQ
+                      Cancel
                     </button>
+                    {!blogToEdit && (
+                      <button
+                        type="button"
+                        className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-10 px-4 w-full sm:w-auto"
+                        disabled={isSubmitting}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleSubmit(e, false);
+                        }}
+                      >
+                        <Save className="w-4 h-4 mr-2" />
+                        <span>{
+                          isSubmitting && !isPublished ? 'Saving...' :
+                            isPublished ? 'Save as Draft' : 'Save as Draft'
+                        }</span>
+                      </button>
+                    )}
                     <button
-                      type="button"
-                      onClick={() => {
-                        const topic = (title || categories || 'real estate').toLowerCase();
-                        const base = [
-                          { q: `What is ${topic}?`, a: `An overview of ${topic} and why it matters.` },
-                          { q: `How to choose the best ${topic}?`, a: `Key factors to consider when selecting ${topic}.` },
-                          { q: `Common mistakes in ${topic}`, a: `Avoid these pitfalls when dealing with ${topic}.` },
-                        ];
-                        setFaqs(prev => [...prev, ...base]);
-                        setCollapsedFaqs(prev => [...prev, false, false, false]);
+                      type="submit"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        handleSubmit(e, true);
                       }}
-                      className="px-4 py-2 rounded-lg bg-emerald-600 text-white hover:bg-emerald-700 flex items-center gap-2"
+                      disabled={isSubmitting}
+                      className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-10 px-8 w-full sm:w-auto min-w-[140px]"
                     >
-                      <MessageSquare className="w-4 h-4" /> Add Suggested FAQs
+                      {isSubmitting && isPublished ? (
+                        <>
+                          <div className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin mr-2" />
+                          <span>{blogToEdit ? 'Updating...' : 'Publishing...'}</span>
+                        </>
+                      ) : (
+                        <>
+                          <Plus className="w-4 h-4 mr-2" />
+                          <span>{blogToEdit ? 'Update Blog' : 'Publish Blog'}</span>
+                        </>
+                      )}
                     </button>
                   </div>
                 </div>
-              )}
+              </form>
             </div>
-
-            {/* Schema/Structured Data Section */}
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <label className="text-lg font-semibold text-gray-900">Schema/Structured Data</label>
-                  <span className="text-sm text-gray-500">(Optional - SEO)</span>
-                  {enableSchema && (
-                    <div className="flex items-center space-x-2">
-                      {schemaSaving ? (
-                        <span className="flex items-center text-xs text-blue-600">
-                          <div className="w-3 h-3 border-2 border-blue-600 border-t-transparent rounded-full animate-spin mr-1"></div>
-                          Auto-saving...
-                        </span>
-                      ) : schemaLastSaved ? (
-                        <span className="text-xs text-green-600">
-                          ✓ Auto-saved {schemaLastSaved.toLocaleTimeString()}
-                        </span>
-                      ) : null}
-                    </div>
-                  )}
-                </div>
-                <label className="inline-flex items-center gap-2 text-sm text-gray-700">
-                  <input
-                    type="checkbox"
-                    checked={enableSchema}
-                    onChange={(e) => setEnableSchema(e.target.checked)}
-                  />
-                  Enable Schema
-                </label>
-              </div>
-
-              {enableSchema && (
-                <div className="space-y-4 bg-gray-50 border border-gray-200 rounded-xl p-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Schema Type</label>
-                    <select
-                      value={schemaType}
-                      onChange={(e) => setSchemaType(e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    >
-                      <option value="BlogPosting">Blog Posting</option>
-                      <option value="Article">Article</option>
-                      <option value="NewsArticle">News Article</option>
-                    </select>
+            {/* History modal */}
+            {showHistory && (
+              <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-[4000] flex items-center justify-center" onClick={() => setShowHistory(false)}>
+                <div className="bg-card text-card-foreground border border-border shadow-lg rounded-xl p-6 w-[92vw] max-w-md flex flex-col gap-4" onClick={(e) => e.stopPropagation()}>
+                  <div className="flex items-center justify-between">
+                    <div className="text-lg font-semibold leading-none tracking-tight">Draft History</div>
+                    <button className="text-muted-foreground hover:text-foreground rounded-sm opacity-70 transition-opacity hover:opacity-100" onClick={() => setShowHistory(false)}>
+                      <X className="w-5 h-5" />
+                    </button>
                   </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Custom Schema JSON (Optional)
-                      <span className="text-xs text-gray-500 ml-2">Advanced users only</span>
-                    </label>
-                    <textarea
-                      value={customSchema}
-                      onChange={(e) => setCustomSchema(e.target.value)}
-                      placeholder='{"additionalProperty": "value"}'
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-mono text-sm"
-                      rows={4}
-                    />
-                    <p className="text-xs text-gray-500 mt-1">
-                      Add custom JSON properties to merge with base schema. Must be valid JSON format.
-                    </p>
-                  </div>
-
-                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                    <p className="text-sm text-blue-800">
-                      <strong>Preview:</strong> Schema helps search engines understand your content better.
-                      {enableSchema && (
-                        <span className="block mt-1">
-                          Generated schema will include: title, description, image, author, publisher, and dates.
-                        </span>
-                      )}
-                    </p>
-                  </div>
-
-                  {/* Real-time Schema Preview */}
-                  {enableSchema && (
-                    <div className="border border-gray-300 rounded-lg p-4 bg-gray-900">
-                      <div className="flex items-center justify-between mb-3">
-                        <h4 className="text-sm font-medium text-gray-300">Generated Schema Preview</h4>
-                        <div className="flex gap-2">
-                          <button
-                            type="button"
-                            onClick={manualSaveSchema}
-                            disabled={schemaSaving}
-                            className="px-3 py-1 text-xs bg-green-600 text-white rounded hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                          >
-                            {schemaSaving ? 'Saving...' : 'Save Now'}
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => {
-                              const schema = generateSchema();
-                              if (schema) {
-                                navigator.clipboard.writeText(JSON.stringify(schema, null, 2));
-                                showToast.success('Schema copied to clipboard!');
-                              }
-                            }}
-                            className="px-3 py-1 text-xs bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
-                          >
-                            Copy JSON
-                          </button>
+                  {historyList?.length ? (
+                    <div className="max-h-[60vh] overflow-auto flex flex-col gap-2">
+                      {historyList.map((h, i) => (
+                        <div key={i} className="flex items-center justify-between p-3 border border-border rounded-lg bg-muted/40 hover:bg-muted/80 transition-colors">
+                          <div className="text-sm min-w-0 pr-4">
+                            <div className="font-medium truncate">{h.title || 'Untitled'}</div>
+                            <div className="text-xs text-muted-foreground mt-0.5">{new Date(h.ts).toLocaleString()}</div>
+                          </div>
+                          <button className="inline-flex items-center justify-center rounded-md text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-8 px-3 shrink-0" onClick={() => {
+                            try {
+                              const raw = localStorage.getItem(draftKey);
+                              if (!raw) return;
+                              const s = JSON.parse(raw);
+                              setTitle(s.title || '');
+                              setDescription(s.description || '');
+                              setFrontImagePreview(s.frontImagePreview || '');
+                              setCategories(s.categories || '');
+                              setMetaTitle(s.metaTitle || '');
+                              setMetaDescription(s.metaDescription || '');
+                              setSlug(s.slug || '');
+                              setRelatedProjects(Array.isArray(s.relatedProjects) ? s.relatedProjects : []);
+                              setEnableFAQ(!!s.enableFAQ);
+                              setFaqs(Array.isArray(s.faqs) && s.faqs.length ? s.faqs : [{ question: '', answer: '' }]);
+                              setAuthor(s.author || author);
+                              setTableBlocks(Array.isArray(s.tableBlocks) ? s.tableBlocks : []);
+                              showToast.success('Draft restored');
+                              setShowHistory(false);
+                            } catch { }
+                          }}>Restore</button>
                         </div>
-                      </div>
-                      <pre className="text-xs text-green-400 overflow-x-auto max-h-64">
-                        {JSON.stringify(generateSchema(), null, 2)}
-                      </pre>
+                      ))}
                     </div>
+                  ) : (
+                    <div className="text-sm text-muted-foreground py-4 text-center">No history yet.</div>
                   )}
                 </div>
-              )}
-            </div>
-
-            {/* Actions */}
-            <div className="flex justify-end space-x-4 pt-6 border-t border-gray-200">
-              {!blogToEdit && (
-                <button
-                  type="button"
-                  className="px-6 py-3 text-gray-700 bg-gray-100 rounded-xl hover:bg-gray-200 transition-all duration-200 font-medium flex items-center space-x-2"
-                  disabled={isSubmitting}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    handleSubmit(e, false);
-                  }}
-                >
-                  <Save className="w-4 h-4" />
-                  <span>{
-                    isSubmitting && !isPublished ? 'Saving...' :
-                      isPublished ? 'Save as Draft' : 'Save as Draft'
-                  }</span>
-                </button>
-              )}
-
-              <button
-                type="button"
-                className="px-8 py-3 text-white bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl hover:from-blue-700 hover:to-indigo-700 transition duration-200 font-medium flex items-center space-x-2 shadow-lg hover:shadow-xl"
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleSubmit(e, true);
-                }}
-                disabled={isSubmitting}
-              >
-                {isSubmitting && isPublished ? (
-                  <>
-                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                    <span>{blogToEdit ? 'Updating...' : 'Publishing...'}</span>
-                  </>
-                ) : (
-                  <>
-                    <Plus className="w-4 h-4" />
-                    <span>{blogToEdit ? 'Update Blog' : 'Publish Blog'}</span>
-                  </>
-                )}
-              </button>
-            </div>
-          </form>
-        </div>
-        {/* History modal */}
-        {showHistory && (
-          <div className="fixed inset-0 bg-black/50 z-[4000] flex items-center justify-center" onClick={() => setShowHistory(false)}>
-            <div className="bg-white rounded-xl shadow-xl p-4 w-[92vw] max-w-[520px]" onClick={(e) => e.stopPropagation()}>
-              <div className="flex items-center justify-between mb-2">
-                <div className="font-semibold">Draft History</div>
-                <button className="text-gray-600" onClick={() => setShowHistory(false)}><X className="w-5 h-5" /></button>
               </div>
-              {historyList?.length ? (
-                <div className="max-h-[60vh] overflow-auto divide-y">
-                  {historyList.map((h, i) => (
-                    <div key={i} className="py-2 flex items-center justify-between">
-                      <div className="text-sm">
-                        <div className="font-medium">{h.title || 'Untitled'}</div>
-                        <div className="text-gray-500">{new Date(h.ts).toLocaleString()}</div>
-                      </div>
-                      <button className="px-3 py-1.5 rounded-lg border border-gray-300 hover:bg-gray-50" onClick={() => {
-                        try {
-                          const raw = localStorage.getItem(draftKey);
-                          if (!raw) return;
-                          const s = JSON.parse(raw);
-                          setTitle(s.title || '');
-                          setDescription(s.description || '');
-                          setFrontImagePreview(s.frontImagePreview || '');
-                          setCategories(s.categories || '');
-                          setMetaTitle(s.metaTitle || '');
-                          setMetaDescription(s.metaDescription || '');
-                          setSlug(s.slug || '');
-                          setRelatedProjects(Array.isArray(s.relatedProjects) ? s.relatedProjects : []);
-                          setEnableFAQ(!!s.enableFAQ);
-                          setFaqs(Array.isArray(s.faqs) && s.faqs.length ? s.faqs : [{ question: '', answer: '' }]);
-                          setAuthor(s.author || author);
-                          setTableBlocks(Array.isArray(s.tableBlocks) ? s.tableBlocks : []);
-                          showToast.success('Draft restored');
-                          setShowHistory(false);
-                        } catch { }
-                      }}>Restore</button>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="text-sm text-gray-600">No history yet.</div>
-              )}
-            </div>
+            )}
+            {/* Lightbox Overlay */}
+            {lightboxUrl && (
+              <div
+                onClick={() => setLightboxUrl('')}
+                style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.85)', zIndex: 3000, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'zoom-out' }}
+              >
+                {/* eslint-disable-next-line jsx-a11y/alt-text */}
+                <img src={lightboxUrl} style={{ maxWidth: '95vw', maxHeight: '95vh', objectFit: 'contain', borderRadius: 8 }} />
+              </div>
+            )}
           </div>
-        )}
-        {/* Lightbox Overlay */}
-        {lightboxUrl && (
-          <div
-            onClick={() => setLightboxUrl('')}
-            style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.85)', zIndex: 3000, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'zoom-out' }}
-          >
-            {/* eslint-disable-next-line jsx-a11y/alt-text */}
-            <img src={lightboxUrl} style={{ maxWidth: '95vw', maxHeight: '95vh', objectFit: 'contain', borderRadius: 8 }} />
-          </div>
-        )}
+        </div>
       </div>
     </div>
   );

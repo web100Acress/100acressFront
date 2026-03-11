@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
+import './ProjectHero.desktop.css';
 
 const ProjectHeroDesktop = ({
   projectExists = true,
@@ -39,7 +40,7 @@ const ProjectHeroDesktop = ({
   };
 
   return (
-    <header role="banner" className="relative h-screen w-full overflow-hidden">
+    <header role="banner" className="project-hero-desktop">
       {/* Structured data for search engines */}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       {/* Background Image */}
@@ -52,66 +53,66 @@ const ProjectHeroDesktop = ({
             loading="eager"
             width="1973"
             height="1100"
-            className="absolute inset-0 mt-16 w-full h-full object-cover"
+            className="project-hero-background-image"
           />
-          <div className="absolute inset-0 mt-16 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
+          <div className="project-hero-background-overlay" />
         </>
       )}
       
       {/* Top Bar - Glassy Navbar */}
-      <div className="fixed top-0 left-0 right-0 z-50 px-4 sm:px-6 lg:px-8 py-3 bg-black/20 backdrop-blur-md border-b border-white/10 transition-colors duration-300" aria-label="Project top navigation">
-        <div className="flex items-center justify-between max-w-7xl mx-auto">
+      <div className="project-hero-navbar" aria-label="Project top navigation">
+        <div className="project-hero-navbar-content">
           {/* Company Logo - Leftmost */}
-          <div className="flex items-center">
+          <div className="project-hero-logo-container">
             {companyLogo ? (
-              <img src={companyLogo} alt={`${projectTitle} developer logo`} className="h-10 w-auto" />
+              <img src={companyLogo} alt={`${projectTitle} developer logo`} className="project-hero-logo-image" />
             ) : (
-              <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg px-6 py-2">
-                <span className="text-white font-bold text-lg">LOGO</span>
+              <div className="project-hero-logo-placeholder">
+                <span className="project-hero-logo-text">LOGO</span>
               </div>
             )}
           </div>
           
           {/* Right side container */}
-          <div className="flex items-center gap-4">
+          <div className="project-hero-navbar-actions">
             {/* WhatsApp Button - Visible on all screen sizes */}
             <a
               href={`https://wa.me/918500900100?text=Hi%2C%20I%27m%20interested%20in%20${encodeURIComponent(projectTitle)}%20property.%20Can%20you%20provide%20more%20details%3F`}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center justify-center w-12 h-12"
+              className="project-hero-whatsapp-button"
               aria-label={`Chat on WhatsApp for ${projectTitle}`}
             >
               <img
                 src="/icons/social.webp"
                 alt="WhatsApp"
-                className="w-8 h-8"
+                className="project-hero-whatsapp-icon"
               />
             </a>
 
             {/* Phone Number Button - Hidden on mobile, visible on tablet and desktop */}
-            <a href={`tel:+91${phoneNumber}`} aria-label={`Call +91${phoneNumber}`} rel="nofollow" className="hidden sm:block">
-              <div className="flex items-center transiti duration-300 transform hover:scale-105 pr-4 gap-1">
+            <a href={`tel:+91${phoneNumber}`} aria-label={`Call +91${phoneNumber}`} rel="nofollow" className="project-hero-phone-button-desktop">
+              <div className="project-hero-phone-button-content">
                 {/* Circular phone icon */}
-                <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0">
-                  <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                <div className="project-hero-phone-icon-container">
+                  <svg className="project-hero-phone-icon" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M6.62 10.79a15.05 15.05 0 006.59 6.59l2.2-2.2a1 1 0 011.01-.24 11.36 11.36 0 003.55.57 1 1 0 011 1v3.61a1 1 0 01-.91 1A16 16 0 014 5.92 1 1 0 015 5h3.61a1 1 0 011 1 11.36 11.36 0 00.57 3.55 1 1 0 01-.24 1.01l-2.32 2.23z"/>
                   </svg>
                 </div>
 
                 {/* Phone number text */}
-                <span className="text-white text-2xl font-black tracking-wide whitespace-nowrap" style={{ textShadow: '0px 0px 5px rgba(0, 0, 0, 0.3)' }}>{phoneNumber}</span>
+                <span className="project-hero-phone-number">{phoneNumber}</span>
               </div>
             </a>
 
             {/* Mobile Phone Button - Golden circle with telephone icon only - Visible only on mobile */}
-            <a href={`tel:+91${phoneNumber}`} aria-label={`Call +91${phoneNumber}`} rel="nofollow" className="block sm:hidden">
-              <div className="flex items-center justify-center bg-gradient-to-br from-yellow-400 via-yellow-500 to-yellow-600 rounded-full shadow-[0_4px_15px_rgba(212,175,55,0.35)] hover:shadow-[0_6px_20px_rgba(212,175,55,0.5)] transition-all duration-300 transform hover:scale-105 border-2 border-yellow-400 w-12 h-12">
+            <a href={`tel:+91${phoneNumber}`} aria-label={`Call +91${phoneNumber}`} rel="nofollow" className="project-hero-phone-button-mobile">
+              <div className="project-hero-phone-button-mobile-content">
                 {/* Telephone icon */}
                 <img
                   src="/icons/telephone-call.webp"
                   alt="Call"
-                  className="w-6 h-6"
+                  className="project-hero-phone-button-mobile-icon"
                 />
               </div>
             </a>
@@ -120,9 +121,9 @@ const ProjectHeroDesktop = ({
       </div>
       
       {/* Bottom Section with Title, Location and Info Bar */}
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20 w-full max-w-5xl px-4" style={{ contentVisibility: 'auto' }}>
+      <div className="project-hero-bottom-section">
         {/* Breadcrumbs kept for accessibility but hidden visually */}
-        <nav className="sr-only" aria-label="Breadcrumb">
+        <nav className="project-hero-breadcrumbs" aria-label="Breadcrumb">
           <ol>
             <li>Home</li>
             <li>{location}</li>
@@ -130,58 +131,58 @@ const ProjectHeroDesktop = ({
           </ol>
         </nav>
         {/* Title and Location positioned above info bar */}
-        <div className="text-center text-white mb-3">
-          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-1 tracking-wide text-white">
+        <div className="project-hero-title-location">
+          <h1 className="project-hero-title">
             {projectTitle}
           </h1>
-          <p className="text-base sm:text-lg font-light opacity-90 text-gray-200">
+          <p className="project-hero-location">
             {location}
           </p>
         </div>
-        <div className="border-2 border-yellow-400/60 bg-black/20 backdrop-blur-md rounded-lg shadow-2xl">
-          <div className="grid grid-cols-2 lg:grid-cols-4 relative">
+        <div className="project-hero-info-bar">
+          <div className="project-hero-info-grid">
             {/* Land Area */}
-            <div className="px-4 py-6 text-center relative group cursor-pointer transition-all duration-300 hover:bg-yellow-400/10 hover:scale-105 hover:shadow-lg rounded-l-lg">
-              <div className="text-xs font-medium text-white/80 uppercase tracking-widest mb-2 group-hover:text-yellow-400 transition-colors duration-300">
+            <div className="project-hero-info-item">
+              <div className="project-hero-info-label">
                 LAND AREA
               </div>
-              <div className="text-xl font-bold text-white group-hover:text-yellow-300 transition-colors duration-300">
+              <div className="project-hero-info-value">
                 {bottomInfo.landArea}
               </div>
               {/* Gradient divider */}
-              <div className="absolute right-0 top-1/2 transform -translate-y-1/2 w-px h-12 bg-gradient-to-b from-transparent via-yellow-400/80 to-transparent lg:block hidden"></div>
+              <div className="project-hero-info-divider"></div>
             </div>
             
             {/* Possession */}
-            <div className="px-4 py-6 text-center relative group cursor-pointer transition-all duration-300 hover:bg-yellow-400/10 hover:scale-105 hover:shadow-lg">
-              <div className="text-xs font-medium text-white/80 uppercase tracking-widest mb-2 group-hover:text-yellow-400 transition-colors duration-300">
+            <div className="project-hero-info-item">
+              <div className="project-hero-info-label">
                 {bottomInfo.possessionLabel}
               </div>
-              <div className="text-xl font-bold text-white group-hover:text-yellow-300 transition-colors duration-300">
+              <div className="project-hero-info-value">
                 {bottomInfo.possession}
               </div>
               {/* Gradient divider */}
-              <div className="absolute right-0 top-1/2 transform -translate-y-1/2 w-px h-12 bg-gradient-to-b from-transparent via-yellow-400/80 to-transparent lg:block hidden"></div>
+              <div className="project-hero-info-divider"></div>
             </div>
             
             {/* About Project */}
-            <div className="px-4 py-6 text-center relative group cursor-pointer transition-all duration-300 hover:bg-yellow-400/10 hover:scale-105 hover:shadow-lg">
-              <div className="text-xs font-medium text-white/80 uppercase tracking-widest mb-2 group-hover:text-yellow-400 transition-colors duration-300">
+            <div className="project-hero-info-item">
+              <div className="project-hero-info-label">
                 ABOUT PROJECT
               </div>
-              <div className="text-lg font-semibold text-white group-hover:text-yellow-300 transition-colors duration-300 leading-tight">
+              <div className="project-hero-info-value about-project">
                 {bottomInfo.aboutProject}
               </div>
               {/* Gradient divider */}
-              <div className="absolute right-0 top-1/2 transform -translate-y-1/2 w-px h-12 bg-gradient-to-b from-transparent via-yellow-400/80 to-transparent lg:block hidden"></div>
+              <div className="project-hero-info-divider"></div>
             </div>
             
             {/* Price */}
-            <div className="px-4 py-6 text-center relative group cursor-pointer transition-all duration-300 hover:bg-yellow-400/10 hover:scale-105 hover:shadow-lg rounded-r-lg">
-              <div className="text-xs font-medium text-yellow-400 uppercase tracking-widest mb-2 group-hover:text-yellow-300 transition-colors duration-300">
+            <div className="project-hero-info-item">
+              <div className="project-hero-info-label">
                 STARTING FROM
               </div>
-              <div className="text-2xl font-bold text-yellow-400 group-hover:text-yellow-300 transition-colors duration-300">
+              <div className="project-hero-info-value price">
                 {bottomInfo.price}
               </div>
             </div>

@@ -53,7 +53,8 @@ import api from "../../config/apiClient";
     const quickLinks = [
       { name: "Home", href: "/" },
       { name: "About Us", href: "/about-us/" },      
-      { name: "Luxury Properties", href: "/top-luxury-projects/" },
+      { name: "Luxury Projects", href: "/top-luxury-projects/" },
+      { name: "Branded Residences", href: "/branded-residences/" },
       { name: "Blog", href: "/blog/" },
       { name: "Career with Us", href: "/career-with-us/" },
       { name: "Testimonials", href: "/testimonials" },

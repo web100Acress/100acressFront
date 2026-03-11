@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import RelatedProjects from '../Relatedproject/RelatedProjects.mobile';
+import './AboutBuilder.mobile.css';
 
 const AboutBuilderMobile = ({ builderName = "", aboutDeveloper = "", currentProjectUrl = "" }) => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -33,40 +34,40 @@ const AboutBuilderMobile = ({ builderName = "", aboutDeveloper = "", currentProj
   }
 
   return (
-    <section className="relative py-4 md:py-6 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 text-white overflow-hidden">
+    <section className="about-builder-mobile">
       {/* Animated Background Elements */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-full opacity-5">
-          <div className="absolute top-1/4 left-1/3 w-64 h-64 bg-gradient-to-br from-amber-500 to-amber-600 rounded-full blur-2xl animate-float"></div>
-          <div className="absolute bottom-1/4 right-1/3 w-56 h-56 bg-gradient-to-tl from-amber-400 to-amber-500 rounded-full blur-2xl animate-float animation-delay-2000"></div>
+      <div className="about-builder-mobile-background">
+        <div className="about-builder-mobile-background-overlay">
+          <div className="about-builder-mobile-float-element-1"></div>
+          <div className="about-builder-mobile-float-element-2"></div>
         </div>
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-amber-500/3 to-transparent"></div>
+        <div className="about-builder-mobile-gradient-overlay"></div>
       </div>
 
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">  
+      <div className="about-builder-mobile-content">  
         {/* Mobile Section Header */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-6 md:mb-8"
+          className="about-builder-mobile-header"
         >
           <motion.div 
-            className="inline-flex items-center justify-center w-14 h-14 bg-gradient-to-br from-amber-500 to-amber-600 rounded-full mb-3"
+            className="about-builder-mobile-header-icon"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
-            <svg className="w-7 h-7 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="about-builder-mobile-header-icon-svg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
             </svg>
           </motion.div>
-          <h2 className="text-amber-400 text-xs font-semibold uppercase tracking-[0.2em] mb-2">
+          <h2 className="about-builder-mobile-subtitle">
             DEVELOPER
           </h2>
-          <h3 className="text-white text-2xl md:text-3xl font-bold leading-tight mb-3 max-w-3xl mx-auto">
+          <h3 className="about-builder-mobile-title">
             About {builderName || "the Developer"}
           </h3>
-          <div className="w-16 h-0.5 bg-gradient-to-r from-amber-600 via-amber-500 to-amber-400 rounded-full mx-auto"></div>
+          <div className="about-builder-mobile-accent-line"></div>
         </motion.div>
 
         {/* Mobile Developer Content */}
@@ -74,26 +75,26 @@ const AboutBuilderMobile = ({ builderName = "", aboutDeveloper = "", currentProj
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="max-w-5xl mx-auto mt-6"
+          className="about-builder-mobile-developer-content"
         >
-          <div className="relative group">
-            <div className="relative bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 rounded-xl p-2 md:p-6 border border-gray-700/50">
+          <div className="about-builder-mobile-developer-card">
+            <div className="about-builder-mobile-developer-card-content">
               
               {/* Developer Description */}
               {aboutDeveloper && (
-                <div className="prose prose-sm prose-invert max-w-none mb-2">
+                <div className="about-builder-mobile-developer-description">
                   <div 
-                    className="text-white font-semibold text-base md:text-lg leading-snug"
+                    className="about-builder-mobile-developer-text"
                     dangerouslySetInnerHTML={{ __html: displayContent }}
                   />
                   {shouldTruncate && (
                     <button
                       onClick={() => setIsExpanded(!isExpanded)}
-                      className="mt-2 text-amber-400 font-semibold text-sm hover:text-amber-300 transition-colors duration-300 flex items-center gap-1"
+                      className="about-builder-mobile-expand-button"
                     >
                       {isExpanded ? 'View Less' : 'View More'}
                       <svg 
-                        className={`w-4 h-4 transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}
+                        className={`about-builder-mobile-expand-icon ${isExpanded ? 'rotated' : ''}`}
                         fill="none" 
                         stroke="currentColor" 
                         viewBox="0 0 24 24"
@@ -105,10 +106,8 @@ const AboutBuilderMobile = ({ builderName = "", aboutDeveloper = "", currentProj
                 </div>
               )}
 
-              {/* Mobile Developer Highlights */}
-           
               {/* Mobile Other Projects Section - Inside About Box */}
-              <div className="mt-2 pt-2 border-gray-700/50">
+              <div className="about-builder-mobile-other-projects-section">
                 <RelatedProjects 
                   builderName={builderName} 
                   currentProjectUrl={currentProjectUrl}
@@ -119,20 +118,6 @@ const AboutBuilderMobile = ({ builderName = "", aboutDeveloper = "", currentProj
         </motion.div>
 
       </div>
-
-      {/* Scoped styles for this component */}
-      <style>{`
-        @keyframes float {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-20px); }
-        }
-        .animate-float {
-          animation: float 6s ease-in-out infinite;
-        }
-        .animation-delay-2000 {
-          animation-delay: 2s;
-        }
-      `}</style>
     </section>
   );
 };

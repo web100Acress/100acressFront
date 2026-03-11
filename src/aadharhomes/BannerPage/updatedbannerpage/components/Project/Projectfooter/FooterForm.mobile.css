@@ -1,0 +1,375 @@
+/* Footer Form Mobile Component Styles */
+
+.footer-form-mobile {
+  background: linear-gradient(to bottom, #111827, #000000);
+  padding: 2rem 0;
+  border-top: 1px solid #1f2937;
+}
+
+@media (min-width: 768px) {
+  .footer-form-mobile {
+    padding: 3rem 0;
+  }
+}
+
+.footer-form-mobile-content {
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+@media (min-width: 640px) {
+  .footer-form-mobile-content {
+    padding: 0 1.5rem;
+  }
+}
+
+/* Header */
+.footer-form-mobile-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.footer-form-mobile-trust-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.375rem 0.75rem;
+  background-color: rgba(245, 158, 11, 0.1);
+  border-radius: 9999px;
+  border: 1px solid rgba(245, 158, 11, 0.2);
+  margin-bottom: 1rem;
+}
+
+.footer-form-mobile-trust-badge svg {
+  width: 0.75rem;
+  height: 0.75rem;
+  color: #fbbf24;
+  margin-right: 0.5rem;
+}
+
+.footer-form-mobile-trust-badge-text {
+  color: #fde68a;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.footer-form-mobile-title {
+  color: #ffffff;
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 1rem;
+}
+
+@media (min-width: 768px) {
+  .footer-form-mobile-title {
+    font-size: 1.875rem;
+  }
+}
+
+/* Call now */
+.footer-form-mobile-call-section {
+  padding: 1rem;
+  background: linear-gradient(to right, rgba(245, 158, 11, 0.1), rgba(217, 119, 6, 0.05));
+  border-radius: 1rem;
+  border: 1px solid rgba(245, 158, 11, 0.2);
+  margin-bottom: 1.5rem;
+}
+
+.footer-form-mobile-call-content {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.footer-form-mobile-call-icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  background: linear-gradient(to bottom right, #f59e0b, #d97706);
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.footer-form-mobile-call-icon svg {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: #000000;
+}
+
+.footer-form-mobile-call-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.75rem;
+  color: #fbbf24;
+  font-weight: 700;
+  text-decoration: none;
+  transition: color 0.3s, transform 0.3s;
+  font-size: 1.25rem;
+}
+
+@media (min-width: 768px) {
+  .footer-form-mobile-call-link {
+    font-size: 1.5rem;
+  }
+}
+
+.footer-form-mobile-call-link:hover {
+  color: #fde68a;
+  transform: scale(1.05);
+}
+
+.footer-form-mobile-call-number {
+  font-weight: 800;
+  letter-spacing: 0.025em;
+  line-height: 1;
+}
+
+/* Form */
+.footer-form-mobile-form-wrapper {
+  margin-bottom: 2rem;
+}
+
+.footer-form-mobile-form-container {
+  padding: 1.5rem;
+  background: linear-gradient(to bottom right, rgba(31, 41, 55, 0.5), rgba(17, 24, 39, 0.5));
+  border-radius: 1rem;
+  border: 1px solid rgba(55, 65, 81, 0.5);
+  backdrop-filter: blur(4px);
+}
+
+.footer-form-mobile-form-title {
+  color: #ffffff;
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.footer-form-mobile-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.footer-form-mobile-form-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.footer-form-mobile-form-group {
+  flex: 1;
+}
+
+.footer-form-mobile-form-label {
+  display: block;
+  color: #d1d5db;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.footer-form-mobile-form-input {
+  width: 100%;
+  padding: 0.625rem 0.75rem;
+  background-color: rgba(31, 41, 55, 0.5);
+  border: 1px solid rgba(75, 85, 99, 0.5);
+  border-radius: 0.5rem;
+  color: #ffffff;
+  transition: box-shadow 0.3s, border-color 0.3s;
+}
+
+.footer-form-mobile-form-input::placeholder {
+  color: #9ca3af;
+}
+
+.footer-form-mobile-form-input:focus {
+  outline: none;
+  border-color: transparent;
+  box-shadow: 0 0 0 2px #f59e0b;
+}
+
+.footer-form-mobile-submit-button {
+  width: 100%;
+  background: linear-gradient(to right, #d97706, #f59e0b);
+  color: #000000;
+  font-weight: 700;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.3s, background 0.3s;
+}
+
+.footer-form-mobile-submit-button:hover:not(:disabled) {
+  background: linear-gradient(to right, #f59e0b, #fbbf24);
+  transform: scale(1.05);
+}
+
+.footer-form-mobile-submit-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.footer-form-mobile-submit-button-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.footer-form-mobile-submit-spinner {
+  animation: spin 1s linear infinite;
+  margin-right: 0.75rem;
+  margin-left: -0.25rem;
+  width: 1rem;
+  height: 1rem;
+}
+
+.footer-form-mobile-form-footer {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(55, 65, 81, 0.5);
+}
+
+.footer-form-mobile-form-footer-text {
+  text-align: center;
+  color: #9ca3af;
+  font-size: 0.75rem;
+}
+
+/* Trust indicators */
+.footer-form-mobile-trust-indicators {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.footer-form-mobile-trust-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  background-color: rgba(31, 41, 55, 0.3);
+  border-radius: 0.75rem;
+  border: 1px solid rgba(55, 65, 81, 0.5);
+}
+
+.footer-form-mobile-trust-icon {
+  flex-shrink: 0;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.footer-form-mobile-trust-icon svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.footer-form-mobile-trust-icon.green {
+  background-color: rgba(34, 197, 94, 0.1);
+}
+
+.footer-form-mobile-trust-icon.green svg {
+  color: #10b981;
+}
+
+.footer-form-mobile-trust-icon.blue {
+  background-color: rgba(59, 130, 246, 0.1);
+}
+
+.footer-form-mobile-trust-icon.blue svg {
+  color: #3b82f6;
+}
+
+.footer-form-mobile-trust-icon.amber {
+  background-color: rgba(245, 158, 11, 0.1);
+}
+
+.footer-form-mobile-trust-icon.amber svg {
+  color: #f59e0b;
+}
+
+.footer-form-mobile-trust-icon.purple {
+  background-color: rgba(147, 51, 234, 0.1);
+}
+
+.footer-form-mobile-trust-icon.purple svg {
+  color: #9333ea;
+}
+
+.footer-form-mobile-trust-title {
+  color: #ffffff;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+  font-size: 0.875rem;
+}
+
+.footer-form-mobile-trust-description {
+  color: #9ca3af;
+  font-size: 0.75rem;
+}
+
+/* Disclaimer */
+.footer-form-mobile-disclaimer-section {
+  margin-top: 2rem;
+}
+
+.footer-form-mobile-disclaimer-container {
+  width: 100%;
+  padding: 1.5rem 1rem;
+}
+
+.footer-form-mobile-disclaimer-content {
+  background-color: rgba(31, 41, 55, 0.3);
+  border-radius: 0.75rem;
+  padding: 1rem;
+}
+
+.footer-form-mobile-disclaimer-title {
+  color: #fbbf24;
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.5rem;
+}
+
+.footer-form-mobile-disclaimer-text {
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
+/* Copyright */
+.footer-form-mobile-copyright-section {
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.footer-form-mobile-copyright-content {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.footer-form-mobile-copyright-text {
+  text-align: center;
+  color: #9ca3af;
+  font-size: 0.75rem;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}

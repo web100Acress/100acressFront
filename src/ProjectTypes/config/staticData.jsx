@@ -6,7 +6,7 @@ export const staticData = {
       title: '1 BHK Flats in Gurgaon | Verified Listings ',
       description: 'Find budget-friendly 1 BHK flats in Gurgaon starting from ₹30 Lakhs. Perfect for bachelors and small families. Explore 1 bedroom apartments with modern amenities in prime locations.',
       metaTitle: 'Buy 1BHK Flats in Gurgaon for Modern Lifestyle Living',
-      metaDescription: 'Explore verified 1 BHK flats in Gurgaon with RERA-approved projects, modern amenities, and prime locations. Book your dream home today.',
+      metaDescription: 'Find budget-friendly 1 BHK flats in Gurgaon starting from ₹30 Lakhs. Perfect for bachelors and small families. Explore 1 bedroom apartments with modern amenities in prime locations.',
       h1: '1 BHK Flats in Gurgaon - Your Perfect Affordable Home',
       subtitle: ' ',
       canonical: 'https://www.100acress.com/1-bhk-flats-in-gurgaon/',

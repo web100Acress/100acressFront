@@ -1,0 +1,333 @@
+/* Master Plan Desktop Component Styles */
+
+.master-plan-desktop {
+  position: relative;
+  padding: 2rem 0;
+    background: #1e4158 !important;
+  color: #ffffff;
+  overflow: hidden;
+}
+
+@media (min-width: 768px) {
+  .master-plan-desktop {
+    padding: 2.5rem 0;
+  }
+}
+
+@media (min-width: 1024px) {
+  .master-plan-desktop {
+    padding: 3rem 0;
+  }
+}
+
+.master-plan-desktop-background {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.master-plan-desktop-background-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.05;
+}
+
+.master-plan-desktop-float-1 {
+  position: absolute;
+  top: 33.33%;
+  right: 25%;
+  width: 24rem;
+  height: 24rem;
+  background: linear-gradient(to bottom right, #f59e0b, #d97706);
+  border-radius: 9999px;
+  filter: blur(3rem);
+  animation: masterplan-float 15s ease-in-out infinite;
+}
+
+.master-plan-desktop-float-2 {
+  position: absolute;
+  bottom: 33.33%;
+  left: 25%;
+  width: 20rem;
+  height: 20rem;
+  background: linear-gradient(to top left, #fbbf24, #f59e0b);
+  border-radius: 9999px;
+  filter: blur(3rem);
+  animation: masterplan-float 15s ease-in-out infinite;
+  animation-delay: 2s;
+}
+
+.master-plan-desktop-gradient-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, transparent, rgba(245, 158, 11, 0.1), transparent);
+}
+
+.master-plan-desktop-content {
+  position: relative;
+  z-index: 10;
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+@media (min-width: 640px) {
+  .master-plan-desktop-content {
+    padding: 0 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .master-plan-desktop-content {
+    padding: 0 2rem;
+  }
+}
+
+.master-plan-desktop-header {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+@media (min-width: 768px) {
+  .master-plan-desktop-header {
+    margin-bottom: 3rem;
+  }
+}
+
+.master-plan-desktop-header-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  background: linear-gradient(to bottom right, #f59e0b, #d97706);
+  border-radius: 9999px;
+  margin-bottom: 1rem;
+}
+
+@media (min-width: 768px) {
+  .master-plan-desktop-header-icon {
+    width: 4rem;
+    height: 4rem;
+  }
+}
+
+.master-plan-desktop-header-icon svg {
+  width: 1.75rem;
+  height: 1.75rem;
+  color: #000000;
+}
+
+@media (min-width: 768px) {
+  .master-plan-desktop-header-icon svg {
+    width: 2rem;
+    height: 2rem;
+  }
+}
+
+.master-plan-desktop-subtitle {
+  color: #fbbf24;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  margin-bottom: 0.5rem;
+}
+
+@media (min-width: 768px) {
+  .master-plan-desktop-subtitle {
+    font-size: 0.875rem;
+  }
+}
+
+.master-plan-desktop-title {
+  color: #ffffff;
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 1rem;
+}
+
+@media (min-width: 640px) {
+  .master-plan-desktop-title {
+    font-size: 1.875rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .master-plan-desktop-title {
+    font-size: 2.25rem;
+  }
+}
+
+.master-plan-desktop-accent-line {
+  width: 4rem;
+  height: 0.25rem;
+  background: linear-gradient(to right, #d97706, #f59e0b, #fbbf24);
+  border-radius: 9999px;
+  margin: 0 auto;
+}
+
+.master-plan-desktop-image-clickable {
+  position: relative;
+  cursor: pointer;
+}
+
+.master-plan-desktop-image-glow {
+  position: absolute;
+  inset: -0.25rem;
+  background: linear-gradient(to right, #d97706, #fbbf24);
+  border-radius: 1rem;
+  filter: blur(16px);
+  opacity: 0.2;
+  transition: opacity 0.7s;
+}
+
+.master-plan-desktop-image-clickable:hover .master-plan-desktop-image-glow {
+  opacity: 0.4;
+}
+
+.master-plan-desktop-image-card {
+  position: relative;
+  background: linear-gradient(to bottom right, #111827, #1f2937, #111827);
+  border-radius: 1rem;
+  padding: 0.25rem;
+  border: 1px solid rgba(55, 65, 81, 0.5);
+  backdrop-filter: blur(4px);
+}
+
+.master-plan-desktop-image-frame {
+  position: relative;
+  width: 100%;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  background: linear-gradient(to bottom right, #1f2937, #111827);
+  aspect-ratio: 16 / 9;
+}
+
+.master-plan-desktop-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.7s;
+}
+
+.master-plan-desktop-image-clickable:hover .master-plan-desktop-image {
+  transform: scale(1.05);
+}
+
+.master-plan-desktop-zoom-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.8), rgba(0,0,0,0.4), transparent);
+  opacity: 0;
+  transition: opacity 0.7s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.master-plan-desktop-image-clickable:hover .master-plan-desktop-zoom-overlay {
+  opacity: 1;
+}
+
+.master-plan-desktop-zoom-inner {
+  text-align: center;
+  transform: scale(0.95);
+  transition: transform 0.7s;
+}
+
+.master-plan-desktop-image-clickable:hover .master-plan-desktop-zoom-inner {
+  transform: scale(1);
+}
+
+.master-plan-desktop-zoom-icon {
+  background: linear-gradient(to bottom right, #f59e0b, #d97706);
+  border-radius: 9999px;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 25px 50px -12px rgba(245, 158, 11, 0.5);
+  transition: transform 0.7s;
+  display: inline-flex;
+}
+
+.master-plan-desktop-image-clickable:hover .master-plan-desktop-zoom-icon {
+  transform: rotate(12deg);
+}
+
+.master-plan-desktop-zoom-icon svg {
+  width: 2.5rem;
+  height: 2.5rem;
+  color: #000000;
+}
+
+.master-plan-desktop-zoom-title {
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.master-plan-desktop-zoom-subtitle {
+  color: #fbbf24;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+/* Modal */
+.master-plan-desktop-modal {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0,0,0,0.95);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 50;
+  padding: 1rem;
+}
+
+.master-plan-desktop-modal-close {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  color: #ffffff;
+  transition: color 0.3s;
+  z-index: 10;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.master-plan-desktop-modal-close:hover {
+  color: #fbbf24;
+}
+
+.master-plan-desktop-modal-close svg {
+  width: 2rem;
+  height: 2rem;
+}
+
+.master-plan-desktop-modal-body {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  max-width: 80rem;
+  max-height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.master-plan-desktop-modal-image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+@keyframes masterplan-float {
+  0%, 100% { transform: translateY(0) translateX(0); }
+  50% { transform: translateY(-10px) translateX(5px); }
+}

@@ -1513,8 +1513,11 @@ const GlobalFilterTemplate = ({
                       <p className="mb-4">
                         Gurgaon's growth is not due to chance. Hundreds of MNCs, packed IT corridors, and a continuously expanding workforce have created a housing demand that the city has not been able to fully meet, and this gap is precisely where buyers find opportunity.
                       </p>
-                      <p>
+                      <p className="mb-4">
                         New infrastructure is accelerating things further. The Dwarka Expressway is now fully operational. The Delhi-Mumbai Expressway has slashed travel times to southern zones. Metro lines are pushing deeper into New Gurgaon sectors that were considered "too far" just three years ago.
+                      </p>
+                      <p>
+                        In 2026, buyers are choosing Gurgaon for its modern townships, premium gated communities, better air quality in South Gurgaon, and high-ROI investment opportunities. Property appreciation has been rising because of the perfect mix of lifestyle upgrades, infrastructure push, and large-scale residential launches by top developers.
                       </p>
                     </div>
                   </div>

@@ -1,0 +1,206 @@
+/* Project Layout 2 Global Theme - Dark Blue Theme */
+/* Main background color theme for all sections */
+
+/* Root container */
+.project-layout-2-root {
+  background-color: #25526f !important;
+  min-height: 100vh;
+}
+
+/* Section backgrounds */
+.project-section {
+  background-color: #25526f !important;
+  position: relative;
+}
+
+/* Alternative section backgrounds for variety */
+.project-section-alt {
+  background-color: #1e4158 !important;
+  position: relative;
+}
+
+/* Dark overlay for better text readability */
+.project-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(37, 82, 111, 0.1);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Ensure content stays above overlay */
+.project-section > * {
+  position: relative;
+  z-index: 2;
+}
+
+/* Hero section specific styling */
+.project-hero-section {
+  background-color: #25526f !important;
+}
+
+/* About section */
+.project-about-section {
+  background-color: #25526f !important;
+}
+
+/* Highlights section */
+.project-highlights-section {
+  background-color: #1e4158 !important;
+}
+
+/* Pricing section */
+.project-pricing-section {
+  background-color: #25526f !important;
+}
+
+/* Amenities section */
+.project-amenities-section {
+  background-color: #1e4158 !important;
+}
+
+/* Gallery section */
+.project-gallery-section {
+  background-color: #25526f !important;
+}
+
+/* Video section */
+.project-video-section {
+  background-color: #1e4158 !important;
+}
+
+/* Floor plan section */
+.project-floorplan-section {
+  background-color: #25526f !important;
+}
+
+/* Location section */
+.project-location-section {
+  background-color: #1e4158 !important;
+}
+
+/* Master plan section */
+.project-masterplan-section {
+  background-color: #25526f !important;
+}
+
+/* FAQ section */
+.project-faq-section {
+  background-color: #1e4158 !important;
+}
+
+/* Builder section */
+.project-builder-section {
+  background-color: #1e4158 !important;
+}
+
+/* Footer form section */
+.project-footer-section {
+  background-color: #25526f !important;
+}
+
+/* Text colors for better contrast on dark blue background */
+.project-section h1,
+.project-section h2,
+.project-section h3,
+.project-section h4,
+.project-section h5,
+.project-section h6 {
+  color: #ffffff !important;
+}
+
+.project-section p,
+.project-section span,
+.project-section div {
+  color: #f0f0f0 !important;
+}
+
+/* Card backgrounds within sections */
+.project-card {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+/* Button styling */
+.project-button-primary {
+  background-color: #f39c12 !important;
+  color: #ffffff !important;
+  border: none !important;
+}
+
+.project-button-secondary {
+  background-color: transparent !important;
+  color: #ffffff !important;
+  border: 2px solid #ffffff !important;
+}
+
+/* Input fields */
+.project-input {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  color: #ffffff !important;
+}
+
+.project-input::placeholder {
+  color: rgba(255, 255, 255, 0.6) !important;
+}
+
+/* Modal backgrounds */
+.project-modal {
+  background-color: #25526f !important;
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+  .project-section {
+    padding: 2rem 1rem !important;
+  }
+}
+
+/* Smooth transitions */
+.project-section {
+  transition: background-color 0.3s ease;
+}
+
+/* Override any conflicting backgrounds */
+.bg-white,
+.bg-gray-50,
+.bg-gray-100,
+.bg-gray-200 {
+  background-color: #25526f !important;
+}
+
+/* Special handling for elements that should stay white */
+.text-white-only,
+.bg-white-only,
+.project-white-element {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+}
+
+/* Ensure images and videos maintain their appearance */
+.project-section img,
+.project-section video {
+  background-color: transparent !important;
+}
+
+/* Border colors */
+.project-section .border,
+.project-section .border-gray-200,
+.project-section .border-gray-300 {
+  border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+/* Shadow effects */
+.project-shadow {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Gradient overlays for depth */
+.project-gradient-overlay {
+  background: linear-gradient(135deg, #25526f 0%, #1e4158 100%) !important;
+}

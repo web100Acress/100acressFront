@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Api_Service from '../../../../../../Redux/utils/Api_Service';
 import { motion } from 'framer-motion';
+import './RelatedProjects.desktop.css';
 
 const RelatedProjectsDesktop = ({ builderName = "", currentProjectUrl = "", onShowCallback = () => {} }) => {
   const [builderProjects, setBuilderProjects] = useState([]);
@@ -74,57 +75,45 @@ const RelatedProjectsDesktop = ({ builderName = "", currentProjectUrl = "", onSh
   };
 
   return (
-    <section className="py-8 md:py-10 lg:py-12  text-white relative overflow-hidden">
+    <section className="related-projects-desktop">
       {/* Animated Background Elements */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-full opacity-5">
-          <div className="absolute top-1/3 left-1/4 w-96 h-96 bg-gradient-to-br from-amber-500 to-amber-600 rounded-full blur-3xl animate-float"></div>
-          <div className="absolute bottom-1/3 right-1/4 w-80 h-80 bg-gradient-to-tl from-amber-400 to-amber-500 rounded-full blur-3xl animate-float animation-delay-2000"></div>
+      <div className="related-projects-desktop-background">
+        <div className="related-projects-desktop-background-overlay">
+          <div className="related-projects-desktop-float-1"></div>
+          <div className="related-projects-desktop-float-2"></div>
         </div>
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-amber-500/3 to-transparent"></div>
+        <div className="related-projects-desktop-gradient-overlay"></div>
       </div>
 
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
+      <div className="related-projects-desktop-content">
         {/* Premium Section Header */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-4 md:mb-12"
+          className="related-projects-desktop-header"
         >
-          {/* <motion.div 
-            className="inline-flex items-center justify-center w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-amber-500 to-amber-600 rounded-full mb-4"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <svg className="w-8 h-8 md:w-10 md:h-10 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-            </svg>
-          </motion.div> */}
-          {/* <h2 className="text-amber-400 text-sm md:text-base font-semibold uppercase tracking-[0.2em] mb-2">
-            RELATED PROJECTS
-          </h2> */}
-          <h3 className="text-white text-xl md:text-2xl lg:text-3xl font-bold leading-tight mb-4 max-w-4xl mx-auto">
+          <h3 className="related-projects-desktop-title">
            Other Projects by {builderName}
           </h3>
-          <div className="w-24 h-1 bg-gradient-to-r from-amber-600 via-amber-500 to-amber-400 rounded-full mx-auto"></div>
+          <div className="related-projects-desktop-accent-line"></div>
         </motion.div>
 
         {loading ? (
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="flex justify-center items-center py-12"
+            className="related-projects-desktop-loading"
           >
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-500"></div>
+            <div className="related-projects-desktop-spinner"></div>
           </motion.div>
         ) : error ? (
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="text-center py-12"
+            className="related-projects-desktop-error"
           >
-            <p className="text-gray-400">Unable to load related projects</p>
+            <p className="related-projects-desktop-error-text">Unable to load related projects</p>
           </motion.div>
         ) : (
           <>
@@ -133,7 +122,7 @@ const RelatedProjectsDesktop = ({ builderName = "", currentProjectUrl = "", onSh
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-8"
+              className="related-projects-desktop-grid"
             >
               {projectsToShow.map((project, index) => (
                 <motion.div 
@@ -141,81 +130,69 @@ const RelatedProjectsDesktop = ({ builderName = "", currentProjectUrl = "", onSh
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.1 * index }}
-                  className="group cursor-pointer"
+                  className="related-projects-desktop-card"
                   onClick={() => handleProjectClick(project)}
                 >
                   <div className="relative">
                     {/* Glow Effect */}
-                    <div className="absolute -inset-1 bg-gradient-to-r from-amber-600 to-amber-400 rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-500"></div>
+                    <div className="related-projects-desktop-card-glow"></div>
                     
-                    <div className="relative bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 rounded-2xl border border-gray-700/50 backdrop-blur-sm overflow-hidden hover:border-amber-500/30 transition-all duration-300">
+                    <div className="related-projects-desktop-card-inner">
                       
                       {/* Project Image */}
-                      <div className="aspect-[5/4] bg-gradient-to-br from-gray-800 to-gray-900 overflow-hidden">
+                      <div className="related-projects-desktop-card-image">
                         {project.thumbnailImage?.url ? (
                           <img
                             src={project.thumbnailImage.url}
                             alt={project.projectName}
                             fetchpriority="high"
-                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                            className="related-projects-desktop-card-image-img"
                           />
                         ) : (
-                          <div className="w-full h-full flex items-center justify-center">
-                            <div className="w-16 h-16 bg-gradient-to-br from-amber-500 to-amber-600 rounded-full flex items-center justify-center">
-                              <svg className="w-8 h-8 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <div className="related-projects-desktop-card-placeholder">
+                            <div className="related-projects-desktop-card-placeholder-icon">
+                              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                               </svg>
                             </div>
                           </div>
                         )}
-                        
-                        {/* Overlay */}
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                       </div>
-
-                      {/* Project Details */}
-                      <div className="p-3">
-                        <h4 
-                          className={`text-white font-bold text-sm mb-1 group-hover:text-amber-400 transition-colors duration-300 cursor-pointer ${
-                            isProjectNameExpanded(index) ? '' : 'truncate'
-                          }`}
-                          onClick={(e) => toggleProjectName(index, e)}
-                          title={project.projectName}
-                        >
-                          {project.projectName}
-                        </h4>
-                        
-                        <div className="flex items-start space-x-1 mb-0">
-                          <svg className="w-3 h-3 text-amber-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                          </svg>
-                          <p className="text-gray-400 text-xs truncate">
-                            {project.projectAddress}, {project.city}
-                          </p>
-                        </div>
-
-                        {/* Price Range */}
-                        <div className="flex items-center space-x-1 mb-1">
+                      
+                      {/* Project Info */}
+                      <div className="related-projects-desktop-card-content">
+                        <h4 className="related-projects-desktop-card-title">
+                           {project.projectName}
+                         </h4>
+                        <p className="related-projects-desktop-card-location">
+                          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                           </svg>
+                           {project.projectAddress}, {project.city}
+                         </p>
+                        <div className="related-projects-desktop-card-price">
                           {!project?.minPrice && !project?.maxPrice ? (
-                            <p className="text-yellow-400 font-bold text-sm">₹ Reveal Soon</p>
+                            <span className="related-projects-desktop-card-price-reveal">₹ Reveal Soon</span>
                           ) : (
-                            <p className="text-yellow-400 font-bold text-sm">
-                              <span className="mr-1">₹</span>
-                              {project.minPrice < 1 ? (
-                                <span>{(project.minPrice * 100).toFixed(2)} L</span>
-                              ) : (
-                                <span>{project.minPrice} Cr </span>
-                              )}
-                              - {project.maxPrice} Cr
-                            </p>
+                            <>
+                              <span className="related-projects-desktop-card-price-label">Starting</span>
+                              <span className="related-projects-desktop-card-price-value">
+                                {project.minPrice < 1 ? (
+                                  <span>{(project.minPrice * 100).toFixed(2)} L</span>
+                                ) : (
+                                  <span>{project.minPrice} Cr </span>
+                                )}
+                              </span>
+                              <span className="related-projects-desktop-card-price-unit">- {project.maxPrice} Cr</span>
+                            </>
                           )}
                         </div>
 
                         {/* View Details Button */}
                         <button 
                           onClick={() => handleProjectClick(project)}
-                          className="w-full bg-gradient-to-r from-amber-600 to-amber-500 text-black font-semibold py-1.5 px-3 rounded-lg hover:from-amber-500 hover:to-amber-400 transition-all duration-300 transform group-hover:scale-105 shadow-lg hover:shadow-amber-500/30 text-xs"
+                          className="related-projects-desktop-card-btn"
                         >
                           View Details
                         </button>
@@ -231,7 +208,7 @@ const RelatedProjectsDesktop = ({ builderName = "", currentProjectUrl = "", onSh
               <motion.div 
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="text-center text-gray-400 mt-8"
+                className="related-projects-desktop-empty"
               >
                 No related projects found for {builderName}.
               </motion.div>
@@ -243,15 +220,15 @@ const RelatedProjectsDesktop = ({ builderName = "", currentProjectUrl = "", onSh
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.4 }}
-                className="text-center mt-8"
+                className="related-projects-desktop-view-all"
               >
                 <button
                   onClick={() => setShowAllProjects(!showAllProjects)}
-                  className="inline-flex items-center space-x-2 bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 text-black font-bold px-8 py-3 rounded-lg border-2 border-yellow-400 shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 transform"
+                  className="related-projects-desktop-view-all-btn"
                 >
                   <span>{showAllProjects ? 'Show Less' : 'View All Projects'}</span>
                   <svg 
-                    className={`w-4 h-4 transition-transform duration-300 ${showAllProjects ? 'rotate-180' : ''}`} 
+                    className={`related-projects-desktop-view-all-icon ${showAllProjects ? 'rotate-180' : ''}`} 
                     fill="none" 
                     stroke="currentColor" 
                     viewBox="0 0 24 24"
@@ -264,20 +241,6 @@ const RelatedProjectsDesktop = ({ builderName = "", currentProjectUrl = "", onSh
           </>
         )}
       </div>
-
-      {/* Scoped styles for this component */}
-      <style>{`
-        @keyframes float {
-          0%, 100% { transform: translateY(0) translateX(0); }
-          50% { transform: translateY(-10px) translateX(5px); }
-        }
-        .animate-float {
-          animation: float 15s ease-in-out infinite;
-        }
-        .animation-delay-2000 {
-          animation-delay: 2s;
-        }
-      `}</style>
     </section>
   );
 };
