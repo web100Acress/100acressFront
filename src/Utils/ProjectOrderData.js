@@ -209,158 +209,121 @@ export const getBrandedResidencesDesiredOrder = async () => {
   return data.brandedresidences.filter(item => item.isActive).map(item => item.name);
 };
 
+let cachedProjectData = null;
+let lastFetchTime = 0;
+const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+
+const fetchProjectData = async () => {
+  const now = Date.now();
+  if (cachedProjectData && (now - lastFetchTime < CACHE_DURATION)) {
+    return cachedProjectData;
+  }
+
+  const api = (await import('../config/apiClient')).default;
+  const response = await api.get('/project/viewAll/data');
+  
+  if (response.data && response.data.data) {
+    cachedProjectData = response.data.data;
+    lastFetchTime = now;
+    return cachedProjectData;
+  }
+  return [];
+};
+
 export const getBrandedResidences = async () => {
   console.log('🏢 getBrandedResidences: Function called');
   try {
-    console.log('🏢 getBrandedResidences: Starting fetch...');
+    const allProjects = await fetchProjectData();
+    const orderData = await getProjectOrderData();
     
-    // Try to fetch actual project data from API
-    const api = (await import('../config/apiClient')).default;
-    const response = await api.get('/project/viewAll/data');
-    console.log('🏢 getBrandedResidences: API response:', response.data);
+    // Ensure we have a valid order list, fallback to hardcoded defaults if API returns empty
+    let brandedResidencesOrder = orderData.brandedresidences?.filter(item => item.isActive) || [];
+    
+    if (brandedResidencesOrder.length === 0) {
+      console.log('🏢 getBrandedResidences: No order data from API, using defaults');
+      brandedResidencesOrder = [
+        { id: 42, name: "Elan The Emperor", order: 1, isActive: true },
+        { id: 43, name: "Experion The Trillion", order: 2, isActive: true },
+        { id: 44, name: "Trump Towers Delhi NCR", order: 3, isActive: true },
+        { id: 45, name: "Birla Arika", order: 4, isActive: true },
+        { id: 46, name: "SmartWorld Elie Saab Residences", order: 5, isActive: true }
+      ];
+    }
 
-    if (response.data && response.data.data) {
-      const allProjects = response.data.data;
-      console.log('🏢 getBrandedResidences: Total projects found:', allProjects.length);
-      
-      // Log all projects that contain "SmartWorld" or "Elie Saab"
-      const matchingProjects = allProjects.filter(p => 
-        p.projectName && (
-          p.projectName.toLowerCase().includes('smartworld') || 
-          p.projectName.toLowerCase().includes('elie saab')
-        )
-      );
-      console.log('🏢 getBrandedResidences: Projects matching "SmartWorld" or "Elie Saab":', matchingProjects.map(p => ({
-        name: p.projectName,
-        city: p.city,
-        id: p._id
-      })));
-
-      // Get the desired order from project orders
-      const orderData = await getProjectOrderData();
-      console.log('🏢 getBrandedResidences: Order data:', orderData);
-      
-      const brandedResidencesOrder = orderData.brandedresidences?.filter(item => item.isActive) || [];
-      console.log('🏢 getBrandedResidences: Branded residences order:', brandedResidencesOrder);
-
-      // Map the projects to their order
-      const orderedProjects = [];
-      brandedResidencesOrder.forEach(orderItem => {
-        console.log('🏢 getBrandedResidences: Processing order item:', orderItem);
-        
-        // Find project by name (case-insensitive match)
-        const project = allProjects.find(p => {
-          const normalizedName = p.projectName?.toLowerCase().replace(/\s+/g, '') || '';
-          const normalizedOrderName = orderItem.name.toLowerCase().replace(/\s+/g, '');
-          const isMatch = normalizedName === normalizedOrderName;
-          
-          console.log('🏢 getBrandedResidences: Comparing:', {
-            projectName: p.projectName,
-            normalizedName,
-            orderName: orderItem.name,
-            normalizedOrderName,
-            isMatch
-          });
-          
-          return isMatch;
-        });
-
-        console.log('🏢 getBrandedResidences: Found project:', project?.projectName || 'Not found');
-
-        if (project) {
-          orderedProjects.push({
-            ...project, // Include all original project fields
-            projectName: project.projectName, // Ensure projectName field exists
-            title: project.projectName, // Also set title for consistency
-            link: orderItem.link || `/${project.project_url}/`,
-            // Keep the original image structure as expected by CommonProject
-            thumbnailImage: project.thumbnailImage,
-            frontImage: project.frontImage,
-            // Also set image field for fallback
-            image: project.thumbnailImage?.url || project.frontImage?.url || `https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/${project.thumbnailImage?.public_id}`
-          });
-        } else {
-          // Fallback to static data if project not found in database
-          orderedProjects.push({
-            projectName: orderItem.name, // Add projectName field
-            title: orderItem.name,
-            link: orderItem.link,
-            image: orderItem.thumbnailImage || orderItem.frontImage || orderItem.image,
-            frontImage: orderItem.frontImage,
-            thumbnailImage: orderItem.thumbnailImage
-          });
-        }
+    const orderedProjects = brandedResidencesOrder.map(orderItem => {
+      // Try to find matching project in the fetched data
+      const project = (allProjects || []).find(p => {
+        const normalizedName = p.projectName?.toLowerCase().replace(/\s+/g, '') || '';
+        const normalizedOrderName = orderItem.name.toLowerCase().replace(/\s+/g, '');
+        return normalizedName === normalizedOrderName;
       });
 
-      console.log('🏢 getBrandedResidences: Final ordered projects:', orderedProjects);
-      return orderedProjects;
-    }
-  } catch (error) {
-    console.error('❌ Error fetching branded residences from API:', error);
-  }
+      if (project) {
+        return {
+          ...project,
+          projectName: project.projectName,
+          title: project.projectName,
+          link: orderItem.link || `/${project.project_url}/`,
+          thumbnailImage: project.thumbnailImage,
+          frontImage: project.frontImage,
+          image: project.thumbnailImage?.url || project.frontImage?.url || `https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/${project.thumbnailImage?.public_id}`
+        };
+      }
+      // Fallback to static info if project not in database
+      return {
+        projectName: orderItem.name,
+        title: orderItem.name,
+        link: orderItem.link || '#',
+        image: orderItem.thumbnailImage || orderItem.frontImage || orderItem.image || '/Images/dummy.webp',
+        frontImage: orderItem.frontImage,
+        thumbnailImage: orderItem.thumbnailImage
+      };
+    });
 
-  // Fallback to static data
-  console.log('🏢 getBrandedResidences: Using fallback static data');
-  const data = await getProjectOrderData();
-  const fallbackData = data.brandedresidences?.filter(item => item.isActive).map(item => ({
-    projectName: item.name, // Add projectName field
-    title: item.name,
-    link: item.link,
-    image: item.thumbnailImage || item.frontImage || item.image,
-    frontImage: item.frontImage,
-    thumbnailImage: item.thumbnailImage,
-    // Add fallback image if no image is available
-    image: item.thumbnailImage || item.frontImage || item.image || '/Images/dummy.webp'
-  })) || [];
-  
-  console.log('🏢 getBrandedResidences: Fallback data:', fallbackData);
-  return fallbackData;
+    console.log('🏢 getBrandedResidences: Final projects:', orderedProjects);
+    return orderedProjects;
+  } catch (error) {
+    console.error('❌ Error fetching branded residences:', error);
+    // Ultimate fallback if everything fails
+    return [
+      { projectName: "Elan The Emperor", title: "Elan The Emperor", link: "/elan-the-emperor/", image: "/Images/dummy.webp" },
+      { projectName: "Experion The Trillion", title: "Experion The Trillion", link: "/experion-the-trillion/", image: "/Images/dummy.webp" }
+    ];
+  }
 };
 
 export const getBudgetPlots = async () => {
   try {
-    // Try to fetch actual project data from API
-    const api = (await import('../config/apiClient')).default;
-    const response = await api.get('/project/viewAll/data');
-
-    if (response.data && response.data.data) {
-      const allProjects = response.data.data;
-
-      // Get the desired order from project orders
+    const allProjects = await fetchProjectData();
+    
+    if (allProjects && allProjects.length > 0) {
       const orderData = await getProjectOrderData();
       const budgetPlotsOrder = orderData.budgetPlots.filter(item => item.isActive);
 
-      // Map the projects to their order
-      const orderedProjects = [];
-      budgetPlotsOrder.forEach(orderItem => {
-        // Find project by name (case-insensitive match)
+      const orderedProjects = budgetPlotsOrder.map(orderItem => {
         const project = allProjects.find(p =>
           p.projectName &&
           p.projectName.toLowerCase().replace(/\s+/g, '') === orderItem.name.toLowerCase().replace(/\s+/g, '')
         );
 
         if (project) {
-          orderedProjects.push({
-            ...project, // Include all original project fields
-            projectName: project.projectName, // Ensure projectName field exists
-            title: project.projectName, // Also set title for consistency
+          return {
+            ...project,
+            projectName: project.projectName,
+            title: project.projectName,
             link: orderItem.link || `/${project.project_url}/`,
-            // Keep the original image structure as expected by CommonProject
             thumbnailImage: project.thumbnailImage,
             frontImage: project.frontImage,
-            // Also set image field for fallback
             image: project.thumbnailImage?.url || project.frontImage?.url || `https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/${project.thumbnailImage?.public_id}`
-          });
-        } else {
-          // Fallback to static data if project not found in database
-          orderedProjects.push({
-            title: orderItem.name,
-            link: orderItem.link,
-            image: orderItem.thumbnailImage || orderItem.frontImage,
-            thumbnailImage: orderItem.thumbnailImage,
-            frontImage: orderItem.frontImage
-          });
+          };
         }
+        return {
+          title: orderItem.name,
+          link: orderItem.link,
+          image: orderItem.thumbnailImage || orderItem.frontImage,
+          thumbnailImage: orderItem.thumbnailImage,
+          frontImage: orderItem.frontImage
+        };
       });
 
       return orderedProjects;

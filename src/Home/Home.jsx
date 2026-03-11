@@ -617,14 +617,17 @@ const Home = () => {
       sectionsRef.current[section] = el;
     }
   };
-  const changeNavbarColor = () => {
-    if (window.scrollY >= 250) {
-      setColorchange(true);
-    } else {
-      setColorchange(false);
-    }
-  };
-  window.addEventListener("scroll", changeNavbarColor);
+  useEffect(() => {
+    const changeNavbarColor = () => {
+      if (window.scrollY >= 250) {
+        setColorchange(true);
+      } else {
+        setColorchange(false);
+      }
+    };
+    window.addEventListener("scroll", changeNavbarColor);
+    return () => window.removeEventListener("scroll", changeNavbarColor);
+  }, []);
   const [activeFilter, setActiveFilter] = useState("Trending");
   const [trendingPage, setTrendingPage] = useState(0);
   const trendingScrollRef = useRef(null);

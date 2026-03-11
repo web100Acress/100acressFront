@@ -44,7 +44,7 @@ const getApiBaseUrl = () => {
 const api = axios.create({
   // Use dynamic resolver; we also override per-request below
   baseURL: getBaseUrl() || getApiBaseUrl(),
-  timeout: 30000,
+  timeout: 60000,
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
