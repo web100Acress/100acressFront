@@ -32,7 +32,8 @@ const ModernRecommendedSection = () => {
   const [favTick, setFavTick] = useState(0);
   const swiperRef = useRef(null);
   const { getSpotlight } = Api_Service();
-  const { isAuthenticated } = useContext(AuthContext);
+  const auth = useContext(AuthContext);
+  const isAuthenticated = auth?.isAuthenticated;
 
   useEffect(() => {
     getSpotlight();

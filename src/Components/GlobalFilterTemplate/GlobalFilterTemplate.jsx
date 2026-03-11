@@ -1481,15 +1481,8 @@ const GlobalFilterTemplate = ({
                       <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4">
                         {section.title}
                       </h3>
-                      <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4">
-                        {section.title}
-                      </h3>
-
-
-
                       <div className="text-gray-600 leading-relaxed whitespace-pre-line">
                         {section.content}
-                        {/* content */}
                       </div>
                     </div>
                   ))}
@@ -1520,29 +1513,9 @@ const GlobalFilterTemplate = ({
                       <p className="mb-4">
                         Gurgaon's growth is not due to chance. Hundreds of MNCs, packed IT corridors, and a continuously expanding workforce have created a housing demand that the city has not been able to fully meet, and this gap is precisely where buyers find opportunity.
                       </p>
-                      <p className="mb-4">
+                      <p>
                         New infrastructure is accelerating things further. The Dwarka Expressway is now fully operational. The Delhi-Mumbai Expressway has slashed travel times to southern zones. Metro lines are pushing deeper into New Gurgaon sectors that were considered "too far" just three years ago.
                       </p>
-                      <p>
-                        In 2026, buyers are choosing Gurgaon for its modern townships, premium gated communities, better air quality in South Gurgaon, and high-ROI investment opportunities. Property appreciation has been rising because of the perfect mix of lifestyle upgrades, infrastructure push, and large-scale residential launches by top developers.
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8 hover:shadow-xl transition-shadow duration-300">
-                    <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 text-blue-600">
-                      Why Invest in Upcoming Projects in Gurgaon?
-                    </h3>
-                    <div className="text-gray-600 leading-relaxed">
-                      <p className="mb-4">
-                        Investing in upcoming projects provides multiple advantages, especially in a high-growth market like Gurgaon:
-                      </p>
-                      <ul className="list-disc pl-5 space-y-2">
-                        <li><strong>Wide Property Choices:</strong> Upcoming projects in Gurgaon offer a diverse range of housing options, including smartly designed 2 BHK homes and expansive 3 & 4 BHK luxury residences, ensuring choices for different budgets and lifestyle needs.</li>
-                        <li><strong>Infrastructure Growth:</strong> Improved road networks, metro connectivity, and new commercial hubs are driving property appreciation.</li>
-                        <li><strong>High Appreciation Potential:</strong> Early investment in upcoming projects in 2025 often results in better price appreciation by possession.</li>
-                        <li><strong>Strong Rental Demand:</strong> Gurgaon's corporate ecosystem ensures consistent rental demand across major locations.</li>
-                      </ul>
                     </div>
                   </div>
 
@@ -1683,7 +1656,7 @@ const GlobalFilterTemplate = ({
                         </div>
                         <div>
                           <h4 className="font-semibold text-gray-900 mb-2">Southern Peripheral Road (SPR)</h4>
-                          <p className="text-sm">SPR connects key parts of the city and features multiple new launch projects in 2026 that balance lifestyle convenience and investment growth.</p>
+                          <p className="text-sm">SPR connects key parts of the city and features multiple new launch projects in 2026 that balance lifestyle comfort with investment growth.</p>
                         </div>
                       </div>
                     </div>

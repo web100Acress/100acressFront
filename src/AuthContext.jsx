@@ -81,7 +81,7 @@ export const AuthProvider = ({ children }) => {
         }
       }
 
-      if (token) {
+      if (currentToken) {
         try { hydrateFavoritesFromServer(); } catch (_) { }
       }
     };
