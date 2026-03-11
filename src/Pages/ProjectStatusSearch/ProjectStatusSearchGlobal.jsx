@@ -158,7 +158,7 @@ const ProjectStatusSearchGlobal = () => {
     },
     brandedresidences: {
       title: "Branded Residences in India | Luxury Homes by Global Brands",
-      description: "Explore Luxury Branded Residences | By Global Brands",
+      description: "Branded residences represent a new chapter in modern luxury living. These homes are created when experienced real estate developers collaborate with globally recognized design and lifestyle partners. The result is a residence where architecture, interiors, and everyday comfort are thoughtfully planned together. From carefully selected materials to elegant layouts, every detail reflects a refined standard of living. Compared to conventional housing, branded homes are aimed at design consistency, high-quality construction, and well curated lifestyle experience. Premium services, caring services and serene living conditions are usually taken by residents to enable them to live in comfort and privacy. These residences are being developed in Gurugram and Noida, cities known for their modern skyline and growing demand for premium residential living.",
       metaTitle: "Branded Residences in India | Luxury Homes by Global Brands",
       canonical: "https://www.100acress.com/branded-residences/",
       query: "allproject",
@@ -167,10 +167,44 @@ const ProjectStatusSearchGlobal = () => {
         "@context": "https://schema.org",
         "@type": "RealEstateAgent",
         "name": "100acress",
-        "description": "Explore branded residences in prime locations, like Gurugram and Noida, where developers collaborate with global brands, creating luxury homes with premium amenities.",
+        "description": "Branded residences represent a new chapter in modern luxury living. These homes are created when experienced real estate developers collaborate with globally recognized design and lifestyle partners. The result is a residence where architecture, interiors, and everyday comfort are thoughtfully planned together. From carefully selected materials to elegant layouts, every detail reflects a refined standard of living. Compared to conventional housing, branded homes are aimed at design consistency, high-quality construction, and well curated lifestyle experience. Premium services, caring services and serene living conditions are usually taken by residents to enable them to live in comfort and privacy. These residences are being developed in Gurugram and Noida, cities known for their modern skyline and growing demand for premium residential living.",
         "url": "https://www.100acress.com",
         "areaServed": "India"
-      }
+      },
+      faqs: [
+        {
+          question: "What are branded residences?",
+          answer: "Branded residences are luxury homes developed with global brands, offering premium design, exclusive amenities, and professionally managed services."
+        },
+        {
+          question: "Why are branded residences popular in India?",
+          answer: "They offer luxury living, trusted brand value, premium amenities, and better property management compared to regular residential projects."
+        },
+        {
+          question: "Are branded residences a good investment?",
+          answer: "Yes, branded residences often attract premium buyers and tenants, helping maintain strong resale value and rental demand."
+        },
+        {
+          question: "How are branded residences different from luxury apartments?",
+          answer: "Branded residences involve global brand partnerships, offering curated design, exclusive services, and a lifestyle experience beyond typical luxury apartments."
+        },
+        {
+          question: "Do branded residences offer hotel-style services?",
+          answer: "Many branded residences provide services like concierge, housekeeping, valet parking, and private club access."
+        },
+        {
+          question: "Are branded residences more expensive than normal properties?",
+          answer: "Yes, they usually cost more due to brand association, premium design, exclusive amenities, and luxury lifestyle services."
+        },
+        {
+          question: "Who should buy branded residences?",
+          answer: "High-net-worth buyers, NRIs, and investors seeking luxury living, global brand standards, and long-term investment potential."
+        },
+        {
+          question: "Are branded residences available in Gurgaon?",
+          answer: "Yes, Gurgaon offers several branded residence projects by leading developers in prime locations with luxury amenities."
+        }
+      ]
     }
   };
 
