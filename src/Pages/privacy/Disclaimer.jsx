@@ -10,7 +10,7 @@ const Disclaimer = () => {
       <Helmet>
         <title>Disclaimer - 100acress.com</title>
         <meta name="description" content="Disclaimer for 100acress.com - Read our terms of use and legal disclaimers regarding property listings and user responsibilities." />
-        <link rel="canonical" href="https://www.100acress.com/disclaimer" />
+        <link rel="canonical" href="https://www.100acress.com/disclaimer/" />
       </Helmet>
       
      
