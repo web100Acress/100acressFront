@@ -92,7 +92,7 @@ const FooterFormMobile = ({ builderName = "Premium", projectViewDetails = {}, pr
   const { dialNumber, displayNumber } = getFooterPhoneNumbers();
 
   return (
-    <div className="footer-form-mobile">
+    <div className="footer-form-mobile" style={{ paddingTop: '120px', zIndex: 1, position: 'relative' }}>
       <div className="footer-form-mobile-content">
         
         {/* Mobile Header */}

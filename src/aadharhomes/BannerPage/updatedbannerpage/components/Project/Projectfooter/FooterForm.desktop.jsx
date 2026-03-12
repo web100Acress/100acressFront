@@ -92,7 +92,7 @@ const FooterFormDesktop = ({ builderName = "Premium", projectViewDetails = {}, p
   const { dialNumber, displayNumber } = getFooterPhoneNumbers();
 
   return (
-    <div className="footer-form-desktop">
+    <div className="footer-form-desktop" style={{ paddingTop: '120px', zIndex: 1, position: 'relative' }}>
       <div className="footer-form-desktop-content">
         <div className="footer-form-desktop-main-grid">
           

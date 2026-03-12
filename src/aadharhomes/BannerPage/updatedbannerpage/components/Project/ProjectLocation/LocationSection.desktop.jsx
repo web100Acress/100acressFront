@@ -160,7 +160,7 @@ const LocationSection = ({
   };
 
   return (
-    <section className="location-section-desktop">
+    <section className="location-section-desktop" style={{ paddingTop: '120px', zIndex: 1, position: 'relative' }}>
       {/* Animated Background Elements */}
       <div className="location-section-background">
         <div className="location-section-background-overlay">

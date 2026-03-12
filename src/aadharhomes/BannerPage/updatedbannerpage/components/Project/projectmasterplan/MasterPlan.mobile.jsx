@@ -23,7 +23,7 @@ const MasterPlanMobile = ({ projectName = "", masterPlanImage = null }) => {
   }
 
   return (
-    <section className="master-plan-mobile">
+    <section className="master-plan-mobile" style={{ paddingTop: '120px', zIndex: 1, position: 'relative' }}>
       {/* Animated Background Elements */}
       <div className="master-plan-mobile-background">
         <div className="master-plan-mobile-background-overlay">

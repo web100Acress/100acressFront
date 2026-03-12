@@ -3,7 +3,7 @@
 .faq-section-desktop {
   position: relative;
   padding: 4rem 0;
- background: linear-gradient(to right, transparent, rgba(245, 158, 11, 0.03), transparent);
+  background: #2d94b3;
   color: #ffffff;
   overflow: hidden;
 }
@@ -264,7 +264,7 @@
 .faq-section-desktop-cta-glow {
   position: absolute;
   inset: -0.25rem;
-  background: linear-gradient(to right, #d97706, #fbbf24);
+  background: linear-gradient(to right, #2d94b3, #2d94b3);
   border-radius: 1rem;
   filter: blur(12px);
   opacity: 0.2;
@@ -277,7 +277,7 @@
 
 .faq-section-desktop-cta-card {
   position: relative;
-  background: linear-gradient(to bottom right, #111827, #1f2937, #111827);
+  background: #25526f;
   border-radius: 0.75rem;
   padding: 1.5rem;
   backdrop-filter: blur(4px);

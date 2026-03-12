@@ -445,7 +445,7 @@ function App() {
                         <Route path="/project/luxury" element={<Navigate to="/" replace />} />
                         <Route path="/project/luxury/" element={<Navigate to="/" replace />} />
                         <Route path="/projects-in-goa/" element={<CityProjectsGlobal />} />
-                        <Route path="/testimonials" element={<TestimonialsPage />} />
+                        <Route path="/testimonials/" element={<TestimonialsPage />} />
                         <Route path="/projects-in-noida/" element={<CityProjectsGlobal />} />
                         <Route path="/projects-in-panipat/" element={<CityProjectsGlobal />} />
                         <Route path="/projects-in-panchkula/" element={<CityProjectsGlobal />} />
@@ -461,7 +461,7 @@ function App() {
                         <Route path="/projects-in-:citySlug/" element={<CityProjectsGlobal />} />
                         <Route path="/projects-in-:citySlug/" element={<CityProjectsGlobal />} />
                         <Route path="/projects-in-pushkar/" element={<CityProjectsGlobal />} />
-                        <Route path="/qr-generator" element={<QRGeneratorPage />} />
+                        <Route path="/qr-generator/" element={<QRGeneratorPage />} />
                         <Route path="/emi-calculator/" element={<EMICalculatorPage />} />
                         {/* Contact Card Route - Multiple Templates */}
                         <Route path="/hi/:slug" element={

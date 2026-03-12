@@ -188,9 +188,9 @@ const ModernBlogPage = () => {
       <Helmet>
         <meta
           name="description"
-          content="Discover the latest insights, tips, and expert guidance on real estate trends, investment strategies, and property management on our blog at 100acress.com. Stay informed!"
+          content="Read the latest real estate blogs on 100acress.com covering property news, Gurgaon market trends, investment tips, and expert guides for buying and investing in property."
         />
-        <title>Blog | Expert Guidance on Real Estate | 100acress.com</title>
+        <title>Real Estate Blog | Property News, Market Trends & Investment Guides</title>
         <link rel="canonical" href="https://www.100acress.com/blog/" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />

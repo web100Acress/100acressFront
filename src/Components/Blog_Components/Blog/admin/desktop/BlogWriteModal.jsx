@@ -72,6 +72,7 @@ const BlogWriteModal = () => {
   // SEO
   const [metaTitle, setMetaTitle] = useState('');
   const [metaDescription, setMetaDescription] = useState('');
+  const [canonicalUrl, setCanonicalUrl] = useState('');
   const [slug, setSlug] = useState('');
   const [slugTouched, setSlugTouched] = useState(false); // if user edits slug manually
   const [slugChecking, setSlugChecking] = useState(false);
@@ -837,6 +838,7 @@ const BlogWriteModal = () => {
             // map SEO fields if your backend returns them with these keys
             setMetaTitle(b.metaTitle || '');
             setMetaDescription(b.metaDescription || '');
+            setCanonicalUrl(b.canonicalUrl || '');
             // If blog has a saved slug, mark as touched so auto-slug doesn't overwrite it
             if (b.slug) {
               setSlugTouched(true);
@@ -986,7 +988,7 @@ const BlogWriteModal = () => {
         const snapshot = {
           ts: Date.now(),
           title, description: finalContentForDraft, frontImagePreview, categories,
-          metaTitle, metaDescription, slug, relatedProjects, enableFAQ, faqs,
+          metaTitle, metaDescription, canonicalUrl, slug, relatedProjects, enableFAQ, faqs,
           author, tableBlocks
         };
         localStorage.setItem(draftKey, JSON.stringify(snapshot));
@@ -1000,7 +1002,17 @@ const BlogWriteModal = () => {
       } catch { }
     }, 1200);
     return () => clearTimeout(t);
-  }, [draftKey, historyKey, title, description, frontImagePreview, categories, metaTitle, metaDescription, slug, relatedProjects, enableFAQ, faqs, author, tableBlocks]);
+  }, [draftKey, historyKey, title, description, frontImagePreview, categories, metaTitle, metaDescription, canonicalUrl, slug, relatedProjects, enableFAQ, faqs, author, tableBlocks]);
+
+  // Generate canonical URL in real-time based on slug
+  useEffect(() => {
+    if (slug) {
+      const baseUrl = 'https://www.100acress.com/';
+      setCanonicalUrl(`${baseUrl}${slug}`);
+    } else {
+      setCanonicalUrl('');
+    }
+  }, [slug]);
 
   // Convert the next 4 standalone images (from cursor) into a grid with inline styles
   const convertNextImagesToGrid = () => {
@@ -1228,9 +1240,14 @@ const BlogWriteModal = () => {
         }
         console.log('[BlogWriteModal] Projects loaded (total):', all.length);
         setAllProjects(all);
+        
+        if (all.length === 0) {
+          showToast.warning('No projects found. The related projects feature requires projects to be available.');
+        }
       } catch (error) {
         console.error('Error fetching projects:', error);
-        showToast.error('Failed to load projects');
+        const errorMessage = error?.response?.data?.message || error?.message || 'Unknown error occurred';
+        showToast.error(`Failed to load projects: ${errorMessage}`);
       } finally {
         setIsLoadingProjects(false);
       }
@@ -1455,26 +1472,28 @@ const BlogWriteModal = () => {
       return;
     }
 
-    // Check image dimensions and aspect ratio (1200x628 = 300:157)
+    // Check image dimensions and aspect ratio (more flexible validation)
     const img = new Image();
     img.onload = function () {
-      const expectedWidth = 1200;
-      const expectedHeight = 628;
-      const tolerance = 5; // Allow 5px tolerance
+      // More flexible dimension check - allow reasonable range
+      const minWidth = 800;
+      const maxWidth = 2000;
+      const minHeight = 400;
+      const maxHeight = 1200;
 
-      if (Math.abs(this.width - expectedWidth) > tolerance || Math.abs(this.height - expectedHeight) > tolerance) {
-        showToast.error(`Image must be exactly ${expectedWidth} × ${expectedHeight} pixels (Current: ${this.width} × ${this.height})`);
+      if (this.width < minWidth || this.width > maxWidth || this.height < minHeight || this.height > maxHeight) {
+        showToast.error(`Image dimensions should be between ${minWidth}-${maxWidth} × ${minHeight}-${maxHeight} pixels (Current: ${this.width} × ${this.height})`);
         e.target.value = '';
         return;
       }
 
-      // Calculate aspect ratio
-      const expectedRatio = expectedWidth / expectedHeight;
-      const actualRatio = this.width / this.height;
-      const ratioTolerance = 0.01; // 1% tolerance
+      // More flexible aspect ratio check (allow common blog image ratios)
+      const aspectRatio = this.width / this.height;
+      const minRatio = 1.5; // 3:2
+      const maxRatio = 2.5; // 2.5:1
 
-      if (Math.abs(actualRatio - expectedRatio) > ratioTolerance) {
-        showToast.error(`Image aspect ratio must be ${expectedWidth}:${expectedHeight} (300:157). Current ratio is ${this.width}:${this.height}`);
+      if (aspectRatio < minRatio || aspectRatio > maxRatio) {
+        showToast.error(`Image aspect ratio should be between 3:2 and 2.5:1. Current ratio is ${this.width}:${this.height}`);
         e.target.value = '';
         return;
       }
@@ -1765,6 +1784,7 @@ const BlogWriteModal = () => {
       if (metaTitle) formDataAPI.append('metaTitle', metaTitle.trim());
       if (metaDescription) formDataAPI.append('metaDescription', metaDescription.trim());
       if (slug) formDataAPI.append('slug', slug.trim());
+      if (canonicalUrl) formDataAPI.append('canonicalUrl', canonicalUrl.trim());
 
       // Related projects
       if (relatedProjects.length > 0) {
@@ -1909,6 +1929,7 @@ const BlogWriteModal = () => {
     setBlogId('');
     setMetaTitle('');
     setMetaDescription('');
+    setCanonicalUrl('');
     setSlug('');
     setSlugTouched(false);
     setRelatedProjects([]);
@@ -2436,7 +2457,6 @@ const BlogWriteModal = () => {
               {seoScore.score} · {seoScore.label}
             </span>
           </div>
-
           <div className="flex flex-wrap items-center gap-2 justify-end">
             <button type="button" onClick={() => setShowPreview(v => !v)} className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2">
               {showPreview ? 'Hide Preview' : 'Show Preview'}
@@ -2453,6 +2473,7 @@ const BlogWriteModal = () => {
                   setCategories(s.categories || '');
                   setMetaTitle(s.metaTitle || '');
                   setMetaDescription(s.metaDescription || '');
+                  setCanonicalUrl(s.canonicalUrl || '');
                   setSlug(s.slug || '');
                   setRelatedProjects(Array.isArray(s.relatedProjects) ? s.relatedProjects : []);
                   setEnableFAQ(!!s.enableFAQ);
@@ -2460,86 +2481,50 @@ const BlogWriteModal = () => {
                   setAuthor(s.author || author);
                   setTableBlocks(Array.isArray(s.tableBlocks) ? s.tableBlocks : []);
                   showToast.success('Draft restored');
+                  setShowHistory(false);
                 } catch { }
-              }} className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2 gap-2">
-                <History className="w-4 h-4" /> Restore Draft
-              </button>
-            )}
-            {historyList?.length > 0 && (
-              <button type="button" onClick={() => setShowHistory(true)} className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2 gap-2">
-                <History className="w-4 h-4" /> History
+              }} className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2">
+                Restore Draft
               </button>
             )}
           </div>
         </div>
 
-        {seoInsights?.length > 0 && (
-          <div className="bg-card text-card-foreground rounded-lg border shadow-sm p-4 mb-4">
-            <div className="flex items-center justify-between mb-2">
-              <div className="font-semibold text-sm">SEO Insights</div>
-              <button type="button" className="text-xs text-muted-foreground hover:text-foreground transition-colors" onClick={() => setShowSeoDetails(v => !v)}>
-                {showSeoDetails ? 'Hide' : 'Show'} details
-              </button>
-            </div>
-            {showSeoDetails && (
-              <ul className="space-y-1.5 max-h-56 overflow-auto pr-1">
-                {seoInsights.map((it, i) => (
-                  <li key={i} className="text-[13px] flex items-start gap-2">
-                    <span className={`mt-1 inline-block w-2 h-2 rounded-full shrink-0 ${it.severity === 'good' ? 'bg-emerald-500' : it.severity === 'warn' ? 'bg-yellow-500' : 'bg-red-500'}`}></span>
-                    <span className="text-muted-foreground leading-snug">
-                      {it.text}
-                      {it.section && <span className="ml-2 text-[11px] text-muted-foreground/70">[{it.section}]</span>}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-        )}
-        {/* Load fonts */}
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" />
-
-        {/* Main Layout Container matching Shadcn style */}
-        <div className="bg-background text-foreground min-h-screen">
-
-          {/* Main Content Area */}
-          <div className="max-w-7xl mx-auto py-6">
-
-            {/* Header */}
-            <div className="mb-6">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-4">
-                  <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center shadow-sm">
-                    {blogToEdit ? (
-                      <Edit3 className="w-6 h-6 text-primary-foreground" />
-                    ) : (
-                      <Plus className="w-6 h-6 text-primary-foreground" />
-                    )}
-                  </div>
-                  <div>
-                    <h2 className="text-2xl font-semibold tracking-tight">
-                      {blogToEdit ? 'Edit Blog Post ' : 'Create New Blog'}
-                    </h2>
-                    <p className="text-sm text-muted-foreground mt-1">
-                      {blogToEdit
-                        ? 'Update your blog content, SEO and settings'
-                        : 'Write and publish your next blog post'}
-                    </p>
-                  </div>
-                </div>
-                {blogToEdit && (
-                  <div className="flex items-center gap-3">
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80" title="Total views (all time)">Views: {views}</span>
-                  </div>
+        {/* Header */}
+        <div className="mb-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center shadow-sm">
+                {blogToEdit ? (
+                  <Edit3 className="w-6 h-6 text-primary-foreground" />
+                ) : (
+                  <Plus className="w-6 h-6 text-primary-foreground" />
                 )}
-                <button
-                  onClick={() => navigate('/seo/blogs')}
-                  className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground h-9 w-9"
-                >
-                  <X className="w-5 h-5" />
-                </button>
+              </div>
+              <div>
+                <h2 className="text-2xl font-semibold tracking-tight">
+                  {blogToEdit ? 'Edit Blog Post ' : 'Create New Blog'}
+                </h2>
+                <p className="text-sm text-muted-foreground mt-1">
+                  {blogToEdit
+                    ? 'Update your blog content, SEO and settings'
+                    : 'Write and publish your next blog post'}
+                </p>
               </div>
             </div>
+            {blogToEdit && (
+              <div className="flex items-center gap-3">
+                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80" title="Total views (all time)">Views: {views}</span>
+              </div>
+            )}
+            <button
+              onClick={() => navigate('/seo/blogs')}
+              className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground h-9 w-9"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+        </div>
 
             {/* Cropper Modal */}
             {showCropper && (
@@ -2589,9 +2574,199 @@ const BlogWriteModal = () => {
               </div>
             )}
 
-            {/* Form */}
+            {/* Form with Preview */}
             <div className="bg-card text-card-foreground rounded-xl shadow-sm border overflow-hidden">
-              <form className="p-6 space-y-8">
+              <div className="flex flex-col lg:flex-row">
+                {/* Left Side - Blog Preview */}
+                <div className="lg:w-2/5 lg:border-r border-border bg-muted/20">
+                  <div className="p-6 border-b border-border bg-background/50">
+                    <div className="flex items-center gap-2">
+                      <Monitor className="w-5 h-5 text-primary" />
+                      <h3 className="text-base font-semibold leading-none tracking-tight">Blog Preview</h3>
+                      <span className="text-xs text-muted-foreground">(Live SEO Preview)</span>
+                    </div>
+                  </div>
+                  
+                  <div className="p-6 space-y-4">
+                    {/* SEO Info Bar */}
+                    <div className="bg-background rounded-lg border border-border p-4 space-y-3">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-medium text-foreground">SEO Information</span>
+                        <div className="flex items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={() => setPreviewMode('desktop')}
+                            className={`inline-flex items-center justify-center rounded-md text-xs font-medium transition-all h-7 px-2 ${previewMode === 'desktop' ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground hover:text-foreground'}`}
+                          >
+                            <Monitor className="w-3 h-3 mr-1" /> Desktop
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setPreviewMode('mobile')}
+                            className={`inline-flex items-center justify-center rounded-md text-xs font-medium transition-all h-7 px-2 ${previewMode === 'mobile' ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground hover:text-foreground'}`}
+                          >
+                            <Smartphone className="w-3 h-3 mr-1" /> Mobile
+                          </button>
+                        </div>
+                      </div>
+                      
+                      <div className="space-y-2 text-xs">
+                        <div className="flex items-center justify-between">
+                          <span className="text-muted-foreground">Slug:</span>
+                          <div className="flex items-center gap-2">
+                            <code className="bg-muted px-2 py-1 rounded text-xs font-mono">/{slug || 'my-custom-slug'}</code>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                navigator.clipboard.writeText(slug || 'my-custom-slug');
+                                showToast.success('Slug copied!');
+                              }}
+                              className="text-muted-foreground hover:text-foreground transition-colors"
+                              title="Copy slug"
+                            >
+                              <Copy className="w-3 h-3" />
+                            </button>
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-center justify-between">
+                          <span className="text-muted-foreground">Canonical URL:</span>
+                          <div className="flex items-center gap-2 max-w-[200px]">
+                            <code className="bg-muted px-2 py-1 rounded text-xs font-mono truncate">
+                              {slug ? `blog/${slug}/` : `blog/view/${id || 'new'}`}
+                            </code>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const url = slug ? `https://100acress.com/blog/${slug}/` : `https://100acress.com/blog/view/${id || 'new'}`;
+                                navigator.clipboard.writeText(url);
+                                showToast.success('Canonical URL copied!');
+                              }}
+                              className="text-muted-foreground hover:text-foreground transition-colors flex-shrink-0"
+                              title="Copy canonical URL"
+                            >
+                              <Copy className="w-3 h-3" />
+                            </button>
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-center justify-between">
+                          <span className="text-muted-foreground">Meta Title:</span>
+                          <span className="text-xs font-medium truncate max-w-[200px]">
+                            {metaTitle || title || 'Not set'}
+                          </span>
+                        </div>
+                        
+                        <div className="flex items-center justify-between">
+                          <span className="text-muted-foreground">Meta Desc:</span>
+                          <span className="text-xs font-medium truncate max-w-[200px]">
+                            {metaDescription ? `${metaDescription.substring(0, 50)}...` : 'Not set'}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Blog Preview */}
+                    <div className="bg-background rounded-lg border border-border overflow-hidden">
+                      <div className={`transition-all duration-300 ${previewMode === 'mobile' ? 'max-w-[390px] mx-auto ring-2 ring-muted rounded-lg' : ''}`}>
+                        {/* Featured Image */}
+                        {frontImagePreview && (
+                          <div className="relative">
+                            <img 
+                              src={frontImagePreview} 
+                              alt="Blog preview" 
+                              className={`w-full object-cover ${previewMode === 'mobile' ? 'h-48' : 'h-64'}`} 
+                            />
+                            <div className="absolute top-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded">
+                              Featured Image
+                            </div>
+                          </div>
+                        )}
+                        
+                        {/* Blog Content Preview */}
+                        <div className="p-4 sm:p-6">
+                          <h1 className={`font-bold text-foreground mb-3 leading-tight ${previewMode === 'mobile' ? 'text-xl' : 'text-2xl'}`}>
+                            {title || 'Your blog title will appear here'}
+                          </h1>
+                          
+                          <div className="flex items-center gap-4 text-xs text-muted-foreground mb-4 pb-3 border-b border-border">
+                            <span>By {author || 'Admin'}</span>
+                            <span>•</span>
+                            <span>{new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                            <span>•</span>
+                            <span className="text-primary font-medium">/{slug || 'my-custom-slug'}</span>
+                          </div>
+                          
+                          {/* Content Preview */}
+                          <div className={`prose prose-sm max-w-none ${previewMode === 'mobile' ? 'text-xs' : 'text-sm'}`}>
+                            {description ? (
+                              <div 
+                                className="text-muted-foreground leading-relaxed"
+                                dangerouslySetInnerHTML={{
+                                  __html: description.replace(/<[^>]*>/g, '').substring(0, previewMode === 'mobile' ? 150 : 300) + '...'
+                                }}
+                              />
+                            ) : (
+                              <p className="text-muted-foreground italic">
+                                Start writing your blog content to see the preview here...
+                              </p>
+                            )}
+                          </div>
+                          
+                          {/* Categories */}
+                          {categories && (
+                            <div className="mt-4 pt-4 border-t border-border">
+                              <div className="flex flex-wrap gap-2">
+                                {categories.split(',').map((cat, idx) => (
+                                  <span key={idx} className="inline-flex items-center px-2 py-1 bg-primary/10 text-primary text-xs rounded-full font-medium">
+                                    {cat.trim()}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                          
+                          {/* Read more indicator */}
+                          <div className="mt-4 text-center">
+                            <button 
+                              type="button"
+                              onClick={() => setShowPreview(true)}
+                              className="text-primary text-sm font-medium hover:text-primary/80 transition-colors"
+                            >
+                              Read full article →
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* SEO Score Indicator */}
+                    <div className="bg-background rounded-lg border border-border p-4">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-sm font-medium text-foreground">SEO Score</span>
+                        <span className="text-sm font-bold" style={{ color: seoScore.color }}>
+                          {seoScore.score}/100
+                        </span>
+                      </div>
+                      <div className="w-full bg-muted rounded-full h-2">
+                        <div 
+                          className="h-2 rounded-full transition-all duration-300"
+                          style={{ 
+                            width: `${seoScore.score}%`,
+                            backgroundColor: seoScore.color
+                          }}
+                        />
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-2">
+                        {seoScore.label} - {seoScore.details.title && `Title: ${seoScore.details.title}`}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Right Side - Form */}
+                <div className="lg:w-3/5">
+                  <form className="p-6 space-y-8" onSubmit={(e) => e.preventDefault()}>
                 {/* Title */}
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
@@ -2780,6 +2955,45 @@ const BlogWriteModal = () => {
                       )}
                     </div>
                   </div>
+
+                  {/* Canonical URL */}
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Canonical URL</label>
+                      <div className="text-[11px] text-muted-foreground">
+                        Auto-generated
+                      </div>
+                    </div>
+                    <div className="relative">
+                      <input
+                        type="text"
+                        value={canonicalUrl}
+                        readOnly
+                        className="flex h-10 w-full rounded-md border border-input bg-muted/50 px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                        placeholder="https://www.100acress.com/your-blog-slug"
+                      />
+                      {canonicalUrl && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            navigator.clipboard.writeText(canonicalUrl);
+                            showToast.success('Canonical URL copied!');
+                          }}
+                          className="absolute right-3 bottom-2.5 text-muted-foreground hover:text-foreground transition-colors"
+                          title="Copy canonical URL"
+                        >
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                          </svg>
+                        </button>
+                      )}
+                    </div>
+                    {canonicalUrl && (
+                      <div className="text-[10px] text-green-600 dark:text-green-500">
+                        ✓ Canonical URL ready for SEO
+                      </div>
+                    )}
+                  </div>
                 </div>
 
                 {/* Featured Image */}
@@ -2882,8 +3096,9 @@ const BlogWriteModal = () => {
                       </div>
                     </div>
                   </div>
+                </div>
 
-                  {/* Blog Category Section */}
+                {/* Blog Category Section */}
                   <div className="space-y-3 pt-4 border-t">
                     <div className="flex items-center gap-2">
                       <Tag className="w-5 h-5 text-primary" />
@@ -3671,8 +3886,8 @@ const BlogWriteModal = () => {
                       )}
                     </button>
                   </div>
-                </div>
-              </form>
+                </form>
+              </div>
             </div>
             {/* History modal */}
             {showHistory && (
@@ -3687,33 +3902,36 @@ const BlogWriteModal = () => {
                   {historyList?.length ? (
                     <div className="max-h-[60vh] overflow-auto flex flex-col gap-2">
                       {historyList.map((h, i) => (
-                        <div key={i} className="flex items-center justify-between p-3 border border-border rounded-lg bg-muted/40 hover:bg-muted/80 transition-colors">
-                          <div className="text-sm min-w-0 pr-4">
-                            <div className="font-medium truncate">{h.title || 'Untitled'}</div>
-                            <div className="text-xs text-muted-foreground mt-0.5">{new Date(h.ts).toLocaleString()}</div>
+                        <React.Fragment key={i}>
+                          <div className="flex items-center justify-between p-3 border border-border rounded-lg bg-muted/40 hover:bg-muted/80 transition-colors">
+                            <div className="text-sm min-w-0 pr-4">
+                              <div className="font-medium truncate">{h.title || 'Untitled'}</div>
+                              <div className="text-xs text-muted-foreground mt-0.5">{new Date(h.ts).toLocaleString()}</div>
+                            </div>
+                            <button className="inline-flex items-center justify-center rounded-md text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-8 px-3 shrink-0" onClick={() => {
+                              try {
+                                const raw = localStorage.getItem(draftKey);
+                                if (!raw) return;
+                                const s = JSON.parse(raw);
+                                setTitle(s.title || '');
+                                setDescription(s.description || '');
+                                setFrontImagePreview(s.frontImagePreview || '');
+                                setCategories(s.categories || '');
+                                setMetaTitle(s.metaTitle || '');
+                                setMetaDescription(s.metaDescription || '');
+                                setCanonicalUrl(s.canonicalUrl || '');
+                                setSlug(s.slug || '');
+                                setRelatedProjects(Array.isArray(s.relatedProjects) ? s.relatedProjects : []);
+                                setEnableFAQ(!!s.enableFAQ);
+                                setFaqs(Array.isArray(s.faqs) && s.faqs.length ? s.faqs : [{ question: '', answer: '' }]);
+                                setAuthor(s.author || author);
+                                setTableBlocks(Array.isArray(s.tableBlocks) ? s.tableBlocks : []);
+                                showToast.success('Draft restored');
+                                setShowHistory(false);
+                              } catch { }
+                            }}>Restore</button>
                           </div>
-                          <button className="inline-flex items-center justify-center rounded-md text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-8 px-3 shrink-0" onClick={() => {
-                            try {
-                              const raw = localStorage.getItem(draftKey);
-                              if (!raw) return;
-                              const s = JSON.parse(raw);
-                              setTitle(s.title || '');
-                              setDescription(s.description || '');
-                              setFrontImagePreview(s.frontImagePreview || '');
-                              setCategories(s.categories || '');
-                              setMetaTitle(s.metaTitle || '');
-                              setMetaDescription(s.metaDescription || '');
-                              setSlug(s.slug || '');
-                              setRelatedProjects(Array.isArray(s.relatedProjects) ? s.relatedProjects : []);
-                              setEnableFAQ(!!s.enableFAQ);
-                              setFaqs(Array.isArray(s.faqs) && s.faqs.length ? s.faqs : [{ question: '', answer: '' }]);
-                              setAuthor(s.author || author);
-                              setTableBlocks(Array.isArray(s.tableBlocks) ? s.tableBlocks : []);
-                              showToast.success('Draft restored');
-                              setShowHistory(false);
-                            } catch { }
-                          }}>Restore</button>
-                        </div>
+                        </React.Fragment>
                       ))}
                     </div>
                   ) : (
@@ -3722,7 +3940,6 @@ const BlogWriteModal = () => {
                 </div>
               </div>
             )}
-            {/* Lightbox Overlay */}
             {lightboxUrl && (
               <div
                 onClick={() => setLightboxUrl('')}
@@ -3735,7 +3952,7 @@ const BlogWriteModal = () => {
           </div>
         </div>
       </div>
-    </div>
+    // </div>
   );
 };
 

@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
+import { Helmet } from "react-helmet";
 import Footer from "../Components/Actual_Components/Footer";
 import { MapPin, Mail, Phone, X, Search, SlidersHorizontal, Filter, ChevronDown, Clock, Building2, Users, Briefcase, Eye, Calendar, Award, Target } from "lucide-react";
 import { CarrierIcon } from "../Assets/icons";
@@ -325,7 +326,14 @@ const CareerWithUs = () => {
   }, [jobs]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100">
+    <>
+      <Helmet>
+        <title>Careers at 100acress | Join Our Real Estate Team in Gurgaon</title>
+        <meta name="description" content="Explore career opportunities at 100acress.com. Join our growing real estate platform and build your career with a dynamic team in Gurgaon. Apply for exciting roles and grow with us." />
+        <link rel="canonical" href="https://www.100acress.com/career-with-us/" />
+      </Helmet>
+      
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-16 mt-16 lg:mt-20">
         {/* Hero Section */}
         <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primaryRed via-red-600 to-red-700 text-white mb-20">
@@ -1111,6 +1119,7 @@ const CareerWithUs = () => {
       </div>
       <Footer />
     </div>
+    </>
   );
 };
 

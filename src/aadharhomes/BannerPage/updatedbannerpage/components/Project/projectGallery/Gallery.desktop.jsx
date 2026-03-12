@@ -65,7 +65,7 @@ const GalleryDesktop = ({ galleryImages = [], projectName = '' }) => {
   const remainingImagesCount = galleryImages.length - visibleImages.length;
 
   return (
-    <section className="gallery-desktop">
+    <section className="gallery-desktop" style={{ paddingTop: '120px', zIndex: 1, position: 'relative' }}>
       <div className="gallery-desktop-content">
         <div className="gallery-desktop-header">
             <h2 className="gallery-desktop-subtitle">

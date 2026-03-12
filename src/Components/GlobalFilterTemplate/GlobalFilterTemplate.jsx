@@ -1490,17 +1490,53 @@ const GlobalFilterTemplate = ({
               </div>
             </div>
           )}
-          {/* Know More About Upcoming Projects Section */}
+          {/* Know More About BHK Flats Section */}
           {projectStatus === 'upcoming' && (
             <div className="mt-12 sm:mt-16 bg-gradient-to-br from-blue-50 to-indigo-50 py-12 sm:py-16 px-4 sm:px-6 lg:px-8">
               <div className="max-w-6xl mx-auto">
                 <div className="text-center mb-8 sm:mb-12">
                   <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-                    Know More About <span className="text-blue-600 text-4xl sm:text-5xl">Upcoming Projects</span>
+                    Know More About <span className="text-blue-600 text-4xl sm:text-5xl">
+                      {bhkType === '1' && '1BHK Flats'}
+                      {bhkType === '2' && '2 BHK Flats'}
+                      {bhkType === '3' && '3 BHK Flats'}
+                      {bhkType === '4' && '4 BHK Flats'}
+                      {bhkType === '5' && '5 BHK Flats'}
+                      {!bhkType && 'Upcoming Projects'}
+                    </span>
                   </h2>
                   <div className="w-24 h-1 bg-blue-600 mx-auto mb-6"></div>
                   <p className="text-lg text-gray-600 max-w-4xl mx-auto">
-                    <a href="https://www.100acress.com/projects/upcoming/" className="text-blue-600 hover:underline font-medium">Explore verified upcoming projects in Gurgaon 2026</a> featuring spacious {bhkType ? `${bhkType}BHK` : 'BHK'} apartments, luxury residences, and affordable housing options built for modern living. Whether you're a growing family, an NRI, or a smart investor, Gurgaon has exactly what you're looking for. It offers the perfect balance of space, comfort, rental yield, and resale value. Whether you're buying for your family or as an investment, a {bhkType ? `${bhkType}BHK` : 'BHK'} in an upcoming Gurgaon project gives you the best return on every rupee spent.
+                    {bhkType === '1' && (
+                      <>
+                        Explore a range of 1 BHK flats in Gurgaon located in different parts of the city. These homes are a practical option for working professionals, couples, and small families. Many projects are close to offices, metro stations, and daily essentials to make everyday life more convenient. With options across several neighborhoods, these 1-bedroom apartments in Gurgaon offer a simple and comfortable way to live in the city.
+                      </>
+                    )}
+                    {bhkType === '2' && (
+                      <>
+                        Explore 2 BHK flats in Gurgaon that offer a comfortable balance of space and budget. These homes are suitable for families or professionals who need a little extra room. Many projects are located in well-planned areas with good road and metro connectivity. From affordable sectors to more premium neighborhoods, buyers can find homes that match different budgets and everyday living needs.
+                      </>
+                    )}
+                    {bhkType === '3' && (
+                      <>
+                        Explore a city that has quietly become one of the best places to settle down with your family. 3 BHK flats in Gurgaon offer the right mix of space, comfort, and convenience, from good schools and hospitals to well-connected roads and markets. The city suits different budgets too, making it a practical choice for families who want a better lifestyle without moving too far from Delhi.
+                      </>
+                    )}
+                    {bhkType === '4' && (
+                      <>
+                        Find your comfort in a big house for your whole family. 4 BHK flats in Gurgaon offer 4 bedrooms, a large living area, and ample space for you and your family. Gurgaon is connected to Delhi and has schools, hospitals, and markets in close proximity. The perfect home for a growing family or a family that needs more space.
+                      </>
+                    )}
+                    {bhkType === '5' && (
+                      <>
+                        Explore what it feels like to live in a home that truly has enough space for everyone. 5 BHK flats in Gurgaon give you five bedrooms, large living areas, and room for family, guests, and even a home office. Gurgaon has good schools, hospitals, and workplaces all nearby, making everyday life convenient. If you have a big family or simply want extra space, these homes are worth a closer look.
+                      </>
+                    )}
+                    {!bhkType && (
+                      <>
+                        <a href="https://www.100acress.com/projects/upcoming/" className="text-blue-600 hover:underline font-medium">Explore verified upcoming projects in Gurgaon 2026</a> featuring spacious apartments, luxury residences, and affordable housing options built for modern living. Whether you're a growing family, an NRI, or a smart investor, Gurgaon has exactly what you're looking for.
+                      </>
+                    )}
                   </p>
                 </div>
 
@@ -1524,25 +1560,25 @@ const GlobalFilterTemplate = ({
 
                   <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8 hover:shadow-xl transition-shadow duration-300">
                     <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 text-blue-600">
-                      Best Areas to Buy {bhkType ? `${bhkType} BHK` : 'BHK'} Flat in Gurgaon
+                      Top Locations for Buying a Good Flat in Gurgaon
                     </h3>
                     <div className="text-gray-600 leading-relaxed">
                       <div className="space-y-4">
                         <div>
                           <h4 className="font-semibold text-gray-900 mb-2">Dwarka Expressway</h4>
-                          <p className="text-sm">The fastest-growing residential belt in Gurgaon right now. Direct connectivity to Delhi, IGI Airport, and NH-48 makes it a top pick for working professionals. {bhkType ? `${bhkType} BHK` : 'BHK'} flat prices here are still competitive but rising steadily with every new possession.</p>
+                          <p className="text-sm">One of the fastest-growing residential corridors, offering seamless connectivity to Delhi, IGI Airport, and NH-48.</p>
                         </div>
                         <div>
                           <h4 className="font-semibold text-gray-900 mb-2">New Gurgaon (Sectors 82–95)</h4>
-                          <p className="text-sm">Planned layouts, wider roads, and peaceful surroundings make New Gurgaon the best area to buy a {bhkType ? `${bhkType} BHK` : 'BHK'} in Gurgaon for families. Affordable flat rates in Gurgaon's new sectors with strong long-term appreciation.</p>
+                          <p className="text-sm">Planned roads, calm surroundings & strong appreciation. A family-friendly pocket that keeps delivering.</p>
                         </div>
                         <div>
                           <h4 className="font-semibold text-gray-900 mb-2">Golf Course Extension Road</h4>
-                          <p className="text-sm">Premium living without Golf Course Road pricing. Upscale apartments, top schools, and a mature social infrastructure. Ideal for buyers who want lifestyle and investment in one address.</p>
+                          <p className="text-sm">Premium lifestyle without the premium price tag. Upscale residential towers, reputable schools, and established social infrastructure make it perfect for buyers balancing their lives.</p>
                         </div>
                         <div>
                           <h4 className="font-semibold text-gray-900 mb-2">Sohna Road</h4>
-                          <p className="text-sm">Sohna Road is a value-driven corridor that provides a variety of affordable and mid-range {bhkType ? `${bhkType} BHK` : 'BHK'} flats. Good connectivity to NH-248A and proximity to educational institutions make it popular with families.</p>
+                          <p className="text-sm">A value-driven corridor offering budget-friendly and mid-range studio to 5 BHK apartments. Leading educational institutions keep this location consistently popular among end-users and investors alike.</p>
                         </div>
                       </div>
                     </div>
@@ -1552,36 +1588,97 @@ const GlobalFilterTemplate = ({
                 <div className="grid md:grid-cols-2 gap-6 sm:gap-8 mb-8 sm:mb-12">
                   <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8 hover:shadow-xl transition-shadow duration-300">
                     <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 text-blue-600">
-                      Amenities Offered in Upcoming Projects 2026
+                      {bhkType === '1' && 'Best Amenities in 1 BHK Flats'}
+                      {bhkType === '2' && 'What Amenities Do You Get in a 2 BHK Flat in Gurgaon?'}
+                      {bhkType === '3' && 'What Amenities Do You Get in a 3 BHK Flat in Gurgaon?'}
+                      {bhkType === '4' && 'Best Amenities in 4 BHK Flats'}
+                      {bhkType === '5' && 'What Amenities Do You Get in a 5 BHK Flat in Gurgaon?'}
+                      {!bhkType && 'Amenities Offered in Upcoming Projects 2026'}
                     </h3>
                     <div className="text-gray-600 leading-relaxed">
-                      <p className="mb-4">
-                        Most upcoming projects in Gurgaon are designed to deliver a modern lifestyle, featuring:
-                      </p>
-                      <ul className="list-disc pl-5 space-y-2">
-                        <li>Clubhouse and swimming pool</li>
-                        <li>Gymnasium and wellness zones</li>
-                        <li>Landscaped gardens and jogging tracks</li>
-                        <li>Children's play areas and sports facilities</li>
-                        <li>24×7 security and smart access systems</li>
-                      </ul>
-                      <p className="mt-4">
-                        These amenities enhance both living comfort and property value.
-                      </p>
+                      {bhkType === '1' && (
+                        <ul className="list-disc pl-5 space-y-2">
+                          <li>Fully equipped clubhouse and swimming pool</li>
+                          <li>Gymnasium and dedicated wellness zones</li>
+                          <li>Landscaped green gardens with jogging tracks</li>
+                          <li>Children's play areas and multi-sport courts</li>
+                          <li>Round-the-clock security with smart access systems</li>
+                        </ul>
+                      )}
+                      {bhkType === '2' && (
+                        <ul className="list-disc pl-5 space-y-2">
+                          <li>Clubhouse — A common space for events, gatherings, and relaxation</li>
+                          <li>Swimming Pool — For daily fitness and weekend unwinding</li>
+                          <li>Gymnasium — Fully equipped gym inside your own society</li>
+                          <li>Children's Play Area — Safe and fun outdoor space for kids</li>
+                          <li>Sports Facilities—Badminton, basketball, and more</li>
+                          <li>24×7 Security — CCTV, guards, and smart entry systems</li>
+                          <li>Community Hall — For family functions and social gatherings</li>
+                        </ul>
+                      )}
+                      {bhkType === '3' && (
+                        <ul className="list-disc pl-5 space-y-2">
+                          <li>Fully Equipped Clubhouse & Swimming Pool</li>
+                          <li>Modern Gymnasium & Yoga Wellness Zone</li>
+                          <li>Landscaped Gardens & Jogging Track</li>
+                          <li>Safe Children's Play Area & Sports Courts</li>
+                          <li>24×7 Smart Security & CCTV Surveillance</li>
+                          <li>Covered Parking & EV Charging Points</li>
+                        </ul>
+                      )}
+                      {(bhkType === '4' || bhkType === '5') && (
+                        <ul className="list-disc pl-5 space-y-2">
+                          <li>Fully Equipped Clubhouse & Swimming Pool</li>
+                          <li>Modern Gymnasium & Yoga Wellness Zone</li>
+                          <li>Landscaped Gardens & Jogging Track</li>
+                          <li>Safe Children's Play Area & Sports Courts</li>
+                          <li>24×7 Smart Security & CCTV Surveillance</li>
+                          <li>Covered Parking & EV Charging Points</li>
+                        </ul>
+                      )}
+                      {!bhkType && (
+                        <>
+                          <p className="mb-4">
+                            Most upcoming projects in Gurgaon are designed to deliver a modern lifestyle, featuring:
+                          </p>
+                          <ul className="list-disc pl-5 space-y-2">
+                            <li>Clubhouse and swimming pool</li>
+                            <li>Gymnasium and wellness zones</li>
+                            <li>Landscaped gardens and jogging tracks</li>
+                            <li>Children's play areas and sports facilities</li>
+                            <li>24×7 security and smart access systems</li>
+                          </ul>
+                          <p className="mt-4">
+                            These amenities enhance both living comfort and property value.
+                          </p>
+                        </>
+                      )}
                     </div>
                   </div>
 
                   <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8 hover:shadow-xl transition-shadow duration-300">
                     <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 text-blue-600">
-                      Investment Tips for Upcoming Projects in Gurgaon
+                      {bhkType === '1' && 'What to Check Before Buying a Flat in Gurgaon'}
+                      {(bhkType === '3' || bhkType === '4' || bhkType === '5') && 'Key Things to Check Before Buying a Flat in Gurgaon'}
+                      {!bhkType && 'Investment Tips for Upcoming Projects in Gurgaon'}
+                      {bhkType === '2' && 'Investment Tips for Upcoming Projects in Gurgaon'}
                     </h3>
                     <div className="text-gray-600 leading-relaxed">
-                      <ul className="list-disc pl-5 space-y-3">
-                        <li><strong>Check RERA Registration:</strong> Always verify that the upcoming project is RERA-approved for transparency and legal safety.</li>
-                        <li><strong>Understand the Offering:</strong> Review carpet area, project density, and amenities rather than relying only on brochures.</li>
-                        <li><strong>Site Visit Matters:</strong> Visiting the project location helps evaluate connectivity, surroundings, and future growth.</li>
-                        <li><strong>Choose the Right Timing:</strong> Pre-launch and early-stage upcoming projects in 2026 usually offer better pricing, while near-possession projects suit buyers needing immediate occupancy.</li>
-                      </ul>
+                      {(bhkType === '1' || bhkType === '3' || bhkType === '4' || bhkType === '5') ? (
+                        <ul className="list-disc pl-5 space-y-3">
+                          <li><strong>Check RERA First:</strong> Never skip RERA verification it protects your money, ensures builder accountability, and keeps your investment 100% legally safe.</li>
+                          <li><strong>Look Beyond the Brochure:</strong> Check the real carpet area, ventilation, floor density, and amenities before you decide. What looks good on paper should hold up in reality.</li>
+                          <li><strong>Visit Before You Commit:</strong> A quick site visit reveals road access, nearby schools, markets, and metro connectivity—things that directly impact your property's future value.</li>
+                          <li><strong>Buy at the Right Time:</strong> Early-stage projects in Gurgaon 2026 offer the best pricing. If you need faster possession, ready-to-move compact flats in Gurgaon are your smartest pick.</li>
+                        </ul>
+                      ) : (
+                        <ul className="list-disc pl-5 space-y-3">
+                          <li><strong>Check RERA Registration:</strong> Always verify that the upcoming project is RERA-approved for transparency and legal safety.</li>
+                          <li><strong>Understand the Offering:</strong> Review carpet area, project density, and amenities rather than relying only on brochures.</li>
+                          <li><strong>Site Visit Matters:</strong> Visiting the project location helps evaluate connectivity, surroundings, and future growth.</li>
+                          <li><strong>Choose the Right Timing:</strong> Pre-launch and early-stage upcoming projects in 2026 usually offer better pricing, while near-possession projects suit buyers needing immediate occupancy.</li>
+                        </ul>
+                      )}
                     </div>
                   </div>
                 </div>

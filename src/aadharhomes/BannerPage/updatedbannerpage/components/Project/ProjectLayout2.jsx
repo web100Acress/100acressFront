@@ -950,7 +950,7 @@ function ProjectLayout2() {
         />
       </div>
 
-        <div className="relative p-6 md:p-8 text-center">
+        <div className="relative p-6 md:p-8 text-center" style={{ backgroundColor: '#2d94b3', paddingTop: '120px', zIndex: 1, position: 'relative' }}>
                 {/* Premium Header Section */}
                 <div className="mb-4">
                   {/* Refined Circular Icon */}

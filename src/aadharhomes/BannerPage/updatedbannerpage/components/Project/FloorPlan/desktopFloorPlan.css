@@ -3,7 +3,7 @@
 /* Main section container */
 .desktop-floorplan-section {
   padding: 2.5rem 0;
-  background: #1e4158 !important;
+  background-color: transparent;
   color: #ffffff;
   position: relative;
   overflow: hidden;
@@ -143,7 +143,7 @@
 .desktop-floorplan-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to bottom right, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.9));
+  background: #25526f;
   backdrop-filter: blur(12px);
   display: flex;
   align-items: center;
