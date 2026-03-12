@@ -160,7 +160,7 @@ const LocationSection = ({
   };
 
   return (
-    <section className="location-section-mobile">
+    <section className="location-section-mobile" style={{ paddingTop: '120px', zIndex: 1, position: 'relative' }}>
       {/* Animated Background Elements */}
       <div className="location-section-mobile-background">
         <div className="location-section-mobile-background-overlay">

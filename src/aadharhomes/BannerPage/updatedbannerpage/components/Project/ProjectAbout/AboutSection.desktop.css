@@ -6,9 +6,8 @@
   width: 100%;
   margin: 0 auto;
   max-width: 80rem;
-  padding: 0 1rem 0 1.5rem 0 2rem;
-  padding-top: 2rem;
-  padding-bottom: 2rem;
+  padding: 100px 1rem 2rem;
+  z-index: 1;
 }
 
 /* Luxury Rounded Card Container */
@@ -17,7 +16,7 @@
   border-radius: 1.5rem;
   overflow: hidden;
   border: 1px solid rgba(250, 204, 21, 0.2);
-  background: linear-gradient(to bottom right, #000000, #111827, #1f2937);
+  background: #25526f;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
 }
 

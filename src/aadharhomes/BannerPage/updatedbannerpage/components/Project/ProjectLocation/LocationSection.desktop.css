@@ -4,7 +4,7 @@
 .location-section-desktop {
   position: relative;
   padding: 2rem 0;
-  background: #25526f;
+  background: #2d94b3;
   color: #ffffff;
   overflow: hidden;
 }
@@ -378,7 +378,7 @@
 
 .location-section-point-text {
   color: #d1d5db;
-  font-size: 1.25rem;
+  font-size: 1rem;
   line-height: 1.2;
   flex: 1;
   font-weight: 600;
@@ -431,14 +431,14 @@
 
 .location-section-point-text {
   color: #d1d5db;
-  font-size: 0.875rem;
+  font-size: 0.75rem;
   line-height: 1.6;
   transition: color 0.3s;
   display: -webkit-box;
-  -webkit-line-clamp: 3;
+  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  line-clamp: 3;
+  line-clamp: 2;
 }
 
 .location-section-point:hover .location-section-point-text {
@@ -447,7 +447,7 @@
 
 @media (min-width: 768px) {
   .location-section-point-text {
-    font-size: 1rem;
+    font-size: 0.875rem;
   }
 }
 
@@ -544,6 +544,6 @@
   }
   
   .location-section-point-text {
-    font-size: 1rem;
+    font-size: 0.875rem;
   }
 }

@@ -23,7 +23,7 @@ const MasterPlanDesktop = ({ projectName = "", masterPlanImage = null }) => {
   }
 
   return (
-    <section className="master-plan-desktop">
+    <section className="master-plan-desktop" style={{ paddingTop: '120px', zIndex: 1, position: 'relative' }}>
       {/* Animated Background Elements */}
       <div className="master-plan-desktop-background">
         <div className="master-plan-desktop-background-overlay">

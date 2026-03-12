@@ -161,7 +161,7 @@ const Desktoptestimonial = () => {
                 {/* Footer Links */}
                 <div className="flex flex-col items-center gap-1">
                     <Link 
-                        to="/testimonials"
+                        to="/testimonials/"
                         className="flex items-center gap-2 text-[#0A2647] font-semibold hover:underline transition-colors"
                     >
                         See more reviews <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

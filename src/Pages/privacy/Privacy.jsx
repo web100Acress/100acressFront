@@ -7,10 +7,10 @@ const Privacy = () => {
   return (
     <>
       <Helmet>
-        <title>Privacy Policy - 100acress.com</title>
+        <title>Privacy Policy | 100acress Data Protection & User Privacy</title>
         <meta
           name="description"
-          content="Read the comprehensive Privacy Policy of 100acress.com. Learn how we collect, use, and protect your personal information while using our real estate services."
+          content="Read the Privacy Policy of 100acress.com to understand how we collect, use, and protect your personal information when you use our real estate platform and services."
         />
         <link rel="canonical" href="https://www.100acress.com/privacy-policy/" />
       </Helmet>

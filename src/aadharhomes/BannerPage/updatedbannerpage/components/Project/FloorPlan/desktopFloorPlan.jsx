@@ -63,7 +63,7 @@ const DesktopFloorPlan = ({ floorPlans = [], bhkDetails = [], onShowCallback = (
   }
 
   return (
-    <section className="desktop-floorplan-section">
+    <section className="desktop-floorplan-section" style={{ paddingTop: '120px', zIndex: 1, position: 'relative' }}>
       {/* Background decorative lines */}
       <div className="desktop-floorplan-bg-decoration">
         <svg width="800" height="600" viewBox="0 0 800 600" fill="none" xmlns="http://www.w3.org/2000/svg">

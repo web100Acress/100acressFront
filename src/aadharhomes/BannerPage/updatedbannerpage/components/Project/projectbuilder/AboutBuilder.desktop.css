@@ -3,10 +3,10 @@
 /* Main section container */
 .about-builder-desktop {
   position: relative;
-  padding: 2rem 0;
-  background-color: #25526f;
+  padding: 100px 0 2rem 0;
   color: #ffffff;
   overflow: hidden;
+  z-index: 1;
 }
 
 @media (min-width: 768px) {
@@ -71,10 +71,25 @@
 /* Content wrapper */
 .about-builder-desktop-content {
   position: relative;
-  z-index: 10;
+  z-index: 1;
   max-width: 80rem;
   margin: 0 auto;
-  padding: 0 1rem 0 1.5rem 0 2rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+@media (min-width: 640px) {
+  .about-builder-desktop-content {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .about-builder-desktop-content {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
 }
 
 /* Section Header */
@@ -197,7 +212,7 @@
 
 .about-builder-desktop-developer-card-content {
   position: relative;
-  background: linear-gradient(to bottom right, #111827, #1f2937, #111827);
+  background: #25526f;
   border-radius: 1rem;
   padding: 2rem;
   border: 1px solid rgba(156, 163, 175, 0.3);

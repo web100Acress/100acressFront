@@ -46,7 +46,7 @@
   position: relative;
   border-radius: 1rem;
   overflow: hidden;
-  background: linear-gradient(to bottom right, #111827, #000000, #1f2937);
+  background: #25526f;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
   border: 1px solid rgba(146, 64, 14, 0.3);
 }

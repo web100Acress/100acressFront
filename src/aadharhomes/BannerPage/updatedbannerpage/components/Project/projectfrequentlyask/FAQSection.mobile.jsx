@@ -70,7 +70,7 @@ const FAQSectionMobile = ({ projectViewDetails = {}, onShowCallback = () => {} }
   }
 
   return (
-    <section className="faq-section-mobile">
+    <section className="faq-section-mobile" style={{ paddingTop: '120px', zIndex: 1, position: 'relative' }}>
       {/* Animated Background Elements */}
       <div className="faq-section-mobile-background">
         <div className="faq-section-mobile-background-overlay">

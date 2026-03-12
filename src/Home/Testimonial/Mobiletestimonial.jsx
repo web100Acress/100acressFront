@@ -286,7 +286,7 @@ const Mobiletestimonial = () => {
                         </svg>
                     </a>
                     <a 
-                        href="/testimonials"
+                        href="/testimonials/"
                         className="bg-[#0A2647] text-white px-6 py-2 rounded-full font-semibold hover:bg-[#1A5F7A] transition-colors shadow-md text-sm"
                     >
                         See more reviews

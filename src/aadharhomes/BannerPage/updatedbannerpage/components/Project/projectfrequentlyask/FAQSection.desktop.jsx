@@ -70,7 +70,7 @@ const FAQSectionDesktop = ({ projectViewDetails = {}, onShowCallback = () => {} 
   }
 
   return (
-    <section className="faq-section-desktop">
+    <section className="faq-section-desktop" style={{ paddingTop: '120px', zIndex: 1, position: 'relative' }}>
       {/* Animated Background Elements */}
       <div className="faq-section-desktop-background">
         <div className="faq-section-desktop-background-overlay">

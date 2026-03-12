@@ -57,7 +57,7 @@ import api from "../../config/apiClient";
       { name: "Branded Residences", href: "/branded-residences/" },
       { name: "Blog", href: "/blog/" },
       { name: "Career with Us", href: "/career-with-us/" },
-      { name: "Testimonials", href: "/testimonials" },
+      { name: "Testimonials", href: "/testimonials/" },
       { name: "Contact", href: "/contact-us/" },
     ];
 
@@ -115,7 +115,7 @@ import api from "../../config/apiClient";
       // { name: "Rental Properties in Gurugram", href: "/rental-properties/best-rental-property-in-gurugram/" },
       { name: "Privacy Policy", href: "/privacy-policy/" },
       { name: "Terms & Conditions", href: "/terms-and-conditions/" },
-      { name: "Disclaimer", href: "/disclaimer"},
+      { name: "Disclaimer", href: "/disclaimer/"},
     ];
 
     return (

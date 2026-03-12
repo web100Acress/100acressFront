@@ -1,7 +1,4 @@
-/* Project Layout 2 Global Theme - Dark Blue Theme */
-/* Main background color theme for all sections */
 
-/* Root container */
 .project-layout-2-root {
   background-color: #25526f !important;
   min-height: 100vh;
@@ -45,27 +42,36 @@
 
 /* About section */
 .project-about-section {
-  background-color: #25526f !important;
+  background-color: #2d94b3 !important;
 }
 
 /* Highlights section */
 .project-highlights-section {
-  background-color: #1e4158 !important;
+  background-color: #2d94b3 !important;
 }
 
 /* Pricing section */
 .project-pricing-section {
-  background-color: #25526f !important;
+  background-color: #2d94b3 !important;
 }
 
 /* Amenities section */
 .project-amenities-section {
-  background-color: #1e4158 !important;
+  background-color: #2d94b3 !important;
 }
 
 /* Gallery section */
 .project-gallery-section {
-  background-color: #25526f !important;
+  background-color: #2d94b3 !important;
+}
+/* Floor plan section */
+.project-floorplan-section {
+  background-color: #2d94b3 !important;
+}
+
+/* Location section */
+.project-location-section {
+  background-color: #2d94b3 !important;
 }
 
 /* Video section */
@@ -73,19 +79,9 @@
   background-color: #1e4158 !important;
 }
 
-/* Floor plan section */
-.project-floorplan-section {
-  background-color: #25526f !important;
-}
-
-/* Location section */
-.project-location-section {
-  background-color: #1e4158 !important;
-}
-
 /* Master plan section */
 .project-masterplan-section {
-  background-color: #25526f !important;
+  background-color: #2d94b3 !important;
 }
 
 /* FAQ section */
@@ -95,12 +91,18 @@
 
 /* Builder section */
 .project-builder-section {
-  background-color: #1e4158 !important;
+  background-color: #2d94b3 !important;
+}
+
+/* Brochure section */
+.project-brochure-section {
+  background-color: #2d94b3 !important;
+  margin-top: 2rem !important;
 }
 
 /* Footer form section */
 .project-footer-section {
-  background-color: #25526f !important;
+  background-color: #2d94b3 !important;
 }
 
 /* Text colors for better contrast on dark blue background */
