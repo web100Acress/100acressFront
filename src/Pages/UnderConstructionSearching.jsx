@@ -1,6 +1,8 @@
 import React, { useContext, useState } from "react";
 import { DataContext } from "../MyContext";
 import { Link } from "react-router-dom";
+import { Helmet } from "react-helmet";
+import { staticData } from "../ProjectTypes/config/staticData";
 const UnderConstructionSearching = () => {
   const { allProjectData } = useContext(DataContext);
   const [project, setProject] = useState("");
@@ -56,11 +58,19 @@ const UnderConstructionSearching = () => {
     setFilteredProjects(filtered);
   };
 
+  const ucData = staticData.status.underconstruction;
+
   return (
     <>
+      <Helmet>
+        <title>{ucData.metaTitle}</title>
+        <meta name="description" content={ucData.description} />
+        <meta name="keywords" content={ucData.keywords} />
+        <link rel="canonical" href={ucData.canonical} />
+      </Helmet>
       {" "}
       <h1 className=" p-1 text-center text-2xl mt-2 sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold ">
-        Projects in UnderConstruction
+        {ucData.title}
       </h1>
       <div className="hidden lg:flex items-center px-14 bg-gray-200 pt-3 justify-center">
         <div className="w-full">

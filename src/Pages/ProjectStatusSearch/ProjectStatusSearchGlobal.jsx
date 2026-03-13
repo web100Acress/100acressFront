@@ -4,6 +4,7 @@ import { useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import Api_Service from "../../Redux/utils/Api_Service";
 import GlobalFilterTemplate from "../../Components/GlobalFilterTemplate/GlobalFilterTemplate";
+import { staticData } from "../../ProjectTypes/config/staticData.jsx";
 import { statusConfigs } from "../../ProjectTypes/config/pageConfigs.js";
 import { getBrandedResidencesDesiredOrder, getBrandedResidences } from "../../Utils/ProjectOrderData.js";
 
@@ -90,15 +91,10 @@ const ProjectStatusSearchGlobal = () => {
     return projectData;
   }, [projectData]);
 
-  // Project status configurations with enhanced SEO
+  // Project status configurations from staticData
   const statusConfig = {
     upcoming: {
-      title: "UpComing Projects in Gurgaon",
-      description: "Explore best upcoming projects in Gurgaon with modern amenities. Find residential & commercial spaces customized to your lifestyle. Visit 100acress today!",
-      metaTitle: "Discover Upcoming Projects in Gurgaon - 100acress",
-      canonical: "https://www.100acress.com/projects/upcoming/",
-      query: "allupcomingproject",
-      keywords: "upcoming projects gurgaon, new residential projects gurgaon, commercial projects gurgaon, gurgaon real estate, property investment gurgaon",
+      ...staticData.status.upcoming,
       structuredData: {
         "@context": "https://schema.org",
         "@type": "RealEstateAgent",
@@ -109,12 +105,7 @@ const ProjectStatusSearchGlobal = () => {
       }
     },
     underconstruction: {
-      title: "Under Construction Projects in Gurgaon",
-      description: "Under Construction Properties in Gurgaon include commercial and residential projects that will meet various requirements. These developments are equipped with modern amenities, great places close to business areas, as well as extensive green spaces. They're designed to meet the ever-changing demands of urban dwellers who want peace, convenience, and a vibrant lifestyle.",
-      metaTitle: "Property in UnderConstruction - Flats, Villas, House in gurugram.",
-      canonical: "https://www.100acress.com/projects/underconstruction/",
-      query: "underconstruction",
-      keywords: "under construction projects gurgaon, ongoing projects gurgaon, construction status gurgaon, gurgaon property development",
+      ...staticData.status.underconstruction,
       structuredData: {
         "@context": "https://schema.org",
         "@type": "RealEstateAgent",
@@ -125,12 +116,7 @@ const ProjectStatusSearchGlobal = () => {
       }
     },
     readytomove: {
-      title: "Ready To Move Projects",
-      description: "Explore ready to move properties in Gurgaon with modern amenities. Find residential & commercial spaces ready for immediate possession.",
-      metaTitle: "Ready To Move Properties in Gurgaon - 100acress",
-      canonical: "https://www.100acress.com/projects/ready-to-move/",
-      query: "readytomove",
-      keywords: "ready to move properties gurgaon, immediate possession gurgaon, completed projects gurgaon, gurgaon ready homes",
+      ...staticData.status.readytomove,
       structuredData: {
         "@context": "https://schema.org",
         "@type": "RealEstateAgent",
@@ -141,12 +127,7 @@ const ProjectStatusSearchGlobal = () => {
       }
     },
     newlaunch: {
-      title: "Projects in New Launch",
-      description: "Explore new launch projects in Gurgaon with modern amenities. Find the latest residential & commercial spaces.",
-      metaTitle: "New Launch Projects in Gurgaon - 100acress",
-      canonical: "https://www.100acress.com/projects/newlaunch/",
-      query: "newlaunch",
-      keywords: "new launch projects gurgaon, latest projects gurgaon, new residential projects gurgaon, gurgaon property launches",
+      ...staticData.status.newlaunch,
       structuredData: {
         "@context": "https://schema.org",
         "@type": "RealEstateAgent",
@@ -157,12 +138,7 @@ const ProjectStatusSearchGlobal = () => {
       }
     },
     brandedresidences: {
-      title: "Branded Residences in India | Luxury Homes by Global Brands",
-      description: "Branded residences represent a new chapter in modern luxury living. These homes are created when experienced real estate developers collaborate with globally recognized design and lifestyle partners. The result is a residence where architecture, interiors, and everyday comfort are thoughtfully planned together. From carefully selected materials to elegant layouts, every detail reflects a refined standard of living. Compared to conventional housing, branded homes are aimed at design consistency, high-quality construction, and well curated lifestyle experience. Premium services, caring services and serene living conditions are usually taken by residents to enable them to live in comfort and privacy. These residences are being developed in Gurugram and Noida, cities known for their modern skyline and growing demand for premium residential living.",
-      metaTitle: "Branded Residences in India | Luxury Homes by Global Brands",
-      canonical: "https://www.100acress.com/branded-residences/",
-      query: "allproject",
-      keywords: "branded residences india, luxury homes global brands, premium residences gurugram noida, global brand collaborations",
+      ...staticData.status.brandedresidences,
       structuredData: {
         "@context": "https://schema.org",
         "@type": "RealEstateAgent",
@@ -171,40 +147,6 @@ const ProjectStatusSearchGlobal = () => {
         "url": "https://www.100acress.com",
         "areaServed": "India"
       },
-      faqs: [
-        {
-          question: "What are branded residences?",
-          answer: "Branded residences are luxury homes developed with global brands, offering premium design, exclusive amenities, and professionally managed services."
-        },
-        {
-          question: "Why are branded residences popular in India?",
-          answer: "They offer luxury living, trusted brand value, premium amenities, and better property management compared to regular residential projects."
-        },
-        {
-          question: "Are branded residences a good investment?",
-          answer: "Yes, branded residences often attract premium buyers and tenants, helping maintain strong resale value and rental demand."
-        },
-        {
-          question: "How are branded residences different from luxury apartments?",
-          answer: "Branded residences involve global brand partnerships, offering curated design, exclusive services, and a lifestyle experience beyond typical luxury apartments."
-        },
-        {
-          question: "Do branded residences offer hotel-style services?",
-          answer: "Many branded residences provide services like concierge, housekeeping, valet parking, and private club access."
-        },
-        {
-          question: "Are branded residences more expensive than normal properties?",
-          answer: "Yes, they usually cost more due to brand association, premium design, exclusive amenities, and luxury lifestyle services."
-        },
-        {
-          question: "Who should buy branded residences?",
-          answer: "High-net-worth buyers, NRIs, and investors seeking luxury living, global brand standards, and long-term investment potential."
-        },
-        {
-          question: "Are branded residences available in Gurgaon?",
-          answer: "Yes, Gurgaon offers several branded residence projects by leading developers in prime locations with luxury amenities."
-        }
-      ]
     }
   };
 

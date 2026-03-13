@@ -6,18 +6,18 @@
   width: 100%;
   margin: 0 auto;
   max-width: 80rem;
-  padding: 100px 1rem 2rem;
+  padding: 3rem 1rem 2rem;
   z-index: 1;
 }
 
 /* Luxury Rounded Card Container */
 .about-section-card {
   position: relative;
-  border-radius: 1.5rem;
+  border-radius: 1rem;
   overflow: hidden;
-  border: 1px solid rgba(250, 204, 21, 0.2);
+  border: 1px solid rgba(146, 64, 14, 0.3);
   background: #25526f;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+  /* box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4); */
 }
 
 /* Circular golden ambient accents */
@@ -50,40 +50,40 @@
   position: relative;
   display: grid;
   grid-template-columns: repeat(1, 1fr);
-  gap: 1rem;
+  gap: 2rem;
   align-items: center;
-  padding: 1.5rem 2rem;
+  padding: 2.5rem;
 }
 
 @media (min-width: 768px) {
   .about-section-content {
     grid-template-columns: repeat(2, 1fr);
-    gap: 1.5rem;
-    padding: 2rem 2.5rem;
+    gap: 2rem;
+    padding: 2.5rem;
   }
 }
 
 @media (min-width: 1024px) {
   .about-section-content {
-    padding: 2.5rem 3rem;
+    padding: 2.5rem;
   }
 }
 
 @media (min-width: 1280px) {
   .about-section-content {
-    padding: 3rem;
+    padding: 2.5rem;
   }
 }
 
 /* Left Column - Text Content */
 .about-section-text-column {
   position: relative;
-  order: 2;
+  order: 1;
 }
 
 @media (min-width: 768px) {
   .about-section-text-column {
-    order: 1;
+    order: 2;
   }
 }
 
@@ -265,7 +265,7 @@
   border: none;
   cursor: pointer;
   transition: background-color 0.2s;
-  box-shadow: 0 10px 15px -3px rgba(250, 204, 21, 0.1);
+  /* box-shadow: 0 10px 15px -3px rgba(250, 204, 21, 0.1); */
 }
 
 .about-section-get-details:hover {
@@ -275,13 +275,13 @@
 /* Right Column - Image */
 .about-section-image-column {
   position: relative;
-  order: 1;
+  order: 2;
   width: 100%;
 }
 
 @media (min-width: 768px) {
   .about-section-image-column {
-    order: 2;
+    order: 1;
   }
 }
 
@@ -317,7 +317,7 @@
   border-radius: 0;
   overflow: hidden;
   border: 1px solid rgba(250, 204, 21, 0.3);
-  box-shadow: 0 10px 40px rgba(250, 204, 21, 0.1);
+  /* box-shadow: 0 10px 40px rgba(250, 204, 21, 0.1); */
 }
 
 @media (min-width: 768px) {

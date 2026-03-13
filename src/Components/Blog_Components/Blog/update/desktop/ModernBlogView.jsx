@@ -2,17 +2,23 @@ import React, { useContext, useEffect, useState, useRef } from "react";
 import { useParams, Link } from "react-router-dom";
 import api from "../../../../../config/apiClient";
 import { DataContext } from "../../../../../MyContext";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { Helmet } from "react-helmet";
 import DOMPurify from 'dompurify';
 import { Calendar, Clock, Eye, User, X, Phone, Send } from 'lucide-react';
 import { FALLBACK_IMG } from '../../../../../Utils/imageUtils';
 import Footer from "../../../../../Home/Footer/CrimsonEleganceFooter";
 import FAQSection from "../../../../Actual_Components/FAQSection";
+import { brandedresidences } from "../../../../../Redux/slice/AllSectionData.jsx";
+import Api_Service from "../../../../../Redux/utils/Api_Service.jsx";
+import { getBrandedResidences } from "../../../../../Utils/ProjectOrderData";
 
 const ModernBlogView = () => {
   const { allupcomingProject } = useContext(DataContext);
+  const dispatch = useDispatch();
+  const { getAllProjects } = Api_Service();
   const spotlight = useSelector(store => store?.project?.spotlight);
+  const brandedResidencesData = useSelector(store => store?.allsectiondata?.brandedresidences || []);
   const [data, setData] = useState({});
   const [loadError, setLoadError] = useState("");
   const [isLoading, setIsLoading] = useState(true);
@@ -32,6 +38,33 @@ const ModernBlogView = () => {
   const [tableBlocks, setTableBlocks] = useState([]);
   const countryDropdownRef = useRef(null);
   const { id, slug } = useParams();
+
+  // Fetch branded residences data using dedicated utility
+  useEffect(() => {
+    const fetchBrandedResidences = async () => {
+      try {
+        console.log('🏢 ModernBlogView: Fetching branded residences data...');
+        const projects = await getBrandedResidences();
+        if (projects && projects.length > 0) {
+          console.log('🏢 ModernBlogView: Branded residences data fetched successfully:', projects.length);
+          dispatch(brandedresidences(projects));
+        } else {
+          console.log('🏢 ModernBlogView: No branded residences data found, falling back to general projects');
+          await getAllProjects('brandedresidences', 4);
+        }
+      } catch (error) {
+        console.error('🏢 ModernBlogView: Error fetching branded residences:', error);
+        // Attempt fallback to general API service
+        try {
+          await getAllProjects('brandedresidences', 4);
+        } catch (fallbackError) {
+          console.error('🏢 ModernBlogView: Fallback also failed:', fallbackError);
+        }
+      }
+    };
+
+    fetchBrandedResidences();
+  }, [dispatch, getAllProjects]);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -902,8 +935,10 @@ const ModernBlogView = () => {
         <meta property="og:title" content={data.blog_Title || 'Blog Post'} />
         <meta property="og:description" content={data.metaDescription || data.blog_Description?.substring(0, 160)} />
         <meta property="og:image" content={data.blog_Image?.display || FALLBACK_IMG} />
+        <meta property="og:url" content={`https://www.100acress.com${window.location.pathname}`} />
         <meta name="twitter:card" content="summary_large_image" />
         {data.blog_Image?.url && <meta name="twitter:image" content={data.blog_Image.url} />}
+        <link rel="canonical" href={`https://www.100acress.com${window.location.pathname}`} />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
@@ -1095,62 +1130,66 @@ const ModernBlogView = () => {
           <aside className="lg:col-span-3">
             <div className="sticky top-24">
               <h3 className="text-xl font-bold text-gray-900 mb-6" style={{ fontFamily: "'Open Sans', sans-serif" }}>
-                Recommended Projects
+                Branded Residences
               </h3>
 
               <div className="space-y-3">
-                {spotlight?.slice(0, 4).map((project) => (
-                  <Link
-                    key={project._id}
-                    to={`/projects/${project.slug || project._id}`}
-                    className="block hover:shadow-md transition-all duration-300 group"
-                  >
-                    <div className="flex gap-3 p-2">
-                      {/* Project Image */}
-                      <div className="relative w-20 h-20 rounded-md overflow-hidden flex-shrink-0">
-                        <img
-                          src={project?.thumbnailImage?.url || project?.frontImage?.url || FALLBACK_IMG}
-                          alt={project?.projectName || project.project_Title || 'Project'}
-                          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                          onError={(e) => {
-                            e.target.src = FALLBACK_IMG;
-                          }}
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
-                      </div>
+                {brandedResidencesData && brandedResidencesData.length > 0 ? (
+                  brandedResidencesData.slice(0, 4).map((project) => (
+                    <Link
+                      key={project._id || project.projectName}
+                      to={project.link || `/${project.project_url}/`}
+                      className="block hover:shadow-md transition-all duration-300 group"
+                    >
+                      <div className="flex gap-3 p-2">
+                        {/* Project Image */}
+                        <div className="relative w-20 h-20 rounded-md overflow-hidden flex-shrink-0">
+                          <img
+                            src={project?.thumbnailImage?.url || project?.frontImage?.url || FALLBACK_IMG}
+                            alt={project?.projectName || project.project_Title || 'Project'}
+                            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                            onError={(e) => {
+                              e.target.src = FALLBACK_IMG;
+                            }}
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+                        </div>
 
-                      {/* Project Info */}
-                      <div className="flex-1 min-w-0">
-                        <h4 className="font-semibold text-gray-900 text-sm mb-1 line-clamp-2 group-hover:text-red-600 transition-colors">
-                          {project?.projectName || project.project_Title || project.name}
-                        </h4>
-
-                        {/* Price */}
-                        {(project?.minPrice || project?.price) && (
-                          <p className="text-red-600 font-bold text-xs mb-1">
-                            ₹{(project?.minPrice || project?.price)?.toLocaleString()}*
+                        {/* Project Info */}
+                        <div className="flex-1 min-w-0">
+                          <h4 className="font-semibold text-gray-900 text-sm mb-1 line-clamp-2 group-hover:text-red-600 transition-colors">
+                            {project?.projectName || project.project_Title || project.name}
+                          </h4>
+                          <p className="text-xs text-gray-600 line-clamp-2">
+                            {project?.city || 'Gurgaon'}
                           </p>
-                        )}
-
-                        {/* Location */}
-                        {project.projectAddress && (
-                          <p className="text-gray-500 text-xs flex items-center">
-                            <svg className="w-3 h-3 mr-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                            </svg>
-                            <span className="truncate">{project.projectAddress}</span>
-                          </p>
-                        )}
+                          {project?.minPrice && (
+                            <p className="text-xs font-semibold text-red-600 mt-1">
+                              ₹{project.minPrice.toLocaleString()} Cr*
+                            </p>
+                          )}
+                        </div>
                       </div>
+                    </Link>
+                  ))
+                ) : (
+                  <div className="text-center py-8">
+                    <div className="w-12 h-12 mx-auto mb-3 bg-gray-100 rounded-full flex items-center justify-center">
+                      <span className="text-gray-400 text-lg">🏢</span>
                     </div>
-                  </Link>
-                ))}
+                    <p className="text-sm text-gray-500">
+                      Loading branded residences...
+                    </p>
+                    <p className="text-xs text-gray-400 mt-1">
+                      Please check your connection
+                    </p>
+                  </div>
+                )}
               </div>
 
-              {/* View All Projects Button */}
+              {/* View All Branded Residences Button */}
               <Link
-                to="/projects-in-gurugram/"
+                to="/branded-residences/"
                 className="block w-full mt-6 text-center px-4 py-2 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 transition-colors"
               >
                 View All Projects

@@ -36,6 +36,7 @@ import {
   Tablet,
   Download,
   X,
+  Search as SearchIcon
 
 } from "lucide-react";
 // Removed all Ant Design imports - using simple JSX with Tailwind CSS
@@ -125,6 +126,12 @@ export default function BlogDashboard() {
     pageSpeed: 0
   });
 
+  // SEO Analysis states
+  const [seoAnalysis, setSeoAnalysis] = useState(null);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [showSeoModal, setShowSeoModal] = useState(false);
+  const [selectedBlogForSeo, setSelectedBlogForSeo] = useState(null);
+
   // Remove pagination state variables since we're fetching all blogs
   // const [currentPage, setCurrentPage] = useState(1);
   // const [totalPages, setTotalPages] = useState(1);
@@ -164,6 +171,29 @@ export default function BlogDashboard() {
       setFilteredBlogs(filtered);
     }
   }, [blogs, searchQuery]);
+
+  // SEO Analysis function
+  const handleAnalyzeSEO = async (blog) => {
+    try {
+      setIsAnalyzing(true);
+      setSelectedBlogForSeo(blog);
+      const res = await api.post('/blog/analyze-seo', {
+        title: blog.blog_Title,
+        metaTitle: blog.metaTitle || blog.blog_Title,
+        metaDescription: blog.metaDescription || blog.blog_Description,
+        slug: blog.slug,
+        content: blog.blog_Content,
+        focusKeyword: blog.focusKeyword || ''
+      });
+      setSeoAnalysis(res.data);
+      setShowSeoModal(true);
+    } catch (error) {
+      console.error('SEO Analysis error:', error);
+      alert('Failed to analyze SEO');
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
 
   const fetchDashboardData = async () => {
     try {
@@ -703,88 +733,82 @@ export default function BlogDashboard() {
       },
       render: (_, record) => (
         <div className="flex items-center space-x-3">
-          <Tooltip title={`${record.likes || 0} Likes`}>
-            <div className="flex items-center space-x-1 text-green-600">
-              <ThumbsUp size={16} />
-              <span className="text-sm font-medium">{record.likes || 0}</span>
-            </div>
-          </Tooltip>
-          <Tooltip title={`${record.shares || 0} Shares`}>
-            <div className="flex items-center space-x-1 text-purple-600">
-              <Share2 size={16} />
-              <span className="text-sm font-medium">{record.shares || 0}</span>
-            </div>
-          </Tooltip>
-          <Tooltip title={`${record.commentsCount || 0} Comments`}>
-            <div className="flex items-center space-x-1 text-red-600">
-              <MessageCircle size={16} />
-              <span className="text-sm font-medium">{record.commentsCount || 0}</span>
-            </div>
-          </Tooltip>
+          <div title={`${record.likes || 0} Likes`} className="flex items-center space-x-1 text-green-600">
+            <ThumbsUp size={16} />
+            <span className="text-sm font-medium">{record.likes || 0}</span>
+          </div>
+          <div title={`${record.shares || 0} Shares`} className="flex items-center space-x-1 text-purple-600">
+            <Share2 size={16} />
+            <span className="text-sm font-medium">{record.shares || 0}</span>
+          </div>
+          <div title={`${record.commentsCount || 0} Comments`} className="flex items-center space-x-1 text-red-600">
+            <MessageCircle size={16} />
+            <span className="text-sm font-medium">{record.commentsCount || 0}</span>
+          </div>
         </div>
       ),
     },
     {
       title: 'Actions',
       key: 'actions',
-      width: 220,
+      width: 280,
       fixed: 'right',
       render: (_, record) => (
-        <Space size="small">
-          <Tooltip title="View Blog">
-            <Button
-              type="text"
-              icon={<Eye size={18} />}
-              onClick={() => history(blogLink(record))}
-              className="text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-full"
-            />
-          </Tooltip>
+        <div className="flex items-center gap-1">
+          <button
+            type="button"
+            title="View Blog"
+            className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-blue-50 hover:text-blue-800 text-blue-600 h-8 w-8 p-0 rounded-full"
+            onClick={() => history(blogLink(record))}
+          >
+            <Eye size={18} />
+          </button>
 
-          <Tooltip title="Edit Blog">
-            <Button
-              type="text"
-              icon={<Edit size={18} />}
-              className="text-indigo-600 hover:text-indigo-800 hover:bg-indigo-50 rounded-full"
-              onClick={(e) => {
-                if (!isOwnedByMe(record)) {
-                  e.preventDefault();
-                  console.warn('For edit, contact admin');
-                  return;
-                }
-                history(`/seo/blogs/edit/${record._id}`);
-              }}
-            />
-          </Tooltip>
-          <Tooltip title={record.isPublished ? "Click to Unpublish" : "Click to Publish"}>
-            <div className="flex items-center gap-2">
-              <div
-                className={`relative flex items-center cursor-pointer select-none transition-all duration-300 
+          <button
+            type="button"
+            title="Edit Blog"
+            className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-indigo-50 hover:text-indigo-800 text-indigo-600 h-8 w-8 p-0 rounded-full"
+            onClick={(e) => {
+              if (!isOwnedByMe(record)) {
+                e.preventDefault();
+                console.warn('For edit, contact admin');
+                return;
+              }
+              history(`/seo/blogs/edit/${record._id}`);
+            }}
+          >
+            <Edit size={18} />
+          </button>
+
+          <button
+            type="button"
+            title="Analyze SEO"
+            className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-green-500 text-white hover:bg-green-600 h-8 w-8 p-0 rounded-full shadow-sm"
+            onClick={() => handleAnalyzeSEO(record)}
+            disabled={isAnalyzing && selectedBlogForSeo?._id === record._id}
+          >
+            {isAnalyzing && selectedBlogForSeo?._id === record._id ? (
+              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+            ) : (
+              <Search size={18} />
+            )}
+          </button>
+          <div title={record.isPublished ? "Click to Unpublish" : "Click to Publish"} className="flex items-center gap-2">
+            <div
+              className={`relative flex items-center cursor-pointer select-none transition-all duration-300 
         ${isOwnedByMe(record) ? 'opacity-100' : 'opacity-60 cursor-not-allowed'}
       `}
-                onClick={() => {
-                  if (!isOwnedByMe(record)) {
-                    console.warn('For publish/unpublish, contact admin');
-                    return;
-                  }
-                  setSelectedBlog(record);
-                  handlePublishToggle(!record.isPublished, record._id);
-                }}
-              >
-                {/* Smooth Toggle Base */}
-                <div
-                  className={`w-11 h-6 rounded-full transition-colors duration-300 ease-in-out 
-          ${record.isPublished ? 'bg-green-500 shadow-md shadow-green-300/40' : 'bg-gray-300'}
-        `}
-                />
-                {/* Toggle Circle */}
-                <div
-                  className={`absolute left-0 top-0 w-6 h-6 bg-white rounded-full shadow-sm transform transition-transform duration-300
-          ${record.isPublished ? 'translate-x-5' : 'translate-x-0'}
-        `}
-                />
+              onClick={() => {
+                if (!isOwnedByMe(record)) {
+                  console.warn('For publish/unpublish, contact admin');
+                  return;
+                }
+                togglePublish(record._id);
+              }}
+            >
+              <div className={`relative w-11 h-6 ${record.isPublished ? 'bg-green-500' : 'bg-gray-300'} rounded-full transition-colors duration-300`}>
+                <div className={`absolute top-0.5 ${record.isPublished ? 'left-6' : 'left-0.5'} w-5 h-5 bg-white rounded-full shadow-md transition-all duration-300`} />
               </div>
-
-              {/* Label */}
               <span
                 className={`text-xs font-medium transition-all duration-300 ${record.isPublished ? 'text-green-600' : 'text-gray-500'
                   }`}
@@ -792,42 +816,41 @@ export default function BlogDashboard() {
                 {record.isPublished ? 'Published' : 'Draft'}
               </span>
             </div>
-          </Tooltip>
+          </div>
 
-          <Tooltip title="Delete Blog">
-            <Button
-              type="text"
-              danger
-              icon={<Trash2 size={18} />}
-              onClick={() => {
-                // Always block deletion: require contacting admin
-                console.warn('For delete, contact admin');
-                return;
-              }}
-              className="hover:bg-red-50 rounded-full"
-            />
-          </Tooltip>
-        </Space>
+          <button
+            type="button"
+            title="Delete Blog"
+            className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-red-50 hover:text-red-800 text-red-600 h-8 w-8 p-0 rounded-full"
+            onClick={() => {
+              // Always block deletion: require contacting admin
+              console.warn('For delete, contact admin');
+              return;
+            }}
+          >
+            <Trash2 size={18} />
+          </button>
+        </div>
       ),
     },
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 p-2 sm:p-3 lg:p-4">
+    <div className="min-h-screen bg-background">
       <div className="w-full max-w-7xl mx-auto">
         {/* Professional Header */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-3 sm:p-4 mb-2 border border-gray-100 dark:border-gray-700 backdrop-blur-sm bg-opacity-90 dark:bg-opacity-90">
+        <div className="bg-card border-border rounded-lg shadow-sm p-4 mb-4 border backdrop-blur-sm">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
             <div className="space-y-1">
               <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-md flex items-center justify-center">
-                  <BarChart3 size={16} className="text-white" />
+                <div className="w-8 h-8 bg-primary rounded-md flex items-center justify-center">
+                  <BarChart3 size={16} className="text-primary-foreground" />
                 </div>
                 <div>
-                  <h2 className="text-lg sm:text-xl font-bold mb-0 bg-gradient-to-r from-gray-800 via-blue-600 to-indigo-600 dark:from-gray-100 dark:via-blue-400 dark:to-indigo-400 bg-clip-text text-transparent">
+                  <h2 className="text-lg sm:text-xl font-bold mb-0">
                     Blog Analytics
                   </h2>
-                  <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300">
+                  <p className="text-xs sm:text-sm text-muted-foreground">
                     Professional insights overview
                   </p>
                 </div>
@@ -837,7 +860,7 @@ export default function BlogDashboard() {
               <select
                 value={timeRange}
                 onChange={(e) => setTimeRange(e.target.value)}
-                className="text-xs sm:text-sm px-2 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               >
                 <option value="7d">7d</option>
                 <option value="30d">30d</option>
@@ -1479,6 +1502,114 @@ export default function BlogDashboard() {
           </div>
         )}
       </div>
+
+      {/* SEO Analysis Modal */}
+      {showSeoModal && seoAnalysis && (
+        <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-[5000] flex items-center justify-center p-4" onClick={() => setShowSeoModal(false)}>
+          <div className="bg-background rounded-lg shadow-lg w-full max-w-4xl max-h-[90vh] overflow-hidden border border-border" onClick={(e) => e.stopPropagation()}>
+            {/* Header */}
+            <div className="flex items-center justify-between p-6 border-b border-border">
+              <div>
+                <h2 className="text-xl font-semibold">SEO Analysis Report</h2>
+                <p className="text-sm text-muted-foreground mt-1">
+                  {selectedBlogForSeo?.blog_Title}
+                </p>
+              </div>
+              <button
+                onClick={() => setShowSeoModal(false)}
+                className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-8 w-8 p-0"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+
+            {/* Content */}
+            <div className="flex-1 overflow-auto p-6">
+              <div className="text-center mb-6">
+                <div className={`inline-flex items-center justify-center w-16 h-16 rounded-full mb-4 ${
+                  seoAnalysis.overall_score >= 80 ? 'bg-green-100' :
+                  seoAnalysis.overall_score >= 60 ? 'bg-amber-100' : 'bg-red-100'
+                }`}>
+                  <span className={`text-2xl font-bold ${
+                    seoAnalysis.overall_score >= 80 ? 'text-green-600' :
+                    seoAnalysis.overall_score >= 60 ? 'text-amber-600' : 'text-red-600'
+                  }`}>
+                    {seoAnalysis.overall_score}
+                  </span>
+                </div>
+                <h3 className="text-lg font-semibold">Overall SEO Score</h3>
+                <p className="text-sm text-muted-foreground">
+                  {seoAnalysis.overall_score >= 80 ? 'Excellent' :
+                   seoAnalysis.overall_score >= 60 ? 'Good' : 'Needs Improvement'}
+                </p>
+              </div>
+
+              {/* Basic Metrics */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                <div className="bg-card border-border rounded-lg p-4 border">
+                  <div className="text-2xl font-bold text-primary">{seoAnalysis.content?.wordCount || 0}</div>
+                  <div className="text-sm text-muted-foreground">Words</div>
+                </div>
+                <div className="bg-card border-border rounded-lg p-4 border">
+                  <div className="text-2xl font-bold text-primary">{seoAnalysis.readability?.flesch_score || 0}</div>
+                  <div className="text-sm text-muted-foreground">Readability</div>
+                </div>
+                <div className="bg-card border-border rounded-lg p-4 border">
+                  <div className="text-2xl font-bold text-primary">{seoAnalysis.images?.total || 0}</div>
+                  <div className="text-sm text-muted-foreground">Images</div>
+                </div>
+                <div className="bg-card border-border rounded-lg p-4 border">
+                  <div className="text-2xl font-bold text-primary">{seoAnalysis.links?.total || 0}</div>
+                  <div className="text-sm text-muted-foreground">Links</div>
+                </div>
+              </div>
+
+              {/* Issues and Suggestions */}
+              <div className="space-y-4">
+                {seoAnalysis.h1_validation?.status !== 'success' && (
+                  <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                    <div className="flex items-center gap-2 text-red-600">
+                      <X className="w-4 h-4" />
+                      <span className="font-medium">H1 Tag Issue</span>
+                    </div>
+                    <p className="text-sm text-red-700 mt-1">{seoAnalysis.h1_validation?.message}</p>
+                  </div>
+                )}
+
+                {seoAnalysis.images?.missing_alt > 0 && (
+                  <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+                    <div className="flex items-center gap-2 text-amber-600">
+                      <X className="w-4 h-4" />
+                      <span className="font-medium">Missing Alt Tags</span>
+                    </div>
+                    <p className="text-sm text-amber-700 mt-1">{seoAnalysis.images?.missing_alt} images missing alt text</p>
+                  </div>
+                )}
+
+                {seoAnalysis.content_structure?.status !== 'success' && (
+                  <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+                    <div className="flex items-center gap-2 text-amber-600">
+                      <X className="w-4 h-4" />
+                      <span className="font-medium">Content Structure</span>
+                    </div>
+                    <p className="text-sm text-amber-700 mt-1">Add more lists, tables, or quotes to improve readability</p>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div className="p-4 border-t border-border flex justify-end">
+              <button
+                onClick={() => setShowSeoModal(false)}
+                className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-4 py-2"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

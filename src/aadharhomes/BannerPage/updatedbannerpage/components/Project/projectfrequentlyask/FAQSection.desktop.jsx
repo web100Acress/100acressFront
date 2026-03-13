@@ -61,6 +61,7 @@ const FAQSectionDesktop = ({ projectViewDetails = {}, onShowCallback = () => {} 
   const faqs = generateFAQs();
 
   const toggleFAQ = (index) => {
+    console.log('Toggling FAQ:', index, 'Current openIndex:', openIndex);
     setOpenIndex(openIndex === index ? null : index);
   };
 
@@ -106,66 +107,43 @@ const FAQSectionDesktop = ({ projectViewDetails = {}, onShowCallback = () => {} 
           <div className="faq-section-desktop-accent-line"></div>
         </motion.div>
 
-        {/* Desktop FAQ Content */}
-        <motion.div 
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="faq-section-desktop-faq-content"
-        >
+        {/* Desktop FAQ Content - Simplified without motion conflicts */}
+        <div className="faq-section-desktop-faq-content">
           <div className="faq-section-desktop-faq-list">
             {faqs.map((faq, index) => (
-              <motion.div 
+              <div 
                 key={index}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5, delay: 0.1 * index }}
-                className="faq-section-desktop-faq-item"
+                className={`faq-section-desktop-faq-item ${openIndex === index ? 'open' : ''}`}
+                onClick={() => toggleFAQ(index)}
               >
-                <div className="faq-section-desktop-faq-item">
-                  {/* Glow Effect */}
-                  <div className="faq-section-desktop-faq-glow"></div>
-                  
-                  <div className="faq-section-desktop-faq-card">
-                    
-                    {/* Question */}
-                    <button
-                      onClick={() => toggleFAQ(index)}
-                      className="faq-section-desktop-question-button"
-                    >
-                      <h4 className="faq-section-desktop-question">
-                        {faq.title}?
-                      </h4>
-                      <motion.div 
-                        className={`faq-section-desktop-chevron ${openIndex === index ? 'open' : ''}`}
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.9 }}
-                      >
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                        </svg>
-                      </motion.div>
-                    </button>
+                {/* Glow Effect */}
+                <div className="faq-section-desktop-faq-glow"></div>
+                
+                <div className="faq-section-desktop-faq-card">
+                  {/* Question */}
+                  <div className="faq-section-desktop-question-header">
+                    <h4 className="faq-section-desktop-question">
+                      {faq.title}?
+                    </h4>
+                    <div className={`faq-section-desktop-chevron ${openIndex === index ? 'open' : ''}`}>
+                      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </div>
+                  </div>
 
-                    {/* Answer */}
-                    <motion.div 
-                      className="faq-section-desktop-answer"
-                      initial={false}
-                      animate={{ height: openIndex === index ? 'auto' : 0 }}
-                    >
-                      <div className={`faq-section-desktop-answer-inner ${openIndex === index ? 'open' : ''}`}>
-                        <div className="faq-section-desktop-divider"></div>
-                        <p className="faq-section-desktop-answer-text">
-                          {faq.content}
-                        </p>
-                      </div>
-                    </motion.div>
+                  {/* Answer */}
+                  <div className={`faq-section-desktop-answer ${openIndex === index ? 'open' : ''}`}>
+                    <div className="faq-section-desktop-divider"></div>
+                    <p className="faq-section-desktop-answer-text">
+                      {faq.content}
+                    </p>
                   </div>
                 </div>
-              </motion.div>
+              </div>
             ))}
           </div>
-        </motion.div>
+        </div>
 
         {/* Desktop Contact CTA */}
         <motion.div 

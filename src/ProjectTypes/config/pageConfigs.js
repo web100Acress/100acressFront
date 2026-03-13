@@ -1,5 +1,5 @@
 // Page configurations for different filter page types
-import { getStaticData, getFAQData, getTrustBoosters } from './staticData.jsx';
+import { staticData, getStaticData, getFAQData, getTrustBoosters } from './staticData.jsx';
 
 export const pageConfigs = {
   // City Page Configuration
@@ -294,26 +294,22 @@ export const projectTypeConfigs = {
 // Status configurations for project status pages
 export const statusConfigs = {
   upcoming: {
-    title: "UpComing Projects in Gurgaon",
-    description: "Explore best upcoming projects in Gurgaon with modern amenities. Find residential & commercial spaces customized to your lifestyle. Visit 100acress today!",
+    ...staticData.status.upcoming,
     badgeColor: "bg-blue-500",
     badgeText: "Upcoming"
   },
   underconstruction: {
-    title: "Under Construction Projects in Gurgaon",
-    description: "Under Construction Properties in Gurgaon include commercial and residential projects that will meet various requirements. These developments are equipped with modern amenities, great places close to business areas, as well as extensive green spaces. They're designed to meet the ever-changing demands of urban dwellers who want peace, convenience, and a vibrant lifestyle.",
+    ...staticData.status.underconstruction,
     badgeColor: "bg-orange-500",
     badgeText: "Under Construction"
   },
   readytomove: {
-    title: "Ready To Move Projects",
-    description: "Explore ready to move properties in Gurgaon with modern amenities. Find residential & commercial spaces ready for immediate possession.",
+    ...staticData.status.readytomove,
     badgeColor: "bg-green-500",
     badgeText: "Ready to Move"
   },
   newlaunch: {
-    title: "Projects in New Launch",
-    description: "Explore new launch projects in Gurgaon with modern amenities. Find the latest residential & commercial spaces.",
+    ...staticData.status.newlaunch,
     badgeColor: "bg-purple-500",
     badgeText: "New Launch"
   },

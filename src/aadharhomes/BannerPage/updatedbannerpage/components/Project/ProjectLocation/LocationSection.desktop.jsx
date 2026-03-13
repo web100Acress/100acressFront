@@ -160,176 +160,81 @@ const LocationSection = ({
   };
 
   return (
-    <section className="location-section-desktop" style={{ paddingTop: '120px', zIndex: 1, position: 'relative' }}>
-      {/* Animated Background Elements */}
-      <div className="location-section-background">
-        <div className="location-section-background-overlay">
-          <div className="location-section-float-element-1"></div>
-          <div className="location-section-float-element-2"></div>
-        </div>
-        <div className="location-section-gradient-overlay"></div>
+    <section className="location-section-desktop">
+      {/* Section Title - Outside Card */}
+      <div className="location-section-desktop-title-wrap">
+        <h2 className="location-section-desktop-title">
+          LOCATION & CONNECTIVITY
+        </h2>
       </div>
 
-      <div className="location-section-content">
-        {/* Section Header */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={isMounted ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
-          className="location-section-header"
-        >
-          <motion.div 
-            className="location-section-header-icon"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <svg className="w-7 h-7 md:w-8 md:h-8 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-            </svg>
-          </motion.div>
-          <h2 className="location-section-subtitle">
-            LOCATION & CONNECTIVITY
-          </h2>
-          <h3 className="location-section-title">
-            Strategic Location with Unmatched Connectivity
-          </h3>
-          <div className="location-section-accent-line"></div>
-        </motion.div>
+      {/* Luxury Dark Card Container */}
+      <div className="location-section-desktop-card">
+        {/* Dark Golden Accent Line */}
+        <div className="location-section-desktop-card-accent"></div>
 
-        {/* Main Content */}
-        <div className="location-section-main-grid">
-          {/* Location Map Card */}
-          <motion.div 
-            className="location-section-map-card"
-            initial={{ opacity: 0, x: -20 }}
-            animate={isMounted ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.2 }}
-          >
-            <div className="location-section-map-glow"></div>
-              
-              {/* Map Container */}
-              <div className="location-section-map-container">
-                {/* Map Image */}
-                <div className="location-section-map-image-container">
-                  {locationImage?.url ? (
-                    <img 
-                      src={locationImage.url} 
-                      alt={`${projectName} Location`} 
-                      className="location-section-map-image"
-                    />
-                  ) : (
-                    <div className="location-section-map-placeholder">
-                      <div className="location-section-map-placeholder-content">
-                        <div className="location-section-map-placeholder-icon">
-                          <svg className="w-8 h-8 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-1.447-.894L15 4m0 13V4m0 0L9 7" />
-                          </svg>
-                        </div>
-                        <p className="location-section-map-placeholder-text">Interactive Location Map</p>
-                      </div>
+        <div className="location-section-desktop-grid">
+          
+          {/* Left Column - Content */}
+          <div className="location-section-desktop-left">
+            {/* Section Header */}
+            <div className="location-section-desktop-left-header">
+              <h3 className="location-section-desktop-subtitle">
+                {projectName ? `${projectName} Location` : "Location Highlights"}
+              </h3>
+              <div className="location-section-desktop-underline"></div>
+            </div>
+
+            {/* All Location Points Vertical List */}
+            <div className="location-points-vertical-list custom-scrollbar">
+              <div className="location-points-grid">
+                {[
+                  ...(connectivityPoints || []),
+                  ...(businessPoints || []),
+                  ...(educationPoints || []),
+                  ...(entertainmentPoints || [])
+                ].map((point, index) => (
+                  <div key={index} className="location-point-item">
+                    <div className="location-point-check">
+                      <svg fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                      </svg>
                     </div>
-                  )}
-                
-                {/* Map Overlay Controls - Inside the image container */}
-                <div className="location-section-map-overlay">
-                  <div className="location-section-map-overlay-content">
-                    <button 
-                      onClick={handleViewOnMap}
-                      className="location-section-view-map-button"
-                    >
-                      View on Map
-                    </button>
+                    <p className="location-point-text">{point}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Right Column - Map/Image */}
+          <div className="location-section-desktop-right">
+            <div className="location-section-desktop-image-wrap" onClick={handleViewOnMap} style={{ cursor: 'pointer' }}>
+              {(locationImage?.url || locationImage) ? (
+                <>
+                  <img 
+                    src={locationImage?.url || locationImage} 
+                    alt={`${projectName} Location Map`}
+                    className="location-section-desktop-image"
+                  />
+                  <div className="location-section-desktop-image-overlay"></div>
+                </>
+              ) : (
+                <div className="flex items-center justify-center h-full bg-slate-800 text-slate-500">
+                  <div className="text-center">
+                    <svg className="w-12 h-12 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+                    </svg>
+                    <p>View Map</p>
                   </div>
                 </div>
-              </div>
-              
-               <div className="location-section-info-cards-grid">
-                  {tabsWithPoints.map((tab, index) => (
-                    <motion.div
-                      key={tab.id}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.3, delay: 0.1 * index }}
-                      className="location-section-info-card"
-                    >
-                      {/* Tab Header with Icon */}
-                      <div className="location-section-tab-header">
-                        
-                        <div>
-                          {/* <h4 className="text-white font-semibold text-sm">{tab.label}</h4> */}
-                          {/* <p className="text-gray-400 text-xs">{tab.points.length} locations</p> */}
-                        </div>
-                      </div>
-                      
-                      {/* Location Points */}
-                      <div className="location-section-points-container">
-                        {tab.points.slice(0, 2).map((point, i) => (
-                          <div key={i} className="location-section-point-item">
-                            <div className={`location-section-point-icon ${tab.color.split(' ')[2]}`}>
-                              {tab.icon}
-                            </div>
-                            <p className="location-section-point-text">{point}</p>
-                          </div>
-                        ))}
-                        {tab.points.length > 2 && (
-                          <p className="location-section-more-points">
-                            +{tab.points.length - 2} more
-                          </p>
-                        )}
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
+              )}
+              <div className="location-section-desktop-frame"></div>
             </div>
-          </motion.div>
+          </div>
 
-          {/* Connectivity Points Grid */}
-          <motion.div 
-            className="location-section-connectivity-grid"
-            initial={{ opacity: 0, x: 20 }}
-            animate={isMounted ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.4 }}
-          >
-          </motion.div>
         </div>
       </div>
-
-      {/* Scoped styles for this component */}
-      <style>{`
-        @keyframes float {
-          0%, 100% { transform: translateY(0) translateX(0); }
-          50% { transform: translateY(-10px) translateX(5px); }
-        }
-        .animate-float {
-          animation: float 15s ease-in-out infinite;
-        }
-        .animation-delay-2000 {
-          animation-delay: 2s;
-        }
-        .custom-scrollbar::-webkit-scrollbar {
-          width: 4px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-          background: rgba(255, 255, 255, 0.05);
-          border-radius: 10px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: rgba(255, 255, 255, 0.2);
-          border-radius: 10px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-          background: rgba(255, 255, 255, 0.3);
-        }
-        /* Clamp to ~3 lines with ellipsis */
-        .clamp-3 {
-          display: -webkit-box;
-          -webkit-line-clamp: 3;
-          -webkit-box-orient: vertical;
-          overflow: hidden;
-          line-clamp: 3;
-        }
-      `}</style>
     </section>
   );
 };

@@ -53,9 +53,9 @@ const PricingSectionDesktop = ({ projectName, minPrice, maxPrice, bhkDetails = [
   };
 
   return (
-    <section className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-[120px] pb-8" style={{ zIndex: 1 }}>
+    <section className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-[60px] pb-8" style={{ zIndex: 1 }}>
       {/* Luxury Dark Card Container */}
-      <div className="relative rounded-2xl overflow-hidden bg-[#25526f] shadow-[0_20px_60px_rgba(0,0,0,0.4)] border border-amber-900/30">
+      <div className="relative rounded-2xl overflow-hidden bg-[#25526f] border border-amber-900/30">
         
         {/* Dark Golden Accent Line */}
         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-600 via-amber-500 to-amber-700"></div>

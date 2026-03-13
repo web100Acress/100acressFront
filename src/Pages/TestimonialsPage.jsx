@@ -159,10 +159,23 @@ const TestimonialsPage = () => {
         <>
             <Helmet>
                 {/* Primary Meta Tags */}
-                <title>Customer Testimonials | 100acress.com Reviews - Real Estate in Delhi NCR</title>
-                <meta name="description" content="Read genuine customer testimonials and reviews for 100acress.com. 98% client satisfaction rate. Find out why we're the best real estate consultant in Delhi NCR, Gurgaon, Noida & more." />
-                <meta name="keywords" content="100acress reviews, customer testimonials, real estate reviews Delhi NCR, property consultant Gurgaon reviews, best real estate company reviews, happy homeowners testimonials" />
+                <title>Customer Reviews & Testimonials | 100acress</title>
+                <meta name="description" content="See what our clients say about 100acress.com. Genuine testimonials from property buyers and investors who trusted our real estate services in Gurgaon." />
+                <meta name="keywords" content="100acress reviews, customer testimonials, real estate reviews Gurgaon, property buyer testimonials, real estate services reviews, client feedback 100acress, property investment testimonials" />
                 <link rel="canonical" href="https://www.100acress.com/testimonials/" />
+                
+                {/* Open Graph Meta Tags */}
+                <meta property="og:title" content="Customer Reviews & Testimonials | 100acress" />
+                <meta property="og:description" content="See what our clients say about 100acress.com. Genuine testimonials from property buyers and investors who trusted our real estate services in Gurgaon." />
+                <meta property="og:url" content="https://www.100acress.com/testimonials/" />
+                <meta property="og:type" content="website" />
+                <meta property="og:image" content="https://www.100acress.com/Images/100acress-logo.png" />
+                
+                {/* Twitter Card Meta Tags */}
+                <meta name="twitter:card" content="summary_large_image" />
+                <meta name="twitter:title" content="Customer Reviews & Testimonials | 100acress" />
+                <meta name="twitter:description" content="See what our clients say about 100acress.com. Genuine testimonials from property buyers and investors who trusted our real estate services in Gurgaon." />
+                <meta name="twitter:image" content="https://www.100acress.com/Images/100acress-logo.png" />
             </Helmet>
             
         <div className="min-h-screen bg-gray-50 font-['Inter',sans-serif]">

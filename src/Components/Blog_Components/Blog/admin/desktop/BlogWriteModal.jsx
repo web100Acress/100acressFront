@@ -26,11 +26,19 @@ import {
   Check,
   Monitor,
   Smartphone,
+  Eye,
   MessageSquare,
   History,
   Maximize2,
   Minimize2,
-  ChevronDown
+  ChevronDown,
+  Target,
+  BookOpen,
+  Search,
+  Zap,
+  BarChart3,
+  Share2,
+  Lightbulb
 } from 'lucide-react';
 
 const initialCategories = [
@@ -86,7 +94,14 @@ const BlogWriteModal = () => {
   const [newBlog, setNewBlog] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isPublished, setIsPublished] = useState(false);
+  const [isDraft, setIsDraft] = useState(false);
   const [views, setViews] = useState(0);
+
+  // SEO Analysis State
+  const [seoAnalysis, setSeoAnalysis] = useState(null);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [showSeoModal, setShowSeoModal] = useState(false);
+  const [focusKeyword, setFocusKeyword] = useState('');
 
   // Related projects state
   const [relatedProjects, setRelatedProjects] = useState([]);
@@ -231,6 +246,28 @@ const BlogWriteModal = () => {
     }
 
     return baseSchema;
+  };
+
+  // SEO Analysis function
+  const handleAnalyzeSEO = async () => {
+    try {
+      setIsAnalyzing(true);
+      const res = await api.post('/blog/analyze-seo', {
+        title,
+        metaTitle,
+        metaDescription,
+        slug,
+        content: description,
+        focusKeyword
+      });
+      setSeoAnalysis(res.data);
+      setShowSeoModal(true);
+    } catch (error) {
+      console.error('SEO Analysis error:', error);
+      showToast.error('Failed to analyze SEO');
+    } finally {
+      setIsAnalyzing(false);
+    }
   };
 
   // Manual save schema function
@@ -831,6 +868,8 @@ const BlogWriteModal = () => {
             setCategories(b.blog_Category || '');
             setAuthor(b.author || 'Admin');
             setViews(typeof b.views === 'number' ? b.views : 0);
+            setIsPublished(b.blog_Status === 'Published');
+            setIsDraft(b.blog_Status === 'Draft');
             setBlogId(b._id || '');
             setBlogToEdit(true);
             setNewBlog(false);
@@ -2665,107 +2704,173 @@ const BlogWriteModal = () => {
                         </div>
                       </div>
                     </div>
-                    
-                    {/* Blog Preview */}
-                    <div className="bg-background rounded-lg border border-border overflow-hidden">
-                      <div className={`transition-all duration-300 ${previewMode === 'mobile' ? 'max-w-[390px] mx-auto ring-2 ring-muted rounded-lg' : ''}`}>
-                        {/* Featured Image */}
-                        {frontImagePreview && (
-                          <div className="relative">
-                            <img 
-                              src={frontImagePreview} 
-                              alt="Blog preview" 
-                              className={`w-full object-cover ${previewMode === 'mobile' ? 'h-48' : 'h-64'}`} 
-                            />
-                            <div className="absolute top-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded">
-                              Featured Image
-                            </div>
+
+                    <div className="space-y-6">
+                      {/* SEO Score Indicator */}
+                      <div className="bg-background rounded-lg border border-border p-4">
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-sm font-medium text-foreground">SEO Score</span>
+                          <div className="flex items-center gap-2">
+                            <button
+                              type="button"
+                              onClick={handleAnalyzeSEO}
+                              disabled={isAnalyzing}
+                              className="inline-flex items-center gap-1.5 px-2 py-1 bg-primary/10 text-primary hover:bg-primary/20 rounded text-[10px] font-bold uppercase transition-colors disabled:opacity-50"
+                            >
+                              {isAnalyzing ? (
+                                <div className="w-3 h-3 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
+                              ) : (
+                                <History className="w-3 h-3" />
+                              )}
+                              Analyze SEO
+                            </button>
+                            <span className="text-sm font-bold" style={{ color: seoScore.color }}>
+                              {seoScore.score}/100
+                            </span>
                           </div>
-                        )}
-                        
-                        {/* Blog Content Preview */}
-                        <div className="p-4 sm:p-6">
-                          <h1 className={`font-bold text-foreground mb-3 leading-tight ${previewMode === 'mobile' ? 'text-xl' : 'text-2xl'}`}>
-                            {title || 'Your blog title will appear here'}
-                          </h1>
-                          
-                          <div className="flex items-center gap-4 text-xs text-muted-foreground mb-4 pb-3 border-b border-border">
-                            <span>By {author || 'Admin'}</span>
-                            <span>•</span>
-                            <span>{new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
-                            <span>•</span>
-                            <span className="text-primary font-medium">/{slug || 'my-custom-slug'}</span>
+                        </div>
+                        <div className="w-full bg-muted rounded-full h-2">
+                          <div 
+                            className="h-2 rounded-full transition-all duration-300"
+                            style={{ 
+                              width: `${seoScore.score}%`,
+                              backgroundColor: seoScore.color
+                            }}
+                          />
+                        </div>
+                        <p className="text-xs text-muted-foreground mt-2">
+                          {seoScore.label} - {seoScore.details.title && `Title: ${seoScore.details.title}`}
+                        </p>
+                      </div>
+
+                      {/* Blog Preview */}
+                      <div className="bg-background rounded-lg border border-border overflow-hidden">
+                        <div className="p-3 border-b border-border bg-muted/30 flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <Eye className="w-4 h-4 text-primary" />
+                            <span className="text-sm font-medium">Live Preview</span>
                           </div>
-                          
-                          {/* Content Preview */}
-                          <div className={`prose prose-sm max-w-none ${previewMode === 'mobile' ? 'text-xs' : 'text-sm'}`}>
-                            {description ? (
-                              <div 
-                                className="text-muted-foreground leading-relaxed"
-                                dangerouslySetInnerHTML={{
-                                  __html: description.replace(/<[^>]*>/g, '').substring(0, previewMode === 'mobile' ? 150 : 300) + '...'
-                                }}
+                          <div className="flex items-center gap-1 bg-background rounded-md border p-0.5">
+                            <button
+                              type="button"
+                              onClick={() => setPreviewMode('desktop')}
+                              className={`p-1 rounded text-xs transition-colors ${previewMode === 'desktop' ? 'bg-primary text-primary-foreground' : 'hover:bg-muted'}`}
+                              title="Desktop view"
+                            >
+                              <Monitor className="w-3 h-3" />
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setPreviewMode('mobile')}
+                              className={`p-1 rounded text-xs transition-colors ${previewMode === 'mobile' ? 'bg-primary text-primary-foreground' : 'hover:bg-muted'}`}
+                              title="Mobile view"
+                            >
+                              <Smartphone className="w-3 h-3" />
+                            </button>
+                          </div>
+                        </div>
+                        <div className={`transition-all duration-300 ${previewMode === 'mobile' ? 'max-w-[390px] mx-auto ring-2 ring-muted rounded-lg' : ''}`}>
+                          {/* Featured Image */}
+                          {frontImagePreview && (
+                            <div className="relative">
+                              <img 
+                                src={frontImagePreview} 
+                                alt="Blog preview" 
+                                className={`w-full object-cover ${previewMode === 'mobile' ? 'h-48' : 'h-64'}`} 
                               />
-                            ) : (
-                              <p className="text-muted-foreground italic">
-                                Start writing your blog content to see the preview here...
-                              </p>
-                            )}
-                          </div>
-                          
-                          {/* Categories */}
-                          {categories && (
-                            <div className="mt-4 pt-4 border-t border-border">
-                              <div className="flex flex-wrap gap-2">
-                                {categories.split(',').map((cat, idx) => (
-                                  <span key={idx} className="inline-flex items-center px-2 py-1 bg-primary/10 text-primary text-xs rounded-full font-medium">
-                                    {cat.trim()}
-                                  </span>
-                                ))}
+                              <div className="absolute top-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded">
+                                Featured Image
                               </div>
                             </div>
                           )}
                           
-                          {/* Read more indicator */}
-                          <div className="mt-4 text-center">
-                            <button 
-                              type="button"
-                              onClick={() => setShowPreview(true)}
-                              className="text-primary text-sm font-medium hover:text-primary/80 transition-colors"
-                            >
-                              Read full article →
-                            </button>
+                          {/* Blog Content Preview */}
+                          <div className="p-4 sm:p-6">
+                            <h1 className={`font-bold text-foreground mb-3 leading-tight ${previewMode === 'mobile' ? 'text-xl' : 'text-2xl'}`}>
+                              {title || 'Your blog title will appear here'}
+                            </h1>
+                            
+                            <div className="flex items-center gap-4 text-xs text-muted-foreground mb-4 pb-3 border-b border-border">
+                              <span>By {author || 'Admin'}</span>
+                              <span>•</span>
+                              <span>{new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                              <span>•</span>
+                              <span className="text-primary font-medium">/{slug || 'my-custom-slug'}</span>
+                            </div>
+                            
+                            {/* Content Preview */}
+                            <div className={`prose prose-sm max-w-none ${previewMode === 'mobile' ? 'text-xs' : 'text-sm'}`}>
+                              {description ? (
+                                <div 
+                                  className="text-muted-foreground leading-relaxed"
+                                  dangerouslySetInnerHTML={{
+                                    __html: description.replace(/<[^>]*>/g, '').substring(0, previewMode === 'mobile' ? 150 : 300) + '...'
+                                  }}
+                                />
+                              ) : (
+                                <p className="text-muted-foreground italic">
+                                  Start writing your blog content to see the preview here...
+                                </p>
+                              )}
+                            </div>
+                            
+                            {/* Categories */}
+                            {categories && (
+                              <div className="mt-4 pt-4 border-t border-border">
+                                <div className="flex flex-wrap gap-2">
+                                  {categories.split(',').map((cat, idx) => (
+                                    <span key={idx} className="inline-flex items-center px-2 py-1 bg-primary/10 text-primary text-xs rounded-full font-medium">
+                                      {cat.trim()}
+                                    </span>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+                            
+                            {/* Read more indicator */}
+                            <div className="mt-4 text-center">
+                              <button 
+                                type="button"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  e.stopPropagation();
+                                  // Store current scroll position
+                                  const scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+                                  setShowPreview(true);
+                                  // Restore scroll position after state update
+                                  requestAnimationFrame(() => {
+                                    window.scrollTo(0, scrollPosition);
+                                  });
+                                }}
+                                className="text-primary text-sm font-medium hover:text-primary/80 transition-colors"
+                              >
+                                Read full article →
+                              </button>
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
-                    
-                    {/* SEO Score Indicator */}
-                    <div className="bg-background rounded-lg border border-border p-4">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-sm font-medium text-foreground">SEO Score</span>
-                        <span className="text-sm font-bold" style={{ color: seoScore.color }}>
-                          {seoScore.score}/100
-                        </span>
-                      </div>
-                      <div className="w-full bg-muted rounded-full h-2">
-                        <div 
-                          className="h-2 rounded-full transition-all duration-300"
-                          style={{ 
-                            width: `${seoScore.score}%`,
-                            backgroundColor: seoScore.color
-                          }}
-                        />
-                      </div>
-                      <p className="text-xs text-muted-foreground mt-2">
-                        {seoScore.label} - {seoScore.details.title && `Title: ${seoScore.details.title}`}
-                      </p>
-                    </div>
                   </div>
                 </div>
-                
+
                 {/* Right Side - Form */}
                 <div className="lg:w-3/5">
+                  <div className="p-6 border-b border-border bg-background/50 flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <FileText className="w-5 h-5 text-primary" />
+                      <h3 className="text-base font-semibold leading-none tracking-tight">Blog Editor</h3>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {isDraft && (
+                        <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-amber-100 text-amber-800 border border-amber-200">
+                          DRAFT
+                        </span>
+                      )}
+                      <span className="text-[10px] text-muted-foreground">ID: {id || 'New'}</span>
+                    </div>
+                  </div>
+
                   <form className="p-6 space-y-8" onSubmit={(e) => e.preventDefault()}>
                 {/* Title */}
                 <div className="space-y-3">
@@ -2890,6 +2995,20 @@ const BlogWriteModal = () => {
                         )}
                       </div>
                     )}
+                  </div>
+
+                  {/* Focus Keyword */}
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Focus Keyword</label>
+                    <div className="relative">
+                      <input
+                        type="text"
+                        value={focusKeyword}
+                        onChange={(e) => setFocusKeyword(e.target.value)}
+                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                        placeholder="Enter your focus keyword"
+                      />
+                    </div>
                   </div>
 
                   {/* Meta Title */}
@@ -3947,6 +4066,460 @@ const BlogWriteModal = () => {
               >
                 {/* eslint-disable-next-line jsx-a11y/alt-text */}
                 <img src={lightboxUrl} style={{ maxWidth: '95vw', maxHeight: '95vh', objectFit: 'contain', borderRadius: 8 }} />
+              </div>
+            )}
+
+            {/* SEO Analysis Modal */}
+            {showSeoModal && seoAnalysis && (
+              <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-[5000] flex items-center justify-center p-4" onClick={() => setShowSeoModal(false)}>
+                <div 
+                  className="bg-card text-card-foreground border border-border shadow-2xl rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  {/* Header */}
+                  <div className="p-6 border-b border-border bg-muted/30 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 bg-primary/10 rounded-lg">
+                        <History className="w-5 h-5 text-primary" />
+                      </div>
+                      <div>
+                        <h2 className="text-xl font-bold">SEO Audit Report</h2>
+                        <p className="text-xs text-muted-foreground">Real-time analysis of your blog content</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="text-right">
+                        <div className="text-2xl font-bold text-primary">{seoAnalysis.overall_score || 0}</div>
+                        <div className="text-xs text-muted-foreground">Overall Score</div>
+                      </div>
+                      <button 
+                        onClick={() => setShowSeoModal(false)}
+                        className="p-2 hover:bg-muted rounded-full transition-colors"
+                      >
+                        <X className="w-5 h-5" />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Tabs / Navigation (Simplified) */}
+                  <div className="flex border-b border-border px-6 bg-muted/10">
+                    <div className="py-3 border-b-2 border-primary text-sm font-medium text-primary cursor-default">Overview</div>
+                  </div>
+
+                  {/* Content */}
+                  <div className="flex-1 overflow-auto p-6 space-y-8">
+                    {/* Google Snippet Preview */}
+                    <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20 rounded-xl p-5 border border-blue-200 dark:border-blue-800">
+                      <h3 className="font-bold flex items-center gap-2 mb-4">
+                        <Search className="w-4 h-4 text-blue-600" />
+                        Google Search Preview
+                      </h3>
+                      <div className="bg-white dark:bg-gray-900 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
+                        <div className="text-xs text-blue-600 dark:text-blue-400 mb-1 truncate">
+                          {seoAnalysis?.overview?.url?.value || `https://www.100acress.com/blog/${slug || 'your-post-slug'}/`}
+                        </div>
+                        <div className="text-lg text-blue-800 dark:text-blue-300 font-semibold mb-1 hover:underline cursor-pointer">
+                          {seoAnalysis?.overview?.title?.value || title || 'Untitled Blog'}
+                        </div>
+                        <div className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2">
+                          {seoAnalysis?.overview?.description?.value || metaDescription || 'No meta description available. This is how your blog will appear in Google search results.'}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* LSI Keywords */}
+                    {seoAnalysis?.lsi_keywords && seoAnalysis.lsi_keywords.length > 0 && (
+                      <div className="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-950/20 dark:to-pink-950/20 rounded-xl p-5 border border-purple-200 dark:border-purple-800">
+                        <h3 className="font-bold flex items-center gap-2 mb-4">
+                          <Zap className="w-4 h-4 text-purple-600" />
+                          LSI Keywords (Semantic SEO)
+                        </h3>
+                        <div className="flex flex-wrap gap-2">
+                          {seoAnalysis.lsi_keywords.map((keyword, i) => (
+                            <span key={i} className="px-3 py-1 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-full text-xs font-medium">
+                              {keyword}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Focus Keyword Analysis */}
+                    {seoAnalysis?.focus_keyword?.keyword && (
+                      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20 rounded-xl p-5 border border-blue-200 dark:border-blue-800">
+                        <h3 className="font-bold flex items-center gap-2 mb-4">
+                          <Target className="w-4 h-4 text-blue-600" />
+                          Focus Keyword Analysis
+                        </h3>
+                        <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+                          <div className={`text-center p-3 rounded-lg border ${seoAnalysis.focus_keyword.checks.in_title ? 'bg-green-50 border-green-200 text-green-700' : 'bg-red-50 border-red-200 text-red-700'}`}>
+                            <div className="text-xs font-semibold">In Title</div>
+                            <div className="text-lg">{seoAnalysis.focus_keyword.checks.in_title ? '✓' : '✗'}</div>
+                          </div>
+                          <div className={`text-center p-3 rounded-lg border ${seoAnalysis.focus_keyword.checks.in_meta_description ? 'bg-green-50 border-green-200 text-green-700' : 'bg-red-50 border-red-200 text-red-700'}`}>
+                            <div className="text-xs font-semibold">In Meta</div>
+                            <div className="text-lg">{seoAnalysis.focus_keyword.checks.in_meta_description ? '✓' : '✗'}</div>
+                          </div>
+                          <div className={`text-center p-3 rounded-lg border ${seoAnalysis.focus_keyword.checks.in_url ? 'bg-green-50 border-green-200 text-green-700' : 'bg-red-50 border-red-200 text-red-700'}`}>
+                            <div className="text-xs font-semibold">In URL</div>
+                            <div className="text-lg">{seoAnalysis.focus_keyword.checks.in_url ? '✓' : '✗'}</div>
+                          </div>
+                          <div className={`text-center p-3 rounded-lg border ${seoAnalysis.focus_keyword.checks.in_content ? 'bg-green-50 border-green-200 text-green-700' : 'bg-red-50 border-red-200 text-red-700'}`}>
+                            <div className="text-xs font-semibold">In Content</div>
+                            <div className="text-lg">{seoAnalysis.focus_keyword.checks.in_content ? '✓' : '✗'}</div>
+                          </div>
+                          <div className={`text-center p-3 rounded-lg border ${0.5 <= seoAnalysis.focus_keyword.checks.density <= 2.5 ? 'bg-green-50 border-green-200 text-green-700' : 'bg-amber-50 border-amber-200 text-amber-700'}`}>
+                            <div className="text-xs font-semibold">Density</div>
+                            <div className="text-lg">{seoAnalysis.focus_keyword.checks.density}%</div>
+                          </div>
+                        </div>
+                        <div className="mt-3 text-right">
+                          <span className="text-sm font-semibold text-blue-600">Score: {seoAnalysis.focus_keyword.score}/100</span>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Readability Analysis */}
+                    <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20 rounded-xl p-5 border border-green-200 dark:border-green-800">
+                      <h3 className="font-bold flex items-center gap-2 mb-4">
+                        <BookOpen className="w-4 h-4 text-green-600" />
+                        Readability Analysis
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <div className="text-sm text-muted-foreground mb-1">Flesch Reading Ease Score</div>
+                          <div className="text-2xl font-bold text-green-600">{seoAnalysis?.readability?.flesch_score || 0}</div>
+                          <div className="text-sm text-muted-foreground">{seoAnalysis?.readability?.status || 'Unknown'}</div>
+                        </div>
+                        <div className="flex items-center justify-center">
+                          <div className="relative w-32 h-32">
+                            <svg className="transform -rotate-90 w-32 h-32">
+                              <circle cx="64" cy="64" r="56" stroke="currentColor" strokeWidth="8" fill="none" className="text-green-200"></circle>
+                              <circle cx="64" cy="64" r="56" stroke="currentColor" strokeWidth="8" fill="none" strokeDasharray={`${2 * Math.PI * 56}`} strokeDashoffset={`${2 * Math.PI * 56 * (1 - (seoAnalysis?.readability?.score || 0) / 100)}`} className="text-green-600 transition-all duration-500"></circle>
+                            </svg>
+                            <div className="absolute inset-0 flex items-center justify-center">
+                                      <span className="text-xl font-bold text-green-600">{seoAnalysis?.readability?.score || 0}</span>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                    {/* Top Stats */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      {/* Title Audit */}
+                      <div className="bg-muted/30 rounded-xl p-5 border border-border">
+                        <div className="flex items-center justify-between mb-4">
+                          <div className="flex items-center gap-2">
+                            <FileText className="w-4 h-4 text-primary" />
+                            <span className="font-semibold">Title</span>
+                          </div>
+                          <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${seoAnalysis?.overview?.title?.status === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                            {seoAnalysis?.overview?.title?.message || 'No title'}
+                          </span>
+                        </div>
+                        <p className="text-sm text-foreground break-words">{seoAnalysis?.overview?.title?.value || 'Missing Title'}</p>
+                      </div>
+
+                      {/* Description Audit */}
+                      <div className="bg-muted/30 rounded-xl p-5 border border-border">
+                        <div className="flex items-center justify-between mb-4">
+                          <div className="flex items-center gap-2">
+                            <MessageSquare className="w-4 h-4 text-primary" />
+                            <span className="font-semibold">Description</span>
+                          </div>
+                          <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${seoAnalysis?.overview?.description?.status === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                            {seoAnalysis?.overview?.description?.message || 'No description'}
+                          </span>
+                        </div>
+                        <p className="text-sm text-foreground break-words line-clamp-2">{seoAnalysis?.overview?.description?.value || 'Missing Meta Description'}</p>
+                      </div>
+
+                      {/* URL Audit */}
+                      <div className="bg-muted/30 rounded-xl p-5 border border-border">
+                        <div className="flex items-center justify-between mb-4">
+                          <div className="flex items-center gap-2">
+                            <LinkIcon className="w-4 h-4 text-primary" />
+                            <span className="font-semibold">URL</span>
+                          </div>
+                          <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${seoAnalysis?.overview?.url?.status === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                            {seoAnalysis?.overview?.url?.message || 'No URL'}
+                          </span>
+                        </div>
+                        <p className="text-xs font-mono text-muted-foreground break-all">{seoAnalysis?.overview?.url?.value || 'Missing URL'}</p>
+                      </div>
+
+                      {/* Canonical Audit */}
+                      <div className="bg-muted/30 rounded-xl p-5 border border-border">
+                        <div className="flex items-center justify-between mb-4">
+                          <div className="flex items-center gap-2">
+                            <Tag className="w-4 h-4 text-primary" />
+                            <span className="font-semibold">Canonical</span>
+                          </div>
+                          <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${seoAnalysis?.overview?.canonical?.status === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                            {seoAnalysis?.overview?.canonical?.message || 'No canonical'}
+                          </span>
+                        </div>
+                        <p className="text-xs font-mono text-muted-foreground break-all">{seoAnalysis?.overview?.canonical?.value || 'Missing canonical'}</p>
+                      </div>
+                    </div>
+
+                    {/* Detailed Analysis */}
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                      {/* Headings */}
+                      <div className="lg:col-span-1 space-y-4">
+                        <h3 className="font-bold flex items-center gap-2">
+                          <FileText className="w-4 h-4 text-primary" />
+                          Headings ({seoAnalysis?.headings?.length || 0})
+                        </h3>
+                        <div className="bg-muted/20 rounded-xl border border-border overflow-hidden divide-y divide-border">
+                          {seoAnalysis?.headings && seoAnalysis.headings.length > 0 ? seoAnalysis.headings.map((h, i) => (
+                            <div key={i} className="p-3 text-xs flex gap-3">
+                              <span className="font-bold text-primary shrink-0">{h.type}</span>
+                              <span className="text-foreground line-clamp-2">{h.text}</span>
+                            </div>
+                          )) : (
+                            <div className="p-4 text-center text-xs text-muted-foreground">No headings found</div>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Images & Links */}
+                      <div className="lg:col-span-2 space-y-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          {/* Images Summary */}
+                          <div className="space-y-4">
+                            <h3 className="font-bold flex items-center gap-2 text-sm">
+                              <ImageIcon className="w-4 h-4 text-primary" />
+                              Images ({seoAnalysis?.images?.total || 0})
+                            </h3>
+                            <div className="bg-muted/20 rounded-xl border border-border p-4">
+                              <div className="flex items-center justify-between text-xs mb-2">
+                                <span>Missing Alt Tags</span>
+                                <span className={(seoAnalysis?.images?.missing_alt || 0) > 0 ? "text-red-600 font-bold" : "text-green-600 font-bold"}>
+                                  {seoAnalysis?.images?.missing_alt || 0}
+                                </span>
+                              </div>
+                              <div className="w-full bg-muted rounded-full h-1.5 overflow-hidden">
+                                <div 
+                                  className="h-full bg-red-500 transition-all" 
+                                  style={{ width: `${((seoAnalysis?.images?.missing_alt || 0) / (seoAnalysis?.images?.total || 1)) * 100}%` }}
+                                />
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Links Summary */}
+                          <div className="space-y-4">
+                            <h3 className="font-bold flex items-center gap-2 text-sm">
+                              <LinkIcon className="w-4 h-4 text-primary" />
+                              Links ({seoAnalysis?.links?.total || 0})
+                            </h3>
+                            <div className="bg-muted/20 rounded-xl border border-border p-4 flex justify-between gap-4">
+                              <div className="text-center flex-1">
+                                <div className="text-lg font-bold text-primary">{seoAnalysis?.links?.internal || 0}</div>
+                                <div className="text-[10px] text-muted-foreground uppercase font-semibold">Internal</div>
+                              </div>
+                              <div className="w-px bg-border self-stretch" />
+                              <div className="text-center flex-1">
+                                <div className="text-lg font-bold text-primary">{seoAnalysis?.links?.external || 0}</div>
+                                <div className="text-[10px] text-muted-foreground uppercase font-semibold">External</div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Word Count */}
+                        <div className="bg-primary/5 border border-primary/20 rounded-xl p-4 flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <div className="p-2 bg-primary/10 rounded-lg">
+                              <FileText className="w-4 h-4 text-primary" />
+                            </div>
+                            <div>
+                              <div className="text-sm font-bold">{seoAnalysis?.content?.wordCount || 0} Words</div>
+                              <p className="text-[10px] text-muted-foreground">Estimated reading time: {Math.ceil((seoAnalysis?.content?.wordCount || 0) / 200)} min</p>
+                            </div>
+                          </div>
+                          <span className={`px-2 py-1 rounded text-[10px] font-bold ${seoAnalysis?.content?.status === 'success' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'}`}>
+                            {seoAnalysis?.content?.status === 'success' ? 'GOOD LENGTH' : 'THIN CONTENT'}
+                          </span>
+                        </div>
+
+                        {/* H1 Validation */}
+                        <div className={`rounded-xl p-4 border ${seoAnalysis?.h1_validation?.status === 'success' ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'}`}>
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                              <div className={`p-2 rounded-lg ${seoAnalysis?.h1_validation?.status === 'success' ? 'bg-green-100' : 'bg-red-100'}`}>
+                                <FileText className={`w-4 h-4 ${seoAnalysis?.h1_validation?.status === 'success' ? 'text-green-600' : 'text-red-600'}`} />
+                              </div>
+                              <div>
+                                <div className="text-sm font-bold">H1 Tags</div>
+                                <p className="text-[10px] text-muted-foreground">{seoAnalysis?.h1_validation?.message || 'No H1 analysis'}</p>
+                              </div>
+                            </div>
+                            <span className="text-sm font-semibold text-muted-foreground">Score: {seoAnalysis?.h1_validation?.score || 0}/100</span>
+                          </div>
+                        </div>
+
+                        {/* Paragraph Length */}
+                        <div className={`rounded-xl p-4 border ${seoAnalysis?.paragraphs?.status === 'success' ? 'bg-green-50 border-green-200' : 'bg-amber-50 border-amber-200'}`}>
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                              <div className={`p-2 rounded-lg ${seoAnalysis?.paragraphs?.status === 'success' ? 'bg-green-100' : 'bg-amber-100'}`}>
+                                <FileText className={`w-4 h-4 ${seoAnalysis?.paragraphs?.status === 'success' ? 'text-green-600' : 'text-amber-600'}`} />
+                              </div>
+                              <div>
+                                <div className="text-sm font-bold">Paragraph Length</div>
+                                <p className="text-[10px] text-muted-foreground">{seoAnalysis?.paragraphs?.message || 'No paragraph analysis'}</p>
+                              </div>
+                            </div>
+                            <span className="text-sm font-semibold text-muted-foreground">Score: {seoAnalysis?.paragraphs?.score || 0}/100</span>
+                          </div>
+                        </div>
+
+                        {/* Internal Links */}
+                        <div className={`rounded-xl p-4 border ${seoAnalysis?.links?.status === 'success' ? 'bg-green-50 border-green-200' : 'bg-amber-50 border-amber-200'}`}>
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                              <div className={`p-2 rounded-lg ${seoAnalysis?.links?.status === 'success' ? 'bg-green-100' : 'bg-amber-100'}`}>
+                                <LinkIcon className={`w-4 h-4 ${seoAnalysis?.links?.status === 'success' ? 'text-green-600' : 'text-amber-600'}`} />
+                              </div>
+                              <div>
+                                <div className="text-sm font-bold">Internal Links</div>
+                                <p className="text-[10px] text-muted-foreground">{seoAnalysis?.links?.message || 'No link analysis'}</p>
+                              </div>
+                            </div>
+                            <span className="text-sm font-semibold text-muted-foreground">Score: {(seoAnalysis?.links?.internal >= 3 && seoAnalysis?.links?.internal <= 5) ? '100/100' : (seoAnalysis?.links?.internal >= 1) ? '70/100' : '0/100'}</span>
+                          </div>
+                        </div>
+
+                        {/* Image SEO */}
+                        <div className={`rounded-xl p-4 border ${seoAnalysis?.images?.status === 'success' ? 'bg-green-50 border-green-200' : 'bg-amber-50 border-amber-200'}`}>
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                              <div className={`p-2 rounded-lg ${seoAnalysis?.images?.status === 'success' ? 'bg-green-100' : 'bg-amber-100'}`}>
+                                <ImageIcon className={`w-4 h-4 ${seoAnalysis?.images?.status === 'success' ? 'text-green-600' : 'text-amber-600'}`} />
+                              </div>
+                              <div>
+                                <div className="text-sm font-bold">Image SEO</div>
+                                <p className="text-[10px] text-muted-foreground">{seoAnalysis?.images?.message || 'No image analysis'}</p>
+                              </div>
+                            </div>
+                            <span className="text-sm font-semibold text-muted-foreground">Score: {seoAnalysis?.images?.score || 0}/100</span>
+                          </div>
+                        </div>
+
+                        {/* Schema Markup */}
+                        <div className={`rounded-xl p-4 border ${seoAnalysis?.schema?.status === 'success' ? 'bg-green-50 border-green-200' : 'bg-amber-50 border-amber-200'}`}>
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                              <div className={`p-2 rounded-lg ${seoAnalysis?.schema?.status === 'success' ? 'bg-green-100' : 'bg-amber-100'}`}>
+                                <Tag className={`w-4 h-4 ${seoAnalysis?.schema?.status === 'success' ? 'text-green-600' : 'text-amber-600'}`} />
+                              </div>
+                              <div>
+                                <div className="text-sm font-bold">Schema Markup</div>
+                                <p className="text-[10px] text-muted-foreground">{seoAnalysis?.schema?.message || 'No schema analysis'}</p>
+                              </div>
+                            </div>
+                            <span className="text-sm font-semibold text-muted-foreground">Score: {seoAnalysis?.schema?.score || 0}/100</span>
+                          </div>
+                        </div>
+
+                        {/* Content Structure */}
+                        <div className={`rounded-xl p-4 border ${seoAnalysis?.content_structure?.status === 'success' ? 'bg-green-50 border-green-200' : seoAnalysis?.content_structure?.status === 'warning' ? 'bg-amber-50 border-amber-200' : 'bg-red-50 border-red-200'}`}>
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                              <div className={`p-2 rounded-lg ${seoAnalysis?.content_structure?.status === 'success' ? 'bg-green-100' : seoAnalysis?.content_structure?.status === 'warning' ? 'bg-amber-100' : 'bg-red-100'}`}>
+                                <BarChart3 className={`w-4 h-4 ${seoAnalysis?.content_structure?.status === 'success' ? 'text-green-600' : seoAnalysis?.content_structure?.status === 'warning' ? 'text-amber-600' : 'text-red-600'}`} />
+                              </div>
+                              <div>
+                                <div className="text-sm font-bold">Content Structure</div>
+                                <p className="text-[10px] text-muted-foreground">Lists: {seoAnalysis?.content_structure?.lists || 0}, Tables: {seoAnalysis?.content_structure?.tables || 0}, Quotes: {seoAnalysis?.content_structure?.quotes || 0}</p>
+                              </div>
+                            </div>
+                            <span className="text-sm font-semibold text-muted-foreground">Score: {seoAnalysis?.content_structure?.score || 0}/100</span>
+                          </div>
+                        </div>
+
+                        {/* Keyword Position */}
+                        <div className={`rounded-xl p-4 border ${seoAnalysis?.keyword_position?.status === 'success' ? 'bg-green-50 border-green-200' : seoAnalysis?.keyword_position?.status === 'warning' ? 'bg-amber-50 border-amber-200' : 'bg-red-50 border-red-200'}`}>
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                              <div className={`p-2 rounded-lg ${seoAnalysis?.keyword_position?.status === 'success' ? 'bg-green-100' : seoAnalysis?.keyword_position?.status === 'warning' ? 'bg-amber-100' : 'bg-red-100'}`}>
+                                <Target className={`w-4 h-4 ${seoAnalysis?.keyword_position?.status === 'success' ? 'text-green-600' : seoAnalysis?.keyword_position?.status === 'warning' ? 'text-amber-600' : 'text-red-600'}`} />
+                              </div>
+                              <div>
+                                <div className="text-sm font-bold">Keyword Position</div>
+                                <p className="text-[10px] text-muted-foreground">First Para: {seoAnalysis?.keyword_position?.firstParagraph ? '✓' : '✗'}, H2: {seoAnalysis?.keyword_position?.h2Headings ? '✓' : '✗'}, Image Alt: {seoAnalysis?.keyword_position?.imageAlt ? '✓' : '✗'}</p>
+                              </div>
+                            </div>
+                            <span className="text-sm font-semibold text-muted-foreground">Score: {seoAnalysis?.keyword_position?.score || 0}/100</span>
+                          </div>
+                        </div>
+
+                        {/* Social Tags */}
+                        <div className={`rounded-xl p-4 border ${seoAnalysis?.social_tags?.status === 'success' ? 'bg-green-50 border-green-200' : seoAnalysis?.social_tags?.status === 'warning' ? 'bg-amber-50 border-amber-200' : 'bg-red-50 border-red-200'}`}>
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                              <div className={`p-2 rounded-lg ${seoAnalysis?.social_tags?.status === 'success' ? 'bg-green-100' : seoAnalysis?.social_tags?.status === 'warning' ? 'bg-amber-100' : 'bg-red-100'}`}>
+                                <Share2 className={`w-4 h-4 ${seoAnalysis?.social_tags?.status === 'success' ? 'text-green-600' : seoAnalysis?.social_tags?.status === 'warning' ? 'text-amber-600' : 'text-red-600'}`} />
+                              </div>
+                              <div>
+                                <div className="text-sm font-bold">Social Media Tags</div>
+                                <p className="text-[10px] text-muted-foreground">OG: {seoAnalysis?.social_tags?.ogTitle ? '✓' : '✗'} {seoAnalysis?.social_tags?.ogDescription ? '✓' : '✗'} {seoAnalysis?.social_tags?.ogImage ? '✓' : '✗'}, Twitter: {seoAnalysis?.social_tags?.twitterCard ? '✓' : '✗'}</p>
+                              </div>
+                            </div>
+                            <span className="text-sm font-semibold text-muted-foreground">Score: {seoAnalysis?.social_tags?.score || 0}/100</span>
+                          </div>
+                        </div>
+
+                        {/* Internal Link Suggestions */}
+                        {seoAnalysis?.internal_link_suggestions && seoAnalysis.internal_link_suggestions.length > 0 && (
+                          <div className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/20 dark:to-orange-950/20 rounded-xl p-5 border border-amber-200 dark:border-amber-800">
+                            <h3 className="font-bold flex items-center gap-2 mb-4">
+                              <Lightbulb className="w-4 h-4 text-amber-600" />
+                              Internal Link Suggestions
+                            </h3>
+                            <div className="space-y-2">
+                              {seoAnalysis.internal_link_suggestions.map((link, i) => (
+                                <div key={i} className="flex items-center gap-2 text-sm">
+                                  <LinkIcon className="w-3 h-3 text-amber-600" />
+                                  <span className="text-amber-700 dark:text-amber-300">{link}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Competitor Benchmark */}
+                        <div className={`rounded-xl p-4 border ${seoAnalysis?.competitor_benchmark?.status === 'success' ? 'bg-green-50 border-green-200' : seoAnalysis?.competitor_benchmark?.status === 'warning' ? 'bg-amber-50 border-amber-200' : 'bg-red-50 border-red-200'}`}>
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                              <div className={`p-2 rounded-lg ${seoAnalysis?.competitor_benchmark?.status === 'success' ? 'bg-green-100' : seoAnalysis?.competitor_benchmark?.status === 'warning' ? 'bg-amber-100' : 'bg-red-100'}`}>
+                                <BarChart3 className={`w-4 h-4 ${seoAnalysis?.competitor_benchmark?.status === 'success' ? 'text-green-600' : seoAnalysis?.competitor_benchmark?.status === 'warning' ? 'text-amber-600' : 'text-red-600'}`} />
+                              </div>
+                              <div>
+                                <div className="text-sm font-bold">Competitor Benchmark</div>
+                                <p className="text-[10px] text-muted-foreground">Your: {seoAnalysis?.competitor_benchmark?.yourWordCount || 0} vs Avg: {seoAnalysis?.competitor_benchmark?.avgWordCount || 0} words</p>
+                                <p className="text-[10px] text-muted-foreground">{seoAnalysis?.competitor_benchmark?.suggestion || 'No suggestion available'}</p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Footer */}
+                  <div className="p-4 border-t border-border bg-muted/30 flex justify-end">
+                    <button
+                      onClick={() => setShowSeoModal(false)}
+                      className="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors"
+                    >
+                      Done
+                    </button>
+                  </div>
+                </div>
               </div>
             )}
           </div>
