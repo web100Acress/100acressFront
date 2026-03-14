@@ -744,6 +744,7 @@ function ProjectLayout2() {
           thumbnailImage={thumbnailImage}
           projectTitle={projectTitle}
           location={location}
+          projectType={projectViewDetails?.type}
           phoneNumber={phoneNumber}
           companyLogo={companyLogo}
           bottomInfo={bottomInfo}

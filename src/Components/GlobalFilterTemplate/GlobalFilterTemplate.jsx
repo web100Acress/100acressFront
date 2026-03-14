@@ -15,6 +15,7 @@ import FilterBar from "../../Pages/ProjectStatusSearch/FilterBar";
 import ProjectCard from "../../Pages/ProjectStatusSearch/ProjectCard";
 import CompareBar from "../../Pages/ProjectStatusSearch/CompareBar";
 import FAQAccordion from "../../Pages/ProjectStatusSearch/FAQAccordion";
+import GlobalLoadingButton from "../GlobalLoadingButton";
 import { staticData } from "../../ProjectTypes/config/staticData";
 import { getPageDataFromURL } from "../../ProjectTypes/config/staticDataExample";
 
@@ -26,6 +27,9 @@ const GlobalFilterTemplate = ({
   // Data
   projects = [],
   isLoading = false,
+  loadingMore = false,
+  hasMoreProjects = false,
+  onLoadMore = null,
 
   // SEO Data (preserved exactly as provided)
   metaTitle,
@@ -761,18 +765,23 @@ const GlobalFilterTemplate = ({
   }, [currentConfig.query, throttledGetAllProjects]);
 
   useEffect(() => {
+    if (!projectData) return;
+    
     console.log('Project data updated:', projectData?.length, 'for status:', projectStatus, 'pageType:', pageType);
-    // Only update if data has actually changed to prevent infinite loops
+    
+    // Check if the property already exists and is the same to avoid infinite loops
     const currentData = datafromsearch[projectStatus];
     if (JSON.stringify(currentData) !== JSON.stringify(projectData)) {
-      setDatafromsearch({ [projectStatus]: projectData });
+      setDatafromsearch(prev => ({ ...prev, [projectStatus]: projectData }));
     }
-    // Clear filtered results when underlying data changes (from refetch)
-    // But don't clear for budget pages as they handle their own filtering
+  }, [projectData, projectStatus]);
+
+  // Handle clearing filtered projects separately to break the loop
+  useEffect(() => {
     if (pageType !== 'budget') {
       setFilteredProjects([]);
     }
-  }, [projectData, projectStatus, pageType, datafromsearch]);
+  }, [projectStatus, pageType]);
 
   useEffect(() => {
     console.log('🏗️ GlobalFilterTemplate: Projects changed, processing:', {
@@ -822,22 +831,28 @@ const GlobalFilterTemplate = ({
   useEffect(() => {
     if (memoizedProjectData && memoizedProjectData.length > 0 && !projectOrdersLoading) {
       // Only auto-filter if filters or sort have been set (not on initial data load)
-      if (Object.keys(filters).some(key => filters[key] !== '') || sort) {
+      const hasActiveFilters = Object.values(filters).some(value => value !== '');
+      if (hasActiveFilters || sort) {
         handleSearch(false); // Don't reset pagination for auto-filter
       }
     }
-  }, [filters, sort, projectOrders, projectOrdersLoading]);
+  }, [filters, sort, projectOrdersLoading]); // Removed projectOrders to avoid possible object reference instability loop
 
   // Initialize displayed projects when data loads
   useEffect(() => {
     console.log('Initialize displayed projects effect - memoizedProjectData:', memoizedProjectData?.length, 'pageType:', pageType, 'isLoading:', isLoading);
     if (memoizedProjectData && memoizedProjectData.length > 0) {
       console.log('Setting displayed projects from memoizedProjectData:', memoizedProjectData.length);
-      updateDisplayedProjects(memoizedProjectData);
-      setFilteredProjects(memoizedProjectData);
+      // Avoid redundant state updates if data is already set correctly
+      setDisplayedProjects(prev => {
+        if (JSON.stringify(prev) === JSON.stringify(memoizedProjectData)) return prev;
+        return memoizedProjectData;
+      });
+      setFilteredProjects(prev => {
+        if (JSON.stringify(prev) === JSON.stringify(memoizedProjectData)) return prev;
+        return memoizedProjectData;
+      });
     } else if (!isLoading) {
-      // Only reset displayed projects when no data AND not loading
-      // This prevents clearing during initial load
       console.log('Resetting displayed projects - no data and not loading');
       setDisplayedProjects([]);
       setFilteredProjects([]);
@@ -1427,6 +1442,20 @@ const GlobalFilterTemplate = ({
                   })}
                 </div>
               )}
+
+              {/* Load More Button - Global Component */}
+              <GlobalLoadingButton
+                isLoading={loadingMore}
+                hasMore={hasMoreProjects}
+                onLoadMore={onLoadMore}
+                loadedCount={displayedProjects.length}
+                totalCount={null}
+                loadingText="Loading more projects..."
+                loadMoreText="Load More Projects"
+                variant="primary"
+                size="medium"
+                showProgress={true}
+              />
 
 
               {/* Empty State */}

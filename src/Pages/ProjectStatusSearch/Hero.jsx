@@ -35,20 +35,24 @@ export default function Hero({
       setPlaceholderIndex((prev) => (prev + 1) % placeholderTexts.length);
     }, 3000);
     return () => clearInterval(interval);
-  }, []);
+  }, [placeholderTexts.length]);
   
   useEffect(() => {
     let currentIndex = 0;
+    const currentText = placeholderTexts[placeholderIndex];
     const typeInterval = setInterval(() => {
-      if (currentIndex <= placeholderTexts[placeholderIndex].length) {
-        setPlaceholder(placeholderTexts[placeholderIndex].slice(0, currentIndex));
+      if (currentIndex <= currentText.length) {
+        setPlaceholder(currentText.slice(0, currentIndex));
         currentIndex++;
       } else {
         clearInterval(typeInterval);
       }
     }, 50);
-    return () => clearInterval(typeInterval);
-  }, [placeholderIndex]);
+    return () => {
+      clearInterval(typeInterval);
+      setPlaceholder(''); // Reset placeholder when index changes to avoid flickers
+    };
+  }, [placeholderIndex, placeholderTexts]);
   
   // Debounce timer ref
   const debounceTimer = useRef(null);

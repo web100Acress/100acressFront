@@ -739,19 +739,44 @@ const Home = () => {
     loadData(activeFilter);
   }, [activeFilter, loadData]);
 
-  // Fetch new launch projects for the dedicated section
+  // Preload critical data on mount
   useEffect(() => {
-    if (!NewLaunchProjects || NewLaunchProjects.length === 0) {
-      getAllProjects("newlaunch", 4);
-    }
-  }, [NewLaunchProjects]);
+    // Load trending and featured immediately (above the fold)
+    const loadCriticalData = async () => {
+      const promises = [];
+      
+      if (TrendingProjects.length === 0) promises.push(getTrending());
+      if (FeaturedProjects.length === 0) promises.push(getFeatured());
+      if (NewLaunchProjects.length === 0) promises.push(getAllProjects("newlaunch", 4));
+      
+      await Promise.all(promises);
+    };
+    
+    loadCriticalData();
+  }, []);
 
-  // Fetch upcoming projects for the dedicated section
+  // Load remaining data in parallel after initial load
   useEffect(() => {
-    if (!UpcomingProjects || UpcomingProjects.length === 0) {
-      getUpcoming();
-    }
-  }, [UpcomingProjects]);
+    if (!isContentReady) return;
+    
+    // Load remaining data in parallel
+    const loadRemainingData = async () => {
+      const promises = [];
+      
+      if (UpcomingProjects.length === 0) promises.push(getUpcoming());
+      if (CommercialProjects.length === 0) promises.push(getCommercial());
+      if (AffordableProjects.length === 0) promises.push(getAffordable());
+      if (SCOProjects.length === 0) promises.push(getScoplots());
+      if (LuxuryAllProject.length === 0) promises.push(getAllProjects("luxury"));
+      if (BudgetHomesProjects.length === 0) promises.push(getBudgetHomes());
+      if (ProjectinDelhi.length === 0) promises.push(getProjectIndelhi());
+      
+      await Promise.all(promises);
+    };
+    
+    // Small delay to prevent blocking initial render
+    setTimeout(loadRemainingData, 100);
+  }, [isContentReady]);
 
   // Load branded residences data
   useEffect(() => {
@@ -829,7 +854,7 @@ const Home = () => {
     const timer = setTimeout(() => {
       setIsFirstLoad(false);
       setIsContentReady(true);
-    }, 100); // Ultra fast - 100ms
+    }, 50); // Ultra fast - 50ms
 
     return () => clearTimeout(timer);
   }, []);
@@ -843,57 +868,68 @@ const Home = () => {
             if (!observedSections[section]) {
               setObservedSections(prev => ({ ...prev, [section]: true }));
 
-              if (section === "upcoming" && UpcomingProjects.length === 0) {
-                getUpcoming();
-              }
-              if (section === "luxury" && LuxuryProjects.length === 0) {
-                getAllProjects("luxury");
-              }
-              if (section === "budget" && BudgetHomesProjects.length === 0) {
-                getBudgetHomes();
-              }
-              if (section === "SCO" && SCOProjects.length === 0) {
-                getScoplots();
-              }
-              if (section === "commercial" && CommercialProjects.length === 0) {
-                getCommercial();
-              }
-              if (section === "feature" && FeaturedProjects.length === 0) {
-                getFeatured();
-              }
-              if (section === "affordable" && AffordableProjects.length === 0) {
-                getAffordable();
-              }
-              if (section === "delhi" && ProjectinDelhi.length === 0) {
-                getProjectIndelhi();
-              }
-              if (section === "dubai" && DubaiProjects.length === 0) {
-                getProjectbyState("Dubai");
-              }
-              if (section === "Farmhouses" && FarmhouseProjects.length === 0) {
-                console.log("🏡 Fetching Farmhouse Projects...");
-                getAllProjects("farmhouse", 8);
-              }
-              if (section === "resale") {
-                SetResaleSectionVisible(true);
-              }
+              // Load data immediately when section comes into view
+              const loadSectionData = async () => {
+                const promises = [];
+                
+                if (section === "upcoming" && UpcomingProjects.length === 0) {
+                  promises.push(getUpcoming());
+                }
+                if (section === "luxury" && LuxuryAllProject.length === 0) {
+                  promises.push(getAllProjects("luxury"));
+                }
+                if (section === "budget" && BudgetHomesProjects.length === 0) {
+                  promises.push(getBudgetHomes());
+                }
+                if (section === "SCO" && SCOProjects.length === 0) {
+                  promises.push(getScoplots());
+                }
+                if (section === "commercial" && CommercialProjects.length === 0) {
+                  promises.push(getCommercial());
+                }
+                if (section === "feature" && FeaturedProjects.length === 0) {
+                  promises.push(getFeatured());
+                }
+                if (section === "affordable" && AffordableProjects.length === 0) {
+                  promises.push(getAffordable());
+                }
+                if (section === "delhi" && ProjectinDelhi.length === 0) {
+                  promises.push(getProjectIndelhi());
+                }
+                if (section === "dubai" && DubaiProjects.length === 0) {
+                  promises.push(getProjectbyState("dubai"));
+                }
+                if (section === "Farmhouses" && FarmhouseProjects.length === 0) {
+                  console.log("🏡 Fetching Farmhouse Projects...");
+                  promises.push(getAllProjects("farmhouse", 8));
+                }
+                
+                await Promise.all(promises);
+                
+                if (section === "resale") {
+                  SetResaleSectionVisible(true);
+                }
+              };
+              
+              loadSectionData();
             }
           }
         });
       },
-      { root: null, threshold: 0.1, rootMargin: "700px" }
+      {
+        rootMargin: '100px', // Start loading 100px before section comes into view
+        threshold: 0.1
+      }
     );
 
-    Object.values(sectionsRef.current).forEach((el) => observer.observe(el));
+    // Observe all sections
+    const sections = document.querySelectorAll('[data-section]');
+    sections.forEach(section => observer.observe(section));
 
     return () => {
-      Object.values(sectionsRef.current).forEach((el) => observer.unobserve(el));
+      sections.forEach(section => observer.unobserve(section));
     };
-  }, [UpcomingProjects, LuxuryProjects, BudgetHomesProjects, SCOProjects, ProjectinDelhi, DubaiProjects, FarmhouseProjects]);
-
-  // console.log(resalesectionvisible,"section")
-
-
+  }, [observedSections, UpcomingProjects, LuxuryAllProject, BudgetHomesProjects, SCOProjects, CommercialProjects, FeaturedProjects, AffordableProjects, ProjectinDelhi, DubaiProjects, FarmhouseProjects, getAllProjects, getUpcoming, getBudgetHomes, getScoplots, getCommercial, getFeatured, getAffordable, getProjectIndelhi, getProjectbyState]);
 
   return (
     <Wrapper className="section">

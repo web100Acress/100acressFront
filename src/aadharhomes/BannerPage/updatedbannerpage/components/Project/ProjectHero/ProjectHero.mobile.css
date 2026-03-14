@@ -182,7 +182,8 @@
 .project-hero-mobile-location {
   font-size: 0.875rem;
   font-weight: 500;
-  color: #d1d5db;
+  opacity: 0.9;
+  color: #e5e7eb;
 }
 
 /* Info Bar */

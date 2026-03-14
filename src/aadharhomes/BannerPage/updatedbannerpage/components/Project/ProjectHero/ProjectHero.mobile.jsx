@@ -8,6 +8,7 @@ const ProjectHeroMobile = ({
   thumbnailImage = null,
   projectTitle = "",
   location = "",
+  projectType = "",
   phoneNumber = "",
   companyLogo = null,
   bottomInfo = {
@@ -124,7 +125,7 @@ const ProjectHeroMobile = ({
             {projectTitle}
           </h1>
           <p className="project-hero-mobile-location">
-            {location}
+            {projectType && `${projectType}`} in {location}
           </p>
         </div>
 
@@ -193,9 +194,11 @@ const ProjectHeroMobile = ({
 ProjectHeroMobile.propTypes = {
   projectExists: PropTypes.bool,
   backgroundImage: PropTypes.string,
+  thumbnailImage: PropTypes.string,
   projectTitle: PropTypes.string,
   location: PropTypes.string,
-  phoneNumber: PropTypes.string,
+  projectType: PropTypes.string,
+  phoneNumber: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   companyLogo: PropTypes.string,
   bottomInfo: PropTypes.shape({
     landArea: PropTypes.string,

@@ -243,9 +243,9 @@ const Api_service = () => {
     }
   }
 
-  const getResaleProperties = async () => {
+  const getResaleProperties = async (page = 1, limit = 18) => {
     try {
-      const res = await api.get(`property/buy/ViewAll`);
+      const res = await api.get(`property/buy/ViewAll?page=${page}&limit=${limit}`);
       const responsedata = res.data.ResaleData;
       dispatch(resale(responsedata));
     } catch (error) {

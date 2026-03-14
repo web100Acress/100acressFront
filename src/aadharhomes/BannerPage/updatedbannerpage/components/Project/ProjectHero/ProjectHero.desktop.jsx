@@ -7,6 +7,7 @@ const ProjectHeroDesktop = ({
   backgroundImage = null,
   projectTitle = "",
   location = "",
+  projectType = "",
   phoneNumber = "",
   companyLogo = null,
   bottomInfo = {
@@ -25,13 +26,16 @@ const ProjectHeroDesktop = ({
   // Only set background image if it exists
   const hasBackgroundImage = !!backgroundImage;
 
+  // Ensure phoneNumber is a string to avoid PropType warnings
+  const safePhoneNumber = String(phoneNumber || "");
+
   // Basic JSON-LD structured data describing the project hero entity
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Residence",
     name: projectTitle,
     image: backgroundImage,
-    telephone: phoneNumber,
+    telephone: safePhoneNumber,
     address: {
       "@type": "PostalAddress",
       addressLocality: location
@@ -91,7 +95,7 @@ const ProjectHeroDesktop = ({
             </a>
 
             {/* Phone Number Button - Hidden on mobile, visible on tablet and desktop */}
-            <a href={`tel:+91${phoneNumber}`} aria-label={`Call +91${phoneNumber}`} rel="nofollow" className="project-hero-phone-button-desktop">
+            <a href={`tel:+91${safePhoneNumber}`} aria-label={`Call +91${safePhoneNumber}`} rel="nofollow" className="project-hero-phone-button-desktop">
               <div className="project-hero-phone-button-content">
                 {/* Circular phone icon */}
                 <div className="project-hero-phone-icon-container">
@@ -101,12 +105,12 @@ const ProjectHeroDesktop = ({
                 </div>
 
                 {/* Phone number text */}
-                <span className="project-hero-phone-number">{phoneNumber}</span>
+                <span className="project-hero-phone-number">{safePhoneNumber}</span>
               </div>
             </a>
 
             {/* Mobile Phone Button - Golden circle with telephone icon only - Visible only on mobile */}
-            <a href={`tel:+91${phoneNumber}`} aria-label={`Call +91${phoneNumber}`} rel="nofollow" className="project-hero-phone-button-mobile">
+            <a href={`tel:+91${safePhoneNumber}`} aria-label={`Call +91${safePhoneNumber}`} rel="nofollow" className="project-hero-phone-button-mobile">
               <div className="project-hero-phone-button-mobile-content">
                 {/* Telephone icon */}
                 <img
@@ -135,8 +139,9 @@ const ProjectHeroDesktop = ({
           <h1 className="project-hero-title">
             {projectTitle}
           </h1>
+          
           <p className="project-hero-location">
-            {location}
+            {projectType && `${projectType}`} in {location}
           </p>
         </div>
         <div className="project-hero-info-bar">
@@ -198,7 +203,8 @@ ProjectHeroDesktop.propTypes = {
   backgroundImage: PropTypes.string,
   projectTitle: PropTypes.string,
   location: PropTypes.string,
-  phoneNumber: PropTypes.string,
+  projectType: PropTypes.string,
+  phoneNumber: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   companyLogo: PropTypes.string,
   bottomInfo: PropTypes.shape({
     landArea: PropTypes.string,

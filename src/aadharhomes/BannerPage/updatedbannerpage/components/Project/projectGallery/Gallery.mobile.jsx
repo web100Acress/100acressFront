@@ -83,7 +83,7 @@ const GalleryMobile = ({ galleryImages = [], projectName = '' }) => {
           <div className="gallery-mobile-grid-featured">
             {visibleImages[0] && (
               <img
-                fetchPriority='high'
+                fetchpriority="high"
                 src={visibleImages[0].url}
                 alt="Gallery image 1"
                 className="gallery-mobile-image"

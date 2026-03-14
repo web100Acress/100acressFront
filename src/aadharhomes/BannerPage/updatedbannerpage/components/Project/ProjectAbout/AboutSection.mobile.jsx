@@ -39,7 +39,7 @@ const AboutSectionMobile = ({ projectName, description, imageUrl, onShowCallback
           <div className="about-section-mobile-image-wrapper">
             <div className="about-section-mobile-image-container">
               <img 
-                fetchPriority='high'
+                fetchpriority="high"
                 src={imageUrl} 
                 alt={`${projectName || 'Project'} overview`} 
                 loading="lazy"

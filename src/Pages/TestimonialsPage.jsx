@@ -5,11 +5,13 @@ import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import Navbar from '../aadharhomes/navbar/Navbar';
 import Footer from '../Home/Footer/CrimsonEleganceFooter';
+import GlobalLoadingButton from '../Components/GlobalLoadingButton';
 
 const TestimonialsPage = () => {
     const [visibleCount, setVisibleCount] = useState(6);
     const [selectedTestimonial, setSelectedTestimonial] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [loadingMore, setLoadingMore] = useState(false);
 
     const testimonials = [
         {
@@ -140,7 +142,12 @@ const TestimonialsPage = () => {
     const hasMore = visibleCount < testimonials.length;
 
     const loadMore = () => {
-        setVisibleCount(prev => Math.min(prev + 6, testimonials.length));
+        setLoadingMore(true);
+        // Simulate loading delay for better UX
+        setTimeout(() => {
+            setVisibleCount(prev => Math.min(prev + 6, testimonials.length));
+            setLoadingMore(false);
+        }, 300);
     };
 
     const openModal = (item) => {
@@ -277,19 +284,20 @@ const TestimonialsPage = () => {
                     ))}
                 </motion.div>
 
-                {/* Load More Button */}
-                {hasMore && (
-                    <div className="text-center mt-8">
-                        <motion.button
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            onClick={loadMore}
-                            className="bg-[#0A2647] text-white px-8 py-3 rounded-full font-semibold hover:bg-[#1A5F7A] transition-colors shadow-lg hover:shadow-xl"
-                        >
-                            Load More Testimonials
-                        </motion.button>
-                    </div>
-                )}
+                {/* Load More Button - Global Component */}
+                <GlobalLoadingButton
+                    isLoading={loadingMore}
+                    hasMore={hasMore}
+                    onLoadMore={loadMore}
+                    loadedCount={displayedTestimonials.length}
+                    totalCount={testimonials.length}
+                    loadingText="Loading testimonials..."
+                    loadMoreText="Load More Testimonials"
+                    variant="outline"
+                    size="medium"
+                    showProgress={true}
+                    className="mt-8"
+                />
 
                 {/* Footer Links */}
                 <div className="flex flex-col items-center gap-4 mt-12">

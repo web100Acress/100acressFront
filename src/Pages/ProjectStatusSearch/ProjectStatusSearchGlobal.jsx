@@ -27,6 +27,9 @@ const ProjectStatusSearchGlobal = () => {
 
   // State for branded residences
   const [isLoading, setIsLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [hasMoreProjects, setHasMoreProjects] = useState(true);
   const [brandedResidencesOrder, setBrandedResidencesOrder] = useState([]);
   const [brandedResidencesProjects, setBrandedResidencesProjects] = useState([]);
 
@@ -242,8 +245,13 @@ const ProjectStatusSearchGlobal = () => {
 
     // Set loading to true initially when status/query changes
     setIsLoading(true);
+    setCurrentPage(1);
+    setHasMoreProjects(true);
     if (currentConfig?.query) {
-      throttledGetAllProjects(currentConfig.query, 0);
+      // Load initial batch with reasonable limit for fast loading
+      const initialLimit = (projectStatus === 'upcoming' || projectStatus === 'newlaunch' || projectStatus === 'underconstruction' || projectStatus === 'readytomove') ? 50 : 30; // Higher limit for popular pages
+      console.log(`🚀 Performance fix: Loading ${projectStatus} projects with initial limit ${initialLimit}`);
+      throttledGetAllProjects(currentConfig.query, initialLimit);
     }
   }, [projectStatus, currentConfig?.query, throttledGetAllProjects, location.pathname, componentKey]);
 
@@ -251,8 +259,56 @@ const ProjectStatusSearchGlobal = () => {
   useEffect(() => {
     if (memoizedProjectData && memoizedProjectData.length > 0) {
       setIsLoading(false);
+      // Check if there might be more data
+      const pageSize = (projectStatus === 'upcoming' || projectStatus === 'newlaunch' || projectStatus === 'underconstruction' || projectStatus === 'readytomove') ? 50 : 30;
+      setHasMoreProjects(memoizedProjectData.length === pageSize);
     }
-  }, [memoizedProjectData]);
+  }, [memoizedProjectData, projectStatus]);
+
+  // Load more projects function
+  const loadMoreProjects = useCallback(async () => {
+    if (loadingMore || !hasMoreProjects || !currentConfig?.query) return;
+    
+    setLoadingMore(true);
+    try {
+      const nextPage = currentPage + 1;
+      const pageSize = (projectStatus === 'upcoming' || projectStatus === 'newlaunch' || projectStatus === 'underconstruction' || projectStatus === 'readytomove') ? 50 : 30;
+      const offset = nextPage * pageSize;
+      
+      console.log(`🔄 Loading more ${projectStatus} projects: page ${nextPage}, offset ${offset}`);
+      
+      // Call API with offset for next batch
+      await getAllProjects(currentConfig.query, offset);
+      setCurrentPage(nextPage);
+      
+      // Update hasMore based on whether we got a full page
+      // This will be updated in the next useEffect cycle
+    } catch (error) {
+      console.error('Error loading more projects:', error);
+      setHasMoreProjects(false);
+    } finally {
+      setLoadingMore(false);
+    }
+  }, [loadingMore, hasMoreProjects, currentConfig, currentPage, projectStatus, getAllProjects]);
+
+  // Scroll detection for lazy loading
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!hasMoreProjects || loadingMore) return;
+      
+      const scrollHeight = document.documentElement.scrollHeight;
+      const scrollTop = document.documentElement.scrollTop;
+      const clientHeight = document.documentElement.clientHeight;
+      
+      // Load more when user is 500px from bottom
+      if (scrollTop + clientHeight >= scrollHeight - 500) {
+        loadMoreProjects();
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [hasMoreProjects, loadingMore, loadMoreProjects]);
 
   // Cleanup on unmount
   useEffect(() => {
@@ -365,6 +421,9 @@ const ProjectStatusSearchGlobal = () => {
         pageType="status"
         projects={memoizedProjectData || []}
         isLoading={isLoading}
+        loadingMore={loadingMore}
+        hasMoreProjects={hasMoreProjects}
+        onLoadMore={loadMoreProjects}
         pageConfig={currentConfig}
       />
     </>

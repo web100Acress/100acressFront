@@ -5,12 +5,17 @@ import api from "../../../../../config/apiClient";
 import HeroSection from "../../create/HeroSectionContainer";
 import BlogCard from "../../create/desktop/BlogCard";
 import Footer from "../../../../../Home/Footer/CrimsonEleganceFooter";
+import GlobalLoadingButton from "../../../../GlobalLoadingButton";
 
 const ModernBlogPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [allBlogs, setAllBlogs] = useState([]);
+  const [totalBlogCount, setTotalBlogCount] = useState(0); // Separate state for total count
   const [loading, setLoading] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [hasMoreBlogs, setHasMoreBlogs] = useState(true);
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("latest");
   const [activeCategory, setActiveCategory] = useState(null);
@@ -30,7 +35,7 @@ const ModernBlogPage = () => {
   useEffect(() => {
     const loadBlogCategories = async () => {
       try {
-        // Fetch all blogs with pagination to get complete data
+        // Fetch ALL blogs for accurate category counting
         let allBlogs = [];
         let page = 1;
         let hasMoreData = true;
@@ -65,6 +70,8 @@ const ModernBlogPage = () => {
           .sort((a, b) => b.count - a.count); // Sort by count descending
 
         setBlogCategories(categoriesWithCounts);
+        setTotalBlogCount(allBlogs.length); // Set total count for "All Categories"
+        console.log(`📊 Category counts loaded: Total blogs: ${allBlogs.length}, Categories:`, categoriesWithCounts);
       } catch (error) {
         console.error('Failed to load blog categories:', error);
       }
@@ -76,61 +83,90 @@ const ModernBlogPage = () => {
   useEffect(() => {
     const fetchBlogs = async () => {
       setLoading(true);
+      setCurrentPage(1);
+      setAllBlogs([]);
       try {
-        // Fetch all blogs by paginating through all pages
-        let allBlogsData = [];
-        let page = 1;
-        let hasMoreData = true;
-        const limit = 100; // Fetch 100 blogs per page
+        // Fetch first page for faster loading
+        const params = {
+          limit: 50, // Increased from 20 for better display while maintaining performance
+          page: 1,
+          sortBy: 'createdAt',
+          sortOrder: 'desc'
+        };
 
-        while (hasMoreData) {
-          const params = {
-            limit: limit,
-            page: page,
-            sortBy: 'createdAt',
-            sortOrder: 'desc'
-          };
-
-          // Don't send search to API, we'll filter client-side for better results
-          // Add category parameter if there's an active category
-          if (activeCategory && activeCategory.trim()) {
-            params.category = activeCategory.trim();
-          }
-
-          const response = await api.get(`blog/view`, { params });
-
-          if (response?.data?.data && Array.isArray(response.data.data)) {
-            const blogs = response.data.data;
-
-            // If API doesn't support category filtering, filter manually
-            let filteredBlogs = blogs;
-            if (activeCategory && activeCategory.trim()) {
-              filteredBlogs = blogs.filter(blog => blog.blog_Category === activeCategory);
-            }
-
-            allBlogsData = [...allBlogsData, ...filteredBlogs];
-
-            // If we got fewer blogs than the limit, we've reached the end
-            if (blogs.length < limit) {
-              hasMoreData = false;
-            } else {
-              page++;
-            }
-          } else {
-            hasMoreData = false;
-          }
+        // Add category parameter if there's an active category
+        if (activeCategory && activeCategory.trim()) {
+          params.category = activeCategory.trim();
         }
 
-        setAllBlogs(allBlogsData);
+        const response = await api.get(`blog/view`, { params });
+
+        if (response?.data?.data && Array.isArray(response.data.data)) {
+          const blogs = response.data.data;
+
+          // If API doesn't support category filtering, filter manually
+          let filteredBlogs = blogs;
+          if (activeCategory && activeCategory.trim()) {
+            filteredBlogs = blogs.filter(blog => blog.blog_Category === activeCategory);
+          }
+
+          setAllBlogs(filteredBlogs);
+          setHasMoreBlogs(blogs.length === 50); // Check if there might be more blogs
+        } else {
+          setAllBlogs([]);
+          setHasMoreBlogs(false);
+        }
       } catch (error) {
         console.error('Error fetching blogs:', error);
         setAllBlogs([]);
+        setHasMoreBlogs(false);
       } finally {
         setLoading(false);
       }
     };
     fetchBlogs();
-  }, [activeCategory]); // Remove search from dependencies, we'll filter client-side
+  }, [activeCategory]);
+
+  // Load more blogs function
+  const loadMoreBlogs = async () => {
+    if (loadingMore || !hasMoreBlogs) return;
+    
+    setLoadingMore(true);
+    try {
+      const nextPage = currentPage + 1;
+      const params = {
+        limit: 50,
+        page: nextPage,
+        sortBy: 'createdAt',
+        sortOrder: 'desc'
+      };
+
+      if (activeCategory && activeCategory.trim()) {
+        params.category = activeCategory.trim();
+      }
+
+      const response = await api.get(`blog/view`, { params });
+
+      if (response?.data?.data && Array.isArray(response.data.data)) {
+        const blogs = response.data.data;
+        
+        let filteredBlogs = blogs;
+        if (activeCategory && activeCategory.trim()) {
+          filteredBlogs = blogs.filter(blog => blog.blog_Category === activeCategory);
+        }
+
+        setAllBlogs(prev => [...prev, ...filteredBlogs]);
+        setCurrentPage(nextPage);
+        setHasMoreBlogs(blogs.length === 50);
+      } else {
+        setHasMoreBlogs(false);
+      }
+    } catch (error) {
+      console.error('Error loading more blogs:', error);
+    } finally {
+      setLoadingMore(false);
+    }
+  };
 
   // Get featured blog (first one or marked as featured) - only when no category filter
   const featuredBlog = useMemo(() => {
@@ -285,7 +321,7 @@ const ModernBlogPage = () => {
                       ? 'bg-white text-blue-600'
                       : 'bg-blue-100 text-blue-600'
                     }`}>
-                    {allBlogs.length}
+                    {totalBlogCount}
                   </span>
                 </button>
 
@@ -381,6 +417,20 @@ const ModernBlogPage = () => {
                 ))}
               </div>
             )}
+
+            {/* Load More Button - Global Component */}
+            <GlobalLoadingButton
+              isLoading={loadingMore}
+              hasMore={hasMoreBlogs}
+              onLoadMore={loadMoreBlogs}
+              loadedCount={filteredBlogs.length}
+              totalCount={totalBlogCount}
+              loadingText="Loading more blogs..."
+              loadMoreText="Load More Blogs"
+              variant="primary"
+              size="medium"
+              showProgress={true}
+            />
 
           </div>
         </div>

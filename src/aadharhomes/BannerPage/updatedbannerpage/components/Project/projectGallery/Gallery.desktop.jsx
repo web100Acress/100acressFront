@@ -81,7 +81,7 @@ const GalleryDesktop = ({ galleryImages = [], projectName = '' }) => {
           <div className="gallery-desktop-grid-featured">
             {visibleImages[0] && (
               <img
-                fetchPriority='high'
+                fetchpriority="high"
                 src={visibleImages[0].url}
                 alt="Gallery image 1"
                 className="gallery-desktop-image"

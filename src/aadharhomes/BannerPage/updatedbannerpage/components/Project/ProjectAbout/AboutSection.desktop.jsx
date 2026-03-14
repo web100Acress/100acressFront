@@ -101,7 +101,7 @@ const AboutSectionDesktop = ({ projectName, description, imageUrl, onShowCallbac
             {/* Rounded container with golden ring and soft glow */}
             <div className="about-section-image-frame">
               <img 
-                fetchPriority='high'
+                fetchpriority="high"
                 src={imageUrl} 
                 alt={`${projectName || 'Project'} overview`} 
                 loading="lazy"
