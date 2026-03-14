@@ -9,14 +9,10 @@ import { Calendar, Clock, Eye, User, X, Phone, Send } from 'lucide-react';
 import { FALLBACK_IMG } from '../../../../../Utils/imageUtils';
 import Footer from "../../../../../Home/Footer/CrimsonEleganceFooter";
 import FAQSection from "../../../../Actual_Components/FAQSection";
-import { brandedresidences } from "../../../../../Redux/slice/AllSectionData.jsx";
-import Api_Service from "../../../../../Redux/utils/Api_Service.jsx";
-import { getBrandedResidences } from "../../../../../Utils/ProjectOrderData";
-
+// import { brandedresidences } from "../../../../../Redux/slice/AllSectionData.jsx";
 const ModernBlogView = () => {
   const { allupcomingProject } = useContext(DataContext);
   const dispatch = useDispatch();
-  const { getAllProjects } = Api_Service();
   const spotlight = useSelector(store => store?.project?.spotlight);
   const brandedResidencesData = useSelector(store => store?.allsectiondata?.brandedresidences || []);
   const [data, setData] = useState({});
@@ -39,32 +35,32 @@ const ModernBlogView = () => {
   const countryDropdownRef = useRef(null);
   const { id, slug } = useParams();
 
-  // Fetch branded residences data using dedicated utility
-  useEffect(() => {
-    const fetchBrandedResidences = async () => {
-      try {
-        console.log('🏢 ModernBlogView: Fetching branded residences data...');
-        const projects = await getBrandedResidences();
-        if (projects && projects.length > 0) {
-          console.log('🏢 ModernBlogView: Branded residences data fetched successfully:', projects.length);
-          dispatch(brandedresidences(projects));
-        } else {
-          console.log('🏢 ModernBlogView: No branded residences data found, falling back to general projects');
-          await getAllProjects('brandedresidences', 4);
-        }
-      } catch (error) {
-        console.error('🏢 ModernBlogView: Error fetching branded residences:', error);
-        // Attempt fallback to general API service
-        try {
-          await getAllProjects('brandedresidences', 4);
-        } catch (fallbackError) {
-          console.error('🏢 ModernBlogView: Fallback also failed:', fallbackError);
-        }
-      }
-    };
+  // // Fetch branded residences data using dedicated utility
+  // useEffect(() => {
+  //   const fetchBrandedResidences = async () => {
+  //     try {
+  //       console.log('🏢 ModernBlogView: Fetching branded residences data...');
+  //       const projects = await getBrandedResidences();
+  //       if (projects && projects.length > 0) {
+  //         console.log('🏢 ModernBlogView: Branded residences data fetched successfully:', projects.length);
+  //         dispatch(brandedresidences(projects));
+  //       } else {
+  //         console.log('🏢 ModernBlogView: No branded residences data found, falling back to general projects');
+  //         await getAllProjects('brandedresidences', 4);
+  //       }
+  //     } catch (error) {
+  //       console.error('🏢 ModernBlogView: Error fetching branded residences:', error);
+  //       // Attempt fallback to general API service
+  //       try {
+  //         await getAllProjects('brandedresidences', 4);
+  //       } catch (fallbackError) {
+  //         console.error('🏢 ModernBlogView: Fallback also failed:', fallbackError);
+  //       }
+  //     }
+  //   };
 
-    fetchBrandedResidences();
-  }, [dispatch, getAllProjects]);
+  //   fetchBrandedResidences();
+  // }, [dispatch, getAllProjects]);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -1129,72 +1125,6 @@ const ModernBlogView = () => {
           {/* Left Sidebar - Recommended Projects */}
           <aside className="lg:col-span-3">
             <div className="sticky top-24">
-              <h3 className="text-xl font-bold text-gray-900 mb-6" style={{ fontFamily: "'Open Sans', sans-serif" }}>
-                Branded Residences
-              </h3>
-
-              <div className="space-y-3">
-                {brandedResidencesData && brandedResidencesData.length > 0 ? (
-                  brandedResidencesData.slice(0, 4).map((project) => (
-                    <Link
-                      key={project._id || project.projectName}
-                      to={project.link || `/${project.project_url}/`}
-                      className="block hover:shadow-md transition-all duration-300 group"
-                    >
-                      <div className="flex gap-3 p-2">
-                        {/* Project Image */}
-                        <div className="relative w-20 h-20 rounded-md overflow-hidden flex-shrink-0">
-                          <img
-                            src={project?.thumbnailImage?.url || project?.frontImage?.url || FALLBACK_IMG}
-                            alt={project?.projectName || project.project_Title || 'Project'}
-                            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                            onError={(e) => {
-                              e.target.src = FALLBACK_IMG;
-                            }}
-                          />
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
-                        </div>
-
-                        {/* Project Info */}
-                        <div className="flex-1 min-w-0">
-                          <h4 className="font-semibold text-gray-900 text-sm mb-1 line-clamp-2 group-hover:text-red-600 transition-colors">
-                            {project?.projectName || project.project_Title || project.name}
-                          </h4>
-                          <p className="text-xs text-gray-600 line-clamp-2">
-                            {project?.city || 'Gurgaon'}
-                          </p>
-                          {project?.minPrice && (
-                            <p className="text-xs font-semibold text-red-600 mt-1">
-                              ₹{project.minPrice.toLocaleString()} Cr*
-                            </p>
-                          )}
-                        </div>
-                      </div>
-                    </Link>
-                  ))
-                ) : (
-                  <div className="text-center py-8">
-                    <div className="w-12 h-12 mx-auto mb-3 bg-gray-100 rounded-full flex items-center justify-center">
-                      <span className="text-gray-400 text-lg">🏢</span>
-                    </div>
-                    <p className="text-sm text-gray-500">
-                      Loading branded residences...
-                    </p>
-                    <p className="text-xs text-gray-400 mt-1">
-                      Please check your connection
-                    </p>
-                  </div>
-                )}
-              </div>
-
-              {/* View All Branded Residences Button */}
-              <Link
-                to="/branded-residences/"
-                className="block w-full mt-6 text-center px-4 py-2 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 transition-colors"
-              >
-                View All Projects
-              </Link>
-
               {/* Blog Categories */}
               {/* <div className="mt-6 bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
                 <h3

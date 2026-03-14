@@ -242,8 +242,22 @@ const IndustrialPlotsGurgaon = lazy(() => import("./ProjectTypes/ProjectType/Pro
 const SCOPlotsGurgaon = lazy(() => import("./ProjectTypes/ProjectType/PropertyTypes/SCOPlotsGurgaon"));
 const ShopCumOfficePlotsGurgaon = lazy(() => import("./ProjectTypes/ProjectType/PropertyTypes/ShopCumOfficePlotsGurgaon"));
 
-// Initialize QueryClient
-const queryClient = new QueryClient();
+// Initialize QueryClient with optimized settings
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      cacheTime: 10 * 60 * 1000, // 10 minutes
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+      retry: 1,
+      retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 30000),
+    },
+    mutations: {
+      retry: 1,
+    }
+  }
+});
 
 function App() {
   const location = useLocation();

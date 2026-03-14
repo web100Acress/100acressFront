@@ -4,7 +4,7 @@ import api from '../config/apiClient';
 let inFlightRequest = null;
 let orderDataCache = null;
 let lastCacheUpdate = 0;
-const CACHE_TTL = 60000; // 1 minute local memory cache
+const CACHE_TTL = 300000; // 5 minutes local memory cache to reduce API spam
 
 // Utility to get project order data from backend API or localStorage fallback
 export const getProjectOrderData = async () => {
@@ -12,11 +12,13 @@ export const getProjectOrderData = async () => {
 
   // Return memory cache if still fresh
   if (orderDataCache && (now - lastCacheUpdate < CACHE_TTL)) {
+    console.log('📦 Using memory cache for project orders');
     return orderDataCache;
   }
 
   // If a request is already in flight, reuse it to prevent API spam
   if (inFlightRequest) {
+    console.log('🔄 Reusing in-flight request for project orders');
     return inFlightRequest;
   }
 
@@ -24,7 +26,10 @@ export const getProjectOrderData = async () => {
     try {
       console.log('🌐 Fetching project orders from API...');
       // Removed cache-busting timestamp to reduce OPTIONS preflight requests
-      const response = await api.get('/api/project-orders');
+      const response = await api.get('/api/project-orders', {
+        // Add timeout to prevent hanging requests
+        timeout: 10000
+      });
       
       let orderData = null;
       if (response.data && response.data.data) {
@@ -43,6 +48,7 @@ export const getProjectOrderData = async () => {
       }
     } catch (error) {
       console.error('❌ Error fetching project orders from API:', error);
+      // Don't throw error, fall back to cache/localStorage
     } finally {
       inFlightRequest = null;
     }
@@ -53,6 +59,7 @@ export const getProjectOrderData = async () => {
       if (saved) {
         const parsed = JSON.parse(saved);
         orderDataCache = parsed;
+        console.log('📦 Using localStorage fallback for project orders');
         return parsed;
       }
     } catch (e) {
@@ -60,6 +67,7 @@ export const getProjectOrderData = async () => {
     }
 
     // Return default hardcoded data if all else fails
+    console.log('📦 Using default project orders as final fallback');
     return DEFAULT_PROJECT_ORDERS;
   })();
 
