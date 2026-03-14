@@ -231,8 +231,18 @@ api.interceptors.response.use(
       });
     }
     
-    // Handle rate limiting (429) and service unavailable (503)
-    if (status === 429 || status === 503) {
+    // Handle rate limiting (429) and service unavailable (503) - DISABLE RETRY FOR 429
+    if (status === 429) {
+      // NO RETRY for 429 errors to prevent infinite loops
+      console.warn('Rate limit hit (429) - not retrying to prevent infinite loops');
+      return Promise.reject({
+        ...error,
+        message: 'Too many requests. Please try again later.',
+        isRateLimitError: true
+      });
+    }
+    
+    if (status === 503) {
       const retryAfter = parseInt(error.response.headers?.['retry-after']) || 1;
       const retryCount = originalRequest.__retryCount || 0;
       const maxRetries = 3;

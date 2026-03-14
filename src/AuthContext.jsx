@@ -80,13 +80,16 @@ export const AuthProvider = ({ children }) => {
           console.error("Error parsing user role from localStorage:", error);
         }
       }
-
-      if (currentToken) {
-        try { hydrateFavoritesFromServer(); } catch (_) { }
-      }
     };
     checkAuthStatus();
   }, [decodedToken]);
+
+  // Separate effect for favorites hydration - only run when authentication changes
+  useEffect(() => {
+    if (isAuthenticated && token) {
+      try { hydrateFavoritesFromServer(); } catch (_) { }
+    }
+  }, [isAuthenticated]); // Only depend on authentication state
 
   const login = async (formData) => {
     const { email, password } = formData;
