@@ -175,6 +175,12 @@
   cursor: pointer;
 }
 
+/* Red card background */
+.related-projects-desktop-card .bg-white {
+  background-color: #dc2626 !important;
+  border-color: rgba(220, 38, 38, 0.5) !important;
+}
+
 .related-projects-desktop-card-glow {
   position: absolute;
   inset: -0.25rem;
