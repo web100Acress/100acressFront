@@ -1,0 +1,1596 @@
+import React, { useContext, useEffect, useState, useCallback, useMemo, useRef } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { useParams, useLocation, useNavigate } from "react-router-dom";
+import { allupcomingproject, newlaunch, underconstruction, readytomove } from "../../Redux/slice/AllSectionData.jsx";
+import Api_Service from "../../Redux/utils/Api_Service.jsx";
+import { getProjectOrderData } from "../../Utils/ProjectOrderData";
+import Footer from "../Actual_Components/Footer";
+import Navbar from "../../aadharhomes/navbar/Navbar";
+import { DataContext } from "../../MyContext.jsx";
+import { Helmet } from "react-helmet";
+
+// Import modular components from ProjectStatusSearch
+import Hero from "../../Pages/ProjectStatusSearch/Hero";
+import FilterBar from "../../Pages/ProjectStatusSearch/FilterBar";
+import ProjectCard from "../../Pages/ProjectStatusSearch/ProjectCard";
+import CompareBar from "../../Pages/ProjectStatusSearch/CompareBar";
+import FAQAccordion from "../../Pages/ProjectStatusSearch/FAQAccordion";
+import GlobalLoadingButton from "../GlobalLoadingButton";
+import { getStaticData, getPageDataByUrl } from "../../data/helpers.js";
+import KnowMoreSection from "../../Data/core/KnowMoreSection";
+
+const GlobalFilterTemplate = ({
+  // Page Configuration
+  pageType, // 'city', 'budget', 'status', 'type'
+  pageConfig,
+
+  // Data
+  projects = [],
+  isLoading = false,
+  loadingMore = false,
+  hasMoreProjects = false,
+  onLoadMore = null,
+
+  // SEO Data (preserved exactly as provided)
+  metaTitle,
+  metaDescription,
+  canonical,
+  keywords,
+  structuredData,
+
+  // Additional Props
+  children,
+  ...additionalProps
+}) => {
+  console.log('🏗️ GlobalFilterTemplate: Initialized with:', {
+    pageType,
+    projectsCount: projects.length,
+    isLoading,
+    pathname: typeof window !== 'undefined' ? window.location.pathname : 'N/A',
+    projectSample: projects.slice(0, 3).map(p => ({
+      name: p.projectName || p.title,
+      city: p.city,
+      id: p._id
+    }))
+  });
+  const { allProjectData } = useContext(DataContext);
+  const location = useLocation();
+  const [filteredProjects, setFilteredProjects] = useState([]);
+  const [datafromsearch, setDatafromsearch] = useState({});
+
+  // Modern UI state
+  const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'list'
+  const [savedProjects, setSavedProjects] = useState(new Set());
+  const [compareProjects, setCompareProjects] = useState(new Set());
+  const [sort, setSort] = useState('newest');
+  const [showFilterBar, setShowFilterBar] = useState(false);
+  const [filters, setFilters] = useState({
+    city: '',
+    location: '',
+    projectType: '',
+    price: ''
+  });
+
+
+  // Displayed projects state (no pagination)
+  const [displayedProjects, setDisplayedProjects] = useState([]);
+
+  // Request throttling
+  const requestThrottle = useRef(new Map());
+  const isRequestInProgress = useRef(false);
+  const lastRequestTime = useRef(0);
+
+  // Project order state
+  const [projectOrders, setProjectOrders] = useState(null);
+  const [projectOrdersLoading, setProjectOrdersLoading] = useState(true);
+
+  // Get project status from URL or props
+  const getProjectStatus = () => {
+    const path = location.pathname;
+    console.log('Current path:', path);
+
+    // Check for senior living specifically
+    if (path.includes('/projects/senior-living/')) {
+      console.log('Detected senior living page');
+      return 'senior-living';
+    }
+
+    // Check for branded residences URL
+    if (path.includes('/branded-residences')) {
+      console.log('Detected branded residences page');
+      return 'brandedresidences';
+    }
+
+    // Check for new unified status URLs: projects/{status}
+    if (path.includes('/projects/') && !path.includes('/projects-in-')) {
+      const filter = path.split('/projects/')[1]?.replace('/', '');
+      console.log('Detected unified projects filter:', filter);
+
+      const statusMap = {
+        'upcoming': 'upcoming',
+        'newlaunch': 'newlaunch',
+        'underconstruction': 'underconstruction',
+        'ready-to-move': 'readytomove'
+      };
+
+      if (statusMap[filter]) {
+        console.log('Detected status from unified URL:', statusMap[filter]);
+        return statusMap[filter];
+      }
+    }
+
+    // For project type, city, and budget pages, return null
+    if (pageType === 'type' || pageType === 'city' || pageType === 'budget') {
+      return null;
+    }
+
+    return 'upcoming'; // default for status pages only
+  };
+
+  const projectStatus = getProjectStatus();
+  console.log('Detected project status:', projectStatus);
+
+  // Detect BHK type from URL for BHK flats pages
+  const getBhkType = () => {
+    const path = location.pathname;
+    const bhkMatch = path.match(/(\d)-bhk-flats-in-gurgaon/);
+    return bhkMatch ? bhkMatch[1] : null;
+  };
+
+  const bhkType = getBhkType();
+  console.log('Detected BHK type:', bhkType);
+
+  // Get BHK data from new data files
+  const getBhkData = () => {
+    if (!bhkType) return null;
+    return getStaticData(`bhk/${bhkType}`);
+  };
+
+  const bhkData = getBhkData();
+  const knowMoreContent = bhkType 
+    ? bhkData?.customFields?.knowMoreContent 
+    : getStaticData('projects/upcoming')?.customFields?.knowMoreContent;
+
+  // Get page data from new data system based on URL
+  const searchParams = new URLSearchParams(location.search);
+  const searchParamsObj = Object.fromEntries(searchParams.entries());
+  let staticPageData = getPageDataByUrl(location.pathname, searchParamsObj);
+  
+  // Fallback: If URL matching fails, directly check for projects/upcoming
+  if (!staticPageData && (location.pathname.includes('/projects/upcoming'))) {
+    staticPageData = getStaticData('projects/upcoming');
+  }
+  
+  console.log('=== DEBUG INFO ===');
+  console.log('URL pathname:', location.pathname);
+  console.log('staticPageData:', staticPageData);
+  console.log('staticPageData?.customFields?.knowMoreContent:', staticPageData?.customFields?.knowMoreContent);
+  
+  // Get status data from new data system
+  const statusData = projectStatus ? getStaticData(`status/${projectStatus}`) : null;
+  console.log('statusData:', statusData);
+
+  // Use pageConfig first, then static data, then fallback to default config
+  const baseConfig = pageConfig || staticPageData || {
+    title: "Discover Projects",
+    description: "Premium projects crafted with quality, sustainability, and exceptional after‑sales service.",
+    metaTitle: "Discover Projects - 100acress",
+    canonical: "https://www.100acress.com/",
+    query: "allupcomingproject",
+    keywords: "real estate projects, property investment, luxury homes",
+    structuredData: {
+      "@context": "https://schema.org",
+      "@type": "RealEstateAgent",
+      "name": "100acress",
+      "description": "Leading real estate platform",
+      "url": "https://www.100acress.com",
+      "areaServed": "India"
+    }
+  };
+
+  // Final config with status-based overrides from new data system
+  const currentConfig = statusData 
+    ? { ...baseConfig, ...staticPageData, ...statusData }
+    : { ...baseConfig, ...staticPageData };
+
+  const { getAllProjects } = Api_Service();
+
+  // Debounce timer ref
+  const debounceTimer = useRef(null);
+
+  // Throttled API call function
+  const throttledGetAllProjects = useCallback(async (query, limit) => {
+    const now = Date.now();
+    const throttleKey = `${query}-${limit}`;
+    const lastCall = requestThrottle.current.get(throttleKey) || 0;
+
+    // Throttle requests - minimum 3 seconds between calls for same query
+    if (now - lastCall < 3000) {
+      console.log(`Request throttled for ${query}, skipping...`);
+      return;
+    }
+
+    // Prevent concurrent requests
+    if (isRequestInProgress.current) {
+      console.log('Request already in progress, skipping...');
+      return;
+    }
+
+    // Clear existing debounce timer
+    if (debounceTimer.current) {
+      clearTimeout(debounceTimer.current);
+    }
+
+    // Debounce the API call by 500ms
+    debounceTimer.current = setTimeout(async () => {
+      try {
+        isRequestInProgress.current = true;
+        lastRequestTime.current = now;
+        requestThrottle.current.set(throttleKey, now);
+
+        console.log(`Making API call for ${query} with limit ${limit}`);
+        await getAllProjects(query, limit);
+      } catch (error) {
+        console.error(`Error in throttled API call for ${query}:`, error);
+      } finally {
+        isRequestInProgress.current = false;
+      }
+    }, 500);
+  }, [getAllProjects]);
+
+  // Redux selectors for different project types
+  const allSectionData = useSelector(store => store?.allsectiondata);
+  const upcomingProjects = allSectionData?.allupcomingproject || [];
+  const underConstructionProjects = allSectionData?.underconstruction || [];
+  const readyToMoveProjects = allSectionData?.readytomove || [];
+  const newLaunchProjects = allSectionData?.newlaunch || [];
+
+  // Selector for project type pages - also responds to filter changes
+  const [activeQuery, setActiveQuery] = useState(currentConfig.query || '');
+
+  // Update activeQuery when currentConfig.query changes (e.g., when URL changes)
+  useEffect(() => {
+    if (currentConfig.query && currentConfig.query !== activeQuery) {
+      console.log('Updating activeQuery from currentConfig:', currentConfig.query);
+      setActiveQuery(currentConfig.query);
+    }
+  }, [currentConfig.query]);
+
+  const typeProjects = useSelector(store => {
+    // Use activeQuery which can be updated by filter changes
+    if (activeQuery) {
+      return store?.allsectiondata?.[activeQuery] || [];
+    }
+    if (currentConfig.query) {
+      return store?.allsectiondata?.[currentConfig.query] || [];
+    }
+    return [];
+  }, (left, right) => JSON.stringify(left) === JSON.stringify(right));
+
+  // Get the appropriate project data based on status
+  const getProjectData = () => {
+    console.log('Getting project data for status:', projectStatus);
+    console.log('Page type:', pageType);
+    console.log('Available data:', {
+      upcoming: upcomingProjects?.length || 0,
+      underconstruction: underConstructionProjects?.length || 0,
+      readytomove: readyToMoveProjects?.length || 0,
+      newlaunch: newLaunchProjects?.length || 0
+    });
+
+    // For budget pages, always use the projects prop (pre-filtered by GlobalBudgetPrice)
+    if (pageType === 'budget') {
+      console.log('Budget page - using projects from props:', projects?.length || 0);
+      return projects || [];
+    }
+
+    // If projects are passed as props, use them first
+    if (projects && projects.length > 0) {
+      console.log('Using projects from props:', projects.length);
+
+      // Apply project type filtering if we have a typeFilter function
+      if (pageType === 'type' && pageConfig?.typeFilter) {
+        console.log('Applying project type filtering');
+        console.log('Total projects before filtering:', projects.length);
+        console.log('Sample project data:', projects.slice(0, 3).map(p => ({
+          name: p.projectName,
+          type: p.type,
+          projectType: p.projectType,
+          category: p.category,
+          propertyType: p.propertyType
+        })));
+        const filteredProjects = projects.filter(pageConfig.typeFilter);
+        console.log('Filtered projects by type:', filteredProjects.length);
+        console.log('Sample filtered projects:', filteredProjects.slice(0, 3).map(p => p.projectName));
+        return filteredProjects;
+      }
+
+      return projects;
+    }
+
+    // If activeQuery is set (from filter change), use typeProjects
+    if (activeQuery && typeProjects && typeProjects.length > 0) {
+      console.log('Using typeProjects from activeQuery:', activeQuery, 'count:', typeProjects.length);
+      return typeProjects;
+    }
+
+    // If no project status (for type/city/budget pages), use typeProjects if available
+    if (!projectStatus) {
+      if (typeProjects && typeProjects.length > 0) {
+        console.log('Using typeProjects for project type page:', typeProjects.length);
+        return typeProjects;
+      }
+      console.log('No project status detected, returning empty array');
+      return [];
+    }
+
+    switch (projectStatus) {
+      case 'upcoming':
+        console.log('Returning upcoming projects:', upcomingProjects?.length || 0);
+        return upcomingProjects;
+      case 'underconstruction':
+        console.log('Returning underconstruction projects:', underConstructionProjects?.length || 0);
+        return underConstructionProjects;
+      case 'readytomove':
+        console.log('Returning readytomove projects:', readyToMoveProjects?.length || 0);
+        return readyToMoveProjects;
+      case 'newlaunch':
+        console.log('Returning newlaunch projects:', newLaunchProjects?.length || 0);
+        return newLaunchProjects;
+      default:
+        console.log('No matching status, returning empty array');
+        return [];
+    }
+  };
+
+  const projectData = getProjectData();
+
+  // Memoize project data to prevent unnecessary re-renders
+  const memoizedProjectData = React.useMemo(() => {
+    return projectData;
+  }, [projectData]);
+
+  // Use the original project data - filtering will be handled by handleSearch
+  const filteredProjectData = memoizedProjectData;
+
+  // Load project orders
+  useEffect(() => {
+    const loadProjectOrders = async () => {
+      try {
+        setProjectOrdersLoading(true);
+        const orders = await getProjectOrderData();
+        console.log('Project orders loaded in GlobalFilterTemplate:', orders);
+        setProjectOrders(orders);
+      } catch (error) {
+        console.error('Error loading project orders:', error);
+      } finally {
+        setProjectOrdersLoading(false);
+      }
+    };
+
+    loadProjectOrders();
+
+    // Removed auto-refresh interval to prevent unnecessary API calls
+    // Project orders will only be loaded once when component mounts
+    // Users can manually refresh if needed
+  }, []);
+
+  function handleDatafromSearch(data) {
+    setFilteredProjects(data);
+  }
+
+
+  // Modern UI utility functions
+  const toggleSaveProject = (project) => {
+    const projectId = project._id || project.id;
+    setSavedProjects(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(projectId)) {
+        newSet.delete(projectId);
+      } else {
+        newSet.add(projectId);
+      }
+      return newSet;
+    });
+  };
+
+  const toggleCompareProject = (project) => {
+    const projectId = project._id || project.id;
+    setCompareProjects(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(projectId)) {
+        newSet.delete(projectId);
+      } else {
+        newSet.add(projectId);
+      }
+      return newSet;
+    });
+  };
+
+  // Enhanced filter change handler that detects when data refetch is needed
+  const handleFilterChange = (key, value) => {
+    const newFilters = { ...filters, [key]: value };
+
+    // Check if this filter change requires different data fetching
+    const requiresDataRefetch = shouldRefetchData(key, value, newFilters);
+
+    setFilters(newFilters);
+
+    if (requiresDataRefetch) {
+      console.log(`Filter change requires data refetch for ${key}: ${value}`);
+      // Update the query based on the new filter context
+      updateQueryForFilters(newFilters);
+    } else {
+      // Auto-filter when filter changes (client-side filtering only)
+      setTimeout(() => {
+        handleSearch();
+      }, 100);
+    }
+  };
+
+  // Determine if a filter change requires data refetch
+  const shouldRefetchData = (key, value, newFilters) => {
+    // If we're on a status page and user changes project type, we need to refetch
+    if (projectStatus && (key === 'projectType' && value !== filters.projectType)) {
+      return true;
+    }
+
+    // If we're on a project type page and user changes status-like filters, we need to refetch
+    if (pageType === 'type' && (key === 'projectType' && value !== filters.projectType)) {
+      return true;
+    }
+
+    // If switching from one major filter context to another
+    if (key === 'projectType' && value !== '' && filters.projectType === '') {
+      return true; // First time selecting a project type
+    }
+
+    return false;
+  };
+
+  // Update query and refetch data based on new filter context
+  const updateQueryForFilters = (newFilters) => {
+    let newQuery = currentConfig.query;
+
+    // If user selected a specific project type, use the corresponding query
+    if (newFilters.projectType && newFilters.projectType !== '') {
+      // Map project types to their corresponding queries
+      const projectTypeToQuery = {
+        'Farm Houses': 'farmhouse',
+        'Commercial Property': 'commercial',
+        'Residential Flats': 'residentiaProject',
+        'SCO Plots': 'scoplots',
+        'Villas': 'villas',
+        'Independent Floors': 'builderindepedentfloor',
+        'Residential Plots': 'plotsingurugram',
+        'Industrial Projects': 'industrialprojects',
+        'Industrial Plots': 'industrialplots'
+      };
+
+      if (projectTypeToQuery[newFilters.projectType]) {
+        newQuery = projectTypeToQuery[newFilters.projectType];
+      }
+    } else if (projectStatus) {
+      // Fall back to status-based queries
+      const statusToQuery = {
+        'upcoming': 'allupcomingproject',
+        'underconstruction': 'underconstruction',
+        'readytomove': 'readytomove',
+        'newlaunch': 'newlaunch'
+      };
+      newQuery = statusToQuery[projectStatus] || 'allupcomingproject';
+    }
+
+    if (newQuery) {
+      console.log(`Updating query from ${activeQuery} to ${newQuery}`);
+      // Update the active query so the selector picks up the new data
+      setActiveQuery(newQuery);
+      // Trigger new data fetch with updated query
+      throttledGetAllProjects(newQuery, 0);
+    } else {
+      // Fallback to client-side filtering
+      setTimeout(() => {
+        handleSearch();
+      }, 100);
+    }
+  };
+
+  const handleSearch = (searchQueryOrResetPagination = true) => {
+    console.log('🔍 handleSearch: Starting with:', {
+      searchQueryOrResetPagination,
+      memoizedProjectDataLength: memoizedProjectData?.length,
+      sort,
+      filters,
+      pathname: location.pathname,
+      isBrandedResidences: location.pathname.includes('/branded-residences')
+    });
+
+    // Handle both search query string and resetPagination boolean
+    let searchQuery = '';
+    let resetPagination = true;
+
+    if (typeof searchQueryOrResetPagination === 'string') {
+      searchQuery = searchQueryOrResetPagination.trim();
+      resetPagination = true; // Always reset pagination when searching
+    } else if (typeof searchQueryOrResetPagination === 'boolean') {
+      resetPagination = searchQueryOrResetPagination;
+    }
+
+    const dataToFilter = memoizedProjectData || [];
+    console.log('🔍 handleSearch: Data to filter:', {
+      totalItems: dataToFilter.length,
+      sampleItems: dataToFilter.slice(0, 3).map(p => ({
+        name: p.projectName || p.title,
+        city: p.city,
+        id: p._id
+      }))
+    });
+
+    // Apply filtering
+    let filtered = dataToFilter.filter(item => {
+      const matchesSearchQuery = searchQuery === '' || (
+        (item.projectName && item.projectName.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        (item.city && item.city.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        (item.projectAddress && item.projectAddress.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        (item.type && item.type.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        (item.builder_name && item.builder_name.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        (item.project_discripation && item.project_discripation.toLowerCase().includes(searchQuery.toLowerCase()))
+      );
+
+      const cityFilterPass = pageType === 'status' && location.pathname.includes('/branded-residences') ? true : 
+        (filters.city === "" || (item.city && item.city.toLowerCase().includes(filters.city.toLowerCase())));
+
+      const locationFilterPass = filters.location === "" || (item.projectAddress && item.projectAddress.toLowerCase().includes(filters.location.toLowerCase()));
+      const projectTypeFilterPass = filters.projectType === "" || (item.type && item.type.toLowerCase().includes(filters.projectType.toLowerCase()));
+      const priceFilterPass = filters.price === "" || (() => {
+        if (filters.price === "") return true;
+        const [min, max] = filters.price.split(",").map(v => v === "Infinity" ? Infinity : parseFloat(v));
+        return item.minPrice >= min && item.maxPrice <= max;
+      })();
+
+      const passesAllFilters = matchesSearchQuery && cityFilterPass && locationFilterPass && projectTypeFilterPass && priceFilterPass;
+
+      if (item.projectName && item.projectName.includes('SmartWorld')) {
+        console.log('🔍 handleSearch - SmartWorld project filtering:', {
+          name: item.projectName,
+          matchesSearchQuery,
+          cityFilterPass,
+          locationFilterPass,
+          projectTypeFilterPass,
+          priceFilterPass,
+          passesAllFilters,
+          city: item.city,
+          filtersCity: filters.city
+        });
+      }
+
+      return passesAllFilters;
+    });
+
+    console.log('🔍 handleSearch - filtered length:', filtered.length);
+    console.log('🔍 handleSearch - filtered projects structure:', filtered.map(p => ({
+      hasProjectName: !!p.projectName,
+      hasTitle: !!p.title,
+      projectName: p.projectName,
+      title: p.title,
+      city: p.city,
+      id: p._id
+    })));
+    if (sort === 'newest' && projectOrders && !projectOrdersLoading) {
+      // Determine which city to use based on filters or page type
+      let orderCity = null;
+
+      // Check if city filter is applied
+      if (filters.city) {
+        orderCity = filters.city;
+        console.log('Using city from filters:', filters.city);
+      } else if (pageType === 'city') {
+        // Extract city from URL for city pages
+        const path = location.pathname;
+        console.log('Checking path for city:', path);
+        if (path.includes('/projects-in-')) {
+          const cityFromPath = path.split('/projects-in-')[1]?.replace('/', '');
+          if (cityFromPath) {
+            // Capitalize first letter to match projectOrders keys
+            orderCity = cityFromPath.charAt(0).toUpperCase() + cityFromPath.slice(1);
+            console.log('Extracted city from path:', cityFromPath, '-> normalized:', orderCity);
+          }
+        }
+      }
+
+      console.log('Final orderCity:', orderCity);
+      console.log('Available project orders:', Object.keys(projectOrders || {}));
+      console.log('Full projectOrders structure:', projectOrders);
+
+      // Apply custom ordering if city is found
+      if (orderCity && projectOrders && projectOrders[orderCity]) {
+        const cityOrders = projectOrders[orderCity];
+        console.log(`City orders for ${orderCity}:`, cityOrders);
+
+        const desiredOrder = Array.isArray(cityOrders)
+          ? cityOrders.filter(item => item.isActive).map(item => item.name.toLowerCase())
+          : [];
+
+        console.log(`Applying custom order for city: ${orderCity}`, desiredOrder);
+        console.log('Projects to sort:', filtered.slice(0, 3).map(p => p.projectName));
+
+        if (desiredOrder.length > 0) {
+          filtered = filtered.sort((a, b) => {
+            const aName = (a.projectName || '').toLowerCase();
+            const bName = (b.projectName || '').toLowerCase();
+
+            const aIndex = desiredOrder.indexOf(aName);
+            const bIndex = desiredOrder.indexOf(bName);
+
+            console.log(`Comparing: "${aName}" (index: ${aIndex}) vs "${bName}" (index: ${bIndex})`);
+
+            // If both projects are in the desired order, sort by that order
+            if (aIndex !== -1 && bIndex !== -1) {
+              return aIndex - bIndex;
+            }
+
+            // If only one project is in the desired order, prioritize it
+            if (aIndex !== -1) return -1;
+            if (bIndex !== -1) return 1;
+
+            // If neither is in the desired order, maintain original order
+            return 0;
+          });
+
+          console.log('Applied custom order, first 5 projects:', filtered.slice(0, 5).map(p => p.projectName));
+        }
+      } else {
+        console.log('No custom order applied - city not found or no orders for city');
+        console.log('orderCity:', orderCity);
+        console.log('projectOrders[orderCity]:', projectOrders ? projectOrders[orderCity] : 'projectOrders is null');
+      }
+
+      // Apply status-based ordering for status pages
+      let orderStatus = null;
+      if (typeof window !== 'undefined') {
+        const path = window.location.pathname;
+        console.log('Checking path for status:', path);
+
+        if (path.includes('/projects/upcoming')) {
+          orderStatus = 'upcoming';
+        } else if (path.includes('/projects/newlaunch')) {
+          orderStatus = 'newlaunch';
+        } else if (path.includes('/projects/comingsoon')) {
+          orderStatus = 'comingsoon';
+        } else if (path.includes('/projects/underconstruction')) {
+          orderStatus = 'underconstruction';
+        } else if (path.includes('/projects/readytomove')) {
+          orderStatus = 'readytomove';
+        } else if (path.includes('/branded-residences')) {
+          orderStatus = 'brandedresidences';
+        }
+      }
+
+      console.log('Final orderStatus:', orderStatus);
+
+      // Apply custom ordering if status is found
+      if (orderStatus && projectOrders && projectOrders[orderStatus]) {
+        const statusOrders = projectOrders[orderStatus];
+        console.log(`Status orders for ${orderStatus}:`, statusOrders);
+
+        const desiredOrder = Array.isArray(statusOrders)
+          ? statusOrders.filter(item => item.isActive).map(item => item.name.toLowerCase().replace(/\s+/g, ''))
+          : [];
+
+        console.log(`Applying custom order for status: ${orderStatus}`, desiredOrder);
+
+        if (desiredOrder.length > 0) {
+          // First, separate projects into ordered and unordered
+          const orderedProjects = [];
+          const unorderedProjects = [];
+
+          filtered.forEach(project => {
+            const projectName = (project.projectName || project.title || '').toLowerCase().replace(/\s+/g, '');
+            const orderIndex = desiredOrder.findIndex(orderName => 
+              orderName.replace(/\s+/g, '') === projectName
+            );
+
+            console.log('🔄 Status sorting comparison:', {
+              originalProjectName: project.projectName,
+              originalTitle: project.title,
+              normalizedProjectName: projectName,
+              desiredOrder,
+              orderIndex,
+              found: orderIndex !== -1,
+              fullProject: project
+            });
+
+            if (orderIndex !== -1) {
+              orderedProjects.push({ project, orderIndex });
+            } else {
+              unorderedProjects.push(project);
+            }
+          });
+
+          // Sort ordered projects by their orderIndex
+          orderedProjects.sort((a, b) => a.orderIndex - b.orderIndex);
+
+          // Combine: ordered projects first (in exact order), then unordered
+          filtered = [...orderedProjects.map(item => item.project), ...unorderedProjects];
+
+          console.log('Applied status custom order, first 5 projects:', filtered.slice(0, 5).map(p => ({
+      projectName: p.projectName,
+      title: p.title,
+      name: p.name,
+      id: p._id,
+      hasProjectName: !!p.projectName,
+      hasTitle: !!p.title,
+      hasName: !!p.name
+    })));
+        }
+      }
+    } else if (sort === 'price') {
+      filtered = filtered.sort((a, b) => (a.minPrice || 0) - (b.minPrice || 0));
+    } else if (sort === 'newest') {
+      filtered = filtered.sort((a, b) => new Date(b.createdAt || b.updatedAt || 0) - new Date(a.createdAt || a.updatedAt || 0));
+    }
+
+    setFilteredProjects(filtered);
+    updateDisplayedProjects(filtered);
+  };
+
+  const handleExplore = (project) => {
+    const pUrl = project.project_url;
+    window.open(`/${pUrl}/`, '_blank');
+  };
+
+  const handleShare = (project) => {
+    if (navigator.share) {
+      navigator.share({
+        title: project.projectName,
+        text: `Check out this property: ${project.projectName}`,
+        url: `${window.location.origin}/${project.project_url}/`
+      });
+    } else {
+      // Fallback to copying to clipboard
+      navigator.clipboard.writeText(`${window.location.origin}/${project.project_url}/`);
+    }
+  };
+
+  // Update displayed projects (now just shows all projects)
+  const updateDisplayedProjects = (projectsToDisplay) => {
+    console.log('updateDisplayedProjects - projectsToDisplay length:', projectsToDisplay.length);
+    console.log('updateDisplayedProjects - projectsToDisplay sample:', projectsToDisplay.slice(0, 3).map(p => ({
+      hasProjectName: !!p.projectName,
+      hasTitle: !!p.title,
+      projectName: p.projectName,
+      title: p.title,
+      city: p.city,
+      id: p._id,
+      isUndefined: p === undefined,
+      isNull: p === null
+    })));
+    setDisplayedProjects(projectsToDisplay);
+  };
+
+
+  // Scroll detection for filter bar visibility
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop = window.pageYOffset;
+      const navHeight = 64; // 16 * 4 = 64px (mt-16)
+      const heroHeight = window.innerHeight * 0.3; // 30vh hero height
+      setShowFilterBar(scrollTop > (heroHeight + navHeight));
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
+    if (currentConfig.query) {
+      console.log('Loading projects for query:', currentConfig.query);
+      throttledGetAllProjects(currentConfig.query, 0);
+    }
+  }, [currentConfig.query, throttledGetAllProjects]);
+
+  useEffect(() => {
+    if (!projectData) return;
+    
+    console.log('Project data updated:', projectData?.length, 'for status:', projectStatus, 'pageType:', pageType);
+    
+    // Check if the property already exists and is the same to avoid infinite loops
+    const currentData = datafromsearch[projectStatus];
+    if (JSON.stringify(currentData) !== JSON.stringify(projectData)) {
+      setDatafromsearch(prev => ({ ...prev, [projectStatus]: projectData }));
+    }
+  }, [projectData, projectStatus]);
+
+  // Handle clearing filtered projects separately to break the loop
+  useEffect(() => {
+    if (pageType !== 'budget') {
+      setFilteredProjects([]);
+    }
+  }, [projectStatus, pageType]);
+
+  useEffect(() => {
+    console.log('🏗️ GlobalFilterTemplate: Projects changed, processing:', {
+      projectsCount: projects.length,
+      isLoading,
+      projectSample: projects.slice(0, 3).map(p => ({
+        name: p.projectName || p.title,
+        city: p.city,
+        id: p._id
+      }))
+    });
+
+    if (!isLoading && projects.length > 0) {
+      // Apply initial filtering and sorting
+      handleSearch(true); // true means reset pagination
+    } else if (!isLoading && projects.length === 0) {
+      console.log('🏗️ GlobalFilterTemplate: No projects available');
+      setFilteredProjects([]);
+    }
+  }, [projects, isLoading]);
+
+  // Force re-render when project status changes
+  useEffect(() => {
+    console.log('Project status changed to:', projectStatus);
+    setFilteredProjects([]); // Clear any filtered results when status changes
+  }, [projectStatus]);
+
+  // Handle location changes
+  useEffect(() => {
+    console.log('Location changed to:', location.pathname);
+    // Reset activeQuery to the current config's query when location changes
+    setActiveQuery(currentConfig.query || '');
+    // Reset filters when location changes
+    setFilters({
+      city: '',
+      location: '',
+      projectType: '',
+      price: ''
+    });
+    // Don't clear for budget pages as they handle their own filtering
+    if (pageType !== 'budget') {
+      setFilteredProjects([]); // Clear filtered results when route changes
+    }
+  }, [location.pathname, pageType, currentConfig.query]);
+
+  // Auto-filter when filters, sort, or project orders change (but not when data loads)
+  useEffect(() => {
+    if (memoizedProjectData && memoizedProjectData.length > 0 && !projectOrdersLoading) {
+      // Only auto-filter if filters or sort have been set (not on initial data load)
+      const hasActiveFilters = Object.values(filters).some(value => value !== '');
+      if (hasActiveFilters || sort) {
+        handleSearch(false); // Don't reset pagination for auto-filter
+      }
+    }
+  }, [filters, sort, projectOrdersLoading]); // Removed projectOrders to avoid possible object reference instability loop
+
+  // Initialize displayed projects when data loads
+  useEffect(() => {
+    console.log('Initialize displayed projects effect - memoizedProjectData:', memoizedProjectData?.length, 'pageType:', pageType, 'isLoading:', isLoading);
+    if (memoizedProjectData && memoizedProjectData.length > 0) {
+      console.log('Setting displayed projects from memoizedProjectData:', memoizedProjectData.length);
+      // Avoid redundant state updates if data is already set correctly
+      setDisplayedProjects(prev => {
+        if (JSON.stringify(prev) === JSON.stringify(memoizedProjectData)) return prev;
+        return memoizedProjectData;
+      });
+      setFilteredProjects(prev => {
+        if (JSON.stringify(prev) === JSON.stringify(memoizedProjectData)) return prev;
+        return memoizedProjectData;
+      });
+    } else if (!isLoading) {
+      console.log('Resetting displayed projects - no data and not loading');
+      setDisplayedProjects([]);
+      setFilteredProjects([]);
+    }
+  }, [memoizedProjectData, isLoading, pageType]);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      // Clear throttle map and reset flags on unmount
+      requestThrottle.current.clear();
+      isRequestInProgress.current = false;
+      if (debounceTimer.current) {
+        clearTimeout(debounceTimer.current);
+      }
+    };
+  }, []);
+
+  // Generate dynamic structured data for projects
+  const generateProjectStructuredData = () => {
+    const projects = filteredProjects.length > 0 ? filteredProjects : memoizedProjectData || [];
+    return {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      "name": currentConfig.title,
+      "description": currentConfig.description,
+      "url": currentConfig.canonical,
+      "numberOfItems": projects.length,
+      "itemListElement": projects.slice(0, 10).map((project, index) => ({
+        "@type": "ListItem",
+        "position": index + 1,
+        "item": {
+          "@type": "RealEstateListing",
+          "name": project.projectName,
+          "description": project.projectAddress,
+          "url": `${window.location.origin}/${project.project_url}/`,
+          "image": project.frontImage?.url || project.frontImage?.cdn_url,
+          "offers": {
+            "@type": "Offer",
+            "price": project.minPrice ? `${project.minPrice}Cr` : "Contact for Price",
+            "priceCurrency": "INR",
+            "availability": "https://schema.org/InStock"
+          },
+          "address": {
+            "@type": "PostalAddress",
+            "addressLocality": project.city,
+            "addressRegion": project.state,
+            "addressCountry": "IN"
+          }
+        }
+      }))
+    };
+  };
+
+  return (
+    <>
+      <Helmet>
+    <title>{metaTitle || currentConfig.metaTitle}</title>
+    <meta name="description" content={metaDescription || currentConfig.description} />
+    <meta name="keywords" content={keywords || currentConfig.keywords} />
+    <link rel="canonical" href={`https://www.100acress.com${location.pathname}`} />
+
+    {/* Open Graph Tags */}
+    <meta property="og:title" content={metaTitle || currentConfig.metaTitle} />
+    <meta property="og:description" content={metaDescription || currentConfig.description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={`https://www.100acress.com${location.pathname}`} />
+        <meta property="og:image" content="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/logo.webp" />
+        <meta property="og:site_name" content="100acress" />
+        <meta property="og:locale" content="en_IN" />
+
+        {/* Twitter Card Tags */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={metaTitle || currentConfig.metaTitle} />
+        <meta name="twitter:description" content={metaDescription || currentConfig.description} />
+        <meta name="twitter:image" content="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/logo.webp" />
+        <meta name="twitter:site" content="@100acressdotcom" />
+
+        {/* Additional SEO Meta Tags */}
+        <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+        <meta name="googlebot" content="index, follow" />
+        <meta name="bingbot" content="index, follow" />
+        <meta name="author" content="100acress" />
+        <meta name="publisher" content="100acress" />
+        <meta name="copyright" content="100acress" />
+        <meta name="language" content="en" />
+        <meta name="geo.region" content="IN-HR" />
+        <meta name="geo.placename" content="Gurgaon" />
+        <meta name="geo.position" content="28.4595;77.0266" />
+        <meta name="ICBM" content="28.4595, 77.0266" />
+
+        {/* Mobile Optimization */}
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="theme-color" content="#D32F2F" />
+        <meta name="msapplication-TileColor" content="#D32F2F" />
+
+        {/* Structured Data */}
+        <script type="application/ld+json">
+          {JSON.stringify(structuredData || currentConfig.structuredData)}
+        </script>
+        <script type="application/ld+json">
+          {JSON.stringify(generateProjectStructuredData())}
+        </script>
+
+        {/* FAQ Schema */}
+        {projectStatus && (
+          <script type="application/ld+json">
+            {JSON.stringify(
+              projectStatus === 'upcoming' ? {
+                "@context": "https://schema.org",
+                "@type": "FAQPage",
+                "mainEntity": [{
+                  "@type": "Question",
+                  "name": "What are the top upcoming projects in Gurgaon?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Some of the most sought-after upcoming projects in Gurgaon include Trident Realty 104, Satya Group 104, Central Park 104, AIPL Lake City, ArtTech The Story House, Max Estate 361, and Elan Sohna Road."
+                  }
+                }, {
+                  "@type": "Question",
+                  "name": "Which locations in Gurgaon are best for upcoming residential projects?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Prime locations for upcoming projects include Dwarka Expressway, Southern Peripheral Road (SPR), Golf Course Extension Road, Sohna Road, and New Gurgaon, all offering strong connectivity and growth potential."
+                  }
+                }, {
+                  "@type": "Question",
+                  "name": "Are there affordable options among Gurgaon's upcoming projects?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Yes, projects like Satya Group 104, ArtTech The Story House, and Wal Pravah Senior Living provide budget-friendly housing options while maintaining modern amenities."
+                  }
+                }, {
+                  "@type": "Question",
+                  "name": "What amenities do upcoming projects in Gurgaon usually offer?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Most new launches come with swimming pools, clubhouses, gyms, landscaped gardens, sports courts, children's play areas, 24x7 security, and parking facilities, ensuring a premium lifestyle."
+                  }
+                }, {
+                  "@type": "Question",
+                  "name": "Which upcoming projects in Gurgaon offer luxury living?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Luxury options include Trident Realty 104, Central Park 104, Elan Sohna Road, and Oberoi Realty Gurgaon, featuring spacious layouts, high-end amenities, and premium architecture."
+                  }
+                }, {
+                  "@type": "Question",
+                  "name": "What is the typical possession timeline for upcoming projects in Gurgaon?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Most projects aim for possession within 3–4 years of launch. Buyers should always check the RERA-approved completion date before investing."
+                  }
+                }, {
+                  "@type": "Question",
+                  "name": "Why invest in upcoming projects in Gurgaon?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Investing in upcoming projects in Gurgaon offers pre-launch pricing, modern amenities, strong connectivity, and excellent long-term appreciation, making them ideal for both homebuyers and investors."
+                  }
+                }]
+              } : projectStatus === 'newlaunch' ? {
+                "@context": "https://schema.org",
+                "@type": "FAQPage",
+                "mainEntity": [{
+                  "@type": "Question",
+                  "name": "What makes new launch projects in Gurgaon a good investment?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "They offer lower prices, modern features, and great value growth thanks to Gurgaon's rapid development and strong business presence."
+                  }
+                }, {
+                  "@type": "Question",
+                  "name": "Which are the best areas to buy new launch projects in Gurgaon?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Top localities include Dwarka Expressway, Golf Course Extension Road, Sohna Road, and New Gurgaon, known for premium developments and excellent connectivity."
+                  }
+                }, {
+                  "@type": "Question",
+                  "name": "How can I find RERA-approved new launch projects in Gurgaon?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "You can visit trusted real estate platforms like 100acress.com to explore verified, RERA-registered new launch projects with complete details."
+                  }
+                }, {
+                  "@type": "Question",
+                  "name": "What are the typical payment plans for new launch projects in Gurgaon?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Most developers offer construction-linked plans or flexible installment options, letting you pay in stages as the project progresses, making it easier to manage finances."
+                  }
+                }, {
+                  "@type": "Question",
+                  "name": "Are new launch projects in Gurgaon suitable for end-users or investors?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Both! End-users get modern, comfortable homes, while investors benefit from high ROI and rental demand in Gurgaon's fast-developing areas."
+                  }
+                }, {
+                  "@type": "Question",
+                  "name": "What amenities can I expect in Gurgaon's new launch projects?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Most projects offer clubhouses, swimming pools, gyms, landscaped gardens, and smart home features, ensuring a premium living experience."
+                  }
+                }, {
+                  "@type": "Question",
+                  "name": "How do I choose the right new launch project in Gurgaon?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Check the builder's reputation, location, RERA status, amenities, and future development plans around the area before investing."
+                  }
+                }]
+              } : projectStatus === 'underconstruction' ? {
+                "@context": "https://schema.org",
+                "@type": "FAQPage",
+                "mainEntity": [{
+                  "@type": "Question",
+                  "name": "Which are the top under-construction projects in Gurgaon?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Leading projects include DLF Privana South, Godrej Miraya, Elan The Presidential, M3M Mansion, Krisumi Waterfall, Signature Global Twin Tower, and Keystone Seasons."
+                  }
+                }, {
+                  "@type": "Question",
+                  "name": "What are the top luxury under-construction properties?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Luxury projects feature smart layouts, wellness amenities, and include developments on Golf Course Road, Southern Peripheral Road, and Dwarka Expressway."
+                  }
+                }, {
+                  "@type": "Question",
+                  "name": "Is it cheaper to buy an under-construction property in Gurgaon?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Yes, early-phase properties are more economical with lower prices, flexible payment plans, and potential capital appreciation."
+                  }
+                }, {
+                  "@type": "Question",
+                  "name": "What legal checks should I do before booking?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Verify RERA registration, clear land titles, approved plans, commencement certificate, and the developer's track record."
+                  }
+                }, {
+                  "@type": "Question",
+                  "name": "Why is RERA registration important?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "RERA ensures legal transparency, protects buyer investments, and enforces builder commitments on delivery and amenities."
+                  }
+                }, {
+                  "@type": "Question",
+                  "name": "How do under-construction projects offer high ROI?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Projects on key corridors like Dwarka Expressway and Golf Course Road have strong appreciation potential due to infrastructure growth."
+                  }
+                }, {
+                  "@type": "Question",
+                  "name": "Can buyers customize units in under-construction projects?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Yes, many luxury projects allow customization of layouts, interiors, and finishes during early development."
+                  }
+                }]
+              } : projectStatus === 'readytomove' ? {
+                "@context": "https://schema.org",
+                "@type": "FAQPage",
+                "mainEntity": [{
+                  "@type": "Question",
+                  "name": "Which are the best ready-to-move projects in Gurugram?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Top projects include M3M St Andrews, Greenopolis, AMB Selfie Street, and Raheja Sampada offering premium amenities and immediate possession."
+                  }
+                }, {
+                  "@type": "Question",
+                  "name": "Where can I find affordable ready-to-move flats in Gurugram?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Affordable options are available in sectors like Dwarka Expressway, New Gurgaon, and Sohna Road with good amenities and prices under ₹2 Cr."
+                  }
+                }, {
+                  "@type": "Question",
+                  "name": "What benefits come with buying ready-to-move properties?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Immediate possession, no construction delays, GST savings on property price, and potential for instant rental income."
+                  }
+                }, {
+                  "@type": "Question",
+                  "name": "Are ready-to-move commercial properties available in Gurugram?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Yes, projects like AIPL Joy Street and Trehan IRIS Broadway provide ready shops and office spaces for business use."
+                  }
+                }, {
+                  "@type": "Question",
+                  "name": "How do I verify the legal status of ready-to-move projects?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Check the project's RERA registration and possession certificate on official state RERA websites for secure purchases."
+                  }
+                }, {
+                  "@type": "Question",
+                  "name": "Can I get home loans on ready-to-move properties?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Yes, legally clear ready-to-move properties are eligible for home loans from banks and financial institutions."
+                  }
+                }, {
+                  "@type": "Question",
+                  "name": "What amenities are commonly included in ready-to-move projects?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Swimming pools, gyms, parks, clubhouse, 24/7 security, and landscaped gardens are standard features in premium ready-to-move projects."
+                  }
+                }]
+              } : {}
+            )}
+          </script>
+        )}
+
+        {/* Breadcrumb Structured Data */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://www.100acress.com/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Projects",
+                "item": "https://www.100acress.com/projects/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 3,
+                "name": projectStatus === 'upcoming' ? 'Upcoming Projects' :
+                  projectStatus === 'newlaunch' ? 'New Launch Projects' :
+                    projectStatus === 'underconstruction' ? 'Under Construction Projects' :
+                      projectStatus === 'readytomove' ? 'Ready To Move Projects' : currentConfig.title,
+                "item": canonical || currentConfig.canonical
+              }
+            ]
+          })}
+        </script>
+
+        {/* Product Schema for Senior Living */}
+        {projectStatus === 'senior-living' && (
+          <script type="application/ld+json">
+            {JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Product",
+              "name": "Senior Living in Gurgaon",
+              "description": "Explore senior living in Gurgaon designed for safety, comfort, and independent lifestyles. Peaceful communities with healthcare access and daily support.",
+              "sku": "projects-in-dubai-uae",
+              "image": "https://www.100acress.com/Images/mainog.png",
+              "brand": {
+                "@type": "Brand",
+                "name": "Senior Living in Gurgaon"
+              },
+              "offers": {
+                "@type": "AggregateOffer",
+                "priceCurrency": "INR",
+                "lowPrice": "9600000",
+                "availability": "https://schema.org/InStock",
+                "url": "https://www.100acress.com/projects/senior-living/"
+              },
+              "aggregateRating": {
+                "@type": "AggregateRating",
+                "ratingValue": "4.9",
+                "reviewCount": "1989"
+              },
+              "url": "https://www.100acress.com/projects/senior-living/"
+            })}
+          </script>
+        )}
+      </Helmet>
+
+      {/* Navbar */}
+      <Navbar />
+
+      {/* Hero Section */}
+      <Hero
+        title={currentConfig.title}
+        subtitle={currentConfig.subtitle || currentConfig.description}
+        onSearch={handleSearch}
+        onFilterChange={handleFilterChange}
+        filters={filters}
+        projectStatus={projectStatus}
+        pageType={pageType}
+      />
+
+      {/* Section Separator */}
+      <div className="bg-gradient-to-r from-gray-50 to-gray-100 h-1"></div>
+
+      {/* Filter Bar - Show only after scrolling past hero (Desktop only) */}
+      <div className={`hidden lg:block fixed top-16 left-0 right-0 z-40 transition-all duration-500 ease-in-out ${showFilterBar
+          ? 'transform translate-y-0 opacity-100 scale-100 animate-in slide-in-from-top-4'
+          : 'transform -translate-y-full opacity-0 scale-95 pointer-events-none'
+        }`}>
+        <FilterBar
+          view={viewMode}
+          setView={setViewMode}
+          sort={sort}
+          setSort={setSort}
+          filters={filters}
+          onFilterChange={handleFilterChange}
+          onSearch={handleSearch}
+        />
+      </div>
+
+      {/* Section Separator */}
+      <div className="bg-gradient-to-r from-gray-100 to-gray-50 h-1"></div>
+
+      {/* Main Content Area */}
+      <div className={`bg-gray-50 transition-all duration-500 ease-in-out ${showFilterBar ? 'lg:pt-32' : 'pt-0'}`}>
+
+        {/* Main Content with Sidebar */}
+        <div className="max-w-screen-xl mx-auto px-2 sm:px-4 md:px-6 py-4 sm:py-8 lg:pt-0">
+          <div className="flex flex-col lg:flex-row gap-4 sm:gap-8">
+
+            {/* Sidebar - Enhanced SEO Content */}
+            <div className="lg:w-1/3 xl:w-1/4 hidden">
+              <div className="sticky top-32 max-h-[calc(100vh-8rem)] overflow-y-auto pb-6 pt-4">
+                <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300">
+                  <div className="text-center mb-6">
+                    <div className="w-16 h-16 bg-gradient-to-br from-red-500 to-red-700 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <span className="text-2xl">🏠</span>
+                    </div>
+                    <h2 className="text-xl font-bold text-gray-900 mb-2">
+                      {currentConfig.title}
+                    </h2>
+                    <div className="w-12 h-1 bg-gradient-to-r from-red-500 to-red-700 mx-auto rounded-full"></div>
+                  </div>
+
+                  <div className="text-gray-700">
+                    <p className="text-sm leading-relaxed mb-4 text-gray-600">
+                      {currentConfig.description}
+                    </p>
+                    <p className="text-sm leading-relaxed mb-4 text-gray-600">
+                      {projectStatus === 'brandedresidences' ? 
+                        "Branded residences represent a new chapter in modern luxury living. These homes are created when experienced real estate developers collaborate with globally recognized design and lifestyle partners. The result is a residence where architecture, interiors, and everyday comfort are thoughtfully planned together. From carefully selected materials to elegant layouts, every detail reflects a refined standard of living." :
+                        `Browse through our curated collection of ${projectStatus === 'upcoming' ? 'upcoming' : projectStatus === 'underconstruction' ? 'under construction' : projectStatus === 'readytomove' ? 'ready to move' : 'new launch'} properties in Gurgaon.
+                      Each project is carefully selected to meet modern living standards.`
+                      }
+                    </p>
+                    <p className="text-sm leading-relaxed mb-6 text-gray-600">
+                      {projectStatus === 'brandedresidences' ? 
+                        "Compared to conventional housing, branded homes are aimed at design consistency, high-quality construction, and well curated lifestyle experience. Premium services, caring services and serene living conditions are usually taken by the residents to enable them to live in comfort and privacy. These residences are being developed in Gurugram and Noida, cities known for their modern skyline and growing demand for premium residential living." :
+                        `Browse through our curated collection of ${projectStatus === 'upcoming' ? 'upcoming' : projectStatus === 'underconstruction' ? 'under construction' : projectStatus === 'readytomove' ? 'ready to move' : 'new launch'} properties in Gurgaon.
+                      Each project is carefully selected to meet modern living standards.`
+                      }
+                    </p>
+
+                    {/* Enhanced Feature Cards */}
+                    <div className="space-y-4 mb-6">
+                      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-xl border border-blue-100 hover:shadow-md transition-all duration-300">
+                        <div className="flex items-center gap-3 mb-2">
+                          <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center">
+                            <span className="text-white text-sm">🏢</span>
+                          </div>
+                          <h3 className="font-bold text-gray-900 text-sm">Premium Amenities</h3>
+                        </div>
+                        <p className="text-xs text-gray-600">✅ Gym, ✅ Swimming Pool, ✅ Clubhouse, ✅ 24/7 Security</p>
+                      </div>
+
+                      <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-4 rounded-xl border border-green-100 hover:shadow-md transition-all duration-300">
+                        <div className="flex items-center gap-3 mb-2">
+                          <div className="w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center">
+                            <span className="text-white text-sm">📍</span>
+                          </div>
+                          <h3 className="font-bold text-gray-900 text-sm">Strategic Location</h3>
+                        </div>
+                        <p className="text-xs text-gray-600">✅ Business Hubs, ✅ Schools, ✅ Hospitals, ✅ Entertainment Zones</p>
+                      </div>
+
+                      <div className="bg-gradient-to-r from-orange-50 to-amber-50 p-4 rounded-xl border border-orange-100 hover:shadow-md transition-all duration-300">
+                        <div className="flex items-center gap-3 mb-2">
+                          <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center">
+                            <span className="text-white text-sm">💰</span>
+                          </div>
+                          <h3 className="font-bold text-gray-900 text-sm">Best Prices</h3>
+                        </div>
+                        <p className="text-xs text-gray-600">✅ Competitive Pricing, ✅ Flexible Payment Plans, ✅ Attractive Offers</p>
+                      </div>
+                    </div>
+
+                    {/* Expert CTA Button */}
+                    <div className="text-center">
+                      <a
+                        href={`https://wa.me/918500900100?text=${encodeURIComponent(`Hi, I'm interested in ${projectStatus} properties in Gurgaon. Can you help me find the best options?`)}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="block w-full hover:scale-105 transition-all duration-300 hover:-translate-y-1"
+                      >
+                        <img
+                          src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/icons/Untitled+design+(1).png"
+                          alt="Talk to an Expert"
+                          className="w-full h-auto rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+                        />
+                      </a>
+
+                      <p className="text-xs text-gray-500 mt-2">
+                        Get personalized recommendations from our real estate experts
+                      </p>
+                    </div>
+
+                    {/* Trust Indicators */}
+                    <div className="mt-6 pt-4 border-t border-gray-200">
+                      <div className="flex items-center justify-center gap-4 text-xs text-gray-500">
+                        <div className="flex items-center gap-1">
+                          <span>🛡️</span>
+                          <span>RERA Approved</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <span>⭐</span>
+                          <span>4.8/5 Rating</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <span>🏆</span>
+                          <span>Trusted</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Main Content - Project Cards */}
+            <div className="w-full">
+
+              {/* Loading State */}
+              {isLoading && (
+                <div className="flex flex-col items-center justify-center py-12">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mb-4"></div>
+                  <p className="text-gray-600">Loading properties...</p>
+                </div>
+              )}
+
+              {/* No Projects State */}
+              {!isLoading && displayedProjects.length === 0 && (
+                <div className="flex flex-col items-center justify-center py-12">
+                  <div className="text-6xl mb-4">🏠</div>
+                  <h3 className="text-xl font-semibold text-gray-800 mb-2">Finding a Perfect Match for you</h3>
+                  <p className="text-gray-600 text-center max-w-md">
+                    Homes that get you - because perfect matches aren’t just for people.
+                  </p>
+                </div>
+              )}
+
+              {/* Project Cards Grid */}
+              {!isLoading && displayedProjects.length > 0 && (
+                <div className={`grid gap-3 sm:gap-6 ${viewMode === 'grid'
+                    ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'
+                    : 'grid-cols-1'
+                  }`}>
+                  {displayedProjects.map((item, index) => {
+                    const projectId = item._id || index;
+                    const isSaved = savedProjects.has(projectId);
+                    const isComparing = compareProjects.has(projectId);
+
+                    return (
+                      <ProjectCard
+                        key={index}
+                        project={item}
+                        view={viewMode}
+                        onExplore={handleExplore}
+                        onFavorite={toggleSaveProject}
+                        onShare={handleShare}
+                        isFav={isSaved}
+                        onCompareToggle={toggleCompareProject}
+                        compared={isComparing}
+                        projectStatus={projectStatus}
+                      />
+                    );
+                  })}
+                </div>
+              )}
+
+              {/* Dynamic Know More Section - Right after project cards */}
+              {currentConfig?.customFields?.knowMoreContent ? (
+                <div className="mt-8 p-2 bg-green-100 border border-green-300 rounded">
+                  <p className="text-xs text-green-800">KnowMoreSection Component Loading...</p>
+                  <KnowMoreSection data={currentConfig.customFields.knowMoreContent} />
+                </div>
+              ) : (
+                <div className="mt-8 p-2 bg-red-100 border border-red-300 rounded">
+                  <p className="text-xs text-red-800">No knowMoreContent found</p>
+                </div>
+              )}
+
+              {/* Load More Button - Global Component */}
+              <GlobalLoadingButton
+                isLoading={loadingMore}
+                hasMore={hasMoreProjects}
+                onLoadMore={onLoadMore}
+                loadedCount={displayedProjects.length}
+                totalCount={null}
+                loadingText="Loading more projects..."
+                loadMoreText="Load More Projects"
+                variant="primary"
+                size="medium"
+                showProgress={true}
+              />
+
+
+              {/* Empty State */}
+              {(!filteredProjects.length && !memoizedProjectData?.length) && (
+                <div className="text-center py-16">
+                  <div className="w-24 h-24 mx-auto mb-6 bg-gray-100 rounded-full flex items-center justify-center">
+                    <span className="text-4xl">🏠</span>
+                  </div>
+                  <h3 className="text-xl font-semibold text-gray-900 mb-2">Loading...</h3>
+                  <p className="text-gray-600 mb-6">Please wait while we load the properties.</p>
+                  <button
+                    onClick={() => {
+                      setFilteredProjects([]);
+                      setFilters({
+                        city: '',
+                        location: '',
+                        projectType: '',
+                        price: ''
+                      });
+                    }}
+                    className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg font-medium transition-all duration-200"
+                  >
+                    Clear Filters
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Section Separator */}
+          <div className="mt-16 bg-gradient-to-r from-gray-50 to-gray-100 h-1"></div>
+
+          {/* Trust Boosters Section */}
+          <div className="mt-12 sm:mt-16 py-8 sm:py-12">
+            <div className="max-w-6xl mx-auto px-3 sm:px-4 md:px-6">
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-6 sm:mb-8 text-center">
+                Why Choose 100acress?
+              </h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8">
+                <div className="text-center group hover:scale-105 transition-all duration-300">
+                  <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+                    <span className="text-2xl">🛡️</span>
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">RERA Approved</h3>
+                  <p className="text-gray-600 text-sm">All our projects are RERA registered ensuring legal compliance and transparency</p>
+                </div>
+
+                <div className="text-center group hover:scale-105 transition-all duration-300">
+                  <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:rotate-12 transition-transform duration-300">
+                    <span className="text-2xl">🏆</span>
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Trusted Partners</h3>
+                  <p className="text-gray-600 text-sm">Working with top developers like DLF, M3M, Sobha, and Signature Global</p>
+                </div>
+
+                <div className="text-center group hover:scale-105 transition-all duration-300">
+                  <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-orange-600 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:rotate-12 transition-transform duration-300">
+                    <span className="text-2xl">🏠</span>
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Premium Properties</h3>
+                  <p className="text-gray-600 text-sm">Handpicked luxury properties with modern amenities and prime locations</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* FAQ Section for SEO - Full Width */}
+          <div className="mt-12 sm:mt-16">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-6 sm:mb-8 text-center px-3">
+              Frequently Asked Questions
+            </h2>
+            <div className="max-w-4xl mx-auto px-3 sm:px-4">
+              <div className="border border-gray-200 rounded-lg overflow-hidden">
+                <FAQAccordion
+                  projectStatus={projectStatus}
+                  customFAQs={currentConfig.faqs}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Compare Bar */}
+      <CompareBar
+        items={Array.from(compareProjects).map(id =>
+          displayedProjects.find(p => (p._id || p.id) === id)
+        ).filter(Boolean)}
+        onOpen={() => console.log('Open comparison')}
+        onRemove={(project) => toggleCompareProject(project)}
+      />
+
+
+
+      {/* Footer */}
+      <Footer />
+    </>
+  );
+};
+
+export default GlobalFilterTemplate;

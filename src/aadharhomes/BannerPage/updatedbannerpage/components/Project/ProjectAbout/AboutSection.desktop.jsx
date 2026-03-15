@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { motion } from 'framer-motion';
 import './AboutSection.desktop.css';
 
-const AboutSectionDesktop = ({ projectName, description, imageUrl, onShowCallback = () => {} }) => {
+const AboutSectionDesktop = ({ projectName, description, imageUrl, onShowCallback = () => {}, handleBrochureDownload }) => {
   const sectionRef = useRef(null);
   const titleRef = useRef(null);
 
@@ -72,26 +73,42 @@ const AboutSectionDesktop = ({ projectName, description, imageUrl, onShowCallbac
               )}
             </div>
 
-            {/* Read more / less toggle */}
-            <div className="about-section-read-more">
+            {/* Buttons Row - Download Brochure and Get Details */}
+            <div className="about-section-buttons-row">
               <button
-                type="button"
-                onClick={() => setExpanded(!expanded)}
-                className="about-section-read-more-button"
-                aria-expanded={expanded}
-                aria-controls="about-description"
+                onClick={handleBrochureDownload}
+                className="about-section-download-btn"
               >
-                {expanded ? 'Show Less' : 'Read More'}
+                {/* Subtle glow effect */}
+                <div className="about-section-download-btn-glow"></div>
+
+                {/* Button content */}
+                <div className="about-section-download-btn-content">
+                  <svg
+                    width="12"
+                    height="12"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="about-section-download-btn-icon"
+                  >
+                    <polyline points="6,9 12,15 18,9"/>
+                  </svg>
+                  <span className="about-section-download-btn-text">Download Brochure</span>
+                </div>
+              </button>
+              
+              <button 
+                onClick={onShowCallback}
+                className="about-section-get-details"
+                aria-label={`Get details for ${projectName || 'this project'}`}
+              >
+                Get Details
               </button>
             </div>
-            
-            <button 
-              onClick={onShowCallback}
-              className="about-section-get-details"
-              aria-label={`Get details for ${projectName || 'this project'}`}
-            >
-              Get Details
-            </button>
           </div>
         </div>
         

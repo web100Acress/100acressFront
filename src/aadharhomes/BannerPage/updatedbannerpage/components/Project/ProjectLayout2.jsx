@@ -704,6 +704,7 @@ const ProjectLayout2 = () => {
             description={projectViewDetails?.project_discripation}
             imageUrl={projectViewDetails?.projectGallery?.[0]?.url}
             onShowCallback={handleShowCallback}
+            handleBrochureDownload={handleBrochureDownload}
           />
         </Suspense>
       </div>
@@ -897,17 +898,17 @@ const ProjectLayout2 = () => {
         />
       </div>
 
-        <div className="relative p-6 md:p-8 text-center" style={{ backgroundColor: '#2d94b3', paddingTop: '120px', zIndex: 1, position: 'relative' }}>
+        {/* <div className="relative p-6 md:p-8 text-center" style={{ backgroundColor: '#2d94b3', paddingTop: '120px', zIndex: 1, position: 'relative' }}> */}
                 {/* Premium Header Section */}
-                <div className="mb-4">
+                {/* <div className="mb-4"> */}
                   {/* Refined Circular Icon */}
-                  <div className="inline-flex items-center justify-center mb-3">
-                    <div className="relative">
+                  {/* <div className="inline-flex items-center justify-center mb-3">
+                    <div className="relative"> */}
                       {/* Gradient ring */}
-                      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-yellow-500/20 via-yellow-400/15 to-yellow-300/20 p-[1px]">
-                        <div className="w-full h-full rounded-full bg-gray-900 flex items-center justify-center">
+                      {/* <div className="w-12 h-12 rounded-full bg-gradient-to-br from-yellow-500/20 via-yellow-400/15 to-yellow-300/20 p-[1px]">
+                        <div className="w-full h-full rounded-full bg-gray-900 flex items-center justify-center"> */}
                           {/* Document icon - minimalist line style */}
-                          <svg
+                          {/* <svg
                             width="16"
                             height="16"
                             viewBox="0 0 24 24"
@@ -926,28 +927,28 @@ const ProjectLayout2 = () => {
                         </div>
                       </div>
                     </div>
-                  </div>
+                  </div> */}
 
                   {/* Luxury Typography */}
-                  <h3 className="text-xl md:text-2xl font-light text-white mb-2 tracking-wide">
+                  {/* <h3 className="text-xl md:text-2xl font-light text-white mb-2 tracking-wide">
                     Download <span className="bg-gradient-to-r from-yellow-400 via-yellow-400 to-yellow-300 bg-clip-text text-transparent font-medium">{projectViewDetails?.projectName || 'Project'}</span> Brochure
-                  </h3>
+                  </h3> */}
 
                   {/* Elegant divider */}
-                  <div className="w-10 h-px bg-gradient-to-r from-transparent via-yellow-400/50 to-transparent mx-auto mb-3"></div>
+                  {/* <div className="w-10 h-px bg-gradient-to-r from-transparent via-yellow-400/50 to-transparent mx-auto mb-3"></div> */}
 
                   {/* Sophisticated subtext */}
-                  <p className="text-gray-300 text-base font-light leading-relaxed max-w-xl mx-auto">
+                  {/* <p className="text-gray-300 text-base font-light leading-relaxed max-w-xl mx-auto">
                     Get detailed information on floor plans, pricing, payment options, amenities, and specifications to help you make an informed decision.
                   </p>
-                </div>
+                </div> */}
 
                 {/* Subtle separator */}
-                <div className="w-full h-px bg-gradient-to-r from-transparent via-yellow-400/30 to-transparent mb-4"></div>
+                {/* <div className="w-full h-px bg-gradient-to-r from-transparent via-yellow-400/30 to-transparent mb-4"></div> */}
 
                 {/* Information Columns */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
-                  {/* Floor Plans */}
+                {/* <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4"> */}
+                  {/* Floor Plans
                   <div className="flex flex-col items-center space-y-1.5">
                     <div className="w-6 h-6 flex items-center justify-center">
                       <svg
@@ -967,10 +968,10 @@ const ProjectLayout2 = () => {
                       </svg>
                     </div>
                     <span className="text-gray-300 text-sm font-medium tracking-wide">Floor Plans</span>
-                  </div>
+                  </div> */}
 
                   {/* Pricing & Payment Plans */}
-                  <div className="flex flex-col items-center space-y-1.5">
+                  {/* <div className="flex flex-col items-center space-y-1.5">
                     <div className="w-6 h-6 flex items-center justify-center">
                       <svg
                         width="14"
@@ -988,10 +989,10 @@ const ProjectLayout2 = () => {
                       </svg>
                     </div>
                     <span className="text-gray-300 text-sm font-medium tracking-wide">Pricing & Payment Plans</span>
-                  </div>
+                  </div> */}
 
                   {/* Amenities & Specifications */}
-                  <div className="flex flex-col items-center space-y-1.5">
+                  {/* <div className="flex flex-col items-center space-y-1.5">
                     <div className="w-6 h-6 flex items-center justify-center">
                       <svg
                         width="14"
@@ -1010,42 +1011,13 @@ const ProjectLayout2 = () => {
                     </div>
                     <span className="text-gray-300 text-sm font-medium tracking-wide">Amenities & Specifications</span>
                   </div>
-                </div>
+                </div> */}
 
                 {/* Premium CTA Button */}
-                <div className="flex justify-center">
-                  <motion.button
-                    onClick={handleBrochureDownload}
-                    className="group relative bg-gradient-to-r from-yellow-500 via-yellow-500 to-yellow-400 text-black px-6 py-2.5 rounded-full font-medium text-sm flex items-center space-x-2 hover:from-yellow-400 hover:via-yellow-400 hover:to-yellow-300 transition-all duration-300 shadow-lg hover:shadow-yellow-500/20"
-                    whileHover={{
-                      scale: 1.02,
-                      boxShadow: "0 8px 20px rgba(234, 179, 8, 0.2)"
-                    }}
-                    whileTap={{ scale: 0.98 }}
-                  >
-                    {/* Subtle glow effect */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-yellow-400 to-yellow-300 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10 blur-sm"></div>
-
-                    {/* Button content */}
-                    <div className="relative flex items-center space-x-2">
-                      <svg
-                        width="12"
-                        height="12"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        className="text-black"
-                      >
-                        <polyline points="6,9 12,15 18,9"/>
-                      </svg>
-                      <span className="font-medium tracking-wide">Download Brochure</span>
-                    </div>
-                  </motion.button>
-                </div>
-              </div>
+                {/* <div className="flex justify-center"> */}
+                 
+                {/* </div> */}
+              {/* </div> */}
 
       {/* Related Projects */}
       {/* <RelatedProjects 
