@@ -420,7 +420,7 @@
 .about-section-download-btn-glow {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to right, #fbbf24, #fde047);
+  /* background: linear-gradient(to right, #fbbf24, #fde047); */
   border-radius: 9999px;
   opacity: 0;
   transition: opacity 0.3s ease;
