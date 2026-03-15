@@ -23,7 +23,7 @@ import LoadingSpinner from "./Components/LoadingSpinner";
 import ErrorBoundary from "./Components/ErrorBoundary";
 import LoginForm from "./Resister/LoginForm";
 import AuthModal from "./Resister/AuthModal";
-import { registerServiceWorker } from "./utils/serviceWorker";
+import { registerServiceWorker } from "./Utils/serviceWorker";
 
 // import ConfettiAllCorners from "./Components/ConfettiAllCorners"; 
 

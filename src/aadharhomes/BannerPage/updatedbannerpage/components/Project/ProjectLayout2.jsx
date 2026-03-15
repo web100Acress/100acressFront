@@ -125,7 +125,7 @@ const renderMetaTags = () => {
       <link rel="dns-prefetch" href="//fonts.googleapis.com" />
       <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
       <link rel="preconnect" href="https://fonts.googleapis.com" />
-      <link rel="modulepreload" href="/src/utils/serviceWorker.js" as="script" />
+      <link rel="modulepreload" href="/src/Utils/serviceWorker.js" as="script" />
       
       {/* Structured Data */}
       <script type="application/ld+json">
