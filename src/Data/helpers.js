@@ -187,6 +187,42 @@ export const isBHKPage = (key) => {
 };
 
 /**
+ * Check if page is a city page
+ * @param {string} key - The page key
+ * @returns {boolean}
+ */
+export const isCityPage = (key) => {
+  return key?.startsWith('city/');
+};
+
+/**
+ * Check if page is a status page
+ * @param {string} key - The page key
+ * @returns {boolean}
+ */
+export const isStatusPage = (key) => {
+  return key?.startsWith('status/');
+};
+
+/**
+ * Check if page is a budget page
+ * @param {string} key - The page key
+ * @returns {boolean}
+ */
+export const isBudgetPage = (key) => {
+  return key?.startsWith('budget/');
+};
+
+/**
+ * Check if page is a type page
+ * @param {string} key - The page key
+ * @returns {boolean}
+ */
+export const isTypePage = (key) => {
+  return key?.startsWith('type/');
+};
+
+/**
  * Get badge info for a page
  * @param {string} key - The page key
  * @returns {object} Badge info with text and color
@@ -235,13 +271,20 @@ export const getRelatedPages = (currentKey, limit = 3) => {
   const allKeys = getAllPageKeys().filter(k => k !== currentKey);
   
   // Get keys from same category
-  const currentData = getStaticData(currentKey);
   const isProject = isProjectPage(currentKey);
   const isBHK = isBHKPage(currentKey);
+  const isCity = isCityPage(currentKey);
+  const isStatus = isStatusPage(currentKey);
+  const isBudget = isBudgetPage(currentKey);
+  const isType = isTypePage(currentKey);
   
   const relatedKeys = allKeys.filter(key => {
     if (isProject) return isProjectPage(key);
     if (isBHK) return isBHKPage(key);
+    if (isCity) return isCityPage(key);
+    if (isStatus) return isStatusPage(key);
+    if (isBudget) return isBudgetPage(key);
+    if (isType) return isTypePage(key);
     return false;
   });
   
@@ -285,6 +328,10 @@ export default {
   getAllPageData,
   isProjectPage,
   isBHKPage,
+  isCityPage,
+  isStatusPage,
+  isBudgetPage,
+  isTypePage,
   getPageBadge,
   searchPages,
   getRelatedPages,

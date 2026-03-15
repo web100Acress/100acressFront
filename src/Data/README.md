@@ -24,9 +24,52 @@ src/data/
 │   │   ├── bhk3.js
 │   │   ├── bhk4.js
 │   │   └── bhk5.js
-│   └── developers/      # Developer pages (can be added)
+│   ├── cities/          # City pages
+│   │   ├── gurugram.js
+│   │   ├── delhi.js
+│   │   ├── noida.js
+│   │   ├── pune.js
+│   │   ├── mumbai.js
+│   │   ├── goa.js
+│   │   ├── dubai.js
+│   │   ├── alwar.js
+│   │   ├── sonipat.js
+│   │   ├── karnal.js
+│   │   ├── jalandhar.js
+│   │   ├── pushkar.js
+│   │   ├── ayodhya.js
+│   │   ├── panipat.js
+│   │   ├── panchkula.js
+│   │   ├── kasauli.js
+│   │   └── ludhiana.js
+│   ├── status/          # Status pages
+│   │   ├── upcoming.js
+│   │   ├── underconstruction.js
+│   │   ├── readytomove.js
+│   │   ├── newlaunch.js
+│   │   └── brandedresidences.js
+│   ├── budget/          # Budget pages
+│   │   ├── under1cr.js
+│   │   ├── 1to5cr.js
+│   │   ├── 5to10cr.js
+│   │   ├── 10to20cr.js
+│   │   ├── 20to50cr.js
+│   │   └── above50cr.js
+│   └── types/           # Property type pages
+│       ├── residential.js
+│       ├── commercial.js
+│       ├── plots.js
+│       ├── sco.js
+│       ├── independentfloors.js
+│       ├── luxury-villas.js
+│       ├── farmhouse.js
+│       ├── industrial-plots.js
+│       └── plots-gurugram.js
+├── shared/
+│   └── common.js        # Common FAQs, trust indicators, contact info
 ├── index.js             # Central registry
-└── helpers.js           # Utility functions
+├── helpers.js           # Utility functions
+└── README.md            # Documentation
 ```
 
 ## 🚀 Quick Start
@@ -101,6 +144,62 @@ const pageData = getStaticDataByUrl(currentPath);
 | `bhk/3` | `/3-bhk-flats-in-gurgaon` | 3 BHK apartments |
 | `bhk/4` | `/4-bhk-flats-in-gurgaon` | 4 BHK apartments |
 | `bhk/5` | `/5-bhk-flats-in-gurgaon` | 5 BHK apartments |
+
+### City Pages
+
+| Key | URL | Description |
+|-----|-----|-------------|
+| `city/gurugram` | `/projects-in-gurugram` | Gurugram projects |
+| `city/delhi` | `/projects-in-delhi` | Delhi projects |
+| `city/noida` | `/projects-in-noida` | Noida projects |
+| `city/pune` | `/projects-in-pune` | Pune projects |
+| `city/mumbai` | `/projects-in-mumbai` | Mumbai projects |
+| `city/goa` | `/projects-in-goa` | Goa projects |
+| `city/dubai` | `/united-arab-emirates` | Dubai projects |
+| `city/alwar` | `/projects-in-alwar` | Alwar projects |
+| `city/sonipat` | `/projects-in-sonipat` | Sonipat projects |
+| `city/karnal` | `/projects-in-karnal` | Karnal projects |
+| `city/jalandhar` | `/projects-in-jalandhar` | Jalandhar projects |
+| `city/pushkar` | `/projects-in-pushkar` | Pushkar projects |
+| `city/ayodhya` | `/projects-in-ayodhya` | Ayodhya projects |
+| `city/panipat` | `/projects-in-panipat` | Panipat projects |
+| `city/panchkula` | `/projects-in-panchkula` | Panchkula projects |
+| `city/kasauli` | `/projects-in-kasauli` | Kasauli projects |
+| `city/ludhiana` | `/projects-in-ludhiana` | Ludhiana projects |
+
+### Status Pages
+
+| Key | URL | Description |
+|-----|-----|-------------|
+| `status/upcoming` | `/projects/upcoming` | Upcoming projects |
+| `status/underconstruction` | `/projects/underconstruction` | Under construction |
+| `status/readytomove` | `/projects/ready-to-move` | Ready to move |
+| `status/newlaunch` | `/projects/newlaunch` | New launch |
+| `status/brandedresidences` | `/branded-residences` | Branded residences |
+
+### Budget Pages
+
+| Key | URL | Description |
+|-----|-----|-------------|
+| `budget/under1cr` | `/projects/under-1-cr` | Under ₹1 Crore |
+| `budget/1to5cr` | `/projects/1-5-cr` | ₹1 - 5 Crore |
+| `budget/5to10cr` | `/projects/5-10-cr` | ₹5 - 10 Crore |
+| `budget/10to20cr` | `/projects/10-20-cr` | ₹10 - 20 Crore |
+| `budget/20to50cr` | `/projects/20-50-cr` | ₹20 - 50 Crore |
+| `budget/above50cr` | `/projects/above-50-cr` | Above ₹50 Crore |
+
+### Property Type Pages
+
+| Key | URL | Description |
+|-----|-----|-------------|
+| `type/residential` | `/projects/residential` | Residential properties |
+| `type/commercial` | `/projects-type/commercial` | Commercial properties |
+| `type/plots` | `/projects/plots` | Residential plots |
+| `type/sco` | `/sco/plots` | SCO plots |
+| `type/independentfloors` | `/projects/independent-floors` | Independent floors |
+| `type/luxury-villas` | `/projects/villas` | Luxury villas |
+| `type/farmhouse` | `/projects/farmhouse` | Farmhouses |
+| `type/industrial-plots` | `/projects/industrial-plots` | Industrial plots |
 
 ## 🛠️ Helper Functions
 
@@ -269,6 +368,10 @@ export { urlPatternRegistry }      // URL mappings
 export { getAllPageKeys }          // Get all keys
 export { getProjectPageKeys }      // Get project keys
 export { getBHKPageKeys }          // Get BHK keys
+export { getCityPageKeys }         // Get city keys
+export { getStatusPageKeys }       // Get status keys
+export { getBudgetPageKeys }       // Get budget keys
+export { getTypePageKeys }         // Get type keys
 export { hasPageData }             // Check if exists
 
 // From helpers.js
@@ -279,6 +382,12 @@ export { getHeroData }             // Get hero
 export { getFAQs }                 // Get FAQs
 export { getFilters }              // Get filters
 export { getSortOptions }          // Get sort options
+export { isProjectPage }           // Check if project page
+export { isBHKPage }               // Check if BHK page
+export { isCityPage }              // Check if city page
+export { isStatusPage }            // Check if status page
+export { isBudgetPage }            // Check if budget page
+export { isTypePage }              // Check if type page
 export { useStaticData }           // React hook
 export { useSEOData }              // React hook for SEO
 ```
