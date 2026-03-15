@@ -1,3 +1,4 @@
+import React, { useMemo } from 'react';
 /**
  * Utility functions for handling S3 images and CORS issues
  */

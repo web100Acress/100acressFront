@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchActiveSideBanners } from '../../Redux/slice/SideBannerSlice';
 
@@ -15,7 +15,7 @@ const DynamicSideBannerMobile = () => {
 
   useEffect(() => {
     dispatch(fetchActiveSideBanners());
-  }, [dispatch]);
+  });, [dispatch]);
 
   // Rotate through banners every 4 seconds (faster for mobile)
   useEffect(() => {
@@ -25,7 +25,7 @@ const DynamicSideBannerMobile = () => {
       setCurrentBannerIndex((prevIndex) => 
         prevIndex === activeSideBanners.length - 1 ? 0 : prevIndex + 1
       );
-    }, 4000);
+    });, 4000);
 
     return () => clearInterval(interval);
   }, [activeSideBanners]);

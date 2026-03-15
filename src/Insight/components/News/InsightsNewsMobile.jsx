@@ -19,7 +19,7 @@ const InsightsNewsMobile = () => {
         const response = await api.get('blog/view');
         if (response.data?.data) {
           setNews(response.data.data);
-        }
+        });
       } catch (error) {
         console.error('Error fetching news:', error);
       } finally {
@@ -27,7 +27,7 @@ const InsightsNewsMobile = () => {
       }
     };
     fetchNews();
-  }, []);
+  });
 
   const categories = useMemo(() => [
     { id: 'all', name: 'All News' },

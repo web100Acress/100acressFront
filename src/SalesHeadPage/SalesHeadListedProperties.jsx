@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import AllListedProperties from '../AdminPage/AllListedProperties';
 
 // Wrapper component that uses the content without the Admin sidebar

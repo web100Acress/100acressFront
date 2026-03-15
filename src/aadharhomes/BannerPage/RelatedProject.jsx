@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useMemo } from 'react';
 import { DataContext } from "../../MyContext";
 const RelatedProject = () => {
     const {allProjectData} = useContext(DataContext);

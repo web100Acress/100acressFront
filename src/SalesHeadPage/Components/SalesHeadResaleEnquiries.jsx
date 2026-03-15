@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useMemo } from 'react';
 import SalesHeadSidebar from "../SalesHeadSidebar";
 import axios from "axios";
-import { message } from "antd";
+import { message } from '../../utils/antdImports';
 import { ClipLoader } from "react-spinners";
 import { getApiBase } from '../../config/apiBase';
 
@@ -219,7 +219,7 @@ const ResaleEnquiries = () => {
 
   useEffect(() => {
     fetchEnquiriesData();
-  }, []);
+  });
 
   const handleClick = (pageNumber) => {
     setCurrentPage(pageNumber);

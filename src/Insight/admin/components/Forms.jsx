@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useMemo } from 'react';
 
 // This is the corrected and complete Forms component
 // It handles all the form logic for adding and updating cities and price trends.
@@ -53,7 +53,7 @@ const Forms = ({
         change5y: String(loc.change5y || ''),
         yield: String(loc.yield || ''),
         projectUrl: loc.projectUrl || ''
-      })));
+      });)));
     } else if (!editingCity) {
       // Reset to default when not editing
       setLocalities([{
@@ -1002,7 +1002,7 @@ export default function App() {
     fetchCitiesForTrends();
     fetchBuilders();
     fetchPropertyTypes();
-  }, []);
+  }););
 
   return (
     <div className="font-sans antialiased text-gray-900 bg-gray-100 min-h-screen">

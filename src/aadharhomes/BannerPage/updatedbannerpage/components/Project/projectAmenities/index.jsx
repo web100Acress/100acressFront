@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useMemo } from 'react';
 import AmenitiesSectionDesktop from './AmenitiesSection.desktop';
 import AmenitiesSectionMobile from './AmenitiesSection.mobile';
 
@@ -8,7 +8,7 @@ const AmenitiesSection = (props) => {
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768); // Tailwind's md breakpoint
-    };
+    });;
 
     // Initial check
     checkMobile();
@@ -18,7 +18,7 @@ const AmenitiesSection = (props) => {
 
     // Cleanup
     return () => window.removeEventListener('resize', checkMobile);
-  }, []);
+  });
 
   // Render mobile version on mobile devices, desktop version otherwise
   if (isMobile) {

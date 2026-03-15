@@ -1,3 +1,4 @@
+import React, { useMemo } from 'react';
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
@@ -7,7 +8,8 @@ import { ArrowRight } from "lucide-react";
 import Api_service from "../../../Redux/utils/Api_Service";
 import { useDubai } from "../context/DubaiContext";
 
-export const PropertiesSection = () => {
+export const PropertiesSection = () => 
+{
   const { getAllUAEProjects } = Api_service();
   const dubaiProjects = useSelector(store => store?.stateproject?.dubai || []);
   const { selectedEmirate } = useDubai();
@@ -20,7 +22,7 @@ export const PropertiesSection = () => {
     } else {
       setIsLoading(false);
     }
-  }, []);
+  });
 
   useEffect(() => {
     if (dubaiProjects && dubaiProjects.length > 0) {

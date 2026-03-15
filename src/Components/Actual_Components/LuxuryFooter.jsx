@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from "react";
+import React, { useMemo } from 'react';
 import api from "../../config/apiClient";
 import { motion } from "framer-motion"
 import { Facebook, Instagram, Youtube, Phone, MessageCircle, Mail, ArrowRight, Linkedin, Sparkles, Star, Twitter } from "lucide-react"

@@ -103,7 +103,7 @@ export default function EMICalculator({
 
   useEffect(() => {
     setAmount((a) => clamp(Number(a) || 0, minAmount, maxAmount));
-  }, []);
+  });
 
   const { emi, totalInterest, totalPayment, months } = useEMICalc({
     amount,

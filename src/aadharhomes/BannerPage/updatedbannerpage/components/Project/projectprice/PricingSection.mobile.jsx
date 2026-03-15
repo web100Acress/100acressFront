@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 
 const PricingSectionMobile = ({ projectName, minPrice, maxPrice, bhkDetails = [], paymentPlan = [], onShowCallback = () => {}, projectViewDetails = null }) => {
   const hasBhkDetails = bhkDetails && Array.isArray(bhkDetails) && bhkDetails.length > 0;

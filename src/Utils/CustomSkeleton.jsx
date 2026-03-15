@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { Skeleton } from 'antd';
+import React, { useMemo } from 'react';
+import { Skeleton } from '../utils/antdImports';
 import * as AOS from 'aos';
 
 const ProjectsSkeleton = () => {

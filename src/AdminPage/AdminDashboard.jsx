@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import apiClient from '../config/apiClient';
 import { getApiBase } from '../config/apiBase';
@@ -163,7 +163,7 @@ const AdminDashboard = () => {
       // Clean up styles on component unmount
       document.head.removeChild(styleSheet);
     };
-  }, []); // Run once on mount to inject styles
+  }); // Run once on mount to inject styles
 
   // Effect for data fetching and interval
   useEffect(() => {
@@ -177,7 +177,7 @@ const AdminDashboard = () => {
       console.log('Component unmounted, clearing interval');
       clearInterval(interval);
     };
-  }, []);
+  });
 
   const fetchCounts = async () => {
     setLoading(true);

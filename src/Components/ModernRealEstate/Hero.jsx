@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo } from 'react';
 import { MdSearch } from 'react-icons/md';
 
 const Hero = ({

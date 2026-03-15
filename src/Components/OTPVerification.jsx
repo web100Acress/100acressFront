@@ -1,6 +1,7 @@
+import React, { useMemo } from 'react';
 import { useEffect, useState, useRef } from "react";
 import api from "../config/apiClient";
-import { Input } from "antd";
+import { Input } from '../utils/antdImports';
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -34,7 +35,7 @@ function OTPVerification({ email, onVerified }) {
       window.removeEventListener("keydown", blockKeys);
       window.removeEventListener("popstate", blockBack);
     };
-  }, []);
+  });
 
   /* ⏱️ RESEND TIMER */
   useEffect(() => {

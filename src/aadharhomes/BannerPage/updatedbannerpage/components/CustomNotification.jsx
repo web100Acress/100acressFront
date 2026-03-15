@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useMemo } from 'react';
 import './CustomNotification.css';
 
 const CustomNotification = ({ message, type, isVisible, onClose }) => {
@@ -13,7 +13,7 @@ const CustomNotification = ({ message, type, isVisible, onClose }) => {
         // Give animation time to complete before calling onClose
         setTimeout(() => {
           if (onClose) onClose();
-        }, 300);
+        });, 300);
       }, 3000);
 
       return () => clearTimeout(timer);

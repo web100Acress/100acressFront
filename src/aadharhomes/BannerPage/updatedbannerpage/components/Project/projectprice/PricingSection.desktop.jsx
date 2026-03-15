@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 
 const PricingSectionDesktop = ({ projectName, minPrice, maxPrice, bhkDetails = [], paymentPlan = [], onShowCallback = () => {}, projectViewDetails = null }) => {
   console.log('PricingSection Props:', { projectName, bhkDetails, paymentPlan, projectViewDetails });

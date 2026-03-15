@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import '../../../styles/newbanner/master.css';
 
 const MasterPlanSection = ({ projectName, imageUrl, isOpen, setIsOpen }) => {

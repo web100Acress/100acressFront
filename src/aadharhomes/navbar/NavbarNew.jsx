@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useRef, useLayoutEffect } from "react";
+import React, { useMemo } from 'react';
 import { Box, Flex, Button, useDisclosure } from "@chakra-ui/react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import styled from "styled-components";
-import { message } from "antd";
+import { message } from '../../utils/antdImports';
 import { useDispatch } from "react-redux";
 import { maxprice, minprice } from "../../Redux/slice/PriceBasedSlice";
 import { useJwt } from "react-jwt";
@@ -275,11 +275,11 @@ export default function Navbar() {
       setHideCity(cty);
       setIsCompactTablet(hmb);
       setShowHamburger(rsl || rnt || pjt || pjs || bdg || cty || hmb);
-    };
+    });;
     compute();
     window.addEventListener('resize', compute);
     return () => window.removeEventListener('resize', compute);
-  }, []);
+  });
 
   // Navbar height management
   useLayoutEffect(() => {
@@ -306,7 +306,7 @@ export default function Navbar() {
       window.removeEventListener('load', onResize);
       try { if (ro) ro.disconnect(); } catch {}
     };
-  }, []);
+  });
 
   // Navigation helpers
   const go = (path) => {
@@ -352,7 +352,7 @@ export default function Navbar() {
   // Avatar updates
   useEffect(() => {
     const updateFromUrl = (url) => {
-      const bust = url ? `${url}${url.includes('?') ? '&' : '?'}t=${Date.now()}` : "";
+      const bust = url ? `${url});${url.includes('?') ? '&' : '?'}t=${Date.now()}` : "";
       setAvatarUrl(bust);
     };
     let bc;
@@ -379,11 +379,11 @@ export default function Navbar() {
       window.removeEventListener('avatar-updated', onCustom);
       window.removeEventListener('profile-updated', onCustom);
     };
-  }, []);
+  });
 
   useEffect(() => {
     fetchAndSetAvatar();
-  }, [token, userIdForEdit]);
+  });, [token, userIdForEdit]);
 
   // City selection
   const [selectedCity, setSelectedCity] = useState(
@@ -446,7 +446,7 @@ export default function Navbar() {
   useEffect(() => {
     if (colorChange) {
       setIsSearchOpen(true);
-    } else {
+    }); else {
       setIsSearchOpen(false);
     }
   }, [colorChange]);
@@ -471,7 +471,7 @@ export default function Navbar() {
       if (observer) observer.disconnect();
       else window.removeEventListener('scroll', changeNavbarColor);
     };
-  }, []);
+  });
 
   // Placeholder rotation
   useEffect(() => {
@@ -483,7 +483,7 @@ export default function Navbar() {
       });
     }, 3000);
     return () => clearInterval(id);
-  }, []);
+  });
 
   // Search handlers
   const handleSearchInput = (e) => {
@@ -538,7 +538,7 @@ export default function Navbar() {
     if (!isOpen) return;
     const onKeyDown = (e) => {
       if (e.key === 'Escape') onClose();
-    };
+    });;
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
   }, [isOpen, onClose]);
@@ -547,7 +547,7 @@ export default function Navbar() {
     if (!isSearchOpen) return;
     const onKeyDown = (e) => {
       if (e.key === 'Escape') setIsSearchOpen(false);
-    };
+    });;
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
   }, [isSearchOpen]);

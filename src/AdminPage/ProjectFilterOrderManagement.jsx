@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useMemo } from 'react';
 import api from '../config/apiClient';
 import { getProjectOrderData } from '../Utils/ProjectOrderData';
 import Sidebar from './Sidebar';
@@ -31,7 +31,7 @@ const ProjectFilterOrderManagement = () => {
 
   useEffect(() => {
     loadData();
-  }, []);
+  });
 
   const loadData = async () => {
     try {

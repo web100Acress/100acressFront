@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import Slider from 'react-slick';
 import '../../../styles/newbanner/FloorPlanSection.css';
 import { BackwardIcon, ForwardIcon } from '../../../Assets/icons';

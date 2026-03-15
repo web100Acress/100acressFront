@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Search, BookOpen, Clock, User, ArrowRight, Bookmark, Share2, Flame,

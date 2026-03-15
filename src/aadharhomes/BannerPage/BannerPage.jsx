@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useContext } from "react";
+import React, { useMemo } from 'react';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { Link, useParams } from "react-router-dom";
@@ -99,7 +99,7 @@ const BannerPage = () => {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }););
 
   const fetchData = async () => {
     try {
@@ -264,9 +264,9 @@ const BannerPage = () => {
   useEffect(() => {
     const timeOutId = setTimeout(() => {
       setShowPopup(true);
-    }, 3000);
+    });, 3000);
     return () => clearTimeout(timeOutId);
-  }, []);
+  });
 
   const {
     frontImage,

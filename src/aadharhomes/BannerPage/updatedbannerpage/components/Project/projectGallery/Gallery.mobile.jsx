@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useMemo } from 'react';
 import './Gallery.mobile.css';
 
 const GalleryMobile = ({ galleryImages = [], projectName = '' }) => {
@@ -17,7 +17,7 @@ const GalleryMobile = ({ galleryImages = [], projectName = '' }) => {
     setIsModalOpen(false);
     setSelectedImage(null);
     document.body.style.overflow = 'auto';
-  }, []);
+  });
 
   const navigateImage = useCallback((direction) => {
     setCurrentImageIndex(prevIndex => {
@@ -54,7 +54,7 @@ const GalleryMobile = ({ galleryImages = [], projectName = '' }) => {
     window.addEventListener('keydown', handleKeyDown);
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
-    };
+    });;
   }, [handleKeyDown]);
 
   if (!galleryImages || galleryImages.length === 0) {

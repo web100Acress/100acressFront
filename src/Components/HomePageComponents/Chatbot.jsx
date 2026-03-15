@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useMemo } from 'react';
 import { MessageCircle, X, Send, User, Bot, Maximize2, Minimize2, Globe, Home, MapPin, CreditCard, Calendar, Sparkles } from 'lucide-react';
 import UserRegistrationForm from './UserRegistrationForm'; // Corrected import path
 import { useToast } from "../../hooks/use-toast"; // Adjust path as needed
@@ -185,18 +185,18 @@ const Chatbot = () => {
       if (storedDetails) {
         setUserDetails(JSON.parse(storedDetails));
         setIsRegistered(true);
-      }
+      });
     } catch (error) {
       console.error("Failed to parse user details from localStorage:", error);
       localStorage.removeItem('userDetails'); // Clear corrupted data
     }
-  }, []);
+  });
 
   useEffect(() => {
     // Save user details to localStorage when they change
     if (userDetails) {
       localStorage.setItem('userDetails', JSON.stringify(userDetails));
-    } else {
+    }); else {
       localStorage.removeItem('userDetails');
     }
   }, [userDetails]);
@@ -207,7 +207,7 @@ const Chatbot = () => {
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages, isTyping]);
+  });, [messages, isTyping]);
 
   useEffect(() => {
     if (isOpen && isRegistered) {
@@ -236,7 +236,7 @@ const Chatbot = () => {
       const interval = setInterval(() => {
         setPulseAnimation(true);
         setTimeout(() => setPulseAnimation(false), 2000);
-      }, 8000); // Pulse every 8 seconds
+      });, 8000); // Pulse every 8 seconds
       return () => clearInterval(interval);
     }
   }, [isOpen]);

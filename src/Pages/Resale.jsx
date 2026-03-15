@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useMemo } from 'react';
 import { Link } from "react-router-dom";
 import { ArrowIcon, RupeeIcon, PropertyIcon } from "../Assets/icons";
 import AOS from "aos";
@@ -52,12 +52,12 @@ const Resale = () => {
   useEffect(() => {
     if (resalePropertydata.length === 0) {
       getResaleProperties();
-    }
-  }, []);
+    });
+  });
 
   useEffect(() => {
     AOS.init();
-  }, []);
+  }););
 
   // Collapsible filter toggle (for mobile)
   const handleCollapse = idx => {

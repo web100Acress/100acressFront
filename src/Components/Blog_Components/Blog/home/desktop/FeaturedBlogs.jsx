@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useMemo } from 'react';
 import { Link } from "react-router-dom";
 import { Calendar, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
@@ -44,7 +44,7 @@ const FeaturedBlogs = () => {
             limit: 3,
             sortBy: 'createdAt',
             sortOrder: 'desc'
-          }
+          });
         });
 
         if (response?.data?.data) {
@@ -58,7 +58,7 @@ const FeaturedBlogs = () => {
     };
 
     fetchFeaturedBlogs();
-  }, []);
+  });
 
   // Animation variants
   const containerVariants = {

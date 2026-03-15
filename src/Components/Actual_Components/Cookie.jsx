@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useMemo } from 'react';
 import { MDBBtn, MDBModal, MDBModalDialog, MDBModalContent, MDBModalBody } from 'mdb-react-ui-kit';
 import { styled } from 'styled-components';
 
@@ -8,9 +8,9 @@ export default function Cookie() {
   useEffect(() => {
     const timer = setTimeout(() => {
         setBottomModal(!bottomModal);
-    }, 9000);
+    });, 9000);
     return () => clearTimeout(timer);
-  }, []);
+  });
 
   return (
     <Wrapper className="section">

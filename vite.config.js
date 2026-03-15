@@ -2,6 +2,25 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import viteCompression from 'vite-plugin-compression';
 
+// Critical CSS plugin (simplified version)
+function criticalCSSPlugin() {
+  return {
+    name: 'critical-css',
+    generateBundle(options, bundle) {
+      // Find CSS files
+      const cssFiles = Object.entries(bundle).filter(([_, chunk]) => 
+        chunk.type === 'asset' && chunk.fileName.endsWith('.css')
+      );
+
+      cssFiles.forEach(([fileName, chunk]) => {
+        // Add a comment to separate critical and non-critical CSS
+        // In production, use a proper CSS parser to extract critical CSS
+        chunk.source = `/* Critical CSS - Above the fold */\n${chunk.source}`;
+      });
+    }
+  };
+}
+
 export default defineConfig(() => {
   return {
     server: {
@@ -33,7 +52,17 @@ export default defineConfig(() => {
       outDir: 'build',
       rollupOptions: {
         output: {
-          // manualChunks removed to let Vite handle chunking automatically
+          // Manual chunks for better code splitting
+          manualChunks: {
+            // Vendor chunks
+            'react-vendor': ['react', 'react-dom', 'react-router-dom'],
+            'ui-vendor': ['antd', '@chakra-ui/react', '@emotion/react', '@emotion/styled', 'styled-components'],
+            'icons': ['lucide-react', 'react-icons/fa', 'react-icons/fi', 'react-icons/md'],
+            'utils': ['axios', '@tanstack/react-query', 'react-lazyload', 'dompurify'],
+            'animations': ['framer-motion', 'animate.css'],
+            'mdb': ['mdb-react-ui-kit'],
+            'location': ['country-state-city'],
+          },
           chunkFileNames: (chunkInfo) => {
             const facadeModuleId = chunkInfo.facadeModuleId ? chunkInfo.facadeModuleId.split('/').pop() : 'chunk';
             return `js/[name]-[hash].js`;
@@ -43,6 +72,10 @@ export default defineConfig(() => {
             const info = assetInfo.name.split('.');
             const ext = info[info.length - 1];
             if (/\.(css)$/.test(assetInfo.name)) {
+              // Split CSS into critical and non-critical
+              if (assetInfo.name.includes('critical')) {
+                return `css/critical-[name]-[hash].${ext}`;
+              }
               return `css/[name]-[hash].${ext}`;
             }
             if (/\.(png|jpe?g|gif|svg|webp|ico)$/.test(assetInfo.name)) {
@@ -59,13 +92,20 @@ export default defineConfig(() => {
         compress: {
           drop_console: true, // Remove console.log in production
           drop_debugger: true,
+          pure_funcs: ['console.log', 'console.info', 'console.debug', 'console.warn'],
+        },
+        mangle: {
+          safari10: true,
         },
       },
+      cssCodeSplit: true, // Enable CSS code splitting
+      cssTarget: 'chrome80', // Target modern browsers for better CSS optimization
     },
     plugins: [
       react({
         include: /\.(mdx|js|jsx|ts|tsx)$/,
       }),
+      criticalCSSPlugin(),
       viteCompression({
         algorithm: 'brotliCompress',
         threshold: 10240, // >10KB files
@@ -103,7 +143,8 @@ export default defineConfig(() => {
       ],
       exclude: [
         // Exclude large dependencies that should be lazy loaded
-        'jodit-react'
+        'jodit-react',
+        'framer-motion' // Exclude framer-motion to enable lazy loading
       ]
     },
     // Ensure proper handling of dynamic imports

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from 'react';
 import AdminInsightsSidebar from "../components/insightsidebar/AdminInsightsSidebar";
 import { Link } from "react-router-dom";
 

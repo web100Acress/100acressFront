@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from 'react';
 import { Helmet } from "react-helmet";
 import HeroWithFilters from "../sections/HeroWithFilters";
 import FeaturedGrid from "../sections/FeaturedGrid";

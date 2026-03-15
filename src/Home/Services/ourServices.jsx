@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useMemo } from 'react';
 import { Link } from "react-router-dom";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
@@ -35,7 +35,7 @@ function OurServices() {
       once: true,
       easing: 'ease-out'
     });
-  }, []);
+  });
 
   useEffect(() => {
     console.log('🔄 ourServices: step changed to:', step);

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useMemo } from 'react';
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import Api_service from "../../Redux/utils/Api_Service";
@@ -68,7 +68,7 @@ const CityProjectsGlobal = () => {
     setHasMoreProjects(true);
     // Load initial batch with reasonable limit for fast loading
     const initialLimit = 25; // Universal limit for all cities to ensure fast load
-    console.log(`🚀 City Performance fix: Loading ${city} projects with initial limit ${initialLimit} (forcing reload)`);
+    console.log(`🚀 City Performance fix: Loading ${city}); projects with initial limit ${initialLimit} (forcing reload)`);
     
     // Add timeout for very slow responses
     const timeout = setTimeout(() => {

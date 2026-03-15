@@ -14,7 +14,7 @@ const BlogWrite = () => {
   const quillRef = React.useRef(null);
   const localAgent = useMemo(() => {
     try { return JSON.parse(window.localStorage.getItem('agentData') || 'null'); } catch { return null; }
-  }, []);
+  });
   const currentName = (agentData?.name || localAgent?.name || "").toString().trim();
   const currentEmail = (agentData?.email || localAgent?.email || "").toString().trim().toLowerCase();
   const currentId = (agentData?._id || localAgent?._id || "").toString();

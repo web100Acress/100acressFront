@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo } from 'react';
 import styled from "styled-components";
 import { GiVillage } from "react-icons/gi";
 import { HiBars3 } from "react-icons/hi2";

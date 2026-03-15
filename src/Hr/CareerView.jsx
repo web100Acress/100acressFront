@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useMemo } from 'react';
 import Sidebar from "../AdminPage/Sidebar";
 import { useParams } from "react-router-dom";
 import axios from "axios";
@@ -27,7 +27,7 @@ const CareerView = () => {
 
   useEffect(() => {
     fetchViewData();
-  }, []);
+  });
 
   const { activityImage, highlightImage } = viewData;
 

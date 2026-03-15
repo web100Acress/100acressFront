@@ -40,7 +40,7 @@ const BlogView = () => {
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  });
 
   // Fetch blog data
   useEffect(() => {
@@ -49,7 +49,7 @@ const BlogView = () => {
       try {
         let response;
         if (slug) {
-          response = await api.get(`blog/by-slug/${encodeURIComponent(slug)}`);
+          response = await api.get(`blog/by-slug/${encodeURIComponent(slug)});`);
         } else if (id) {
           response = await api.get(`blog/view/${encodeURIComponent(id)}`);
         }

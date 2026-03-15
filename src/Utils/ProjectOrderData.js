@@ -1,3 +1,4 @@
+import React, { useMemo } from 'react';
 import api from '../config/apiClient';
 
 // Internal state for singleton pattern
@@ -169,12 +170,12 @@ const DEFAULT_PROJECT_ORDERS = {
 // Get specific category data
 export const getLuxuryDesiredOrder = async () => {
   const data = await getProjectOrderData();
-  return data.luxury.filter(item => item.isActive).map(item => item.name);
+  return data.useMemo(() => luxury.filter(item => item.isActive).map(item => item.name), [luxury]);
 };
 
 export const getTrendingDesiredOrder = async () => {
   const data = await getProjectOrderData();
-  const trendingOrder = data.trending.filter(item => item.isActive).map(item => item.name);
+  const trendingOrder = data.useMemo(() => trending.filter(item => item.isActive).map(item => item.name), [trending]);
   console.log('getTrendingDesiredOrder - Raw data:', data.trending);
   console.log('getTrendingDesiredOrder - Filtered order:', trendingOrder);
   return trendingOrder;
@@ -182,29 +183,29 @@ export const getTrendingDesiredOrder = async () => {
 
 export const getAffordableDesiredOrder = async () => {
   const data = await getProjectOrderData();
-  return data.affordable.filter(item => item.isActive).map(item => item.name);
+  return data.useMemo(() => affordable.filter(item => item.isActive).map(item => item.name), [affordable]);
 };
 
 export const getSCODesiredOrder = async () => {
   const data = await getProjectOrderData();
-  return data.sco.filter(item => item.isActive).map(item => item.name);
+  return data.useMemo(() => sco.filter(item => item.isActive).map(item => item.name), [sco]);
 };
 
 export const getCommercialDesiredOrder = async () => {
   const data = await getProjectOrderData();
-  return data.commercial.filter(item => item.isActive).map(item => item.name);
+  return data.useMemo(() => commercial.filter(item => item.isActive).map(item => item.name), [commercial]);
 };
 
 export const getBudgetDesiredOrder = async () => {
   const data = await getProjectOrderData();
-  return data.budget.filter(item => item.isActive).map(item => item.name);
+  return data.useMemo(() => budget.filter(item => item.isActive).map(item => item.name), [budget]);
 };
 
 export const getRecommendedDesiredOrder = async () => {
   console.log('📋 getRecommendedDesiredOrder called');
   const data = await getProjectOrderData();
   console.log('📋 Project order data:', data);
-  let recommended = data.recommended.filter(item => item.isActive).map(item => item.name);
+  let recommended = data.useMemo(() => recommended.filter(item => item.isActive).map(item => item.name), [recommended]);
 
   // If we get generic names from the API, use the correct project names
   if (recommended.includes("Recommended Project 1") || recommended.includes("Recommended Project 2")) {
@@ -223,17 +224,17 @@ export const getRecommendedDesiredOrder = async () => {
 
 export const getDesiredLuxuryOrder = async () => {
   const data = await getProjectOrderData();
-  return data.desiredLuxury.filter(item => item.isActive).map(item => item.name);
+  return data.useMemo(() => desiredLuxury.filter(item => item.isActive).map(item => item.name), [desiredLuxury]);
 };
 
 export const getFarmDesiredOrder = async () => {
   const data = await getProjectOrderData();
-  return data.farm.filter(item => item.isActive).map(item => item.name);
+  return data.useMemo(() => farm.filter(item => item.isActive).map(item => item.name), [farm]);
 };
 
 export const getBrandedResidencesDesiredOrder = async () => {
   const data = await getProjectOrderData();
-  return data.brandedresidences.filter(item => item.isActive).map(item => item.name);
+  return data.useMemo(() => brandedresidences.filter(item => item.isActive).map(item => item.name), [brandedresidences]);
 };
 
 let cachedProjectData = null;
@@ -361,13 +362,13 @@ export const getBudgetPlots = async () => {
 
   // Fallback to static data
   const data = await getProjectOrderData();
-  return data.budgetPlots.filter(item => item.isActive).map(item => ({
+  return data.useMemo(() => budgetPlots.filter(item => item.isActive).map(item => ({
     title: item.name,
     link: item.link,
     image: item.thumbnailImage || item.frontImage || item.image,
     frontImage: item.frontImage,
     thumbnailImage: item.thumbnailImage
-  }));
+  }), [budgetPlots]));
 };
 
 // Note: All functions are now async and should be called with await

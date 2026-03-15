@@ -110,11 +110,11 @@
 }
 
 .faq-section-mobile-subtitle {
-  color: #fbbf24;
+  color: #fef08a;
   font-size: 0.75rem;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.1em;
   margin-bottom: 0.5rem;
 }
 
@@ -357,7 +357,7 @@
 }
 
 .faq-section-mobile-cta-subtitle {
-  color: #9ca3af;
+  color: #e5e7eb;
   font-size: 0.75rem;
 }
 

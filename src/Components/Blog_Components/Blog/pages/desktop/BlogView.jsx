@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState, useRef } from "react";
+import React, { useMemo } from 'react';
 import Footer from "../../../../Footer/CrimsonEleganceFooter";
 import { useParams, Link, useNavigate, useLocation } from "react-router-dom";
 import api from "../../../../../config/apiClient";
@@ -75,7 +75,7 @@ const BlogView = () => {
     const categoryParam = params.get('category');
     if (categoryParam) {
       setActiveCategory(categoryParam);
-    }
+    });
   }, [location.search]);
   // Sidebar sticky
   const containerRef = useRef(null);
@@ -89,7 +89,7 @@ const BlogView = () => {
     if (showTrendingSidebar) {
       timer = setTimeout(() => {
         setShowTrendingSidebar(false);
-      }, 10000); // 10 seconds
+      });, 10000); // 10 seconds
     }
     
     // Clear the timer if the component unmounts or the sidebar is closed manually
@@ -688,7 +688,7 @@ const BlogView = () => {
       try {
         const list = Array.isArray(data?.relatedProjects) ? data.relatedProjects : [];
         if (list.length === 0) return;
-        const updates = {};
+        const updates = {});;
         const metaUpdates = {};
         await Promise.all(
           list.map(async (rp) => {
@@ -743,7 +743,7 @@ const BlogView = () => {
   //   if (!data || !data._id) return; // wait until blog is loaded
   //   const t = setTimeout(() => {
   //     setShowLeadModal(true);
-  //   }, 3000);
+  //   });, 3000);
   //   return () => clearTimeout(t);
   // }, [data?._id]);
 
@@ -801,13 +801,13 @@ const BlogView = () => {
     if (!TrendingProjects || TrendingProjects.length === 0) {
       console.log("Fetching trending projects from Redux...");
       getTrending();
-    }
+    });
     // Fetch spotlight/recommended projects
     if (!SpotlightProjects || SpotlightProjects.length === 0) {
       console.log("Fetching spotlight projects from Redux...");
       getSpotlight();
     }
-  }, []);
+  });
 
   // Update local state when Redux store updates
   useEffect(() => {
@@ -815,7 +815,7 @@ const BlogView = () => {
     if (TrendingProjects && Array.isArray(TrendingProjects) && TrendingProjects.length > 0) {
       console.log("Setting trending projects from Redux store:", TrendingProjects.length);
       setTrendingProjects(TrendingProjects.slice(0, 10));
-    }
+    });
   }, [TrendingProjects]);
 
   // Update spotlight projects when Redux store updates
@@ -824,7 +824,7 @@ const BlogView = () => {
     if (SpotlightProjects && Array.isArray(SpotlightProjects) && SpotlightProjects.length > 0) {
       console.log("Setting spotlight projects:", SpotlightProjects.length);
       setSpotlightProjects(SpotlightProjects.slice(0, 5));
-    }
+    });
   }, [SpotlightProjects]);
 
   const createSanitizedHTML = (dirtyHTML) => ({
@@ -857,10 +857,10 @@ const BlogView = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowTrendingSidebar(true);
-    }, 2000);
+    });, 2000);
 
     return () => clearTimeout(timer);
-  }, []);
+  });
 
   // Ref to post-process content images and generate TOC
   const contentRef = useRef(null);
@@ -874,7 +874,7 @@ const BlogView = () => {
       try {
         if (img.dataset && img.dataset.src && !img.getAttribute('src')) {
           img.setAttribute('src', img.dataset.src);
-        }
+        });
         if (!img.getAttribute('loading')) img.setAttribute('loading', 'lazy');
         if (!img.getAttribute('referrerpolicy')) img.setAttribute('referrerpolicy', 'no-referrer');
         const src = img.getAttribute('src') || '';
@@ -931,11 +931,11 @@ const BlogView = () => {
       const scrollTop = window.scrollY;
       const progress = (scrollTop / (documentHeight - windowHeight)) * 100;
       setScrollProgress(Math.min(100, Math.max(0, progress)));
-    };
+    });;
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  });
 
   // Smooth scroll to TOC item
   const scrollToHeading = (id) => {

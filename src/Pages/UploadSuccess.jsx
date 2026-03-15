@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CheckCircle, Home } from 'lucide-react';
 import showToast from '../Utils/toastUtils';
@@ -8,7 +8,7 @@ const UploadSuccess = () => {
 
   useEffect(() => {
     showToast.success('Documents uploaded successfully!');
-  }, []);
+  });
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center">

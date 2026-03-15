@@ -1,3 +1,4 @@
+import React, { useMemo } from 'react';
 // Lightweight favorites store for project cards
 // Persists to localStorage and syncs across tabs via BroadcastChannel
 
@@ -163,7 +164,8 @@ export function subscribe(cb) {
   listeners.add(cb);
   // notify immediately
   try { cb(getFavorites()); } catch (_) {}
-  const onMsg = (ev) => {
+  const onMsg = (ev) => 
+{
     if (ev?.data?.type === 'favorites-update') {
       for (const l of listeners) { try { l(ev.data.ids); } catch (_) {} }
     }

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 
 const GlobalLoadingButton = ({
   isLoading = false,

@@ -1,3 +1,4 @@
+import React, { useMemo } from 'react';
 // Service Worker Registration
 export const registerServiceWorker = () => {
   if ('serviceWorker' in navigator) {

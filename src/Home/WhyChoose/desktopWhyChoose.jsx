@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useMemo } from 'react';
 import "aos/dist/aos.css";
 import AOS from "aos";
 import CountUp from "react-countup";
@@ -14,8 +14,8 @@ import {
 
 function DesktopWhyChoose() {
   useEffect(() => {
-    AOS.init({ duration: 1000, once: true });
-  }, []);
+    AOS.init({ duration: 1000, once: true }););
+  });
 
   const monthlydata = [
     {

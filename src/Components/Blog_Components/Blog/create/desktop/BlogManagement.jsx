@@ -1,3 +1,4 @@
+import React, { useMemo } from 'react';
 import { useState, useEffect, useContext } from "react";
 import api from "../../../../../config/apiClient";
 import { showToast } from "../../../../../Utils/toastUtils";
@@ -22,18 +23,12 @@ import {
   Share2,
   MessageCircle,
 } from "lucide-react";
-import {
-  Modal,
-  Switch,
-  Badge,
-  Progress,
-  Card,
-  Row,
-  Col,
-  Statistic,
-  message,
-  Tooltip,
-} from "antd";
+import { Modal } from '../../../../../utils/antdImports';
+import { Switch } from '../../../../../utils/antdImports';
+import { Badge } from '../../../../../utils/antdImports';
+import { Card } from '../../../../../utils/antdImports';
+import { message } from '../../../../../utils/antdImports';
+import { Tooltip } from '../../../../../utils/antdImports';
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../../../../AuthContext";
 

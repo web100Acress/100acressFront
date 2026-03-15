@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from 'react';
 import PriceTrendsCityPicker from "../Citypeaker/PriceTrendsCityPicker";
 import PriceTrendsCompare from "../PriceTrendsCompare";
 import { Link, useNavigate } from "react-router-dom";

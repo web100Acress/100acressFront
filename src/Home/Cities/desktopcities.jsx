@@ -1,11 +1,11 @@
-import React, { useEffect } from "react";
+import React, { useMemo } from 'react';
 import { styled } from "styled-components";
 import { Link } from "react-router-dom";
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 
 const DesktopCities = () => {
-  useEffect(() => { AOS.init(); }, []);
+  useEffect(() => { AOS.init(); }););
 
   const cities = [
     {

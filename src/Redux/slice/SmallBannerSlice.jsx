@@ -1,3 +1,4 @@
+import React, { useMemo } from 'react';
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
 // Async thunk to fetch active small banners

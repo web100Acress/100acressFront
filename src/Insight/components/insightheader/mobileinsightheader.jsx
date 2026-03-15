@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo } from 'react';
 import { Link } from "react-router-dom";
 import { useSidebar } from "../insightsidebar/SidebarContext";
 import { useAuth } from "../../../AuthContext";

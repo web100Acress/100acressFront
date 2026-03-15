@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useMemo } from 'react';
 import Sidebar from "../../../../../AdminPage/Sidebar";
 import { useParams } from "react-router-dom";
 import api from "../../../../../config/apiClient";
@@ -28,7 +28,7 @@ const BlogViewAdmin = () => {
     const fetchData = async () => {
       try {
         const res = await api.get(
-          `blog/view/${id}`
+          `blog/view/${id});`
         );
         const payload = res.data;
         const safe = payload && typeof payload.data === 'object' && payload.data !== null ? payload.data : {};

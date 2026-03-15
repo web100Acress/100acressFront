@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useMemo } from 'react';
 import styled from "styled-components";
 import Footer from "./Footer";
 import api from "../../config/apiClient";
@@ -344,7 +344,7 @@ const BuyPropViewCard = () => {
 
   useEffect(() => {
     fetchData(1, false);
-  }, []);
+  });
 
   useEffect(() => {
     updateFilteredData();

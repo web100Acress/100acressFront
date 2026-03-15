@@ -1,21 +1,4 @@
-import React from 'react'
-import styled from 'styled-components'
-
-function SearchTop() {
-  return (
-    <Wrapper className='section'> 
-      <div className='SJDMls'>
-         <div className='options'>Buy</div>
-         <div className='options'>Sell</div>
-         <div className='options'>Rent</div>
-      </div>
-    </Wrapper>
-  )
-}
-
-export default SearchTop
-const Wrapper =styled.section`
-font-weight: 400;
+import React, { useMemo } from 'react';
 font-size:18px;
 line-height: 18px;
 font-family: "DM Sans", sans-serif;

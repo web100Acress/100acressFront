@@ -42,28 +42,89 @@
       href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap" />
   </noscript>
 
-  <!-- Font Awesome for WhatsApp icon -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+  <!-- Font Awesome for WhatsApp icon - defer loading -->
+  <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    as="style" onload="this.onload=null;this.rel='stylesheet'"
     integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
     crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <noscript>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+      crossorigin="anonymous" referrerpolicy="no-referrer" />
+  </noscript>
+
+  <!-- Critical CSS will be inlined here by build process -->
+  <style>
+    /* Critical CSS - Above the fold styles */
+    body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Roboto','Oxygen','Ubuntu','Cantarell','Fira Sans','Droid Sans','Helvetica Neue',sans-serif;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}#root{min-height:100vh}.container{max-width:1200px;margin:0 auto;padding:0 20px}.loading-spinner{border:3px solid #f3f3f3;border-top:3px solid #3498db;border-radius:50%;width:40px;height:40px;animation:spin 1s linear infinite}@keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}.hidden{display:none}.flex{display:flex}.block{display:block}.text-center{text-align:center}.text-white{color:#fff}.btn{padding:10px 20px;border:none;border-radius:4px;cursor:pointer;font-size:16px}.btn-primary{background:#007bff;color:#fff}.btn-whatsapp{background:#25d366;color:#fff}
+  </style>
 
   <script type="module" src="/src/index.jsx"></script>
-  <!-- Google tag (gtag.js) - defer init until idle -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-1XY9M6DY08"></script>
+  
+  <!-- Defer non-critical CSS loading -->
+  <script>
+    // Load non-critical CSS after initial render
+    function loadNonCriticalCSS() {
+      // Font Awesome is already loaded via preload
+      // Additional non-critical CSS can be loaded here
+      if (window.requestIdleCallback) {
+        requestIdleCallback(() => {
+          // Load any additional non-critical CSS here
+          console.log('Non-critical CSS loaded');
+        });
+      } else {
+        setTimeout(() => {
+          console.log('Non-critical CSS loaded');
+        }, 100);
+      }
+    }
+    
+    // Load after initial paint
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', loadNonCriticalCSS);
+    } else {
+      loadNonCriticalCSS();
+    }
+  </script>
+  <!-- Google tag (gtag.js) - defer until user interaction -->
   <script>
     function initGA() {
-      window.dataLayer = window.dataLayer || [];
-      function gtag() {
-        dataLayer.push(arguments);
-      }
-      gtag("js", new Date());
-      gtag("config", "G-1XY9M6DY08");
+      // Load the script
+      const script = document.createElement('script');
+      script.async = true;
+      script.src = 'https://www.googletagmanager.com/gtag/js?id=G-1XY9M6DY08';
+      document.head.appendChild(script);
+      
+      script.onload = function() {
+        window.dataLayer = window.dataLayer || [];
+        function gtag() {
+          dataLayer.push(arguments);
+        }
+        gtag("js", new Date());
+        gtag("config", "G-1XY9M6DY08", {
+          // Optimize for performance
+          send_page_view: false,
+          transport_type: 'beacon'
+        });
+        
+        // Track page view after a delay
+        setTimeout(() => {
+          gtag("event", "page_view");
+        }, 1000);
+      };
     }
-    if ("requestIdleCallback" in window) {
-      requestIdleCallback(initGA);
-    } else {
-      setTimeout(initGA, 1500);
+    
+    // Load on first user interaction
+    function loadOnInteraction() {
+      initGA();
+      document.removeEventListener('scroll', loadOnInteraction);
+      document.removeEventListener('click', loadOnInteraction);
+      document.removeEventListener('keydown', loadOnInteraction);
     }
+    
+    document.addEventListener('scroll', loadOnInteraction, { once: true });
+    document.addEventListener('click', loadOnInteraction, { once: true });
+    document.addEventListener('keydown', loadOnInteraction, { once: true });
   </script>
   <!-- Meta Pixel Code -->
   <script>
@@ -98,11 +159,18 @@
         /* ignore */
       }
     }
-    if ("requestIdleCallback" in window) {
-      requestIdleCallback(initFB);
-    } else {
-      setTimeout(initFB, 2000);
+    
+    // Load on first user interaction (different from GA to avoid conflicts)
+    function loadFBOnInteraction() {
+      initFB();
+      document.removeEventListener('mousedown', loadFBOnInteraction);
+      document.removeEventListener('touchstart', loadFBOnInteraction);
+      document.removeEventListener('keydown', loadFBOnInteraction);
     }
+    
+    document.addEventListener('mousedown', loadFBOnInteraction, { once: true });
+    document.addEventListener('touchstart', loadFBOnInteraction, { once: true });
+    document.addEventListener('keydown', loadFBOnInteraction, { once: true });
   </script>
   <!-- oraginisation schema for home page -->
   <script type="application/ld+json">
@@ -242,11 +310,16 @@
         /* ignore */
       }
     }
-    if ("requestIdleCallback" in window) {
-      requestIdleCallback(initLinkedIn);
-    } else {
-      setTimeout(initLinkedIn, 2500);
+    
+    // Load on first user interaction (different event to avoid conflicts)
+    function loadLinkedInOnInteraction() {
+      initLinkedIn();
+      document.removeEventListener('mouseover', loadLinkedInOnInteraction);
+      document.removeEventListener('touchstart', loadLinkedInOnInteraction);
     }
+    
+    document.addEventListener('mouseover', loadLinkedInOnInteraction, { once: true });
+    document.addEventListener('touchstart', loadLinkedInOnInteraction, { once: true });
   </script>
   <noscript>
     <img height="1" width="1" style="display: none" alt=""

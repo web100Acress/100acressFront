@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import Desktoptestimonial from './Desktoptestimonial';
 import Mobiletestimonial from './Mobiletestimonial';
 

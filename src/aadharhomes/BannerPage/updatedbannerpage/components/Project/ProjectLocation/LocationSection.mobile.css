@@ -117,12 +117,12 @@
 
 /* Section title */
 .location-section-mobile-subtitle {
-  color: #fbbf24;
+  color: #fef08a;
   font-size: 0.75rem;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.2em;
-  margin-bottom: 0.25rem;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.5rem;
 }
 
 @media (min-width: 768px) {

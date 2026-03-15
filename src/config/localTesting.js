@@ -1,3 +1,4 @@
+import React, { useMemo } from 'react';
 // Local Testing Configuration
 // This file helps set up local testing for banner management
 

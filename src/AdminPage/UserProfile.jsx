@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useMemo } from 'react';
 import axios from "axios";
 import Sidebar from "./Sidebar";
 
@@ -26,7 +26,7 @@ const UserProfile = () => {
       }
     };
     fetchData();
-  }, []);
+  });
 
   const indexOfLastRow = currentPage * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useMemo } from 'react';
 
 const OnboardingUpload = () => {
   const [loading, setLoading] = useState(true);
@@ -22,7 +22,7 @@ const OnboardingUpload = () => {
       setLoading(true);
       setError('');
       try {
-        const res = await fetch(`/api/public/onboarding/validate?token=${encodeURIComponent(token)}`);
+        const res = await fetch(`/api/public/onboarding/validate?token=${encodeURIComponent(token)});`);
         const j = await res.json();
         if (!res.ok) throw new Error(j?.message || 'Validation failed');
         setInfo(j.data);

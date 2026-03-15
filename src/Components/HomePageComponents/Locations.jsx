@@ -1,5 +1,4 @@
-// import React from 'react'
-// import { styled } from 'styled-components';
+// import React, { useMemo } from 'react';
 // import {ScrollingCarousel } from '@trendyol-js/react-carousel';
 
 // function Locations() {

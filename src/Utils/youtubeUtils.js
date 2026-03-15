@@ -1,3 +1,4 @@
+import React, { useMemo } from 'react';
 // Utility functions for handling YouTube videos
 export function parseYouTubeVideoId(url) {
   if (!url) return '';

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useMemo } from 'react';
 import styled from "styled-components";
 import Footer from "./Footer";
 import api from "../../config/apiClient";
@@ -92,7 +92,7 @@ const RentPropViewCard = () => {
       setBuyData(prev => [...prev]);
     });
     return unsubscribe;
-  }, []);
+  });
 
   // Check and redirect if URL is missing trailing slash
   useEffect(() => {
@@ -247,7 +247,7 @@ const RentPropViewCard = () => {
 
   useEffect(() => {
     fetchData(1, false);
-  }, []);
+  });
 
   useEffect(() => {
     updateFilteredData();

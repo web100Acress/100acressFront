@@ -1,12 +1,12 @@
-  import React, { useState, useEffect, useRef, useLayoutEffect } from "react";
+  import React, { useMemo } from 'react';
 import { Box, Flex, Button, useDisclosure } from "@chakra-ui/react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import styled from "styled-components";
-import { message } from "antd";
+import { message } from '../../utils/antdImports';
 import { useDispatch } from "react-redux";
 import { maxprice, minprice } from "../../Redux/slice/PriceBasedSlice";
-// import { Modal } from "antd"; // removed old user menu modal
+// import { Modal } from '../../utils/antdImports'; // removed old user menu modal
 import { useJwt } from "react-jwt";
 import NavbarDesktop from "./NavbarDesktop";
 import NavbarMobile from "./NavbarMobile";
@@ -108,7 +108,7 @@ export default function Navbar() {
       try { if (ro) ro.disconnect(); } catch {}
       // do not reset padding to avoid layout shift on route changes
     };
-  }, []);
+  });
   useEffect(() => {
     const compute = () => {
       const w = typeof window !== 'undefined' ? window.innerWidth : 0;
@@ -142,7 +142,7 @@ export default function Navbar() {
     compute();
     window.addEventListener('resize', compute);
     return () => window.removeEventListener('resize', compute);
-  }, []);
+  });
 
   // Fast navigate helper for menu clicks
   const go = (path) => {
@@ -189,7 +189,7 @@ export default function Navbar() {
   // Listen for avatar updates broadcasted from profile page (UserEdit)
   useEffect(() => {
     const updateFromUrl = (url) => {
-      const bust = url ? `${url}${url.includes('?') ? '&' : '?'}t=${Date.now()}` : "";
+      const bust = url ? `${url});${url.includes('?') ? '&' : '?'}t=${Date.now()}` : "";
       setAvatarUrl(bust);
     };
     // BroadcastChannel for multi-tab updates
@@ -219,7 +219,7 @@ export default function Navbar() {
       window.removeEventListener('avatar-updated', onCustom);
       window.removeEventListener('profile-updated', onCustom);
     };
-  }, []);
+  });
 
   // Fetch user profile to get avatarUrl when logged in
   useEffect(() => {
@@ -330,7 +330,7 @@ export default function Navbar() {
       if (observer) observer.disconnect();
       else window.removeEventListener('scroll', changeNavbarColor);
     };
-  }, []);
+  });
 
   const handlePriceClick = (min, max) => {
     // setPriceRange({ min, max });
@@ -389,7 +389,7 @@ export default function Navbar() {
 
   useEffect(() => {
     checkUserAuth();
-  }, []);
+  });
 
   // Close mega menu on Escape key
   useEffect(() => {
@@ -421,7 +421,7 @@ export default function Navbar() {
       });
     }, 3000);
     return () => clearInterval(id);
-  }, []);
+  });
 
   const handleSearchInput = (e) => {
     setFormData((s) => ({ ...s, query: e.target.value }));

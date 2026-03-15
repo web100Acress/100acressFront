@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import AdminInsightsSidebar from './AdminInsightsSidebar';
 
@@ -32,7 +32,7 @@ export default function InvestmentInsights() {
   // Calculate EMI and other metrics
   useEffect(() => {
     const calculateInvestment = () => {
-      const { propertyPrice, downPayment, loanAmount, interestRate, loanTenure, monthlyRent } = calculatorData;
+      const { propertyPrice, downPayment, loanAmount, interestRate, loanTenure, monthlyRent }); = calculatorData;
 
       // EMI Calculation
       const monthlyRate = interestRate / 100 / 12;

@@ -1,3 +1,4 @@
+import React, { useMemo } from 'react';
 // Design tokens for Developer Page (colors, radii, shadows, spacing)
 export const tokens = {
   colors: {

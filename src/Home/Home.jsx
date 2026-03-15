@@ -54,7 +54,7 @@ const ProjectsSlider = React.memo(({ projects, title, animation, path, compact =
 
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  });
 
   const handleScroll = () => {
     if (scrollRef.current) {
@@ -229,7 +229,7 @@ const CommercialProjectsSlider = React.memo(({ projects }) => {
 
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  });
 
   const handleScroll = () => {
     if (scrollRef.current) {
@@ -394,7 +394,7 @@ const Home = () => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, []);
+  });
 
   // Shorts ID is now fetched directly by FloatingShorts via backend polling.
 
@@ -413,7 +413,7 @@ const Home = () => {
 
   const handlePopupVisibilityChange = useCallback((isActive) => {
     setIsPopupActive(isActive);
-  }, []);
+  });
 
   // Auth modal state for sidebar card
   const [authOpen, setAuthOpen] = useState(false);
@@ -567,7 +567,7 @@ const Home = () => {
         transition: 'opacity 0.3s ease-in-out, visibility 0.3s ease-in-out'
       });
     }
-  }, []);
+  });
 
   useEffect(() => {
     handleScroll();
@@ -627,7 +627,7 @@ const Home = () => {
     };
     window.addEventListener("scroll", changeNavbarColor);
     return () => window.removeEventListener("scroll", changeNavbarColor);
-  }, []);
+  });
   const [activeFilter, setActiveFilter] = useState("Trending");
   const [trendingPage, setTrendingPage] = useState(0);
   const trendingScrollRef = useRef(null);
@@ -753,7 +753,7 @@ const Home = () => {
     };
     
     loadCriticalData();
-  }, []);
+  });
 
   // Load remaining data in parallel after initial load
   useEffect(() => {
@@ -791,7 +791,7 @@ const Home = () => {
     };
 
     loadBrandedResidences();
-  }, []);
+  });
 
   // Set the displayed projects based on the active filter
   useEffect(() => {
@@ -840,7 +840,7 @@ const Home = () => {
       AOS.init();
     }, 1000);
     return () => clearTimeout(timer);
-  }, []);
+  });
 
   useEffect(() => {
     setTimeout(() => {
@@ -857,7 +857,7 @@ const Home = () => {
     }, 50); // Ultra fast - 50ms
 
     return () => clearTimeout(timer);
-  }, []);
+  });
 
   useEffect(() => {
     const observer = new IntersectionObserver(

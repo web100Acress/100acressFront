@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo } from 'react';
 import { Star, ArrowLeft } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';

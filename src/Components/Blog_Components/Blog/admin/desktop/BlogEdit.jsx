@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext, useMemo } from "react";
-import { Modal } from "antd";
+import { Modal } from '../../../../../utils/antdImports';
 import Sidebar from "../../../../../AdminPage/Sidebar";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import api from "../../../../../config/apiClient";
@@ -31,7 +31,7 @@ const BlogEdit = () => {
   const { agentData, isAdmin } = useContext(AuthContext) || {};
   const localAgent = useMemo(() => {
     try { return JSON.parse(window.localStorage.getItem('agentData') || 'null'); } catch { return null; }
-  }, []);
+  });
   const currentUserName = (agentData?.name || localAgent?.name || "").toString().trim();
   const currentUserEmail = (agentData?.email || localAgent?.email || "").toString().trim().toLowerCase();
   const currentUserId = (agentData?._id || localAgent?._id || "").toString();
@@ -181,7 +181,7 @@ const BlogEdit = () => {
       try {
         console.log('Fetching blog data for ID:', id);
         const res = await api.get(
-          `blog/edit/${id}`
+          `blog/edit/${id});`
         );
         console.log('Blog data received:', res.data);
         const payload = res.data;

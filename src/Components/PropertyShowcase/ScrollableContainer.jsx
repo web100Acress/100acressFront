@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useMemo } from 'react';
 import styled from 'styled-components';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 
@@ -32,8 +32,8 @@ const ScrollableContainer = ({ children }) => {
       // Initial check
       checkScrollPosition();
       return () => container.removeEventListener('scroll', checkScrollPosition);
-    }
-  }, []);
+    });
+  });
 
   return (
     <Container>

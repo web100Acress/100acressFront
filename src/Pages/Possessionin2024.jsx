@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useMemo } from 'react';
 import "react-multi-carousel/lib/styles.css";
 import { DataContext } from "../MyContext";
 import { Link } from "react-router-dom";

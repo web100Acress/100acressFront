@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useMemo } from 'react';
 
 const Header = ({ toggleSidebar }) => {
   const [showDropdown, setShowDropdown] = useState(false);

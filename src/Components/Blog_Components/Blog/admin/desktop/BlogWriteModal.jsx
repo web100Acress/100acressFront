@@ -66,7 +66,7 @@ const BlogWriteModal = () => {
   // Configure global message behavior: auto-dismiss and limit stacking
   useEffect(() => {
     // Intentionally left blank (migrated away from antd message)
-  }, []);
+  });
 
   // Core fields
   const [title, setTitle] = useState('');
@@ -463,7 +463,7 @@ const BlogWriteModal = () => {
       }
     })();
     return () => { alive = false; };
-  }, []);
+  });
 
   // Slug copy feedback
   const [slugCopied, setSlugCopied] = useState(false);
@@ -669,7 +669,7 @@ const BlogWriteModal = () => {
     const html = description || '';
     const temp = document.createElement('div');
     temp.innerHTML = html;
-    const plain = `${title ? title + '. ' : ''}${temp.textContent || temp.innerText || ''}`.toLowerCase().replace(/\s+/g, ' ').trim();
+    const plain = `${title ? title + '. ' : ''});${temp.textContent || temp.innerText || ''}`.toLowerCase().replace(/\s+/g, ' ').trim();
     if (!plain || plain.split(' ').length < 50) {
       setAiScore(0);
       setAiSignals([]);
@@ -729,7 +729,7 @@ const BlogWriteModal = () => {
       const html = description || '';
       const tmp = document.createElement('div');
       tmp.innerHTML = html;
-      const text = `${title || ''} ${tmp.textContent || tmp.innerText || ''}`.toLowerCase().replace(/\s+/g, ' ').trim();
+      const text = `${title || ''}); ${tmp.textContent || tmp.innerText || ''}`.toLowerCase().replace(/\s+/g, ' ').trim();
       if (!text || text.split(' ').length < 30) {
         setPlagScore(0);
         setPlagMatches([]);
@@ -854,7 +854,7 @@ const BlogWriteModal = () => {
     const fetchBlog = async () => {
       if (id) {
         try {
-          const res = await api.get(`/blog/view/${id}`);
+          const res = await api.get(`/blog/view/${id});`);
           const b = res?.data?.data;
           if (b) {
             setTitle(b.blog_Title || '');
@@ -1017,7 +1017,7 @@ const BlogWriteModal = () => {
       if (histRaw) setHistoryList(JSON.parse(histRaw));
     } catch { }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  });
 
   // Debounced autosave on key fields
   useEffect(() => {
@@ -1047,7 +1047,7 @@ const BlogWriteModal = () => {
   useEffect(() => {
     if (slug) {
       const baseUrl = 'https://www.100acress.com/';
-      setCanonicalUrl(`${baseUrl}${slug}`);
+      setCanonicalUrl(`${baseUrl});${slug}`);
     } else {
       setCanonicalUrl('');
     }
@@ -1292,7 +1292,7 @@ const BlogWriteModal = () => {
       }
     };
     loadAllProjects();
-  }, []);
+  });
 
   // Debounced server-side search across all pages (when user types 2+ chars)
   useEffect(() => {
@@ -1307,7 +1307,6 @@ const BlogWriteModal = () => {
         const limit = 100;
         const strategies = [
           (state) => `/blog/search-projects?limit=${limit}&q=${encodeURIComponent(q)}&page=${state.page}`,
-          (state) => `/blog/search-projects?limit=${limit}&q=${encodeURIComponent(q)}&skip=${state.skip}`,
           (state) => `/blog/search-projects?limit=${limit}&q=${encodeURIComponent(q)}&offset=${state.skip}`,
         ];
         let results = [];
@@ -1979,15 +1978,7 @@ const BlogWriteModal = () => {
     setCollapsedFaqs([false]);
   };
 
-  // Add custom icon to Quill toolbar
-  useEffect(() => {
-    const icon = document.querySelector('.ql-table-icon');
-    if (icon && !icon.innerHTML) {
-      icon.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="3" y1="15" x2="21" y2="15"></line><line x1="9" y1="3" x2="9" y2="21"></line><line x1="15" y1="3" x2="15" y2="21"></line></svg>`;
-    }
-  }, []);
-
-  // Quill toolbar config (no default image button; we add our own handlers)
+      // Quill toolbar config (no default image button; we add our own handlers)
   const quillModules = useMemo(() => ({
     toolbar: {
       container: [
@@ -2082,7 +2073,7 @@ const BlogWriteModal = () => {
       root.removeEventListener('paste', onPaste);
       root.removeEventListener('click', onClick);
     };
-  }, []);
+  });
 
   /**
    * Process and compress image file before upload
@@ -2220,7 +2211,7 @@ const BlogWriteModal = () => {
       if (frontPreviewObjUrl) URL.revokeObjectURL(frontPreviewObjUrl);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  });
 
   // Apply B/W mode to editor root
   useEffect(() => {

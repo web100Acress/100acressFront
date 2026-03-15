@@ -1,4 +1,4 @@
-  import React, { useEffect, useState } from "react";
+  import React, { useMemo } from 'react';
 import HrSidebar from "./HrSidebar";
 import api from "../config/apiClient";
 import { CheckCircle, Circle, Clock, Calendar, User, Mail, ChevronRight, FileText, X } from "lucide-react";
@@ -76,7 +76,7 @@ const Onboarding = () => {
     }
   };
 
-  useEffect(() => { fetchList(); }, []);
+  useEffect(() => { fetchList(); });
 
   const advance = async (id) => {
     try {

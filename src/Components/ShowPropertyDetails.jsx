@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useMemo } from 'react';
 import Footer from "../Components/Actual_Components/Footer";
 import api from "../config/apiClient";
-import { Skeleton } from "antd";
+import { Skeleton } from '../utils/antdImports';
 import { Link, useNavigate } from "react-router-dom";
 import Gallery from "../Components/Gallery";
 import { 
@@ -92,7 +92,7 @@ const ShowPropertyDetails = ({ id, type }) => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const res = await api.get(`/property/view/${id}`);
+        const res = await api.get(`/property/view/${id});`);
         const hasData = res?.data?.data && res?.data?.data?.postProperty;
         if (hasData) {
           console.log("Property details loaded successfully");
@@ -248,7 +248,7 @@ const ShowPropertyDetails = ({ id, type }) => {
   useEffect(() => {
     if (rentViewDetails && rentViewDetails.propertyName) {
       // Update document title
-      document.title = `${rentViewDetails.propertyName} - ${rentViewDetails.propertyType || 'Property'} for Sale in ${rentViewDetails.city || 'India'}, ${rentViewDetails.state || ''} | 100Acress`;
+      document.title = `${rentViewDetails.propertyName}); - ${rentViewDetails.propertyType || 'Property'} for Sale in ${rentViewDetails.city || 'India'}, ${rentViewDetails.state || ''} | 100Acress`;
       
       // Update meta description
       const description = `${rentViewDetails.propertyName} - ${rentViewDetails.propertyType || 'Property'} available for sale in ${rentViewDetails.city || 'India'}, ${rentViewDetails.state || ''}. Price: ₹${rentViewDetails.price ? formatPrice(rentViewDetails.price) : 'Contact for price'}. ${rentViewDetails.address ? `Located at ${rentViewDetails.address}.` : ''} View detailed property information, photos, and contact details on 100Acress.`;

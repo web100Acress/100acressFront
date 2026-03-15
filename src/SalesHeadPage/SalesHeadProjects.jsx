@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useMemo } from 'react';
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -17,7 +17,7 @@ const SalesHeadProjects = () => {
   // Fetch projects
   useEffect(() => {
     fetchProjects();
-  }, []);
+  });
 
   const fetchProjects = async () => {
     try {

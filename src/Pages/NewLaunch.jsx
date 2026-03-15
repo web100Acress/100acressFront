@@ -1,4 +1,4 @@
-import React, { useEffect, useState} from "react";
+import React, { useMemo } from 'react';
 import Footer from "../Components/Actual_Components/Footer";
 import { Helmet } from "react-helmet";
 import CommonProject from "../Utils/CommonProject";
@@ -18,11 +18,11 @@ const NewLaunch = () => {
     setFilteredData(data);
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     getAllProjects(query,0);
-  },[]);
+  });
 
-  useEffect(()=>{
+  useEffect(() => {
     setDatafromsearch({ newLaunch });
   },[newLaunch])
 

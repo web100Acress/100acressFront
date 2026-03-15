@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useMemo } from 'react';
 import '../../../styles/newbanner/HighlightsSection.css';
 
 const HighlightsSection = ({ projectViewDetails, highlight = [], handleShowInstantcallBack }) => {
@@ -36,7 +36,7 @@ const HighlightsSection = ({ projectViewDetails, highlight = [], handleShowInsta
         padBottom = parseInt(cs.paddingBottom || '32', 10);
         borderTop = parseInt(cs.borderTopWidth || '0', 10);
         borderBottom = parseInt(cs.borderBottomWidth || '0', 10);
-      }
+      });
       const buttonReserve = vmEl ? vmEl.offsetHeight : viewMoreHeight; // actual height for button + gap
       setViewMoreHeight(buttonReserve || 64);
       const allowance = padTop + padBottom + (buttonReserve || 64); // total non-list vertical space
@@ -74,7 +74,7 @@ const HighlightsSection = ({ projectViewDetails, highlight = [], handleShowInsta
     document.body.style.overflow = 'hidden';
     return () => {
       document.body.style.overflow = prev || 'unset';
-    };
+    });;
   }, [isHighlightsModalOpen]);
 
   const openHighlightsModal = () => setIsHighlightsModalOpen(true);

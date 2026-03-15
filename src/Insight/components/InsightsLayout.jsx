@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useMemo } from 'react';
 import { Outlet } from "react-router-dom";
 import DesktopInsightsSidebar, { useSidebarContext } from "./insightsidebar/desktopinsightsidebar";
 import DesktopInsightsHeader from "./insightheader/desktopinsightheader";
@@ -490,7 +490,7 @@ export default function InsightsLayout() {
         };
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
-    }, []);
+    });
 
     // Check if user has already submitted any enquiry
     useEffect(() => {
@@ -510,7 +510,7 @@ export default function InsightsLayout() {
                 setIsQuickEnquiryModalOpen(true);
             }, 3000);
         }
-    }, []);
+    });
 
     const getPageName = () => {
         const path = window.location.pathname;

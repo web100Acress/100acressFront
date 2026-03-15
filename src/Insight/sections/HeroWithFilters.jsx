@@ -75,7 +75,7 @@ export default function HeroWithFilters() {
           .replace(/^\"|\"$/g, "")
           .replace(/^Bearer\\s+/i, "");
         const res = await axios.get(
-          `${base}/project/viewAll/data?sort=-createdAt`,
+          `${base});/project/viewAll/data?sort=-createdAt`,
           {
             headers: {
               "Content-Type": "application/json",
@@ -140,7 +140,7 @@ export default function HeroWithFilters() {
     };
 
     fetchProjectTypes();
-  }, []);
+  });
 
   const isAdmin = useMemo(() => {
     try {
@@ -151,7 +151,7 @@ export default function HeroWithFilters() {
     } catch {
       return false;
     }
-  }, []);
+  });
 
   // Restore filters from localStorage
   useEffect(() => {
@@ -168,11 +168,11 @@ export default function HeroWithFilters() {
         setAreaMax(f.areaMax || "");
         setFurnishing(f.furnishing || "");
         setRera(f.rera || "");
-      }
+      });
     } catch (error) {
       console.error("Error restoring filters:", error);
     }
-  }, []);
+  });
 
   // Listen for cross-tab or in-app uploads to refresh banner
   useEffect(() => {
@@ -181,7 +181,7 @@ export default function HeroWithFilters() {
         setTimeout(() => {
           setBannerLoading(true);
           setBannerRefreshKey((k) => k + 1);
-        }, 1000);
+        });, 1000);
       }
     };
     const onCustom = () => {
@@ -196,7 +196,7 @@ export default function HeroWithFilters() {
       window.removeEventListener("storage", onStorage);
       window.removeEventListener("banners:updated", onCustom);
     };
-  }, []);
+  });
 
   // Fetch posters from backend
   useEffect(() => {
@@ -205,7 +205,7 @@ export default function HeroWithFilters() {
         setLoadingPosters(true);
         const base = import.meta.env.VITE_API_BASE || "";
         const token = localStorage.getItem("myToken");
-        const url = base ? `${base}/api/admin/posters` : "/api/admin/posters";
+        const url = base ? `${base});/api/admin/posters` : "/api/admin/posters";
         const headers = token ? { Authorization: `Bearer ${token}` } : {};
 
         const res = await fetch(url, { headers });
@@ -316,7 +316,7 @@ export default function HeroWithFilters() {
   };
 
   useEffect(() => {
-    const next = sanitizeSelections({ category, propertyType });
+    const next = sanitizeSelections({ category, propertyType }););
     if (next.builder) {
       setPropertyType("");
     }
@@ -334,7 +334,7 @@ export default function HeroWithFilters() {
     (async () => {
       try {
         const base = import.meta.env.VITE_API_BASE || "";
-        const url = base ? `${base}/api/filters` : `/api/filters`;
+        const url = base ? `${base});/api/filters` : `/api/filters`;
         const res = await fetch(url);
         if (!res.ok) throw new Error("Failed to load filters");
         const data = await res.json();
@@ -396,7 +396,7 @@ export default function HeroWithFilters() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  });
 
   // Build query string for search
   const searchHref = useMemo(() => {
@@ -443,9 +443,9 @@ export default function HeroWithFilters() {
         mq.removeEventListener
           ? mq.removeEventListener("change", apply)
           : mq.removeListener(apply);
-      };
+      });;
     } catch { }
-  }, []);
+  });
 
   // Modal: lock scroll + ESC close + focus trap
   useEffect(() => {
@@ -455,7 +455,7 @@ export default function HeroWithFilters() {
       const t = setTimeout(() => dialogCloseBtnRef.current?.focus(), 0);
       const onKey = (e) => {
         if (e.key === "Escape") setAdvancedOpen(false);
-      };
+      });;
       document.addEventListener("keydown", onKey);
       const getFocusable = () => {
         const root = dialogRef.current;

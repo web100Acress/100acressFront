@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useMemo } from 'react';
 import axios from "axios";
 import { getApiBase } from '../config/apiBase';
 
@@ -6,7 +6,7 @@ import SalesHeadSidebar from "./SalesHeadSidebar";
 import BackToTopButton from "../Pages/BackToTopButton";
 import { ClipLoader } from "react-spinners";
 import { useNavigate } from "react-router-dom";
-import { message } from "antd";
+import { message } from '../utils/antdImports';
 
 const Enquiries = () => {
   const [search, setSearch] = useState("");
@@ -85,7 +85,7 @@ const Enquiries = () => {
 
   useEffect(() => {
     fetchData(1);
-  }, []);
+  });
 
   const handleClick = (pageNumber) => {
     fetchData(pageNumber);

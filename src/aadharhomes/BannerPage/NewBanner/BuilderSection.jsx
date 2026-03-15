@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import '../../../styles/newbanner/builder.css';
 
 const BuilderSection = ({ builderName, builderdescription }) => {

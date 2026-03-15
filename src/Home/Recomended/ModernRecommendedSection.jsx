@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useRef, useContext } from "react";
+import React, { useMemo } from 'react';
 import { useSelector } from "react-redux";
-import { Skeleton } from 'antd';
+import { Skeleton } from '../../utils/antdImports';
 import { format } from 'date-fns';
 import { getPossessionInfo } from '../../Utils/possessionUtils';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -43,7 +43,7 @@ const ModernRecommendedSection = () => {
     hydrateFavoritesFromServer();
     const unsub = subscribe(() => setFavTick((v) => v + 1));
     return () => { if (typeof unsub === 'function') unsub(); };
-  }, []);
+  });
 
   const mockSpotlightData = [];
   const displayData = spotlight && spotlight.length > 0 ? spotlight : mockSpotlightData;

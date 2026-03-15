@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useMemo } from 'react';
 import axios from "axios";
 import { MdSpaceDashboard, MdAnalytics, MdPeople, MdTrendingUp, MdAttachMoney } from "react-icons/md";
 import { FaProjectDiagram, FaUserTie, FaPhone, FaChartLine, FaHome, FaRegUserCircle, FaBuilding } from "react-icons/fa";
@@ -51,20 +51,20 @@ const SalesHeadSidebar = ({ sidebarOpen, setSidebarOpen }) => {
       try {
         const parsedData = JSON.parse(agentData);
         setUserData(parsedData);
-      } catch (error) {
+      }); catch (error) {
         console.error("Error parsing agent data:", error);
       }
     }
     
     // Fetch dashboard data
     fetchDashboardData();
-  }, []);
+  });
 
   useEffect(() => {
     if (darkMode) {
       document.documentElement.classList.add('dark');
       localStorage.setItem('salesHeadDarkMode', 'true');
-    } else {
+    }); else {
       document.documentElement.classList.remove('dark');
       localStorage.setItem('salesHeadDarkMode', 'false');
     }

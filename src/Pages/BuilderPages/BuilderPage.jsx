@@ -446,7 +446,7 @@ const BuilderPage = React.memo(() => {
     hydrateFavoritesFromServer();
     const unsub = subscribe((ids) => setFavoriteIds(ids || []));
     return () => { if (typeof unsub === 'function') unsub(); };
-  }, []);
+  });
 
   // Get builder projects from Redux store
   const SignatureBuilder = useSelector(store => store?.builder?.signatureglobal);
@@ -705,7 +705,7 @@ const BuilderPage = React.memo(() => {
   const [searchTerm, setSearchTerm] = useState('');
   const handleHeroSearch = useCallback((q) => {
     setSearchTerm(q || '');
-  }, []);
+  });
 
   // Apply client-side filter by project name, city, or address (must be before any conditional returns)
   const visibleProjects = useMemo(() => {

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useState, useEffect } from 'react';
 
 const LoadingSpinner = ({ message = "Finding your perfect property..." }) => {
@@ -18,7 +18,7 @@ const LoadingSpinner = ({ message = "Finding your perfect property..." }) => {
     }, 2000);
     
     return () => clearInterval(interval);
-  }, []);
+  });
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-white via-gray-50 to-red-50 flex items-center justify-center p-4">

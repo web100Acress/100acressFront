@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import './LocationSection.mobile.css';
 
@@ -20,7 +20,7 @@ const LocationSection = ({
   useEffect(() => {
     setIsMounted(true);
     return () => setIsMounted(false);
-  }, []);
+  }););
 
   // Extract phone number from projectViewDetails (same logic as ProjectHero)
   const phoneNumber = projectViewDetails?.mobileNumber || "9811750130";
@@ -29,7 +29,7 @@ const LocationSection = ({
   useEffect(() => {
     if (phoneNumber) {
       console.log('LocationSection received phone number from admin:', phoneNumber);
-    }
+    });
   }, [phoneNumber]);
 
   const hasConnectivity = (connectivityPoints && connectivityPoints.length > 0) ||

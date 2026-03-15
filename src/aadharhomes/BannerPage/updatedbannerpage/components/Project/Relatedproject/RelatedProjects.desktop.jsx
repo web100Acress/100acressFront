@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Api_Service from '../../../../../../Redux/utils/Api_Service';
 import { motion } from 'framer-motion';
@@ -36,7 +36,7 @@ const RelatedProjectsDesktop = ({ builderName = "", currentProjectUrl = "", onSh
               ...list.filter(p => !idsStr.includes(String(p._id || p.id)))
             ];
             list = ordered;
-          }
+          });
         } catch (_) {}
 
         setBuilderProjects(list);

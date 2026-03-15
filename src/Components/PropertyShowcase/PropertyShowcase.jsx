@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { FaMapMarkerAlt, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
@@ -30,7 +30,7 @@ const PropertyShowcase = ({ properties }) => {
       // Clear any existing interval
       if (autoScrollIntervalRef.current) {
         clearInterval(autoScrollIntervalRef.current);
-      }
+      });
 
       // Start auto-scroll interval (5 seconds)
       autoScrollIntervalRef.current = setInterval(() => {
@@ -233,7 +233,7 @@ const PropertyShowcase = ({ properties }) => {
       container.addEventListener('scroll', checkScrollPosition);
       checkScrollPosition(); // Initial check
       return () => container.removeEventListener('scroll', checkScrollPosition);
-    }
+    });
   }, [otherProperties]);
 
 

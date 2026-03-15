@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useMemo } from 'react';
 // import Footer from "../Actual_Components/Footer";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import api from "../../config/apiClient";
-import { Modal, Alert } from "antd";
+import { Modal } from '../../utils/antdImports';
+import { Alert } from '../../utils/antdImports';
 import Footer from "../Actual_Components/Footer";
 import { getApiBase as sharedGetApiBase } from "../../config/apiBase";
 import showToast from "../../Utils/toastUtils";
@@ -298,7 +299,7 @@ const UserEdit = () => {
     const fetchData = async () => {
       try {
         const res = await axios.get(
-          `/postPerson/propertyoneEdit/${id}`
+          `/postPerson/propertyoneEdit/${id});`
         );
         const data = res?.data?.data ?? res?.data;
         // Try common shapes: { data: { postProperty: [item] }} or { data: item } or { postProperty: [item] }
@@ -315,7 +316,7 @@ const UserEdit = () => {
       }
     };
     fetchData();
-  }, []);
+  });
 
   const handleUpdateUser = async () => {
     try {

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import '../../../styles/newbanner/gallery.css';
 import { BackwardIcon, ForwardIcon } from'../../../Assets/icons';
 

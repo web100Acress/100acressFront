@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo } from 'react';
 import { format } from 'date-fns';
 import { motion } from 'framer-motion';
 import './FAQSection.mobile.css';

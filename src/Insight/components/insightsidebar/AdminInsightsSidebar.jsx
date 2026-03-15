@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo } from 'react';
 import { Link, useLocation } from "react-router-dom";
 
 // Enhanced Insights sidebar with better icons and responsiveness
@@ -70,7 +70,7 @@ export default function AdminInsightsSidebar() {
   // Close mobile menu on route change
   React.useEffect(() => {
     setMobileOpen(false);
-  }, [location.pathname]);
+  });, [location.pathname]);
 
   // Responsive sidebar width
   const W = collapsed ? 64 : 280;

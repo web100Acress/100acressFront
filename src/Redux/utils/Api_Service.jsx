@@ -1,3 +1,4 @@
+import React, { useMemo } from 'react';
 import { useDispatch } from "react-redux";
 import { spotlight, trending, featured, upcoming, affordable, luxury, scoplots, commercial, budget, projectindelhi } from "../slice/projectSlice";
 import { gurugram, delhi, noida, goa, ayodhya, mumbai, panipat, panchkula, kasauli, karnal, jalandhar, sonipat, alwar, dubai, pushkar, pune } from "../slice/StateProject";

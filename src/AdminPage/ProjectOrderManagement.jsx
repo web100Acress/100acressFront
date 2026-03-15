@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -74,7 +74,7 @@ const ProjectOrderManagement = () => {
   // Load data from localStorage or API
   useEffect(() => {
     loadProjectOrders();
-  }, []);
+  });
 
   const loadProjectOrders = async () => {
     try {

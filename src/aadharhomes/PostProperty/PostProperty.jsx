@@ -1,5 +1,7 @@
-import React, { useState, useEffect, useRef } from "react";
-import { Button, Modal, ConfigProvider } from "antd";
+import React, { useMemo } from 'react';
+import { Button } from '../../utils/antdImports';
+import { Modal } from '../../utils/antdImports';
+import { ConfigProvider } from '../../utils/antdImports';
 import "antd/dist/reset.css";
 
 import Footer from "../../Components/Actual_Components/Footer";
@@ -159,7 +161,7 @@ const NewSellProperty = () => {
     } catch (_) {
       // ignore restore errors
     }
-  }, []);
+  });
 
   const subTypes = {
     Commercial: [
@@ -233,7 +235,7 @@ const NewSellProperty = () => {
     handleResize();
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  });
 
   const handleChangeStateValue = (e) => {
     const stateName = e.target.value;

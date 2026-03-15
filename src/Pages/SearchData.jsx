@@ -29,7 +29,7 @@ const SearchData = () => {
     
     window.addEventListener('error', handleError);
     return () => window.removeEventListener('error', handleError);
-  }, []);
+  });
   
   const location = useLocation();
   // Safely extract and parse the encoded search payload from the URL

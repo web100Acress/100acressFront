@@ -1,3 +1,4 @@
+import React, { useMemo } from 'react';
 import { useEffect } from "react";
 import { Header } from "./components/Header";
 import { NewHero } from "./components/NewHero";

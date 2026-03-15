@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useMemo } from 'react';
 import axios from 'axios';
 import showToast from "../Utils/toastUtils";
 import { API_BASE } from '../config/apiBase';
@@ -21,7 +21,7 @@ const SitemapManagement = () => {
 
   useEffect(() => {
     fetchUrls();
-  }, []);
+  });
 
   const fetchUrls = async () => {
     try {

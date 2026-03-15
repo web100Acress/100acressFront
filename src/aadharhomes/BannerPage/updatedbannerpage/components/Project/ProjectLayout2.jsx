@@ -1,4 +1,4 @@
-import React, { useState, useEffect, lazy, Suspense } from "react";
+import React, { useMemo } from 'react';
 import { format } from 'date-fns';
 import { getPossessionInfo } from '../../../../../Utils/possessionUtils';
 import { motion } from 'framer-motion';
@@ -74,7 +74,7 @@ const usePerformanceOptimizations = () => {
           .trim();
       }
     });
-  }, []);
+  });
 };
 
 // Optimized renderMetaTags with cache headers and resource hints
@@ -430,7 +430,7 @@ const ProjectLayout2 = () => {
     return () => {
       window.removeEventListener('resize', checkMobile);
     };
-  }, []);
+  });
 
   const handleShowCallback = (successCallback = null) => {
     setCallbackSuccessHandler(() => successCallback);
@@ -459,7 +459,7 @@ const ProjectLayout2 = () => {
         setCssLoaded(false);
         
         // Load critical content first
-        const response = await api.get(`project/View/${pUrl}`);
+        const response = await api.get(`project/View/${pUrl});`);
         console.log('Full API Response:', response); // Debug log
         const projectData = response?.data?.dataview?.[0] || null;
         console.log('Project Data:', projectData);
@@ -937,7 +937,7 @@ const ProjectLayout2 = () => {
                   <div className="w-10 h-px bg-gradient-to-r from-transparent via-yellow-400/50 to-transparent mx-auto mb-3"></div>
 
                   {/* Sophisticated subtext */}
-                  <p className="text-gray-300 text-base font-light leading-relaxed max-w-xl mx-auto">
+                  <p className="text-gray-100 text-base font-light leading-relaxed max-w-xl mx-auto">
                     Get detailed information on floor plans, pricing, payment options, amenities, and specifications to help you make an informed decision.
                   </p>
                 </div>
@@ -966,7 +966,7 @@ const ProjectLayout2 = () => {
                         <line x1="9" y1="15" x2="15" y2="15"/>
                       </svg>
                     </div>
-                    <span className="text-gray-300 text-sm font-medium tracking-wide">Floor Plans</span>
+                    <span className="text-gray-100 text-sm font-medium tracking-wide">Floor Plans</span>
                   </div>
 
                   {/* Pricing & Payment Plans */}
@@ -987,7 +987,7 @@ const ProjectLayout2 = () => {
                         <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
                       </svg>
                     </div>
-                    <span className="text-gray-300 text-sm font-medium tracking-wide">Pricing & Payment Plans</span>
+                    <span className="text-gray-100 text-sm font-medium tracking-wide">Pricing & Payment Plans</span>
                   </div>
 
                   {/* Amenities & Specifications */}
@@ -1008,7 +1008,7 @@ const ProjectLayout2 = () => {
                         <polyline points="9,22 9,12 15,12 15,22"/>
                       </svg>
                     </div>
-                    <span className="text-gray-300 text-sm font-medium tracking-wide">Amenities & Specifications</span>
+                    <span className="text-gray-100 text-sm font-medium tracking-wide">Amenities & Specifications</span>
                   </div>
                 </div>
 

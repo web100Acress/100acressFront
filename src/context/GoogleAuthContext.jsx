@@ -1,6 +1,7 @@
+import React, { useMemo } from 'react';
 import { createContext, useContext, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { message } from 'antd';
+import { message } from '../utils/antdImports';
 import googleAuthClient from '../config/googleAuthClient';
 import apiClient, { setAccessTokenMem, clearAccessTokenMem } from '../config/apiClient';
 
@@ -56,7 +57,7 @@ export const GoogleAuthProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  });
 
   const handleGoogleLogout = useCallback(async () => {
     try {

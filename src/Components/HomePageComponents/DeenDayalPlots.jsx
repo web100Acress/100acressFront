@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useMemo } from 'react';
 import { Helmet } from "react-helmet";
 import CommonInside from "../../Utils/CommonInside";
 import { useSelector } from "react-redux";
@@ -9,9 +9,9 @@ const DeenDayalPlots = () => {
   const {getAllProjects} = Api_Service();
   const deenDayalPlots = useSelector(store => store?.allsectiondata?.deendayalplots);
 
-  useEffect(()=>{
+  useEffect(() => {
     getAllProjects(query,0);
-  },[]);
+  });
   
   return (
     <div>

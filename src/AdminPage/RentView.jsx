@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useMemo } from 'react';
 import Sidebar from "./Sidebar";
 import { useParams } from "react-router-dom";
 import axios from "axios";
@@ -21,7 +21,7 @@ const RentView = () => {
         const fetchData = async () => {
             try {
                 const res = await axios.get(
-                    `/property/rent/${id}`
+                    `/property/rent/${id});`
                 );
                 setViewDetails(res.data.data);
 
@@ -32,7 +32,7 @@ const RentView = () => {
             }
         };
         fetchData();
-    }, []);
+    });
 
 
     return (

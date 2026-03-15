@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useMemo } from 'react';
 import './AboutSection.desktop.css';
 
 const AboutSectionDesktop = ({ projectName, description, imageUrl, onShowCallback = () => {} }) => {
@@ -11,7 +11,7 @@ const AboutSectionDesktop = ({ projectName, description, imageUrl, onShowCallbac
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             entry.target.classList.add('animate-fade-up');
-          }
+          });
         });
       },
       { threshold: 0.1 }
@@ -22,7 +22,7 @@ const AboutSectionDesktop = ({ projectName, description, imageUrl, onShowCallbac
     }
 
     return () => observer.disconnect();
-  }, []);
+  });
 
   const [expanded, setExpanded] = useState(false);
 

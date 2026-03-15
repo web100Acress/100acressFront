@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useMemo } from 'react';
 import { AuthContext } from '../../AuthContext';
 import AuthModal from '../../Resister/AuthModal';
 import {
@@ -82,12 +82,12 @@ export default function ProjectCard({
   useEffect(() => {
     try {
       hydrateFavoritesFromServer();
-    } catch (_) {}
+    }); catch (_) {}
     const unsub = subscribe(() => setFavTick((v) => v + 1));
     return () => {
       if (typeof unsub === "function") unsub();
     };
-  }, []);
+  });
 
   const handleFavoriteClick = (e, id, project) => {
     e.preventDefault();

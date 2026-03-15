@@ -1,3 +1,4 @@
+import React, { useMemo } from 'react';
 export const Copyright = () => {
   return (
     <div className="py-6 text-center text-sm text-gray-400 border-t border-white/10 bg-black">

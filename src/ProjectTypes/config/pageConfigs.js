@@ -1,3 +1,4 @@
+import React, { useMemo } from 'react';
 // Page configurations for different filter page types
 import { staticData, getStaticData, getFAQData, getTrustBoosters } from './staticData.jsx';
 

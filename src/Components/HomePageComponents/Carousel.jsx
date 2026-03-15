@@ -1,4 +1,4 @@
-import React,{useState, useEffect} from "react";
+import React, { useMemo } from 'react';
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 
@@ -27,8 +27,8 @@ function StarCarousel({ AllProjects = [] }) {
 
     return () => {
       window.removeEventListener('resize', updateNumber);
-    };
-  }, []);
+    });;
+  });
 
   return (
     <Wrapper className="section">

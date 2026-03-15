@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useMemo } from 'react';
 import api from "../config/apiClient";
 import Sidebar from "./Sidebar";
 import Tippy from "@tippyjs/react";
@@ -102,7 +102,7 @@ const UserAdmin = () => {
       }
     };
     fetchData();
-  }, []);
+  });
 
   // Extract a reasonable "source" value from a user object
   const SOURCE_KEYS = ['source', 'signupSource', 'provider', 'origin'];

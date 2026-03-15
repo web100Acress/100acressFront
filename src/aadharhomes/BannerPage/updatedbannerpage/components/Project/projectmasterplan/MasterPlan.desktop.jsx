@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo } from 'react';
 import { motion } from 'framer-motion';
 import './MasterPlan.desktop.css';
 

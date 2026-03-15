@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useMemo } from 'react';
 import apiClient from "../config/apiClient";
 import Modal from "react-modal";
 import Sidebar from "./Sidebar";

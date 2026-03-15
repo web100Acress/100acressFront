@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Calendar, Clock, Eye, ArrowRight, Heart } from 'lucide-react';
 
 const HeroSection = ({ blog = { blog_Title: "Luxury Waterfront Estate", blog_Category: "Premium Properties", blog_Description: "Discover this exquisite luxury property with modern design and stunning views.", views: 1250, createdAt: new Date().toISOString() }, blogLink = "#", FALLBACK_IMG = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 400'%3E%3Crect fill='%231e293b' width='400' height='400'/%3E%3C/svg%3E" }) => {

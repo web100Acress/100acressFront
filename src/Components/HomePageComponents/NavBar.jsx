@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useMemo } from 'react';
 import Image from "../../Images/100acress.png";
 import { BsFolder } from "react-icons/bs";
 import styled from "styled-components";
@@ -25,12 +25,12 @@ function FinalNavBar() {
     const onScroll = () => {
       try {
         setIsScrolled((window?.scrollY || 0) > 10);
-      } catch (_) {}
+      }); catch (_) {}
     };
     onScroll(); // set initial state
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
-  }, []);
+  });
 
   // Listen for global events to open/close auth modal
   useEffect(() => {
@@ -39,14 +39,14 @@ function FinalNavBar() {
     try {
       window.addEventListener('showLoginModal', openListener);
       window.addEventListener('closeAuthModal', closeListener);
-    } catch (_) {}
+    }); catch (_) {}
     return () => {
       try {
         window.removeEventListener('showLoginModal', openListener);
         window.removeEventListener('closeAuthModal', closeListener);
       } catch (_) {}
     };
-  }, []);
+  });
 
   return (
     <Wrapper className='section' data-scrolled={isScrolled ? '1' : '0'}>

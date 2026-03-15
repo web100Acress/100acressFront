@@ -44,7 +44,7 @@ export default function CommercialCarousel({
     const onScroll = () => {
       const idx = Math.round(el.scrollLeft / cardWidth);
       setActiveIndex(idx);
-    };
+    });;
     el.addEventListener('scroll', onScroll, { passive: true });
     return () => el.removeEventListener('scroll', onScroll);
   }, [cardWidth, filtered]);

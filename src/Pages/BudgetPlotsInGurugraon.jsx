@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useMemo } from 'react';
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { EyeIcon } from "lucide-react";
@@ -22,7 +22,7 @@ const BudgetPlotsInGurugraon = () => {
 
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  });
 
   const handleScroll = () => {
     if (scrollRef.current) {
@@ -77,7 +77,7 @@ const BudgetPlotsInGurugraon = () => {
         console.log('📊 Budget plots loaded:', plots);
         console.log('📸 Image URLs being used:');
         plots.forEach((plot, idx) => {
-          console.log(`  ${idx + 1}. ${plot.title}:`, plot.image);
+          console.log(`  ${idx + 1});. ${plot.title}:`, plot.image);
           console.log(`     - Thumbnail: ${plot.thumbnailImage}`);
           console.log(`     - Front: ${plot.frontImage}`);
         });
@@ -89,7 +89,7 @@ const BudgetPlotsInGurugraon = () => {
     };
 
     loadBudgetPlots();
-  }, []);
+  });
 
   useEffect(() => { 
     AOS.init(); 

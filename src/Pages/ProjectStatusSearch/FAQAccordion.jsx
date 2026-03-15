@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo } from 'react';
 
 export default function FAQAccordion({ projectStatus, customFAQs = null }) {
   const [openIndex, setOpenIndex] = useState(null);

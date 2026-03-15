@@ -7,7 +7,8 @@ import { Eye, Edit, Trash2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Oval } from "react-loader-spinner";
 import { PaginationControls } from "../../Components/Blog_Components/Blog/create/desktop/BlogManagement";
-import { Modal, message } from "antd";
+import { Modal } from '../../utils/antdImports';
+import { message } from '../../utils/antdImports';
 
 // This is a copy of AllListedProperties content without the Sidebar
 const SalesHeadAllListedProperties = () => {
@@ -31,7 +32,7 @@ const SalesHeadAllListedProperties = () => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  });
 
   useEffect(() => {
     fetchProperties();

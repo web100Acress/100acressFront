@@ -1,6 +1,6 @@
 // /** @format */
 
-// import React from "react";
+// import React, { useMemo } from 'react';
 // import styled from "styled-components";
 
 // function DeveloperSlider() {
@@ -249,12 +249,12 @@ function DeveloperSlider() {
         );
         console.log(res.data.data, "dfdfds");
         setLogos(res.data.data);
-      } catch (error) {
+      }); catch (error) {
         console.error("Error fetching data:", error);
       }
     };
     fetchData();
-  }, []);
+  });
 
   return (
     <Wrapper className="section">

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
@@ -12,7 +12,7 @@ const EnhancedRecommendedSection = () => {
 
   useEffect(() => {
     getSpotlight();
-  }, [getSpotlight]);
+  });, [getSpotlight]);
 
   const properties = spotlight?.slice(0, 8) || [];
   const [cards, setCards] = useState(properties);
@@ -22,7 +22,7 @@ const EnhancedRecommendedSection = () => {
     if (properties.length > 0) {
       setCards(properties);
       setStartIndex(0);
-    }
+    });
   }, [spotlight]); // Re-run when spotlight data changes
 
   // Auto-rotate visible cards every 1.5 seconds (no GSAP)
@@ -31,7 +31,7 @@ const EnhancedRecommendedSection = () => {
     if (len < 4) return;
     const interval = setInterval(() => {
       setStartIndex(prev => (prev + 1) % len);
-    }, 1500);
+    });, 1500);
     return () => clearInterval(interval);
   }, [cards.length]);
 

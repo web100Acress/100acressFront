@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useMemo } from 'react';
 import Footer from "../Components/Actual_Components/Footer";
 import axios from "axios";
 import { Helmet } from "react-helmet";

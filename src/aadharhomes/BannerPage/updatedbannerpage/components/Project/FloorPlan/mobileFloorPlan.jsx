@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useMemo } from 'react';
 import './mobileFloorPlan.css';
 
 const MobileFloorPlan = ({ floorPlans = [], bhkDetails = [], onShowCallback = () => {}, projectName = '' }) => {

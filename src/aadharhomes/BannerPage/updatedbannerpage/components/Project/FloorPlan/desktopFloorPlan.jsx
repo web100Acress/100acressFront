@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useMemo } from 'react';
 import './desktopFloorPlan.css';
 
 const DesktopFloorPlan = ({ floorPlans = [], bhkDetails = [], onShowCallback = () => {}, projectName = '' }) => {
@@ -34,7 +34,7 @@ const DesktopFloorPlan = ({ floorPlans = [], bhkDetails = [], onShowCallback = (
 
   React.useEffect(() => {
     scrollToSelectedCard();
-  }, [currentIndex]);
+  });, [currentIndex]);
 
   const handleFormSuccess = () => {
     const unlockKey = `floorplan_unlocked_${bhkDetails[0]?.bhk_type || 'default'}`;

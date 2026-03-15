@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useMemo } from 'react';
 import { getApiBase } from "../../../../../config/apiBase";
 
 /*
@@ -29,7 +29,7 @@ const FloatingShortsMobile = ({ videoId = "" }) => {
     const update = () => {
       setWindowWidth(window.innerWidth);
       setWindowHeight(window.innerHeight);
-    };
+    });;
     update();
     window.addEventListener("resize", update);
 
@@ -79,11 +79,11 @@ const FloatingShortsMobile = ({ videoId = "" }) => {
         try { channel.close(); } catch (_) {}
       }
     };
-  }, []);
+  });
 
   useEffect(() => {
     if (videoId) setActiveVideoId(videoId);
-  }, [videoId]);
+  });, [videoId]);
 
   // Mobile-specific dimensions - very compact for mobile
   const dims = mini
@@ -96,7 +96,7 @@ const FloatingShortsMobile = ({ videoId = "" }) => {
     const safeAreaBottom = 100; // Account for mobile navigation and controls
     const x = Math.max(0, windowWidth - dims.w - margin);
     const y = Math.max(0, windowHeight - dims.h - safeAreaBottom);
-    setPos((p) => ({ x: p.x === 0 && p.y === 0 ? x : Math.min(p.x, windowWidth - dims.w), y: p.y === 0 ? y : Math.min(p.y, windowHeight - dims.h) }));
+    setPos((p) => ({ x: p.x === 0 && p.y === 0 ? x : Math.min(p.x, windowWidth - dims.w), y: p.y === 0 ? y : Math.min(p.y, windowHeight - dims.h) });));
     dragPosRef.current = { x, y };
   }, [windowWidth, windowHeight, dims.w, dims.h]);
 

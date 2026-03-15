@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { motion } from 'framer-motion';
 
 const MovingBorder = ({ children, className, containerClassName, as: Component = 'button', ...props }) => {

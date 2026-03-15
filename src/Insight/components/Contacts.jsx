@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import AdminInsightsSidebar from './insightsidebar/AdminInsightsSidebar';
@@ -38,7 +38,7 @@ export default function Contacts() {
 
   useEffect(() => {
     fetchContacts();
-  }, []);
+  });
 
   // Delete contact
   const deleteContact = async (id) => {

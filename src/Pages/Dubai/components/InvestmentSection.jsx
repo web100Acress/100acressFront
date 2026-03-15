@@ -1,7 +1,9 @@
+import React, { useMemo } from 'react';
 import { TrendingUp, DollarSign, Award, Shield, Globe, CreditCard } from "lucide-react";
 import { Button } from "../../../Components/ui/button";
 
-export const InvestmentSection = () => {
+export const InvestmentSection = () => 
+{
   const insights = [
     {
       icon: TrendingUp,

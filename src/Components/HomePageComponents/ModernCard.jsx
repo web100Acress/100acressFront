@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useMemo } from 'react';
 import { styled } from "styled-components";
 import { MdLocationPin, MdStar, MdArrowForward } from "react-icons/md";
 import axios from "axios";
@@ -18,7 +18,7 @@ function ModernCard() {
           const res = await axios.get('/api/property/buy/ViewAll');
           setTrendingProject(res.data.ResaleData);
           setHasFetchedData(true);
-        } catch (error) {
+        }); catch (error) {
           console.log(error || error.message);
         }
       }
@@ -30,8 +30,8 @@ function ModernCard() {
   useEffect(() => {
     hydrateFavoritesFromServer();
     const unsub = subscribe(() => setFavTick((v) => v + 1));
-    return () => { if (typeof unsub === 'function') unsub(); };
-  }, []);
+    return () => { if (typeof unsub === 'function') unsub(); });;
+  });
 
   const formatPrice = (price) => {
     if (!price) return "Price on request";

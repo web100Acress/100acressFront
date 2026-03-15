@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import './HighlightsSection.desktop.css';
 
 const HighlightsSectionDesktop = ({ projectName, highlights, highlightImage, onShowCallback = () => {} }) => {

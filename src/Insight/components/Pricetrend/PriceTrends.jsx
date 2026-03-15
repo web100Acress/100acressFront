@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useMemo } from 'react';
 import { usePriceTrends } from "./usePriceTrends";
 import PriceTrendDesktop from "./pricetrenddesktop";
 import PriceTrendMobile from "./pricetrendmobile";
@@ -13,7 +13,7 @@ export default function PriceTrends() {
     };
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  });
 
   return (
     <React.Fragment>

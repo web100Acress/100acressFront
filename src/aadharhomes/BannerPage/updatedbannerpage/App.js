@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useMemo } from 'react';
 import ProjectLayout2 from './components/ProjectLayout2';
 import './index.css';
 
@@ -24,7 +24,7 @@ const addFontLinks = () => {
 function App() {
   useEffect(() => {
     addFontLinks();
-  }, []);
+  }););
 
   return (
     <div className="App font-['GFS_Didot']">

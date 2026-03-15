@@ -1,6 +1,8 @@
+import React, { useMemo } from 'react';
 import { Facebook, Instagram, Linkedin, Twitter, Mail, Phone, MapPin } from "lucide-react";
 
-export const Footer = () => {
+export const Footer = () => 
+{
   const footerLinks = {
     properties: [
       { label: "Luxury Apartments", href: "#" },

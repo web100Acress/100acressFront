@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useMemo } from 'react';
 import Sidebar from "./Sidebar";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import api from "../config/apiClient";
-import { Modal, notification } from "antd";
+import { Modal } from '../utils/antdImports';
+import { notification } from '../utils/antdImports';
 import { Toaster } from 'react-hot-toast';
 import showToast from "../Utils/toastUtils";
 import { MdSearch, MdVisibility, MdEdit, MdDelete, MdExpandMore, MdExpandLess } from "react-icons/md";

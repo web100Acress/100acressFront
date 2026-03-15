@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo } from 'react';
 import { MapPin, Building2, TrendingUp, ArrowRight, Star, Crown } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useMemo } from 'react';
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../../AuthContext";
 import { ChevronDown } from "lucide-react";
@@ -20,13 +20,13 @@ export default function DesktopInsightsHeader() {
     useEffect(() => {
         const handleScroll = () => {
             setScrolled(window.scrollY > 20);
-        };
+        });;
         window.addEventListener("scroll", handleScroll);
 
         return () => {
             window.removeEventListener("scroll", handleScroll);
         };
-    }, []);
+    });
 
     // Real user initials generator
     const getInitials = () => {

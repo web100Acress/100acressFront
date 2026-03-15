@@ -42,7 +42,7 @@ const Projects = () => {
       // Clean up styles on component unmount
       document.head.removeChild(styleSheet);
     };
-  }, []); // Run once on mount to inject styles
+  }); // Run once on mount to inject styles
 
   // Listen for project update messages from other components
   useEffect(() => {
@@ -56,7 +56,7 @@ const Projects = () => {
 
     window.addEventListener('message', handleMessage);
     return () => window.removeEventListener('message', handleMessage);
-  }, []);
+  });
 
   useEffect(() => {
     const fetchData = async () => {

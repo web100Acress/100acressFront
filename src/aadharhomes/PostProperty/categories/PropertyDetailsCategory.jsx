@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from 'react';
 import { Info, Bed, Bath, Ruler, DollarSign, Sofa, Calendar, Landmark, Sparkles, FileText, ChevronDown } from "lucide-react";
 
 const PropertyDetailsCategory = ({ 

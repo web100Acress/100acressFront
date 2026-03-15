@@ -1,3 +1,4 @@
+import React, { useMemo } from 'react';
 // Project Type Routes Configuration - Using Unified URL Structure
 export const projectTypeRoutes = {
   "sco-plots": {

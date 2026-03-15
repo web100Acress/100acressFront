@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useMemo } from 'react';
 import { Link } from "react-router-dom";
 import styled, { keyframes } from "styled-components";
 import { 
@@ -80,9 +80,9 @@ const ModernHeroSection = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setPlaceholderIndex((prev) => (prev + 1) % placeholderTexts.length);
-    }, 3000);
+    });, 3000);
     return () => clearInterval(interval);
-  }, []);
+  });
 
   // Detect mobile width for selecting phone vs desktop banners
   useEffect(() => {
@@ -90,7 +90,7 @@ const ModernHeroSection = () => {
     onResize();
     window.addEventListener('resize', onResize);
     return () => window.removeEventListener('resize', onResize);
-  }, []);
+  }););
 
   // Debug: log banner availability
   useEffect(() => {
@@ -101,7 +101,7 @@ const ModernHeroSection = () => {
       phoneLen: (bannerPhone || []).length,
       firstDesktop: (bannerDesktop || [])[0]?.image,
       firstPhone: (bannerPhone || [])[0]?.image,
-    });
+    }););
   }, [isMobile]);
 
   // Trending locations data
@@ -181,7 +181,7 @@ const ModernHeroSection = () => {
   useEffect(() => {
     if (debounceTimer.current) {
       clearTimeout(debounceTimer.current);
-    }
+    });
 
     debounceTimer.current = setTimeout(() => {
       if (searchQuery.trim()) {
@@ -204,14 +204,14 @@ const ModernHeroSection = () => {
     const handleClickOutside = (event) => {
       if (searchRef.current && !searchRef.current.contains(event.target)) {
         setShowSuggestions(false);
-      }
+      });
     };
 
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, []);
+  });
 
   const handleSearch = () => {
     // Use same payload format as navbar search (ensures correct SearchData parsing)

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from 'react';
 import CrimsonEleganceFooter from "../../Home/Footer/CrimsonEleganceFooter";
 
 const Footer = () => {

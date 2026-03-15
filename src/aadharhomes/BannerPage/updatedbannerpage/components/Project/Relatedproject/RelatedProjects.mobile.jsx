@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Api_Service from '../../../../../../Redux/utils/Api_Service';
 import { motion } from 'framer-motion';
@@ -37,7 +37,7 @@ const RelatedProjectsMobile = ({ builderName = "", currentProjectUrl = "", onSho
               ...list.filter(p => !idsStr.includes(String(p._id || p.id)))
             ];
             list = ordered;
-          }
+          });
         } catch (_) {}
 
         setBuilderProjects(list);
@@ -67,7 +67,7 @@ const RelatedProjectsMobile = ({ builderName = "", currentProjectUrl = "", onSho
             scrollContainerRef.current.scrollTo({
               left: nextIndex * cardWidth,
               behavior: 'smooth'
-            });
+            }););
           }
           return nextIndex;
         });

@@ -19,7 +19,7 @@ const DesktopInsightBlog = () => {
         const response = await api.get('blog/view');
         if (response?.data?.data) {
           setApiPosts(response.data.data);
-        }
+        });
       } catch (error) {
         console.error('Error fetching blogs:', error);
       } finally {
@@ -27,7 +27,7 @@ const DesktopInsightBlog = () => {
       }
     };
     fetchBlogs();
-  }, []);
+  });
 
   const posts = useMemo(() => {
     if (apiPosts.length > 0) {

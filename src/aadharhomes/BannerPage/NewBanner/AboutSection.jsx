@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { format } from 'date-fns';
 import { getPossessionInfo } from '../../../Utils/possessionUtils';
 import '../../../styles/newbanner/AboutSection.css';

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useMemo } from 'react';
 import Sidebar from "./Sidebar";
 import { useParams } from "react-router-dom";
 import api from "../config/apiClient";

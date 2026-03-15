@@ -49,7 +49,7 @@ const CareerWithUs = () => {
             sort: sortBy,
             page: currentPage,
             limit: pageSize,
-          }
+          },
         });
         const arr = res?.data?.data || [];
         const meta = res?.data?.meta || {};
@@ -89,7 +89,7 @@ const CareerWithUs = () => {
     if (p) setCurrentPage(Math.max(1, parseInt(p, 10) || 1));
     if (ps) setPageSize(Math.max(1, parseInt(ps, 10) || 9));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  });
 
   // Debounce search input for better UX
   useEffect(() => {

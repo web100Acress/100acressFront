@@ -1,5 +1,4 @@
-import React, { useContext } from 'react'
-import Footer from '../Components/Actual_Components/Footer';
+import React, { useMemo } from 'react';
 import { DataContext } from '../MyContext';
 import { Link, useLocation } from 'react-router-dom';
 import { Helmet } from 'react-helmet';

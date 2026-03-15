@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useMemo } from 'react';
 import { Link } from "react-router-dom";
 import {
   hydrateFavoritesFromServer,
@@ -24,7 +24,7 @@ const LikedProjectsSection = () => {
     hydrateFavoritesFromServer().then(() => {
       setData(getFavoritesData());
       setIds(getFavorites());
-    });
+    }););
 
     const unsub = subscribe((nextIds) => {
       setIds(nextIds || []);
@@ -41,7 +41,7 @@ const LikedProjectsSection = () => {
     fetchSuggested();
 
     return () => unsub();
-  }, []);
+  });
 
   const handleRemove = (e, id) => {
     e.preventDefault();

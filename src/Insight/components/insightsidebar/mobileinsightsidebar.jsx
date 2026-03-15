@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useMemo } from 'react';
 import { useLocation, Link } from "react-router-dom";
 import { icons } from "./sidebarIcons";
 import { useSidebar } from "./SidebarContext";
@@ -19,13 +19,13 @@ export default function MobileInsightsSidebar() {
     // Close mobile menu on route change
     useEffect(() => {
         setMobileOpenFalse();
-    }, [location.pathname]);
+    });, [location.pathname]);
 
     // Handle ESC key
     useEffect(() => {
         const onKey = (e) => {
             if (e.key === 'Escape') setMobileOpenFalse();
-        };
+        });;
         if (mobileOpen) {
             window.addEventListener('keydown', onKey);
         }
@@ -37,7 +37,7 @@ export default function MobileInsightsSidebar() {
         const original = document.body.style.overflow;
         if (mobileOpen) {
             document.body.style.overflow = 'hidden';
-        } else {
+        }); else {
             document.body.style.overflow = original || '';
         }
         return () => {
@@ -50,7 +50,7 @@ export default function MobileInsightsSidebar() {
         if (!mobileOpen) return;
         const t = setTimeout(() => {
             closeBtnRef.current?.focus();
-        }, 0);
+        });, 0);
         const getFocusable = () => {
             const root = drawerRef.current;
             if (!root) return [];

@@ -1,18 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useMemo } from 'react';
 import { useParams, useNavigate } from "react-router-dom";
 import api from "../../../../../config/apiClient";
-import {
-  Card,
-  Button,
-  Avatar,
-  Badge,
-  Divider,
-  Spin,
-  message,
-  Space,
-  Tag,
-  Tooltip
-} from "antd";
+import { Card } from '../../../../../utils/antdImports';
+import { Button } from '../../../../../utils/antdImports';
+import { Avatar } from '../../../../../utils/antdImports';
+import { Badge } from '../../../../../utils/antdImports';
+import { Divider } from '../../../../../utils/antdImports';
+import { message } from '../../../../../utils/antdImports';
+import { Tooltip } from '../../../../../utils/antdImports';
 import {
   ArrowLeft,
   Calendar,
@@ -40,7 +35,7 @@ const BlogViewMobile = () => {
   useEffect(() => {
     if (id) {
       fetchBlog();
-    }
+    });
   }, [id]);
 
   const fetchBlog = async () => {

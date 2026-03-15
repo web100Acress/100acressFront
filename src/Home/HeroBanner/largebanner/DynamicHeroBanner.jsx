@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useMemo } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchActiveBanners,
@@ -53,7 +53,7 @@ const DynamicHeroBanner = () => {
     const onResize = () => setWindowWidth(window.innerWidth);
     window.addEventListener('resize', onResize);
     return () => window.removeEventListener('resize', onResize);
-  }, []);
+  });
 
   // Filter to ensure only hero banners are shown (not small banners)
   const heroBanners = filterHeroBanners(activeBanners);

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useMemo } from 'react';
 import { styled } from "styled-components";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -34,7 +34,7 @@ function PropViewCardPro() {
       }
     };
     fetchData();
-  }, []);
+  });
 
   useEffect(() => {
     console.log(rentData, "Updated data");

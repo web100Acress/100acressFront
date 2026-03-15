@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useMemo } from 'react';
 import { useParams, Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import api from "../../../../../config/apiClient";

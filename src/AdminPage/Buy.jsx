@@ -1,7 +1,7 @@
 
 
 
-import React, { useState, useEffect } from "react";
+import React, { useMemo } from 'react';
 import axios from "axios";
 import Modal from "react-modal";
 import Sidebar from "./Sidebar";
@@ -68,7 +68,7 @@ const Buy = () => {
       }
     };
     fetchData();
-  }, []);
+  });
 
 
   const handleDeleteClick = () => {

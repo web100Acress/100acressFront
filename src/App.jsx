@@ -1,4 +1,4 @@
-import React, { lazy, Suspense, useState, useEffect } from "react";
+import React, { useMemo } from 'react';
 import "./App.css";
 import "./styles/enhanced-toast.css";
 import "./styles/post-property-enhanced.css";
@@ -24,6 +24,10 @@ import ErrorBoundary from "./Components/ErrorBoundary";
 import LoginForm from "./Resister/LoginForm";
 import AuthModal from "./Resister/AuthModal";
 import { registerServiceWorker } from "./Utils/serviceWorker";
+
+// Lazy load remaining components
+const DubaiPage = lazy(() => import("./Pages/Dubai/DubaiPage"));
+const BlogView = lazy(() => import("./Insight/components/InsightBlog/BlogView"));
 
 // import ConfettiAllCorners from "./Components/ConfettiAllCorners"; 
 
@@ -222,8 +226,6 @@ const EditProperty = lazy(() => import("./SalesHeadPage/EditProperty"));
 // Test Component
 const TestSalesHead = lazy(() => import("./Components/TestSalesHead"));
 const ProjectRouter = lazy(() => import("./aadharhomes/BannerPage/updatedbannerpage/components/Project/ProjectRouter"));
-import DubaiPage from "./Pages/Dubai/DubaiPage";
-import BlogView from "./Insight/components/InsightBlog/BlogView";
 
 // Property Types Pages
 const BhkFlatsGurgaon = lazy(() => import("./ProjectTypes/ProjectType/PropertyTypes/BhkFlatsGurgaon"));
@@ -267,7 +269,7 @@ function App() {
   // Register service worker for better caching
   useEffect(() => {
     registerServiceWorker();
-  }, []);
+  });
   
   // Consider dynamic project pages like '/experion-the-trillion/' etc. (single segment with trailing slash)
   const singleSegment = /^\/[A-Za-z0-9-]+\/?$/.test(currentPath);
@@ -864,7 +866,7 @@ function MobileBottomNav() {
     const observer = new MutationObserver(() => update());
     observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
     return () => observer.disconnect();
-  }, []);
+  });
 
   if (hideForNewBanner) return null;
 

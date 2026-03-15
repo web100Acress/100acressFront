@@ -318,7 +318,7 @@ const ProjectStatusSearch = () => {
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  });
 
   useEffect(() => {
     console.log('Loading projects for status:', projectStatus, 'with query:', currentConfig.query);
@@ -370,7 +370,7 @@ const ProjectStatusSearch = () => {
         clearTimeout(debounceTimer.current);
       }
     };
-  }, []);
+  });
 
   // Generate dynamic structured data for projects
   const generateProjectStructuredData = () => {

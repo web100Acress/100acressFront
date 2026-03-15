@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo } from 'react';
 import PropViewCard from "../Components/Actual_Components/RentPropViewCard";
 import styled from "styled-components";
 import FinalNavBar from "../Components/HomePageComponents/NavBar";

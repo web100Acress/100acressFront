@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useMemo } from 'react';
 export default function LocationPrompt() {
   const [status, setStatus] = useState(() => localStorage.getItem("geoConsent"));
   const [busy, setBusy] = useState(false);
@@ -9,7 +9,7 @@ export default function LocationPrompt() {
     if (status !== "granted" && status !== "denied" && status !== null) {
       localStorage.removeItem("geoConsent");
       setStatus(null);
-    }
+    });
   }, [status]);
 
   const ask = () => {

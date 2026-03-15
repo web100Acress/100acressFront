@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useMemo } from 'react';
 import { DataContext } from "../MyContext";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";

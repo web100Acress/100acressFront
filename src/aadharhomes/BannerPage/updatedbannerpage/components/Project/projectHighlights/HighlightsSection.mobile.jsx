@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import './HighlightsSection.mobile.css';
 
 const HighlightsSectionMobile = ({ projectName, highlights, highlightImage, onShowCallback = () => {} }) => {

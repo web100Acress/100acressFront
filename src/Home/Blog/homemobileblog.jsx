@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useMemo } from 'react';
 import { Link } from "react-router-dom";
 import { Calendar, ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { motion } from "framer-motion";
@@ -47,7 +47,7 @@ const HomeMobileBlog = () => {
             limit: 3,
             sortBy: 'createdAt',
             sortOrder: 'desc'
-          }
+          });
         });
 
         if (response?.data?.data) {
@@ -61,7 +61,7 @@ const HomeMobileBlog = () => {
     };
 
     fetchTopBlogs();
-  }, []);
+  });
 
   // Auto-scroll functionality
   useEffect(() => {
@@ -77,7 +77,7 @@ const HomeMobileBlog = () => {
           scrollRef.current.scrollTo({
             left: scrollAmount,
             behavior: 'smooth'
-          });
+          }););
         }
 
         return nextIndex;

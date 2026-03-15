@@ -1,3 +1,4 @@
+import React, { useMemo } from 'react';
 // Static data for all page types - titles, descriptions, FAQs, and other content
 export const staticData = {
   // BHK Pages Data

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useMemo } from 'react';
 import Footer from "../Components/Actual_Components/Footer";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
@@ -11,9 +11,9 @@ const Bptp = () => {
   let query = "bptp";
   const {getProjectOnOverview} = Api_Service();
 
-  useEffect(()=>{
+  useEffect(() => {
     getProjectOnOverview(query)
-  },[])
+  });
   return (
     <div>
       <Helmet>

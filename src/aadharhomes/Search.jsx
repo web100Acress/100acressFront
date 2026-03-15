@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useMemo } from 'react';
 import { Link } from "react-router-dom";
 import { SearchIcon } from "../Assets/icons";
 import AOS from 'aos';
@@ -19,12 +19,12 @@ const Search = ({ data1 }) => {
     setFormData((prevState) => ({
       ...prevState,
       collectionName: data1,
-    }));
+    });));
   }, [data1]);
 
     useEffect(() => {
       AOS.init();
-    }, []);
+    }););
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -61,7 +61,7 @@ const Search = ({ data1 }) => {
     }, 3000);
 
     return () => clearInterval(intervalId);
-  }, []);
+  });
 
   return (
     <Wrapper className="section">

@@ -1,3 +1,4 @@
+import React, { useMemo } from 'react';
 
 import DesktopInsightHeader from "./desktopinsightheader";
 import MobileInsightHeader from "./mobileinsightheader";

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Phone, Mail, Globe, MapPin, Briefcase, Award, MessageCircle } from 'lucide-react';
 

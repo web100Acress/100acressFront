@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useMemo } from 'react';
 import './SimpleNotification.css';
 
 // Global notification state
@@ -19,15 +19,15 @@ const SimpleNotification = () => {
     globalSetNotification = setNotification;
     return () => {
       globalSetNotification = null;
-    };
-  }, []);
+    });;
+  });
 
   useEffect(() => {
     if (notification && notification.isVisible) {
       // Auto dismiss after 3 seconds
       const timer = setTimeout(() => {
         setNotification(null);
-      }, 3000);
+      });, 3000);
 
       return () => clearTimeout(timer);
     }

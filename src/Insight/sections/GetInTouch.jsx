@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo } from 'react';
 import { CheckCircle, ArrowRight, Mail, Phone, MapPin } from 'lucide-react';
 
 const LuxuryRealEstateContact = () => {

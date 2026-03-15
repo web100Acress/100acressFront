@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from 'react';
 import { Link } from "react-router-dom";
 
 export default function CenterLogo({ colorChange, isSearchOpen, centerOnCompact = false, isHome }) {

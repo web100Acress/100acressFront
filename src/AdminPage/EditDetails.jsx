@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useMemo } from 'react';
 import Sidebar from "./Sidebar";
 import { useParams } from "react-router-dom";
 import api from "../config/apiClient";
 
-import { Switch } from "antd";
+import { Switch } from '../utils/antdImports';
 import { FaCheck, FaXmark, FaRegImage, FaRegBuilding, FaCouch } from "react-icons/fa6";
 import { FaRupeeSign, FaMapMarkerAlt, FaLayerGroup, FaRegDotCircle, FaRegCalendar, FaRegClock, FaEdit, FaListAlt } from "react-icons/fa";
 import { MdHome, MdImage, MdInfo, MdLocationOn, MdAttachMoney, MdApartment } from "react-icons/md";
@@ -58,7 +58,7 @@ const EditDetails = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await api.get(`/postPerson/propertyoneEdit/${id}`);
+        const res = await api.get(`/postPerson/propertyoneEdit/${id});`);
         const data = res?.data?.data;
         const list = Array.isArray(data?.postProperty) ? data.postProperty : [];
         const payload = list.length > 0 ? list[0] : {};

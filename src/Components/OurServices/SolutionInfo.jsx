@@ -1,3 +1,4 @@
+import React, { useMemo } from 'react';
 // src/components/RealEstateAssistPage/SolutionInfo.jsx
 import { motion } from "framer-motion";
 import { ArrowRight, ArrowLeft } from "lucide-react";

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState, useRef } from "react";
+import React, { useMemo } from 'react';
 import { useParams, Link } from "react-router-dom";
 import api from "../../../../../config/apiClient";
 import { DataContext } from "../../../../../MyContext";
@@ -44,7 +44,7 @@ const ModernBlogView = () => {
   //       if (projects && projects.length > 0) {
   //         console.log('🏢 ModernBlogView: Branded residences data fetched successfully:', projects.length);
   //         dispatch(brandedresidences(projects));
-  //       } else {
+  //       }); else {
   //         console.log('🏢 ModernBlogView: No branded residences data found, falling back to general projects');
   //         await getAllProjects('brandedresidences', 4);
   //       }
@@ -74,7 +74,7 @@ const ModernBlogView = () => {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, []);
+  });
 
   const countryCodes = [
     { code: '+93', name: 'Afghanistan', flag: '🇦🇫' },
@@ -529,7 +529,7 @@ const ModernBlogView = () => {
       }
     };
     loadBlogCategories();
-  }, []);
+  });
 
   // Extract headings when data changes
   useEffect(() => {
@@ -624,7 +624,7 @@ const ModernBlogView = () => {
     handleScroll(); // Initial check
 
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  });
 
   // Image handling
   const blogImage = data.blog_Image?.cdn_url ||

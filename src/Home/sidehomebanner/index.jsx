@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect, useMemo } from 'react';
 import DynamicSideBannerMobile from "./DynamicSideBanner.mobile";
 import DynamicSideBannerDesktop from "./DynamicSideBanner.desktop";
 
@@ -19,7 +19,7 @@ const DynamicSideBanner = () => {
 
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  });
 
   // Render appropriate component based on screen size
   if (isMobile) {

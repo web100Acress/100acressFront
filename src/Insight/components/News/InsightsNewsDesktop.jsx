@@ -20,7 +20,7 @@ const InsightsNewsDesktop = () => {
         if (response.data?.data) {
           // In this implementation, we treat all blogs as potential news/intel
           setNews(response.data.data);
-        }
+        });
       } catch (error) {
         console.error('Error fetching news:', error);
       } finally {
@@ -28,7 +28,7 @@ const InsightsNewsDesktop = () => {
       }
     };
     fetchNews();
-  }, []);
+  });
 
   const categories = useMemo(() => [
     { id: 'all', name: 'All Intelligence' },

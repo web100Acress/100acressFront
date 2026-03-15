@@ -1,4 +1,4 @@
-import React, {  useEffect, useState } from "react";
+import React, { useMemo } from 'react';
 import { Search as SearchIcon, ChevronDown } from "lucide-react";
 
 const ProjectSearching = ({searchdata, sendDatatoparent, city, showPrimeOnly = false, showSearchOnly = false}) => {
@@ -40,9 +40,9 @@ const ProjectSearching = ({searchdata, sendDatatoparent, city, showPrimeOnly = f
     setFilteredProjects(filtered);
   };
   
-  useEffect(()=>{
+  useEffect(() => {
     sendDatatoparent(filteredProjects)
-  },[filteredProjects])
+  }, [filteredProjects])
 
   return (
     <>

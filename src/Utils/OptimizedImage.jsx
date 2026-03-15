@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useMemo } from 'react';
 
 const OptimizedImage = ({ 
   src, 
@@ -32,7 +32,7 @@ const OptimizedImage = ({
     }
 
     return () => observer.disconnect();
-  }, []);
+  });
 
   const handleLoad = () => {
     setIsLoaded(true);

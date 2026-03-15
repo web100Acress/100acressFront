@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useMemo } from 'react';
 import { getApiBase } from "../../../../../config/apiBase";
 
 /*
@@ -30,7 +30,7 @@ const FloatingShortsDesktop = ({ videoId = "" }) => {
     const update = () => {
       setWindowWidth(window.innerWidth);
       setWindowHeight(window.innerHeight);
-    };
+    });;
     update();
     window.addEventListener("resize", update);
 
@@ -80,11 +80,11 @@ const FloatingShortsDesktop = ({ videoId = "" }) => {
         try { channel.close(); } catch (_) {}
       }
     };
-  }, []);
+  });
 
   useEffect(() => {
     if (videoId) setActiveVideoId(videoId);
-  }, [videoId]);
+  });, [videoId]);
 
   // Desktop-specific dimensions
   const dims = mini
@@ -96,7 +96,7 @@ const FloatingShortsDesktop = ({ videoId = "" }) => {
     const margin = 16;
     const x = Math.max(0, windowWidth - dims.w - margin);
     const y = Math.max(0, windowHeight - dims.h - 96);
-    setPos((p) => ({ x: p.x === 0 && p.y === 0 ? x : Math.min(p.x, windowWidth - dims.w), y: p.y === 0 ? y : Math.min(p.y, windowHeight - dims.h) }));
+    setPos((p) => ({ x: p.x === 0 && p.y === 0 ? x : Math.min(p.x, windowWidth - dims.w), y: p.y === 0 ? y : Math.min(p.y, windowHeight - dims.h) });));
     dragPosRef.current = { x, y };
   }, [windowWidth, windowHeight, dims.w, dims.h]);
 

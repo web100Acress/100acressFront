@@ -1,4 +1,4 @@
-import React, {useEffect, useState } from "react";
+import React, { useMemo } from 'react';
 import "react-multi-carousel/lib/styles.css";
 import { Helmet } from "react-helmet";
 import { staticData } from "../ProjectTypes/config/staticData";
@@ -18,12 +18,12 @@ const ReadyToMoveProject = () => {
     setFilteredData(data);
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     getAllProjects(query,0);
-  },[]);
+  }););
 
-  useEffect(()=>{
-    setDatafromsearch({ readyToMoveData });
+  useEffect(() => {
+    setDatafromsearch({ readyToMoveData }););
   },[readyToMoveData])
 
   const rtmData = staticData.status.readytomove;

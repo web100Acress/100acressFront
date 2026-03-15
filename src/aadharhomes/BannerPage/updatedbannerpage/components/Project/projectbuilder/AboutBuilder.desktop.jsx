@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from 'react';
 import { motion } from "framer-motion";
 import RelatedProjects from "../Relatedproject/RelatedProjects.desktop";
 import "./AboutBuilder.desktop.css";

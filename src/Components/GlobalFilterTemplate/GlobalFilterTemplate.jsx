@@ -348,7 +348,7 @@ const GlobalFilterTemplate = ({
     // Removed auto-refresh interval to prevent unnecessary API calls
     // Project orders will only be loaded once when component mounts
     // Users can manually refresh if needed
-  }, []);
+  });
 
   function handleDatafromSearch(data) {
     setFilteredProjects(data);
@@ -583,7 +583,7 @@ const GlobalFilterTemplate = ({
         console.log(`City orders for ${orderCity}:`, cityOrders);
 
         const desiredOrder = Array.isArray(cityOrders)
-          ? cityOrders.filter(item => item.isActive).map(item => item.name.toLowerCase())
+          ? useMemo(() => cityOrders.filter(item => item.isActive).map(item => item.name.toLowerCase(), [cityOrders]))
           : [];
 
         console.log(`Applying custom order for city: ${orderCity}`, desiredOrder);
@@ -649,7 +649,7 @@ const GlobalFilterTemplate = ({
         console.log(`Status orders for ${orderStatus}:`, statusOrders);
 
         const desiredOrder = Array.isArray(statusOrders)
-          ? statusOrders.filter(item => item.isActive).map(item => item.name.toLowerCase().replace(/\s+/g, ''))
+          ? useMemo(() => statusOrders.filter(item => item.isActive).map(item => item.name.toLowerCase(), [statusOrders]).replace(/\s+/g, ''))
           : [];
 
         console.log(`Applying custom order for status: ${orderStatus}`, desiredOrder);
@@ -751,17 +751,17 @@ const GlobalFilterTemplate = ({
       const navHeight = 64; // 16 * 4 = 64px (mt-16)
       const heroHeight = window.innerHeight * 0.3; // 30vh hero height
       setShowFilterBar(scrollTop > (heroHeight + navHeight));
-    };
+    });;
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  });
 
   useEffect(() => {
     if (currentConfig.query) {
       console.log('Loading projects for query:', currentConfig.query);
       throttledGetAllProjects(currentConfig.query, 0);
-    }
+    });
   }, [currentConfig.query, throttledGetAllProjects]);
 
   useEffect(() => {
@@ -780,7 +780,7 @@ const GlobalFilterTemplate = ({
   useEffect(() => {
     if (pageType !== 'budget') {
       setFilteredProjects([]);
-    }
+    });
   }, [projectStatus, pageType]);
 
   useEffect(() => {
@@ -791,7 +791,7 @@ const GlobalFilterTemplate = ({
         name: p.projectName || p.title,
         city: p.city,
         id: p._id
-      }))
+      });))
     });
 
     if (!isLoading && projects.length > 0) {
@@ -807,7 +807,7 @@ const GlobalFilterTemplate = ({
   useEffect(() => {
     console.log('Project status changed to:', projectStatus);
     setFilteredProjects([]); // Clear any filtered results when status changes
-  }, [projectStatus]);
+  });, [projectStatus]);
 
   // Handle location changes
   useEffect(() => {
@@ -820,7 +820,7 @@ const GlobalFilterTemplate = ({
       location: '',
       projectType: '',
       price: ''
-    });
+    }););
     // Don't clear for budget pages as they handle their own filtering
     if (pageType !== 'budget') {
       setFilteredProjects([]); // Clear filtered results when route changes
@@ -834,7 +834,7 @@ const GlobalFilterTemplate = ({
       const hasActiveFilters = Object.values(filters).some(value => value !== '');
       if (hasActiveFilters || sort) {
         handleSearch(false); // Don't reset pagination for auto-filter
-      }
+      });
     }
   }, [filters, sort, projectOrdersLoading]); // Removed projectOrders to avoid possible object reference instability loop
 
@@ -847,7 +847,7 @@ const GlobalFilterTemplate = ({
       setDisplayedProjects(prev => {
         if (JSON.stringify(prev) === JSON.stringify(memoizedProjectData)) return prev;
         return memoizedProjectData;
-      });
+      }););
       setFilteredProjects(prev => {
         if (JSON.stringify(prev) === JSON.stringify(memoizedProjectData)) return prev;
         return memoizedProjectData;
@@ -867,9 +867,9 @@ const GlobalFilterTemplate = ({
       isRequestInProgress.current = false;
       if (debounceTimer.current) {
         clearTimeout(debounceTimer.current);
-      }
+      });
     };
-  }, []);
+  });
 
   // Generate dynamic structured data for projects
   const generateProjectStructuredData = () => {

@@ -1,3 +1,4 @@
+import React, { useMemo } from 'react';
 // Centralized dynamic filter configuration for HeroWithFilters and related pages
 
 export const CATEGORIES = [

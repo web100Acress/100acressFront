@@ -1,5 +1,5 @@
 // ConfettiAllCorners.jsx
-import React, { useEffect, useRef, useState } from "react";
+import React, { useMemo } from 'react';
 import confetti from "canvas-confetti";
 
 const ConfettiAllCorners = () => {
@@ -12,7 +12,7 @@ const ConfettiAllCorners = () => {
     const myConfetti = confetti.create(canvasRef.current, {
       resize: true,
       useWorker: true,
-    });
+    }););
 
     const commonColors = [
       "#FF6B35", "#FFD23F", "#06FFA5", "#4ECDC4", "#FF6B9D",
@@ -100,7 +100,7 @@ const ConfettiAllCorners = () => {
       clearTimeout(initDelay);
     };
     }, 100); // Small delay to ensure canvas is ready
-  }, []);
+  });
 
   if (!visible) return null;
 

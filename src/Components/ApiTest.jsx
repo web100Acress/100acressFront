@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useMemo } from 'react';
 import api from '../config/apiClient';
 
 const ApiTest = () => {
@@ -42,7 +42,7 @@ const ApiTest = () => {
   useEffect(() => {
     // Test default health endpoint
     testApiConnection('/health');
-  }, []);
+  }););
 
   const handleCustomTest = (e) => {
     e.preventDefault();

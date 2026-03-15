@@ -1,4 +1,4 @@
-import React, {  useEffect, useState } from "react";
+import React, { useMemo } from 'react';
 import Footer from "../Actual_Components/Footer";
 import CommonProject from "../../Utils/CommonProject";
 import { Helmet } from "react-helmet";
@@ -17,13 +17,13 @@ const UpComingProjects = () => {
     setFilteredData(data);
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     getAllProjects(query,0);
-  },[])
+  });)
   
   
-  useEffect(()=>{
-    setDatafromsearch({ allupcomingProject });
+  useEffect(() => {
+    setDatafromsearch({ allupcomingProject }););
   },[allupcomingProject])
 
   

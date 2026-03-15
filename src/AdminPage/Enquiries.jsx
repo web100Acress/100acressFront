@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useMemo } from 'react';
 import axios from "axios";
 import { getApiBase } from '../config/apiBase';
 
@@ -47,7 +47,7 @@ const Enquiries = () => {
     return () => {
       document.head.removeChild(styleSheet);
     };
-  }, []);
+  });
 
   const fetchData = async (page = 1) => {
     setLoading(true);
@@ -97,7 +97,7 @@ const Enquiries = () => {
 
   useEffect(() => {
     fetchData(1);
-  }, []);
+  });
 
   const handleClick = (pageNumber) => {
     fetchData(pageNumber);

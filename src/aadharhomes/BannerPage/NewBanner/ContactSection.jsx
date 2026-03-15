@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import '../../../styles/newbanner/contact.css';
 import { PhoneIcon, WhiteLineIcon } from '../../../Assets/icons';
 

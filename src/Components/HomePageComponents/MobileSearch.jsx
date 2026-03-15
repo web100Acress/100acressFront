@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useMemo } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { FiSearch, FiX } from 'react-icons/fi';
 
@@ -13,7 +13,7 @@ const MobileSearch = () => {
       if (searchRef.current && !searchRef.current.contains(event.target)) {
         if (isExpanded) {
           handleCollapse();
-        }
+        });
       }
     }
 

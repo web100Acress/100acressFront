@@ -1,3 +1,4 @@
+import React, { useMemo } from 'react';
 // src/components/RealEstateAssistPage/ContactForm.jsx
 import { motion, AnimatePresence } from "framer-motion";
 import { Send, Phone, MessageCircle, CheckCircle2, ArrowLeft } from "lucide-react";

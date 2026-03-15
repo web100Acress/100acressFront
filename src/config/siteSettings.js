@@ -1,3 +1,4 @@
+import React, { useMemo } from 'react';
 // Simple site settings storage using localStorage
 // Keys
 const SHORTS_VIDEO_ID_KEY = 'homeShortsVideoId';

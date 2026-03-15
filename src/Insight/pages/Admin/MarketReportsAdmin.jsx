@@ -1,25 +1,17 @@
-import React, { useState, useEffect } from "react";
+import React, { useMemo } from 'react';
 import api from "../../../config/apiClient";
 import { showToast } from "../../../Utils/toastUtils";
 import { Link } from 'react-router-dom';
 import AdminInsightsSidebar from '../../components/insightsidebar/AdminInsightsSidebar';
-import {
-  Form,
-  Input,
-  Select,
-  Upload,
-  Button,
-  Table,
-  Tabs,
-  Card,
-  message,
-  Badge,
-  Tag,
-  Space,
-  Tooltip,
-  Empty,
-  Modal
-} from 'antd';
+import { Input } from '../../../utils/antdImports';
+import { Select } from '../../../utils/antdImports';
+import { Button } from '../../../utils/antdImports';
+import { Card } from '../../../utils/antdImports';
+import { message } from '../../../utils/antdImports';
+import { Badge } from '../../../utils/antdImports';
+import { Tooltip } from '../../../utils/antdImports';
+import { Empty } from '../../../utils/antdImports';
+import { Modal } from '../../../utils/antdImports';
 import {
   UploadOutlined,
   PlusOutlined,
@@ -92,7 +84,7 @@ const MarketReportsAdmin = () => {
   useEffect(() => {
     fetchReports();
     fetchCities();
-  }, []);
+  });
 
   const fetchReports = async () => {
     try {

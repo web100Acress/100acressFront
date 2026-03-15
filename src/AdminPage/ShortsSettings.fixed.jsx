@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getApiBase } from '../config/apiBase';
 import Sidebar from './Sidebar';
@@ -27,7 +27,7 @@ const ShortsSettings = () => {
         showToast.error('Please log in to access this page');
         navigate('/login');
         return;
-      }
+      });
 
       try {
         setIsLoading(true);

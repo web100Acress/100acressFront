@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { MdEmail } from 'react-icons/md';
 import { LuPhoneCall } from 'react-icons/lu';
 import { FaLocationDot } from 'react-icons/fa6';

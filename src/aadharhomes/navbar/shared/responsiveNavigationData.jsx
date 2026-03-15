@@ -1,3 +1,4 @@
+import React, { useMemo } from 'react';
 export const DEVICE_BREAKPOINTS = {
   mobile: '320px',
   tablet: '768px',

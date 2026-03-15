@@ -77,7 +77,7 @@ const ModernBlogPage = () => {
       }
     };
     loadBlogCategories();
-  }, []);
+  });
 
   // Fetch blogs
   useEffect(() => {

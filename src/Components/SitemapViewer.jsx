@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useMemo } from 'react';
 
 function SitemapViewer() {
   const [sitemapContent, setSitemapContent] = useState('');
@@ -8,10 +8,10 @@ function SitemapViewer() {
       const response = await fetch('/sitemap.xml'); // Assuming sitemap.xml is in public folder
       const text = await response.text();
       setSitemapContent(text);
-    }
+    });
 
     fetchSitemap();
-  }, []);
+  });
 
   return (
     <div>

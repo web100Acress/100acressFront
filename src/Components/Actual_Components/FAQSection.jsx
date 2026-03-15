@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo } from 'react';
 import { Helmet } from 'react-helmet';
 
 const FAQSection = ({ faqs, type = 'resale' }) => {

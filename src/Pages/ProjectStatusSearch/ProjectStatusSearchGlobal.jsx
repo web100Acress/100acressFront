@@ -250,7 +250,7 @@ const ProjectStatusSearchGlobal = () => {
     if (currentConfig?.query) {
       // Load initial batch with reasonable limit for fast loading
       const initialLimit = (projectStatus === 'upcoming' || projectStatus === 'newlaunch' || projectStatus === 'underconstruction' || projectStatus === 'readytomove') ? 50 : 30; // Higher limit for popular pages
-      console.log(`🚀 Performance fix: Loading ${projectStatus} projects with initial limit ${initialLimit}`);
+      console.log(`🚀 Performance fix: Loading ${projectStatus}); projects with initial limit ${initialLimit}`);
       throttledGetAllProjects(currentConfig.query, initialLimit);
     }
   }, [projectStatus, currentConfig?.query, throttledGetAllProjects, location.pathname, componentKey]);
@@ -320,7 +320,7 @@ const ProjectStatusSearchGlobal = () => {
         clearTimeout(debounceTimer.current);
       }
     };
-  }, []);
+  });
 
   // Generate dynamic structured data for projects
   const generateProjectStructuredData = () => {

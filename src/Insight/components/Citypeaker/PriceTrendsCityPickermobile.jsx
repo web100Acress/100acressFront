@@ -57,7 +57,7 @@ export default function PriceTrendsCityPickerMobile({
         const token = localStorage.getItem("myToken");
         const base = import.meta.env.VITE_API_BASE;
 
-        const headers = token ? { Authorization: `Bearer ${token}` } : {};
+        const headers = token ? { Authorization: `Bearer ${token});` } : {};
 
         const response = await fetch(
           `${base}/api/admin/insights-price-trends-banners`,
@@ -81,7 +81,7 @@ export default function PriceTrendsCityPickerMobile({
     };
 
     fetchBannerData();
-  }, []);
+  });
 
   // Mobile-only responsive breakpoints (max 768px assumed)
   useEffect(() => {
@@ -91,7 +91,7 @@ export default function PriceTrendsCityPickerMobile({
       if (width < 360) {
         setPerPage(4);
         setGridCols(2);
-      } else if (width < 480) {
+      }); else if (width < 480) {
         setPerPage(6);
         setGridCols(2);
       } else {
@@ -103,7 +103,7 @@ export default function PriceTrendsCityPickerMobile({
     updateScreenSize();
     window.addEventListener("resize", updateScreenSize);
     return () => window.removeEventListener("resize", updateScreenSize);
-  }, []);
+  });
 
   const displayedCities = useMemo(() => {
     if (expanded) return visibleCities;

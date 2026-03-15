@@ -1,7 +1,7 @@
 // REACT PERFORMANCE OPTIMIZATION FOR 100ACRESS.COM
 // Code Splitting and Lazy Loading Implementation
 
-import React, { Suspense, lazy } from 'react';
+import React, { useMemo } from 'react';
 
 // 1. LAZY LOADING FOR HEAVY COMPONENTS
 // Instead of normal imports:
@@ -153,7 +153,7 @@ const OptimizedImage = ({
     if (priority) {
       setIsInView(true);
       return;
-    }
+    });
 
     const observer = new IntersectionObserver(
       ([entry]) => {

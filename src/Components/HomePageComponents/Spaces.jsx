@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useMemo } from 'react';
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import AOS from 'aos';
@@ -20,7 +20,7 @@ function SpacesAvailable() {
 
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  });
 
   const handleScroll = () => {
     if (scrollRef.current) {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useMemo } from 'react';
 import ProjectHeroDesktop from './ProjectHero.desktop';
 import ProjectHeroMobile from './ProjectHero.mobile';
 
@@ -8,7 +8,7 @@ const ProjectHero = (props) => {
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768); // Tailwind's md breakpoint
-    };
+    });;
 
     // Initial check
     checkMobile();
@@ -18,7 +18,7 @@ const ProjectHero = (props) => {
 
     // Cleanup
     return () => window.removeEventListener('resize', checkMobile);
-  }, []);
+  });
 
   // Render mobile version on mobile devices, desktop version otherwise
   if (isMobile) {

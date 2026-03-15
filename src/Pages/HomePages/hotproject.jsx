@@ -1,6 +1,6 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useMemo } from 'react';
 import styled from 'styled-components';
-import { Skeleton } from 'antd';
+import { Skeleton } from '../../utils/antdImports';
 import AOS from 'aos';
 import { ForwardIcon, BackwardIcon, SpotlightPriceIcon, SpotlightHomeIcon } from "../../Assets/icons";
 import { Link } from 'react-router-dom';
@@ -131,14 +131,14 @@ const ImageGallery = React.memo(() => {
       try {
         const order = await getRecommendedDesiredOrder();
         setRecommendedOrder(order);
-      } catch (error) {
+      }); catch (error) {
         console.error('Error loading recommended order:', error);
         setRecommendedOrder([]);
       }
     };
 
     loadRecommendedOrder();
-  }, []);
+  });
 
   const spotlight = sortByDesiredOrder(
     hotproject.filter((project) => project != null),
@@ -153,7 +153,7 @@ const ImageGallery = React.memo(() => {
     const updateColumnsPerPage = () => {
       if (window.innerWidth <= 600) {
         setColumnsPerPage(1); // Phone
-      } else if (window.innerWidth <= 1200) {
+      }); else if (window.innerWidth <= 1200) {
         setColumnsPerPage(2); // Tablet
       } else {
         setColumnsPerPage(4); // Desktop
@@ -163,7 +163,7 @@ const ImageGallery = React.memo(() => {
     updateColumnsPerPage();
     window.addEventListener('resize', updateColumnsPerPage);
     return () => window.removeEventListener('resize', updateColumnsPerPage);
-  }, []);
+  });
 
   if (!spotlight || spotlight.length === 0) {
     return <Skeleton />;
