@@ -108,6 +108,7 @@ const MobileFloorPlan = ({ floorPlans = [], bhkDetails = [], onShowCallback = ()
                 className={`mobile-floorplan-image ${
                   isImageUnlocked ? '' : 'blurred'
                 } ${isTransitioning ? 'transitioning' : ''}`}
+                crossOrigin="anonymous"
               />
 
               {/* Overlay for locked images */}

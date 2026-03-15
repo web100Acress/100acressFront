@@ -76,6 +76,7 @@ const MasterPlanDesktop = ({ projectName = "", masterPlanImage = null }) => {
                 src={masterPlanImage.url}
                 alt={`Master Plan of ${projectName}`}
                 className="master-plan-desktop-image"
+                crossOrigin="anonymous"
               />
               
               {/* Desktop Zoom Overlay */}
@@ -137,6 +138,7 @@ const MasterPlanDesktop = ({ projectName = "", masterPlanImage = null }) => {
               src={masterPlanImage.url}
               alt={`Master Plan of ${projectName}`}
               className="master-plan-desktop-modal-image"
+              crossOrigin="anonymous"
             />
           </div>
         </div>

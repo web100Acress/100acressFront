@@ -3,7 +3,7 @@
 .faq-section-mobile {
   position: relative;
   padding: 3rem 0;
-  background: linear-gradient(to bottom, #000000, #111827, #000000);
+  background: #2d94b3;
   color: #ffffff;
   overflow: hidden;
 }
@@ -35,7 +35,7 @@
   left: 25%;
   width: 16rem;
   height: 16rem;
-  background: linear-gradient(to bottom right, #f59e0b, #d97706);
+  background: #2d94b3;
   border-radius: 50%;
   filter: blur(2rem);
   animation: faq-float 6s ease-in-out infinite;
@@ -47,7 +47,7 @@
   right: 25%;
   width: 14rem;
   height: 14rem;
-  background: linear-gradient(to top left, #fbbf24, #f59e0b);
+  background: #25526f;
   border-radius: 50%;
   filter: blur(2rem);
   animation: faq-float 6s ease-in-out infinite;
@@ -57,7 +57,7 @@
 .faq-section-mobile-gradient-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to right, transparent, rgba(245, 158, 11, 0.1), transparent);
+  background: linear-gradient(to right, transparent, rgba(37, 82, 111, 0.1), transparent);
 }
 
 .faq-section-mobile-content {
@@ -98,7 +98,7 @@
   justify-content: center;
   width: 3.5rem;
   height: 3.5rem;
-  background: linear-gradient(to bottom right, #f59e0b, #d97706);
+  background: #25526f;
   border-radius: 50%;
   margin-bottom: 0.75rem;
 }
@@ -161,7 +161,7 @@
 .faq-section-mobile-faq-glow {
   position: absolute;
   inset: -0.125rem;
-  background: linear-gradient(to right, #d97706, #fbbf24);
+  background: #25526f;
   border-radius: 0.75rem;
   filter: blur(10px);
   opacity: 0.2;
@@ -174,7 +174,7 @@
 
 .faq-section-mobile-faq-card {
   position: relative;
-  background: linear-gradient(to bottom right, #111827, #1f2937, #111827);
+  background: #25526f;
   border-radius: 0.75rem;
   border: 1px solid rgba(55, 65, 81, 0.5);
   backdrop-filter: blur(4px);
@@ -216,7 +216,7 @@
   flex-shrink: 0;
   width: 1.25rem;
   height: 1.25rem;
-  background: linear-gradient(to bottom right, #f59e0b, #d97706);
+  background: #25526f;
   border-radius: 9999px;
   display: flex;
   align-items: center;
@@ -277,7 +277,7 @@
 .faq-section-mobile-cta-glow {
   position: absolute;
   inset: -0.25rem;
-  background: linear-gradient(to right, #d97706, #fbbf24);
+  background: #25526f;
   border-radius: 1rem;
   filter: blur(12px);
   opacity: 0.2;
@@ -290,7 +290,7 @@
 
 .faq-section-mobile-cta-card {
   position: relative;
-  background: linear-gradient(to bottom right, #111827, #1f2937, #111827);
+  background: #25526f;
   border-radius: 0.75rem;
   padding: 1rem;
   border: 1px solid rgba(55, 65, 81, 0.5);
@@ -329,7 +329,7 @@
 .faq-section-mobile-cta-icon {
   width: 2.5rem;
   height: 2.5rem;
-  background: linear-gradient(to bottom right, #f59e0b, #d97706);
+  background: #25526f;
   border-radius: 9999px;
   display: flex;
   align-items: center;

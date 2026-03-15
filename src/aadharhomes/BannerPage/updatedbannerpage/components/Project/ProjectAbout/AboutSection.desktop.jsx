@@ -106,6 +106,8 @@ const AboutSectionDesktop = ({ projectName, description, imageUrl, onShowCallbac
                 alt={`${projectName || 'Project'} overview`} 
                 loading="lazy"
                 decoding="async"
+                crossOrigin="anonymous"
+                performance="high"
                 className="about-section-image"
               />
               {/* Subtle golden gradient overlay for luxury tint */}

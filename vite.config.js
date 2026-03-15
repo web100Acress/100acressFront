@@ -63,7 +63,9 @@ export default defineConfig(() => {
       },
     },
     plugins: [
-      react(),
+      react({
+        include: /\.(mdx|js|jsx|ts|tsx)$/,
+      }),
       viteCompression({
         algorithm: 'brotliCompress',
         threshold: 10240, // >10KB files
@@ -75,6 +77,11 @@ export default defineConfig(() => {
         ext: '.gz',
       }),
     ],
+    esbuild: {
+      loader: 'jsx',
+      include: /src\/.*\.jsx?$/,
+      exclude: [],
+    },
     optimizeDeps: {
       include: [
         'react',

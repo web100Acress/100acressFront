@@ -72,6 +72,7 @@ const GallerySection = ({
                         alt={`${projectName || 'Project'} gallery ${index + 1}`}
                         className="nb-gallery-img"
                         fetchpriority="high"
+                        crossOrigin="anonymous"
                         onClick={() => openModalGallery && openModalGallery(image?.url)}
                         onError={(e) => { e.currentTarget.style.display = 'none'; }}
                       />
@@ -119,7 +120,7 @@ const GallerySection = ({
                     src={image?.url || image}
                     alt={`${projectName || 'Project'} gallery ${index + 1}`}
                     className="nb-gallery-grid-img"
-
+                    crossOrigin="anonymous"
                     onClick={() => openModalGallery && openModalGallery(image?.url || image)}
                     onError={(e) => { e.currentTarget.style.display = 'none'; }}
                   />
@@ -170,7 +171,7 @@ const GallerySection = ({
               <i className="fas fa-chevron-right"></i>
             </button>
             <div className="nb-gallery-modal-content">
-              <img src={modalImageGallery} alt={projectName} className="nb-gallery-modal-img" fetchpriority="high" />
+              <img src={modalImageGallery} alt={projectName} className="nb-gallery-modal-img" fetchpriority="high" crossOrigin="anonymous" />
             </div>
           </div>
         </div>

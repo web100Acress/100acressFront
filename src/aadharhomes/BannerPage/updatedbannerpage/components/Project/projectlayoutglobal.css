@@ -1,18 +1,18 @@
 
 .project-layout-2-root {
-  background-color: #25526f !important;
+  background-color: #2d94b3 !important;
   min-height: 100vh;
 }
 
 /* Section backgrounds */
 .project-section {
-  background-color: #25526f !important;
+  background-color: #2d94b3 !important;
   position: relative;
 }
 
 /* Alternative section backgrounds for variety */
 .project-section-alt {
-  background-color: #1e4158 !important;
+  background-color: #2d94b3 !important;
   position: relative;
 }
 
@@ -76,7 +76,7 @@
 
 /* Video section */
 .project-video-section {
-  background-color: #1e4158 !important;
+  background-color: #2d94b3 !important;
 }
 
 /* Master plan section */

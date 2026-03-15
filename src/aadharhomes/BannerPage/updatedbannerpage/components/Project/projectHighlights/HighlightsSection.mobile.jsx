@@ -29,6 +29,7 @@ const HighlightsSectionMobile = ({ projectName, highlights, highlightImage, onSh
                     src={highlightImage} 
                     alt={`${projectName} Highlights`}
                     className="highlights-section-mobile-image"
+                    crossOrigin="anonymous"
                   />
                   {/* Mobile overlay */}
                   <div className="highlights-section-mobile-image-overlay"></div>

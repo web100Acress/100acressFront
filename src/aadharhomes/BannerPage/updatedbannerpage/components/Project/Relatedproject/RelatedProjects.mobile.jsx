@@ -172,6 +172,7 @@ const RelatedProjectsMobile = ({ builderName = "", currentProjectUrl = "", onSho
                             src={project.thumbnailImage.url}
                             alt={project.projectName}
                             fetchpriority="high"
+                            crossOrigin="anonymous"
                             className="related-projects-mobile-card-image-img"
                           />
                         ) : (

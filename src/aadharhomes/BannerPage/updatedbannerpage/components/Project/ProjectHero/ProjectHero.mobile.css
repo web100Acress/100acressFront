@@ -3,16 +3,20 @@
 /* Main header container */
 .project-hero-mobile {
   position: relative;
-  width: 100%;
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
+  margin-right: calc(-50vw + 50%);
   overflow: hidden;
 }
 
-/* Background Image - Reduced Height with gap from header */
+/* Background Image - Full Width Banner */
 .project-hero-mobile-background {
   position: relative;
-  height: 25vh;
-  width: 100%;
-  margin-top: 3.5rem;
+  width: 100vw;
+  height: 100vh;
+  margin-left: calc(-50vw + 50%);
+  margin-right: calc(-50vw + 50%);
+  margin-top: 1.9rem;
 }
 
 .project-hero-mobile-background-image {
@@ -27,6 +31,48 @@
   position: absolute;
   inset: 0;
   background: linear-gradient(to top, rgba(0, 0, 0, 0.6), transparent, transparent);
+}
+
+/* Thumbnail Gallery Section */
+.project-hero-mobile-thumbnail-gallery {
+  position: relative;
+  background-color: #2d94b3;
+  padding: 1rem;
+}
+
+.project-hero-mobile-thumbnail-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+.project-hero-mobile-thumbnail-item {
+  position: relative;
+  aspect-ratio: 16/9;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+.project-hero-mobile-thumbnail-item:hover {
+  transform: scale(1.05);
+  border-color: rgba(250, 204, 21, 0.5);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.project-hero-mobile-thumbnail-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.project-hero-mobile-thumbnail-item:hover .project-hero-mobile-thumbnail-image {
+  transform: scale(1.1);
 }
 
 /* Top Bar - Compact Mobile Navbar */
@@ -137,7 +183,7 @@
 .project-hero-mobile-bottom-section {
   position: relative;
   width: 100%;
-  background-color: #111827;
+  background-color: #2d94b3;
   padding: 1rem 1rem 1.5rem;
   content-visibility: auto;
 }
@@ -189,7 +235,7 @@
 /* Info Bar */
 .project-hero-mobile-info-bar {
   border: 1px solid rgba(250, 204, 21, 0.6);
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: #25526f;
   backdrop-filter: blur(16px);
   border-radius: 0.75rem;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
@@ -332,5 +378,15 @@
   
   .project-hero-mobile-info-value.price {
     font-size: 1.125rem;
+  }
+  
+  /* Thumbnail gallery responsive adjustments */
+  .project-hero-mobile-thumbnail-gallery {
+    padding: 0.75rem;
+  }
+  
+  .project-hero-mobile-thumbnail-container {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.375rem;
   }
 }

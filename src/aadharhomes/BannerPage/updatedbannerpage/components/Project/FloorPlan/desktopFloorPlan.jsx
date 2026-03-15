@@ -103,6 +103,8 @@ const DesktopFloorPlan = ({ floorPlans = [], bhkDetails = [], onShowCallback = (
                     className={`desktop-floorplan-image ${
                       isImageUnlocked ? '' : 'blurred'
                     }`}
+                    crossOrigin="anonymous"
+                    performance="high"
                   />
                   
                   {/* Premium Glassmorphism Overlay with Vignette */}

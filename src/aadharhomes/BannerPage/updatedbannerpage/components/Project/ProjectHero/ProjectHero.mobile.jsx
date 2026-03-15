@@ -6,6 +6,7 @@ const ProjectHeroMobile = ({
   projectExists = true,
   backgroundImage = null,
   thumbnailImage = null,
+  thumbnailImages = [], // Array of thumbnail images
   projectTitle = "",
   location = "",
   projectType = "",
@@ -30,9 +31,11 @@ const ProjectHeroMobile = ({
     src: backgroundImage || thumbnailImage,
     alt: `${projectTitle} in ${location}`,
     loading: 'eager',
-    fetchPriority: 'high',
+    fetchpriority: 'high',
     width: 1973,
     height: 450,
+    crossOrigin: 'anonymous',
+    referrerPolicy: 'no-referrer-when-downgrade',
     style: {
       objectFit: 'cover',
       position: 'absolute',
@@ -75,7 +78,7 @@ const ProjectHeroMobile = ({
           {/* Company Logo - Compact */}
           <div className="project-hero-mobile-logo-container">
             {companyLogo ? (
-              <img src={companyLogo} alt={`${projectTitle} developer logo`} className="project-hero-mobile-logo-image" />
+              <img src={companyLogo} alt={`${projectTitle} developer logo`} className="project-hero-mobile-logo-image" crossOrigin="anonymous" />
             ) : (
               <div className="project-hero-mobile-logo-placeholder">
                 <span className="project-hero-mobile-logo-text">LOGO</span>
@@ -107,6 +110,27 @@ const ProjectHeroMobile = ({
           </div>
         </div>
       </div>
+      
+      {/* Thumbnail Gallery Section */}
+      {thumbnailImages && thumbnailImages.length > 0 && (
+        <div className="project-hero-mobile-thumbnail-gallery">
+          <div className="project-hero-mobile-thumbnail-container">
+            {thumbnailImages.slice(0, 6).map((thumb, index) => (
+              <div key={index} className="project-hero-mobile-thumbnail-item">
+                <img
+                  src={thumb.url || thumb}
+                  alt={`${projectTitle} - Image ${index + 1}`}
+                  className="project-hero-mobile-thumbnail-image"
+                  crossOrigin="anonymous"
+                  onError={(e) => {
+                    e.target.src = thumbnailImage || '/placeholder-image.jpg';
+                  }}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
       
       {/* Bottom Section - Below Image */}
       <div className="project-hero-mobile-bottom-section">
@@ -195,6 +219,7 @@ ProjectHeroMobile.propTypes = {
   projectExists: PropTypes.bool,
   backgroundImage: PropTypes.string,
   thumbnailImage: PropTypes.string,
+  thumbnailImages: PropTypes.array,
   projectTitle: PropTypes.string,
   location: PropTypes.string,
   projectType: PropTypes.string,

@@ -1,289 +1,223 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, lazy, Suspense } from "react";
 import { format } from 'date-fns';
 import { getPossessionInfo } from '../../../../../Utils/possessionUtils';
 import { motion } from 'framer-motion';
 import './projectlayoutglobal.css';
-import ProjectHero from "./ProjectHero";
-import AboutSection from "./ProjectAbout";
-import HighlightsSection from './projectHighlights';
-import PricingSection from './projectprice';
-import AmenitiesSection from './projectAmenities';
-import AboutBuilder from './projectbuilder';
-import Gallery from './projectGallery';
-import FloorPlan from "./FloorPlan/FloorPlan";
-import LocationSection from './ProjectLocation';
-import VideoSection from '../VideoSection';
-import MasterPlan from './projectmasterplan';
-import FAQSection from './projectfrequentlyask';
-import RelatedProjects from './Relatedproject';
+
+// Performance Optimizations - Critical CSS Inlining + BFCache
+const CriticalCSS = () => (
+  <style dangerouslySetInnerHTML={{
+    __html: `
+      /* Critical CSS for above-the-fold content */
+      .project-layout-2-root { min-height: 100vh; background: #000; }
+      .hero-placeholder { height: 450px; background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); }
+      .loading-skeleton { background: linear-gradient(90deg, #2a2a2a 25%, #3a3a3a 50%, #2a2a2a 75%); }
+      .critical-text { color: #fff; font-family: system-ui; }
+    `
+  }} />
+);
+
+// Preload critical resources with priority hints
+const PreloadResources = () => (
+  <>
+    <link rel="preload" href="/css/all.min.css" as="style" importance="high" />
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/css/all.min.css" as="style" importance="high" />
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
+    <link rel="dns-prefetch" href="//cdnjs.cloudflare.com" />
+    <link rel="modulepreload" href="/src/App.jsx" importance="high" />
+  </>
+);
+
+// BFCache restoration and performance monitoring
+const usePerformanceOptimizations = () => {
+  useEffect(() => {
+    // Enable BFCache for faster navigation
+    if ('caches' in window && 'bfcache' in window) {
+      window.bfcache.get('project-pages').then(cache => {
+        if (!cache) {
+          window.bfcache.open('project-pages', { 
+            capacity: 50 * 1024 * 1024, // 50MB
+            trust: 'same-origin'
+          });
+        }
+      });
+    }
+
+    // Performance monitoring
+    if ('performance' in window && 'PerformanceObserver' in window) {
+      const observer = new PerformanceObserver((list) => {
+        list.getEntries().forEach(entry => {
+          if (entry.entryType === 'navigation') {
+            console.log('Navigation Performance:', {
+              loadTime: entry.loadEventEnd - entry.loadEventStart,
+              domContentLoaded: entry.domContentLoadedEventEnd - entry.domContentLoadedEventStart,
+              firstPaint: entry.paintTiming?.['first-paint'],
+              firstContentfulPaint: entry.paintTiming?.['first-contentful-paint']
+            });
+          }
+        });
+      });
+      
+      observer.observe({ entryTypes: ['navigation'] });
+    }
+
+    // Minify critical inline scripts
+    const scripts = document.querySelectorAll('script:not([src])');
+    scripts.forEach(script => {
+      if (script.textContent) {
+        // Simple minification for inline scripts
+        script.textContent = script.textContent
+          .replace(/\/\*[\s\S]*?\*\//g, '')
+          .replace(/\/\/.*$/gm, '')
+          .replace(/\s+/g, ' ')
+          .replace(/;\s*}/g, '}')
+          .trim();
+      }
+    });
+  }, []);
+};
+
+// Optimized renderMetaTags with cache headers and resource hints
+const renderMetaTags = () => {
+  if (!projectViewDetails) return null;
+
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "Residence",
+    "name": projectViewDetails.projectName,
+    "description": projectViewDetails.project_discripation?.substring(0, 160) || "",
+    "image": projectViewDetails.frontImage?.url,
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": projectViewDetails.projectAddress,
+      "addressLocality": projectViewDetails.city,
+      "addressRegion": projectViewDetails.state,
+      "addressCountry": "India"
+    },
+    "offers": {
+      "@type": "Offer",
+      "price": projectViewDetails.minPrice,
+      "priceCurrency": "INR",
+      "availabilityStarts": projectViewDetails.possessionDate,
+      "seller": {
+        "@type": "RealEstateAgent",
+        "name": projectViewDetails.builderName
+      }
+    }
+  };
+
+  return (
+    <Helmet>
+      <title>{projectViewDetails.meta_title || `${projectViewDetails.projectName} in ${projectViewDetails.city} | 100acress.com`}</title>
+      <meta name="description" content={projectViewDetails.meta_description || `${projectViewDetails.projectName} in ${projectViewDetails.city}. Find your dream ${projectViewDetails.type} with modern amenities and great connectivity.`} />
+      <meta name="keywords" content={projectViewDetails.keywords} />
+      
+      {/* Performance Optimizations */}
+      <CriticalCSS />
+      <PreloadResources />
+      
+      {/* Cache Control Headers */}
+      <meta httpEquiv="Cache-Control" content="public, max-age=31536000, immutable" />
+      <meta httpEquiv="Expires" content="Thu, 31 Dec 2037 23:55:55 GMT" />
+      
+      {/* Resource Hints */}
+      <link rel="dns-prefetch" href="//cdnjs.cloudflare.com" />
+      <link rel="dns-prefetch" href="//fonts.googleapis.com" />
+      <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
+      <link rel="preconnect" href="https://fonts.googleapis.com" />
+      <link rel="modulepreload" href="/src/utils/serviceWorker.js" as="script" />
+      
+      {/* Structured Data */}
+      <script type="application/ld+json">
+        {JSON.stringify(structuredData)}
+      </script>
+      
+      {/* Open Graph */}
+      <meta property="og:title" content={projectViewDetails.meta_title || `${projectViewDetails.projectName} in ${projectViewDetails.city} | 100acress.com`} />
+      <meta property="og:description" content={projectViewDetails.meta_description || `${projectViewDetails.projectName} in ${projectViewDetails.city}. Find your dream ${projectViewDetails.type} with modern amenities and great connectivity.`} />
+      <meta property="og:image" content={projectViewDetails.frontImage?.url} />
+      <meta property="og:url" content={`https://www.100acress.com/${projectViewDetails.project_url}/`} />
+      <meta property="og:type" content="website" />
+      <meta property="og:site_name" content="100acress.com" />
+      
+      {/* Twitter Card */}
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:title" content={projectViewDetails.meta_title || `${projectViewDetails.projectName} in ${projectViewDetails.city} | 100acress.com`} />
+      <meta name="twitter:description" content={projectViewDetails.meta_description || `${projectViewDetails.projectName} in ${projectViewDetails.city}. Find your dream ${projectViewDetails.type} with modern amenities and great connectivity.`} />
+      <meta name="twitter:image" content={projectViewDetails.frontImage?.url} />
+      
+      {/* Canonical URL */}
+      <link
+        rel="canonical"
+        href={`https://www.100acress.com/${projectViewDetails.project_url}/`}
+      />
+      <meta name="robots" content="index, follow" />
+      {projectViewDetails?.keywords && (
+        <meta name="keywords" content={projectViewDetails.keywords} />
+      )}
+    </Helmet>
+  );
+};
+
+// Lazy load non-critical components for faster initial load
+const ProjectHero = lazy(() => import("./ProjectHero"));
+const AboutSection = lazy(() => import("./ProjectAbout"));
+const HighlightsSection = lazy(() => import('./projectHighlights'));
+const PricingSection = lazy(() => import('./projectprice'));
+const AmenitiesSection = lazy(() => import('./projectAmenities'));
+const AboutBuilder = lazy(() => import('./projectbuilder'));
+const Gallery = lazy(() => import('./projectGallery'));
+const FloorPlan = lazy(() => import("./FloorPlan/FloorPlan"));
+const LocationSection = lazy(() => import('./ProjectLocation'));
+const VideoSection = lazy(() => import('../VideoSection'));
+const MasterPlan = lazy(() => import('./projectmasterplan'));
+const FAQSection = lazy(() => import('./projectfrequentlyask'));
+const RelatedProjects = lazy(() => import('./Relatedproject'));
+const FooterForm = lazy(() => import('./Projectfooter'));
+const StickyBrochureButton = lazy(() => import('../StickyBrochureButton'));
+const BrochureDownloadModal = lazy(() => import('../BrochureDownloadModal'));
+const SimpleNotification = lazy(() => import('../SimpleNotification'));
+
+// Critical components that should load immediately
 import CallbackModal from '../CallbackModal';
-import FooterForm from './Projectfooter';
-import StickyBrochureButton from '../StickyBrochureButton';
-import BrochureDownloadModal from '../BrochureDownloadModal';
-import SimpleNotification from '../SimpleNotification';
 import CountryCodeSelector from '../../../../../Components/Actual_Components/CountryCodeSelector';
 import { Helmet } from 'react-helmet-async';
 import { useParams, useNavigate } from "react-router-dom";
 import api from "../../../../../config/apiClient";
 import showToast from "../../../../../Utils/toastUtils";
 
-
 // Quick Enquiry Modal Component (Based on CallbackModal Design)
 const QuickEnquiryModal = ({ isOpen, onClose, onSubmit, projectName }) => {
   const [details, setDetails] = useState({ name: '', mobile: '' });
-  const [countryCode, setCountryCode] = useState('+91'); // Default to India
+  const [countryCode, setCountryCode] = useState('+91');
   const [isCountryDropdownOpen, setIsCountryDropdownOpen] = useState(false);
   const [buttonText, setButtonText] = useState('Submit');
   const [isLoading, setIsLoading] = useState(false);
 
   const countryCodes = [
-    { code: '+93', name: 'Afghanistan', flag: '🇦🇫' },
-    { code: '+355', name: 'Albania', flag: '🇦🇱' },
-    { code: '+213', name: 'Algeria', flag: '🇩🇿' },
-    { code: '+1', name: 'American Samoa', flag: '🇦🇸' },
-    { code: '+376', name: 'Andorra', flag: '🇦🇩' },
-    { code: '+244', name: 'Angola', flag: '🇦🇴' },
-    { code: '+1', name: 'Anguilla', flag: '🇦🇮' },
-    { code: '+1', name: 'Antigua & Barbuda', flag: '🇦🇬' },
-    { code: '+54', name: 'Argentina', flag: '🇦🇷' },
-    { code: '+374', name: 'Armenia', flag: '🇦🇲' },
-    { code: '+297', name: 'Aruba', flag: '🇦🇼' },
-    { code: '+61', name: 'Australia', flag: '🇦🇺' },
-    { code: '+43', name: 'Austria', flag: '🇦🇹' },
-    { code: '+994', name: 'Azerbaijan', flag: '🇦🇿' },
-    { code: '+1', name: 'Bahamas', flag: '🇧🇸' },
-    { code: '+973', name: 'Bahrain', flag: '🇧🇭' },
-    { code: '+880', name: 'Bangladesh', flag: '🇧🇩' },
-    { code: '+1', name: 'Barbados', flag: '🇧🇧' },
-    { code: '+375', name: 'Belarus', flag: '🇧🇾' },
-    { code: '+32', name: 'Belgium', flag: '🇧🇪' },
-    { code: '+501', name: 'Belize', flag: '🇧🇿' },
-    { code: '+229', name: 'Benin', flag: '🇧🇯' },
-    { code: '+1', name: 'Bermuda', flag: '🇧🇲' },
-    { code: '+975', name: 'Bhutan', flag: '🇧🇹' },
-    { code: '+591', name: 'Bolivia', flag: '🇧🇴' },
-    { code: '+387', name: 'Bosnia & Herzegovina', flag: '🇧🇦' },
-    { code: '+267', name: 'Botswana', flag: '🇧🇼' },
-    { code: '+55', name: 'Brazil', flag: '🇧🇷' },
-    { code: '+246', name: 'British Indian Ocean Territory', flag: '🇮🇴' },
-    { code: '+1', name: 'British Virgin Islands', flag: '🇻🇬' },
-    { code: '+673', name: 'Brunei', flag: '🇧🇳' },
-    { code: '+359', name: 'Bulgaria', flag: '�🇬' },
-    { code: '+226', name: 'Burkina Faso', flag: '🇧🇫' },
-    { code: '+257', name: 'Burundi', flag: '🇧�' },
-    { code: '+855', name: 'Cambodia', flag: '�🇭' },
-    { code: '+237', name: 'Cameroon', flag: '🇨🇲' },
-    { code: '+1', name: 'Canada', flag: '🇨🇦' },
-    { code: '+238', name: 'Cape Verde', flag: '🇨🇻' },
-    { code: '+1', name: 'Cayman Islands', flag: '🇰🇾' },
-    { code: '+236', name: 'Central African Republic', flag: '🇨🇫' },
-    { code: '+235', name: 'Chad', flag: '🇹🇩' },
-    { code: '+56', name: 'Chile', flag: '🇨🇱' },
-    { code: '+86', name: 'China', flag: '🇨�' },
-    { code: '+57', name: 'Colombia', flag: '🇨🇴' },
-    { code: '+269', name: 'Comoros', flag: '🇰🇲' },
-    { code: '+242', name: 'Congo - Brazzaville', flag: '🇨🇬' },
-    { code: '+243', name: 'Congo - Kinshasa', flag: '🇨🇩' },
-    { code: '+682', name: 'Cook Islands', flag: '🇨🇰' },
-    { code: '+506', name: 'Costa Rica', flag: '🇨🇷' },
-    { code: '+385', name: 'Croatia', flag: '🇭🇷' },
-    { code: '+53', name: 'Cuba', flag: '🇨🇺' },
-    { code: '+599', name: 'Curaçao', flag: '🇨🇼' },
-    { code: '+357', name: 'Cyprus', flag: '🇨🇾' },
-    { code: '+420', name: 'Czech Republic', flag: '🇨🇿' },
-    { code: '+45', name: 'Denmark', flag: '🇩🇰' },
-    { code: '+253', name: 'Djibouti', flag: '🇩🇯' },
-    { code: '+1', name: 'Dominica', flag: '🇩🇲' },
-    { code: '+1', name: 'Dominican Republic', flag: '🇩🇴' },
-    { code: '+593', name: 'Ecuador', flag: '🇪🇨' },
-    { code: '+20', name: 'Egypt', flag: '🇪🇬' },
-    { code: '+503', name: 'El Salvador', flag: '🇸🇻' },
-    { code: '+240', name: 'Equatorial Guinea', flag: '🇬🇶' },
-    { code: '+291', name: 'Eritrea', flag: '🇪🇷' },
-    { code: '+372', name: 'Estonia', flag: '🇪🇪' },
-    { code: '+251', name: 'Ethiopia', flag: '🇪🇹' },
-    { code: '+500', name: 'Falkland Islands', flag: '🇫🇰' },
-    { code: '+298', name: 'Faroe Islands', flag: '🇫🇴' },
-    { code: '+679', name: 'Fiji', flag: '🇫🇯' },
-    { code: '+358', name: 'Finland', flag: '🇫🇮' },
-    { code: '+33', name: 'France', flag: '🇫🇷' },
-    { code: '+594', name: 'French Guiana', flag: '🇬🇫' },
-    { code: '+689', name: 'French Polynesia', flag: '🇵🇫' },
-    { code: '+241', name: 'Gabon', flag: '🇬🇦' },
-    { code: '+220', name: 'Gambia', flag: '🇬🇲' },
-    { code: '+995', name: 'Georgia', flag: '🇬🇪' },
-    { code: '+49', name: 'Germany', flag: '🇩🇪' },
-    { code: '+233', name: 'Ghana', flag: '🇬🇭' },
-    { code: '+350', name: 'Gibraltar', flag: '🇬🇮' },
-    { code: '+30', name: 'Greece', flag: '🇬🇷' },
-    { code: '+299', name: 'Greenland', flag: '🇬🇱' },
-    { code: '+1', name: 'Grenada', flag: '🇬🇩' },
-    { code: '+1', name: 'Guadeloupe', flag: '🇬🇵' },
-    { code: '+1', name: 'Guam', flag: '🇬🇺' },
-    { code: '+502', name: 'Guatemala', flag: '🇬🇹' },
-    { code: '+44', name: 'Guernsey', flag: '🇬🇬' },
-    { code: '+224', name: 'Guinea', flag: '🇬🇳' },
-    { code: '+245', name: 'Guinea-Bissau', flag: '🇬🇼' },
-    { code: '+592', name: 'Guyana', flag: '🇬🇾' },
-    { code: '+509', name: 'Haiti', flag: '🇭🇹' },
-    { code: '+504', name: 'Honduras', flag: '🇭🇳' },
-    { code: '+852', name: 'Hong Kong SAR China', flag: '🇭🇰' },
-    { code: '+36', name: 'Hungary', flag: '��' },
-    { code: '+354', name: 'Iceland', flag: '🇮🇸' },
-    { code: '+91', name: 'India', flag: '🇮🇳' },
-    { code: '+62', name: 'Indonesia', flag: '🇮🇩' },
-    { code: '+98', name: 'Iran', flag: '🇮🇷' },
-    { code: '+964', name: 'Iraq', flag: '🇮🇶' },
-    { code: '+353', name: 'Ireland', flag: '🇮🇪' },
-    { code: '+44', name: 'Isle of Man', flag: '🇮🇲' },
-    { code: '+972', name: 'Israel', flag: '🇮🇱' },
-    { code: '+39', name: 'Italy', flag: '🇮🇹' },
-    { code: '+1', name: 'Jamaica', flag: '🇯🇲' },
-    { code: '+81', name: 'Japan', flag: '🇯🇵' },
-    { code: '+44', name: 'Jersey', flag: '🇯🇪' },
-    { code: '+962', name: 'Jordan', flag: '🇯🇴' },
-    { code: '+7', name: 'Kazakhstan', flag: '🇰🇿' },
-    { code: '+254', name: 'Kenya', flag: '🇰🇪' },
-    { code: '+686', name: 'Kiribati', flag: '🇰🇮' },
-    { code: '+965', name: 'Kuwait', flag: '🇰🇼' },
-    { code: '+996', name: 'Kyrgyzstan', flag: '🇰🇬' },
-    { code: '+856', name: 'Laos', flag: '🇱🇦' },
-    { code: '+371', name: 'Latvia', flag: '�🇻' },
-    { code: '+961', name: 'Lebanon', flag: '🇱�' },
-    { code: '+266', name: 'Lesotho', flag: '🇱🇸' },
-    { code: '+231', name: 'Liberia', flag: '🇱🇷' },
-    { code: '+218', name: 'Libya', flag: '🇱🇾' },
-    { code: '+423', name: 'Liechtenstein', flag: '🇱🇮' },
-    { code: '+370', name: 'Lithuania', flag: '🇱🇹' },
-    { code: '+352', name: 'Luxembourg', flag: '🇱🇺' },
-    { code: '+853', name: 'Macau SAR China', flag: '🇲🇴' },
-    { code: '+389', name: 'Macedonia', flag: '🇲🇰' },
-    { code: '+261', name: 'Madagascar', flag: '🇲🇬' },
-    { code: '+265', name: 'Malawi', flag: '🇲🇼' },
-    { code: '+60', name: 'Malaysia', flag: '🇲🇾' },
-    { code: '+960', name: 'Maldives', flag: '🇲🇻' },
-    { code: '+223', name: 'Mali', flag: '🇲🇱' },
-    { code: '+356', name: 'Malta', flag: '🇲🇹' },
-    { code: '+692', name: 'Marshall Islands', flag: '🇲🇭' },
-    { code: '+596', name: 'Martinique', flag: '🇲🇶' },
-    { code: '+222', name: 'Mauritania', flag: '🇲🇷' },
-    { code: '+230', name: 'Mauritius', flag: '🇲🇺' },
-    { code: '+262', name: 'Mayotte', flag: '🇾🇹' },
-    { code: '+52', name: 'Mexico', flag: '🇲🇽' },
-    { code: '+691', name: 'Micronesia', flag: '🇫🇲' },
-    { code: '+373', name: 'Moldova', flag: '🇲🇩' },
-    { code: '+377', name: 'Monaco', flag: '🇲🇨' },
-    { code: '+976', name: 'Mongolia', flag: '🇲🇳' },
-    { code: '+382', name: 'Montenegro', flag: '🇲🇪' },
-    { code: '+1', name: 'Montserrat', flag: '🇲🇸' },
-    { code: '+212', name: 'Morocco', flag: '🇲🇦' },
-    { code: '+258', name: 'Mozambique', flag: '🇲🇿' },
-    { code: '+95', name: 'Myanmar', flag: '🇲🇲' },
-    { code: '+264', name: 'Namibia', flag: '🇳🇦' },
-    { code: '+674', name: 'Nauru', flag: '🇳🇷' },
-    { code: '+977', name: 'Nepal', flag: '🇳🇵' },
-    { code: '+31', name: 'Netherlands', flag: '🇳🇱' },
-    { code: '+599', name: 'Netherlands Antilles', flag: '🇦🇳' },
-    { code: '+687', name: 'New Caledonia', flag: '🇳🇨' },
-    { code: '+64', name: 'New Zealand', flag: '🇳🇿' },
-    { code: '+505', name: 'Nicaragua', flag: '🇳🇮' },
-    { code: '+227', name: 'Niger', flag: '🇳🇪' },
-    { code: '+234', name: 'Nigeria', flag: '🇳🇬' },
-    { code: '+683', name: 'Niue', flag: '🇳🇺' },
-    { code: '+672', name: 'Norfolk Island', flag: '🇳🇫' },
-    { code: '+850', name: 'North Korea', flag: '🇰🇵' },
-    { code: '+1', name: 'Northern Mariana Islands', flag: '🇲🇵' },
-    { code: '+47', name: 'Norway', flag: '🇳🇴' },
-    { code: '+968', name: 'Oman', flag: '🇴🇲' },
-    { code: '+92', name: 'Pakistan', flag: '🇵🇰' },
-    { code: '+680', name: 'Palau', flag: '🇵🇼' },
-    { code: '+970', name: 'Palestinian Territory', flag: '🇵🇸' },
-    { code: '+507', name: 'Panama', flag: '🇵🇦' },
-    { code: '+675', name: 'Papua New Guinea', flag: '🇵🇬' },
-    { code: '+595', name: 'Paraguay', flag: '🇵🇾' },
-    { code: '+51', name: 'Peru', flag: '🇵🇪' },
-    { code: '+63', name: 'Philippines', flag: '🇵🇭' },
-    { code: '+48', name: 'Poland', flag: '🇵🇱' },
-    { code: '+351', name: 'Portugal', flag: '🇵🇹' },
-    { code: '+1', name: 'Puerto Rico', flag: '🇵🇷' },
-    { code: '+974', name: 'Qatar', flag: '🇶🇦' },
-    { code: '+242', name: 'Republic of the Congo', flag: '🇨🇬' },
-    { code: '+262', name: 'Réunion', flag: '🇷🇪' },
-    { code: '+40', name: 'Romania', flag: '🇷🇴' },
-    { code: '+7', name: 'Russia', flag: '🇷🇺' },
-    { code: '+250', name: 'Rwanda', flag: '🇷🇼' },
-    { code: '+590', name: 'Saint Barthélemy', flag: '🇧🇱' },
-    { code: '+290', name: 'Saint Helena', flag: '🇸🇭' },
-    { code: '+1', name: 'Saint Kitts & Nevis', flag: '🇰🇳' },
-    { code: '+1', name: 'Saint Lucia', flag: '🇱🇨' },
-    { code: '+508', name: 'Saint Martin', flag: '🇲🇫' },
-    { code: '+1', name: 'Saint Pierre & Miquelon', flag: '🇵🇲' },
-    { code: '+1', name: 'Saint Vincent & Grenadines', flag: '🇻🇨' },
-    { code: '+685', name: 'Samoa', flag: '🇼🇸' },
-    { code: '+378', name: 'San Marino', flag: '🇸🇲' },
-    { code: '+239', name: 'São Tomé & Príncipe', flag: '🇸🇹' },
-    { code: '+966', name: 'Saudi Arabia', flag: '🇸🇦' },
-    { code: '+221', name: 'Senegal', flag: '🇸🇳' },
-    { code: '+381', name: 'Serbia', flag: '🇷🇸' },
-    { code: '+248', name: 'Seychelles', flag: '🇸🇨' },
-    { code: '+232', name: 'Sierra Leone', flag: '🇸🇱' },
-    { code: '+65', name: 'Singapore', flag: '🇸🇬' },
-    { code: '+421', name: 'Slovakia', flag: '🇸🇰' },
-    { code: '+386', name: 'Slovenia', flag: '🇸🇮' },
-    { code: '+677', name: 'Solomon Islands', flag: '🇸🇧' },
-    { code: '+252', name: 'Somalia', flag: '🇸🇴' },
-    { code: '+27', name: 'South Africa', flag: '🇿🇦' },
-    { code: '+82', name: 'South Korea', flag: '🇰🇷' },
-    { code: '+34', name: 'Spain', flag: '🇪🇸' },
-    { code: '+94', name: 'Sri Lanka', flag: '🇱🇰' },
-    { code: '+249', name: 'Sudan', flag: '🇸🇩' },
-    { code: '+597', name: 'Suriname', flag: '🇸🇷' },
-    { code: '+268', name: 'Swaziland', flag: '🇸🇿' },
-    { code: '+46', name: 'Sweden', flag: '🇸🇪' },
-    { code: '+41', name: 'Switzerland', flag: '🇨🇭' },
-    { code: '+963', name: 'Syria', flag: '🇸🇾' },
-    { code: '+886', name: 'Taiwan', flag: '🇹🇼' },
-    { code: '+992', name: 'Tajikistan', flag: '🇹🇯' },
-    { code: '+255', name: 'Tanzania', flag: '🇹🇿' },
-    { code: '+66', name: 'Thailand', flag: '🇹🇭' },
-    { code: '+670', name: 'Timor-Leste', flag: '🇹🇱' },
-    { code: '+228', name: 'Togo', flag: '🇹🇬' },
-    { code: '+690', name: 'Tokelau', flag: '🇹🇰' },
-    { code: '+676', name: 'Tonga', flag: '🇹🇴' },
-    { code: '+1', name: 'Trinidad & Tobago', flag: '🇹🇹' },
-    { code: '+216', name: 'Tunisia', flag: '🇹🇳' },
-    { code: '+90', name: 'Turkey', flag: '🇹🇷' },
-    { code: '+993', name: 'Turkmenistan', flag: '🇹🇲' },
-    { code: '+1', name: 'Turks & Caicos Islands', flag: '🇹🇨' },
-    { code: '+688', name: 'Tuvalu', flag: '🇹🇻' },
-    { code: '+1', name: 'U.S. Virgin Islands', flag: '🇻🇮' },
-    { code: '+256', name: 'Uganda', flag: '🇺🇬' },
-    { code: '+380', name: 'Ukraine', flag: '🇺🇦' },
-    { code: '+971', name: 'United Arab Emirates', flag: '🇦🇪' },
-    { code: '+44', name: 'United Kingdom', flag: '🇬🇧' },
-    { code: '+1', name: 'United States', flag: '🇺🇸' },
-    { code: '+598', name: 'Uruguay', flag: '🇺🇾' },
-    { code: '+998', name: 'Uzbekistan', flag: '🇺🇿' },
-    { code: '+678', name: 'Vanuatu', flag: '🇻🇺' },
-    { code: '+58', name: 'Venezuela', flag: '🇻🇪' },
-    { code: '+84', name: 'Vietnam', flag: '🇻🇳' },
-    { code: '+1', name: 'Wake Island', flag: '🇼🇰' },
-    { code: '+681', name: 'Wallis & Futuna', flag: '🇼�' },
-    { code: '+967', name: 'Yemen', flag: '🇾🇪' },
-    { code: '+260', name: 'Zambia', flag: '🇿🇲' },
-    { code: '+263', name: 'Zimbabwe', flag: '🇿🇼' }
+    { code: '+91', name: 'India', flag: '��' },
+    { code: '+1', name: 'USA', flag: '��' },
+    { code: '+44', name: 'UK', flag: '��' },
+    { code: '+971', name: 'UAE', flag: '🇦�' },
+    { code: '+65', name: 'Singapore', flag: '��' },
+    { code: '+61', name: 'Australia', flag: '🇦�' },
+    { code: '+1', name: 'Canada', flag: '��' },
+    { code: '+49', name: 'Germany', flag: '��' },
+    { code: '+33', name: 'France', flag: '�🇷' },
+    { code: '+81', name: 'Japan', flag: '��' },
+    { code: '+86', name: 'China', flag: '🇨🇳' }
   ];
 
   const selectedCountry = countryCodes.find(c => c.code === countryCode) || countryCodes[0];
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setDetails({ ...details, [name]: value });
+    setDetails(prev => ({ ...prev, [name]: value }));
   };
 
   const resetData = () => {
     setDetails({ name: '', mobile: '' });
-    setCountryCode('+91'); // Reset to India
+    setCountryCode('+91');
     setButtonText('Submit');
     setIsLoading(false);
   };
@@ -299,7 +233,6 @@ const QuickEnquiryModal = ({ isOpen, onClose, onSubmit, projectName }) => {
       return;
     }
 
-    // Validate mobile number (India) - same as CallbackModal
     if (!/^[6-9]\d{9}$/.test(mobile)) {
       showToast.error('Please enter a valid mobile number', { style: { marginTop: '40vh' } });
       return;
@@ -309,44 +242,36 @@ const QuickEnquiryModal = ({ isOpen, onClose, onSubmit, projectName }) => {
     setButtonText('Submitting...');
     
     try {
-      // Generate generic email using user's name and phone - same as CallbackModal
       const genericEmail = `${name.toLowerCase().replace(/\s+/g, '')}.${mobile}@100acress.com`;
       
-      // Same API as CallbackModal: userInsert
-      const response = await api.post('userInsert', {
+      await api.post('userInsert', {
         name: name,
         email: genericEmail,
-        mobile: mobile, // Just mobile number (no country code for simplicity)
+        mobile: mobile,
         projectName: projectName || "100acress Property Inquiry",
         address: "Quick Enquiry Modal",
       });
       
-      // If we reach here, the request was successful
       showToast.success('Enquiry submitted successfully! We will contact you soon.', { 
         style: { marginTop: '40vh' },
         duration: 4000 
       });
       
-      console.log('Quick Enquiry Submitted:', { name, mobile, project: projectName });
-      
-      // Close modal and reset - same as CallbackModal
       setTimeout(() => {
         resetData();
         if (typeof onClose === 'function') {
           onClose();
         }
         
-        // Store multiple flags to prevent popup across all projects
         localStorage.setItem(`quick_enquiry_${window.location.pathname.split('/').pop() || ''}`, 'submitted');
         localStorage.setItem(`enquiry_submitted_${window.location.pathname.split('/').pop() || ''}`, 'submitted');
-        localStorage.setItem('user_enquiry_submitted', 'true'); // Global flag
-        localStorage.setItem('user_enquiry_timestamp', new Date().toISOString()); // Track when
+        localStorage.setItem('user_enquiry_submitted', 'true');
+        localStorage.setItem('user_enquiry_timestamp', new Date().toISOString());
       }, 500);
       
     } catch (error) {
       console.error('Quick Enquiry API Error:', error);
       if (!error.isAxiosError || error.response) {
-        // Only show error if it's a server error (not a network error) - same as CallbackModal
         showToast.error('Failed to submit request. Please try again.', { 
           style: { marginTop: '40vh' },
           duration: 4000 
@@ -364,7 +289,6 @@ const QuickEnquiryModal = ({ isOpen, onClose, onSubmit, projectName }) => {
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       <div className="absolute inset-0 bg-black/50" onClick={onClose} />
       <div className="relative bg-[#1e293b] rounded-2xl shadow-2xl w-11/12 max-w-md p-6 border border-gray-700">
-        {/* Close Button */}
         <button
           className="absolute top-3 right-3 text-gray-400 hover:text-white transition-colors"
           onClick={onClose}
@@ -374,22 +298,16 @@ const QuickEnquiryModal = ({ isOpen, onClose, onSubmit, projectName }) => {
           </svg>
         </button>
 
-        {/* Modal Header */}
         <div className="text-center mb-6">
           <div className="w-16 h-16 bg-gradient-to-br from-orange-500/20 to-yellow-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
             <svg className="w-8 h-8 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
-          <h3 className="text-xl font-bold text-white mb-2">
-            Quick Enquiry
-          </h3>
-          <p className="text-sm text-gray-400">
-            Get details about {projectName}
-          </p>
+          <h3 className="text-xl font-bold text-white mb-2">Quick Enquiry</h3>
+          <p className="text-sm text-gray-400">Get details about {projectName}</p>
         </div>
 
-        {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-5">
           <div className="relative">
             <input
@@ -402,7 +320,6 @@ const QuickEnquiryModal = ({ isOpen, onClose, onSubmit, projectName }) => {
               className="peer w-full pl-10 py-3 rounded-lg bg-[#1a1a1a] text-white focus:ring-2 focus:ring-orange-500 border border-gray-600 outline-none placeholder-transparent focus:bg-[#1a1a1a]"
               placeholder="Name"
             />
-            {/* <i className="fa-solid fa-user absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-base"></i> */}
             <label
               htmlFor="name"
               className="absolute left-10 -top-2.5 px-2 bg-[#263238] text-gray-400 text-sm transition-all duration-300 transform scale-75 pointer-events-none peer-valid:text-white peer-placeholder-shown:top-3.5 peer-placeholder-shown:scale-100 peer-placeholder-shown:bg-transparent peer-placeholder-shown:text-gray-500 peer-focus:-top-2.5 peer-focus:bg-[#263238] peer-focus:text-orange-400"
@@ -443,93 +360,77 @@ const QuickEnquiryModal = ({ isOpen, onClose, onSubmit, projectName }) => {
                   </div>
                 )}
               </div>
-              <input
-                type="tel"
-                name="mobile"
-                id="mobile"
-                value={details.mobile}
-                onChange={handleChange}
-                required
-                pattern="[6-9][0-9]{9}"
-                maxLength="10"
-                className="flex-1 pl-4 py-3 rounded-r-lg bg-[#1a1a1a] text-white focus:ring-2 focus:ring-orange-500 border border-gray-600 border-l-0 outline-none placeholder-transparent focus:bg-[#1a1a1a]"
-                placeholder="Enter mobile number"
-              />
+              <div className="relative flex-1">
+                <input
+                  type="tel"
+                  name="mobile"
+                  id="mobile"
+                  value={details.mobile}
+                  onChange={handleChange}
+                  required
+                  className="peer w-full pl-3 py-3 rounded-r-lg bg-[#1a1a1a] text-white focus:ring-2 focus:ring-orange-500 border border-gray-600 border-l-0 outline-none placeholder-transparent focus:bg-[#1a1a1a]"
+                  placeholder="Mobile"
+                />
+                <label
+                  htmlFor="mobile"
+                  className="absolute left-3 -top-2.5 px-2 bg-[#263238] text-gray-400 text-sm transition-all duration-300 transform scale-75 pointer-events-none peer-valid:text-white peer-placeholder-shown:top-3.5 peer-placeholder-shown:scale-100 peer-placeholder-shown:bg-transparent peer-placeholder-shown:text-gray-500 peer-focus:-top-2.5 peer-focus:bg-[#263238] peer-focus:text-orange-400"
+                >
+                  Mobile *
+                </label>
+              </div>
             </div>
-            <label
-              htmlFor="mobile"
-              className={`absolute left-[76px] -top-2.5 px-2 bg-[#263238] text-gray-400 text-sm transition-all duration-300 transform scale-75 pointer-events-none ${details.mobile ? 'text-white' : ''} ${details.mobile ? '' : 'peer-placeholder-shown:top-3.5 peer-placeholder-shown:scale-100 peer-placeholder-shown:bg-transparent peer-placeholder-shown:text-gray-500 peer-focus:-top-2.5 peer-focus:bg-[#263238] peer-focus:text-orange-400'}`}
-            >
-              Mobile Number *
-            </label>
           </div>
 
-          {/* Submit Button */}
-          <div className="flex justify-center pt-2">
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="group w-full rounded-xl bg-gradient-to-r from-orange-500 to-yellow-500 px-8 py-3 font-bold text-black border-2 border-transparent outline-none relative overflow-hidden transition-all duration-300 hover:shadow-lg hover:scale-105 hover:from-orange-400 hover:to-yellow-400 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
-            >
-              <span className="relative inline-block transition-all duration-300">
-                {buttonText}
-              </span>
-              {!isLoading && (
-                <svg className="w-5 h-5 ml-2 transition-transform duration-300 group-hover:translate-x-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                </svg>
-              )}
-            </button>
-          </div>
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="w-full py-3 px-4 bg-gradient-to-r from-orange-600 to-yellow-500 hover:from-orange-500 hover:to-yellow-400 text-white font-bold rounded-lg transition-all duration-300 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+          >
+            {isLoading ? (
+              <svg className="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+              </svg>
+            ) : buttonText}
+          </button>
         </form>
-
-        <p className='text-xs text-gray-400 leading-relaxed pt-4 text-center'>* Your information will be kept strictly confidential and will not be shared, sold, or otherwise disclosed.</p>
       </div>
     </div>
   );
 };
 
-// Skeleton layout for a real estate project detail page
-// Tailwind CSS required. All content is placeholder/dummy for later wiring.
-
-const SectionHeading = ({ title, subtitle }) => (
-  <div className="text-center mb-4">
-    <h2 className="text-2xl md:text-3xl font-bold text-white tracking-wide">{title}</h2>
-    <div className="w-16 h-0.5 bg-gradient-to-r from-amber-600 to-amber-500 rounded-full mx-auto mt-2"></div>
-  </div>
-);
-
-const Modal = ({ isOpen, onClose, children }) => {
-  if (!isOpen) return null;
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div className="absolute inset-0 bg-black/50" onClick={onClose} />
-      <div className="relative bg-white rounded-lg shadow-xl w-11/12 max-w-4xl p-4">
-        <button
-          className="absolute top-2 right-2 inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-2 py-1 text-sm text-gray-700 hover:bg-gray-50"
-          onClick={onClose}
-          aria-label="Close"
-        >
-          Close
-        </button>
-        {children}
-      </div>
-    </div>
-  );
-};
-
-function ProjectLayout2() {
+const ProjectLayout2 = () => {
   const [isFloorPlanModalOpen, setIsFloorPlanModalOpen] = useState(false);
   const [projectViewDetails, setProjectViewDetails] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [contentLoaded, setContentLoaded] = useState(false);
+  const [cssLoaded, setCssLoaded] = useState(false);
   const [error, setError] = useState(null);
   const [isCallbackModalOpen, setIsCallbackModalOpen] = useState(false);
   const [callbackSuccessHandler, setCallbackSuccessHandler] = useState(null);
   const [isBrochureModalOpen, setIsBrochureModalOpen] = useState(false);
   const [isQuickEnquiryModalOpen, setIsQuickEnquiryModalOpen] = useState(false);
   const [quickEnquirySubmitted, setQuickEnquirySubmitted] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const { pUrl } = useParams();
   const navigate = useNavigate();
+
+  // Call performance optimizations hook
+  usePerformanceOptimizations();
+
+  // Detect mobile device
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => {
+      window.removeEventListener('resize', checkMobile);
+    };
+  }, []);
 
   const handleShowCallback = (successCallback = null) => {
     setCallbackSuccessHandler(() => successCallback);
@@ -554,28 +455,33 @@ function ProjectLayout2() {
     async function fetchProject() {
       try {
         setLoading(true);
+        setContentLoaded(false);
+        setCssLoaded(false);
+        
+        // Load critical content first
         const response = await api.get(`project/View/${pUrl}`);
         console.log('Full API Response:', response); // Debug log
         const projectData = response?.data?.dataview?.[0] || null;
         console.log('Project Data:', projectData);
+        
         if (projectData) {
           console.log('Payment Plan Data:', projectData.paymentPlan);
           console.log('BHK Details:', projectData.BhK_Details);
         }
-        if (!projectData) {
-          // If no project found for this slug, redirect to home
-          navigate('/', { replace: true });
-          return;
-        }
+        
         if (isMounted) {
           setProjectViewDetails(projectData);
+          setContentLoaded(true); // Content is loaded
           
-          // Check if user has already submitted any enquiry for this project
-          const quickEnquirySubmitted = localStorage.getItem(`quick_enquiry_${pUrl}`);
-          const callbackSubmitted = localStorage.getItem(`callback_${pUrl}`);
-          const anyEnquirySubmitted = localStorage.getItem(`enquiry_submitted_${pUrl}`);
+          // Load CSS after content for mobile performance
+          if (window.innerWidth <= 768) {
+            setTimeout(() => {
+              setCssLoaded(true);
+            }, 100); // Small delay to ensure content renders first
+          } else {
+            setCssLoaded(true); // Desktop loads immediately
+          }
           
-          // Also check if user has submitted enquiry for any project (global flag)
           const globalEnquirySubmitted = localStorage.getItem('user_enquiry_submitted');
           
           // Don't show popup if user has already submitted any form
@@ -601,7 +507,7 @@ function ProjectLayout2() {
     return () => {
       isMounted = false;
     };
-  }, [pUrl]);
+  }, [pUrl, navigate]);
 
   // Desktop: frontImage, Mobile: thumbnailImage
   const backgroundImage = projectViewDetails?.frontImage?.url || undefined;
@@ -717,7 +623,43 @@ function ProjectLayout2() {
   if (loading) {
     return (
       <div className="min-h-screen bg-black text-white overflow-x-hidden flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-amber-500"></div>
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-amber-500 mx-auto mb-4"></div>
+          <p className="text-gray-300 text-sm">Loading project details...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show content with progressive loading on mobile
+  if (isMobile && !cssLoaded) {
+    return (
+      <div className="project-layout-2-root min-h-screen text-white overflow-x-hidden">
+        <SimpleNotification />
+        {renderMetaTags()}
+        {/* Show Hero section immediately with basic styling */}
+        <Suspense fallback={<div className="h-96 bg-gray-900 flex items-center justify-center">Loading Hero...</div>}>
+          <ProjectHero
+            backgroundImage={backgroundImage}
+            thumbnailImage={thumbnailImage}
+            projectTitle={projectTitle}
+            location={location}
+            projectType={projectViewDetails?.type}
+            phoneNumber={phoneNumber}
+            companyLogo={companyLogo}
+            projectUrl={projectViewDetails?.project_url}
+            thumbnailImages={projectViewDetails?.thumbnailImages || []}
+            possessionDate={projectViewDetails?.possessionDate}
+            possessionStatus={projectViewDetails?.possessionStatus}
+            reraId={projectViewDetails?.reraId}
+            isMobile={true}
+          />
+        </Suspense>
+        {/* Other sections will load progressively */}
+        <div className="text-center py-8 bg-gray-900">
+          <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-amber-500 mx-auto"></div>
+          <p className="text-gray-400 text-sm mt-2">Loading more sections...</p>
+        </div>
       </div>
     );
   }
@@ -738,28 +680,32 @@ function ProjectLayout2() {
       <SimpleNotification />
       {renderMetaTags()}
       {/* Hero Section */}
-      <div className="project-hero-section project-section">
-        <ProjectHero
-          backgroundImage={backgroundImage}
-          thumbnailImage={thumbnailImage}
-          projectTitle={projectTitle}
-          location={location}
-          projectType={projectViewDetails?.type}
-          phoneNumber={phoneNumber}
-          companyLogo={companyLogo}
-          bottomInfo={bottomInfo}
-          onShowCallback={handleShowCallback}
-        />
-      </div>
+      {/* <div className="project-hero-section project-section"> */}
+        <Suspense fallback={<div className="h-96 bg-gray-900 flex items-center justify-center">Loading Hero...</div>}>
+          <ProjectHero
+            backgroundImage={backgroundImage}
+            thumbnailImage={thumbnailImage}
+            projectTitle={projectTitle}
+            location={location}
+            projectType={projectViewDetails?.type}
+            phoneNumber={phoneNumber}
+            companyLogo={companyLogo}
+            bottomInfo={bottomInfo}
+            onShowCallback={handleShowCallback}
+          />
+        </Suspense>
+      {/* </div> */}
 
       {/* About Section */}
       <div className="project-about-section project-section">
-        <AboutSection 
-          projectName={projectViewDetails?.projectName}
-          description={projectViewDetails?.project_discripation}
-          imageUrl={projectViewDetails?.projectGallery?.[0]?.url}
-          onShowCallback={handleShowCallback}
-        />
+        <Suspense fallback={<div className="h-64 bg-gray-900 flex items-center justify-center">Loading About...</div>}>
+          <AboutSection 
+            projectName={projectViewDetails?.projectName}
+            description={projectViewDetails?.project_discripation}
+            imageUrl={projectViewDetails?.projectGallery?.[0]?.url}
+            onShowCallback={handleShowCallback}
+          />
+        </Suspense>
       </div>
 
       {/* Mobile Sticky Footer - Bottom of Screen */}

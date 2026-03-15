@@ -3,7 +3,7 @@
 /* Main section container */
 .location-section-mobile {
   position: relative;
-  padding: 1.5rem 0;
+  padding: 0rem 0 1.5rem 0;
   background: #2d94b3;
   color: #ffffff;
   overflow: hidden;
@@ -11,7 +11,7 @@
 
 @media (min-width: 768px) {
   .location-section-mobile {
-    padding: 2rem 0;
+    padding: 0rem 0 2rem 0;
   }
 }
 
@@ -230,7 +230,7 @@
   border-radius: 0.75rem;
   overflow: hidden;
   border: 1px solid rgba(55, 65, 81, 0.5);
-  background: linear-gradient(to bottom right, #1f2937, #111827);
+  background: #25526f;
 }
 
 .location-section-mobile-map-image {
@@ -429,7 +429,7 @@
 
 /* Connectivity Card */
 .location-section-mobile-connectivity-card {
-  background: linear-gradient(to bottom right, #111827, #1f2937, #111827);
+  background: #25526f;
   border-radius: 1rem;
   padding: 1rem;
   border: 1px solid rgba(55, 65, 81, 0.5);

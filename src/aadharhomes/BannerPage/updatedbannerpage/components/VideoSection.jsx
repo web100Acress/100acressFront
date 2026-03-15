@@ -127,6 +127,7 @@ const VideoSection = ({
                     src={backgroundImage || thumbnailUrl}
                     alt="Video thumbnail"
                     loading="lazy"
+                    crossOrigin="anonymous"
                     decoding="async"
                     className="video-section-thumbnail-img"
                   />

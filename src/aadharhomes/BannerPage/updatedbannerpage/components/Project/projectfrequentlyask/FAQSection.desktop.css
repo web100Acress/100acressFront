@@ -169,7 +169,7 @@
 
 .faq-section-desktop-faq-card {
   position: relative;
-  background: linear-gradient(to bottom right, #111827, #1f2937, #111827);
+  background: #25526f;
   border-radius: 0.75rem;
   backdrop-filter: blur(4px);
   overflow: hidden;

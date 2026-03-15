@@ -44,7 +44,13 @@ const AboutSectionMobile = ({ projectName, description, imageUrl, onShowCallback
                 alt={`${projectName || 'Project'} overview`} 
                 loading="lazy"
                 decoding="async"
+                crossOrigin="anonymous"
                 className="about-section-mobile-image"
+                width="100%"
+                height="100%"
+                style={{ objectFit: 'cover' }}
+                referrerPolicy="no-referrer"
+                performance="high"
               />
               {/* Mobile gradient overlay */}
               <div className="about-section-mobile-image-overlay"></div>

@@ -17,7 +17,7 @@
   border-radius: 1rem;
   overflow: hidden;
   border: 1px solid rgba(250, 204, 21, 0.2);
-  background: linear-gradient(to bottom right, #000000, #111827, #1f2937);
+  background: #25526f;
   box-shadow: 0 15px 40px rgba(0, 0, 0, 0.35);
 }
 

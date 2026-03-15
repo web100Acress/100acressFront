@@ -411,6 +411,7 @@ const BannerPage = () => {
             style={{ height: "40px", width: "200px" }}
             alt={projectViewDetails.projectName}
             loading="lazy"
+            crossOrigin="anonymous"
           />
 
           <span className="text-[#012e29] text-3xl sm:text-xl lg:text-3xl md:text-2xl sm:pt-2 md:m-2 text-right hidden lg:inline-block">
@@ -452,6 +453,7 @@ const BannerPage = () => {
                   className="img-fluid max-w-full h-auto"
                   src={frontImage.url}
                   alt={projectViewDetails.projectName}
+                  crossOrigin="anonymous"
                 />
               )}
             </div>
@@ -713,6 +715,7 @@ const BannerPage = () => {
                       src={projectViewDetails.highlightImage.url}
                       alt={`${projectViewDetails.projectName}`}
                       className="w-full h-full object-cover"
+                      crossOrigin="anonymous"
                     />
                   )}
                 </div>
@@ -805,6 +808,7 @@ const BannerPage = () => {
                         src={image.url}
                         alt={`Image ${index + 1}`}
                         className="w-full h-auto object-cover md:h-[400px] sm:h-[300px] mt-6 cursor-pointer"
+                        crossOrigin="anonymous"
                         onClick={() => openModal(image.url)}
                       />
                     </div>
@@ -826,6 +830,7 @@ const BannerPage = () => {
                   src={currentImage}
                   alt="Full View"
                   className="max-w-[80vw] max-h-[80vh] object-contain"
+                  crossOrigin="anonymous"
                 />
               </div>
             </div>
@@ -910,6 +915,7 @@ const BannerPage = () => {
                       src={item.url}
                       alt={`${projectViewDetails.projectName} ${index}`}
                       className="w-screen max-h-40vh object-fit z-10"
+                      crossOrigin="anonymous"
                     />
                   )}
                 </div>
@@ -969,6 +975,7 @@ const BannerPage = () => {
                         src={projectViewDetails.project_locationImage.url}
                         alt={`${projectViewDetails.projectName}`}
                         className="w-full h-full object-fit"
+                        crossOrigin="anonymous"
                       />
                     )}
                   </div>
@@ -1053,6 +1060,7 @@ const BannerPage = () => {
               src={projectViewDetails.projectMaster_plan.url}
               className="w-full max-h-auto object-fit"
               alt={`${projectViewDetails.projectName}`}
+              crossOrigin="anonymous"
             />
           )}
         </div>
@@ -1085,6 +1093,7 @@ const BannerPage = () => {
                       className="object-fit w-full h-full"
                       src={project.frontImage && project.frontImage.url}
                       alt="Product image"
+                      crossOrigin="anonymous"
                     />
                   </span>
                   <div className="p-2">

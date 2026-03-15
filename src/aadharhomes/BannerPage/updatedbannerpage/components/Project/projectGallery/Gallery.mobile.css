@@ -1,8 +1,10 @@
 /* Gallery Mobile Component Styles */
 
 .gallery-mobile {
-  padding: 1.5rem 0;
-  background-color: #000000;
+  padding: 1.5rem;
+  background-color: #25526f;
+  border-radius: 0.75rem;
+  margin: 0;
 }
 
 .gallery-mobile-content {
@@ -93,9 +95,10 @@
 }
 
 .gallery-mobile-show-all {
-  margin-bottom: -2rem;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
   padding: 0;
-  text-align: right;
+  text-align: center;
 }
 
 .gallery-mobile-show-all-button {

@@ -105,6 +105,7 @@ const HighlightsSection = ({ projectViewDetails, highlight = [], handleShowInsta
                     alt={`${projectViewDetails.projectName}`}
                     className="nb-highlights-image"
                     fetchpriority="high"
+                    crossOrigin="anonymous"
                   />
                   <div className="nb-highlights-overlay-r"></div>
                   <div className="nb-highlights-overlay-t"></div>

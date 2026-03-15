@@ -4,7 +4,7 @@
 .about-builder-mobile {
   position: relative;
   padding: 1rem 0;
-  background: linear-gradient(to bottom, #111827, #1f2937, #111827);
+  background: #2d94b3;
   color: #ffffff;
   overflow: hidden;
 }
@@ -151,7 +151,7 @@
 
 .about-builder-mobile-developer-card-content {
   position: relative;
-  background: linear-gradient(to bottom right, #111827, #1f2937, #111827);
+  background: #25526f;
   border-radius: 0.75rem;
   padding: 0.5rem;
   border: 1px solid rgba(55, 65, 81, 0.5);

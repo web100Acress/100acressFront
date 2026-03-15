@@ -23,6 +23,7 @@ import LoadingSpinner from "./Components/LoadingSpinner";
 import ErrorBoundary from "./Components/ErrorBoundary";
 import LoginForm from "./Resister/LoginForm";
 import AuthModal from "./Resister/AuthModal";
+import { registerServiceWorker } from "./utils/serviceWorker";
 
 // import ConfettiAllCorners from "./Components/ConfettiAllCorners"; 
 
@@ -262,6 +263,12 @@ const queryClient = new QueryClient({
 function App() {
   const location = useLocation();
   const currentPath = location?.pathname || "/";
+  
+  // Register service worker for better caching
+  useEffect(() => {
+    registerServiceWorker();
+  }, []);
+  
   // Consider dynamic project pages like '/experion-the-trillion/' etc. (single segment with trailing slash)
   const singleSegment = /^\/[A-Za-z0-9-]+\/?$/.test(currentPath);
   const blockedPrefixes = [

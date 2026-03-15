@@ -84,8 +84,9 @@ const GalleryDesktop = ({ galleryImages = [], projectName = '' }) => {
                 fetchpriority="high"
                 src={visibleImages[0].url}
                 alt="Gallery image 1"
-                className="gallery-desktop-image"
+                className="gallery-desktop-image featured"
                 onClick={() => openModal(visibleImages[0].url, galleryImages.findIndex(img => img.url === visibleImages[0].url))}
+                crossOrigin="anonymous"
               />
             )}
           </div>
@@ -97,6 +98,7 @@ const GalleryDesktop = ({ galleryImages = [], projectName = '' }) => {
                   alt={`Gallery image ${index + 2}`}
                   className="gallery-desktop-image"
                   onClick={() => openModal(image.url, galleryImages.findIndex(img => img.url === image.url))}
+                  crossOrigin="anonymous"
                 />
               )}
             </div>
@@ -139,6 +141,7 @@ const GalleryDesktop = ({ galleryImages = [], projectName = '' }) => {
                 src={selectedImage}
                 alt={`Gallery image ${currentImageIndex + 1}`}
                 className="gallery-desktop-modal-image"
+                crossOrigin="anonymous"
               />
               <div className="gallery-desktop-modal-counter">
                 {currentImageIndex + 1} / {galleryImages.length}

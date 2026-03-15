@@ -58,6 +58,7 @@ const ProjectHeroDesktop = ({
             width="1973"
             height="1100"
             className="project-hero-background-image"
+            crossOrigin="anonymous"
           />
           <div className="project-hero-background-overlay" />
         </>
@@ -69,7 +70,7 @@ const ProjectHeroDesktop = ({
           {/* Company Logo - Leftmost */}
           <div className="project-hero-logo-container">
             {companyLogo ? (
-              <img src={companyLogo} alt={`${projectTitle} developer logo`} className="project-hero-logo-image" />
+              <img src={companyLogo} alt={`${projectTitle} developer logo`} className="project-hero-logo-image" crossOrigin="anonymous" />
             ) : (
               <div className="project-hero-logo-placeholder">
                 <span className="project-hero-logo-text">LOGO</span>

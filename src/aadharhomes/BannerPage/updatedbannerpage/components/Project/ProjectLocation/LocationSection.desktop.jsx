@@ -216,6 +216,7 @@ const LocationSection = ({
                     src={locationImage?.url || locationImage} 
                     alt={`${projectName} Location Map`}
                     className="location-section-desktop-image"
+                    crossOrigin="anonymous"
                   />
                   <div className="location-section-desktop-image-overlay"></div>
                 </>

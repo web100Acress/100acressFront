@@ -33,6 +33,7 @@ const RelatedSection = ({ builderName, projectsToShow, builderProjectLength, sho
                                 className="nb-related-image"
                                 src={project.frontImage && project.frontImage.url}
                                 alt={projectName}
+                                crossOrigin="anonymous"
                               />
                             </Link>
                             <div className="nb-related-share" onClick={() => handleShare(project)}>

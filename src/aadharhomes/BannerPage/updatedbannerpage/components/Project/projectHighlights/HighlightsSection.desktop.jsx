@@ -69,6 +69,7 @@ const HighlightsSectionDesktop = ({ projectName, highlights, highlightImage, onS
                     src={highlightImage} 
                     alt={`${projectName} Highlights`}
                     className="highlights-section-desktop-image"
+                    crossOrigin="anonymous"
                   />
                   {/* Subtle Overlay */}
                   <div className="highlights-section-desktop-image-overlay"></div>

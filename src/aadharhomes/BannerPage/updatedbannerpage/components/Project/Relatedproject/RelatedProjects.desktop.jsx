@@ -146,6 +146,7 @@ const RelatedProjectsDesktop = ({ builderName = "", currentProjectUrl = "", onSh
                             src={project.thumbnailImage.url}
                             alt={project.projectName}
                             fetchpriority="high"
+                            crossOrigin="anonymous"
                             className="related-projects-desktop-card-image-img"
                           />
                         ) : (
