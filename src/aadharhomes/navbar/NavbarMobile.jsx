@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useMemo } from 'react';
 import { Box, IconButton, Button } from "@chakra-ui/react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { 
@@ -67,7 +67,7 @@ export default function NavbarMobile({
     try {
       if (isDrawerOpen) {
         document.body.classList.add('mobile-menu-open');
-      } else {
+      }); else {
         document.body.classList.remove('mobile-menu-open');
       }
     } catch {}
@@ -79,7 +79,7 @@ export default function NavbarMobile({
   useEffect(() => {
     // Close drawer on route change
     if (isDrawerOpen) closeDrawer();
-  }, [location.pathname]);
+  });, [location.pathname]);
 
   return (
     <Box display={{ base: 'flex', md: 'none' }}>
@@ -116,6 +116,7 @@ export default function NavbarMobile({
                   alt="100acress"
                   className="mobile-menu-logo"
                   loading="lazy"
+                  crossOrigin="anonymous"
                 />
               </div>
               <button

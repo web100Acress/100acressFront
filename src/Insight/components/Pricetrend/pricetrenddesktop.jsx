@@ -52,12 +52,12 @@ export default function PriceTrends() {
         try {
             const saved = localStorage.getItem('pt_page_size');
             if (saved) setPageSize(Number(saved) || 10);
-        } catch { }
+        }); catch { }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    });
 
     useEffect(() => {
-        try { localStorage.setItem('pt_page_size', String(pageSize)); } catch { }
+        try { localStorage.setItem('pt_page_size', String(pageSize)); }); catch { }
     }, [pageSize]);
 
     // Fetch localities from API (no fallback to mock data)
@@ -218,7 +218,7 @@ export default function PriceTrends() {
             // Don't automatically set city based on geolocation
             // Let the user manually select a city instead
             console.log('No initial city provided, user should select manually');
-        }
+        });
     }, [initialCity]);
 
     // Fetch cities from API
@@ -254,24 +254,24 @@ export default function PriceTrends() {
     useEffect(() => {
         const t = setTimeout(() => setPickerLoading(false), 300);
         return () => clearTimeout(t);
-    }, []);
+    }););
 
     // Fetch cities on component mount
     useEffect(() => {
         fetchCities();
-    }, []);
+    }););
     useEffect(() => {
         let mounted = true;
         (async () => {
             try {
                 const mod = await import('recharts');
                 if (mounted) setCharts(mod);
-            } catch (_) {
+            }); catch (_) {
                 // Recharts not installed, fallback to SVG
             }
         })();
         return () => { mounted = false; };
-    }, []);
+    });
 
     // Update URL on state changes (deep-linking)
     useEffect(() => {
@@ -282,14 +282,14 @@ export default function PriceTrends() {
         if (duration) params.set('duration', duration); else params.delete('duration');
         if (sort) params.set('sort', sort); else params.delete('sort');
         params.set('page', String(page));
-        navigate({ search: params.toString() }, { replace: true });
+        navigate({ search: params.toString() });, { replace: true });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [city, zone, type, duration, sort, page]);
 
     // Persist compareMode and selectedCities in sessionStorage and restore
     useEffect(() => {
         try {
-            const payload = { compareMode, selectedCities };
+            const payload = { compareMode, selectedCities });;
             sessionStorage.setItem('pt_compare', JSON.stringify(payload));
         } catch { }
     }, [compareMode, selectedCities]);
@@ -301,15 +301,15 @@ export default function PriceTrends() {
             const saved = JSON.parse(s);
             if (saved && typeof saved.compareMode === 'boolean') setCompareMode(saved.compareMode);
             if (saved && Array.isArray(saved.selectedCities)) setSelectedCities(saved.selectedCities);
-        } catch { }
+        }); catch { }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    });
 
     // Refetch when key parameters change
     useEffect(() => {
         if (!showPicker && city) fetchLocalities();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [city, zone, type, duration, sort, page, pageSize, showPicker]);
+    });, [city, zone, type, duration, sort, page, pageSize, showPicker]);
 
     const chooseCity = (cname) => {
         console.log('chooseCity: Selecting city:', cname);
@@ -398,7 +398,7 @@ export default function PriceTrends() {
     useEffect(() => {
         if (compareMode && !showPicker && selectedCities.length >= 1) {
             fetchSeries(selectedCities);
-        }
+        });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [compareMode, selectedCities, duration, showPicker]);
 
@@ -408,7 +408,7 @@ export default function PriceTrends() {
             setCompareFlash(true);
             const t = setTimeout(() => setCompareFlash(false), 1200);
             return () => clearTimeout(t);
-        }
+        });
     }, [compareMode]);
 
     const handlePriceAlert = () => {
@@ -492,7 +492,7 @@ export default function PriceTrends() {
                 open: drawerOpen,
                 locality: drawerData?.locality || null,
                 city,
-            };
+            });;
             sessionStorage.setItem('pt_drawer', JSON.stringify(payload));
         } catch { }
     }, [drawerOpen, drawerData, city]);
@@ -508,7 +508,7 @@ export default function PriceTrends() {
                 const items = (localities || []) || [];
                 const found = items.find(r => r.locality === saved.locality);
                 if (found) openDrawer(found);
-            }
+            });
         } catch { }
         setDrawerRestored(true);
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -519,7 +519,7 @@ export default function PriceTrends() {
         const handleClickOutside = (event) => {
             if (showShareDropdown && !event.target.closest('.share-dropdown')) {
                 setShowShareDropdown(false);
-            }
+            });
         };
 
         document.addEventListener('mousedown', handleClickOutside);

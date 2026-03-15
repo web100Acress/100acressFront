@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useMemo } from 'react';
 import AdminInsightsSidebar from "../components/insightsidebar/AdminInsightsSidebar";
 import { Link } from "react-router-dom";
 import CityManagement from "./components/CityManagement";
@@ -68,7 +68,7 @@ export default function InsightsPriceTrendsBanners() {
       console.log('API failed, adding sample data...');
       addSampleData();
     });
-  }, []);
+  });
 
   // Listen for global city data refresh events
   useEffect(() => {
@@ -82,7 +82,7 @@ export default function InsightsPriceTrendsBanners() {
     return () => {
       window.removeEventListener('cityDataChanged', handleCityDataChanged);
     };
-  }, []);
+  });
 
   // Load cities for dropdown when form opens
   const loadCitiesForDropdown = async () => {
@@ -136,7 +136,7 @@ export default function InsightsPriceTrendsBanners() {
     const loadData = async () => {
       try {
         // Load cities data
-        const citiesResponse = await fetch(`${base}/api/admin/cities`, {
+        const citiesResponse = await fetch(`${base});/api/admin/cities`, {
           headers: { Authorization: `Bearer ${token}` }
         });
 
@@ -249,7 +249,7 @@ export default function InsightsPriceTrendsBanners() {
     };
 
     loadData();
-  }, []);
+  });
 
   // Load cities when price trends form is opened
   useEffect(() => {

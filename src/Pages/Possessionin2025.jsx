@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useMemo } from 'react';
 import "react-multi-carousel/lib/styles.css";
 import { Link, useLocation, useParams } from "react-router-dom";
 import { Helmet } from "react-helmet";
@@ -13,9 +13,9 @@ const Possessionin2025 = () => {
   let query = "2025";
   const {getPossessionByYear} = Api_Service();
 
-  useEffect(()=>{
+  useEffect(() => {
     getPossessionByYear(query);
-  },[])
+  });
 
   return (
     <div style={{ overflowX: "hidden" }}>

@@ -1,3 +1,4 @@
+import React, { useMemo } from 'react';
 // Example of how to use static data in GlobalFilterTemplate
 import { getStaticData, getFAQData, getTrustBoosters, getBudgetPageData } from './staticData.jsx';
 

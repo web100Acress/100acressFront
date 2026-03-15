@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useMemo } from 'react';
 import AdminInsightsSidebar from "../components/AdminInsightsSidebar";
 import { Link } from "react-router-dom";
 
@@ -48,7 +48,7 @@ export default function InsightsPropertyInsightsBanners() {
     }
   };
 
-  useEffect(() => { fetchAll(); }, []);
+  useEffect(() => { fetchAll(); }););
 
   const reset = () => setForm({ title: "", subtitle: "", link: "", order: 0, desktopFile: null, mobileFile: null });
 

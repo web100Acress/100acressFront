@@ -43,7 +43,7 @@ const MarketReports = () => {
     const handleResize = () => setIsMobile(window.innerWidth < 768);
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  });
 
   // Fetch market reports
   useEffect(() => {
@@ -52,7 +52,7 @@ const MarketReports = () => {
         setLoading(true);
         const token = localStorage.getItem("myToken")?.replace(/^"/, '').replace(/"$/, '').replace(/^Bearer\s+/i, '') || '';
         const response = await api.get('/api/market-reports', {
-          headers: token ? { Authorization: `Bearer ${token}` } : {}
+          headers: token ? { Authorization: `Bearer ${token});` } : {}
         });
 
         const reports = response.data?.data || [];
@@ -76,7 +76,7 @@ const MarketReports = () => {
     };
 
     fetchMarketReports();
-  }, []);
+  });
 
   // Filter reports based on selections
   const filteredReports = useMemo(() => {

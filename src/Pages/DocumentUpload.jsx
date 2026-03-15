@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../config/apiClient';
 import showToast from "../Utils/toastUtils";
@@ -25,7 +25,7 @@ const DocumentUpload = () => {
     const verifyToken = async () => {
       try {
         // Use the correct endpoint that matches the token system
-        const res = await api.get(`/career/verify-upload-token/${token}`);
+        const res = await api.get(`/career/verify-upload-token/${token});`);
         if (res.data.success && res.data.data) {
           // Map the response to match expected format
           setCandidate({

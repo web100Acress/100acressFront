@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo } from 'react';
 import { MdSearch } from 'react-icons/md';
 
 const Hero = ({
@@ -30,9 +30,16 @@ const Hero = ({
           </h1>
 
           {/* Description */}
-          <p className="text-base sm:text-lg md:text-xl text-white/90 mb-6 sm:mb-8 max-w-2xl lg:max-w-3xl mx-auto leading-relaxed">
+          <p className="text-base sm:text-lg md:text-xl text-white/90 mb-4 sm:mb-6 max-w-2xl lg:max-w-3xl mx-auto leading-relaxed">
             {description}
           </p>
+
+          {/* Special Introductory Paragraph for Senior Living */}
+          {projectType === 'senior-living' && (
+            <p className="text-base sm:text-lg text-white/85 mb-6 sm:mb-8 max-w-3xl mx-auto leading-relaxed">
+              If you are looking for luxury and independent senior living in Gurgaon, your search ends here. We provide the best senior living facilities where elders receive 24/7 medical support, an active community, and a home-like environment. Our safe retirement homes are designed keeping your every need in mind.
+            </p>
+          )}
 
           {/* Search Container */}
           <div className="max-w-4xl mx-auto bg-white rounded-xl sm:rounded-2xl shadow-lg p-4 sm:p-6 mb-6 sm:mb-8">

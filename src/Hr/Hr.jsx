@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import HrSidebar from './HrSidebar';
 import HrDashboard from './HrDashboard';

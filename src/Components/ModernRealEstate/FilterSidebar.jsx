@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo } from 'react';
 import { MdExpandMore, MdExpandLess, MdClose } from 'react-icons/md';
 
 const FilterSidebar = ({

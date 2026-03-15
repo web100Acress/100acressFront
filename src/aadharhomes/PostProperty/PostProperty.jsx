@@ -1,5 +1,7 @@
-import React, { useState, useEffect, useRef } from "react";
-import { Button, Modal, ConfigProvider } from "antd";
+import React, { useMemo } from 'react';
+import { Button } from '../../utils/antdImports';
+import { Modal } from '../../utils/antdImports';
+import { ConfigProvider } from '../../utils/antdImports';
 import "antd/dist/reset.css";
 
 import Footer from "../../Components/Actual_Components/Footer";
@@ -159,7 +161,7 @@ const NewSellProperty = () => {
     } catch (_) {
       // ignore restore errors
     }
-  }, []);
+  });
 
   const subTypes = {
     Commercial: [
@@ -233,7 +235,7 @@ const NewSellProperty = () => {
     handleResize();
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  });
 
   const handleChangeStateValue = (e) => {
     const stateName = e.target.value;
@@ -779,9 +781,9 @@ const NewSellProperty = () => {
       <Helmet>
         <meta
           name="description"
-          content="Post Free Property Listing at 100acress.com. Rent, sell, or rent hassle-free. Reach potential buyers easily with our Trusted platform for property listing."
+          content="Post your property for free on 100acress.com and connect with genuine buyers and tenants. List residential or commercial properties quickly and get verified leads."
         />
-        <title>Post Free Property Listing | Rent/Sell at 100acress.com</title>
+        <title>Post Property for Free | Sell or Rent Property on 100acress</title>
       </Helmet>
 
       <section className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-red-50/30 pt-4 pb-3 md:pt-12 md:pb-5 text-gray-800 relative overflow-hidden">

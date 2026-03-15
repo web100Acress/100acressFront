@@ -1,0 +1,400 @@
+/* Project Hero Desktop Component Styles */
+
+/* Main header container */
+.project-hero-desktop {
+  position: relative;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* Background Image */
+.project-hero-background-image {
+  position: absolute;
+  inset: 0;
+  margin-top: 4rem;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.project-hero-background-overlay {
+  position: absolute;
+  inset: 0;
+  margin-top: 4rem;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.3), transparent);
+}
+
+/* Top Bar - Glassy Navbar */
+.project-hero-navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  padding: 0.75rem;
+  background-color: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  transition: background-color 0.3s;
+}
+
+.project-hero-navbar-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 80rem;
+  margin: 0 auto;
+}
+
+/* Company Logo */
+.project-hero-logo-container {
+  display: flex;
+  align-items: center;
+}
+
+.project-hero-logo-image {
+  height: 2.5rem;
+  width: auto;
+}
+
+.project-hero-logo-placeholder {
+  background-color: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 0.5rem;
+  padding: 0.5rem 1.5rem;
+}
+
+.project-hero-logo-text {
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 1.125rem;
+}
+
+/* Right side container */
+.project-hero-navbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* WhatsApp Button */
+.project-hero-whatsapp-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  text-decoration: none;
+}
+
+.project-hero-whatsapp-icon {
+  width: 2rem;
+  height: 2rem;
+}
+
+/* Phone Number Button - Desktop */
+.project-hero-phone-button-desktop {
+  display: none;
+  text-decoration: none;
+}
+
+@media (min-width: 640px) {
+  .project-hero-phone-button-desktop {
+    display: flex;
+  }
+}
+
+.project-hero-phone-button-content {
+  display: flex;
+  align-items: center;
+  transition: transform 0.3s;
+  padding-right: 1rem;
+  gap: 0.25rem;
+}
+
+.project-hero-phone-button-content:hover {
+  transform: scale(1.05);
+}
+
+/* Circular phone icon */
+.project-hero-phone-icon-container {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.project-hero-phone-icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  color: #ffffff;
+}
+
+/* Phone number text */
+.project-hero-phone-number {
+  color: #ffffff;
+  font-size: 1.5rem;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  text-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+}
+
+/* Mobile Phone Button */
+.project-hero-phone-button-mobile {
+  display: block;
+  text-decoration: none;
+}
+
+@media (min-width: 640px) {
+  .project-hero-phone-button-mobile {
+    display: none;
+  }
+}
+
+.project-hero-phone-button-mobile-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(to bottom right, #facc15, #eab308, #ca8a04);
+  border-radius: 50%;
+  box-shadow: 0 4px 15px rgba(212, 175, 55, 0.35);
+  transition: all 0.3s;
+  transform: scale(1);
+  border: 2px solid #facc15;
+  width: 3rem;
+  height: 3rem;
+}
+
+.project-hero-phone-button-mobile-content:hover {
+  box-shadow: 0 6px 20px rgba(212, 175, 55, 0.5);
+  transform: scale(1.05);
+}
+
+.project-hero-phone-button-mobile-icon {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+/* Bottom Section with Title, Location and Info Bar */
+.project-hero-bottom-section {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  width: 100%;
+  max-width: 64rem;
+  padding: 0 1rem;
+  content-visibility: auto;
+}
+
+/* Breadcrumbs */
+.project-hero-breadcrumbs {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Title and Location */
+.project-hero-title-location {
+  text-align: center;
+  color: #ffffff;
+  margin-bottom: 0.75rem;
+}
+
+.project-hero-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+  letter-spacing: 0.05em;
+  color: #ffffff;
+}
+
+@media (min-width: 640px) {
+  .project-hero-title {
+    font-size: 1.875rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .project-hero-title {
+    font-size: 2.25rem;
+  }
+}
+
+.project-hero-location {
+  font-size: 1rem;
+  font-weight: 500;
+  opacity: 0.9;
+  color: #e5e7eb;
+}
+
+@media (min-width: 640px) {
+  .project-hero-location {
+    font-size: 1.125rem;
+  }
+}
+
+/* Info Bar Container */
+.project-hero-info-bar {
+  border: 2px solid rgba(250, 204, 21, 0.6);
+  background-color: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(12px);
+  border-radius: 0.5rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+/* Info Bar Grid */
+.project-hero-info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  position: relative;
+}
+
+@media (min-width: 1024px) {
+  .project-hero-info-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Info Items */
+.project-hero-info-item {
+  padding: 1rem 1rem;
+  text-align: center;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.project-hero-info-item:hover {
+  background-color: rgba(250, 204, 21, 0.1);
+  transform: scale(1.05);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.project-hero-info-item:first-child:hover {
+  border-radius: 0.5rem 0 0 0.5rem;
+}
+
+.project-hero-info-item:last-child:hover {
+  border-radius: 0 0.5rem 0.5rem 0;
+}
+
+@media (min-width: 1024px) {
+  .project-hero-info-item:first-child:hover {
+    border-radius: 0.5rem 0 0 0.5rem;
+  }
+  
+  .project-hero-info-item:last-child:hover {
+    border-radius: 0 0.5rem 0.5rem 0;
+  }
+}
+
+/* Info Item Labels */
+.project-hero-info-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.8);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.5rem;
+  transition: color 0.3s;
+}
+
+.project-hero-info-item:hover .project-hero-info-label {
+  color: #facc15;
+}
+
+/* Info Item Values */
+.project-hero-info-value {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #ffffff;
+  transition: color 0.3s;
+}
+
+.project-hero-info-item:hover .project-hero-info-value {
+  color: #fde047;
+}
+
+/* Price value - larger */
+.project-hero-info-value.price {
+  font-size: 1.5rem;
+  color: #facc15;
+}
+
+.project-hero-info-item:hover .project-hero-info-value.price {
+  color: #fde047;
+}
+
+/* About project value - different styling */
+.project-hero-info-value.about-project {
+  font-size: 1.125rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+/* Gradient Dividers */
+.project-hero-info-divider {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1px;
+  height: 3rem;
+  background: linear-gradient(to bottom, transparent, rgba(250, 204, 21, 0.8), transparent);
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .project-hero-info-divider {
+    display: block;
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 639px) {
+  .project-hero-navbar {
+    padding: 0.75rem 0.5rem;
+  }
+  
+  .project-hero-navbar-content {
+    padding: 0 0.5rem;
+  }
+  
+  .project-hero-title {
+    font-size: 1.25rem;
+  }
+  
+  .project-hero-location {
+    font-size: 0.875rem;
+  }
+  
+  .project-hero-info-item {
+    padding: 1rem 0.75rem;
+  }
+  
+  .project-hero-info-label {
+    font-size: 0.625rem;
+  }
+  
+  .project-hero-info-value {
+    font-size: 1rem;
+  }
+  
+  .project-hero-info-value.price {
+    font-size: 1.125rem;
+  }
+}

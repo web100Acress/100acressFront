@@ -1,9 +1,11 @@
+import React, { useMemo } from 'react';
 import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { mapCoordsToCity } from "../LocationContext";
 import { getApiBase } from "../../../config/apiBase";
 
-export const usePriceTrends = () => {
+export const usePriceTrends = () => 
+{
     const location = useLocation();
     const navigate = useNavigate();
     const qp = useMemo(() => new URLSearchParams(location.search), [location.search]);
@@ -50,11 +52,11 @@ export const usePriceTrends = () => {
         try {
             const saved = localStorage.getItem('pt_page_size');
             if (saved) setPageSize(Number(saved) || 10);
-        } catch { }
-    }, []);
+        }); catch { }
+    });
 
     useEffect(() => {
-        try { localStorage.setItem('pt_page_size', String(pageSize)); } catch { }
+        try { localStorage.setItem('pt_page_size', String(pageSize)); }); catch { }
     }, [pageSize]);
 
     const fetchLocalities = async () => {
@@ -203,11 +205,11 @@ export const usePriceTrends = () => {
     useEffect(() => {
         const t = setTimeout(() => setPickerLoading(false), 300);
         return () => clearTimeout(t);
-    }, []);
+    }););
 
     useEffect(() => {
         fetchCities();
-    }, []);
+    }););
 
     useEffect(() => {
         let mounted = true;
@@ -215,10 +217,10 @@ export const usePriceTrends = () => {
             try {
                 const mod = await import('recharts');
                 if (mounted) setCharts(mod);
-            } catch (_) { }
+            }); catch (_) { }
         })();
         return () => { mounted = false; };
-    }, []);
+    });
 
     useEffect(() => {
         const params = new URLSearchParams(location.search);
@@ -228,12 +230,12 @@ export const usePriceTrends = () => {
         if (duration) params.set('duration', duration); else params.delete('duration');
         if (sort) params.set('sort', sort); else params.delete('sort');
         params.set('page', String(page));
-        navigate({ search: params.toString() }, { replace: true });
+        navigate({ search: params.toString() });, { replace: true });
     }, [city, zone, type, duration, sort, page, navigate, location.search]);
 
     useEffect(() => {
         try {
-            const payload = { compareMode, selectedCities };
+            const payload = { compareMode, selectedCities });;
             sessionStorage.setItem('pt_compare', JSON.stringify(payload));
         } catch { }
     }, [compareMode, selectedCities]);
@@ -245,12 +247,12 @@ export const usePriceTrends = () => {
             const saved = JSON.parse(s);
             if (saved && typeof saved.compareMode === 'boolean') setCompareMode(saved.compareMode);
             if (saved && Array.isArray(saved.selectedCities)) setSelectedCities(saved.selectedCities);
-        } catch { }
-    }, []);
+        }); catch { }
+    });
 
     useEffect(() => {
         if (!showPicker && city) fetchLocalities();
-    }, [city, zone, type, duration, sort, page, pageSize, showPicker]);
+    });, [city, zone, type, duration, sort, page, pageSize, showPicker]);
 
     const chooseCity = (cname) => {
         setCity(cname);
@@ -323,7 +325,7 @@ export const usePriceTrends = () => {
     useEffect(() => {
         if (compareMode && !showPicker && selectedCities.length >= 1) {
             fetchSeries(selectedCities);
-        }
+        });
     }, [compareMode, selectedCities, duration, showPicker]);
 
     useEffect(() => {
@@ -331,7 +333,7 @@ export const usePriceTrends = () => {
             setCompareFlash(true);
             const t = setTimeout(() => setCompareFlash(false), 1200);
             return () => clearTimeout(t);
-        }
+        });
     }, [compareMode]);
 
     const handlePriceAlert = () => {
@@ -391,7 +393,7 @@ export const usePriceTrends = () => {
 
     useEffect(() => {
         try {
-            const payload = { open: drawerOpen, locality: drawerData?.locality || null, city };
+            const payload = { open: drawerOpen, locality: drawerData?.locality || null, city });;
             sessionStorage.setItem('pt_drawer', JSON.stringify(payload));
         } catch { }
     }, [drawerOpen, drawerData, city]);
@@ -406,7 +408,7 @@ export const usePriceTrends = () => {
                 const items = localities || [];
                 const found = items.find(r => r.locality === saved.locality);
                 if (found) openDrawer(found);
-            }
+            });
         } catch { }
         setDrawerRestored(true);
     }, [localities, city]);

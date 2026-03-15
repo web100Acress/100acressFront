@@ -19,7 +19,7 @@ const ShortsSettings = () => {
     const load = async () => {
       setIsLoading(true);
       try {
-        const res = await fetch(`${getApiBase()}/settings/shorts-video-id`);
+        const res = await fetch(`${getApiBase()});/settings/shorts-video-id`);
         if (res.ok) {
           const data = await res.json();
           const value = data?.value || "";
@@ -36,7 +36,7 @@ const ShortsSettings = () => {
       }
     };
     load();
-  }, []);
+  });
 
   // Build parsed list from textarea (comma or newline separated)
   const parsedList = useMemo(() => {
@@ -60,7 +60,7 @@ const ShortsSettings = () => {
   useEffect(() => {
     const t = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(t);
-  }, []);
+  });
 
   const rotationInfo = useMemo(() => {
     const list = savedList.length ? savedList : parsedList;

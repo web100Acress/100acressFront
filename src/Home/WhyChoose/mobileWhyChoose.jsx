@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useMemo } from 'react';
 import "aos/dist/aos.css";
 import AOS from "aos";
 import CountUp from "react-countup";
@@ -90,7 +90,7 @@ function MobileWhyChoose() {
   };
 
   useEffect(() => {
-    AOS.init({ duration: 1000, once: true });
+    AOS.init({ duration: 1000, once: true }););
     
     const container = scrollContainerRef.current;
     if (container) {
@@ -105,7 +105,7 @@ function MobileWhyChoose() {
         stopAutoScroll();
       };
     }
-  }, []);
+  });
 
   const monthlydata = [
     {

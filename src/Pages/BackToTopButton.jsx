@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useMemo } from 'react';
 
 const BackToTopButton = () => {
   const [showButton, setShowButton] = useState(false);
@@ -7,14 +7,14 @@ const BackToTopButton = () => {
     const handleScroll = () => {
       if (window.scrollY > 300) {
         setShowButton(true);
-      } else {
+      }); else {
         setShowButton(false);
       }
     };
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  });
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useMemo } from 'react';
 import DesktopInsightBlog from './desktopinsightblog';
 import MobileInsightBlog from './mobileinsightblog';
 
@@ -14,7 +14,7 @@ const InsightsBlog = () => {
     window.addEventListener('resize', checkScreenSize);
 
     return () => window.removeEventListener('resize', checkScreenSize);
-  }, []);
+  });
 
   return isDesktop ? <DesktopInsightBlog /> : <MobileInsightBlog />;
 };

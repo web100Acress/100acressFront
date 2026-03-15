@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useMemo } from 'react';
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../../AuthContext";
 import { ChevronDown } from "lucide-react";
@@ -20,13 +20,13 @@ export default function DesktopInsightsHeader() {
     useEffect(() => {
         const handleScroll = () => {
             setScrolled(window.scrollY > 20);
-        };
+        });;
         window.addEventListener("scroll", handleScroll);
 
         return () => {
             window.removeEventListener("scroll", handleScroll);
         };
-    }, []);
+    });
 
     // Real user initials generator
     const getInitials = () => {
@@ -67,7 +67,7 @@ export default function DesktopInsightsHeader() {
             >
                 {/* Left: Branding & Context */}
                 <div className="flex items-center gap-4">
-                    <Link to="/real-estate-insights">
+                    <Link to="/real-estate-insights/">
                         <div className="flex items-center gap-2">
                             <div className="w-8 h-8 bg-[#e53e3e] rounded-lg flex items-center justify-center p-1.5 shadow-sm">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" className="w-full h-full">

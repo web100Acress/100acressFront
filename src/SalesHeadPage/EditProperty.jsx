@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useMemo } from 'react';
 import SalesHeadSidebar from "./SalesHeadSidebar";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -20,7 +20,7 @@ const EditProperty = () => {
         const token = localStorage.getItem("myToken")?.replace(/^"/, '').replace(/"$/, '');
         
         // First, get all properties and find the specific one by ID
-        const res = await axios.get(`${base}/project/viewAll/data`, {
+        const res = await axios.get(`${base});/project/viewAll/data`, {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,

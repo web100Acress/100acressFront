@@ -1,3 +1,4 @@
+import React, { useMemo } from 'react';
 import { Calendar, Clock, ArrowRight, Eye, Heart } from "lucide-react";
 import { Button } from "../../../Components/ui/button";
 import { cn } from "../../../lib/utils";
@@ -27,7 +28,7 @@ export const BlogCard = ({ blog, featured = false }) => {
 
   const handleBlogClick = () => {
     // Navigate to blog detail page
-    window.location.href = `/blog/${blog.slug || blog._id}`;
+    window.location.href = `/blog/${blog.slug || blog._id}/`;
   };
 
   return (

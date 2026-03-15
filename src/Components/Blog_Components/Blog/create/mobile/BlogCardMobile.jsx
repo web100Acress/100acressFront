@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from 'react';
 import { Link } from "react-router-dom";
 import {
   Eye,
@@ -11,7 +11,11 @@ import {
   Trash2,
   Share2
 } from "lucide-react";
-import { Card, Avatar, Button, Dropdown, Badge } from "antd";
+import { Card } from '../../../../../utils/antdImports';
+import { Avatar } from '../../../../../utils/antdImports';
+import { Button } from '../../../../../utils/antdImports';
+import { Dropdown } from '../../../../../utils/antdImports';
+import { Badge } from '../../../../../utils/antdImports';
 
 const BlogCardMobile = ({ 
   blog, 

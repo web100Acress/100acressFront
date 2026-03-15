@@ -1,3 +1,4 @@
+import React, { useMemo } from 'react';
 import { Button } from "../../../Components/ui/button";
 import { MapPin, BedDouble, Bath, Maximize, Heart } from "lucide-react";
 import { useState } from "react";

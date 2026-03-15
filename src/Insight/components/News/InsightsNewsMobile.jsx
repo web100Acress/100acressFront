@@ -19,7 +19,7 @@ const InsightsNewsMobile = () => {
         const response = await api.get('blog/view');
         if (response.data?.data) {
           setNews(response.data.data);
-        }
+        });
       } catch (error) {
         console.error('Error fetching news:', error);
       } finally {
@@ -27,7 +27,7 @@ const InsightsNewsMobile = () => {
       }
     };
     fetchNews();
-  }, []);
+  });
 
   const categories = useMemo(() => [
     { id: 'all', name: 'All News' },
@@ -67,7 +67,7 @@ const InsightsNewsMobile = () => {
     return `${minutes} min`;
   };
 
-  const blogLink = (id) => `/insights/blog/${id}`;
+  const blogLink = (id) => `/insights/blog/${id}/`;
 
   const SkeletonCard = () => (
     <div className="bg-white rounded-2xl border border-slate-100 p-4 animate-pulse mb-4">

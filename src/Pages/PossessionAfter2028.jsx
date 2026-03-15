@@ -1,9 +1,9 @@
-import React, { useEffect } from "react";
+import React, { useMemo } from 'react';
 import "react-multi-carousel/lib/styles.css";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import Footer from "../Components/Actual_Components/Footer";
-// import { Skeleton } from 'antd';
+// import { Skeleton } from '../utils/antdImports';
 import CustomSkeleton from "../Utils/CustomSkeleton";
 import { useSelector } from "react-redux";
 import Api_service from "../Redux/utils/Api_Service";
@@ -14,9 +14,9 @@ const PossessionAfter2028 = () => {
   let query = "possesionafter2026";
   const {getAllProjects} = Api_service();
 
-  useEffect(()=>{
+  useEffect(() => {
     getAllProjects(query);
-  },[])
+  });
     if (!possessionIn2026AndBeyond || possessionIn2026AndBeyond.length === 0) {
       return <CustomSkeleton />;
     }

@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useState } from "react";
+import React, { useMemo } from 'react';
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
 import {
@@ -118,7 +118,7 @@ const CommonInside = ({
     if (Array.isArray(Actualdata) && Actualdata.length > 0) {
       import("aos").then((Aos) => {
         Aos.init();
-      });
+      }););
     }
   }, [Actualdata]);
 
@@ -126,12 +126,12 @@ const CommonInside = ({
   useEffect(() => {
     try {
       hydrateFavoritesFromServer();
-    } catch (_) {}
+    }); catch (_) {}
     const unsub = subscribe(() => setFavTick((v) => v + 1));
     return () => {
       if (typeof unsub === "function") unsub();
     };
-  }, []);
+  });
 
   // Filter out invalid items and ensure we have valid data
   let filteredData = Array.isArray(Actualdata)

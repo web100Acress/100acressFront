@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { FaUsers, FaMoneyBillWave, FaClock, FaUserPlus, FaChartBar } from 'react-icons/fa';
 import HrSidebar from './HrSidebar';
@@ -17,7 +17,7 @@ const HrDashboard = () => {
 
   useEffect(() => {
     fetchDashboardData();
-  }, []);
+  });
 
   const fetchDashboardData = async () => {
     try {

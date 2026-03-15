@@ -35,7 +35,7 @@ const PropertyShowcase = ({ properties = [] }) => {
   useEffect(() => {
     const base = (properties || []).slice(0, 4);
     setQueue(base.length >= 1 ? [...base, base[0]] : base);
-  }, [properties]);
+  });, [properties]);
 
   const startTimer = () => {
     if (timerRef.current) return;
@@ -68,7 +68,7 @@ const PropertyShowcase = ({ properties = [] }) => {
     startTimer();
     return () => stopTimer();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }););
 
   const onMouseEnter = () => {
     hoverRef.current = true;

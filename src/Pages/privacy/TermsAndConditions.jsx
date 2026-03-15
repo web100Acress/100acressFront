@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import Footer from '../../Components/Actual_Components/Footer';
 import { Helmet } from 'react-helmet';
 import Navbar from '../../aadharhomes/navbar/Navbar';
@@ -7,10 +7,10 @@ const TermsAndConditions = () => {
   return (
     <>
       <Helmet>
-        <title>Terms and Conditions - 100acress.com</title>
+        <title>Terms & Conditions | 100acress Real Estate Platform Policy</title>
         <meta 
           name="description" 
-          content="Read the terms and conditions of 100acress.com. Understand our policies for property listings, transactions, and usage of our platform." 
+          content="Review the official Terms & Conditions of 100acress.com. Learn about website usage, property listings, user responsibilities, and legal policies for our real estate platform." 
         />
         <link rel="canonical" href="https://www.100acress.com/terms-and-conditions/" />
       </Helmet>

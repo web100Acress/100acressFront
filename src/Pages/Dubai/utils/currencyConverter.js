@@ -1,3 +1,4 @@
+import React, { useMemo } from 'react';
 // Conversion rates based on requirements
 // 1.0 Indian Rupee equals 0.041 United Arab Emirates Dirham
 // 1.0 Indian Rupee equals 0.011 US Dollar

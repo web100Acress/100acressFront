@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useMemo } from 'react';
 import HrSidebar from "./HrSidebar";
 import api from "../config/apiClient";
 import { FaSearch, FaUsers, FaCheckCircle, FaTimesCircle } from "react-icons/fa";
@@ -14,7 +14,7 @@ const ItDashboard = () => {
 
   useEffect(() => {
     fetchAllUsers();
-  }, []);
+  });
 
   useEffect(() => {
     const timer = setTimeout(() => {

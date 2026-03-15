@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useMemo } from 'react';
 
 const OptimizedImage = ({ 
   src, 
@@ -6,7 +6,7 @@ const OptimizedImage = ({
   className = '', 
   placeholder = 'blur',
   loading = 'lazy',
-  fetchPriority = 'auto',
+  fetchpriority = 'auto',
   width,
   height,
   ...props 
@@ -32,7 +32,7 @@ const OptimizedImage = ({
     }
 
     return () => observer.disconnect();
-  }, []);
+  });
 
   const handleLoad = () => {
     setIsLoaded(true);
@@ -64,7 +64,7 @@ const OptimizedImage = ({
             src={hasError ? '/placeholder-image.jpg' : src}
             alt={alt}
             loading={loading}
-            fetchPriority={fetchPriority}
+            fetchpriority={fetchpriority}
             decoding="async"
             width={width}
             height={height}

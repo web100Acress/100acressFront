@@ -1,6 +1,8 @@
+import React, { useMemo } from 'react';
 import { Facebook, Instagram, Linkedin, Twitter, Mail, Phone, MapPin } from "lucide-react";
 
-export const Footer = () => {
+export const Footer = () => 
+{
   const footerLinks = {
     properties: [
       { label: "Luxury Apartments", href: "#" },
@@ -193,13 +195,28 @@ export const Footer = () => {
               © 2026 100acress Dubai. All rights reserved.
             </p>
             <div className="flex items-center space-x-6 text-sm">
-              <a href="#" className="text-muted-foreground hover:text-gold transition-colors">
+              <a 
+                href="/privacy-policy" 
+                className="text-muted-foreground hover:text-gold transition-colors cursor-pointer"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 Privacy Policy
               </a>
-              <a href="#" className="text-muted-foreground hover:text-gold transition-colors">
+              <a 
+                href="/terms-of-service" 
+                className="text-muted-foreground hover:text-gold transition-colors cursor-pointer"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 Terms of Service
               </a>
-              <a href="#" className="text-muted-foreground hover:text-gold transition-colors">
+              <a 
+                href="/cookie-policy" 
+                className="text-muted-foreground hover:text-gold transition-colors cursor-pointer"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 Cookie Policy
               </a>
             </div>

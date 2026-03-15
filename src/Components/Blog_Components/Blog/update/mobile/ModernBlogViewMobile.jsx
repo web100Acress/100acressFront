@@ -1,3 +1,4 @@
+import React, { useMemo } from 'react';
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import api from "../../../../../config/apiClient";
@@ -17,7 +18,12 @@ import {
   Edit,
   Trash2
 } from "lucide-react";
-import { Card, Button, Avatar, Divider, Dropdown, message } from "antd";
+import { Card } from '../../../../../utils/antdImports';
+import { Button } from '../../../../../utils/antdImports';
+import { Avatar } from '../../../../../utils/antdImports';
+import { Divider } from '../../../../../utils/antdImports';
+import { Dropdown } from '../../../../../utils/antdImports';
+import { message } from '../../../../../utils/antdImports';
 
 export default function ModernBlogViewMobile() {
   const { id } = useParams();
@@ -31,7 +37,7 @@ export default function ModernBlogViewMobile() {
 
   useEffect(() => {
     fetchBlog();
-  }, [id]);
+  });, [id]);
 
   const fetchBlog = async () => {
     try {

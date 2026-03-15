@@ -197,26 +197,26 @@ const BUILDER_INFO = {
 const BUILDER_QUERIES = {
   'shapoorji-pallonji': 'Shapoorji Pallonji',
   'satya-group': 'Satya Group',
-  'signature-global': 'Signature Global',
-  'm3m-india': 'M3M India',
-  'dlf-homes': 'DLF',
-  'experion-developers': 'Experion Developers',
-  'elan-group': 'Elan Group',
-  'bptp-limited': 'BPTP',
   'adani-realty': 'Adani Realty',
-  'smartworld-developers': 'Smartworld Developers',
+  'm3m-india': 'M3M India',
+  'emaar-india': 'Emaar India',
+  'experion-developers': 'Experion Developers',
+  'signature-global': 'Signature Global',
+  'dlf-homes': 'DLF Homes',
+  'whiteland': 'whiteland',
+  'aipl': 'aipl',
+  'elan-group': 'Elan Group',
+  'bptp-limited': 'BPTP LTD',
   'trevoc-group': 'Trevoc Group',
-  'indiabulls-real-estate': 'Indiabulls Real Estate',
-  'central-park': 'Central Park',
-  'emaar-properties': 'Emaar Properties',
+  'indiabulls-real-estate': 'Indiabulls',
+  'smartworld-developers': 'Smartworld',
+  'central-park': 'central park',
   'godrej-properties': 'Godrej Properties',
-  'whiteland': 'Whiteland Corporation',
-  'aipl': 'AIPL',
-  'birla-estate': 'Birla Estate',
-  'sobha-developers': 'Sobha Developers',
+  'birla-estate': 'Birla Estates',
+  'sobha-developers': 'Sobha',
   'trump-towers': 'Trump Towers',
-  'puri-developers': 'Puri Developers',
-  'aarize-developers': 'Aarize Developers',
+  'puri-developers': 'Puri Constructions',
+  'aarize-developers': 'Aarize Group',
   'max-estates': 'Max Estates',
   'danube-properties': 'Danube Properties',
   'bnw-properties': 'BNW Developments',
@@ -226,7 +226,7 @@ const BUILDER_QUERIES = {
   'nakheel-properties': 'Nakheel Properties',
   'meraas-properties': 'Meraas Properties',
   'aldar-properties': 'Aldar Properties',
-  'omniyat-properties': 'Omniyat Properties'
+  'omniyat-properties': 'Omniyat Properties',
 };
 
 // Canonical display names for builder brands (for titles/meta)
@@ -446,7 +446,7 @@ const BuilderPage = React.memo(() => {
     hydrateFavoritesFromServer();
     const unsub = subscribe((ids) => setFavoriteIds(ids || []));
     return () => { if (typeof unsub === 'function') unsub(); };
-  }, []);
+  });
 
   // Get builder projects from Redux store
   const SignatureBuilder = useSelector(store => store?.builder?.signatureglobal);
@@ -705,7 +705,7 @@ const BuilderPage = React.memo(() => {
   const [searchTerm, setSearchTerm] = useState('');
   const handleHeroSearch = useCallback((q) => {
     setSearchTerm(q || '');
-  }, []);
+  });
 
   // Apply client-side filter by project name, city, or address (must be before any conditional returns)
   const visibleProjects = useMemo(() => {

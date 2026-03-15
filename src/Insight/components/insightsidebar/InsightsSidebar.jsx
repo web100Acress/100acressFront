@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from 'react';
 import DesktopInsightsSidebar from "./desktopinsightsidebar";
 import MobileInsightsSidebar from "./mobileinsightsidebar";
 

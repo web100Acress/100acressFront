@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useMemo } from 'react';
 import { motion } from 'framer-motion';
+import './MasterPlan.desktop.css';
 
 const MasterPlanDesktop = ({ projectName = "", masterPlanImage = null }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -22,40 +23,40 @@ const MasterPlanDesktop = ({ projectName = "", masterPlanImage = null }) => {
   }
 
   return (
-    <section className="py-8 md:py-10 lg:py-12 bg-black text-white relative overflow-hidden">
+    <section className="master-plan-desktop" style={{ paddingTop: '120px', zIndex: 1, position: 'relative' }}>
       {/* Animated Background Elements */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-full opacity-5">
-          <div className="absolute top-1/3 right-1/4 w-96 h-96 bg-gradient-to-br from-amber-500 to-amber-600 rounded-full blur-3xl animate-float"></div>
-          <div className="absolute bottom-1/3 left-1/4 w-80 h-80 bg-gradient-to-tl from-amber-400 to-amber-500 rounded-full blur-3xl animate-float animation-delay-2000"></div>
+      <div className="master-plan-desktop-background">
+        <div className="master-plan-desktop-background-overlay">
+          <div className="master-plan-desktop-float-1"></div>
+          <div className="master-plan-desktop-float-2"></div>
         </div>
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-amber-500/3 to-transparent"></div>
+        <div className="master-plan-desktop-gradient-overlay"></div>
       </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="master-plan-desktop-content">
         {/* Section Header */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-4 md:mb-12"
+          className="master-plan-desktop-header"
         >
           <motion.div 
-            className="inline-flex items-center justify-center w-14 h-14 md:w-16 md:h-16 bg-gradient-to-br from-amber-500 to-amber-600 rounded-full mb-4"
+            className="master-plan-desktop-header-icon"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
-            <svg className="w-7 h-7 md:w-8 md:h-8 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
           </motion.div>
-          <h2 className="text-amber-400 text-xs md:text-sm font-semibold uppercase tracking-[0.2em] mb-2">
+          <h2 className="master-plan-desktop-subtitle">
             MASTER PLAN
           </h2>
-          <h3 className="text-white text-2xl sm:text-3xl md:text-4xl font-bold leading-tight mb-4">
+          <h3 className="master-plan-desktop-title">
             Master Plan of {projectName}
           </h3>
-          <div className="w-16 h-1 bg-gradient-to-r from-amber-600 via-amber-500 to-amber-400 rounded-full mx-auto"></div>
+          <div className="master-plan-desktop-accent-line"></div>
         </motion.div>
 
         {/* Desktop Master Plan Image */}
@@ -63,30 +64,31 @@ const MasterPlanDesktop = ({ projectName = "", masterPlanImage = null }) => {
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="relative group cursor-pointer"
+          className="master-plan-desktop-image-clickable"
           onClick={openModal}
         >
           {/* Glow Effect */}
-          <div className="absolute -inset-1 bg-gradient-to-r from-amber-600 to-amber-400 rounded-2xl blur opacity-20 group-hover:opacity-40 transition-all duration-700"></div>
+          <div className="master-plan-desktop-image-glow"></div>
           
-          <div className="relative bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 rounded-2xl p-1 border border-gray-700/50 backdrop-blur-sm">
-            <div className="relative aspect-[16/9] w-full rounded-xl overflow-hidden bg-gradient-to-br from-gray-800 to-gray-900">
+          <div className="master-plan-desktop-image-card">
+            <div className="master-plan-desktop-image-frame">
               <img
                 src={masterPlanImage.url}
                 alt={`Master Plan of ${projectName}`}
-                className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105"
+                className="master-plan-desktop-image"
+                crossOrigin="anonymous"
               />
               
               {/* Desktop Zoom Overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-700 flex items-center justify-center">
-                <div className="text-center transform scale-95 group-hover:scale-100 transition-transform duration-700">
-                  <div className="bg-gradient-to-br from-amber-500 to-amber-600 rounded-full p-5 mb-4 shadow-2xl shadow-amber-500/50 transform group-hover:rotate-12 transition-transform duration-700">
-                    <svg className="w-10 h-10 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="master-plan-desktop-zoom-overlay">
+                <div className="master-plan-desktop-zoom-inner">
+                  <div className="master-plan-desktop-zoom-icon">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
                     </svg>
                   </div>
-                  <p className="text-white font-bold text-xl mb-2">View Full Size</p>
-                  <p className="text-amber-400 text-sm font-medium">Click to explore details</p>
+                  <p className="master-plan-desktop-zoom-title">View Full Size</p>
+                  <p className="master-plan-desktop-zoom-subtitle">Click to explore details</p>
                 </div>
               </div>
             </div>
@@ -122,38 +124,25 @@ const MasterPlanDesktop = ({ projectName = "", masterPlanImage = null }) => {
 
       {/* Desktop Full Screen Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-95 flex justify-center items-center z-50 p-4">
+        <div className="master-plan-desktop-modal">
           <button
             onClick={closeModal}
-            className="absolute top-6 right-6 text-white hover:text-amber-400 transition-colors z-10"
+            className="master-plan-desktop-modal-close"
           >
-            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
-          <div className="relative w-full h-full max-w-7xl max-h-full flex items-center justify-center">
+          <div className="master-plan-desktop-modal-body">
             <img
               src={masterPlanImage.url}
               alt={`Master Plan of ${projectName}`}
-              className="max-w-full max-h-full object-contain"
+              className="master-plan-desktop-modal-image"
+              crossOrigin="anonymous"
             />
           </div>
         </div>
       )}
-
-      {/* Scoped styles for this component */}
-      <style>{`
-        @keyframes float {
-          0%, 100% { transform: translateY(0) translateX(0); }
-          50% { transform: translateY(-10px) translateX(5px); }
-        }
-        .animate-float {
-          animation: float 15s ease-in-out infinite;
-        }
-        .animation-delay-2000 {
-          animation-delay: 2s;
-        }
-      `}</style>
     </section>
   );
 };

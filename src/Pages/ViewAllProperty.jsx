@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from 'react';
 import showToast from "../Utils/toastUtils";
 
 const ViewAllProperty = ({ category, title, imageSrc, tags }) => {

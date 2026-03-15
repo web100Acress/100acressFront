@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useMemo } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import AdminInsightsSidebar from '../../components/insightsidebar/AdminInsightsSidebar';
 import { Plus, Edit, Trash2, Upload, Download, Search, Filter, X, BookOpen, Clock, BarChart3, Star, FileText, AlertCircle } from 'lucide-react';
@@ -143,12 +143,12 @@ const AdminGuides = () => {
       newSocket.off('reconnect_attempt');
       newSocket.close();
     };
-  }, []);
+  });
 
   // Initial data fetch
   useEffect(() => {
     fetchGuides();
-  }, []);
+  });
 
   // WebSocket event listeners
   useEffect(() => {

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from 'react';
 import { Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "../AuthContext";
 import SalesHeadLayout from "../SalesHeadPage/SalesHeadLayout";

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import CallbackModal from './CallbackModal';
 import api from '../../../../config/apiClient';
 

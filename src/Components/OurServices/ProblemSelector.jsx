@@ -1,3 +1,4 @@
+import React, { useMemo } from 'react';
 // src/components/RealEstateAssistPage/ProblemSelector.jsx
 import { motion } from "framer-motion";
 import { Home, DollarSign, Building2 } from "lucide-react";

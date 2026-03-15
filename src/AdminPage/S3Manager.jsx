@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useMemo } from 'react';
 import {
   FaAws,
   FaUpload,
@@ -66,7 +66,7 @@ const S3Manager = () => {
   // Authentication check
   useEffect(() => {
     checkAuthentication();
-  }, []);
+  });
 
   useEffect(() => {
     if (isAuthenticated) {

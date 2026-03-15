@@ -1,3 +1,4 @@
+import React, { useMemo } from 'react';
 import { createContext, useContext, useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
@@ -5,9 +6,9 @@ const DubaiContext = createContext();
 const emiratesConfig = {
   "Dubai": {
     route: "/united-arab-emirates",
-    headline: "New & Upcoming Projects in Dubai",
-    subheadline: "Your Gateway to Premium Properties",
-    description: "Explore Premium Projects in Dubai",
+    headline: "Top Projects in Dubai UAE",
+    subheadline: "Explore Top Luxury & Investment Properties",
+    description: "Explore the best projects in Dubai UAE including luxury apartments, villas, and off-plan properties. Discover top investment opportunities in Dubai.",
     heroImage: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=1920&q=80", // Dubai skyline
     tagline: "The City of Gold"
   },

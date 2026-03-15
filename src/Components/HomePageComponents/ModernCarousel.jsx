@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useMemo } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination, Autoplay, EffectCoverflow } from 'swiper/modules';
 import { MdArrowForward, MdArrowBack } from 'react-icons/md';
@@ -35,8 +35,8 @@ function ModernCarousel({ AllProjects = [] }) {
 
     return () => {
       window.removeEventListener('resize', updateNumber);
-    };
-  }, []);
+    });;
+  });
 
   return (
     <Wrapper className="section">
@@ -132,7 +132,7 @@ const PropertyCard = ({ property }) => {
     const unsub = subscribe(() => {
       const id = property?._id || property?.id || property?.slug;
       setIsFavorite(favCheck(id));
-    });
+    }););
     return () => { if (typeof unsub === 'function') unsub(); };
   }, [property?._id, property?.id, property?.slug]);
 

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useMemo } from 'react';
 import Footer from "../Components/Actual_Components/Footer";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
@@ -9,9 +9,9 @@ const EmaarIndia = () => {
   const {getProjectOnStatus} = Api_Service();
   const emaarIndia = useSelector(store=> store?.projectStatus?.emaar);
   let query = "emaar";
-  useEffect(()=>{
+  useEffect(() => {
     getProjectOnStatus(query,0);
-  })
+  });)
 
   return (
     <div>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchActiveSmallBanners } from '../../../Redux/slice/SmallBannerSlice';
 import { Link } from 'react-router-dom';
@@ -14,7 +14,7 @@ const SmallBannerSection = () => {
 
   useEffect(() => {
     dispatch(fetchActiveSmallBanners());
-  }, [dispatch]);
+  });, [dispatch]);
 
   // Handle responsive image switching
   useEffect(() => {

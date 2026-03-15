@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from 'react';
 import { Box, Flex, Button, Grid } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";

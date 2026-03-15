@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { gradients } from './DesignTokens';
 
 export default function FilterBar({ view, setView, sort, setSort, mapView, setMapView }) {

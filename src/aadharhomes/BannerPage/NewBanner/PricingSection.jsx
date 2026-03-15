@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import '../../../styles/PricingSection.css';
 
 export default function PricingSection({ projectViewDetails, BhK_Details, handleShowInstantcallBack }) {

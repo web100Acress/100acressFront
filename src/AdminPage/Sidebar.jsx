@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useMemo } from 'react';
 import { MdSpaceDashboard, MdInsights } from "react-icons/md";
 import { FaDiagramProject } from "react-icons/fa6";
 import { SiBloglovin } from "react-icons/si";
@@ -34,7 +34,7 @@ const Sidebar = () => {
         console.error("Error parsing agent data:", error);
       }
     }
-  }, []);
+  });
 
   useEffect(() => {
     if (darkMode) {

@@ -1,3 +1,4 @@
+import React, { useMemo } from 'react';
 /**
  * Utility functions for URL generation
  * Works in both development (localhost) and production environments

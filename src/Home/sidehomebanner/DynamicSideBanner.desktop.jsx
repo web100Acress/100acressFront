@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchActiveSideBanners } from '../../Redux/slice/SideBannerSlice';
 
@@ -15,7 +15,7 @@ const DynamicSideBannerDesktop = () => {
 
   useEffect(() => {
     dispatch(fetchActiveSideBanners());
-  }, [dispatch]);
+  });, [dispatch]);
 
   // Rotate through banners every 5 seconds (standard for desktop)
   useEffect(() => {
@@ -25,7 +25,7 @@ const DynamicSideBannerDesktop = () => {
       setCurrentBannerIndex((prevIndex) => 
         prevIndex === activeSideBanners.length - 1 ? 0 : prevIndex + 1
       );
-    }, 5000);
+    });, 5000);
 
     return () => clearInterval(interval);
   }, [activeSideBanners]);

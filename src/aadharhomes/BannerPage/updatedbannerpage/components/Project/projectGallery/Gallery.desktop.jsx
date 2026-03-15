@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useMemo } from 'react';
+import './Gallery.desktop.css';
 
 const GalleryDesktop = ({ galleryImages = [], projectName = '' }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -16,7 +17,7 @@ const GalleryDesktop = ({ galleryImages = [], projectName = '' }) => {
     setIsModalOpen(false);
     setSelectedImage(null);
     document.body.style.overflow = 'auto';
-  }, []);
+  });
 
   const navigateImage = useCallback((direction) => {
     setCurrentImageIndex(prevIndex => {
@@ -53,7 +54,7 @@ const GalleryDesktop = ({ galleryImages = [], projectName = '' }) => {
     window.addEventListener('keydown', handleKeyDown);
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
-    };
+    });;
   }, [handleKeyDown]);
 
   if (!galleryImages || galleryImages.length === 0) {
@@ -64,38 +65,40 @@ const GalleryDesktop = ({ galleryImages = [], projectName = '' }) => {
   const remainingImagesCount = galleryImages.length - visibleImages.length;
 
   return (
-    <section className="py-8 bg-black">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-4">
-            <h2 className="text-amber-400 text-sm font-semibold uppercase tracking-widest mb-3">
+    <section className="gallery-desktop" style={{ paddingTop: '120px', zIndex: 1, position: 'relative' }}>
+      <div className="gallery-desktop-content">
+        <div className="gallery-desktop-header">
+            <h2 className="gallery-desktop-subtitle">
               GALLERY
             </h2>
-            <h3 className="text-white text-2xl md:text-3xl font-bold leading-tight mb-2">
+            <h3 className="gallery-desktop-title">
               Project Images{projectName ? ` of ${projectName}` : ''}
             </h3>
-            <div className="w-20 h-1 bg-gradient-to-r from-amber-600 to-amber-500 rounded-full mx-auto mt-4"></div>
+            <div className="gallery-desktop-accent-line"></div>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 h-[500px]">
-          <div className="col-span-2 row-span-2 h-full">
+        <div className="gallery-desktop-grid">
+          <div className="gallery-desktop-grid-featured">
             {visibleImages[0] && (
               <img
-                fetchPriority='high'
+                fetchpriority="high"
                 src={visibleImages[0].url}
                 alt="Gallery image 1"
-                className="w-full h-full object-cover rounded-lg cursor-pointer transition-transform duration-300 hover:scale-105"
+                className="gallery-desktop-image featured"
                 onClick={() => openModal(visibleImages[0].url, galleryImages.findIndex(img => img.url === visibleImages[0].url))}
+                crossOrigin="anonymous"
               />
             )}
           </div>
           {visibleImages.slice(1, 5).map((image, index) => (
-            <div key={index} className="h-full">
+            <div key={index} className="gallery-desktop-grid-cell">
               {image && (
                 <img
                   src={image.url}
                   alt={`Gallery image ${index + 2}`}
-                  className="w-full h-full object-cover rounded-lg cursor-pointer transition-transform duration-300 hover:scale-105"
+                  className="gallery-desktop-image"
                   onClick={() => openModal(image.url, galleryImages.findIndex(img => img.url === image.url))}
+                  crossOrigin="anonymous"
                 />
               )}
             </div>
@@ -103,10 +106,10 @@ const GalleryDesktop = ({ galleryImages = [], projectName = '' }) => {
         </div>
 
         {remainingImagesCount > 0 && (
-          <div className="mt-6 text-center">
+          <div className="gallery-desktop-show-all">
             <button
               onClick={() => openModal(galleryImages[5]?.url, 5)} // Open modal with the 6th image
-              className="bg-amber-600 text-white font-semibold px-6 py-3 rounded-lg hover:bg-amber-700 transition-colors"
+              className="gallery-desktop-show-all-button"
             >
               Show All Photos ({remainingImagesCount}+)
             </button>
@@ -115,17 +118,17 @@ const GalleryDesktop = ({ galleryImages = [], projectName = '' }) => {
       </div>
 
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-90 flex justify-center items-center z-50 p-4">
+        <div className="gallery-desktop-modal">
           <button
             onClick={closeModal}
-            className="absolute top-4 right-4 text-white text-4xl z-10"
+            className="gallery-desktop-modal-close"
           >
             &times;
           </button>
-          <div className="relative w-full h-full max-w-6xl max-h-full flex items-center justify-center">
+          <div className="gallery-desktop-modal-body">
             <button 
               onClick={(e) => { e.stopPropagation(); navigateImage('prev'); }}
-              className="absolute left-4 md:left-8 text-white bg-black bg-opacity-50 hover:bg-opacity-75 rounded-full p-2 z-10 transition-all"
+              className="gallery-desktop-modal-nav prev"
               aria-label="Previous image"
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 md:h-10 md:w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -133,20 +136,21 @@ const GalleryDesktop = ({ galleryImages = [], projectName = '' }) => {
               </svg>
             </button>
             
-            <div className="relative w-full h-full flex items-center justify-center">
+            <div className="gallery-desktop-modal-image-wrap">
               <img
                 src={selectedImage}
                 alt={`Gallery image ${currentImageIndex + 1}`}
-                className="max-w-full max-h-full object-contain"
+                className="gallery-desktop-modal-image"
+                crossOrigin="anonymous"
               />
-              <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-50 text-white px-3 py-1 rounded-full text-sm">
+              <div className="gallery-desktop-modal-counter">
                 {currentImageIndex + 1} / {galleryImages.length}
               </div>
             </div>
             
             <button 
               onClick={(e) => { e.stopPropagation(); navigateImage('next'); }}
-              className="absolute right-4 md:right-8 text-white bg-black bg-opacity-50 hover:bg-opacity-75 rounded-full p-2 z-10 transition-all"
+              className="gallery-desktop-modal-nav next"
               aria-label="Next image"
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 md:h-10 md:w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">

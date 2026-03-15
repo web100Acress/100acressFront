@@ -1,3 +1,4 @@
+import React, { useMemo } from 'react';
 import { useRef, useState, useEffect } from "react";
   import { motion, AnimatePresence } from "framer-motion";
 
@@ -16,9 +17,9 @@ import { useRef, useState, useEffect } from "react";
 
     useEffect(() => {
       if (!divRef.current) return;
-      const { width, height, top, left } = divRef.current.getBoundingClientRect();
+      const { width, height, top, left }); = divRef.current.getBoundingClientRect();
       setDimensions({ width, height, top, left });
-    }, []);
+    });
 
     const handleClick = (e) => {
       // Allow access to post property without login

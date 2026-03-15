@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useMemo } from 'react';
 import confetti from "canvas-confetti";
 
 const AutoConfetti = () => {
@@ -11,7 +11,7 @@ const AutoConfetti = () => {
       const myConfetti = confetti.create(canvasRef.current, {
         resize: true,
         useWorker: true,
-      });
+      }););
 
       const commonColors = [
         "#FF6B35", "#FFD23F", "#06FFA5", "#4ECDC4", "#FF6B9D",
@@ -101,7 +101,7 @@ const AutoConfetti = () => {
     }, 100);
 
     return () => clearTimeout(initDelay);
-  }, []);
+  });
 
   if (!visible) return null;
 

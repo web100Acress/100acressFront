@@ -1,3 +1,4 @@
+import React, { useMemo } from 'react';
 import { useContext, useEffect } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../../../../AuthContext";
@@ -19,7 +20,7 @@ const SeoPrivateRoute = () => {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${token});`,
           },
         });
         const data = await response.json();

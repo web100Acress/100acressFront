@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useMemo } from 'react';
 import HrSidebar from './HrSidebar';
 import api from '../config/apiClient';
 
@@ -25,7 +25,7 @@ const LeaveManagement = () => {
 
   useEffect(() => {
     fetchAllLeaveRequests();
-  }, []);
+  });
 
   const fetchAllLeaveRequests = async () => {
     try {

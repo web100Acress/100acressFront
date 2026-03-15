@@ -1,5 +1,5 @@
 import api from "./config/apiClient";
-import React, { createContext, useState, useEffect, useContext } from "react";
+import React, { useMemo } from 'react';
 import { useNavigate } from "react-router-dom";
 import { DataContext } from "./MyContext";
 import { useJwt } from "react-jwt";
@@ -80,13 +80,20 @@ export const AuthProvider = ({ children }) => {
           console.error("Error parsing user role from localStorage:", error);
         }
       }
-
-      if (token) {
-        try { hydrateFavoritesFromServer(); } catch (_) { }
-      }
     };
     checkAuthStatus();
   }, [decodedToken]);
+
+  // Separate effect for favorites hydration - only run when authentication changes
+  useEffect(() => {
+    if (isAuthenticated && token) {
+      try { 
+        hydrateFavoritesFromServer(); 
+      } catch (_) { 
+        // Silently handle errors during favorites hydration
+      }
+    }
+  }, [isAuthenticated]); // Only depend on authentication state
 
   const login = async (formData) => {
     const { email, password } = formData;

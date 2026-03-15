@@ -1,3 +1,4 @@
+import React, { useMemo } from 'react';
 // Blog Components - Complete Organized Structure
 // 
 // This file exports all blog components organized by functionality and platform

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useMemo } from 'react';
 import AuthModal from "../../../Resister/AuthModal";
 import api from "../../../config/apiClient";
 import { Button as MovingBorderButton } from "../../../Components/ui/moving-border";
@@ -11,7 +11,7 @@ function useIsMobile() {
     const handler = () => setIsMobile(window.innerWidth < 768);
     window.addEventListener("resize", handler);
     return () => window.removeEventListener("resize", handler);
-  }, []);
+  }););
   return isMobile;
 }
 
@@ -57,7 +57,7 @@ export default function RightSection({
   useEffect(() => {
     const openAuth = () => {
       if (typeof setShowAuth === "function") setShowAuth(true);
-    };
+    });;
     const closeAuth = () => {
       if (typeof setShowAuth === "function") setShowAuth(false);
     };
@@ -369,7 +369,7 @@ function DesktopMenu({ avatarUrl, firstName, isHome, colorChange, isAdmin, isBlo
     if (!open) return;
     const handler = (e) => {
       if (menuRef.current && !menuRef.current.contains(e.target)) setOpen(false);
-    };
+    });;
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
   }, [open]);

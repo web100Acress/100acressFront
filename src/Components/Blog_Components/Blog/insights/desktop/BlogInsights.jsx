@@ -204,7 +204,7 @@ const BlogInsights = () => {
   useEffect(() => {
     const timer = setTimeout(() => setIsLoading(false), 1000);
     return () => clearTimeout(timer);
-  }, []);
+  });
 
   // Get all unique categories from blogs
   const categories = [

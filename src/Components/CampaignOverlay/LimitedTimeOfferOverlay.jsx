@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useMemo } from 'react';
 import { motion, AnimatePresence } from "framer-motion";
 import { X, TrendingUp, Clock, FileText, Calculator } from "lucide-react";
 
@@ -19,7 +19,7 @@ const LimitedTimeOfferOverlay = ({ isVisible, onClose }) => {
 
         if (totalSeconds <= 0) {
           clearInterval(timer);
-          return { hours: 0, minutes: 0, seconds: 0 };
+          return { hours: 0, minutes: 0, seconds: 0 });;
         }
 
         return {

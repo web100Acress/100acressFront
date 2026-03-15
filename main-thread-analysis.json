@@ -1,0 +1,953 @@
+{
+  "issues": [
+    {
+      "file": "src/AdminPage/AdminContact.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/AdminPage/AdminDashboard.jsx",
+      "type": "Heavy Map Operation in Render",
+      "severity": "medium"
+    },
+    {
+      "file": "src/AdminPage/AdminDashboard.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/AdminPage/AdminJobPosting.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/AdminPage/Adminproperty.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/AdminPage/BannerManagement.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/AdminPage/Buy.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/AdminPage/BuyEdit.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/AdminPage/BuyView.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/AdminPage/Dashboard.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/AdminPage/Enquiries.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/AdminPage/InsertProject.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/AdminPage/OtherEnquiries.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/AdminPage/ProjectEdit.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/AdminPage/ProjectEditHighlight.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/AdminPage/ProjectFilterOrderManagement.jsx",
+      "type": "Heavy Map Operation in Render",
+      "severity": "medium"
+    },
+    {
+      "file": "src/AdminPage/ProjectFilterOrderManagement.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/AdminPage/ProjectOrderManagement.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/AdminPage/Projects.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/AdminPage/RentEdit.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/AdminPage/RentView.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/AdminPage/ResaleEnquiries.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/AdminPage/S3Manager.jsx",
+      "type": "Heavy Map Operation in Render",
+      "severity": "medium"
+    },
+    {
+      "file": "src/AdminPage/S3Manager.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/AdminPage/ShortsSettings.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/AdminPage/Sidebar.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/AdminPage/SitemapManagement.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/AdminPage/UserAdmin.jsx",
+      "type": "Heavy Map Operation in Render",
+      "severity": "medium"
+    },
+    {
+      "file": "src/AdminPage/UserAdmin.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/AdminPage/UserProfile.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/App.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Components/Actual_Components/BuyPropViewCard.jsx",
+      "type": "Heavy Map Operation in Render",
+      "severity": "medium"
+    },
+    {
+      "file": "src/Components/Actual_Components/BuyPropViewCard.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Components/Actual_Components/Cookie.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Components/Actual_Components/LoginMain.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Components/Actual_Components/PropViewCardPro.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Components/Actual_Components/RentPropViewCard.jsx",
+      "type": "Heavy Map Operation in Render",
+      "severity": "medium"
+    },
+    {
+      "file": "src/Components/Actual_Components/RentPropViewCard.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Components/Actual_Components/SmallPopForm.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Components/ApiTest.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Components/AutoConfetti.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Components/CampaignOverlay/useCampaignManager.js",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Components/ConfettiAllCorners.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Components/ContactCard/ModernContactCard.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Components/EMICalculator.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Components/EmailVerification.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Components/Flag.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Components/GlobalFilterTemplate/GlobalFilterTemplate.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Components/HomePageComponents/Card.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Components/HomePageComponents/Carousel.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Components/HomePageComponents/Chatbot.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Components/HomePageComponents/DeenDayalPlots.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Components/HomePageComponents/DeveloperSlider.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Components/HomePageComponents/LikedProjectsSection.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Components/HomePageComponents/ModernCard.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Components/HomePageComponents/ModernCarousel.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Components/HomePageComponents/ModernHeroSection.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Components/HomePageComponents/NavBar.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Components/HomePageComponents/PropertyShowcase.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Components/HomePageComponents/RotatingCardCarousel.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Components/HomePageComponents/Spaces.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Components/HomePageComponents/UpComingProjects.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Components/HomePageComponents/UserEdit.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Components/LoadingSpinner.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Components/OTPVerification.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Components/PossessionProperty.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Components/PropertyShowcase/ScrollableContainer.js",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Components/PropertyShowcase/ScrollableContainer.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Components/QR/QRGenerator.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Components/SitemapViewer.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Home/Blog/homeDesktop.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Home/Blog/homemobileblog.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Home/Builder/Builder.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Home/Cities/Cities.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Home/Cities/desktopcities.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Home/Cities/mobilecities.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Home/HeroBanner/largebanner/DynamicHeroBanner.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Home/Home.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Home/Recomended/ModernRecommendedSection.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Home/SearchBar/SearchBar.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Home/Services/ourServices.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Home/Testimonial/Mobiletestimonial.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Home/WhyChoose/WhyChoose.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Home/WhyChoose/desktopWhyChoose.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Home/WhyChoose/mobileWhyChoose.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Home/sidehomebanner/index.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Hr/CareerEdit.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Hr/CareerView.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Hr/HrDashboard.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Hr/HrEmployees.jsx",
+      "type": "Heavy Map Operation in Render",
+      "severity": "medium"
+    },
+    {
+      "file": "src/Hr/HrEmployees.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Hr/ItDashboard.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Hr/JobPosting.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Hr/LeaveManagement.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Hr/Onboarding.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Insight/admin/InsightsPriceTrendsBanners.jsx",
+      "type": "Heavy Map Operation in Render",
+      "severity": "medium"
+    },
+    {
+      "file": "src/Insight/admin/InsightsPriceTrendsBanners.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Insight/admin/InsightsPropertyInsightsBanners.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Insight/admin/components/CityManagement.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Insight/admin/components/Forms.jsx",
+      "type": "Heavy Map Operation in Render",
+      "severity": "medium"
+    },
+    {
+      "file": "src/Insight/admin/components/Forms.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Insight/components/Citypeaker/PriceTrendsCityPicker.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Insight/components/Citypeaker/PriceTrendsCityPickerDesktop.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Insight/components/Citypeaker/PriceTrendsCityPickermobile.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Insight/components/Contacts.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Insight/components/EnquiryManagement.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Insight/components/InsightBlog/BlogView.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Insight/components/InsightBlog/InsightsBlog.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Insight/components/InsightBlog/desktopinsightblog.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Insight/components/InsightBlog/mobileinsightblog.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Insight/components/InsightsLayout.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Insight/components/Marketreport/MarketReports.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Insight/components/News/InsightsNews.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Insight/components/News/InsightsNewsDesktop.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Insight/components/News/InsightsNewsMobile.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Insight/components/PriceTrendsBanners.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Insight/components/PriceTrendsCityPickerContainer.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Insight/components/Pricetrend/PriceTrends.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Insight/components/Pricetrend/pricetrenddesktop.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Insight/components/Pricetrend/usePriceTrends.js",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Insight/components/insightheader/desktopinsightheader.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Insight/pages/Admin/AdminGuides.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Insight/pages/Admin/MarketReportsAdmin.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Insight/pages/InsightsGuides.jsx",
+      "type": "Heavy Map Operation in Render",
+      "severity": "medium"
+    },
+    {
+      "file": "src/Insight/pages/MarketAnalytics.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Insight/sections/HeroWithFilters.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Insight/sections/HeroWithFilters_fixed.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Pages/Activity.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Pages/BackToTopButton.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Pages/Bptp.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Pages/BudgetPlotsInGurugraon.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Pages/BudgetPrice.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Pages/BuilderPages/BuilderPage.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Pages/BuilderPages/LuxuryProjects.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Pages/CareerWithUs.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Pages/Dubai/components/Header.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Pages/Dubai/components/NewHero.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Pages/Dubai/components/PropertiesSection.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Pages/GlobalBudgetPrice.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Pages/HomePages/Builderaction.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Pages/HomePages/hotproject.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Pages/NewLaunch.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Pages/Orris.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Pages/PossessionAfter2028.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Pages/Possessionin2025.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Pages/Possessionin2026.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Pages/ProjectStatusSearch/ProjectCard.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Pages/ProjectStatusSearch/ProjectStatusSearchGlobal.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Pages/ProjectStatusSearch.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Pages/ReadyToMoveProject.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Pages/Resale.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Pages/SearchData.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Pages/Snapshot.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Pages/UploadSuccess.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Pages/UserViewProperty.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Pages/country/components/Header.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Pages/country/srilanka/SriLankaPage.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/ProjectTypes/ProjectType/[type].jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Resister/LoginForm.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Resister/SignupForm.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/SalesHeadPage/Components/SalesHeadRegisteredUsers.jsx",
+      "type": "Heavy Map Operation in Render",
+      "severity": "medium"
+    },
+    {
+      "file": "src/SalesHeadPage/Components/SalesHeadRegisteredUsers.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/SalesHeadPage/Components/SalesHeadResaleEnquiries.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/SalesHeadPage/ListedProperties.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/SalesHeadPage/SalesHeadEnquiries.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/SalesHeadPage/SalesHeadHeader.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/SalesHeadPage/SalesHeadProjects.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/SalesHeadPage/SalesHeadSidebar.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Utils/CommonInside.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Utils/CommonProject.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Utils/CustomSkeleton.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Utils/MotionWrapper.js",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/Utils/OptimizedImage.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/aadharhomes/BannerPage/BannerPage.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/aadharhomes/BannerPage/NewBanner/NewBanner.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/aadharhomes/BannerPage/updatedbannerpage/App.js",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/aadharhomes/PostProperty/PostProperty.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/aadharhomes/PostProperty/index.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/aadharhomes/ScollSearch.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/aadharhomes/Search.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/aadharhomes/navbar/Navbar.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/aadharhomes/navbar/NavbarDesktop.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/aadharhomes/navbar/NavbarNew.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/aadharhomes/navbar/postpropertybutton/PostPropertyButton.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/aadharhomes/navbar/rightsection/RightSection.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/aadharhomes/navbar/shared/screenSizeDetector.jsx",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/hooks/use-toast.js",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/hooks/useFramerMotion.js",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    },
+    {
+      "file": "src/hooks/useIsMobile.js",
+      "type": "useEffect without dependencies (runs on every render)",
+      "severity": "high"
+    }
+  ],
+  "recommendations": [
+    "Implement useMemo() for map operations with filter/sort",
+    "Add proper dependency arrays to useEffect hooks"
+  ]
+}

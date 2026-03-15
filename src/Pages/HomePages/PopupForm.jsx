@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useMemo } from 'react';
 import { X, User, Mail, Phone, MapPin, Home, DollarSign } from "lucide-react";
 
 const PopupForm = ({ onPopupVisibilityChange }) => {
@@ -18,7 +18,7 @@ const PopupForm = ({ onPopupVisibilityChange }) => {
   useEffect(() => {
     if (typeof onPopupVisibilityChange === 'function') {
       onPopupVisibilityChange(showImage || showForm);
-    }
+    });
   }, [showImage, showForm, onPopupVisibilityChange]);
 
   const handleFormChange = (e) => {

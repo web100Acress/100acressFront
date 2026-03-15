@@ -1,4 +1,4 @@
-import React, { lazy, Suspense, useState, useEffect } from "react";
+import React, { useMemo } from 'react';
 import "./App.css";
 import "./styles/enhanced-toast.css";
 import "./styles/post-property-enhanced.css";
@@ -23,6 +23,11 @@ import LoadingSpinner from "./Components/LoadingSpinner";
 import ErrorBoundary from "./Components/ErrorBoundary";
 import LoginForm from "./Resister/LoginForm";
 import AuthModal from "./Resister/AuthModal";
+import { registerServiceWorker } from "./Utils/serviceWorker";
+
+// Lazy load remaining components
+const DubaiPage = lazy(() => import("./Pages/Dubai/DubaiPage"));
+const BlogView = lazy(() => import("./Insight/components/InsightBlog/BlogView"));
 
 // import ConfettiAllCorners from "./Components/ConfettiAllCorners"; 
 
@@ -221,8 +226,6 @@ const EditProperty = lazy(() => import("./SalesHeadPage/EditProperty"));
 // Test Component
 const TestSalesHead = lazy(() => import("./Components/TestSalesHead"));
 const ProjectRouter = lazy(() => import("./aadharhomes/BannerPage/updatedbannerpage/components/Project/ProjectRouter"));
-import DubaiPage from "./Pages/Dubai/DubaiPage";
-import BlogView from "./Insight/components/InsightBlog/BlogView";
 
 // Property Types Pages
 const BhkFlatsGurgaon = lazy(() => import("./ProjectTypes/ProjectType/PropertyTypes/BhkFlatsGurgaon"));
@@ -242,12 +245,32 @@ const IndustrialPlotsGurgaon = lazy(() => import("./ProjectTypes/ProjectType/Pro
 const SCOPlotsGurgaon = lazy(() => import("./ProjectTypes/ProjectType/PropertyTypes/SCOPlotsGurgaon"));
 const ShopCumOfficePlotsGurgaon = lazy(() => import("./ProjectTypes/ProjectType/PropertyTypes/ShopCumOfficePlotsGurgaon"));
 
-// Initialize QueryClient
-const queryClient = new QueryClient();
+// Initialize QueryClient with optimized settings
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      cacheTime: 10 * 60 * 1000, // 10 minutes
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+      retry: 1,
+      retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 30000),
+    },
+    mutations: {
+      retry: 1,
+    }
+  }
+});
 
 function App() {
   const location = useLocation();
   const currentPath = location?.pathname || "/";
+  
+  // Register service worker for better caching
+  useEffect(() => {
+    registerServiceWorker();
+  });
+  
   // Consider dynamic project pages like '/experion-the-trillion/' etc. (single segment with trailing slash)
   const singleSegment = /^\/[A-Za-z0-9-]+\/?$/.test(currentPath);
   const blockedPrefixes = [
@@ -297,519 +320,526 @@ function App() {
           <AuthProvider>
             <TooltipProvider>
               <QueryClientProvider client={queryClient}>
-              <ErrorBoundary>
-                <Suspense fallback={<LoadingSpinner />}>
-                  <Toaster position="top-center" />
-                  <Sonner position="top-right" richColors />
-                  <HotToaster position="top-center" />
+                <ErrorBoundary>
+                  <Suspense fallback={<LoadingSpinner />}>
+                    <Toaster position="top-center" />
+                    <Sonner position="top-right" richColors />
+                    <HotToaster position="top-center" />
 
-                  {/* Your existing routes */}
-                  <Routes>
-                    <Route element={<PublicRoute />}>
-                      <Route index element={<Home />} />
-                      <Route path="/verify-email/*" element={<VerifyEmailRedirect />} />
-                      <Route path="/post-property/*" element={<PostPropertyRedirect />} />
-                      <Route path="/postproperty" element={<NewSellProperty />} />
-                      <Route path="/auth/">
-                        <Route path="signup/">
-                          <Route index element={<SignupForm />} />
-                          <Route
-                            path="email-verification/"
-                            element={<EmailVerification />}
-                          />
-                          <Route
-                            path="otp-verification/"
-                            element={<OTPVerification />}
-                          />
+                    {/* Your existing routes */}
+                    <Routes>
+                      <Route element={<PublicRoute />}>
+                        <Route index element={<Home />} />
+                        <Route path="/verify-email/*" element={<VerifyEmailRedirect />} />
+                        <Route path="/post-property/*" element={<PostPropertyRedirect />} />
+                        <Route path="/postproperty" element={<NewSellProperty />} />
+                        <Route path="/auth/">
+                          <Route path="signup/">
+                            <Route index element={<SignupForm />} />
+                            <Route
+                              path="email-verification/"
+                              element={<EmailVerification />}
+                            />
+                            <Route
+                              path="otp-verification/"
+                              element={<OTPVerification />}
+                            />
+                          </Route>
+                        </Route>
+                        <Route path="/privacy-policy/" element={<Privacy />} />
+                        <Route path="/disclaimer/" element={<Disclaimer />} />
+                        <Route
+                          path="/terms-and-conditions/"
+                          element={<TermsAndConditions />}
+                        />
+                        <Route path="/projects-in-gurugram/" element={<CityProjectsGlobal />} />
+                        <Route
+                          path="/projects-in-gurugram/budget"
+                          element={<BudgetPrice />}
+                        />
+
+                        {/* Unified projects/{filter} routes */}
+                        <Route
+                          path="/projects/under-1-cr/"
+                          element={<GlobalBudgetPrice />}
+                        />
+                        <Route
+                          path="/projects/1-5-cr/"
+                          element={<GlobalBudgetPrice />}
+                        />
+                        <Route
+                          path="/projects/5-10-cr/"
+                          element={<GlobalBudgetPrice />}
+                        />
+                        <Route
+                          path="/projects/10-20-cr/"
+                          element={<GlobalBudgetPrice />}
+                        />
+                        <Route
+                          path="/projects/20-50-cr/"
+                          element={<GlobalBudgetPrice />}
+                        />
+                        <Route
+                          path="/projects/above-50-cr/"
+                          element={<GlobalBudgetPrice />}
+                        />
+                        <Route
+                          path="/projects-in-gurugram/property-possession-after-2026/"
+                          element={<Navigate to="/" replace />}
+                        />
+                        <Route
+                          path="/projects-in-gurugram/property-possession-in-2024/"
+                          element={<Navigate to="/projects/ready-to-move/" replace />}
+                        />
+                        <Route
+                          path="/projects-in-gurugram/property-possession-in-2024"
+                          element={<Navigate to="/projects/ready-to-move/" replace />}
+                        />
+                        <Route
+                          path="/developers/:builderName"
+                          element={<BuilderPage />}
+                        />
+                        <Route path="/max-estates/" element={<Navigate to="/" replace />} />
+                        <Route
+                          path="/projects-in-gurugram/property-possession-in-2025/"
+                          element={<Navigate to="/" replace />}
+                        />
+                        <Route
+                          path="/projects-in-gurugram/property-possession-after-2025/"
+                          element={<Navigate to="/" replace />}
+                        />
+                        <Route
+                          path="/projects-in-gurugram/property-possession-in-2026/"
+                          element={<Navigate to="/" replace />}
+                        />
+                        {/* Redirects to home page */}
+                        <Route path="/property/residential/" element={<Navigate to="/" replace />} />
+                        <Route path="/property/residential" element={<Navigate to="/" replace />} />
+                        <Route path="/projects-status/newlaunch-projects/" element={<Navigate to="/" replace />} />
+                        <Route path="/projects-status/newlaunch-projects" element={<Navigate to="/" replace />} />
+                        <Route path="/sco/plots" element={<Navigate to="/" replace />} />
+                        <Route path="/sco/plots/" element={<Navigate to="/" replace />} />
+                        <Route
+                          path="/rental-properties/best-rental-property-in-gurugram/"
+                          element={<RentPropViewCard />}
+                        />
+                        <Route
+                          path="/buy-properties/best-resale-property-in-gurugram/"
+                          element={<BuyPropViewCard />}
+                        />
+                        <Route path="/about-us/" element={<AboutModern />} />
+                        <Route
+                          path="/rental-properties/:pUrl/:id/"
+                          element={<RentViewDetails />}
+                        />
+                        <Route
+                          path="/buy-properties/:pUrl/:id/"
+                          element={<BuyViewDetails />}
+                        />
+                        <Route path="/propviewcard" element={<PropViewCardPro />} />
+                        <Route
+                          path="/projects/residential/"
+                          element={<ProjectTypeGlobal />}
+                        />
+                        <Route
+                          path="/projects/commercial/"
+                          element={<ProjectTypeGlobal />}
+                        />
+                        <Route path="/projects/sco-plots/" element={<ProjectTypeGlobal />} />
+                        {/* <Route path="/dlf-homes-sco-plots/" element={<DlfSco />} /> */}
+                        <Route
+                          path="/projects/independent-floors/"
+                          element={<ProjectTypeGlobal />}
+                        />
+                        <Route path="/projects-in-delhi/" element={<CityProjectsGlobal />} />
+                        <Route path="/global/projects-in-dubai-uae/" element={<DubaiPage />} />
+                        {/* Redirect old UAE routes to new URL */}
+                        <Route path="/united-arab-emirates" element={<Navigate to="/global/projects-in-dubai-uae/" replace />} />
+                        <Route path="/united-arab-emirates/" element={<Navigate to="/global/projects-in-dubai-uae/" replace />} />
+                        {/* Redirect deleted Dubai routes to home */}
+                        <Route path="/projects-in-dubai" element={<Navigate to="/" replace />} />
+                        <Route path="/dubai/insights" element={<Navigate to="/" replace />} />
+                        <Route path="/dubai/developers" element={<Navigate to="/" replace />} />
+                        <Route path="/dubai/contact" element={<Navigate to="/" replace />} />
+                        {/* Redirect developer pages to home */}
+                        <Route path="/developers/experion" element={<Navigate to="/" replace />} />
+                        <Route path="/developers/experion/" element={<Navigate to="/" replace />} />
+                        {/* Redirect luxury project page to home */}
+                        <Route path="/project/luxury" element={<Navigate to="/" replace />} />
+                        <Route path="/project/luxury/" element={<Navigate to="/" replace />} />
+                        <Route path="/projects-in-goa/" element={<CityProjectsGlobal />} />
+                        <Route path="/testimonials/" element={<TestimonialsPage />} />
+                        <Route path="/projects-in-noida/" element={<CityProjectsGlobal />} />
+                        <Route path="/projects-in-panipat/" element={<CityProjectsGlobal />} />
+                        <Route path="/projects-in-panchkula/" element={<CityProjectsGlobal />} />
+                        <Route path="/projects-in-kasauli/" element={<CityProjectsGlobal />} />
+                        <Route path="/projects-in-sonipat/" element={<CityProjectsGlobal />} />
+                        <Route path="/projects-in-karnal/" element={<CityProjectsGlobal />} />
+                        <Route path="/projects-in-jalandhar/" element={<CityProjectsGlobal />} />
+                        <Route path="/projects-in-ayodhya/" element={<CityProjectsGlobal />} />
+                        <Route path="/projects-in-mumbai/" element={<CityProjectsGlobal />} />
+                        <Route path="/projects-in-pune/" element={<CityProjectsGlobal />} />
+                        <Route path="/projects-in-alwar/" element={<CityProjectsGlobal />} />
+                        {/* Dynamic city projects route (generic template). Keep after specific routes to avoid conflicts. */}
+                        <Route path="/projects-in-:citySlug/" element={<CityProjectsGlobal />} />
+                        <Route path="/projects-in-:citySlug/" element={<CityProjectsGlobal />} />
+                        <Route path="/projects-in-pushkar/" element={<CityProjectsGlobal />} />
+                        <Route path="/qr-generator/" element={<QRGeneratorPage />} />
+                        <Route path="/emi-calculator/" element={<EMICalculatorPage />} />
+                        {/* Contact Card Route - Multiple Templates */}
+                        <Route path="/hi/:slug" element={
+                          <LazyLoad>
+                            <UnifiedContactCard />
+                          </LazyLoad>
+                        } />
+
+                        {/* this the whole about insight section routes */}
+
+
+
+                        {/* Shared Layout for Analytics/Insights */}
+                        <Route element={<InsightsLayout />}>
+                          {/* <Route path="/property-market-trends/" element={<RealEstateInsightsHome />} /> */}
+                          <Route path="/real-estate-insights/" element={<RealEstateInsightsHome />} />
+                          {/* <Route path="/insights/" element={<RealEstateInsightsHome />} /> */}
+                          <Route path="/real-estate-insights/property-insights" element={<RealEstateInsightsHome />} />
+                          <Route path="/real-estate-insights/price-trends" element={<PriceTrends />} />
+                          <Route path="/real-estate-insights/market-reports" element={<MarketReports />} />
+                          <Route path="/insights/area-analytics" element={<AreaAnalytics />} />
+                          <Route path="/insights/market-analytics" element={<MarketAnalytics />} />
+                          <Route path="/insights/location" element={<LocationIntelligence />} />
+                          <Route path="/insights/investment" element={<InvestmentInsights />} />
+                          <Route path="/real-estate-insights/news" element={<InsightsNews />} />
+                          <Route path="/real-estate-insights/blog" element={<InsightsBlog />} />
+                          <Route path="/insights/blog/:id" element={<BlogView />} />
+                          <Route path="/real-estate-insights/guides" element={<InsightsGuides />} />
+                          <Route path="/loan-eligibility" element={<LoanEligibility />} />
+                          {/* Backwards compatibility aliases */}
+                          <Route path="/real-estate-insights/market" element={<MarketAnalytics />} />
+                          <Route path="/real-estate-insights/location" element={<LocationIntelligence />} />
+                          <Route path="/real-estate-insights/investment" element={<InvestmentInsights />} />
+                        </Route>
+
+
+
+
+
+
+                        <Route path="/projects/upcoming-projects-in-gurgaon/" element={<Navigate to="/" replace />} />
+
+                        {/* Unified status routes with projects/{filter} pattern */}
+                        <Route
+                          path="/projects/upcoming/"
+                          element={<ProjectStatusSearchGlobal />}
+                        />
+                        <Route
+                          path="/projects/underconstruction/"
+                          element={<ProjectStatusSearchGlobal />}
+                        />
+                        <Route
+                          path="/projects/ready-to-move/"
+                          element={<ProjectStatusSearchGlobal />}
+                        />
+                        <Route
+                          path="/projects/newlaunch/"
+                          element={<ProjectStatusSearchGlobal />}
+                        />
+                        <Route
+                          path="/branded-residences/"
+                          element={<ProjectStatusSearchGlobal />}
+                        />
+
+
+                        <Route path="/projects/plots/" element={<ProjectTypeGlobal />} />
+                        <Route path="/projects/villas/" element={<ProjectTypeGlobal />} />
+                        <Route path="/projects/farmhouse/" element={<ProjectTypeGlobal />} />
+                        <Route path="/projects/farmhouses/" element={<ProjectTypeGlobal />} />
+                        <Route path="/projects/affordable-homes/" element={<AffordableHomes />} />
+                        <Route path="/projects/industrial-plots/" element={<ProjectTypeGlobal />} />
+                        <Route path="/projects/industrial-projects/" element={<Navigate to="/" replace />} />
+                        <Route path="/projects/senior-living/" element={<ProjectTypeGlobal />} />
+                        <Route path="/news-and-articals/" element={<NewsandArtical />} />
+                        {/* New dynamic project type routes */}
+                        <Route path="/project-type/:type" element={<ProjectTypeGlobal />} />
+                        <Route path="/project-types-demo" element={<ProjectTypeDemo />} />
+                        <Route
+                          path="/userdashboard/"
+                          element={
+                            token !== null ? <UserDashBoard /> : <Navigate to="/" />
+                          }
+                        />
+                        <Route path="/useredit/:id" element={<UserEdit />} />
+                        <Route path="/viewallproperty" element={<ViewAllProperty />} />
+                        <Route path="/contact-us/" element={<ContactUs />} />
+                        <Route path="/enquire-now/" element={<LazyLoad><EnquireNow /></LazyLoad>} />
+                        <Route path="/activity" element={<Activity />} />
+                        <Route path="/career-with-us/" element={<CareerWithUs />} />
+                        <Route path="/blog/" element={<ModernBlogPage />} />
+                        <Route path="/author/:authorName" element={<AuthorPage />} />
+                        {/* Place static path before dynamic ones to avoid '/blog/write' matching ':slug' */}
+                        <Route path="/blog/write" element={<BlogWrite />} />
+                        {/* Direct ID access - must come before slug to avoid conflicts */}
+                        <Route path="/blog/:id" element={<ModernBlogView />} />
+                        <Route path="/blog/:id/" element={<ModernBlogView />} />
+                        {/* Handle slug-only URLs like /blog/my-blog-slug */}
+                        <Route path="/blog/:slug" element={<ModernBlogView />} />
+                        <Route path="/blog/:slug/" element={<ModernBlogView />} />
+                        {/* Handle slug/id URLs like /blog/my-blog-slug/67f7bd08edb6d0442ad0012e */}
+                        <Route path="/blog/:slug/:id" element={<ModernBlogView />} />
+                        <Route path="/blog/:slug/:id/" element={<ModernBlogView />} />
+                        <Route path="/blogging" element={<Blogging />} />
+                        <Route path="/blog-insights" element={<BlogInsights />} />
+                        <Route path="/insights/price-trends" element={<PriceTrends />} />
+                        <Route path="/insights/property-insights" element={<RealEstateInsightsHome />} />
+                        <Route path="/insights/news" element={<InsightsNews />} />
+                        <Route path="/insights/blog" element={<InsightsBlog />} />
+                        <Route path="/insights/guides" element={<InsightsGuides />} />
+                        <Route
+                          path="/resetpassword/:token"
+                          element={<ForgetPassword />}
+                        />
+                        <Route path="/forgetpassword" element={<ResetEmailPassword />} />
+                        <Route path="/knowabouts" element={<PropertyKnow />} />
+
+                        <Route path="/test-sales-head" element={<LazyLoad><TestSalesHead /></LazyLoad>} />
+                        {/* <Route path="/:pUrl/" element={<ProjectLayout2 />} /> */}
+
+                        <Route
+                          path="/userviewproperty/:id"
+                          element={<UserViewProperty />}
+                        />
+                        <Route path="/usereditproperty" element={<UserEditProperty />} />
+                        <Route
+                          path="/property-in-gurugram/:location"
+                          element={<GurugramPrimeLocation />}
+                        />
+                        <Route path="/searchdata/:key" element={<SearchData />} />
+                        <Route path="*" element={<PageNotFound />} />
+                        <Route path="/contactmainpage" element={<ContactPage />} />
+                        <Route path="/bptp-plots-gurugram/" element={<Navigate to="/" replace />} />
+                        {/* <Route path="/orris-plots-gurugram/" element={<Orris />} /> */}
+                        <Route path="/top-luxury-projects/" element={<LuxuryProject />} />
+                        <Route path="/onboarding/upload" element={<OnboardingUpload />} />
+                        <Route path="/document-upload/:token" element={<DocumentUpload />} />
+                        <Route path="/upload-success" element={<UploadSuccess />} />
+
+
+                        {/* Property Types Routes */}
+                        <Route path="/1-bhk-flats-in-gurgaon/" element={<BhkFlatsGurgaon bhkType="1" />} />
+                        <Route path="/2-bhk-flats-in-gurgaon/" element={<BhkFlatsGurgaon bhkType="2" />} />
+                        <Route path="/3-bhk-flats-in-gurgaon/" element={<BhkFlatsGurgaon bhkType="3" />} />
+                        <Route path="/4-bhk-flats-in-gurgaon/" element={<BhkFlatsGurgaon bhkType="4" />} />
+                        <Route path="/5-bhk-flats-in-gurgaon/" element={<BhkFlatsGurgaon bhkType="5" />} />
+                        <Route path="/property-types/fully-furnished-flats-gurgaon/" element={<FurnishedFlatsGurgaon furnishingType="Fully Furnished" />} />
+                        <Route path="/property-types/semi-furnished-flats-gurgaon/" element={<Navigate to="/" replace />} />
+                        <Route path="/property-types/unfurnished-flats-gurgaon/" element={<FurnishedFlatsGurgaon furnishingType="Unfurnished" />} />
+                        <Route path="/property-types/penthouse-gurgaon/" element={<Navigate to="/" replace />} />
+                        <Route path="/property-types/independent-floor-gurgaon/" element={<IndependentFloorGurgaon />} />
+                        <Route path="/property-types/independent-houses-gurgaon/" element={<IndependentHousesGurgaon />} />
+                        <Route path="/property-types/flats-under-1-cr-gurgaon/" element={<BudgetFlatsGurgaon budgetRange="1" />} />
+                        <Route path="/property-types/flats-under-5-cr-gurgaon/" element={<BudgetFlatsGurgaon budgetRange="5" />} />
+                        <Route path="/property-types/flats-under-10-cr-gurgaon/" element={<BudgetFlatsGurgaon budgetRange="10" />} />
+                        <Route path="/property-types/flats-under-20-cr-gurgaon/" element={<BudgetFlatsGurgaon budgetRange="20" />} />
+                        <Route path="/property-types/affordable-homes-gurgaon/" element={<Navigate to="/" replace />} />
+                        <Route path="/property-types/farmhouse-gurgaon/" element={<FarmhouseGurgaon />} />
+                        <Route path="/property-types/luxury-villas-gurgaon/" element={<Navigate to="/" replace />} />
+                        <Route path="/property-types/residential-flats-gurgaon/" element={<ResidentialFlatsGurgaon />} />
+                        <Route path="/property-types/retail-shops-gurgaon/" element={<RetailShopsGurgaon />} />
+                        <Route path="/property-types/builder-floor-gurgaon/" element={<Navigate to="/" replace />} />
+                        <Route path="/property-types/industrial-plots-gurgaon/" element={<IndustrialPlotsGurgaon />} />
+                        <Route path="/property-types/sco-plots-gurgaon/" element={<SCOPlotsGurgaon />} />
+                        <Route path="/property-types/shop-cum-office-plots-gurgaon/" element={<ShopCumOfficePlotsGurgaon />} />
+                      </Route>
+
+                      {/* Admin Routing */}
+                      <Route path="/admin" element={<PrivateRoute />}>
+                        <Route index element={<LazyLoad><AdminDashboard /></LazyLoad>} />
+                        <Route
+                          path="viewproperty/:id"
+                          element={<LazyLoad><ViewPropertyAdmin /></LazyLoad>}
+                        />
+                        <Route
+                          path="viewproperty/viewdetails/:id"
+                          element={<LazyLoad><ClientDetails /></LazyLoad>}
+                        />
+                        <Route
+                          path="viewproperty/editdetails/:id"
+                          element={<LazyLoad><EditDetails /></LazyLoad>}
+                        />
+                        <Route path="addnew" element={<LazyLoad><Addnew /></LazyLoad>} />
+                        <Route path="project-insert" element={<LazyLoad><InsertProject /></LazyLoad>} />
+                        <Route path="adminproperty" element={<LazyLoad><Adminproperty /></LazyLoad>} />
+                        <Route path="blog/view/:id" element={<LazyLoad><BlogViewAdmin /></LazyLoad>} />
+                        <Route path="blog/edit/:id" element={<LazyLoad><BlogEdit /></LazyLoad>} />
+                        <Route path="career" element={<LazyLoad><Career /></LazyLoad>} />
+                        <Route path="user" element={<LazyLoad><UserAdmin /></LazyLoad>} />
+                        <Route path="all-listed-properties" element={<LazyLoad><AllListedProperties /></LazyLoad>} />
+                        <Route path="contact" element={<LazyLoad><AdminContact /></LazyLoad>} />
+                        <Route path="editProject" element={<LazyLoad><EditProject /></LazyLoad>} />
+                        <Route path="enquiries" element={<LazyLoad><Enquiries /></LazyLoad>} />
+                        {/* <Route path="blog-enquiries" element={<LazyLoad><BlogEnquiries /></LazyLoad>} /> */}
+                        <Route path="OtherEnquiries" element={<LazyLoad><OtherEnquiries /></LazyLoad>} />
+                        <Route path="header" element={<LazyLoad><Header /></LazyLoad>} />
+                        <Route path="Projects/property" element={<LazyLoad><Projects /></LazyLoad>} />
+                        <Route path="resale-enquiries" element={<LazyLoad><Rent /></LazyLoad>} />
+                        {/* <Route path="jobposting" element={<LazyLoad><JobPosting /></LazyLoad>} /> */}
+                        <Route path="blog" element={<LazyLoad><Blog /></LazyLoad>} />
+                        <Route path="rent/view/:id" element={<LazyLoad> <RentView /></LazyLoad>} />
+                        <Route path="rent/view/edit/:id" element={<LazyLoad> <RentEdit /></LazyLoad>} />
+                        <Route
+                          path="acress/property/aadhar"
+                          element={<LazyLoad> <Sidebar /></LazyLoad>}
+                        />
+                        <Route path="buy" element={<LazyLoad> <Buy /></LazyLoad>} />
+                        <Route path="buy/view/:id" element={<LazyLoad> <BuyView /></LazyLoad>} />
+                        <Route path="buy/view/edit/:id" element={<LazyLoad> <BuyEdit /></LazyLoad>} />
+                        <Route path="contactpage" element={<LazyLoad> <ContactPage /></LazyLoad>} />
+                        <Route path="shorts" element={<LazyLoad><ShortsSettings /></LazyLoad>} />
+                        <Route path="banner-management" element={<LazyLoad><BannerManagement /></LazyLoad>} />
+                        <Route path="unified-banner-management" element={<LazyLoad><UnifiedBannerManagement /></LazyLoad>} />
+                        <Route
+                          path="ContactUs/UserProfile"
+                          element={<LazyLoad> <UserProfile /></LazyLoad>}
+                        />
+                        <Route
+                          path="ProjectsView/:pUrl"
+                          element={<LazyLoad> <ProjectView /></LazyLoad>}
+                        />
+                        <Route path="ProjectsEdit/:id" element={<LazyLoad> <ProjectEdit /></LazyLoad>} />
+                        <Route path="careerview/:id" element={<LazyLoad> <CareerView /></LazyLoad>} />
+                        <Route path="careerEdit/:id" element={<LazyLoad> <CareerEdit /></LazyLoad>} />
+                        <Route
+                          path="projecteditbhk/:id"
+                          element={<LazyLoad> <ProjectEditBHK /></LazyLoad>}
+                        />
+                        <Route
+                          path="projectedithighlight/:id"
+                          element={<LazyLoad> <ProjectEditHighlight /></LazyLoad>}
+                        />
+                        <Route
+                          path="ProjectsAddBhk/:id"
+                          element={<LazyLoad> <ProjectsAddBhk /></LazyLoad>}
+                        />
+                        <Route path="adminProperty" element={<LazyLoad> <Adminproperty /></LazyLoad>} />
+                        <Route
+                          path="ProjectAddHighlights/:id"
+                          element={<LazyLoad> <ProjectAddHighligths /></LazyLoad>}
+                        />
+                        <Route
+                          path="project-order-manager"
+                          element={<LazyLoad><ProjectOrderManager /></LazyLoad>}
+                        />
+                        <Route
+                          path="project-order-management"
+                          element={<LazyLoad><ProjectOrderManagement /></LazyLoad>}
+                        />
+                        <Route
+                          path="dashboard"
+                          element={<LazyLoad><AdminDashboard /></LazyLoad>}
+                        />
+                        <Route
+                          path="insights"
+                          element={<LazyLoad><InsightsManagement /></LazyLoad>}
+                        />
+                        <Route
+                          path="insights/InsightsPriceTrendsBanners"
+                          element={<LazyLoad><InsightsPriceTrendsBanners /></LazyLoad>}
+                        />
+                        <Route
+                          path="s3-manager"
+                          element={<LazyLoad><S3Manager /></LazyLoad>}
+                        />
+                        <Route
+                          path="insights/EnquiryManagement"
+                          element={<LazyLoad><EnquiryManagement /></LazyLoad>}
+                        />
+                        <Route
+                          path="insights/contacts"
+                          element={<LazyLoad><Contacts /></LazyLoad>}
+                        />
+                        <Route
+                          path="insights/investment"
+                          element={<LazyLoad><InvestmentInsights /></LazyLoad>}
+                        />
+                        <Route path="jobposting" element={<LazyLoad><AdminJobPosting /></LazyLoad>} />
+                        <Route path="jobposting/view/:id" element={<LazyLoad><AdminJobPostingView /></LazyLoad>} />
+                        <Route path="jobposting/edit/:id" element={<LazyLoad><AdminJobPostingEdit /></LazyLoad>} />
+                        <Route path="contact-cards" element={<LazyLoad><ContactCardManagement /></LazyLoad>} />
+                        <Route path="sitemap-management" element={<LazyLoad><SitemapManagement /></LazyLoad>} />
+                      </Route>
+
+                      {/* Sales Head Routing */}
+                      <Route path="/sales-head" element={<SalesHeadPrivateRoute />}>
+                        <Route index element={<LazyLoad><SalesHeadDashboard /></LazyLoad>} />
+                        <Route path="dashboard" element={<LazyLoad><SalesHeadDashboard /></LazyLoad>} />
+                        <Route path="sales-team" element={<div className="p-6"><h1 className="text-3xl font-bold text-gray-800 dark:text-white">Sales Team Management</h1><p className="mt-4 text-gray-600 dark:text-gray-300">Manage your sales team members and performance.</p></div>} />
+                        <Route path="sales-performance" element={<div className="p-6"><h1 className="text-3xl font-bold text-gray-800 dark:text-white">Sales Performance</h1><p className="mt-4 text-gray-600 dark:text-gray-300">Track and analyze sales performance metrics.</p></div>} />
+                        <Route path="projects" element={<LazyLoad><SalesHeadProjects /></LazyLoad>} />
+                        <Route path="listed-projects" element={<LazyLoad><SalesHeadAllListedProperties /></LazyLoad>} />
+                        <Route path="listed-properties" element={<LazyLoad><ListedProperties /></LazyLoad>} />
+                        <Route path="view-property/:id" element={<LazyLoad><ViewProperty /></LazyLoad>} />
+                        <Route path="edit-property/:id" element={<LazyLoad><EditProperty /></LazyLoad>} />
+                        <Route path="enquiries" element={<LazyLoad><SalesHeadEnquiries /></LazyLoad>} />
+                        <Route path="resale-enquiries" element={<LazyLoad><SalesHeadResaleEnquiries /></LazyLoad>} />
+                        <Route path="registered-users" element={<LazyLoad><SalesHeadRegisteredUsers /></LazyLoad>} />
+                        <Route path="revenue" element={<div className="p-6"><h1 className="text-3xl font-bold text-gray-800 dark:text-white">Revenue</h1><p className="mt-4 text-gray-600 dark:text-gray-300">Track revenue and financial performance.</p></div>} />
+                        <Route path="analytics" element={<div className="p-6"><h1 className="text-3xl font-bold text-gray-800 dark:text-white">Analytics</h1><p className="mt-4 text-gray-600 dark:text-gray-300">View detailed sales analytics and insights.</p></div>} />
+                        <Route path="reports" element={<div className="p-6"><h1 className="text-3xl font-bold text-gray-800 dark:text-white">Reports</h1><p className="mt-4 text-gray-600 dark:text-gray-300">Generate and view sales reports.</p></div>} />
+                      </Route>
+
+                      {/* HR Department Routing */}
+                      <Route path="/hr" element={<HrPrivateRoute />}>
+                        <Route index element={<LazyLoad><Hr /></LazyLoad>} />
+                        <Route path="dashboard" element={<LazyLoad><HrDashboard /></LazyLoad>} />
+                        <Route path="jobposting" element={<LazyLoad><HrJobPosting /></LazyLoad>} />
+                        <Route path="jobposting/view/:id" element={<LazyLoad><JobPostingView /></LazyLoad>} />
+                        <Route path="jobposting/applications/:id" element={<LazyLoad><JobApplications /></LazyLoad>} />
+                        <Route path="jobposting/edit/:id" element={<LazyLoad><JobPostingEdit /></LazyLoad>} />
+                        <Route path="onboarding" element={<LazyLoad><Onboarding /></LazyLoad>} />
+                        <Route path="offboarding" element={<LazyLoad><Offboarding /></LazyLoad>} />
+                        <Route path="it" element={<LazyLoad><ItDashboard /></LazyLoad>} />
+                        <Route path="accounts" element={<LazyLoad><AccountsDashboard /></LazyLoad>} />
+                        <Route path="leave" element={<LazyLoad><LeaveManagement /></LazyLoad>} />
+                        <Route path="leave-management" element={<LazyLoad><LeaveManagement /></LazyLoad>} />
+                        <Route path="employees" element={<LazyLoad><HrEmployees /></LazyLoad>} />
+                        <Route path="payroll" element={<div className="p-6"><h1 className="text-3xl font-bold text-gray-800 dark:text-white">Payroll Management</h1><p className="mt-4 text-gray-600 dark:text-gray-300">Handle payroll processing and salary management.</p></div>} />
+                        <Route path="attendance" element={<div className="p-6"><h1 className="text-3xl font-bold text-gray-800 dark:text-white">Attendance Management</h1><p className="mt-4 text-gray-600 dark:text-gray-300">Track employee attendance and working hours.</p></div>} />
+                        <Route path="recruitment" element={<div className="p-6"><h1 className="text-3xl font-bold text-gray-800 dark:text-white">Recruitment</h1><p className="mt-4 text-gray-600 dark:text-gray-300">Manage job postings and recruitment process.</p></div>} />
+                        <Route path="reports" element={<div className="p-6"><h1 className="text-3xl font-bold text-gray-800 dark:text-white">HR Reports</h1><p className="mt-4 text-gray-600 dark:text-gray-300">Generate and view HR analytics and reports.</p></div>} />
+                      </Route>
+
+                      {/* Admin route for Guides */}
+                      <Route path="/Admin/insights/guides" element={<LazyLoad><AdminGuides /></LazyLoad>} />
+
+                      {/* Admin route for Market Reports */}
+                      <Route path="/admin/insights/market-report-generator" element={<LazyLoad><MarketReportsAdmin /></LazyLoad>} />
+
+                      {/* Admin route for Project Filter Order Management */}
+                      <Route path="/Admin/project-filter-order" element={<LazyLoad><ProjectFilterOrderManagement /></LazyLoad>} />
+
+
+                      {/* Blog route only user with role Blog will be able to login */}
+                      <Route path="/seo/" element={<SeoPrivateRoute />}>
+                        <Route path="blogs" element={<BlogManagementSidebar />} >
+                          <Route index element={<BlogDashboard />} />
+                          <Route path="dashboard" element={<BlogDashboard />} />
+                          <Route path="manage" element={<BlogManagement />} />
+                          <Route path="write" element={<BlogWriteModal />} />
+                          <Route path="profile" element={<AuthorProfileUpdate />} />
+                          <Route path="view/:id" element={<ModernBlogView />} />
+                          <Route path="edit/:id" element={<BlogWriteModal />} />
+                          <Route path="drafts" element={<DraftManagement />} />
                         </Route>
                       </Route>
-                      <Route path="/privacy-policy/" element={<Privacy />} />
-                      <Route path="/disclaimer/" element={<Disclaimer />} />
-                      <Route
-                        path="/terms-and-conditions/"
-                        element={<TermsAndConditions />}
-                      />
-                      <Route path="/projects-in-gurugram/" element={<CityProjectsGlobal />} />
-                      <Route
-                        path="/projects-in-gurugram/budget"
-                        element={<BudgetPrice />}
-                      />
-
-                      {/* Unified projects/{filter} routes */}
-                      <Route
-                        path="/projects/under-1-cr/"
-                        element={<GlobalBudgetPrice />}
-                      />
-                      <Route
-                        path="/projects/1-5-cr/"
-                        element={<GlobalBudgetPrice />}
-                      />
-                      <Route
-                        path="/projects/5-10-cr/"
-                        element={<GlobalBudgetPrice />}
-                      />
-                      <Route
-                        path="/projects/10-20-cr/"
-                        element={<GlobalBudgetPrice />}
-                      />
-                      <Route
-                        path="/projects/20-50-cr/"
-                        element={<GlobalBudgetPrice />}
-                      />
-                      <Route
-                        path="/projects/above-50-cr/"
-                        element={<GlobalBudgetPrice />}
-                      />
-                      <Route
-                        path="/projects-in-gurugram/property-possession-after-2026/"
-                        element={<Navigate to="/" replace />}
-                      />
-                      <Route
-                        path="/projects-in-gurugram/property-possession-in-2024/"
-                        element={<Navigate to="/projects/ready-to-move/" replace />}
-                      />
-                      <Route
-                        path="/projects-in-gurugram/property-possession-in-2024"
-                        element={<Navigate to="/projects/ready-to-move/" replace />}
-                      />
-                      <Route
-                        path="/developers/:builderName"
-                        element={<BuilderPage />}
-                      />
-                      <Route path="/max-estates/" element={<Navigate to="/" replace />} />
-                      <Route
-                        path="/projects-in-gurugram/property-possession-in-2025/"
-                        element={<Navigate to="/" replace />}
-                      />
-                      <Route
-                        path="/projects-in-gurugram/property-possession-after-2025/"
-                        element={<Navigate to="/" replace />}
-                      />
-                      <Route
-                        path="/projects-in-gurugram/property-possession-in-2026/"
-                        element={<Navigate to="/" replace />}
-                      />
-                      {/* Redirects to home page */}
-                      <Route path="/property/residential/" element={<Navigate to="/" replace />} />
-                      <Route path="/property/residential" element={<Navigate to="/" replace />} />
-                      <Route path="/projects-status/newlaunch-projects/" element={<Navigate to="/" replace />} />
-                      <Route path="/projects-status/newlaunch-projects" element={<Navigate to="/" replace />} />
-                      <Route path="/sco/plots" element={<Navigate to="/" replace />} />
-                      <Route path="/sco/plots/" element={<Navigate to="/" replace />} />
-                      <Route
-                        path="/rental-properties/best-rental-property-in-gurugram/"
-                        element={<RentPropViewCard />}
-                      />
-                      <Route
-                        path="/buy-properties/best-resale-property-in-gurugram/"
-                        element={<BuyPropViewCard />}
-                      />
-                      <Route path="/about-us/" element={<AboutModern />} />
-                      <Route
-                        path="/rental-properties/:pUrl/:id/"
-                        element={<RentViewDetails />}
-                      />
-                      <Route
-                        path="/buy-properties/:pUrl/:id/"
-                        element={<BuyViewDetails />}
-                      />
-                      <Route path="/propviewcard" element={<PropViewCardPro />} />
-                      <Route
-                        path="/projects/residential/"
-                        element={<ProjectTypeGlobal />}
-                      />
-                      <Route
-                        path="/projects/commercial/"
-                        element={<ProjectTypeGlobal />}
-                      />
-                      <Route path="/projects/sco-plots/" element={<ProjectTypeGlobal />} />
-                      {/* <Route path="/dlf-homes-sco-plots/" element={<DlfSco />} /> */}
-                      <Route
-                        path="/projects/independent-floors/"
-                        element={<ProjectTypeGlobal />}
-                      />
-                      <Route path="/projects-in-delhi/" element={<CityProjectsGlobal />} />
-                      <Route path="/global/projects-in-dubai-uae/" element={<DubaiPage />} />
-                      {/* Redirect old UAE routes to new URL */}
-                      <Route path="/united-arab-emirates" element={<Navigate to="/global/projects-in-dubai-uae/" replace />} />
-                      <Route path="/united-arab-emirates/" element={<Navigate to="/global/projects-in-dubai-uae/" replace />} />
-                      {/* Redirect deleted Dubai routes to home */}
-                      <Route path="/projects-in-dubai" element={<Navigate to="/" replace />} />
-                      <Route path="/dubai/insights" element={<Navigate to="/" replace />} />
-                      <Route path="/dubai/developers" element={<Navigate to="/" replace />} />
-                      <Route path="/dubai/contact" element={<Navigate to="/" replace />} />
-                      {/* Redirect developer pages to home */}
-                      <Route path="/developers/experion" element={<Navigate to="/" replace />} />
-                      <Route path="/developers/experion/" element={<Navigate to="/" replace />} />
-                      {/* Redirect luxury project page to home */}
-                      <Route path="/project/luxury" element={<Navigate to="/" replace />} />
-                      <Route path="/project/luxury/" element={<Navigate to="/" replace />} />
-                      <Route path="/projects-in-goa/" element={<CityProjectsGlobal />} />
-                      <Route path="/testimonials" element={<TestimonialsPage />} />
-                      <Route path="/projects-in-noida/" element={<CityProjectsGlobal />} />
-                      <Route path="/projects-in-panipat/" element={<CityProjectsGlobal />} />
-                      <Route path="/projects-in-panchkula/" element={<CityProjectsGlobal />} />
-                      <Route path="/projects-in-kasauli/" element={<CityProjectsGlobal />} />
-                      <Route path="/projects-in-sonipat/" element={<CityProjectsGlobal />} />
-                      <Route path="/projects-in-karnal/" element={<CityProjectsGlobal />} />
-                      <Route path="/projects-in-jalandhar/" element={<CityProjectsGlobal />} />
-                      <Route path="/projects-in-ayodhya/" element={<CityProjectsGlobal />} />
-                      <Route path="/projects-in-mumbai/" element={<CityProjectsGlobal />} />
-                      <Route path="/projects-in-pune/" element={<CityProjectsGlobal />} />
-                      <Route path="/projects-in-alwar/" element={<CityProjectsGlobal />} />
-                      {/* Dynamic city projects route (generic template). Keep after specific routes to avoid conflicts. */}
-                      <Route path="/projects-in-:citySlug/" element={<CityProjectsGlobal />} />
-                      <Route path="/projects-in-:citySlug/" element={<CityProjectsGlobal />} />
-                      <Route path="/projects-in-pushkar/" element={<CityProjectsGlobal />} />
-                      <Route path="/qr-generator" element={<QRGeneratorPage />} />
-                      <Route path="/emi-calculator/" element={<EMICalculatorPage />} />
-                      {/* Contact Card Route - Multiple Templates */}
-                      <Route path="/hi/:slug" element={
-                        <LazyLoad>
-                          <UnifiedContactCard />
-                        </LazyLoad>
-                      } />
-
-                   {/* this the whole about insight section routes */}
-
-
-
-                      {/* Shared Layout for Analytics/Insights */}
-                      <Route element={<InsightsLayout />}>
-                        {/* <Route path="/property-market-trends/" element={<RealEstateInsightsHome />} /> */}
-                        <Route path="/real-estate-insights/" element={<RealEstateInsightsHome />} />
-                        {/* <Route path="/insights/" element={<RealEstateInsightsHome />} /> */}
-                        <Route path="/real-estate-insights/property-insights" element={<RealEstateInsightsHome />} />
-                        <Route path="/real-estate-insights/price-trends" element={<PriceTrends />} />
-                        <Route path="/real-estate-insights/market-reports" element={<MarketReports />} />
-                        <Route path="/insights/area-analytics" element={<AreaAnalytics />} />
-                        <Route path="/insights/market-analytics" element={<MarketAnalytics />} />
-                        <Route path="/insights/location" element={<LocationIntelligence />} />
-                        <Route path="/insights/investment" element={<InvestmentInsights />} />
-                        <Route path="/real-estate-insights/news" element={<InsightsNews />} />
-                        <Route path="/real-estate-insights/blog" element={<InsightsBlog />} />
-                        <Route path="/insights/blog/:id" element={<BlogView />} />
-                        <Route path="/real-estate-insights/guides" element={<InsightsGuides />} />
-                        <Route path="/loan-eligibility" element={<LoanEligibility />} />
-                        {/* Backwards compatibility aliases */}
-                        <Route path="/real-estate-insights/market" element={<MarketAnalytics />} />
-                        <Route path="/real-estate-insights/location" element={<LocationIntelligence />} />
-                        <Route path="/real-estate-insights/investment" element={<InvestmentInsights />} />
-                      </Route>
-
-
-
-
-
-
-                      <Route path="/projects/upcoming-projects-in-gurgaon/" element={<Navigate to="/" replace />} />
-
-                      {/* Unified status routes with projects/{filter} pattern */}
-                      <Route
-                        path="/projects/upcoming/"
-                        element={<ProjectStatusSearchGlobal />}
-                      />
-                      <Route
-                        path="/projects/underconstruction/"
-                        element={<ProjectStatusSearchGlobal />}
-                      />
-                      <Route
-                        path="/projects/ready-to-move/"
-                        element={<ProjectStatusSearchGlobal />}
-                      />
-                      <Route
-                        path="/projects/newlaunch/"
-                        element={<ProjectStatusSearchGlobal />}
-                      />
-
-
-                      <Route path="/projects/plots/" element={<ProjectTypeGlobal />} />
-                      <Route path="/projects/villas/" element={<ProjectTypeGlobal />} />
-                      <Route path="/projects/farmhouse/" element={<ProjectTypeGlobal />} />
-                      <Route path="/projects/farmhouses/" element={<ProjectTypeGlobal />} />
-                      <Route path="/projects/affordable-homes/" element={<AffordableHomes />} />
-                      <Route path="/projects/industrial-plots/" element={<ProjectTypeGlobal />} />
-                      <Route path="/projects/industrial-projects/" element={<Navigate to="/" replace />} />
-                      <Route path="/projects/senior-living/" element={<ProjectTypeGlobal />} />
-                      <Route path="/news-and-articals/" element={<NewsandArtical />} />
-                      {/* New dynamic project type routes */}
-                      <Route path="/project-type/:type" element={<ProjectTypeGlobal />} />
-                      <Route path="/project-types-demo" element={<ProjectTypeDemo />} />
-                      <Route
-                        path="/userdashboard/"
-                        element={
-                          token !== null ? <UserDashBoard /> : <Navigate to="/" />
-                        }
-                      />
-                      <Route path="/useredit/:id" element={<UserEdit />} />
-                      <Route path="/viewallproperty" element={<ViewAllProperty />} />
-                      <Route path="/contact-us/" element={<ContactUs />} />
-                      <Route path="/enquire-now/" element={<LazyLoad><EnquireNow /></LazyLoad>} />
-                      <Route path="/activity" element={<Activity />} />
-                      <Route path="/career-with-us/" element={<CareerWithUs />} />
-                      <Route path="/blog/" element={<ModernBlogPage />} />
-                      <Route path="/author/:authorName" element={<AuthorPage />} />
-                      {/* Place static path before dynamic ones to avoid '/blog/write' matching ':slug' */}
-                      <Route path="/blog/write" element={<BlogWrite />} />
-                      {/* Direct ID access - must come before slug to avoid conflicts */}
-                      <Route path="/blog/:id" element={<ModernBlogView />} />
-                      {/* Handle slug-only URLs like /blog/my-blog-slug */}
-                      <Route path="/blog/:slug" element={<ModernBlogView />} />
-                      {/* Handle slug/id URLs like /blog/my-blog-slug/67f7bd08edb6d0442ad0012e */}
-                      <Route path="/blog/:slug/:id" element={<ModernBlogView />} />
-                      <Route path="/blogging" element={<Blogging />} />
-                      <Route path="/blog-insights" element={<BlogInsights />} />
-                      <Route path="/insights/price-trends" element={<PriceTrends />} />
-                      <Route path="/insights/property-insights" element={<RealEstateInsightsHome />} />
-                      <Route path="/insights/news" element={<InsightsNews />} />
-                      <Route path="/insights/blog" element={<InsightsBlog />} />
-                      <Route path="/insights/guides" element={<InsightsGuides />} />
-                      <Route
-                        path="/resetpassword/:token"
-                        element={<ForgetPassword />}
-                      />
-                      <Route path="/forgetpassword" element={<ResetEmailPassword />} />
-                      <Route path="/knowabouts" element={<PropertyKnow />} />
-
-                      <Route path="/test-sales-head" element={<LazyLoad><TestSalesHead /></LazyLoad>} />
-                      {/* <Route path="/:pUrl/" element={<ProjectLayout2 />} /> */}
-
-                      <Route
-                        path="/userviewproperty/:id"
-                        element={<UserViewProperty />}
-                      />
-                      <Route path="/usereditproperty" element={<UserEditProperty />} />
-                      <Route
-                        path="/property-in-gurugram/:location"
-                        element={<GurugramPrimeLocation />}
-                      />
-                      <Route path="/searchdata/:key" element={<SearchData />} />
-                      <Route path="*" element={<PageNotFound />} />
-                      <Route path="/contactmainpage" element={<ContactPage />} />
-                      <Route path="/bptp-plots-gurugram/" element={<Navigate to="/" replace />} />
-                      {/* <Route path="/orris-plots-gurugram/" element={<Orris />} /> */}
-                      <Route path="/top-luxury-projects/" element={<LuxuryProject />} />
-                      <Route path="/onboarding/upload" element={<OnboardingUpload />} />
-                      <Route path="/document-upload/:token" element={<DocumentUpload />} />
-                      <Route path="/upload-success" element={<UploadSuccess />} />
-
-
-                      {/* Property Types Routes */}
-                      <Route path="/1-bhk-flats-in-gurgaon/" element={<BhkFlatsGurgaon bhkType="1" />} />
-                      <Route path="/2-bhk-flats-in-gurgaon/" element={<BhkFlatsGurgaon bhkType="2" />} />
-                      <Route path="/3-bhk-flats-in-gurgaon/" element={<BhkFlatsGurgaon bhkType="3" />} />
-                      <Route path="/4-bhk-flats-in-gurgaon/" element={<BhkFlatsGurgaon bhkType="4" />} />
-                      <Route path="/5-bhk-flats-in-gurgaon/" element={<BhkFlatsGurgaon bhkType="5" />} />
-                      <Route path="/property-types/fully-furnished-flats-gurgaon/" element={<FurnishedFlatsGurgaon furnishingType="Fully Furnished" />} />
-                      <Route path="/property-types/semi-furnished-flats-gurgaon/" element={<Navigate to="/" replace />} />
-                      <Route path="/property-types/unfurnished-flats-gurgaon/" element={<FurnishedFlatsGurgaon furnishingType="Unfurnished" />} />
-                      <Route path="/property-types/penthouse-gurgaon/" element={<Navigate to="/" replace />} />
-                      <Route path="/property-types/independent-floor-gurgaon/" element={<IndependentFloorGurgaon />} />
-                      <Route path="/property-types/independent-houses-gurgaon/" element={<IndependentHousesGurgaon />} />
-                      <Route path="/property-types/flats-under-1-cr-gurgaon/" element={<BudgetFlatsGurgaon budgetRange="1" />} />
-                      <Route path="/property-types/flats-under-5-cr-gurgaon/" element={<BudgetFlatsGurgaon budgetRange="5" />} />
-                      <Route path="/property-types/flats-under-10-cr-gurgaon/" element={<BudgetFlatsGurgaon budgetRange="10" />} />
-                      <Route path="/property-types/flats-under-20-cr-gurgaon/" element={<BudgetFlatsGurgaon budgetRange="20" />} />
-                      <Route path="/property-types/affordable-homes-gurgaon/" element={<Navigate to="/" replace />} />
-                      <Route path="/property-types/farmhouse-gurgaon/" element={<FarmhouseGurgaon />} />
-                      <Route path="/property-types/luxury-villas-gurgaon/" element={<Navigate to="/" replace />} />
-                      <Route path="/property-types/residential-flats-gurgaon/" element={<ResidentialFlatsGurgaon />} />
-                      <Route path="/property-types/retail-shops-gurgaon/" element={<RetailShopsGurgaon />} />
-                      <Route path="/property-types/builder-floor-gurgaon/" element={<Navigate to="/" replace />} />
-                      <Route path="/property-types/industrial-plots-gurgaon/" element={<IndustrialPlotsGurgaon />} />
-                      <Route path="/property-types/sco-plots-gurgaon/" element={<SCOPlotsGurgaon />} />
-                      <Route path="/property-types/shop-cum-office-plots-gurgaon/" element={<ShopCumOfficePlotsGurgaon />} />
-                    </Route>
-
-                    {/* Admin Routing */}
-                    <Route path="/admin" element={<PrivateRoute />}>
-                      <Route index element={<LazyLoad><AdminDashboard /></LazyLoad>} />
-                      <Route
-                        path="viewproperty/:id"
-                        element={<LazyLoad><ViewPropertyAdmin /></LazyLoad>}
-                      />
-                      <Route
-                        path="viewproperty/viewdetails/:id"
-                        element={<LazyLoad><ClientDetails /></LazyLoad>}
-                      />
-                      <Route
-                        path="viewproperty/editdetails/:id"
-                        element={<LazyLoad><EditDetails /></LazyLoad>}
-                      />
-                      <Route path="addnew" element={<LazyLoad><Addnew /></LazyLoad>} />
-                      <Route path="project-insert" element={<LazyLoad><InsertProject /></LazyLoad>} />
-                      <Route path="adminproperty" element={<LazyLoad><Adminproperty /></LazyLoad>} />
-                      <Route path="blog/view/:id" element={<LazyLoad><BlogViewAdmin /></LazyLoad>} />
-                      <Route path="blog/edit/:id" element={<LazyLoad><BlogEdit /></LazyLoad>} />
-                      <Route path="career" element={<LazyLoad><Career /></LazyLoad>} />
-                      <Route path="user" element={<LazyLoad><UserAdmin /></LazyLoad>} />
-                      <Route path="all-listed-properties" element={<LazyLoad><AllListedProperties /></LazyLoad>} />
-                      <Route path="contact" element={<LazyLoad><AdminContact /></LazyLoad>} />
-                      <Route path="editProject" element={<LazyLoad><EditProject /></LazyLoad>} />
-                      <Route path="enquiries" element={<LazyLoad><Enquiries /></LazyLoad>} />
-                      {/* <Route path="blog-enquiries" element={<LazyLoad><BlogEnquiries /></LazyLoad>} /> */}
-                      <Route path="OtherEnquiries" element={<LazyLoad><OtherEnquiries /></LazyLoad>} />
-                      <Route path="header" element={<LazyLoad><Header /></LazyLoad>} />
-                      <Route path="Projects/property" element={<LazyLoad><Projects /></LazyLoad>} />
-                      <Route path="resale-enquiries" element={<LazyLoad><Rent /></LazyLoad>} />
-                      {/* <Route path="jobposting" element={<LazyLoad><JobPosting /></LazyLoad>} /> */}
-                      <Route path="blog" element={<LazyLoad><Blog /></LazyLoad>} />
-                      <Route path="rent/view/:id" element={<LazyLoad> <RentView /></LazyLoad>} />
-                      <Route path="rent/view/edit/:id" element={<LazyLoad> <RentEdit /></LazyLoad>} />
-                      <Route
-                        path="acress/property/aadhar"
-                        element={<LazyLoad> <Sidebar /></LazyLoad>}
-                      />
-                      <Route path="buy" element={<LazyLoad> <Buy /></LazyLoad>} />
-                      <Route path="buy/view/:id" element={<LazyLoad> <BuyView /></LazyLoad>} />
-                      <Route path="buy/view/edit/:id" element={<LazyLoad> <BuyEdit /></LazyLoad>} />
-                      <Route path="contactpage" element={<LazyLoad> <ContactPage /></LazyLoad>} />
-                      <Route path="shorts" element={<LazyLoad><ShortsSettings /></LazyLoad>} />
-                        <Route path="banner-management" element={<LazyLoad><BannerManagement /></LazyLoad>} />
-                      <Route path="unified-banner-management" element={<LazyLoad><UnifiedBannerManagement /></LazyLoad>} />
-                      <Route
-                        path="ContactUs/UserProfile"
-                        element={<LazyLoad> <UserProfile /></LazyLoad>}
-                      />
-                      <Route
-                        path="ProjectsView/:pUrl"
-                        element={<LazyLoad> <ProjectView /></LazyLoad>}
-                      />
-                      <Route path="ProjectsEdit/:id" element={<LazyLoad> <ProjectEdit /></LazyLoad>} />
-                      <Route path="careerview/:id" element={<LazyLoad> <CareerView /></LazyLoad>} />
-                      <Route path="careerEdit/:id" element={<LazyLoad> <CareerEdit /></LazyLoad>} />
-                      <Route
-                        path="projecteditbhk/:id"
-                        element={<LazyLoad> <ProjectEditBHK /></LazyLoad>}
-                      />
-                      <Route
-                        path="projectedithighlight/:id"
-                        element={<LazyLoad> <ProjectEditHighlight /></LazyLoad>}
-                      />
-                      <Route
-                        path="ProjectsAddBhk/:id"
-                        element={<LazyLoad> <ProjectsAddBhk /></LazyLoad>}
-                      />
-                      <Route path="adminProperty" element={<LazyLoad> <Adminproperty /></LazyLoad>} />
-                      <Route
-                        path="ProjectAddHighlights/:id"
-                        element={<LazyLoad> <ProjectAddHighligths /></LazyLoad>}
-                      />
-                      <Route
-                        path="project-order-manager"
-                        element={<LazyLoad><ProjectOrderManager /></LazyLoad>}
-                      />
-                      <Route
-                        path="project-order-management"
-                        element={<LazyLoad><ProjectOrderManagement /></LazyLoad>}
-                      />
-                      <Route
-                        path="dashboard"
-                        element={<LazyLoad><AdminDashboard /></LazyLoad>}
-                      />
-                      <Route
-                        path="insights"
-                        element={<LazyLoad><InsightsManagement /></LazyLoad>}
-                      />
-                      <Route
-                        path="insights/InsightsPriceTrendsBanners"
-                        element={<LazyLoad><InsightsPriceTrendsBanners /></LazyLoad>}
-                      />
-                      <Route
-                        path="s3-manager"
-                        element={<LazyLoad><S3Manager /></LazyLoad>}
-                      />
-                      <Route
-                        path="insights/EnquiryManagement"
-                        element={<LazyLoad><EnquiryManagement /></LazyLoad>}
-                      />
-                      <Route
-                        path="insights/contacts"
-                        element={<LazyLoad><Contacts /></LazyLoad>}
-                      />
-                      <Route
-                        path="insights/investment"
-                        element={<LazyLoad><InvestmentInsights /></LazyLoad>}
-                      />
-                      <Route path="jobposting" element={<LazyLoad><AdminJobPosting /></LazyLoad>} />
-                      <Route path="jobposting/view/:id" element={<LazyLoad><AdminJobPostingView /></LazyLoad>} />
-                      <Route path="jobposting/edit/:id" element={<LazyLoad><AdminJobPostingEdit /></LazyLoad>} />
-                      <Route path="contact-cards" element={<LazyLoad><ContactCardManagement /></LazyLoad>} />
-                      <Route path="sitemap-management" element={<LazyLoad><SitemapManagement /></LazyLoad>} />
-                    </Route>
-
-                    {/* Sales Head Routing */}
-                    <Route path="/sales-head" element={<SalesHeadPrivateRoute />}>
-                      <Route index element={<LazyLoad><SalesHeadDashboard /></LazyLoad>} />
-                      <Route path="dashboard" element={<LazyLoad><SalesHeadDashboard /></LazyLoad>} />
-                      <Route path="sales-team" element={<div className="p-6"><h1 className="text-3xl font-bold text-gray-800 dark:text-white">Sales Team Management</h1><p className="mt-4 text-gray-600 dark:text-gray-300">Manage your sales team members and performance.</p></div>} />
-                      <Route path="sales-performance" element={<div className="p-6"><h1 className="text-3xl font-bold text-gray-800 dark:text-white">Sales Performance</h1><p className="mt-4 text-gray-600 dark:text-gray-300">Track and analyze sales performance metrics.</p></div>} />
-                      <Route path="projects" element={<LazyLoad><SalesHeadProjects /></LazyLoad>} />
-                      <Route path="listed-projects" element={<LazyLoad><SalesHeadAllListedProperties /></LazyLoad>} />
-                      <Route path="listed-properties" element={<LazyLoad><ListedProperties /></LazyLoad>} />
-                      <Route path="view-property/:id" element={<LazyLoad><ViewProperty /></LazyLoad>} />
-                      <Route path="edit-property/:id" element={<LazyLoad><EditProperty /></LazyLoad>} />
-                      <Route path="enquiries" element={<LazyLoad><SalesHeadEnquiries /></LazyLoad>} />
-                      <Route path="resale-enquiries" element={<LazyLoad><SalesHeadResaleEnquiries /></LazyLoad>} />
-                      <Route path="registered-users" element={<LazyLoad><SalesHeadRegisteredUsers /></LazyLoad>} />
-                      <Route path="revenue" element={<div className="p-6"><h1 className="text-3xl font-bold text-gray-800 dark:text-white">Revenue</h1><p className="mt-4 text-gray-600 dark:text-gray-300">Track revenue and financial performance.</p></div>} />
-                      <Route path="analytics" element={<div className="p-6"><h1 className="text-3xl font-bold text-gray-800 dark:text-white">Analytics</h1><p className="mt-4 text-gray-600 dark:text-gray-300">View detailed sales analytics and insights.</p></div>} />
-                      <Route path="reports" element={<div className="p-6"><h1 className="text-3xl font-bold text-gray-800 dark:text-white">Reports</h1><p className="mt-4 text-gray-600 dark:text-gray-300">Generate and view sales reports.</p></div>} />
-                    </Route>
-
-                    {/* HR Department Routing */}
-                    <Route path="/hr" element={<HrPrivateRoute />}>
-                      <Route index element={<LazyLoad><Hr /></LazyLoad>} />
-                      <Route path="dashboard" element={<LazyLoad><HrDashboard /></LazyLoad>} />
-                      <Route path="jobposting" element={<LazyLoad><HrJobPosting /></LazyLoad>} />
-                      <Route path="jobposting/view/:id" element={<LazyLoad><JobPostingView /></LazyLoad>} />
-                      <Route path="jobposting/applications/:id" element={<LazyLoad><JobApplications /></LazyLoad>} />
-                      <Route path="jobposting/edit/:id" element={<LazyLoad><JobPostingEdit /></LazyLoad>} />
-                      <Route path="onboarding" element={<LazyLoad><Onboarding /></LazyLoad>} />
-                      <Route path="offboarding" element={<LazyLoad><Offboarding /></LazyLoad>} />
-                      <Route path="it" element={<LazyLoad><ItDashboard /></LazyLoad>} />
-                      <Route path="accounts" element={<LazyLoad><AccountsDashboard /></LazyLoad>} />
-                      <Route path="leave" element={<LazyLoad><LeaveManagement /></LazyLoad>} />
-                      <Route path="leave-management" element={<LazyLoad><LeaveManagement /></LazyLoad>} />
-                      <Route path="employees" element={<LazyLoad><HrEmployees /></LazyLoad>} />
-                      <Route path="payroll" element={<div className="p-6"><h1 className="text-3xl font-bold text-gray-800 dark:text-white">Payroll Management</h1><p className="mt-4 text-gray-600 dark:text-gray-300">Handle payroll processing and salary management.</p></div>} />
-                      <Route path="attendance" element={<div className="p-6"><h1 className="text-3xl font-bold text-gray-800 dark:text-white">Attendance Management</h1><p className="mt-4 text-gray-600 dark:text-gray-300">Track employee attendance and working hours.</p></div>} />
-                      <Route path="recruitment" element={<div className="p-6"><h1 className="text-3xl font-bold text-gray-800 dark:text-white">Recruitment</h1><p className="mt-4 text-gray-600 dark:text-gray-300">Manage job postings and recruitment process.</p></div>} />
-                      <Route path="reports" element={<div className="p-6"><h1 className="text-3xl font-bold text-gray-800 dark:text-white">HR Reports</h1><p className="mt-4 text-gray-600 dark:text-gray-300">Generate and view HR analytics and reports.</p></div>} />
-                    </Route>
-
-                    {/* Admin route for Guides */}
-                    <Route path="/Admin/insights/guides" element={<LazyLoad><AdminGuides /></LazyLoad>} />
-
-                    {/* Admin route for Market Reports */}
-                    <Route path="/admin/insights/market-report-generator" element={<LazyLoad><MarketReportsAdmin /></LazyLoad>} />
-
-                    {/* Admin route for Project Filter Order Management */}
-                    <Route path="/Admin/project-filter-order" element={<LazyLoad><ProjectFilterOrderManagement /></LazyLoad>} />
-
-
-                    {/* Blog route only user with role Blog will be able to login */}
-                    <Route path="/seo/" element={<SeoPrivateRoute />}>
-                      <Route path="blogs" element={<BlogManagementSidebar />} >
-                        <Route index element={<BlogDashboard />} />
-                        <Route path="dashboard" element={<BlogDashboard />} />
-                        <Route path="manage" element={<BlogManagement />} />
-                        <Route path="write" element={<BlogWriteModal />} />
-                        <Route path="profile" element={<AuthorProfileUpdate />} />
-                        <Route path="view/:id" element={<ModernBlogView />} />
-                        <Route path="edit/:id" element={<BlogWriteModal />} />
-                        <Route path="drafts" element={<DraftManagement />} />
-                      </Route>
-                    </Route>
-                    <Route path="/:pUrl/" element={<ProjectLayout2 />} />
-                  </Routes>
-                </Suspense>
-              </ErrorBoundary>
-            </QueryClientProvider>
-          </TooltipProvider>
-          {!isProjectPage && <MobileBottomNav />}
-        </AuthProvider>
-      </DataProvider>
+                      <Route path="/:pUrl/" element={<ProjectLayout2 />} />
+                    </Routes>
+                  </Suspense>
+                </ErrorBoundary>
+              </QueryClientProvider>
+            </TooltipProvider>
+            {!isProjectPage && <MobileBottomNav />}
+          </AuthProvider>
+        </DataProvider>
       </Provider>
     </>
   );
@@ -836,7 +866,7 @@ function MobileBottomNav() {
     const observer = new MutationObserver(() => update());
     observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
     return () => observer.disconnect();
-  }, []);
+  });
 
   if (hideForNewBanner) return null;
 

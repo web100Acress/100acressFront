@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from 'react';
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import Navbar from "../aadharhomes/navbar/Navbar"; // Correct path to Navbar component
 

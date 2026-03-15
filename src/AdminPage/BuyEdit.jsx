@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from "react";
+import React, { useMemo } from 'react';
 import Sidebar from "./Sidebar";
 import { useParams,Link } from "react-router-dom";
 import axios from "axios";
@@ -33,7 +33,7 @@ const BuyEdit = () => {
         const fetchData = async () => {
             try {
                 const res = await axios.get(
-                    `/property/buy/edit/${id}`
+                    `/property/buy/edit/${id});`
                 );
                 setViewDetails(res.data.dataedit);
 
@@ -42,7 +42,7 @@ const BuyEdit = () => {
             }
         };
         fetchData();
-    }, []);
+    });
 
 
     return (

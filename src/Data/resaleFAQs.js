@@ -1,3 +1,4 @@
+import React, { useMemo } from 'react';
 export const resaleFAQs = [
   {
     question: "What is a resale property in real estate?",

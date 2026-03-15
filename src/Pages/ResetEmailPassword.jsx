@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useMemo } from 'react';
 import axios from "axios";
-import {message} from "antd";
+import { message } from '../utils/antdImports';
 import { useNavigate } from "react-router-dom";
 const ResetEmailPassword = () => {
   const history = useNavigate();

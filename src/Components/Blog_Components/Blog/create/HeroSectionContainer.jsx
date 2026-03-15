@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import HeroSection from './desktop/HeroSection';
 import HeroSectionMobile from './mobile/HeroSectionMobile';
 
@@ -10,13 +10,13 @@ const HeroSectionContainer = ({ blog, blogLink, FALLBACK_IMG }) => {
       const mobile = window.innerWidth < 1024; // lg breakpoint
       setIsMobile(mobile);
       console.log('Screen width:', window.innerWidth, 'Is mobile:', mobile);
-    };
+    });;
 
     checkMobile();
     window.addEventListener('resize', checkMobile);
     
     return () => window.removeEventListener('resize', checkMobile);
-  }, []);
+  });
 
   console.log('Rendering HeroSection, isMobile:', isMobile);
 

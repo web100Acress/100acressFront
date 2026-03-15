@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { CarParkingIcon } from '../../Assets/icons';
 const icons = {
     car_parking: (

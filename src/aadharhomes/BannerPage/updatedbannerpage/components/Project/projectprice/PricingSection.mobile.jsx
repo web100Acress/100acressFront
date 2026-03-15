@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 
 const PricingSectionMobile = ({ projectName, minPrice, maxPrice, bhkDetails = [], paymentPlan = [], onShowCallback = () => {}, projectViewDetails = null }) => {
   const hasBhkDetails = bhkDetails && Array.isArray(bhkDetails) && bhkDetails.length > 0;
@@ -51,9 +51,9 @@ const PricingSectionMobile = ({ projectName, minPrice, maxPrice, bhkDetails = []
   };
 
   return (
-    <section className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6">
+    <section className="relative w-full overflow-hidden">
       {/* Mobile-Optimized Card Container */}
-      <div className="relative rounded-xl overflow-hidden bg-gradient-to-br from-gray-900 via-black to-gray-800 shadow-[0_15px_40px_rgba(0,0,0,0.4)] border border-amber-900/30">
+      <div className="relative rounded-xl overflow-hidden bg-[#25526f] shadow-[0_15px_40px_rgba(0,0,0,0.4)] border border-amber-900/30">
         
         {/* Mobile accent line */}
         <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-amber-600 via-amber-500 to-amber-700"></div>
@@ -146,9 +146,7 @@ const PricingSectionMobile = ({ projectName, minPrice, maxPrice, bhkDetails = []
 
           {/* Mobile CTA Section */}
           <div className="mt-6 text-center">
-            <p className="text-gray-400 text-sm mb-4">
-              Contact us for detailed pricing and exclusive offers
-            </p>
+           
             <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
               <button 
                 onClick={onShowCallback}

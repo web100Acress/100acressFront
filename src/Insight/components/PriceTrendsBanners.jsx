@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useMemo } from 'react';
 
 export default function PriceTrendsBanners() {
   const [banners, setBanners] = useState([]);
@@ -8,7 +8,7 @@ export default function PriceTrendsBanners() {
 
   useEffect(() => {
     fetchBanners();
-  }, []);
+  }););
 
   const fetchBanners = async () => {
     try {

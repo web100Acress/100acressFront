@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useMemo } from 'react';
+import './Gallery.mobile.css';
 
 const GalleryMobile = ({ galleryImages = [], projectName = '' }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -16,7 +17,7 @@ const GalleryMobile = ({ galleryImages = [], projectName = '' }) => {
     setIsModalOpen(false);
     setSelectedImage(null);
     document.body.style.overflow = 'auto';
-  }, []);
+  });
 
   const navigateImage = useCallback((direction) => {
     setCurrentImageIndex(prevIndex => {
@@ -53,7 +54,7 @@ const GalleryMobile = ({ galleryImages = [], projectName = '' }) => {
     window.addEventListener('keydown', handleKeyDown);
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
-    };
+    });;
   }, [handleKeyDown]);
 
   if (!galleryImages || galleryImages.length === 0) {
@@ -64,40 +65,42 @@ const GalleryMobile = ({ galleryImages = [], projectName = '' }) => {
   const remainingImagesCount = galleryImages.length - visibleImages.length;
 
   return (
-    <section className="py-6 bg-black">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <section className="gallery-mobile">
+      <div className="gallery-mobile-content">
         {/* Mobile Section Header */}
-        <div className="text-center mb-4">
-          <h2 className="text-amber-400 text-xs font-semibold uppercase tracking-wider mb-2">
+        <div className="gallery-mobile-header">
+          <h2 className="gallery-mobile-subtitle">
             GALLERY
           </h2>
-          <h3 className="text-white text-2xl md:text-3xl font-bold leading-tight mb-3 max-w-3xl mx-auto">
+          <h3 className="gallery-mobile-title">
             Project Images{projectName ? ` of ${projectName}` : ''}
           </h3>
-          <div className="w-16 h-0.5 bg-gradient-to-r from-amber-600 to-amber-500 rounded-full mx-auto mt-2"></div>
+          <div className="gallery-mobile-accent-line"></div>
         </div>
 
         {/* Mobile Gallery Grid */}
-        <div className="grid grid-cols-2 gap-3 h-[400px]">
-          <div className="col-span-2 row-span-2 h-full">
+        <div className="gallery-mobile-grid">
+          <div className="gallery-mobile-grid-featured">
             {visibleImages[0] && (
               <img
-                fetchPriority='high'
+                fetchpriority="high"
                 src={visibleImages[0].url}
                 alt="Gallery image 1"
-                className="w-full h-full object-cover rounded-lg cursor-pointer transition-transform duration-300 hover:scale-105"
+                className="gallery-mobile-image featured"
                 onClick={() => openModal(visibleImages[0].url, galleryImages.findIndex(img => img.url === visibleImages[0].url))}
+                crossOrigin="anonymous"
               />
             )}
           </div>
           {visibleImages.slice(1, 4).map((image, index) => (
-            <div key={index} className="h-full">
+            <div key={index} className="gallery-mobile-grid-cell">
               {image && (
                 <img
                   src={image.url}
                   alt={`Gallery image ${index + 2}`}
-                  className="w-full h-full object-cover rounded-lg cursor-pointer transition-transform duration-300 hover:scale-105"
+                  className="gallery-mobile-image"
                   onClick={() => openModal(image.url, galleryImages.findIndex(img => img.url === image.url))}
+                  crossOrigin="anonymous"
                 />
               )}
             </div>
@@ -106,10 +109,10 @@ const GalleryMobile = ({ galleryImages = [], projectName = '' }) => {
 
         {/* Mobile Show All Button */}
         {remainingImagesCount > 0 && (
-          <div className="-mb-8 px-0 sm:px-0 text-right">
+          <div className="gallery-mobile-show-all">
             <button
               onClick={() => openModal(galleryImages[4]?.url, 4)}
-              className="bg-amber-600 text-white font-semibold px-3 mb-2 py-2.5 rounded-lg hover:bg-amber-700 transition-colors text-sm inline-block"
+              className="gallery-mobile-show-all-button"
             >
               Show All Photos ({remainingImagesCount}+)
             </button>
@@ -118,17 +121,17 @@ const GalleryMobile = ({ galleryImages = [], projectName = '' }) => {
 
         {/* Mobile Modal */}
         {isModalOpen && (
-          <div className="fixed inset-0 bg-black bg-opacity-95 flex justify-center items-center z-50 p-4">
+          <div className="gallery-mobile-modal">
             <button
               onClick={closeModal}
-              className="absolute top-4 right-4 text-white text-3xl z-10 bg-black bg-opacity-50 rounded-full w-10 h-10 flex items-center justify-center"
+              className="gallery-mobile-modal-close"
             >
               &times;
             </button>
-            <div className="relative w-full h-full max-w-full max-h-full flex items-center justify-center">
+            <div className="gallery-mobile-modal-body">
               <button 
                 onClick={(e) => { e.stopPropagation(); navigateImage('prev'); }}
-                className="absolute left-2 text-white bg-black bg-opacity-60 hover:bg-opacity-80 rounded-full p-2 z-10 transition-all"
+                className="gallery-mobile-modal-nav prev"
                 aria-label="Previous image"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -136,20 +139,21 @@ const GalleryMobile = ({ galleryImages = [], projectName = '' }) => {
                 </svg>
               </button>
               
-              <div className="relative w-full h-full flex items-center justify-center">
+              <div className="gallery-mobile-modal-image-wrap">
                 <img
                   src={selectedImage}
                   alt={`Gallery image ${currentImageIndex + 1}`}
-                  className="max-w-full max-h-full object-contain"
+                  className="gallery-mobile-modal-image"
+                  crossOrigin="anonymous"
                 />
-                <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-60 text-white px-3 py-1 rounded-full text-xs">
+                <div className="gallery-mobile-modal-counter">
                   {currentImageIndex + 1} / {galleryImages.length}
                 </div>
               </div>
               
               <button 
                 onClick={(e) => { e.stopPropagation(); navigateImage('next'); }}
-                className="absolute right-2 text-white bg-black bg-opacity-60 hover:bg-opacity-80 rounded-full p-2 z-10 transition-all"
+                className="gallery-mobile-modal-nav next"
                 aria-label="Next image"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">

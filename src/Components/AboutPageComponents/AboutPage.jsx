@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from 'react';
 import Nav from "../../aadharhomes/Nav";
 import Footer from "../Actual_Components/Footer";
 

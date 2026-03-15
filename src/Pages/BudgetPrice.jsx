@@ -1,4 +1,4 @@
-import React, {useEffect, useState } from "react";
+import React, { useMemo } from 'react';
 import Footer from "../Components/Actual_Components/Footer";
 import { Helmet } from "react-helmet";
 import NoPropertiesMessage from "../Components/NoPropertiesMessage ";
@@ -21,7 +21,7 @@ const BudgetPrice = () => {
       try {
         setIsLoading(true);
         // Fetch all projects without any filters
-        const response = await axios.get(`${API_ROUTES_PROJECTS}/projectsearch?limit=1000`);
+        const response = await axios.get(`${API_ROUTES_PROJECTS});/projectsearch?limit=1000`);
         setAllProjects(response.data.data || []);
       } catch (error) {
         console.error("Error fetching all projects:", error);
@@ -31,7 +31,7 @@ const BudgetPrice = () => {
     };
 
     fetchAllProjects();
-  }, []);
+  });
 
   // Filter projects by price range
   useEffect(() => {

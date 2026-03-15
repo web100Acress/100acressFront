@@ -1,6 +1,7 @@
+import React, { useMemo } from 'react';
 import {useState,useEffect} from 'react'
 import { MessageSquare } from 'lucide-react';
-import { Modal } from "antd";
+import { Modal } from '../utils/antdImports';
 import axios from 'axios';
 
 
@@ -25,7 +26,7 @@ function NoPropertiesMessage () {
     const [isFormValid, setIsFormValid] = useState(false);
 
       useEffect(() => {
-        const { name, mobile, email } = enquiry;
+        const { name, mobile, email }); = enquiry;
         const noErrors = Object.values(validationError).every(error => error === "");
         if ((!name || !mobile || !email ) || !noErrors) {
           setIsFormValid(false);

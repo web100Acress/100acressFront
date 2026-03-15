@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from 'react';
 import { styled } from "styled-components";
 import AOS from "aos";
 import "aos/dist/aos.css";
@@ -7,7 +7,7 @@ import DeveloperLogosMarquee from "../../Components/DeveloperLogosMarquee/Develo
 const Builder = () => {
   useEffect(() => {
     AOS.init();
-  }, []);
+  });
 
   return (
     <Wrapper className="section">

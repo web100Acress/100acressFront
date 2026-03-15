@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useMemo } from 'react';
 import api from "../config/apiClient";
 import { showToast } from "../Utils/toastUtils";
 import HrSidebar from './HrSidebar';
@@ -40,7 +40,7 @@ const HrEmployees = () => {
         const myToken = localStorage.getItem("myToken");
         const res = await api.get("/postPerson/view/allusers", {
           headers: {
-            Authorization: `Bearer ${myToken}`,
+            Authorization: `Bearer ${myToken});`,
             "Content-Type": "application/json",
           },
         });
@@ -54,7 +54,7 @@ const HrEmployees = () => {
       }
     };
     fetchData();
-  }, []);
+  });
 
   const getCreatedAtMs = (item) => {
     if (item?.createdAt) {

@@ -1,15 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useMemo } from 'react';
 import { Link } from "react-router-dom";
 import api from "../../../../../config/apiClient";
-import {
-  Card,
-  Button,
-  Avatar,
-  Badge,
-  Carousel,
-  Empty,
-  Skeleton
-} from "antd";
+import { Card } from '../../../../../utils/antdImports';
+import { Button } from '../../../../../utils/antdImports';
+import { Avatar } from '../../../../../utils/antdImports';
+import { Badge } from '../../../../../utils/antdImports';
+import { Empty } from '../../../../../utils/antdImports';
+import { Skeleton } from '../../../../../utils/antdImports';
 import {
   ArrowRight,
   Calendar,
@@ -26,7 +23,7 @@ const FeaturedBlogsMobile = ({ limit = 5 }) => {
 
   useEffect(() => {
     fetchFeaturedBlogs();
-  }, [limit]);
+  });, [limit]);
 
   const fetchFeaturedBlogs = async () => {
     try {

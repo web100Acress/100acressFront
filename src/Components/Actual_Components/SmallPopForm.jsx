@@ -1,14 +1,11 @@
-import React,{useState, useEffect} from 'react'
-
-const SmallPopForm = () => {
-    const [showPopup, setShowPopup] = useState(false);
+import React, { useMemo } from 'react';
 
     useEffect(() => {
       const timeOutId = setTimeout(() => {
         setShowPopup(true);
-      }, 3000);
+      });, 3000);
       return () => clearTimeout(timeOutId);
-    }, []);
+    });
   return (
     <div className='relative mx-2'>
          {showPopup && (

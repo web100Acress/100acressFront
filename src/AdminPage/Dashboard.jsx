@@ -1,4 +1,4 @@
-// import React, { useEffect, useState } from "react";
+// import React, { useMemo } from 'react';
 // import Sidebar from "./Sidebar";
 // import axios from "axios";
 // import Chart from "./Chart";
@@ -39,12 +39,12 @@
 //         setUser(res.data.totalUser);
 //         setLeads(res.data.totalprojectLeads);
 //         setMonthlyLeads(res.data.monthlyLeads); 
-//       } catch (error) {
+//       }); catch (error) {
 //         console.log("error")
 //       }
 //     };
 //     fetchData();
-//   }, []);
+//   });
 //   return (
 //     <>
 //       <div className="flex h-screen">

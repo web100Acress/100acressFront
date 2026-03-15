@@ -1,3 +1,4 @@
+import React, { useMemo } from 'react';
 // Helper function to safely access process.env
 const getEnv = (key, defaultValue = '') => {
   // In browser environment

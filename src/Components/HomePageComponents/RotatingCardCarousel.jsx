@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useMemo } from 'react';
 import styled, { keyframes, css } from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 
@@ -183,7 +183,7 @@ const RotatingCardCarousel = ({ cards = [], interval = 3000 }) => {
       timer = setInterval(() => {
         if (!isPaused) {
           rotateCards();
-        }
+        });
       }, interval);
     };
     
@@ -194,11 +194,11 @@ const RotatingCardCarousel = ({ cards = [], interval = 3000 }) => {
   // Pause on hover
   const handleMouseEnter = useCallback(() => {
     setIsPaused(true);
-  }, []);
+  });
   
   const handleMouseLeave = useCallback(() => {
     setIsPaused(false);
-  }, []);
+  });
 
   // Handle card click
   const handleCardClick = (card) => {

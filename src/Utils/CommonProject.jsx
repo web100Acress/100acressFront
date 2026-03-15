@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useState, useCallback } from "react";
+import React, { useMemo } from 'react';
 import {
   LocationRedIcon,
   PropertyIcon,
@@ -97,11 +97,11 @@ const CommonProject = ({
       window.dispatchEvent(new Event("viewed-projects-changed"));
       // TODO: If API available and user is authenticated, send this event to backend as well.
     } catch (_) { }
-  }, []);
+  });
 
   useEffect(() => {
     AOS.init();
-  }, []);
+  });
 
   // Hydrate favorites once and subscribe for cross-component updates
   useEffect(() => {
@@ -112,7 +112,7 @@ const CommonProject = ({
     return () => {
       if (typeof unsub === "function") unsub();
     };
-  }, []);
+  });
 
   const response = data;
 

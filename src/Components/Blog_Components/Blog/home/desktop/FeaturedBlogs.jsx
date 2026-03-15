@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useMemo } from 'react';
 import { Link } from "react-router-dom";
 import { Calendar, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
@@ -10,7 +10,7 @@ const FeaturedBlogs = () => {
 
   const FALLBACK_IMG = "/Images/blog.avif";
   const BRAND_RED = "#E63946";
-  
+
   const onImgError = (e) => {
     if (e?.target && e.target.src !== window.location.origin + FALLBACK_IMG && !e.target.dataset.fallback) {
       e.target.dataset.fallback = "1";
@@ -30,8 +30,8 @@ const FeaturedBlogs = () => {
       .replace(/^-+|-+$/g, '');       // Trim leading/trailing hyphens
 
   const blogLink = (blog) => {
-    if (blog?.slug) return `/blog/${blog.slug}`;
-    return `/blog/${getSlug(blog.blog_Title)}/${blog._id}`;
+    if (blog?.slug) return `/blog/${blog.slug}/`;
+    return `/blog/${getSlug(blog.blog_Title)}/${blog._id}/`;
   };
 
   useEffect(() => {
@@ -44,7 +44,7 @@ const FeaturedBlogs = () => {
             limit: 3,
             sortBy: 'createdAt',
             sortOrder: 'desc'
-          }
+          });
         });
 
         if (response?.data?.data) {
@@ -58,7 +58,7 @@ const FeaturedBlogs = () => {
     };
 
     fetchFeaturedBlogs();
-  }, []);
+  });
 
   // Animation variants
   const containerVariants = {
@@ -106,7 +106,7 @@ const FeaturedBlogs = () => {
     <section className="bg-white py-16 px-6 md:px-20 font-['Poppins','Inter',sans-serif]">
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
-        <motion.div 
+        <motion.div
           className="text-center mb-8"
           initial={{ opacity: 0, y: -20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -117,13 +117,13 @@ const FeaturedBlogs = () => {
             <span className="text-black">Featured </span>
             <span style={{ color: BRAND_RED }}>Blogs</span>
           </h2>
-          
+
           <p className="text-gray-600 text-base md:text-lg max-w-2xl mx-auto mb-3">
             Stay updated with the latest insights, trends, and expert advice in real estate
           </p>
-          
+
           {/* Animated Red Underline */}
-          <motion.div 
+          <motion.div
             className="w-24 h-1 mx-auto rounded-full"
             style={{ background: `linear-gradient(90deg, ${BRAND_RED} 0%, #DC2626 100%)` }}
             initial={{ width: 0 }}
@@ -134,7 +134,7 @@ const FeaturedBlogs = () => {
         </motion.div>
 
         {/* Main Layout: Featured Blog (Left) + Side Blogs (Right) */}
-        <motion.div 
+        <motion.div
           className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
@@ -149,7 +149,7 @@ const FeaturedBlogs = () => {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5 }}
-              whileHover={{ 
+              whileHover={{
                 y: -5,
                 transition: { duration: 0.3, ease: "easeOut" }
               }}
@@ -161,7 +161,7 @@ const FeaturedBlogs = () => {
                     {/* Category & Date */}
                     <div className="flex items-center gap-3 mb-4 flex-wrap">
                       {featuredBlog.blog_Category && (
-                        <span 
+                        <span
                           className="px-4 py-1.5 text-white rounded-full font-medium text-sm"
                           style={{ backgroundColor: BRAND_RED }}
                         >
@@ -194,7 +194,7 @@ const FeaturedBlogs = () => {
                     </p>
 
                     {/* Read More Button */}
-                    <div 
+                    <div
                       className="inline-flex items-center gap-2 font-bold text-base group-hover:gap-3 transition-all duration-300 self-start"
                       style={{ color: BRAND_RED }}
                     >
@@ -227,7 +227,7 @@ const FeaturedBlogs = () => {
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
-                whileHover={{ 
+                whileHover={{
                   y: -3,
                   transition: { duration: 0.3, ease: "easeOut" }
                 }}
@@ -248,7 +248,7 @@ const FeaturedBlogs = () => {
                     <div className="p-4 flex flex-col flex-1">
                       {/* Category */}
                       {blog.blog_Category && (
-                        <span 
+                        <span
                           className="px-2 py-1 text-white rounded-full font-medium text-xs mb-2 inline-block self-start"
                           style={{ backgroundColor: BRAND_RED }}
                         >
@@ -283,7 +283,7 @@ const FeaturedBlogs = () => {
         </motion.div>
 
         {/* View All Blogs Button */}
-        <motion.div 
+        <motion.div
           className="text-center"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -291,10 +291,10 @@ const FeaturedBlogs = () => {
           transition={{ duration: 0.5, delay: 0.4 }}
         >
           <Link to="/blog/">
-            <motion.button 
+            <motion.button
               className="inline-flex items-center gap-3 px-8 py-4 text-white font-bold rounded-full shadow-lg transition-all duration-300"
               style={{ backgroundColor: BRAND_RED }}
-              whileHover={{ 
+              whileHover={{
                 scale: 1.05,
                 boxShadow: "0 20px 25px -5px rgba(230, 57, 70, 0.3), 0 10px 10px -5px rgba(230, 57, 70, 0.2)"
               }}

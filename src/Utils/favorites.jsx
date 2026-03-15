@@ -1,3 +1,4 @@
+import React, { useMemo } from 'react';
 // Lightweight favorites store for project cards
 // Persists to localStorage and syncs across tabs via BroadcastChannel
 
@@ -6,6 +7,11 @@ import api from "../config/apiClient";
 const IDS_KEY = 'favoriteProjects';
 const DATA_KEY = 'favoriteProjectsData'; // map of id -> lightweight snapshot for rendering
 const CHANNEL = typeof window !== 'undefined' && 'BroadcastChannel' in window ? new BroadcastChannel('favorites') : null;
+
+// Debouncing and deduplication for hydrateFavoritesFromServer
+let hydratePromise = null;
+let lastHydrateTime = 0;
+const HYDRATE_DEBOUNCE_MS = 1000; // 1 second debounce
 
 function readJSON(key, fallback) {
   try {
@@ -158,7 +164,8 @@ export function subscribe(cb) {
   listeners.add(cb);
   // notify immediately
   try { cb(getFavorites()); } catch (_) {}
-  const onMsg = (ev) => {
+  const onMsg = (ev) => 
+{
     if (ev?.data?.type === 'favorites-update') {
       for (const l of listeners) { try { l(ev.data.ids); } catch (_) {} }
     }
@@ -172,43 +179,69 @@ export function subscribe(cb) {
 
 // Server hydration: merge server favorites with local and broadcast
 export async function hydrateFavoritesFromServer() {
-  try {
-    const token = localStorage.getItem('myToken') || localStorage.getItem('token');
-    const uid = getStoredUserId();
-    if (!token || !uid) return getFavorites();
-    const res = await api.get(`/postPerson/users/${uid}/favorites`);
-    const serverIds = res?.data?.data?.ids?.map(String) || [];
-    const localIds = getFavorites();
-    // Merge unique
-    const merged = Array.from(new Set([...(localIds || []), ...(serverIds || [])]));
-    writeJSON(IDS_KEY, merged);
-    // Best-effort store snapshots from response
-    const items = res?.data?.data?.items || [];
-    const data = getFavoritesData();
-    const nextData = { ...data };
-    for (const it of items) {
-      const id = String(it._id);
-      nextData[id] = nextData[id] || {
-        id,
-        title: it.projectName || '',
-        image: it.frontImage?.url || it.thumbnailImage?.url || '',
-        city: it.city || '',
-        maxPrice: it.maxPrice ?? null,
-        minPrice: it.minPrice ?? null,
-        url: it.project_url ? `/${it.project_url}/` : '#',
-      };
-    }
-    writeJSON(DATA_KEY, nextData);
-    notifyAll(merged);
-    return merged;
-  } catch (e) {
-    // ignore 403 errors (user not authorized for favorites), stay local-only
-    if (e?.response?.status === 403) {
-      return getFavorites();
-    }
-    // ignore other errors; stay local-only if server not reachable
-    return getFavorites();
+  // Prevent duplicate calls within debounce period
+  const now = Date.now();
+  if (now - lastHydrateTime < HYDRATE_DEBOUNCE_MS && hydratePromise) {
+    console.log('🚀 Favorites hydrate: returning cached promise');
+    return hydratePromise;
   }
+
+  lastHydrateTime = now;
+  console.log('🔄 Favorites hydrate: starting API call');
+  
+  hydratePromise = (async () => {
+    try {
+      const token = localStorage.getItem('myToken') || localStorage.getItem('token');
+      const uid = getStoredUserId();
+      if (!token || !uid) return getFavorites();
+      
+      const res = await api.get(`/postPerson/users/${uid}/favorites`);
+      const serverIds = res?.data?.data?.ids?.map(String) || [];
+      const localIds = getFavorites();
+      
+      // Merge unique
+      const merged = Array.from(new Set([...(localIds || []), ...(serverIds || [])]));
+      writeJSON(IDS_KEY, merged);
+      
+      // Best-effort store snapshots from response
+      const items = res?.data?.data?.items || [];
+      const data = getFavoritesData();
+      const nextData = { ...data };
+      
+      for (const it of items) {
+        const id = String(it._id);
+        nextData[id] = nextData[id] || {
+          id,
+          title: it.projectName || '',
+          image: it.frontImage?.url || it.thumbnailImage?.url || '',
+          city: it.city || '',
+          maxPrice: it.maxPrice ?? null,
+          minPrice: it.minPrice ?? null,
+          url: it.project_url ? `/${it.project_url}/` : '#',
+        };
+      }
+      
+      writeJSON(DATA_KEY, nextData);
+      notifyAll(merged);
+      console.log('✅ Favorites hydrate: completed successfully');
+      return merged;
+    } catch (e) {
+      console.log('⚠️ Favorites hydrate: failed', e?.response?.status);
+      // ignore 403 errors (user not authorized for favorites), stay local-only
+      if (e?.response?.status === 403) {
+        return getFavorites();
+      }
+      // ignore other errors; stay local-only if server not reachable
+      return getFavorites();
+    } finally {
+      // Clear promise after completion (but keep debounce timing)
+      setTimeout(() => {
+        hydratePromise = null;
+      }, HYDRATE_DEBOUNCE_MS);
+    }
+  })();
+  
+  return hydratePromise;
 }
 
 // Optional polling: periodically hydrate from server while authenticated

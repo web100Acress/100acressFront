@@ -1,8 +1,9 @@
+import React, { useMemo } from 'react';
 import { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import showToast from "../Utils/toastUtils";
 import "antd/dist/reset.css";
-import { Input } from "antd";
+import { Input } from '../utils/antdImports';
 import { AuthContext } from "../AuthContext";
 import { Eye, EyeOff, X } from "lucide-react";
 import api from "../config/apiClient";
@@ -29,7 +30,7 @@ function SignupForm({ inModal = false, onSwitchToLogin }) {
     return () => {
       // Cleanup if needed
     };
-  }, []);
+  });
   const resetData = () => {
     setUserSignUp({
       name: "",

@@ -1,5 +1,5 @@
-import React from 'react';
-import { Collapse } from 'antd';
+import React, { useMemo } from 'react';
+import { Collapse } from '../../../utils/antdImports';
 import '../../../styles/newbanner/faq.css';
 
 const FAQSection = ({ title, items }) => {

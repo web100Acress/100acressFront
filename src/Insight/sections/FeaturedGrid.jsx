@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useMemo } from 'react';
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { isFavorite, toggleFavorite } from "../../Utils/favorites";
@@ -113,7 +113,7 @@ export default function FeaturedGrid() {
       // Show all sections like in Home.jsx
       setFilteredProjects([]);
       return;
-    }
+    });
 
     switch (activeFilter) {
       case "Trending":
@@ -157,7 +157,7 @@ export default function FeaturedGrid() {
       const id = project._id || project.id;
       if (isFavorite(id)) {
         favoriteIds.add(id);
-      }
+      });
     });
     setFavorites(favoriteIds);
   }, [filteredProjects]);

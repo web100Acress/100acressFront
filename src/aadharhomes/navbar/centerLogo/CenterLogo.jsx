@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from 'react';
 import { Link } from "react-router-dom";
 
 export default function CenterLogo({ colorChange, isSearchOpen, centerOnCompact = false, isHome }) {
@@ -22,12 +22,13 @@ export default function CenterLogo({ colorChange, isSearchOpen, centerOnCompact 
         <img
           src={
             isHome 
-              ? "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/logowhite.webp.webp"
+              ? "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/logowhite.webp"
               : (colorChange 
-                ? "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/logowhite.webp.webp"
+                ? "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/logowhite.webp"
                 : "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/red.100acresslogo.webp")
           }
           alt="100acress logo"
+          crossOrigin="anonymous"
           style={{
             height: window.innerWidth >= 768 ? '60px' : '45px',
             minHeight: window.innerWidth >= 768 ? '60px' : '45px',

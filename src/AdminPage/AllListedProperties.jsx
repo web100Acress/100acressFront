@@ -8,7 +8,7 @@ import { Eye, Edit, Trash2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Oval } from "react-loader-spinner";
 import { PaginationControls } from "../Components/Blog_Components/Blog/create/desktop/BlogManagement"; 
-import { Modal } from "antd";
+import { Modal } from '../utils/antdImports';
 import showToast from "../Utils/toastUtils";
 
 // --- Memoized Property Row for Performance ---
@@ -90,7 +90,7 @@ const AllListedProperties = () => {
   const token = useMemo(() => {
     const raw = localStorage.getItem("myToken") || "";
     return raw.replace(/^"|"$/g, "").replace(/^Bearer\s+/i, "");
-  }, []);
+  });
 
   const [allListedProperty, setAllListedProperty] = useState([]);
   const [totalPages, setTotalPages] = useState(0);

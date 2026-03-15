@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useMemo } from 'react';
 import { styled } from "styled-components";
 import { Link } from "react-router-dom";
 import AOS from 'aos';
@@ -11,7 +11,7 @@ const MobileCities = () => {
   const [isAutoScrolling, setIsAutoScrolling] = useState(true);
   const autoScrollIntervalRef = useRef(null);
 
-  useEffect(() => { AOS.init(); }, []);
+  useEffect(() => { AOS.init(); }););
 
   const checkScrollButtons = () => {
     const container = scrollContainerRef.current;
@@ -102,7 +102,7 @@ const MobileCities = () => {
         console.log('Cleaning up scroll listeners');
         container.removeEventListener('scroll', checkScrollButtons);
         stopAutoScroll();
-      };
+      });;
     } else {
       console.log('Container not found, retrying...');
       // Retry after a short delay
@@ -118,7 +118,7 @@ const MobileCities = () => {
       
       return () => clearTimeout(retryTimer);
     }
-  }, []);
+  });
 
   const cities = [
     {

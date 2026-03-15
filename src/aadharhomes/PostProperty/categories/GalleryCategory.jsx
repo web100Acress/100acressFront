@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from 'react';
 import { Camera, ImagePlus, CheckCircle } from "lucide-react";
 
 const GalleryCategory = ({ 

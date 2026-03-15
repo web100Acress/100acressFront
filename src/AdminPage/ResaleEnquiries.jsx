@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useMemo } from 'react';
 import Sidebar from "./Sidebar";
 import axios from "axios";
-import { message } from "antd"; // Assuming Ant Design message is available
+import { message } from '../utils/antdImports'; // Assuming Ant Design message is available
 import { ClipLoader } from "react-spinners"; // Assuming react-spinners is installed for loading indicator
 import { getApiBase } from '../config/apiBase';
 
@@ -26,7 +26,7 @@ const ResaleEnquiries = () => {
     return () => {
       document.head.removeChild(styleSheet);
     };
-  }, []);
+  });
 
   // Function to fetch agent details by agent ID or number
   const fetchAgentDetails = async (agentId, agentNumber) => {
@@ -250,7 +250,7 @@ const ResaleEnquiries = () => {
 
   useEffect(() => {
     fetchEnquiriesData();
-  }, []);
+  });
 
   const handleClick = (pageNumber) => {
     setCurrentPage(pageNumber);

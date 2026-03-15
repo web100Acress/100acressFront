@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import '../../../styles/newbanner/location.css';
 
 const LocationSection = ({
@@ -27,7 +27,7 @@ const LocationSection = ({
           <div className="nb-location-image-card">
             {locationImageUrl && (
               <>
-                <img src={locationImageUrl} alt={`${projectName} Location`} fetchpriority="high" className="nb-location-image" />
+                <img src={locationImageUrl} alt={`${projectName} Location`} fetchpriority="high" className="nb-location-image" crossOrigin="anonymous" />
                 <div className="nb-location-overlay"></div>
               </>
             )}

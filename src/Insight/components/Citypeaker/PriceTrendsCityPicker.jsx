@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useMemo } from 'react';
 import PriceTrendsCityPickerMobile from "./PriceTrendsCityPickermobile";
 import PriceTrendsCityPickerDesktop from "./PriceTrendsCityPickerDesktop";
 
@@ -20,10 +20,10 @@ export default function PriceTrendsCityPicker({
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 768);
-    };
+    });;
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  });
 
   // Common props for both components
   const commonProps = {

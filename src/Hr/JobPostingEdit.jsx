@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useMemo } from 'react';
 import { useParams, useNavigate } from "react-router-dom";
 import api from "../config/apiClient";
 import { FaSave, FaSpinner } from 'react-icons/fa';
@@ -27,7 +27,7 @@ const JobPostingEdit = () => {
       setLoading(true);
       setError(null);
       try {
-        const res = await api.get(`/career/opening/View/${id}`);
+        const res = await api.get(`/career/opening/View/${id});`);
         const data = res?.data?.data || {};
         // Debug payload to ensure mapping is correct
         // eslint-disable-next-line no-console

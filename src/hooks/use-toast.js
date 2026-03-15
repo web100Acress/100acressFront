@@ -19,7 +19,8 @@ function genId() {
 
 const toastTimeouts = new Map();
 
-const addToRemoveQueue = (toastId) => {
+const addToRemoveQueue = (toastId) => 
+{
   if (toastTimeouts.has(toastId)) return;
 
   const timeout = setTimeout(() => {
@@ -133,7 +134,7 @@ function useToast() {
       const index = listeners.indexOf(setState);
       if (index > -1) listeners.splice(index, 1);
     };
-  }, []);
+  });
 
   return {
     ...state,

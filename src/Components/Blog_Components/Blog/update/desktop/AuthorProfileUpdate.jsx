@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useMemo } from 'react';
 import { Helmet } from "react-helmet";
 import api from "../../../../../config/apiClient";
 import showToast from "../../../../../Utils/toastUtils";
@@ -121,7 +121,7 @@ const AuthorProfileUpdate = () => {
     };
 
     fetchProfile();
-  }, []);
+  });
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;

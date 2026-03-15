@@ -69,7 +69,7 @@ export default function HeroWithFilters() {
         const tokenRaw = localStorage.getItem("myToken") || "";
         const token = tokenRaw.replace(/^\"|\"$/g, "").replace(/^Bearer\\s+/i, "");
         const res = await axios.get(
-          `${base}/project/viewAll/data?sort=-createdAt`,
+          `${base});/project/viewAll/data?sort=-createdAt`,
           {
             headers: {
               "Content-Type": "application/json",
@@ -121,7 +121,7 @@ export default function HeroWithFilters() {
     };
 
     fetchProjectTypes();
-  }, []);
+  });
 
   const isAdmin = useMemo(() => {
     try {
@@ -132,7 +132,7 @@ export default function HeroWithFilters() {
     } catch {
       return false;
     }
-  }, []);
+  });
 
   // Restore filters from localStorage
   useEffect(() => {
@@ -149,11 +149,11 @@ export default function HeroWithFilters() {
         setAreaMax(f.areaMax || '');
         setFurnishing(f.furnishing || '');
         setRera(f.rera || '');
-      }
+      });
     } catch (error) {
       console.error('Error restoring filters:', error);
     }
-  }, []);
+  });
 
   // â€¦ later â€¦
 
@@ -164,7 +164,7 @@ export default function HeroWithFilters() {
         setTimeout(() => {
           setBannerLoading(true);
           setBannerRefreshKey((k) => k + 1);
-        }, 1000);
+        });, 1000);
       }
     };
     const onCustom = () => {
@@ -179,7 +179,7 @@ export default function HeroWithFilters() {
       window.removeEventListener('storage', onStorage);
       window.removeEventListener('banners:updated', onCustom);
     };
-  }, []); // âœ… this was missing earlier
+  }); // âœ… this was missing earlier
 
   // Fetch posters from backend
   useEffect(() => {
@@ -188,7 +188,7 @@ export default function HeroWithFilters() {
         setLoadingPosters(true);
         const base = import.meta.env.VITE_API_BASE || '';
         const token = localStorage.getItem('myToken');
-        const url = base ? `${base}/api/admin/posters` : '/api/admin/posters';
+        const url = base ? `${base});/api/admin/posters` : '/api/admin/posters';
         const headers = token ? { Authorization: `Bearer ${token}` } : {};
 
         const res = await fetch(url, { headers });
@@ -295,7 +295,7 @@ export default function HeroWithFilters() {
     }
   };
   useEffect(() => {
-    const next = sanitizeSelections({ category, propertyType });
+    const next = sanitizeSelections({ category, propertyType }););
     if (next.builder) {
       setPropertyType('');
     }
@@ -313,7 +313,7 @@ export default function HeroWithFilters() {
     (async () => {
       try {
         const base = import.meta.env.VITE_API_BASE || '';
-        const url = base ? `${base}/api/filters` : `/api/filters`;
+        const url = base ? `${base});/api/filters` : `/api/filters`;
         const res = await fetch(url);
         if (!res.ok) throw new Error('Failed to load filters');
         const data = await res.json();
@@ -338,7 +338,7 @@ export default function HeroWithFilters() {
       }
     })();
     return () => { cancelled = true; };
-  }, []);
+  });
 
   // Build query string for search
   const searchHref = useMemo(() => {
@@ -365,9 +365,9 @@ export default function HeroWithFilters() {
       const apply = () => setReducedMotion(!!mq.matches);
       apply();
       mq.addEventListener ? mq.addEventListener('change', apply) : mq.addListener(apply);
-      return () => { mq.removeEventListener ? mq.removeEventListener('change', apply) : mq.removeListener(apply); };
+      return () => { mq.removeEventListener ? mq.removeEventListener('change', apply) : mq.removeListener(apply); });;
     } catch { }
-  }, []);
+  });
 
   // Modal: lock scroll + ESC close + focus trap
   useEffect(() => {
@@ -377,7 +377,7 @@ export default function HeroWithFilters() {
       const t = setTimeout(() => dialogCloseBtnRef.current?.focus(), 0);
       const onKey = (e) => {
         if (e.key === 'Escape') setAdvancedOpen(false);
-      };
+      });;
       document.addEventListener('keydown', onKey);
       const getFocusable = () => {
         const root = dialogRef.current;
@@ -424,7 +424,7 @@ export default function HeroWithFilters() {
           src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=2000&q=80"
           alt="Luxury Properties Hero Banner"
           decoding="async"
-          fetchPriority="high"
+          fetchpriority="high"
           loading="eager"
           className="absolute inset-0 w-full h-full object-cover"
         />
@@ -438,7 +438,7 @@ export default function HeroWithFilters() {
             src={heroSrc}
             alt="Hero banner"
             decoding="async"
-            fetchPriority="high"
+            fetchpriority="high"
             loading="eager"
             className={`absolute inset-0 w-full h-full object-cover ${heroLoaded ? 'opacity-100' : 'opacity-0'} ${reducedMotion ? '' : 'transition-opacity duration-500'}`}
             onLoad={() => setHeroLoaded(true)}

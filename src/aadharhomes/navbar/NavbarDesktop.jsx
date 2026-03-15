@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useMemo } from 'react';
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
@@ -187,16 +187,16 @@ export default function NavbarDesktop({
   useEffect(() => {
     const handleResize = () => {
       setIsSmallScreen(window.innerWidth <= 1600);
-    };
+    });;
     handleResize();
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  });
 
   // Cleanup campaign manager on unmount
   // useEffect(() => {
   //   return cleanup;
-  // }, [cleanup]);
+  // });, [cleanup]);
 
   // Don't render until client-side hydration is complete - AFTER all hooks
   if (!isClient) {

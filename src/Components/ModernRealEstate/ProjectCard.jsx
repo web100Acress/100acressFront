@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { MdFavorite, MdFavoriteBorder, MdShare, MdLocationOn, MdAttachMoney } from 'react-icons/md';
 
 const ProjectCard = ({

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useMemo } from 'react';
 import PostProperty from './PostProperty';
 
 const ResponsivePostProperty = () => {
@@ -18,7 +18,7 @@ const ResponsivePostProperty = () => {
     
     // Cleanup
     return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  });
 
   // Render the responsive PostProperty component
   return <PostProperty />;

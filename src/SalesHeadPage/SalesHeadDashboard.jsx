@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useMemo } from 'react';
 import axios from "axios";
 import { getApiBase } from '../config/apiBase';
 import { MdSpaceDashboard, MdPeople, MdTrendingUp, MdAttachMoney, MdPhone, MdAssessment, MdGroup, MdBusiness, MdHome } from "react-icons/md";
 import { FaProjectDiagram, FaChartLine, FaUserTie, FaHome as FaHomeIcon } from "react-icons/fa";
-import { message } from "antd";
+import { message } from '../utils/antdImports';
 import { useNavigate } from "react-router-dom";
 
 const SalesHeadDashboard = () => {
@@ -33,7 +33,7 @@ const SalesHeadDashboard = () => {
         
         const headers = {
           "Content-Type": "application/json",
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          ...(token ? { Authorization: `Bearer ${token});` } : {}),
         };
 
         // Fetch total enquiries count

@@ -1,6 +1,6 @@
 /** @format */
 
-import React from "react";
+import React, { useMemo } from 'react';
 import { styled } from "styled-components";
 import { useProductContext } from "../../Context/productContext";
 import { Link } from "react-router-dom";

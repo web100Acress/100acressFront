@@ -1,5 +1,5 @@
 import { position } from "@chakra-ui/react";
-import React from "react";
+import React, { useMemo } from 'react';
 import ImageGallery from "react-image-gallery";
 import "react-image-gallery/styles/css/image-gallery.css";
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchAllSmallBanners } from '../Redux/slice/SmallBannerSlice.jsx';
 import { toast } from 'react-toastify';
@@ -45,7 +45,7 @@ const SmallBannerManagement = () => {
 
   useEffect(() => {
     dispatch(fetchAllSmallBanners());
-  }, [dispatch]);
+  });, [dispatch]);
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;

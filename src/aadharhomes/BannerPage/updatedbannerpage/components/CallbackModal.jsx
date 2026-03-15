@@ -1,7 +1,8 @@
-import React, { useState, useCallback } from 'react';
+import React, { useMemo } from 'react';
 import api from '../../../../config/apiClient';
 import CountryCodeSelector from '../../../../Components/Actual_Components/CountryCodeSelector';
 import { showNotification } from './SimpleNotification';
+import './CallbackModal.css';
 
 const CallbackModal = ({ isOpen, onClose, projectViewDetails = {}, projectTitle = "", location = "", onSuccess = null }) => {
   const [sideDetails, setSideDetails] = useState({ name: '', mobile: '', countryCode: '+91' });
@@ -211,32 +212,32 @@ const CallbackModal = ({ isOpen, onClose, projectViewDetails = {}, projectTitle 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center backdrop-blur-sm bg-black/60 p-4">
-      <div className="relative w-full max-w-lg mx-auto overflow-hidden rounded-2xl bg-gradient-to-br from-slate-900 via-slate-800 to-black shadow-2xl shadow-orange-500/20 border border-orange-500/20 animate-in fade-in-0 zoom-in-95 duration-300">
-        <div className="bg-gradient-to-r from-orange-500 to-yellow-500 px-6 py-3 text-center text-black relative">
-          <p className="font-semibold text-lg mb-0 text-center tracking-wider">
+    <div className="callback-modal-overlay">
+      <div className="callback-modal-container">
+        <div className="callback-modal-header">
+          <p className="callback-modal-header-title">
             Instant Callback
           </p>
           <button
-            className="text-black text-xl absolute top-1/2 right-5 transform -translate-y-1/2 cursor-pointer hover:rotate-90 transition-transform duration-300"
+            className="callback-modal-header-close"
             onClick={onClose}
           >
             ✖
           </button>
         </div>
 
-        <form onSubmit={sideSubmitDetails} className="space-y-6 px-8 py-8">
+        <form onSubmit={sideSubmitDetails} className="callback-modal-form">
           {/* Name Field */}
-          <div className="space-y-2">
-            <label className="block text-sm font-medium text-white">
-              Full Name <span className="text-orange-400">*</span>
+          <div className="callback-modal-field">
+            <label className="callback-modal-label">
+              Full Name <span className="callback-modal-label-required">*</span>
             </label>
-            <div className="relative">
-              <svg className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="callback-modal-input-wrapper">
+              <svg className="callback-modal-input-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
               </svg>
               <input
-                className="w-full h-12 pl-12 pr-4 rounded-xl bg-white/5 backdrop-blur-md border border-white/20 text-white placeholder-gray-400 focus:ring-2 focus:ring-orange-400 focus:border-orange-400 outline-none transition-all duration-300"
+                className="callback-modal-input"
                 type="text"
                 name="name"
                 placeholder="Enter your full name"
@@ -248,42 +249,42 @@ const CallbackModal = ({ isOpen, onClose, projectViewDetails = {}, projectTitle 
           </div>
 
           {/* Mobile Field */}
-          <div className="space-y-2">
-            <label className="block text-sm font-medium text-white">
-              Mobile Number <span className="text-orange-400">*</span>
+          <div className="callback-modal-field">
+            <label className="callback-modal-label">
+              Mobile Number <span className="callback-modal-label-required">*</span>
             </label>
-            <div className="h-auto">
+            <div className="callback-modal-phone-container">
               <CountryCodeSelector
                 selectedCountryCode={sideDetails.countryCode}
                 onCountryCodeChange={handleCountryCodeChange}
                 phoneNumber={sideDetails.mobile}
                 onPhoneNumberChange={handlePhoneNumberChange}
                 placeholder="Enter phone number"
-                className="w-full [&>div>div>button]:!h-12 [&>div>div>button]:!py-2 [&>div>input]:!h-12 [&>div>input]:!py-2"
+                className="callback-modal-phone-selector"
               />
             </div>
           </div>
 
 
           {/* Submit Button */}
-          <div className="flex justify-center pt-4">
+          <div className="callback-modal-submit">
             <button
               type="submit"
               disabled={isLoading}
-              className="group w-full rounded-xl bg-gradient-to-r from-orange-500 to-yellow-500 px-8 py-3 font-bold text-black border-2 border-transparent outline-none relative overflow-hidden transition-all duration-300 hover:shadow-lg hover:scale-105 hover:from-orange-400 hover:to-yellow-400 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+              className="callback-modal-submit-btn"
             >
-              <span className="relative inline-block transition-all duration-300">
+              <span className="callback-modal-submit-btn-text">
                 {sideButtonText}
               </span>
               {!isLoading && (
-                <svg className="w-5 h-5 ml-2 transition-transform duration-300 group-hover:translate-x-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="callback-modal-submit-btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                 </svg>
               )}
             </button>
           </div>
 
-          <p className='text-xs text-gray-400 leading-relaxed pt-2'>* Your information will be kept strictly confidential and will not be shared, sold, or otherwise disclosed.</p>
+          <p className='callback-modal-disclaimer'>* Your information will be kept strictly confidential and will not be shared, sold, or otherwise disclosed.</p>
         </form>
       </div>
     </div>

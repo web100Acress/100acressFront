@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useMemo } from 'react';
 import Sidebar from "./Sidebar";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import api from "../config/apiClient";
@@ -129,7 +129,7 @@ const ProjectEdit = () => {
     fetchCitiesFromBackend();
     fetchStatesFromBackend();
     fetchCountriesFromBackend();
-  }, []);
+  });
 
   // Initialize city search term when values.city changes
   useEffect(() => {
@@ -196,7 +196,7 @@ const ProjectEdit = () => {
       }
     };
     fetchProjectStatuses();
-  }, []);
+  });
 
   // Fetch all project builders for dropdown
   useEffect(() => {
@@ -220,7 +220,7 @@ const ProjectEdit = () => {
       }
     };
     fetchProjectBuilders();
-  }, []);
+  });
 
   // Function to fetch project data
   const fetchData = async () => {

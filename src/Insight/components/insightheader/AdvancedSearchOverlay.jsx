@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useMemo } from 'react';
 import { ChevronDown } from "lucide-react";
 
 export default function AdvancedSearchOverlay({ isOpen, onClose }) {
@@ -22,7 +22,7 @@ export default function AdvancedSearchOverlay({ isOpen, onClose }) {
             const isHeaderSearchClick = event.target.closest(".header-search-container");
             if (overlayRef.current && !overlayRef.current.contains(event.target) && !isHeaderSearchClick) {
                 onClose();
-            }
+            });
         };
 
         if (isOpen) {

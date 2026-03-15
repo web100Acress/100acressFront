@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useMemo } from 'react';
 import { Button } from "../Components/ui/button";
 import { Input } from "../Components/ui/Input";
 import { Avatar, AvatarFallback, AvatarImage } from "../Components/ui/avatar";
@@ -28,7 +28,7 @@ const SalesHeadHeader = ({ onMenuClick }) => {
     } catch (error) {
       console.error('Error decoding token:', error);       
     }
-  }, []);
+  });
   return (
     <header className="sticky top-0 z-30 bg-card/80 backdrop-blur-sm border-b border-border">
       <div className="flex items-center justify-between p-4 lg:p-6">

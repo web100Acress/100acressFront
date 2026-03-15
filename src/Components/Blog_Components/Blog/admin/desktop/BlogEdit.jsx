@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext, useMemo } from "react";
-import { Modal } from "antd";
+import { Modal } from '../../../../../utils/antdImports';
 import Sidebar from "../../../../../AdminPage/Sidebar";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import api from "../../../../../config/apiClient";
@@ -31,11 +31,11 @@ const BlogEdit = () => {
   const { agentData, isAdmin } = useContext(AuthContext) || {};
   const localAgent = useMemo(() => {
     try { return JSON.parse(window.localStorage.getItem('agentData') || 'null'); } catch { return null; }
-  }, []);
+  });
   const currentUserName = (agentData?.name || localAgent?.name || "").toString().trim();
   const currentUserEmail = (agentData?.email || localAgent?.email || "").toString().trim().toLowerCase();
   const currentUserId = (agentData?._id || localAgent?._id || "").toString();
-  
+
 
   // Theme state
   const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'light');
@@ -62,7 +62,7 @@ const BlogEdit = () => {
       if (viewDetails.frontImage && viewDetails.frontImage.file) {
         formData.append("blog_Image", viewDetails.frontImage.file);
       }
-      
+
       const response = await api.put(
         `blog/update/${id}`,
         formData
@@ -181,7 +181,7 @@ const BlogEdit = () => {
       try {
         console.log('Fetching blog data for ID:', id);
         const res = await api.get(
-          `blog/edit/${id}`
+          `blog/edit/${id});`
         );
         console.log('Blog data received:', res.data);
         const payload = res.data;
@@ -210,14 +210,14 @@ const BlogEdit = () => {
         }
       } catch (error) {
         console.error('Error fetching blog data:', error);
-        
+
         let errorMessage = 'Failed to load blog data';
         if (error.response) {
           errorMessage = error.response.data?.message || `Server error: ${error.response.status}`;
         } else if (error.request) {
           errorMessage = 'Network error. Please check your connection.';
         }
-        
+
         showToast.error(errorMessage);
       }
     };
@@ -257,7 +257,7 @@ const BlogEdit = () => {
               </button> */}
             </div>
             {/* Card Form */}
-            <section className={`${theme === 'dark' ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-100'} rounded-xl shadow-2xl overflow-hidden border p-8 w-full`}> 
+            <section className={`${theme === 'dark' ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-100'} rounded-xl shadow-2xl overflow-hidden border p-8 w-full`}>
               {/* Blog Image */}
               <div className="mb-6">
                 <Tippy content={<span>Blog Image</span>} animation="scale" theme="light-border">
@@ -281,70 +281,70 @@ const BlogEdit = () => {
                 <Tippy content={<span>Blog Title</span>} animation="scale" theme="light-border">
                   <label className={`block font-semibold mb-2 flex items-center gap-2 ${theme === 'dark' ? 'text-blue-300' : 'text-red-700'}`}><MdTitle />Blog Title</label>
                 </Tippy>
-                    <input
-                      name="blog_Title"
-                      placeholder="Blog Title"
+                <input
+                  name="blog_Title"
+                  placeholder="Blog Title"
                   className={`w-full rounded-lg border ${theme === 'dark' ? 'border-gray-600 bg-gray-900 text-gray-100 placeholder-gray-400' : 'border-gray-300'} px-4 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none`}
-                      value={viewDetails.blog_Title}
+                  value={viewDetails.blog_Title}
                   onChange={(e) => setViewDetails({ ...viewDetails, blog_Title: e.target.value })}
-                    />
+                />
               </div>
               {/* Blog Description */}
               <div className="mb-6">
                 <Tippy content={<span>Blog Description</span>} animation="scale" theme="light-border">
                   <label className={`block font-semibold mb-2 flex items-center gap-2 ${theme === 'dark' ? 'text-blue-300' : 'text-red-700'}`}><MdDescription />Blog Description</label>
                 </Tippy>
-                      <textarea
-                        name="blog_Description"
-                        placeholder="Blog Description"
+                <textarea
+                  name="blog_Description"
+                  placeholder="Blog Description"
                   className={`w-full rounded-lg border ${theme === 'dark' ? 'border-gray-600 bg-gray-900 text-gray-100 placeholder-gray-400' : 'border-gray-300'} px-4 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none min-h-[120px]`}
-                        value={viewDetails.blog_Description}
+                  value={viewDetails.blog_Description}
                   onChange={(e) => setViewDetails({ ...viewDetails, blog_Description: e.target.value })}
-                      />
+                />
               </div>
               {/* Blog Category */}
               <div className="mb-6">
                 <Tippy content={<span>Blog Category</span>} animation="scale" theme="light-border">
                   <label className={`block font-semibold mb-2 flex items-center gap-2 ${theme === 'dark' ? 'text-blue-300' : 'text-red-700'}`}><MdCategory />Blog Category</label>
                 </Tippy>
-                      <select
+                <select
                   className={`w-full rounded-lg border ${theme === 'dark' ? 'border-gray-600 bg-gray-900 text-gray-100' : 'border-gray-300'} px-4 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none`}
-                        value={viewDetails.blog_Category}
+                  value={viewDetails.blog_Category}
                   onChange={(e) => setViewDetails({ ...viewDetails, blog_Category: e.target.value })}
-                      >
+                >
                   <option value="" className="text-gray-600">Blog Category</option>
                   <option value="Commercial Property">Commercial Property</option>
                   <option value="Residential Flats">Residential Flats</option>
-                        <option value="SCO Plots">SCO Plots</option>
+                  <option value="SCO Plots">SCO Plots</option>
                   <option value="Deendayal Plots">Deen Dayal Plots</option>
                   <option value="Residential Plots">Residential Plots</option>
                   <option value="Independent Floors">Independent Floors</option>
-                        <option value="Builder Floors">Builder Floors</option>
+                  <option value="Builder Floors">Builder Floors</option>
                   <option value="Affordable Homes">Affordable Homes</option>
-                      </select>
+                </select>
               </div>
               {/* Author */}
               <div className="mb-6">
                 <Tippy content={<span>Author</span>} animation="scale" theme="light-border">
                   <label className={`block font-semibold mb-2 flex items-center gap-2 ${theme === 'dark' ? 'text-blue-300' : 'text-red-700'}`}><MdPerson />Author</label>
                 </Tippy>
-                      <input
-                        name="author"
+                <input
+                  name="author"
                   placeholder="Author"
                   className={`w-full rounded-lg border ${theme === 'dark' ? 'border-gray-600 bg-gray-900 text-gray-100 placeholder-gray-400' : 'border-gray-300'} px-4 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none`}
-                        value={viewDetails.author}
+                  value={viewDetails.author}
                   onChange={(e) => setViewDetails({ ...viewDetails, author: e.target.value })}
-                      />
-          </div>
+                />
+              </div>
               <div className="flex justify-end mt-8">
-          <button
-            type="button"
-            onClick={handleConfirmAndUpdate}
-            className={`flex items-center gap-2 text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-lg px-8 py-3 shadow-lg transition-all ${theme === 'dark' ? 'bg-gradient-to-r from-blue-700 via-blue-800 to-gray-900' : ''}`}
-            disabled={!canEdit}
-          >
+                <button
+                  type="button"
+                  onClick={handleConfirmAndUpdate}
+                  className={`flex items-center gap-2 text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-lg px-8 py-3 shadow-lg transition-all ${theme === 'dark' ? 'bg-gradient-to-r from-blue-700 via-blue-800 to-gray-900' : ''}`}
+                  disabled={!canEdit}
+                >
                   <MdEdit className="text-xl" /> Upda
-          </button>
+                </button>
               </div>
             </section>
           </div>

@@ -1,3 +1,4 @@
+import React, { useMemo } from 'react';
 import ShowPropertyDetails from "../Components/ShowPropertyDetails";
 import { useParams } from "react-router-dom";
 

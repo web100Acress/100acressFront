@@ -331,12 +331,12 @@ export default function Activity() {
       window.removeEventListener('viewed-projects-changed', onViewed);
       window.removeEventListener('storage', onViewed);
     };
-  }, []);
+  });
 
   useEffect(() => {
     const unsub = favSubscribe(() => setFavData(getFavoritesData()));
     return () => { try { unsub(); } catch {} };
-  }, []);
+  });
 
   const likedList = useMemo(() => {
     const data = favData || {};

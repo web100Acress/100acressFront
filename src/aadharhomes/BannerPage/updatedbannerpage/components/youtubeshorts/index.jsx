@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useMemo } from 'react';
 import FloatingShortsMobile from "./FloatingShorts.mobile";
 import FloatingShortsDesktop from "./FloatingShorts.desktop";
 const FloatingShorts = ({ videoId = "" }) => {
@@ -9,11 +9,11 @@ const FloatingShorts = ({ videoId = "" }) => {
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 768);
-    };
+    });;
 
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  });
 
   // Render appropriate component based on screen size
   if (isMobile) {

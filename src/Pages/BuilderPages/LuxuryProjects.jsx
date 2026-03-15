@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useMemo } from 'react';
 import CommonInside from "../../Utils/CommonInside";
 import { useSelector } from "react-redux";
 import Api_Service from "../../Redux/utils/Api_Service";
@@ -61,9 +61,9 @@ const LuxuryProject = () => {
     return 0;
   });
 
- useEffect(()=>{
+ useEffect(() => {
     getAllProjects(query,0);
-  },[])
+  });
   return (
     <div>
       <Navbar />

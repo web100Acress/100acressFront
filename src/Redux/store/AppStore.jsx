@@ -1,3 +1,4 @@
+import React, { useMemo } from 'react';
 import { configureStore } from "@reduxjs/toolkit";
 import projectReducer from "../slice/projectSlice.jsx";
 import allUpcomingProjectReducer from "../slice/AllSectionData.jsx"; 

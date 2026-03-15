@@ -26,6 +26,7 @@ import { AuthContext } from "../AuthContext";
 // import FloatingShorts from "../aadharhomes/BannerPage/updatedbannerpage/components/youtubeshorts";
 import DynamicHeroBanner from "./HeroBanner/largebanner/DynamicHeroBanner";
 // import Tesimonial from "../Components/HomePageComponents/Tesimonial";
+import { getBrandedResidences } from "../Utils/ProjectOrderData";
 
 // Lazy load heavy components
 const BudgetPlotsInGurugraon = React.lazy(() => import("../Pages/BudgetPlotsInGurugraon"));
@@ -53,7 +54,7 @@ const ProjectsSlider = React.memo(({ projects, title, animation, path, compact =
 
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  });
 
   const handleScroll = () => {
     if (scrollRef.current) {
@@ -228,7 +229,7 @@ const CommercialProjectsSlider = React.memo(({ projects }) => {
 
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  });
 
   const handleScroll = () => {
     if (scrollRef.current) {
@@ -393,7 +394,7 @@ const Home = () => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, []);
+  });
 
   // Shorts ID is now fetched directly by FloatingShorts via backend polling.
 
@@ -412,7 +413,7 @@ const Home = () => {
 
   const handlePopupVisibilityChange = useCallback((isActive) => {
     setIsPopupActive(isActive);
-  }, []);
+  });
 
   // Auth modal state for sidebar card
   const [authOpen, setAuthOpen] = useState(false);
@@ -566,7 +567,7 @@ const Home = () => {
         transition: 'opacity 0.3s ease-in-out, visibility 0.3s ease-in-out'
       });
     }
-  }, []);
+  });
 
   useEffect(() => {
     handleScroll();
@@ -590,6 +591,7 @@ const Home = () => {
   const DubaiProjects = useSelector(store => store?.stateproject?.dubai) || [];
   const LuxuryAllProject = useSelector(store => store?.allsectiondata?.luxuryAll) || [];
   const NewLaunchProjects = useSelector(store => store?.allsectiondata?.newlaunch) || [];
+  const [brandedResidencesProjects, setBrandedResidencesProjects] = useState([]);
   const FarmhouseProjects = useSelector(store => {
     const data = store?.allsectiondata?.farmhouse || [];
     console.log('🏡 Redux Store State - All Section Data:', store?.allsectiondata);
@@ -615,14 +617,17 @@ const Home = () => {
       sectionsRef.current[section] = el;
     }
   };
-  const changeNavbarColor = () => {
-    if (window.scrollY >= 250) {
-      setColorchange(true);
-    } else {
-      setColorchange(false);
-    }
-  };
-  window.addEventListener("scroll", changeNavbarColor);
+  useEffect(() => {
+    const changeNavbarColor = () => {
+      if (window.scrollY >= 250) {
+        setColorchange(true);
+      } else {
+        setColorchange(false);
+      }
+    };
+    window.addEventListener("scroll", changeNavbarColor);
+    return () => window.removeEventListener("scroll", changeNavbarColor);
+  });
   const [activeFilter, setActiveFilter] = useState("Trending");
   const [trendingPage, setTrendingPage] = useState(0);
   const trendingScrollRef = useRef(null);
@@ -734,19 +739,59 @@ const Home = () => {
     loadData(activeFilter);
   }, [activeFilter, loadData]);
 
-  // Fetch new launch projects for the dedicated section
+  // Preload critical data on mount
   useEffect(() => {
-    if (!NewLaunchProjects || NewLaunchProjects.length === 0) {
-      getAllProjects("newlaunch", 4);
-    }
-  }, [NewLaunchProjects]);
+    // Load trending and featured immediately (above the fold)
+    const loadCriticalData = async () => {
+      const promises = [];
+      
+      if (TrendingProjects.length === 0) promises.push(getTrending());
+      if (FeaturedProjects.length === 0) promises.push(getFeatured());
+      if (NewLaunchProjects.length === 0) promises.push(getAllProjects("newlaunch", 4));
+      
+      await Promise.all(promises);
+    };
+    
+    loadCriticalData();
+  });
 
-  // Fetch upcoming projects for the dedicated section
+  // Load remaining data in parallel after initial load
   useEffect(() => {
-    if (!UpcomingProjects || UpcomingProjects.length === 0) {
-      getUpcoming();
-    }
-  }, [UpcomingProjects]);
+    if (!isContentReady) return;
+    
+    // Load remaining data in parallel
+    const loadRemainingData = async () => {
+      const promises = [];
+      
+      if (UpcomingProjects.length === 0) promises.push(getUpcoming());
+      if (CommercialProjects.length === 0) promises.push(getCommercial());
+      if (AffordableProjects.length === 0) promises.push(getAffordable());
+      if (SCOProjects.length === 0) promises.push(getScoplots());
+      if (LuxuryAllProject.length === 0) promises.push(getAllProjects("luxury"));
+      if (BudgetHomesProjects.length === 0) promises.push(getBudgetHomes());
+      if (ProjectinDelhi.length === 0) promises.push(getProjectIndelhi());
+      
+      await Promise.all(promises);
+    };
+    
+    // Small delay to prevent blocking initial render
+    setTimeout(loadRemainingData, 100);
+  }, [isContentReady]);
+
+  // Load branded residences data
+  useEffect(() => {
+    const loadBrandedResidences = async () => {
+      try {
+        const projects = await getBrandedResidences();
+        console.log('🏠 Home: Branded residences loaded:', projects);
+        setBrandedResidencesProjects(projects);
+      } catch (error) {
+        console.error('🏠 Home: Error loading branded residences:', error);
+      }
+    };
+
+    loadBrandedResidences();
+  });
 
   // Set the displayed projects based on the active filter
   useEffect(() => {
@@ -795,7 +840,7 @@ const Home = () => {
       AOS.init();
     }, 1000);
     return () => clearTimeout(timer);
-  }, []);
+  });
 
   useEffect(() => {
     setTimeout(() => {
@@ -809,10 +854,10 @@ const Home = () => {
     const timer = setTimeout(() => {
       setIsFirstLoad(false);
       setIsContentReady(true);
-    }, 100); // Ultra fast - 100ms
+    }, 50); // Ultra fast - 50ms
 
     return () => clearTimeout(timer);
-  }, []);
+  });
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -823,57 +868,68 @@ const Home = () => {
             if (!observedSections[section]) {
               setObservedSections(prev => ({ ...prev, [section]: true }));
 
-              if (section === "upcoming" && UpcomingProjects.length === 0) {
-                getUpcoming();
-              }
-              if (section === "luxury" && LuxuryProjects.length === 0) {
-                getAllProjects("luxury");
-              }
-              if (section === "budget" && BudgetHomesProjects.length === 0) {
-                getBudgetHomes();
-              }
-              if (section === "SCO" && SCOProjects.length === 0) {
-                getScoplots();
-              }
-              if (section === "commercial" && CommercialProjects.length === 0) {
-                getCommercial();
-              }
-              if (section === "feature" && FeaturedProjects.length === 0) {
-                getFeatured();
-              }
-              if (section === "affordable" && AffordableProjects.length === 0) {
-                getAffordable();
-              }
-              if (section === "delhi" && ProjectinDelhi.length === 0) {
-                getProjectIndelhi();
-              }
-              if (section === "dubai" && DubaiProjects.length === 0) {
-                getProjectbyState("Dubai");
-              }
-              if (section === "Farmhouses" && FarmhouseProjects.length === 0) {
-                console.log("🏡 Fetching Farmhouse Projects...");
-                getAllProjects("farmhouse", 8);
-              }
-              if (section === "resale") {
-                SetResaleSectionVisible(true);
-              }
+              // Load data immediately when section comes into view
+              const loadSectionData = async () => {
+                const promises = [];
+                
+                if (section === "upcoming" && UpcomingProjects.length === 0) {
+                  promises.push(getUpcoming());
+                }
+                if (section === "luxury" && LuxuryAllProject.length === 0) {
+                  promises.push(getAllProjects("luxury"));
+                }
+                if (section === "budget" && BudgetHomesProjects.length === 0) {
+                  promises.push(getBudgetHomes());
+                }
+                if (section === "SCO" && SCOProjects.length === 0) {
+                  promises.push(getScoplots());
+                }
+                if (section === "commercial" && CommercialProjects.length === 0) {
+                  promises.push(getCommercial());
+                }
+                if (section === "feature" && FeaturedProjects.length === 0) {
+                  promises.push(getFeatured());
+                }
+                if (section === "affordable" && AffordableProjects.length === 0) {
+                  promises.push(getAffordable());
+                }
+                if (section === "delhi" && ProjectinDelhi.length === 0) {
+                  promises.push(getProjectIndelhi());
+                }
+                if (section === "dubai" && DubaiProjects.length === 0) {
+                  promises.push(getProjectbyState("dubai"));
+                }
+                if (section === "Farmhouses" && FarmhouseProjects.length === 0) {
+                  console.log("🏡 Fetching Farmhouse Projects...");
+                  promises.push(getAllProjects("farmhouse", 8));
+                }
+                
+                await Promise.all(promises);
+                
+                if (section === "resale") {
+                  SetResaleSectionVisible(true);
+                }
+              };
+              
+              loadSectionData();
             }
           }
         });
       },
-      { root: null, threshold: 0.1, rootMargin: "700px" }
+      {
+        rootMargin: '100px', // Start loading 100px before section comes into view
+        threshold: 0.1
+      }
     );
 
-    Object.values(sectionsRef.current).forEach((el) => observer.observe(el));
+    // Observe all sections
+    const sections = document.querySelectorAll('[data-section]');
+    sections.forEach(section => observer.observe(section));
 
     return () => {
-      Object.values(sectionsRef.current).forEach((el) => observer.unobserve(el));
+      sections.forEach(section => observer.unobserve(section));
     };
-  }, [UpcomingProjects, LuxuryProjects, BudgetHomesProjects, SCOProjects, ProjectinDelhi, DubaiProjects, FarmhouseProjects]);
-
-  // console.log(resalesectionvisible,"section")
-
-
+  }, [observedSections, UpcomingProjects, LuxuryAllProject, BudgetHomesProjects, SCOProjects, CommercialProjects, FeaturedProjects, AffordableProjects, ProjectinDelhi, DubaiProjects, FarmhouseProjects, getAllProjects, getUpcoming, getBudgetHomes, getScoplots, getCommercial, getFeatured, getAffordable, getProjectIndelhi, getProjectbyState]);
 
   return (
     <Wrapper className="section">
@@ -1184,6 +1240,19 @@ const Home = () => {
                 )}
               </div>
 
+              {/* Branded Residences */}
+              <div>
+                {brandedResidencesProjects.length === 0 ? <CustomSkeleton /> : (
+                  <ProjectsSlider 
+                    projects={brandedResidencesProjects} 
+                    title="Branded Residences" 
+                    animation="fade-up" 
+                    path={"/branded-residences/"} 
+                    compact 
+                  />
+                )}
+              </div>
+
               {/* Luxury Projects */}
               <div ref={setRef("luxury")} data-section="luxury" style={{ height: "10px" }}></div>
               <div>
@@ -1267,6 +1336,14 @@ const Home = () => {
                       <h2 className="text-2xl xl:text-4xl lg:text-3xl md:text-2xl text-[#111] font-bold font-['Rubik',sans-serif] mb-3 pl-1">
                         Top Featured Projects
                       </h2>
+                      <div className="hidden sm:block">
+                        <Link to="/projects-in-gurugram/" target="_top">
+                          <span className="relative overflow-hidden flex items-center text-white text-sm px-3 py-1.5 rounded-full bg-red-600 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 before:absolute before:left-0 before:top-0 before:h-full before:w-0 before:bg-red-700 before:transition-all before:duration-300 before:rounded-full before:-z-10 hover:before:w-full">
+                            <EyeIcon size={16} />
+                            <span className="ml-2">View All Projects</span>
+                          </span>
+                        </Link>
+                      </div>
                     </div>
 
                     <div

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useMemo } from 'react';
 import Sidebar from "../../../../../AdminPage/Sidebar";
 import { Link } from "react-router-dom";
 import api from "../../../../../config/apiClient";
@@ -109,7 +109,7 @@ const Blog = () => {
 
   useEffect(() => {
     fetchBlogData();
-  }, []); // Fetch all data on component mount
+  }); // Fetch all data on component mount
 
   // Apply author filter on top of current viewAll (which may already be search-filtered)
   const filteredBlogs = viewAll.filter((row) => {

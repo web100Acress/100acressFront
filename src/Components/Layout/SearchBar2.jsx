@@ -1,3 +1,4 @@
+import React, { useMemo } from 'react';
 import Card from "../../RoughComponent/Card"
 import Card2Boot from "../../RoughComponent/Card2Boot"
 import Carousel from "react-multi-carousel"

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useMemo } from 'react';
 import Sidebar from "./Sidebar";
 import { useParams, Link } from "react-router-dom";
 import axios from "axios";
@@ -33,7 +33,7 @@ const RentEdit = () => {
     const fetchData = async () => {
       try {
         const res = await axios.get(
-          `/property/rent/${id}`
+          `/property/rent/${id});`
         );
         setViewDetails(res.data.data);
       } catch (error) {
@@ -41,7 +41,7 @@ const RentEdit = () => {
       }
     };
     fetchData();
-  }, []);
+  });
 
   const handleDataUpdate = async () => {
     try {

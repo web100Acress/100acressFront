@@ -1,3 +1,4 @@
+import React, { useMemo } from 'react';
 // Utility functions for project ordering
 
 // Simple seeded random number generator for consistent random ordering

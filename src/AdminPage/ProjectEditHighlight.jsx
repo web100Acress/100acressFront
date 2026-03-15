@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useMemo } from 'react';
 import Sidebar from "./Sidebar";
 import axios from "axios";
 import { useParams } from "react-router-dom";
@@ -32,7 +32,7 @@ const ProjectEditHighlight = () => {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  });
 
   const updateEditHighLightsData = async (e) => {
     try {

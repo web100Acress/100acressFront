@@ -1,3 +1,4 @@
+import React, { useMemo } from 'react';
 export const rentalFAQs = [
   {
     question: "Does 100acress charge any brokerage for rental properties?",

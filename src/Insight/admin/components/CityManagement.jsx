@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useMemo } from 'react';
 
 export default function CityManagement({
   activeTab,
@@ -63,13 +63,13 @@ export default function CityManagement({
       console.log('CityManagement received cityDataChanged event:', event.detail);
       // The parent component should handle the actual refresh
       // This is just a notification that data might have changed
-    };
+    });;
 
     window.addEventListener('cityDataChanged', handleCityDataChanged);
     return () => {
       window.removeEventListener('cityDataChanged', handleCityDataChanged);
     };
-  }, []);
+  });
 
   return (
     <div className="bg-white border border-gray-200 rounded-2xl shadow-sm">

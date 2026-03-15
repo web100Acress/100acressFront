@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useMemo } from 'react';
 import { styled } from "styled-components";
 import { MdLocationPin } from "react-icons/md";
 import axios from "axios";
@@ -12,16 +12,16 @@ function StarCard() {
 //             const res = await axios.get('https://acre.onrender.com/project/trending');
 //             setTrendingProject(res.data.data);
 //             // console.log(trendingProject, "trending project");
-//         } catch (error) {
+//         }); catch (error) {
 //             console.log(error || error.message);
 //         }
 //     }
 //     fetchData();
-// }, []);
+// });
 
-// useEffect(()=>{
+// useEffect(() => {
 //    console.log(trendingProject,"final")
-// },[trendingProject])
+// });,[trendingProject])
 
 
 
@@ -35,7 +35,7 @@ const [trendingProject, setTrendingProject] = useState([]);
           const res = await axios.get('/api/property/buy/ViewAll');
           setTrendingProject(res.data.ResaleData);
           setHasFetchedData(true);
-        } catch (error) {
+        }); catch (error) {
           console.log(error || error.message);
         }
       }
@@ -45,7 +45,7 @@ const [trendingProject, setTrendingProject] = useState([]);
 
   useEffect(() => {
     console.log(trendingProject, "final");
-  }, [trendingProject]);
+  });, [trendingProject]);
 
   
   return (

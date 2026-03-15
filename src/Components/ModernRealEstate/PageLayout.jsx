@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useMemo } from 'react';
 import { Helmet } from 'react-helmet';
 import Hero from './Hero';
 import FilterSidebar from './FilterSidebar';
@@ -56,7 +56,7 @@ const PageLayout = ({
       // Price filter
       if (filters.price.min && project.minPrice && project.minPrice < parseFloat(filters.price.min) * 100000) {
         return false;
-      }
+      });
       if (filters.price.max && project.minPrice && project.minPrice > parseFloat(filters.price.max) * 100000) {
         return false;
       }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useMemo } from 'react';
 import { useDubai } from '../context/DubaiContext';
 
 export const NewHero = () => {
@@ -9,7 +9,7 @@ export const NewHero = () => {
     const handleScroll = () => setScrollY(window.scrollY);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  });
 
   // Dubai video from S3 bucket
   const heroVideo = "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/dubai/dubai_vidoe.webm";

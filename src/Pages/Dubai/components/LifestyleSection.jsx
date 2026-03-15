@@ -1,9 +1,11 @@
+import React, { useMemo } from 'react';
 import { Button } from "../../../Components/ui/button";
 import { ArrowRight } from "lucide-react";
 import lifestyle1 from "../assets/lifestyle-1.jpg";
 import lifestyle2 from "../assets/lifestyle-2.jpg";
 
-export const LifestyleSection = () => {
+export const LifestyleSection = () => 
+{
   return (
     <section id="lifestyle" className="py-24 relative overflow-hidden">
       {/* Blurry Video Background Effect */}

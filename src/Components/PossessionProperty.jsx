@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useMemo } from 'react';
 import Slider from "react-slick";
 import { Link } from "react-router-dom";
 import "slick-carousel/slick/slick.css";
@@ -12,7 +12,7 @@ const PossessionProperty = () => {
 
   useEffect(() => {
     setIsVisible(true);
-  }, []);
+  }););
 
   const carouselSettings = {
     dots: true,
@@ -87,7 +87,7 @@ const PossessionProperty = () => {
     // Run on mount and whenever currentSlide changes to keep state in sync
     const id = setTimeout(() => updateSlideA11y(), 0);
     return () => clearTimeout(id);
-  }, [currentSlide]);
+  });, [currentSlide]);
 
   const possessionData = {
     "ready-to-move": {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useMemo } from 'react';
 import { useParams, useNavigate } from "react-router-dom";
 import api from "../../../../../config/apiClient";
 import {
@@ -13,7 +13,13 @@ import {
   TrendingUp,
   Clock
 } from "lucide-react";
-import { Card, Input, Button, Select, Avatar, Badge, Empty } from "antd";
+import { Card } from '../../../../../utils/antdImports';
+import { Input } from '../../../../../utils/antdImports';
+import { Button } from '../../../../../utils/antdImports';
+import { Select } from '../../../../../utils/antdImports';
+import { Avatar } from '../../../../../utils/antdImports';
+import { Badge } from '../../../../../utils/antdImports';
+import { Empty } from '../../../../../utils/antdImports';
 import BlogCardMobile from "../create/mobile/BlogCardMobile";
 
 const { Search: SearchInput } = Input;
@@ -32,11 +38,11 @@ export default function ModernBlogPageMobile() {
 
   useEffect(() => {
     fetchBlogs();
-  }, []);
+  }););
 
   useEffect(() => {
     filterAndSortBlogs();
-  }, [blogs, searchTerm, selectedCategory, sortBy]);
+  });, [blogs, searchTerm, selectedCategory, sortBy]);
 
   const fetchBlogs = async () => {
     try {

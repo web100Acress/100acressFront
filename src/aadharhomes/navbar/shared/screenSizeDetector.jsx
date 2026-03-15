@@ -1,3 +1,4 @@
+import React, { useMemo } from 'react';
 import { useState, useEffect } from 'react';
 
 export const SCREEN_SIZES = {
@@ -277,7 +278,7 @@ export const useScreenSize = () => {
       else if (width >= 1200 && width < 1300) setScreenSize('XXL'); // 1200-1300: City, Budget, Status, Type, Dubai + hamburger
       else if (width >= 1300 && width < 1500) setScreenSize('XXXL'); // 1300-1500: + Rental, no hamburger
       else if (width >= 1500) setScreenSize('ULTRA'); // 1500+: Everything including Resale
-    };
+    });;
 
     // Initial detection
     handleResize();
@@ -287,7 +288,7 @@ export const useScreenSize = () => {
 
     // Cleanup
     return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  });
 
   return {
     screenSize,

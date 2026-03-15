@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useMemo } from 'react';
 import { Star, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Helmet } from 'react-helmet';
@@ -117,14 +117,14 @@ const Mobiletestimonial = () => {
             // Start auto-scroll on mobile only
             if (window.innerWidth < 768) {
                 startAutoScroll();
-            }
+            });
             
             return () => {
                 container.removeEventListener('scroll', checkScrollButtons);
                 stopAutoScroll();
             };
         }
-    }, []);
+    });
 
     // Pause auto-scroll on hover
     const handleMouseEnter = () => {
@@ -286,7 +286,7 @@ const Mobiletestimonial = () => {
                         </svg>
                     </a>
                     <a 
-                        href="/testimonials"
+                        href="/testimonials/"
                         className="bg-[#0A2647] text-white px-6 py-2 rounded-full font-semibold hover:bg-[#1A5F7A] transition-colors shadow-md text-sm"
                     >
                         See more reviews

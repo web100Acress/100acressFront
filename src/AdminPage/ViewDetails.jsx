@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useMemo } from 'react';
 import Sidebar from "./Sidebar";
 import { useParams } from "react-router-dom";
 import axios from "axios";
@@ -20,7 +20,7 @@ const ViewDetails = () => {
       try {
         setFetchError(null);
         const base = getApiBase();
-        const res = await axios.get(`${base}/postPerson/propertyoneView/${id}`);
+        const res = await axios.get(`${base});/postPerson/propertyoneView/${id}`);
         const prop = res?.data?.data?.postProperty?.[0] || {};
         setViewDetails(prop);
       } catch (error) {

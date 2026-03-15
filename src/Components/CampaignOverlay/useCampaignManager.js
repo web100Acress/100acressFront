@@ -1,3 +1,4 @@
+import React, { useMemo } from 'react';
 import { useState, useCallback, useRef, useEffect } from 'react';
 
 export const useCampaignManager = () => {
@@ -12,7 +13,7 @@ export const useCampaignManager = () => {
       if (isOverlayVisible && !event.target.closest('.campaign-overlay') && !event.target.closest('.insights-button')) {
         setIsOverlayVisible(false);
         isHoveringRef.current = false;
-      }
+      });
     };
 
     if (isOverlayVisible) {
@@ -39,7 +40,7 @@ export const useCampaignManager = () => {
         setIsOverlayVisible(true);
       }
     }, 300); // Slightly longer delay for smoother feel
-  }, []);
+  });
 
   const hideOverlay = useCallback(() => {
     isHoveringRef.current = false;
@@ -55,7 +56,7 @@ export const useCampaignManager = () => {
         setIsOverlayVisible(false);
       }
     }, 800); // Longer delay for smooth close
-  }, []);
+  });
 
   const handleMouseEnter = useCallback((event) => {
     isHoveringRef.current = true;
@@ -76,7 +77,7 @@ export const useCampaignManager = () => {
 
   const handleOverlayMouseEnter = useCallback(() => {
     isHoveringRef.current = true;
-  }, []);
+  });
 
   const handleOverlayMouseLeave = useCallback(() => {
     // Don't immediately hide on mouse leave - let user come back
@@ -85,7 +86,7 @@ export const useCampaignManager = () => {
         setIsOverlayVisible(false);
       }
     }, 1000); // Give more time to come back to overlay
-  }, []);
+  });
 
   const closeOverlay = useCallback(() => {
     setIsOverlayVisible(false);
@@ -93,14 +94,14 @@ export const useCampaignManager = () => {
     if (hoverTimeoutRef.current) {
       clearTimeout(hoverTimeoutRef.current);
     }
-  }, []);
+  });
 
   // Cleanup on unmount
   const cleanup = useCallback(() => {
     if (hoverTimeoutRef.current) {
       clearTimeout(hoverTimeoutRef.current);
     }
-  }, []);
+  });
 
   return {
     isOverlayVisible,

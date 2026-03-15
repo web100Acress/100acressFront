@@ -1,3 +1,4 @@
+import React, { useMemo } from 'react';
 // Desktop Categories
 export { default as BasicInfoCategory } from './BasicInfoCategory';
 export { default as LocationCategory } from './LocationCategory';

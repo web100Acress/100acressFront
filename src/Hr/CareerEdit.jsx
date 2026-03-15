@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useMemo } from 'react';
 import Sidebar from "../AdminPage/Sidebar";
 import { useParams } from "react-router-dom";
 import axios from "axios";
@@ -37,7 +37,7 @@ const CareerEdit = () => {
 
   useEffect(() => {
     fetchViewData();
-  }, []);
+  });
 
 
 function handleFileChange(event) {

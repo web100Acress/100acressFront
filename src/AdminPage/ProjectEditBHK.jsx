@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useMemo } from 'react';
 import Sidebar from "./Sidebar";
 import { useParams, useNavigate } from "react-router-dom"; // Import useNavigate
 import apiClient from "../config/apiClient";
@@ -22,7 +22,7 @@ const ProjectEditBHK = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await apiClient.get(`bhk_edit/${id}`);
+        const res = await apiClient.get(`bhk_edit/${id});`);
         // Ensure data exists before setting state
         if (res.data?.data?.BhK_Details && res.data.data.BhK_Details.length > 0) {
           setViewBHK(res.data.data.BhK_Details[0]);

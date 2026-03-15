@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo } from 'react';
 
 export default function PriceTrendsCompare({
   duration,

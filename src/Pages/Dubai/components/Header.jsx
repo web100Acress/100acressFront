@@ -1,3 +1,4 @@
+import React, { useMemo } from 'react';
 import { useState, useEffect } from "react";
 import { Button } from "../../../Components/ui/button";
 import { Menu, X, Phone, ChevronDown } from "lucide-react";
@@ -7,7 +8,8 @@ import { useDubai } from "../context/DubaiContext";
 // Logo URL
 const LOGO = "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/white-logo.webp";
 
-export const Header = () => {
+export const Header = () => 
+{
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isEmiratesDropdownOpen, setIsEmiratesDropdownOpen] = useState(false);
@@ -29,7 +31,7 @@ export const Header = () => {
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  });
 
   // Close dropdown when clicking outside
   useEffect(() => {

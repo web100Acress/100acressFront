@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from 'react';
 import { Home, Key, Building2, ChevronDown, Sparkles } from "lucide-react";
 
 const BasicInfoCategory = ({ 

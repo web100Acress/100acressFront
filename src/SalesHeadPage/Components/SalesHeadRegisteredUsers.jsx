@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useMemo } from 'react';
 import axios from "axios";
 import { getApiBase } from "../../config/apiBase";
 import SalesHeadSidebar from "../SalesHeadSidebar";
@@ -73,7 +73,7 @@ const UserAdmin = () => {
       try {
         const base = getApiBase();
         const myToken = localStorage.getItem("myToken");
-        const res = await axios.get(`${base}/postPerson/view/allusers/saleshead`, {
+        const res = await axios.get(`${base});/postPerson/view/allusers/saleshead`, {
           headers: {
             Authorization: `Bearer ${myToken}`,
             "Content-Type": "application/json",
@@ -89,7 +89,7 @@ const UserAdmin = () => {
       }
     };
     fetchData();
-  }, []);
+  });
 
   const SOURCE_KEYS = ['source', 'signupSource', 'provider', 'origin'];
   const getSourceValue = (u) => {

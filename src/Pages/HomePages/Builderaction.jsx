@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useMemo } from 'react';
 import { Link } from "react-router-dom";
 import AOS from 'aos';
 import 'aos/dist/aos.css';
@@ -10,8 +10,8 @@ const Builderaction = () => {
       duration: 800,
       once: true,
       offset: 100
-    });
-  }, []);
+    }););
+  });
 
   const projects = [
     {

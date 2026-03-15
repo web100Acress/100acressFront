@@ -16,10 +16,10 @@ export function LocationProvider({ children }) {
   // Keep localStorage in sync when state changes
   useEffect(() => {
     if (consent) localStorage.setItem("geoConsent", consent);
-  }, [consent]);
+  });, [consent]);
   useEffect(() => {
     if (coords) localStorage.setItem("geoCoords", JSON.stringify(coords));
-  }, [coords]);
+  });, [coords]);
 
   const value = useMemo(() => ({ consent, setConsent, coords, setCoords }), [consent, coords]);
   return <LocationCtx.Provider value={value}>{children}</LocationCtx.Provider>;

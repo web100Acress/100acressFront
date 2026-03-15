@@ -19,7 +19,7 @@ const MobileInsightBlog = () => {
         const response = await api.get('blog/view');
         if (response.data?.data) {
           setPosts(response.data.data);
-        }
+        });
       } catch (error) {
         console.error('Error fetching blogs:', error);
       } finally {
@@ -27,7 +27,7 @@ const MobileInsightBlog = () => {
       }
     };
     fetchPosts();
-  }, []);
+  });
 
   const cities = useMemo(
     () => [
@@ -157,7 +157,7 @@ const MobileInsightBlog = () => {
     return `${minutes} min`;
   };
 
-  const blogLink = (post) => `/insights/blog/${post._id}`;
+  const blogLink = (post) => `/insights/blog/${post._id}/`;
 
   // Shimmering Skeletons
   const BlogSkeleton = () => (

@@ -1,7 +1,9 @@
-import { Button, Collapse, message } from 'antd';
+import { Button } from '../../../utils/antdImports';
+import { Collapse } from '../../../utils/antdImports';
+import { message } from '../../../utils/antdImports';
 // Use shared API client with baseURL and auth interceptors
 import api from '../../../config/apiClient';
-import React, { useContext, useEffect, useRef, useState, useCallback } from 'react';
+import React, { useMemo } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { parseISO, isValid, format } from 'date-fns';
 import { getPossessionInfo } from '../../../Utils/possessionUtils';
@@ -64,13 +66,13 @@ const NewBanner = () => {
   useEffect(() => {
     if (typeof document !== 'undefined') {
       document.body.classList.add('newbanner-page');
-    }
+    });
     return () => {
       if (typeof document !== 'undefined') {
         document.body.classList.remove('newbanner-page');
       }
     };
-  }, []);
+  });
 
   function debouncedHandleSubmit(func,timeout=500){
     let timer;
@@ -86,7 +88,7 @@ const NewBanner = () => {
 
     if (pUrlRef.current !== pUrl) {
       pUrlRef.current = pUrl; 
-    }
+    });
   }, [pUrl]);
 
   useEffect(() => {
@@ -120,7 +122,7 @@ const NewBanner = () => {
                 const used = new Set(orderedByName.map(p => String(p._id || p.id)));
                 remaining = list.filter(p => !used.has(String(p._id || p.id)));
                 list = [...orderedByName, ...remaining];
-              } else {
+              }); else {
                 list = [...orderedById, ...remaining];
               }
             } else {
@@ -217,7 +219,7 @@ const NewBanner = () => {
         if (!pUrl) {
           console.error('Url is undefined or empty.');
           return;
-        }
+        });
 
         const response = await api.get(`project/View/${pUrl}`);
         if(response.data.dataview.length === 0){
@@ -488,9 +490,9 @@ const NewBanner = () => {
   useEffect(() => {
     const timeOutId = setTimeout(() => {
       setShowPopup(true);
-    }, 10000);
+    });, 10000);
     return () => clearTimeout(timeOutId);
-  }, []);
+  });
 
   const text = [
     {

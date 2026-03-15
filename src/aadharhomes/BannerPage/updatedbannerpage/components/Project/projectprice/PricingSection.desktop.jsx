@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 
 const PricingSectionDesktop = ({ projectName, minPrice, maxPrice, bhkDetails = [], paymentPlan = [], onShowCallback = () => {}, projectViewDetails = null }) => {
   console.log('PricingSection Props:', { projectName, bhkDetails, paymentPlan, projectViewDetails });
@@ -53,9 +53,9 @@ const PricingSectionDesktop = ({ projectName, minPrice, maxPrice, bhkDetails = [
   };
 
   return (
-    <section className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+    <section className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-[60px] pb-8" style={{ zIndex: 1 }}>
       {/* Luxury Dark Card Container */}
-      <div className="relative rounded-2xl overflow-hidden bg-gradient-to-br from-gray-900 via-black to-gray-800 shadow-[0_20px_60px_rgba(0,0,0,0.4)] border border-amber-900/30">
+      <div className="relative rounded-2xl overflow-hidden bg-[#25526f] border border-amber-900/30">
         
         {/* Dark Golden Accent Line */}
         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-600 via-amber-500 to-amber-700"></div>
@@ -76,10 +76,10 @@ const PricingSectionDesktop = ({ projectName, minPrice, maxPrice, bhkDetails = [
           {hasBhkDetails ? (
             <>
               {/* Desktop/Tablet: Table Layout (md and up) */}
-              <div className="hidden md:block">
-                <div className="rounded-lg border border-gray-700 max-w-4xl mx-auto">
-                  <table className="w-full divide-y divide-gray-700">
-                    <thead className="bg-gradient-to-r from-amber-900/30 to-amber-800/20">
+              <div className="hidden md:block mt-8">
+                <div className="rounded-lg border border-amber-700/50 max-w-4xl mx-auto">
+                  <table className="w-full divide-y divide-amber-700/30">
+                    <thead className="bg-gradient-to-r from-amber-800/40 to-amber-700/30">
                       <tr>
                         <th scope="col" className="px-6 py-4 text-center text-xs font-medium text-amber-400 uppercase tracking-wider">
                           Unit Type
@@ -97,9 +97,9 @@ const PricingSectionDesktop = ({ projectName, minPrice, maxPrice, bhkDetails = [
                         )}
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-700">
+                    <tbody className="divide-y divide-amber-700/30">
                       {bhkDetails.map((item, index) => (
-                        <tr key={index} className="hover:bg-gray-800/50 transition-colors duration-200">
+                        <tr key={index} className="hover:bg-amber-800/20 transition-colors duration-200">
                           <td className="px-6 py-4 text-center">
                             <div className="text-base font-medium text-white">{item.bhk_type || `Unit ${index + 1}`}</div>
                           </td>
@@ -126,14 +126,14 @@ const PricingSectionDesktop = ({ projectName, minPrice, maxPrice, bhkDetails = [
               </div>
 
               {/* Mobile: Card Layout (improved design) */}
-              <div className="md:hidden space-y-3 max-w-sm mx-auto">
+              <div className="md:hidden space-y-3 max-w-sm mx-auto mt-8">
                 {bhkDetails.map((item, index) => (
                   <div key={index} className="relative group">
                     <div className="absolute -inset-0.5 bg-gradient-to-r from-amber-600 to-amber-400 rounded-xl blur opacity-20 group-hover:opacity-30 transition duration-300"></div>
-                    <div className="relative bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 rounded-xl border border-gray-700/50 p-4 space-y-3">
+                    <div className="relative bg-[#25526f] rounded-xl border border-amber-700/50 p-4 space-y-3">
                       
                       {/* Unit Type - Full width header */}
-                      <div className="text-center pb-2 border-b border-gray-700/50">
+                      <div className="text-center pb-2 border-b border-amber-700/50">
                         <div className="text-xs text-amber-400 uppercase tracking-wider font-medium mb-1">Unit Type</div>
                         <div className="text-xl font-bold text-white">{item.bhk_type || `Unit ${index + 1}`}</div>
                       </div>
@@ -198,9 +198,7 @@ const PricingSectionDesktop = ({ projectName, minPrice, maxPrice, bhkDetails = [
 
           {/* CTA Section */}
           <div className="mt-8 text-center">
-            <p className="text-gray-400 mb-6">
-              Contact us for detailed pricing and exclusive offers
-            </p>
+           
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <button 
                 onClick={onShowCallback}

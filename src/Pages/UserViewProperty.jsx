@@ -50,7 +50,7 @@ const UserViewProperty = () => {
     fetchData();
     const interval = setInterval(() => fetchData(true), 60000);
     return () => clearInterval(interval);
-  }, []);
+  });
 
   // Filter Logic - Merged Category + Search Filtration
   const filteredProperties = useMemo(() => {

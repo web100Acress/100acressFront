@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from 'react';
 import Footer from "../Components/Actual_Components/Footer";
 import { Helmet } from "react-helmet";
 

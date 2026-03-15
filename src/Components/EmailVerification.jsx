@@ -1,7 +1,9 @@
+import React, { useMemo } from 'react';
 import { useEffect, useState } from "react";
 import {  useNavigate } from "react-router-dom";
 import api from "../config/apiClient";
-import { Input ,message} from 'antd';
+import { Input } from '../utils/antdImports';
+import { message } from '../utils/antdImports';
 
 function EmailVerification() {
 
@@ -20,7 +22,7 @@ function EmailVerification() {
     } catch {
       // ignore
     }
-  }, []);
+  });
 
   const handleSendOTP = () => {
     if (isSending) return;

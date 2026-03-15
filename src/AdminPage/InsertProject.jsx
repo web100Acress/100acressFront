@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useMemo } from 'react';
 import { useNavigate } from "react-router-dom";
 import api from "../config/apiClient";
 import { showToast } from "../Utils/toastUtils"; // Import Ant Design message for modern notifications
@@ -186,7 +186,7 @@ const InsertProject = () => {
     fetchCitiesFromBackend();
     fetchStatesFromBackend();
     fetchCountriesFromBackend();
-  }, []);
+  });
 
   const [editFromData, setEditFromData] = useState({
     projectName: "",

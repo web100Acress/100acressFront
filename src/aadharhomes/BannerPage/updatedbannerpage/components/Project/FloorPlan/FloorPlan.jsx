@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useMemo } from 'react';
 import MobileFloorPlan from './mobileFloorPlan';
 import DesktopFloorPlan from './desktopFloorPlan';
 
@@ -9,7 +9,7 @@ const FloorPlan = ({ floorPlans = [], bhkDetails = [], onShowCallback = () => {}
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768); // Tailwind's md breakpoint
-    };
+    });;
 
     // Initial check
     checkMobile();
@@ -19,7 +19,7 @@ const FloorPlan = ({ floorPlans = [], bhkDetails = [], onShowCallback = () => {}
 
     // Cleanup
     return () => window.removeEventListener('resize', checkMobile);
-  }, []);
+  });
 
   // Render mobile version on mobile devices, desktop version otherwise
   if (isMobile) {

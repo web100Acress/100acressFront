@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useMediaQuery } from '@chakra-ui/react';
 import HomeDesktopBlog from './homeDesktop';
 import HomeMobileBlog from './homemobileblog';

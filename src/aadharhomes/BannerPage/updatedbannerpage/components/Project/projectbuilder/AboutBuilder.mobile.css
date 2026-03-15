@@ -1,0 +1,259 @@
+/* About Builder Mobile Component Styles */
+
+/* Main section container */
+.about-builder-mobile {
+  position: relative;
+  padding: 1rem 0;
+  background: #2d94b3;
+  color: #ffffff;
+  overflow: hidden;
+}
+
+@media (min-width: 768px) {
+  .about-builder-mobile {
+    padding: 1.5rem 0;
+  }
+}
+
+/* Animated Background Elements */
+.about-builder-mobile-background {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.about-builder-mobile-background-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.05;
+}
+
+.about-builder-mobile-float-element-1 {
+  position: absolute;
+  top: 25%;
+  left: 33.33%;
+  width: 16rem;
+  height: 16rem;
+  background: linear-gradient(to bottom right, #f59e0b, #d97706);
+  border-radius: 50%;
+  filter: blur(2rem);
+  animation: float 6s ease-in-out infinite;
+}
+
+.about-builder-mobile-float-element-2 {
+  position: absolute;
+  bottom: 25%;
+  right: 33.33%;
+  width: 14rem;
+  height: 14rem;
+  background: linear-gradient(to top left, #fbbf24, #f59e0b);
+  border-radius: 50%;
+  filter: blur(2rem);
+  animation: float 6s ease-in-out infinite;
+  animation-delay: 2s;
+}
+
+.about-builder-mobile-gradient-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, transparent, rgba(245, 158, 11, 0.1), transparent);
+}
+
+/* Content wrapper */
+.about-builder-mobile-content {
+  position: relative;
+  z-index: 10;
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: 0 1rem 0 1.5rem 0 2rem;
+}
+
+/* Section Header */
+.about-builder-mobile-header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .about-builder-mobile-header {
+    margin-bottom: 2rem;
+  }
+}
+
+/* Header icon */
+.about-builder-mobile-header-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  background: linear-gradient(to bottom right, #f59e0b, #d97706);
+  border-radius: 50%;
+  margin-bottom: 0.75rem;
+}
+
+.about-builder-mobile-header-icon svg {
+  width: 1.75rem;
+  height: 1.75rem;
+  color: #000000;
+}
+
+/* Section title */
+.about-builder-mobile-subtitle {
+  color: #fbbf24;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  margin-bottom: 0.5rem;
+}
+
+.about-builder-mobile-title {
+  color: #ffffff;
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 0.75rem;
+  max-width: 48rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media (min-width: 768px) {
+  .about-builder-mobile-title {
+    font-size: 1.875rem;
+  }
+}
+
+/* Accent line */
+.about-builder-mobile-accent-line {
+  width: 4rem;
+  height: 0.125rem;
+  background: linear-gradient(to right, #d97706, #f59e0b, #fbbf24);
+  border-radius: 9999px;
+  margin: 0 auto;
+}
+
+/* Developer Content */
+.about-builder-mobile-developer-content {
+  max-width: 64rem;
+  margin: 0 auto;
+  margin-top: 1.5rem;
+}
+
+/* Developer card */
+.about-builder-mobile-developer-card {
+  position: relative;
+}
+
+.about-builder-mobile-developer-card-content {
+  position: relative;
+  background: #25526f;
+  border-radius: 0.75rem;
+  padding: 0.5rem;
+  border: 1px solid rgba(55, 65, 81, 0.5);
+}
+
+@media (min-width: 768px) {
+  .about-builder-mobile-developer-card-content {
+    padding: 1.5rem;
+  }
+}
+
+/* Developer Description */
+.about-builder-mobile-developer-description {
+  margin-bottom: 0.5rem;
+}
+
+.about-builder-mobile-developer-text {
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
+@media (min-width: 768px) {
+  .about-builder-mobile-developer-text {
+    font-size: 1.125rem;
+  }
+}
+
+/* Expand/Collapse button */
+.about-builder-mobile-expand-button {
+  margin-top: 0.5rem;
+  color: #fbbf24;
+  font-weight: 600;
+  font-size: 0.875rem;
+  transition: color 0.3s;
+  border: none;
+  background: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.about-builder-mobile-expand-button:hover {
+  color: #fde68a;
+}
+
+.about-builder-mobile-expand-icon {
+  width: 1rem;
+  height: 1rem;
+  transition: transform 0.3s;
+}
+
+.about-builder-mobile-expand-icon.rotated {
+  transform: rotate(180deg);
+}
+
+/* Mobile Other Projects Section */
+.about-builder-mobile-other-projects-section {
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid rgba(55, 65, 81, 0.5);
+}
+
+/* Animations */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animation-delay-2000 {
+  animation-delay: 2s;
+}
+
+/* Responsive adjustments */
+@media (max-width: 767px) {
+  .about-builder-mobile-content {
+    padding: 0 0.75rem;
+  }
+  
+  .about-builder-mobile-header {
+    margin-bottom: 1.5rem;
+  }
+  
+  .about-builder-mobile-title {
+    font-size: 1.25rem;
+  }
+  
+  .about-builder-mobile-developer-card-content {
+    padding: 0.5rem;
+  }
+  
+  .about-builder-mobile-developer-text {
+    font-size: 1rem;
+  }
+}

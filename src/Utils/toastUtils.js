@@ -1,3 +1,4 @@
+import React, { useMemo } from 'react';
 import toast from 'react-hot-toast';
 
 // Toast utility functions with consistent 2-second duration

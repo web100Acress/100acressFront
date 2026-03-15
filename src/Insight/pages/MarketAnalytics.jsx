@@ -92,7 +92,7 @@ export default function MarketAnalytics() {
       }
     } catch { }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  });
 
   // Dynamically import Recharts so app doesn't crash if package isn't installed yet.
   useEffect(() => {
@@ -106,7 +106,7 @@ export default function MarketAnalytics() {
       }
     })();
     return () => { mounted = false; };
-  }, []);
+  });
 
   return (
     <React.Fragment>

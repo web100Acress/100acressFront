@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useMemo } from 'react';
 import styled, { keyframes } from "styled-components";
 import { Link } from "react-router-dom";
 import {
@@ -103,7 +103,7 @@ function SearchBar() {
         { enableHighAccuracy: true, timeout: 10000, maximumAge: 300000 } // 5 minutes cache
       );
     }
-  }, []);
+  });
 
   // Enhanced number conversion system with advanced features
   const numberWords = {
@@ -433,7 +433,7 @@ function SearchBar() {
     if (storedSearches) {
       setPreviousSearches(JSON.parse(storedSearches));
     }
-  }, []);
+  });
 
   // Save search to localStorage
   const saveSearchToLocalStorage = (query) => {
@@ -1001,7 +1001,7 @@ function SearchBar() {
     updateItemsPerPage();
     window.addEventListener("resize", updateItemsPerPage);
     return () => window.removeEventListener("resize", updateItemsPerPage);
-  }, []);
+  });
 
   const handleNext = () => {
     if (currentIndex + itemsPerPage < localities.length) {

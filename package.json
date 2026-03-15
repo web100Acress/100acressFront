@@ -101,7 +101,14 @@
     "preview": "vite preview",
     "lint": "eslint src --ext .js,.jsx --max-warnings=0",
     "check:api-domain": "node scripts/checkApiDomain.js",
-    "verify:api": "npm run lint && npm run check:api-domain"
+    "verify:api": "npm run lint && npm run check:api-domain",
+    "analyze:css": "node scripts/purge-css.js",
+    "analyze:bundle": "node scripts/analyze-bundle.js build",
+    "analyze": "npm run analyze:css && npm run analyze:bundle",
+    "optimize:imports": "node scripts/optimize-imports.js",
+    "optimize:all": "npm run optimize:imports && npm run build && npm run analyze",
+    "optimize:main-thread": "node scripts/fix-useeffect-deps.js && node scripts/optimize-heavy-maps.js",
+    "analyze:main-thread": "node scripts/analyze-main-thread.js"
   },
   "eslintConfig": {
     "extends": [

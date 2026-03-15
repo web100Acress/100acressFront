@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useMemo } from 'react';
 import { Link } from "react-router-dom";
 import { SearchIcon } from "../Assets/icons";
 
@@ -13,7 +13,7 @@ const ScrollSearch = ({ data1 }) => {
     setFormData((prevState) => ({
       ...prevState,
       collectionName: data1,
-    }));
+    });));
   }, [data1]);
 
   const handleInputChange = (event) => {
@@ -51,7 +51,7 @@ const ScrollSearch = ({ data1 }) => {
     }, 3000);
 
     return () => clearInterval(intervalId);
-  }, []);
+  });
 
   return (
     <div

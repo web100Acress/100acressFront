@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from 'react';
 import { cn } from "../../lib/utils"; // Class name utility
 
 const Card = React.forwardRef((props, ref) => {

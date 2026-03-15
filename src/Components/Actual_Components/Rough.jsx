@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useMemo } from 'react';
 import ConfirmationPopup from "./ConfirmationPopup";
 import styled from "styled-components";
 

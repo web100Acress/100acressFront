@@ -10,7 +10,8 @@ import { Eye, Edit, Trash2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Oval } from "react-loader-spinner";
 import { PaginationControls } from "../Components/Blog_Components/Blog/create/desktop/BlogManagement";
-import { Modal, message } from "antd";
+import { Modal } from '../utils/antdImports';
+import { message } from '../utils/antdImports';
 
 // Memoized Property Row Component
 const PropertyRow = memo(({ property, onDelete }) => {
@@ -202,7 +203,7 @@ const AllListedProperties = () => {
       // Clean up styles on component unmount
       document.head.removeChild(styleSheet);
     };
-  }, []);
+  });
 
   const fetchData = useCallback(async () => {
     try {
@@ -365,7 +366,7 @@ const AllListedProperties = () => {
     setOpenModal(false);
     setPropertyToDelete(null);
     setModalText("Do you want to delete this Property?");
-  }, []);
+  });
 
   const handleDeleteProperty = useCallback(
     async (id) => {
@@ -455,7 +456,7 @@ const AllListedProperties = () => {
     setOpenModal(true);
     setPropertyToDelete(id);
     setModalText("Do you want to delete this Property?");
-  }, []);
+  });
 
   // Memoize the DeleteConfirmationModal component with a different name
   const MemoizedDeleteConfirmationModal = useMemo(

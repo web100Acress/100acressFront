@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useMemo } from 'react';
 import { Eye, EyeOff, X } from "lucide-react";
 import { AuthContext } from "../AuthContext";
 import api from "../config/apiClient";
@@ -10,9 +10,9 @@ function LoginForm({ inModal = false, onSwitchToRegister, preventRedirect = fals
   
   useEffect(() => {
     return () => {
-
+      // Cleanup function if needed
     };
-  }, []);
+  });
 
   const [userLogin, setUserLogin] = useState({ email: "", password: "" });
   const [passwordHide, setPasswordHide] = useState(true);

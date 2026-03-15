@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import Slider from 'react-slick';
 import '../../../styles/newbanner/FloorPlanSection.css';
 import { BackwardIcon, ForwardIcon } from '../../../Assets/icons';
@@ -64,6 +64,7 @@ const FloorPlanSection = ({
                         src={image.url}
                         alt={`${projectViewDetails.projectName} floor plan ${index + 1}`}
                         className="nb-floor-img"
+                        crossOrigin="anonymous"
                         onClick={() => openModalfloor(image.url)}
                       />
                       <div className="nb-floor-caption">
@@ -90,7 +91,7 @@ const FloorPlanSection = ({
                 ✕
               </button>
               <div className="nb-floor-modal-body">
-                <img src={selectedImagefloor} alt="Floor Plan" className="nb-floor-modal-img" />
+                <img src={selectedImagefloor} alt="Floor Plan" className="nb-floor-modal-img" crossOrigin="anonymous" />
               </div>
             </div>
           </div>

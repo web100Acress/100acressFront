@@ -1,7 +1,14 @@
+import React, { useMemo } from 'react';
 import { useState,useEffect } from "react"
 import api from "../../../../../config/apiClient";
 import { ArrowDown, ArrowUp, Edit, Eye, Plus, Trash2, Search, FileText, Calendar, User, Filter, BarChart3 } from "lucide-react";
-import { Switch, Modal, Card, Badge, Tooltip, Empty, Skeleton } from "antd";
+import { Switch } from '../../../../../utils/antdImports';
+import { Modal } from '../../../../../utils/antdImports';
+import { Card } from '../../../../../utils/antdImports';
+import { Badge } from '../../../../../utils/antdImports';
+import { Tooltip } from '../../../../../utils/antdImports';
+import { Empty } from '../../../../../utils/antdImports';
+import { Skeleton } from '../../../../../utils/antdImports';
 import { Link, useNavigate } from "react-router-dom";
 import { PaginationControls } from "./BlogManagement";
 
@@ -105,7 +112,7 @@ export default function DraftBlogManagement() {
         const fetchData = async () => {
           try {
             setLoading(true);
-            const res = await api.get(`blog/draft/view?page=${currentPage}&limit=${pageSize}`);
+            const res = await api.get(`blog/draft/view?page=${currentPage});&limit=${pageSize}`);
             console.log("Response",res.data);
             setBlogs(res.data.data);
             setTotalPages(res.data.totalPages);
@@ -116,7 +123,7 @@ export default function DraftBlogManagement() {
           }
         };
         fetchData();
-      }, []);
+      });
   // Toggle sort direction
   const toggleSort = (field) => {
     if (sortField === field) {

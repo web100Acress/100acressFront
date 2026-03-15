@@ -29,7 +29,7 @@ const SearchData = () => {
     
     window.addEventListener('error', handleError);
     return () => window.removeEventListener('error', handleError);
-  }, []);
+  });
   
   const location = useLocation();
   // Safely extract and parse the encoded search payload from the URL
@@ -909,7 +909,7 @@ const SearchData = () => {
       {/* Mobile Floating Filter Button - Bottom Right */}
       <button
         onClick={() => setShowFilters(!showFilters)}
-        className="md:hidden fixed bottom-24 right-6 z-50 w-14 h-14 bg-red-500 text-white rounded-full flex items-center justify-center shadow-2xl hover:bg-red-600 hover:scale-110 transition-all duration-300"
+        className="md:hidden fixed bottom-24 right-6 z-50 w-14 h-14 bg-red-500 text-white rounded-full flex items-center justify-center shadow-2xl hover:bg-red-600 hover:scale-110 transition-all duration-300 mb-36"
         aria-label="Toggle Filters"
       >
         {showFilters ? (

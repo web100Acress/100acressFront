@@ -20,7 +20,7 @@ const InsightsNewsDesktop = () => {
         if (response.data?.data) {
           // In this implementation, we treat all blogs as potential news/intel
           setNews(response.data.data);
-        }
+        });
       } catch (error) {
         console.error('Error fetching news:', error);
       } finally {
@@ -28,7 +28,7 @@ const InsightsNewsDesktop = () => {
       }
     };
     fetchNews();
-  }, []);
+  });
 
   const categories = useMemo(() => [
     { id: 'all', name: 'All Intelligence' },
@@ -79,7 +79,7 @@ const InsightsNewsDesktop = () => {
     return `${minutes} min`;
   };
 
-  const blogLink = (id) => `/insights/blog/${id}`;
+  const blogLink = (id) => `/insights/blog/${id}/`;
 
   const CardSkeleton = () => (
     <div className="bg-white rounded-3xl border border-gray-100 p-5 animate-pulse flex gap-6">

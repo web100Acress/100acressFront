@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from 'react';
 import { styled } from "styled-components";
 import Image from "../../Images/logo-circle-symbol-area-location-icon-removebg-preview.png";
 

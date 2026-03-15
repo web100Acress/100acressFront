@@ -116,7 +116,7 @@ const OtherEnquiries = () => {
 
   useEffect(() => {
     fetchData(1);
-  }, []);
+  });
 
   const onPrev = () => { if (page > 1) fetchData(page - 1); };
   const onNext = () => { if (page < totalPages) fetchData(page + 1); };

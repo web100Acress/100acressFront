@@ -1,3 +1,4 @@
+import React, { useMemo } from 'react';
 import { Button } from "../Components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../Components/ui/Card";
 import { QrCode, Building, MapPin, Phone, Globe, ArrowRight } from "lucide-react";

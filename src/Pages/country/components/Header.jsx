@@ -1,3 +1,4 @@
+import React, { useMemo } from 'react';
 import { useState, useEffect } from "react";
 import { Button } from "../../../Components/ui/button";
 import { Menu, X, Phone, ChevronDown, Globe } from "lucide-react";
@@ -6,7 +7,8 @@ import { cn } from "../../../lib/utils";
 // Logo URL
 const LOGO = "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/white-logo.webp";
 
-export const Header = () => {
+export const Header = () => 
+{
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isCountriesDropdownOpen, setIsCountriesDropdownOpen] = useState(false);
@@ -22,17 +24,17 @@ export const Header = () => {
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
-    };
+    });;
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  });
 
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (isCountriesDropdownOpen && !event.target.closest('.countries-dropdown')) {
         setIsCountriesDropdownOpen(false);
-      }
+      });
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);

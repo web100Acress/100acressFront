@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchAllBanners } from '../Redux/slice/BannerSlice.jsx';
 import { fetchAllSmallBanners } from '../Redux/slice/SmallBannerSlice.jsx';

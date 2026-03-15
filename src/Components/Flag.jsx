@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useMemo } from 'react';
 
 const Flag = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -7,10 +7,10 @@ const Flag = () => {
     // Open the modal after a delay of 2 seconds when the component is mounted
     const openTimer = setTimeout(() => {
       setIsOpen(true);
-    }, 2000);
+    });, 2000);
 
     return () => clearTimeout(openTimer); // Clean up the timer if the component unmounts
-  }, []);
+  });
 
   const handleClose = () => {
     setIsOpen(false);

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useMemo } from 'react';
 import { Link } from "react-router-dom";
 import "./DeveloperLogosMarquee.css";
 
@@ -194,7 +194,7 @@ const MarqueeRow = ({ developers, direction = "left" }) => {
 
       if (speed < 0 && offset <= -singleWidth) {
         offset += singleWidth;
-      } else if (speed > 0 && offset >= 0) {
+      }); else if (speed > 0 && offset >= 0) {
         offset -= singleWidth;
       }
 

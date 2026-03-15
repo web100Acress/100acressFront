@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import '../../../styles/newbanner/master.css';
 
 const MasterPlanSection = ({ projectName, imageUrl, isOpen, setIsOpen }) => {
@@ -26,6 +26,7 @@ const MasterPlanSection = ({ projectName, imageUrl, isOpen, setIsOpen }) => {
                     alt={projectName}
                     className="nb-master-image"
                     fetchpriority="high"
+                    crossOrigin="anonymous"
                     onClick={() => setIsOpen && setIsOpen(true)}
                   />
                 )}
@@ -51,6 +52,7 @@ const MasterPlanSection = ({ projectName, imageUrl, isOpen, setIsOpen }) => {
                 alt={`${projectName} Master Plan`}
                 className="nb-master-modal-img"
                 fetchpriority="high"
+                crossOrigin="anonymous"
               />
             </div>
           </div>

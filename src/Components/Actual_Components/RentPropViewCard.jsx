@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useMemo } from 'react';
 import styled from "styled-components";
 import Footer from "./Footer";
 import api from "../../config/apiClient";
@@ -20,10 +20,18 @@ import {
 import FAQSection from "./FAQSection";
 import { rentalFAQs } from "../../Data/rentalFAQs";
 
+import GlobalLoadingButton from "../GlobalLoadingButton";
+
 const RentPropViewCard = () => {
   const navigate = useNavigate();
   const { isAuthenticated, user } = useContext(AuthContext);
   const [showAuth, setShowAuth] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  const [totalCount, setTotalCount] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 18;
   const [buyData, setBuyData] = useState([]);
   const [filterData, setFilterData] = useState([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -37,10 +45,44 @@ const RentPropViewCard = () => {
   const [maxPrice, setMaxPrice] = useState("");
   const [activeIndex, setActiveIndex] = useState('propertyType');
   const [selectedValues, setSelectedValues] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 18;
+  const [selectedQuickFilters, setSelectedQuickFilters] = useState([]);
   const [filterModalOpen, setFilterModalOpen] = useState(false);
+  const [favorites, setFavorites] = useState([]);
   const [authModalOpen, setAuthModalOpen] = useState(false);
+
+  // Fetch favorites if authenticated
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      fetchFavorites();
+    }
+  }, [isAuthenticated, user]);
+
+  const fetchFavorites = async () => {
+    try {
+      const res = await api.get('/favorites');
+      setFavorites(res.data.favorites || []);
+    } catch (error) {
+      console.error('Error fetching favorites:', error);
+    }
+  };
+
+  const toggleFavorite = async (propertyId) => {
+    if (!isAuthenticated) {
+      setAuthModalOpen(true);
+      return;
+    }
+    try {
+      if (favorites.includes(propertyId)) {
+        await api.delete(`/favorites/${propertyId}`);
+        setFavorites(prev => prev.filter(id => id !== propertyId));
+      } else {
+        await api.post('/favorites', { propertyId });
+        setFavorites(prev => [...prev, propertyId]);
+      }
+    } catch (error) {
+      console.error('Error toggling favorite:', error);
+    }
+  };
 
   // Hydrate favorites once and subscribe for cross-component updates
   useEffect(() => {
@@ -50,7 +92,7 @@ const RentPropViewCard = () => {
       setBuyData(prev => [...prev]);
     });
     return unsubscribe;
-  }, []);
+  });
 
   // Check and redirect if URL is missing trailing slash
   useEffect(() => {
@@ -164,28 +206,48 @@ const RentPropViewCard = () => {
     setMaxPrice(null);
   };
 
-  const fetchData = async () => {
+  const fetchData = async (page = 1, append = false) => {
     try {
-      const res = await api.get("/property/rent/viewAll");
+      if (append) setLoadingMore(true);
+      else setLoading(true);
+
+      const limit = itemsPerPage;
+      const res = await api.get(`/property/rent/viewAll?page=${page}&limit=${limit}`);
       const list = Array.isArray(res?.data?.rentaldata) ? res.data.rentaldata : [];
-      setBuyData(list);
-      setFilterData(list);
+      const total = res?.data?.totalCount || list.length;
+
+      setTotalCount(total);
+      
+      if (append) {
+        setBuyData(prev => [...prev, ...list]);
+        setFilterData(prev => [...prev, ...list]);
+      } else {
+        setBuyData(list);
+        setFilterData(list);
+      }
+
+      setHasMore(list.length === limit);
     } catch (error) {
       console.error("Error fetching data:", error);
-      setBuyData([]);
-      setFilterData([]);
+      if (!append) {
+        setBuyData([]);
+        setFilterData([]);
+      }
+    } finally {
+      setLoading(false);
+      setLoadingMore(false);
     }
   };
 
-  // Scroll to top of grid on page change
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+  const handleLoadMore = () => {
+    const nextPage = currentPage + 1;
+    setCurrentPage(nextPage);
+    fetchData(nextPage, true);
   };
-      
+
   useEffect(() => {
-    fetchData();
-  }, []);
+    fetchData(1, false);
+  });
 
   useEffect(() => {
     updateFilteredData();
@@ -259,6 +321,63 @@ const RentPropViewCard = () => {
     "Jaipur",
     "Vadodara"
   ];
+
+  const quickFilters = [
+    { label: 'Gurgaon', icon: '🏢', type: 'city', value: 'Gurugram' },
+    { label: 'Delhi', icon: '🏛️', type: 'city', value: 'Delhi' },
+    { label: 'Noida', icon: '🏙️', type: 'city', value: 'Noida' },
+    { label: 'Plot', icon: '🏞️', type: 'property', value: 'Plot / Land' },
+    { label: 'Flat', icon: '🏠', type: 'property', value: 'Flat/Apartment' },
+    { label: 'Villa', icon: '🏡', type: 'property', value: 'Independent House / Villa' },
+    { label: '3 BHK', icon: '🏘️', type: 'unit', value: '3 BHK' },
+    { label: '2 BHK', icon: '🏘️', type: 'unit', value: '2 BHK' },
+    { label: '4 BHK', icon: '🏘️', type: 'unit', value: '4 BHK' },
+  ];
+
+  function handleQuickFilterClick(filter) {
+    // Toggle quick filter selection
+    setSelectedQuickFilters((prev) =>
+      prev.includes(filter.label)
+        ? prev.filter((f) => f !== filter.label)
+        : [...prev, filter.label]
+    );
+
+    // Apply the actual filter based on type
+    if (filter.type === 'city') {
+      setSelectedCities((prev) =>
+        prev.includes(filter.value)
+          ? prev.filter((city) => city !== filter.value)
+          : [...prev, filter.value]
+      );
+    } else if (filter.type === 'property') {
+      setSelectedPropertyTypes((prev) =>
+        prev.includes(filter.value)
+          ? prev.filter((type) => type !== filter.value)
+          : [...prev, filter.value]
+      );
+    } else if (filter.type === 'unit') {
+      setSelectedAreas((prev) =>
+        prev.includes(filter.value)
+          ? prev.filter((area) => area !== filter.value)
+          : [...prev, filter.value]
+      );
+    }
+  }
+
+  // Collapsible filter panel state
+  const [filterSections, setFilterSections] = useState({
+    city: true,
+    propertyType: true,
+    budget: true,
+    area: false,
+    bedrooms: false,
+    amenities: false,
+    verified: false,
+  });
+
+  const toggleSection = (key) => {
+    setFilterSections((prev) => ({ ...prev, [key]: !prev[key] }));
+  };
 
   return (
     <>
@@ -664,10 +783,10 @@ const RentPropViewCard = () => {
               </div>
               {/* Property Grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                {filteredAndSearchedData.length === 0 ? (
+                {loading && filteredAndSearchedData.length === 0 ? (
                   <div className="col-span-full"><CustomSkeleton /></div>
                 ) : (
-                  paginatedData.map((property, idx) => (
+                  filteredAndSearchedData.map((property, idx) => (
                     <Link
                       key={property._id || idx}
                       to={property.propertyName && property._id
@@ -753,7 +872,7 @@ const RentPropViewCard = () => {
 
                         {/* Location */}
                         <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
-                          <svg className="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                          <svg className="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                           </svg>
@@ -784,13 +903,19 @@ const RentPropViewCard = () => {
                 )}
               </div>
               {/* Pagination */}
-              <div className="mt-8 flex justify-center">
-                <PaginationControls
-                  currentPage={currentPage}
-                  setCurrentPage={handlePageChange}
-                  totalPages={totalPages}
-                />
-              </div>
+              <GlobalLoadingButton
+                isLoading={loadingMore}
+                hasMore={hasMore}
+                onLoadMore={handleLoadMore}
+                loadedCount={buyData.length}
+                totalCount={totalCount}
+                loadingText="Fetching more rental properties..."
+                loadMoreText="View More Rental Properties"
+                variant="primary"
+                size="medium"
+                showProgress={true}
+                className="mt-8"
+              />
             </main>
           </div>
         </div>

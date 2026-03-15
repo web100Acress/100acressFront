@@ -1,3 +1,4 @@
+import React, { useMemo } from 'react';
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
@@ -7,7 +8,8 @@ import { ArrowRight } from "lucide-react";
 import Api_service from "../../../Redux/utils/Api_Service";
 import { useDubai } from "../context/DubaiContext";
 
-export const PropertiesSection = () => {
+export const PropertiesSection = () => 
+{
   const { getAllUAEProjects } = Api_service();
   const dubaiProjects = useSelector(store => store?.stateproject?.dubai || []);
   const { selectedEmirate } = useDubai();
@@ -20,7 +22,7 @@ export const PropertiesSection = () => {
     } else {
       setIsLoading(false);
     }
-  }, []);
+  });
 
   useEffect(() => {
     if (dubaiProjects && dubaiProjects.length > 0) {
@@ -124,7 +126,7 @@ export const PropertiesSection = () => {
   });
 
   return (
-    <section id="properties" className="py-24 relative overflow-hidden">
+    <section id="properties" className="py-18 relative overflow-hidden">
       {/* Blurry Video Background Effect */}
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/20 to-transparent">
         <div className="absolute inset-0 backdrop-blur-sm">
@@ -160,7 +162,7 @@ export const PropertiesSection = () => {
           </div>
         ) : (
           /* Properties Grid */
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 mb-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 mb-6">
             {properties.map((property, index) => (
               <div
                 key={property.id || index}
@@ -172,6 +174,24 @@ export const PropertiesSection = () => {
             ))}
           </div>
         )}
+
+        {/* Future of Real Estate Projects Section */}
+        <div className="mt-12 mb-6">
+          <div className="glass-effect rounded-2xl border border-white/10 p-6 md:p-8 animate-fade-in-scale">
+            
+            <div className="max-w-4xl mx-auto space-y-4 text-muted-foreground text-center">
+              <p className="text-base leading-relaxed font-display">
+                Dubai is one of the fastest-growing real estate markets in the world and offers a wide range of residential, commercial, and mixed-use developments. From luxury waterfront apartments to high-end villas and modern business hubs, projects in Dubai attract investors, homeowners, and global buyers looking for premium lifestyle and strong returns.
+              </p>
+              <p className="text-base leading-relaxed font-display">
+                The city has become a global investment destination because of its state-of-the-art infrastructure, world class architecture, and favourable investment policies. Dubai's property market continues to grow, with new communities, luxury skyscrapers, and smart cities introduced every year.
+              </p>
+              <p className="text-base leading-relaxed font-display">
+                Dubai also offers different types of property, ranging from luxury apartments to villas, townhouses, and even commercial property. If you are planning to buy a property in Dubai, it offers a range of choices with different payment plans and high returns on investment in terms of rentals.
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   );

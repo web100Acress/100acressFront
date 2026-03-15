@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useMemo } from 'react';
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -31,7 +31,7 @@ const Snapshot = () => {
     const handleResize = () => setIsMobile(window.innerWidth <= 425);
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  }););
 
   const paragraphText = ` 100acress.com Real Estate Company specializes in providing premier
             property solutions tailored to meet your needs. With a diverse

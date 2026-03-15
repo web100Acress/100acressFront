@@ -1,5 +1,5 @@
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useMemo } from 'react';
 import { QrCode, Download, Copy, Home, MapPin, Phone, Mail, Globe, Building, User, Lock } from 'lucide-react';
 import { Button } from '../../Components/ui/button';
 import { Input } from '../../Components/ui/Input';
@@ -34,8 +34,8 @@ const QRGenerator = () => {
     const savedLogin = localStorage.getItem('100acress_login');
     if (savedLogin) {
       setIsLoggedIn(true);
-    }
-  }, []);
+    });
+  });
 
   const handleLogin = (e) => {
     e.preventDefault();

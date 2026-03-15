@@ -1,3 +1,4 @@
+import React, { useMemo } from 'react';
 import { useState, useEffect, useContext } from "react";
 import api from "../../../../../config/apiClient";
 import { showToast } from "../../../../../utils/toastUtils";
@@ -25,18 +26,13 @@ import {
   X,
   Filter
 } from "lucide-react";
-import {
-  Modal,
-  Switch,
-  Badge,
-  Progress,
-  Card,
-  message,
-  Drawer,
-  Button,
-  Space,
-  Divider
-} from "antd";
+import { Modal } from '../../../../../utils/antdImports';
+import { Switch } from '../../../../../utils/antdImports';
+import { Badge } from '../../../../../utils/antdImports';
+import { Card } from '../../../../../utils/antdImports';
+import { message } from '../../../../../utils/antdImports';
+import { Button } from '../../../../../utils/antdImports';
+import { Divider } from '../../../../../utils/antdImports';
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../../AuthContext";
 
@@ -109,7 +105,7 @@ export default function BlogManagementMobile() {
   useEffect(() => {
     if (token) {
       fetchBlogs();
-    }
+    });
   }, [token]);
 
   // Filter and search blogs
@@ -119,7 +115,7 @@ export default function BlogManagementMobile() {
     // Apply status filter
     if (statusFilter !== "all") {
       filtered = filtered.filter(blog => blog.status === statusFilter);
-    }
+    });
 
     // Apply search filter
     if (searchTerm) {

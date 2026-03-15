@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useMemo } from 'react';
 import { Link } from "react-router-dom";
 import { Calendar, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
@@ -30,8 +30,8 @@ const HomeDesktopBlog = () => {
       .replace(/^-+|-+$/g, '');       // Trim leading/trailing hyphens
 
   const blogLink = (blog) => {
-    if (blog?.slug) return `/blog/${blog.slug}`;
-    return `/blog/${getSlug(blog.blog_Title)}/${blog._id}`;
+    if (blog?.slug) return `/blog/${blog.slug}/`;
+    return `/blog/${getSlug(blog.blog_Title)}/${blog._id}/`;
   };
 
   useEffect(() => {
@@ -44,7 +44,7 @@ const HomeDesktopBlog = () => {
             limit: 3,
             sortBy: 'createdAt',
             sortOrder: 'desc'
-          }
+          });
         });
 
         if (response?.data?.data) {
@@ -58,7 +58,7 @@ const HomeDesktopBlog = () => {
     };
 
     fetchTopBlogs();
-  }, []);
+  });
 
   if (loading) {
     return (

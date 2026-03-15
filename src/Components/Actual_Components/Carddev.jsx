@@ -1,7 +1,4 @@
-import React from 'react'
-import { styled } from 'styled-components'
-import Image from "../../Images/etpb4z-kjnhxk-3t59vo.jpg"
-import { Link } from 'react-router-dom';
+import React, { useMemo } from 'react';
 
 function Carddev(elem) {
   

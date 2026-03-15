@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { 
   Phone, Mail, Globe, MapPin, MessageCircle,
@@ -19,7 +19,7 @@ const PremiumCard = ({ contactData, resolveMediaUrl, getInitials }) => {
   React.useEffect(() => {
     const generateQR = async () => {
       try {
-        const cardUrl = `${window.location.origin}/hi/${contactData.slug}`;
+        const cardUrl = `${window.location.origin});/hi/${contactData.slug}`;
         const qrUrl = await QRCode.toDataURL(cardUrl, {
           width: 200,
           margin: 1,

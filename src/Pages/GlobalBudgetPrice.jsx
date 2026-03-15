@@ -1,4 +1,4 @@
-import React, { useEffect, useState, startTransition } from "react";
+import React, { useMemo } from 'react';
 import { useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import Api_Service from "../Redux/utils/Api_Service";
@@ -86,7 +86,7 @@ const GlobalBudgetPrice = () => {
     } else {
       setIsLoading(false);
     }
-  }, []);
+  });
 
   // Force component re-render when URL changes by updating key
   const [componentKey, setComponentKey] = useState(0);

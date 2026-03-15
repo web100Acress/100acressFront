@@ -1,6 +1,6 @@
 /** @format */
 
-import React, { useEffect, useState } from "react";
+import React, { useMemo } from 'react';
 import styled from "styled-components";
 import { Link, useNavigate } from "react-router-dom";
 import { BLOG, REGISTER, ROOT } from "../../lib/route";
@@ -26,7 +26,7 @@ function LoginMain() {
     signUpButton.addEventListener("click", () => {
       container.classList.add("right-panel-active");
       clseBtn.style.color = "red";
-    });
+    }););
 
     signInButton.addEventListener("click", () => {
       container.classList.remove("right-panel-active");
@@ -38,7 +38,7 @@ function LoginMain() {
     handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  });
 
   // Path-only endpoints; axiosSetup will prefix baseURL
   const URLREGISTER = `postPerson/register`;

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useMemo } from 'react';
 import styled from "styled-components";
 import Footer from "./Footer";
 import api from "../../config/apiClient";
@@ -34,6 +34,8 @@ function formatPrice(price) {
   }
 }
 
+import GlobalLoadingButton from "../GlobalLoadingButton";
+
 const BuyPropViewCard = () => {
   const navigate = useNavigate();
   const { isAuthenticated, user } = useContext(AuthContext);
@@ -57,6 +59,12 @@ const BuyPropViewCard = () => {
   const [position5, setPosition5] = useState("down");
   const [position6, setPosition6] = useState("down");
   const [position7, setPosition7] = useState("down");
+  const [loading, setLoading] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  const [totalCount, setTotalCount] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 18;
   const [buyData, setBuyData] = useState([]);
   const [filterData, setFilterData] = useState([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -70,8 +78,7 @@ const BuyPropViewCard = () => {
   const [maxPrice, setMaxPrice] = useState("");
   const [activeIndex, setActiveIndex] = useState('propertyType');
   const [selectedValues, setSelectedValues] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 18;
+  const [selectedQuickFilters, setSelectedQuickFilters] = useState([]);
   const [filterModalOpen, setFilterModalOpen] = useState(false);
   const [favorites, setFavorites] = useState([]);
   const [authModalOpen, setAuthModalOpen] = useState(false);
@@ -296,22 +303,48 @@ const BuyPropViewCard = () => {
     setIsRightbarOpen(!isRightbarOpen); 
   };
 
-  const fetchData = async () => {
+  const fetchData = async (page = 1, append = false) => {
     try {
-      const res = await api.get("/property/buy/ViewAll");
+      if (append) setLoadingMore(true);
+      else setLoading(true);
+
+      const limit = itemsPerPage;
+      const res = await api.get(`/property/buy/ViewAll?page=${page}&limit=${limit}`);
       const list = Array.isArray(res?.data?.ResaleData) ? res.data.ResaleData : [];
-      setBuyData(list);
-      setFilterData(list);
+      const total = res?.data?.totalCount || list.length; // Fallback if backend doesn't provide totalCount
+
+      setTotalCount(total);
+      
+      if (append) {
+        setBuyData(prev => [...prev, ...list]);
+        setFilterData(prev => [...prev, ...list]);
+      } else {
+        setBuyData(list);
+        setFilterData(list);
+      }
+
+      setHasMore(list.length === limit);
     } catch (error) {
       console.error("Error fetching data:", error);
-      setBuyData([]);
-      setFilterData([]);
+      if (!append) {
+        setBuyData([]);
+        setFilterData([]);
+      }
+    } finally {
+      setLoading(false);
+      setLoadingMore(false);
     }
   };
 
+  const handleLoadMore = () => {
+    const nextPage = currentPage + 1;
+    setCurrentPage(nextPage);
+    fetchData(nextPage, true);
+  };
+
   useEffect(() => {
-    fetchData();
-  }, []);
+    fetchData(1, false);
+  });
 
   useEffect(() => {
     updateFilteredData();
@@ -352,7 +385,6 @@ const BuyPropViewCard = () => {
     setCurrentPage(1); // Reset to first page when filters change
   }, [selectedPropertyTypes, selectedAreas, selectedCities]);
 
-  // Add click outside handler for dropdown
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (isOpen && !event.target.closest('.dropdown-container')) {
@@ -463,7 +495,6 @@ const BuyPropViewCard = () => {
     { label: '2 BHK', icon: '🏘️', type: 'unit', value: '2 BHK' },
     { label: '4 BHK', icon: '🏘️', type: 'unit', value: '4 BHK' },
   ];
-  const [selectedQuickFilters, setSelectedQuickFilters] = useState([]);
 
   function handleQuickFilterClick(filter) {
     // Toggle quick filter selection
@@ -921,10 +952,10 @@ const BuyPropViewCard = () => {
               </div>
               {/* Property Grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                {filteredAndSearchedData.length === 0 ? (
+                {loading && buyData.length === 0 ? (
                   <div className="col-span-full"><CustomSkeleton /></div>
                 ) : (
-                  paginatedData.map((property, idx) => (
+                  filterData.map((property, idx) => (
                     <Link
                       key={property._id || idx}
                       to={property.propertyName && property._id
@@ -946,23 +977,7 @@ const BuyPropViewCard = () => {
                         {/* Heart/Wishlist Button */}
                         <button
                           type="button"
-                          aria-label={
-                            favorites.includes(property._id)
-                              ? "Remove from wishlist"
-                              : isAuthenticated
-                              ? "Add to wishlist"
-                              : "Login to add to wishlist"
-                          }
-                          title={
-                            favorites.includes(property._id)
-                              ? "Remove from wishlist"
-                              : isAuthenticated
-                              ? "Add to wishlist"
-                              : "Login to add to wishlist"
-                          }
-                          className={`absolute top-3 right-3 inline-flex items-center justify-center w-8 h-8 rounded-full ${
-                            favorites.includes(property._id) ? "" : "bg-transparent"
-                          } border-white transition`}
+                          className="absolute top-3 right-3 inline-flex items-center justify-center w-8 h-8 rounded-full bg-white/80 hover:bg-white transition-colors shadow-sm"
                           onClick={(e) => {
                             e.preventDefault();
                             e.stopPropagation();
@@ -970,28 +985,9 @@ const BuyPropViewCard = () => {
                           }}
                         >
                           {favorites.includes(property._id) ? (
-                            <svg
-                              width="24"
-                              height="24"
-                              viewBox="0 0 24 24"
-                              fill="red"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-                            </svg>
+                            <MdFavorite className="text-red-500 text-xl" />
                           ) : (
-                            <svg
-                              width="24"
-                              height="24"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="#d1d5db"
-                              strokeWidth="2"
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="opacity-100"
-                            >
-                              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-                            </svg>
+                            <MdFavoriteBorder className="text-gray-600 text-xl" />
                           )}
                         </button>
                         <div className="absolute top-3 right-54">
@@ -1041,13 +1037,19 @@ const BuyPropViewCard = () => {
                 )}
               </div>
               {/* Pagination */}
-              <div className="mt-8 flex justify-center">
-                <PaginationControls
-                  currentPage={currentPage}
-                  setCurrentPage={handlePageChange}
-                  totalPages={totalPages}
-                />
-              </div>
+              <GlobalLoadingButton
+                isLoading={loadingMore}
+                hasMore={hasMore}
+                onLoadMore={handleLoadMore}
+                loadedCount={buyData.length}
+                totalCount={totalCount}
+                loadingText="Fetching more properties..."
+                loadMoreText="View More Resale Properties"
+                variant="primary"
+                size="medium"
+                showProgress={true}
+                className="mt-8"
+              />
             </main>
           </div>
         </div>

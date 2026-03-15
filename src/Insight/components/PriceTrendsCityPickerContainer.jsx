@@ -15,7 +15,7 @@ export default function PriceTrendsCityPickerContainer() {
   // Fetch cities and city images on component mount
   useEffect(() => {
     fetchData();
-  }, []);
+  }););
 
   const fetchData = async () => {
     try {

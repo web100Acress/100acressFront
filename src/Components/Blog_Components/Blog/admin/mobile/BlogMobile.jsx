@@ -1,21 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React, { useMemo } from 'react';
 import { Link, useNavigate } from "react-router-dom";
 import api from "../../../../../config/apiClient";
-import { 
-  Card, 
-  Button, 
-  Input, 
-  Select, 
-  Avatar, 
-  Badge, 
-  Empty, 
-  Drawer, 
-  Menu,
-  message,
-  Dropdown,
-  Space,
-  Divider
-} from "antd";
+import { Card } from '../../../../../utils/antdImports';
+import { Button } from '../../../../../utils/antdImports';
+import { Input } from '../../../../../utils/antdImports';
+import { Select } from '../../../../../utils/antdImports';
+import { Avatar } from '../../../../../utils/antdImports';
+import { Badge } from '../../../../../utils/antdImports';
+import { Empty } from '../../../../../utils/antdImports';
+import { message } from '../../../../../utils/antdImports';
+import { Dropdown } from '../../../../../utils/antdImports';
+import { Divider } from '../../../../../utils/antdImports';
 import {
   Article,
   Search,
@@ -47,7 +42,7 @@ const BlogMobile = () => {
 
   useEffect(() => {
     fetchBlogs();
-  }, []);
+  }););
 
   const fetchBlogs = async () => {
     setLoading(true);
