@@ -138,7 +138,7 @@ const RelatedProjectsDesktop = ({ builderName = "", currentProjectUrl = "", onSh
                       <div className="w-full h-28 lg:h-32">
                         <img
                           src={project.thumbnailImage?.url || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?q=80&w=1400&auto=format&fit=crop'}
-                          alt={project.projectName}
+                          alt={`${project.projectName} property thumbnail`}
                           fetchpriority="high"
                           crossOrigin="anonymous"
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
@@ -147,9 +147,9 @@ const RelatedProjectsDesktop = ({ builderName = "", currentProjectUrl = "", onSh
                     </div>
 
                     <div className="p-2">
-                      <h4 className="font-bold text-sm text-white mb-0 line-clamp-1">
+                      <div className="font-bold text-sm text-white mb-0 line-clamp-1">
                         {project.projectName}
-                      </h4>
+                      </div>
 
                       <p className="text-xs text-gray-600 mb-1">
                         {project.type || 'Residential'}

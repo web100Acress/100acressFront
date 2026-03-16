@@ -611,7 +611,23 @@ const Home = () => {
     budget: false,
     delhi: false,
     dubai: false,
+    luxuryAll: false,
+    newlaunch: false,
+    farmhouse: false,
+    branded: false,
   });
+  
+  // Add loading states for different sections
+  const [isTrendingLoading, setIsTrendingLoading] = useState(true);
+  const [isFeaturedLoading, setIsFeaturedLoading] = useState(true);
+  const [isUpcomingLoading, setIsUpcomingLoading] = useState(true);
+  const [isBrandedLoading, setIsBrandedLoading] = useState(true);
+  const [isLuxuryLoading, setIsLuxuryLoading] = useState(true);
+  const [isBudgetLoading, setIsBudgetLoading] = useState(true);
+  const [isSCOLoading, setIsSCOLoading] = useState(true);
+  const [isFarmhouseLoading, setIsFarmhouseLoading] = useState(true);
+  const [isCommercialLoading, setIsCommercialLoading] = useState(true);
+  
   const setRef = (section) => (el) => {
     if (el && !sectionsRef.current[section]) {
       sectionsRef.current[section] = el;
@@ -739,21 +755,103 @@ const Home = () => {
     loadData(activeFilter);
   }, [activeFilter, loadData]);
 
-  // Preload critical data on mount
+  // Preload critical data on mount - Optimized for faster loading
   useEffect(() => {
-    // Load trending and featured immediately (above the fold)
+    // Load trending, featured, luxury, budget, SCO, farmhouse and commercial immediately (above the fold)
     const loadCriticalData = async () => {
       const promises = [];
       
-      if (TrendingProjects.length === 0) promises.push(getTrending());
-      if (FeaturedProjects.length === 0) promises.push(getFeatured());
-      if (NewLaunchProjects.length === 0) promises.push(getAllProjects("newlaunch", 4));
+      // Prioritize trending data for this section
+      if (TrendingProjects.length === 0) {
+        setIsTrendingLoading(true);
+        promises.push(getTrending());
+      }
       
-      await Promise.all(promises);
+      // Load featured in parallel (same priority)
+      if (FeaturedProjects.length === 0) {
+        setIsFeaturedLoading(true);
+        promises.push(getFeatured());
+      }
+      
+      // Load luxury in parallel (high priority section)
+      if (LuxuryAllProject.length === 0) {
+        setIsLuxuryLoading(true);
+        promises.push(getAllProjects("luxury"));
+      }
+      
+      // Load budget in parallel (important section)
+      if (BudgetHomesProjects.length === 0) {
+        setIsBudgetLoading(true);
+        promises.push(getBudgetHomes());
+      }
+      
+      // Load SCO in parallel (important section)
+      if (SCOProjects.length === 0) {
+        setIsSCOLoading(true);
+        promises.push(getScoplots());
+      }
+      
+      // Load farmhouse in parallel (important section)
+      if (FarmhouseProjects.length === 0) {
+        setIsFarmhouseLoading(true);
+        promises.push(getFarmhouse());
+      }
+      
+      // Load commercial in parallel (important section)
+      if (CommercialProjects.length === 0) {
+        setIsCommercialLoading(true);
+        promises.push(getCommercial());
+      }
+      
+      // Execute critical calls in parallel
+      if (promises.length > 0) {
+        await Promise.allSettled(promises);
+      }
+      
+      // Mark sections as loaded
+      setIsTrendingLoading(false);
+      setIsFeaturedLoading(false);
+      setIsLuxuryLoading(false);
+      setIsBudgetLoading(false);
+      setIsSCOLoading(false);
+      setIsFarmhouseLoading(false);
+      setIsCommercialLoading(false);
     };
     
+    // Load immediately without delay
     loadCriticalData();
-  }, []);
+  }, [TrendingProjects.length, FeaturedProjects.length, LuxuryAllProject.length, BudgetHomesProjects.length, SCOProjects.length, FarmhouseProjects.length, CommercialProjects.length, getTrending, getFeatured, getAllProjects, getBudgetHomes, getScoplots, getFarmhouse, getCommercial]);
+
+  // Update loading states when data arrives
+  useEffect(() => {
+    if (TrendingProjects.length > 0) {
+      setIsTrendingLoading(false);
+    }
+    if (FeaturedProjects.length > 0) {
+      setIsFeaturedLoading(false);
+    }
+    if (UpcomingProjects.length > 0) {
+      setIsUpcomingLoading(false);
+    }
+    if (brandedResidencesProjects.length > 0) {
+      setIsBrandedLoading(false);
+    }
+    if (LuxuryAllProject.length > 0) {
+      setIsLuxuryLoading(false);
+    }
+    if (BudgetHomesProjects.length > 0) {
+      setIsBudgetLoading(false);
+    }
+    if (SCOProjects.length > 0) {
+      setIsSCOLoading(false);
+    }
+    if (FarmhouseProjects.length > 0) {
+      setIsFarmhouseLoading(false);
+    }
+    if (CommercialProjects.length > 0) {
+      setIsCommercialLoading(false);
+    }
+  }, [TrendingProjects, FeaturedProjects, UpcomingProjects, brandedResidencesProjects, LuxuryAllProject, BudgetHomesProjects, SCOProjects, FarmhouseProjects, CommercialProjects]);
 
   // Load remaining data in parallel after initial load
   useEffect(() => {
@@ -764,11 +862,8 @@ const Home = () => {
       const promises = [];
       
       if (UpcomingProjects.length === 0) promises.push(getUpcoming());
-      if (CommercialProjects.length === 0) promises.push(getCommercial());
       if (AffordableProjects.length === 0) promises.push(getAffordable());
-      if (SCOProjects.length === 0) promises.push(getScoplots());
-      if (LuxuryAllProject.length === 0) promises.push(getAllProjects("luxury"));
-      if (BudgetHomesProjects.length === 0) promises.push(getBudgetHomes());
+      // Luxury, Budget, SCO, Farmhouse and Commercial now loaded in critical data for faster performance
       if (ProjectinDelhi.length === 0) promises.push(getProjectIndelhi());
       
       await Promise.all(promises);
@@ -778,18 +873,24 @@ const Home = () => {
     setTimeout(loadRemainingData, 100);
   }, [isContentReady]);
 
-  // Load branded residences data
+  // Load branded residences data - Optimized for faster loading
   useEffect(() => {
     const loadBrandedResidences = async () => {
       try {
+        setIsBrandedLoading(true);
         const projects = await getBrandedResidences();
         console.log('🏠 Home: Branded residences loaded:', projects);
-        setBrandedResidencesProjects(projects);
+        setBrandedResidencesProjects(projects || []);
       } catch (error) {
         console.error('🏠 Home: Error loading branded residences:', error);
+        // Set empty array to prevent infinite loading
+        setBrandedResidencesProjects([]);
+      } finally {
+        setIsBrandedLoading(false);
       }
     };
 
+    // Load immediately without delay
     loadBrandedResidences();
   }, []);
 
@@ -1018,9 +1119,8 @@ const Home = () => {
 
             {/* Main content */}
             <div className="relative z-0 md:col-start-1 md:row-start-1 max-w-[1000px]">
-              {TrendingProjects.length === 0 ? <CustomSkeleton /> : (
-                <div data-aos="fade-up"
-                  data-aos-duration="1000" className="py-0 mt-3 w-full">
+              {isTrendingLoading && TrendingProjects.length === 0 ? <CustomSkeleton /> : (
+                <div className="py-0 mt-3 w-full">
                   <div className="flex items-center justify-between text-left mb-4 mt-6">
                     <h2 className="text-2xl xl:text-4xl lg:text-3xl md:text-2xl text-[#111] font-bold mb-3 text-left">
                       {`${activeFilter}`} Projects in Gurugram, Delhi and Noida
@@ -1034,14 +1134,6 @@ const Home = () => {
                       </Link>
                     </div>
                   </div>
-
-        
-        
-
-
-
-
-
 
 
                   {/* Filter Buttons */}
@@ -1229,26 +1321,29 @@ const Home = () => {
               )}
               <div>
                 {console.log("Upcoming Projects Data:", UpcomingProjects)}
-                {UpcomingProjects.length === 0 ? <CustomSkeleton /> : (
+                {isUpcomingLoading && UpcomingProjects.length === 0 ? <CustomSkeleton /> : (
                   <ProjectsSlider 
                     projects={UpcomingProjects} 
-                    title="New Launch Projects in Gurgaon" 
-                    animation="fade-down" 
+                    title="New Launch Projects in Gurgaon"
+                    animation="fade-up" 
                     path={"/projects/newlaunch/"} 
-                    compact 
-                  />
+                    lazyLoad={true}
+                    smoothLoad={true}
+                  />  
                 )}
               </div>
 
               {/* Branded Residences */}
               <div>
-                {brandedResidencesProjects.length === 0 ? <CustomSkeleton /> : (
+                {isBrandedLoading && brandedResidencesProjects.length === 0 ? <CustomSkeleton /> : (
                   <ProjectsSlider 
                     projects={brandedResidencesProjects} 
                     title="Branded Residences" 
                     animation="fade-up" 
                     path={"/branded-residences/"} 
-                    compact 
+                    compact
+                    lazyLoad={true}
+                    smoothLoad={true}
                   />
                 )}
               </div>
@@ -1256,13 +1351,15 @@ const Home = () => {
               {/* Luxury Projects */}
               <div ref={setRef("luxury")} data-section="luxury" style={{ height: "10px" }}></div>
               <div>
-                {LuxuryAllProject.length === 0 ? <CustomSkeleton /> : (
+                {isLuxuryLoading && LuxuryAllProject.length === 0 ? <CustomSkeleton /> : (
                   <ProjectsSlider 
                     projects={LuxuryAllProject} 
                     title="Top Luxury Apartments For You" 
                     animation="fade-up" 
                     path={"/top-luxury-projects/"} 
-                    compact 
+                    compact
+                    lazyLoad={true}
+                    smoothLoad={true}
                   />
                 )}
               </div>
@@ -1271,13 +1368,15 @@ const Home = () => {
               {/* Budget Projects */}
               <div ref={setRef("budget")} data-section="budget" style={{ height: "10px" }}></div>
               <div>
-                {BudgetHomesProjects.length === 0 ? <CustomSkeleton /> : (
+                {isBudgetLoading && BudgetHomesProjects.length === 0 ? <CustomSkeleton /> : (
                   <ProjectsSlider 
                     projects={BudgetHomesProjects} 
                     title="Best Budget Projects in Gurugram" 
-                    animation="flip-left" 
+                    animation="fade-up" 
                     path="/budget-plots-in-gurgaon/"
-                    compact 
+                    compact
+                    lazyLoad={true}
+                    smoothLoad={true}
                   />
                 )}
               </div>
@@ -1285,13 +1384,15 @@ const Home = () => {
               {/* Sco Plots */}
               <div ref={setRef("SCO")} data-section="SCO" style={{ height: "10px" }}></div>
               <div>
-                {SCOProjects.length === 0 ? <CustomSkeleton /> : (
+                {isSCOLoading && SCOProjects.length === 0 ? <CustomSkeleton /> : (
                   <ProjectsSlider 
                     projects={SCOProjects} 
                     title="SCO Projects in Gurugram" 
-                    animation="flip-left" 
+                    animation="fade-up" 
                     path="/projects/sco-plots/" 
-                    compact 
+                    compact
+                    lazyLoad={true}
+                    smoothLoad={true}
                   />
                 )}
               </div>
@@ -1300,13 +1401,15 @@ const Home = () => {
               <div ref={setRef("Farmhouses")} data-section="Farmhouses" style={{ height: "10px" }}></div>
               <div>
                 {console.log("🏡 Farmhouse Projects Data:", FarmhouseProjects, "Length:", FarmhouseProjects.length)}
-                {FarmhouseProjects.length === 0 ? <CustomSkeleton /> : (
+                {isFarmhouseLoading && FarmhouseProjects.length === 0 ? <CustomSkeleton /> : (
                   <ProjectsSlider 
                     projects={FarmhouseProjects} 
                     title="Naugaon Farm Houses" 
-                    animation="flip-left" 
+                    animation="fade-up" 
                     path="/projects/farmhouses/" 
-                    compact 
+                    compact
+                    lazyLoad={true}
+                    smoothLoad={true}
                   />
                 )}
               </div>
@@ -1319,7 +1422,7 @@ const Home = () => {
               {/* Commercial Projects */}
               <div ref={setRef("commercial")} data-section="commercial" style={{ height: "10px" }}></div>
               <div>
-                {CommercialProjects.length === 0 ? <CustomSkeleton /> : (
+                {isCommercialLoading && CommercialProjects.length === 0 ? <CustomSkeleton /> : (
                   <CommercialProjectsSlider projects={CommercialProjects} />
                 )}
               </div>
@@ -1329,7 +1432,7 @@ const Home = () => {
               {/* Feature Projects */}
               <div ref={setRef("feature")} data-section="feature" style={{ height: "10px" }}></div>
               <div>
-                {FeaturedProjects.length === 0 ? <CustomSkeleton /> : (
+                {isFeaturedLoading && FeaturedProjects.length === 0 ? <CustomSkeleton /> : (
                   <div className="relative group">
                     {/* Header outside scroll container */}
                     <div className="flex items-center justify-between mb-4 mt-6">
@@ -1349,19 +1452,26 @@ const Home = () => {
                     <div
                       ref={featuredScrollRef}
                       onScroll={handleFeaturedScroll}
-                      className="overflow-x-auto scrollbar-hide py-4"
-                      style={{ width: '100%', scrollBehavior: 'smooth' }}
+                      className="overflow-x-auto scrollbar-hide py-4 transition-all duration-300 ease-out"
+                      style={{ 
+                        width: '100%', 
+                        scrollBehavior: 'smooth',
+                        scrollSnapType: 'x mandatory',
+                        WebkitOverflowScrolling: 'touch'
+                      }}
                     >
-                      <div className="flex w-full">
+                      <div className="flex w-full gap-4" style={{ scrollSnapAlign: 'start' }}>
                         <CommonProject
                           data={FeaturedProjects}
                           // Title removed here, handled above
-                          animation="flip-left"
+                          animation="fade-up"
                           // Path removed here, handled above
                           compact
                           showGrid={false}
                           slideView={true}
                           hideHeader={true}
+                          lazyLoad={true}
+                          loadingPlaceholder={true}
                         />
                       </div>
                     </div>

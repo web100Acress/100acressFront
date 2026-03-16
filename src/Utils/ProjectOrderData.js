@@ -260,11 +260,18 @@ const fetchProjectData = async () => {
 export const getBrandedResidences = async () => {
   console.log('🏢 getBrandedResidences: Function called');
   try {
-    const allProjects = await fetchProjectData();
-    const orderData = await getProjectOrderData();
+    // Execute both API calls in parallel for faster loading
+    const [allProjects, orderData] = await Promise.allSettled([
+      fetchProjectData(),
+      getProjectOrderData()
+    ]);
+    
+    // Extract results with fallbacks
+    const projectsData = allProjects.status === 'fulfilled' ? allProjects.value : [];
+    const orderDataResult = orderData.status === 'fulfilled' ? orderData.value : {};
     
     // Ensure we have a valid order list, fallback to hardcoded defaults if API returns empty
-    let brandedResidencesOrder = orderData.brandedresidences?.filter(item => item.isActive) || [];
+    let brandedResidencesOrder = orderDataResult.brandedresidences?.filter(item => item.isActive) || [];
     
     if (brandedResidencesOrder.length === 0) {
       console.log('🏢 getBrandedResidences: No order data from API, using defaults');
@@ -279,7 +286,7 @@ export const getBrandedResidences = async () => {
 
     const orderedProjects = brandedResidencesOrder.map(orderItem => {
       // Try to find matching project in the fetched data
-      const project = (allProjects || []).find(p => {
+      const project = (projectsData || []).find(p => {
         const normalizedName = p.projectName?.toLowerCase().replace(/\s+/g, '') || '';
         const normalizedOrderName = orderItem.name.toLowerCase().replace(/\s+/g, '');
         return normalizedName === normalizedOrderName;

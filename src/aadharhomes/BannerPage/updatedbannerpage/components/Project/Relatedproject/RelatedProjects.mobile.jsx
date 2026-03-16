@@ -170,7 +170,7 @@ const RelatedProjectsMobile = ({ builderName = "", currentProjectUrl = "", onSho
                         {project.thumbnailImage?.url ? (
                           <img
                             src={project.thumbnailImage.url}
-                            alt={project.projectName}
+                            alt={`${project.projectName} property thumbnail`}
                             fetchpriority="high"
                             crossOrigin="anonymous"
                             className="related-projects-mobile-card-image-img"

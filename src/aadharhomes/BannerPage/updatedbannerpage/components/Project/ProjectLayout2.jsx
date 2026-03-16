@@ -516,7 +516,7 @@ const ProjectLayout2 = () => {
   const location = projectViewDetails?.projectAddress
     ? `${projectViewDetails.projectAddress}${projectViewDetails?.city ? ", " + projectViewDetails.city : ""}`
     : projectViewDetails?.city || "";
-  const phoneNumber = projectViewDetails?.mobileNumber || "9811750130";
+  const phoneNumber = String(projectViewDetails?.mobileNumber || "9811750130");
   const companyLogo = projectViewDetails?.logo?.url || null;
 
   const formatPrice = () => {
@@ -726,7 +726,7 @@ const ProjectLayout2 = () => {
           {/* WhatsApp Button */}
           <motion.button
             onClick={() => {
-              const phoneNumber = projectViewDetails?.mobileNumber || "9811750130";
+              const phoneNumber = String(projectViewDetails?.mobileNumber || "9811750130");
               const message = `Hi, I'm interested in ${projectTitle}, Can you provide more details?`;
               const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
               window.open(whatsappUrl, '_blank');

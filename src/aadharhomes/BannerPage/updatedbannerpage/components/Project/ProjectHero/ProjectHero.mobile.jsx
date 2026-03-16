@@ -28,7 +28,7 @@ const ProjectHeroMobile = ({
     src: backgroundImage || thumbnailImage,
     alt: `${projectTitle} in ${location}`,
     loading: 'eager',
-    fetchPriority: 'high',
+    fetchpriority: 'high',
     width: 1973,
     height: 450,
     style: {
@@ -99,7 +99,7 @@ const ProjectHeroMobile = ({
             </a>
 
             {/* Phone Button - Compact */}
-            <a href={`tel:+91${phoneNumber}`} aria-label={`Call +91${phoneNumber}`} rel="nofollow" className="flex items-center justify-center w-10 h-10 bg-yellow-500/20 backdrop-blur-sm border border-yellow-400/30 rounded-full hover:bg-yellow-500/30 transition-all duration-300">
+            <a href={`tel:+91${String(phoneNumber)}`} aria-label={`Call +91${String(phoneNumber)}`} rel="nofollow" className="flex items-center justify-center w-10 h-10 bg-yellow-500/20 backdrop-blur-sm border border-yellow-400/30 rounded-full hover:bg-yellow-500/30 transition-all duration-300">
               <svg className="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M6.62 10.79a15.05 15.05 0 006.59 6.59l2.2-2.2a1 1 0 011.01-.24 11.36 11.36 0 003.55.57 1 1 0 011 1v3.61a1 1 0 01-.91 1A16 16 0 014 5.92 1 1 0 015 5h3.61a1 1 0 011 1 11.36 11.36 0 00.57 3.55 1 1 0 01-.24 1.01l-2.32 2.23z"/>
               </svg>

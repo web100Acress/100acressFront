@@ -136,7 +136,7 @@ const MasterPlanDesktop = ({ projectName = "", masterPlanImage = null }) => {
           <div className="master-plan-desktop-modal-body">
             <img
               src={masterPlanImage.url}
-              alt={`Master Plan of ${projectName}`}
+              alt={`Detailed master plan layout showing buildings, amenities, and open spaces`}
               className="master-plan-desktop-modal-image"
               crossOrigin="anonymous"
             />

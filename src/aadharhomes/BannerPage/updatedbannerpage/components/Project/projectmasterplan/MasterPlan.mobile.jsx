@@ -71,7 +71,7 @@ const MasterPlanMobile = ({ projectName = "", masterPlanImage = null }) => {
             <div className="master-plan-mobile-image-card">
               <img
                 src={masterPlanImage.url}
-                alt={`Master Plan of ${projectName}`}
+                alt={`Detailed master plan layout showing buildings, amenities, and open spaces`}
                 className="master-plan-mobile-image"
                 crossOrigin="anonymous"
               />
@@ -127,7 +127,7 @@ const MasterPlanMobile = ({ projectName = "", masterPlanImage = null }) => {
           <div className="master-plan-mobile-modal-body">
             <img
               src={masterPlanImage.url}
-              alt={`Master Plan of ${projectName}`}
+              alt={`Detailed master plan layout showing buildings, amenities, and open spaces`}
               className="master-plan-mobile-modal-image"
               crossOrigin="anonymous"
             />

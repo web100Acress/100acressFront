@@ -160,9 +160,9 @@ const BudgetPlotsInGurugraon = () => {
                       }}
                     />
                   </div>
-                  <button className={`card-button bg-red-600 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-500/30 transition-all duration-300`}>{project.title}</button>
+                  <button className="card-button bg-red-600 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-500\/30 transition-all duration-300">{project.title}</button>
                 </Link>
-              ))}
+              ))
             </div>
           )}
         </div>
@@ -220,7 +220,7 @@ const BudgetPlotsInGurugraon = () => {
                           }}
                         />
                       </div>
-                      <button className={`card-button bg-red-600 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-500/30 transition-all duration-300`}>{project.title}</button>
+                      <button className="card-button bg-red-600 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-500\/30 transition-all duration-300">{project.title}</button>
                     </Link>
                   </div>
                 ))
