@@ -1030,13 +1030,13 @@ export const staticData = {
       ]
     },
     brandedresidences: {
-      title: "Branded Residences in Gurgaon - Luxury Living",
-      description: "Discover premium branded residences in Gurgaon offering luxury living with world-class amenities and exclusive lifestyle features.",
-      metaTitle: "Branded Residences in Gurgaon - Luxury Living | 100acress",
+      title: "Branded Residences in India | Luxury Homes by Global Brands",
+      description: "Explore branded residences in prime locations, like Gurugram and Noida, where developers collaborate with global brands, creating luxury homes with premium amenities. Discover premium branded residences offering luxury living with world-class amenities and exclusive lifestyle features.",
+      metaTitle: "Branded Residences in India | Luxury Homes by Global Brands",
       canonical: "https://www.100acress.com/branded-residences/",
       keywords: "branded residences, luxury homes, branded apartments, premium residences, luxury living gurgaon",
       query: "brandedresidences",
-      heroTitle: "Branded Residences in Gurgaon - Luxury Living",
+      heroTitle: "Branded Residences in India | Luxury Homes by Global Brands",
       heroSubtitle: "Discover premium branded residences in Gurgaon offering luxury living with world-class amenities and exclusive lifestyle features.",
       faqs: [
         {

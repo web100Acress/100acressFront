@@ -16,6 +16,12 @@ import ProjectCard from "../../Pages/ProjectStatusSearch/ProjectCard";
 import CompareBar from "../../Pages/ProjectStatusSearch/CompareBar";
 import FAQAccordion from "../../Pages/ProjectStatusSearch/FAQAccordion";
 import GlobalLoadingButton from "../GlobalLoadingButton";
+import BrandedResidences from "../../content-data/branded/BrandedResidences";
+import UpcomingProjects from "../../content-data/projectsstatus/UpcomingProjects";
+import NewLaunchProjects from "../../content-data/projectsstatus/NewLaunchProjects";
+import UnderConstruction from "../../content-data/projectsstatus/UnderConstruction";
+import ReadyToMove from "../../content-data/projectsstatus/ReadyToMove";
+import { shouldDisplayContent, getContentSettings, shouldShowConfiguredContent } from "../../content-data/config";
 import { staticData } from "../../ProjectTypes/config/staticData";
 import { getPageDataFromURL } from "../../ProjectTypes/config/staticDataExample";
 
@@ -1457,6 +1463,41 @@ const GlobalFilterTemplate = ({
                 showProgress={true}
               />
 
+              {/* Branded Residences Section - Managed by config */}
+              {shouldDisplayContent('brandedResidences') && (
+                <div className={getContentSettings('brandedResidences').marginTop || 'mt-8'}>
+                  <BrandedResidences />
+                </div>
+              )}
+
+              {/* Upcoming Projects Section - Managed by config */}
+              {shouldDisplayContent('upcomingProjects') && (
+                <div className={getContentSettings('upcomingProjects').marginTop || 'mt-8'}>
+                  <UpcomingProjects />
+                </div>
+              )}
+
+              {/* New Launch Projects Section - Managed by config */}
+              {shouldDisplayContent('newLaunchProjects') && (
+                <div className={getContentSettings('newLaunchProjects').marginTop || 'mt-8'}>
+                  <NewLaunchProjects />
+                </div>
+              )}
+
+              {/* Under Construction Section - Managed by config */}
+              {shouldDisplayContent('underConstruction') && (
+                <div className={getContentSettings('underConstruction').marginTop || 'mt-8'}>
+                  <UnderConstruction />
+                </div>
+              )}
+
+              {/* Ready to Move Section - Managed by config */}
+              {shouldDisplayContent('readyToMove') && (
+                <div className={getContentSettings('readyToMove').marginTop || 'mt-8'}>
+                  <ReadyToMove />
+                </div>
+              )}
+
 
               {/* Empty State */}
               {(!filteredProjects.length && !memoizedProjectData?.length) && (
@@ -1516,6 +1557,9 @@ const GlobalFilterTemplate = ({
               </div>
             </div>
           )}
+          {/* Default Project Status Sections - Hide when configured content is displayed */}
+          {!shouldShowConfiguredContent() && (
+            <>
           {/* Know More About BHK Flats Section */}
           {projectStatus === 'upcoming' && (
             <div className="mt-12 sm:mt-16 bg-gradient-to-br from-blue-50 to-indigo-50 py-12 sm:py-16 px-4 sm:px-6 lg:px-8">
@@ -2415,6 +2459,9 @@ const GlobalFilterTemplate = ({
                 </div>
               </div>
             </div>
+          )}
+
+            </>
           )}
 
           {/* Trust Boosters Section */}
