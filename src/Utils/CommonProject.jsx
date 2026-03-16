@@ -140,11 +140,12 @@ const CommonProject = ({
               <div className="overflow-hidden rounded-t-2xl">
                 <img
                   src={item?.thumbnailImage?.url || item?.frontImage?.url || `https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/${item?.thumbnailImage?.public_id}`}
-                  alt="Property"
-                  fetchpriority="high"
+                  alt={item?.projectName || "Property"}
+                  fetchpriority={index < 4 ? "high" : "low"}
                   className={`w-full ${compact ? "aspect-[4/3]" : "aspect-[16/9]"
                     } object-cover transform-gpu transition-transform duration-500 ease-out group-hover:scale-[1.04]`}
                   loading="lazy"
+                  decoding="async"
                   onError={(e) => {
                     e.target.src =
                       "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='640' height='360' viewBox='0 0 640 360'%3E%3Crect width='640' height='360' fill='%23f3f4f6'/%3E%3Ctext x='320' y='180' font-family='Arial' font-size='16' text-anchor='middle' fill='%236b7280'%3EProject Image%3C/text%3E%3C/svg%3E";

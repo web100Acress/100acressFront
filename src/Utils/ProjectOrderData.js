@@ -247,27 +247,14 @@ const fetchProjectData = async () => {
   }
 
   const api = (await import('../config/apiClient')).default;
+  const response = await api.get('/project/viewAll/data');
   
-  // Add timeout to prevent hanging
-  const timeoutPromise = new Promise((_, reject) => 
-    setTimeout(() => reject(new Error('API timeout')), 8000)
-  );
-  
-  const apiPromise = api.get('/project/viewAll/data', { timeout: 8000 });
-  
-  try {
-    const response = await Promise.race([apiPromise, timeoutPromise]);
-    
-    if (response.data && response.data.data) {
-      cachedProjectData = response.data.data;
-      lastFetchTime = now;
-      return cachedProjectData;
-    }
-    return [];
-  } catch (error) {
-    console.error('❌ fetchProjectData timeout or error:', error);
-    return [];
+  if (response.data && response.data.data) {
+    cachedProjectData = response.data.data;
+    lastFetchTime = now;
+    return cachedProjectData;
   }
+  return [];
 };
 
 export const getBrandedResidences = async () => {
@@ -341,16 +328,10 @@ export const getBrandedResidences = async () => {
 
 export const getBudgetPlots = async () => {
   try {
-    // Execute both API calls in parallel for faster loading
-    const [allProjectsPromise, orderDataPromise] = await Promise.allSettled([
-      fetchProjectData(),
-      getProjectOrderData()
-    ]);
-
-    const allProjects = allProjectsPromise.status === 'fulfilled' ? allProjectsPromise.value : [];
-    const orderData = orderDataPromise.status === 'fulfilled' ? orderDataPromise.value : {};
-
-    if (allProjects && allProjects.length > 0 && orderData && orderData.budgetPlots) {
+    const allProjects = await fetchProjectData();
+    
+    if (allProjects && allProjects.length > 0) {
+      const orderData = await getProjectOrderData();
       const budgetPlotsOrder = orderData.budgetPlots.filter(item => item.isActive);
 
       const orderedProjects = budgetPlotsOrder.map(orderItem => {

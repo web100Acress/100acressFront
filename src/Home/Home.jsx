@@ -599,22 +599,20 @@ const Home = () => {
     return data;
   });
 
-  const { getTrending, getFeatured, getUpcoming, getCommercial, getAffordable, getLuxury, getScoplots, getBudgetHomes, getProjectIndelhi, getAllProjects, getProjectbyState, getFarmhouse } = Api_Service();
+  const { getHomepageData, getTrending, getFeatured, getUpcoming, getCommercial, getAffordable, getLuxury, getScoplots, getBudgetHomes, getProjectIndelhi, getAllProjects, getProjectbyState, getFarmhouse } = Api_Service();
   const [dataLoaded, setDataLoaded] = useState({
+    homepage: false,
     trending: false,
     featured: false,
     upcoming: false,
     commercial: false,
-    sco: false,
     affordable: false,
     luxury: false,
+    scoplots: false,
     budget: false,
-    delhi: false,
-    dubai: false,
-    luxuryAll: false,
-    newlaunch: false,
-    farmhouse: false,
-    branded: false,
+    city: false,
+    state: false,
+    farmhouse: false
   });
   
   // Add loading states for different sections
@@ -757,58 +755,18 @@ const Home = () => {
 
   // Preload critical data on mount - Optimized for faster loading
   useEffect(() => {
-    // Load trending, featured, luxury, budget, SCO, farmhouse and commercial immediately (above the fold)
     const loadCriticalData = async () => {
-      const promises = [];
-      
-      // Prioritize trending data for this section
-      if (TrendingProjects.length === 0) {
-        setIsTrendingLoading(true);
-        promises.push(getTrending());
-      }
-      
-      // Load featured in parallel (same priority)
-      if (FeaturedProjects.length === 0) {
-        setIsFeaturedLoading(true);
-        promises.push(getFeatured());
-      }
-      
-      // Load luxury in parallel (high priority section)
-      if (LuxuryAllProject.length === 0) {
-        setIsLuxuryLoading(true);
-        promises.push(getAllProjects("luxury"));
-      }
-      
-      // Load budget in parallel (important section)
-      if (BudgetHomesProjects.length === 0) {
-        setIsBudgetLoading(true);
-        promises.push(getBudgetHomes());
-      }
-      
-      // Load SCO in parallel (important section)
-      if (SCOProjects.length === 0) {
-        setIsSCOLoading(true);
-        promises.push(getScoplots());
-      }
-      
-      // Load farmhouse in parallel (important section)
-      if (FarmhouseProjects.length === 0) {
-        setIsFarmhouseLoading(true);
-        promises.push(getFarmhouse());
-      }
-      
-      // Load commercial in parallel (important section)
-      if (CommercialProjects.length === 0) {
-        setIsCommercialLoading(true);
-        promises.push(getCommercial());
-      }
-      
-      // Execute critical calls in parallel
-      if (promises.length > 0) {
-        await Promise.allSettled(promises);
-      }
-      
-      // Mark sections as loaded
+      setIsTrendingLoading(true);
+      setIsFeaturedLoading(true);
+      setIsLuxuryLoading(true);
+      setIsBudgetLoading(true);
+      setIsSCOLoading(true);
+      setIsFarmhouseLoading(true);
+      setIsCommercialLoading(true);
+
+      // Use the new consolidated endpoint
+      await getHomepageData();
+
       setIsTrendingLoading(false);
       setIsFeaturedLoading(false);
       setIsLuxuryLoading(false);
@@ -816,11 +774,12 @@ const Home = () => {
       setIsSCOLoading(false);
       setIsFarmhouseLoading(false);
       setIsCommercialLoading(false);
+      
+      setDataLoaded(prev => ({ ...prev, homepage: true }));
     };
     
-    // Load immediately without delay
     loadCriticalData();
-  }, [TrendingProjects.length, FeaturedProjects.length, LuxuryAllProject.length, BudgetHomesProjects.length, SCOProjects.length, FarmhouseProjects.length, CommercialProjects.length, getTrending, getFeatured, getAllProjects, getBudgetHomes, getScoplots, getFarmhouse, getCommercial]);
+  }, [getHomepageData]);
 
   // Update loading states when data arrives
   useEffect(() => {
@@ -1043,8 +1002,10 @@ const Home = () => {
           100acress.com - Buy Property in India & Dubai | Trusted Real Estate Platform
         </title>
         <link rel="canonical" href="https://www.100acress.com/" />
-        {/* Preconnect to critical domains - only unique ones */}
+        {/* Preconnect to critical domains */}
         <link rel="preconnect" href="https://d16gdc5rm7f21b.cloudfront.net" />
+        <link rel="dns-prefetch" href="https://d16gdc5rm7f21b.cloudfront.net" />
+        <link rel="preconnect" href="https://www.100acress.com" />
       </Helmet>
       {/* Visually hidden H1 for correct heading order without affecting layout */}
       <h1 className="sr-only">100acress Real Estate in Gurgaon – Buy, Rent, Sell & New Launch Projects</h1>

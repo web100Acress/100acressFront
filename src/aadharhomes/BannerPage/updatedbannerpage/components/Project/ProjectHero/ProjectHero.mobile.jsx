@@ -28,7 +28,7 @@ const ProjectHeroMobile = ({
     src: backgroundImage || thumbnailImage,
     alt: `${projectTitle} in ${location}`,
     loading: 'eager',
-    fetchpriority: 'high',
+    fetchPriority: 'high',
     width: 1973,
     height: 450,
     style: {
@@ -99,7 +99,7 @@ const ProjectHeroMobile = ({
             </a>
 
             {/* Phone Button - Compact */}
-            <a href={`tel:+91${String(phoneNumber)}`} aria-label={`Call +91${String(phoneNumber)}`} rel="nofollow" className="flex items-center justify-center w-10 h-10 bg-yellow-500/20 backdrop-blur-sm border border-yellow-400/30 rounded-full hover:bg-yellow-500/30 transition-all duration-300">
+            <a href={`tel:+91${phoneNumber}`} aria-label={`Call +91${phoneNumber}`} rel="nofollow" className="flex items-center justify-center w-10 h-10 bg-yellow-500/20 backdrop-blur-sm border border-yellow-400/30 rounded-full hover:bg-yellow-500/30 transition-all duration-300">
               <svg className="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M6.62 10.79a15.05 15.05 0 006.59 6.59l2.2-2.2a1 1 0 011.01-.24 11.36 11.36 0 003.55.57 1 1 0 011 1v3.61a1 1 0 01-.91 1A16 16 0 014 5.92 1 1 0 015 5h3.61a1 1 0 011 1 11.36 11.36 0 00.57 3.55 1 1 0 01-.24 1.01l-2.32 2.23z"/>
               </svg>
@@ -109,7 +109,7 @@ const ProjectHeroMobile = ({
       </div>
       
       {/* Bottom Section - Below Image */}
-      <div className="relative w-full bg-[#2d94b3] px-4 py-6" style={{ contentVisibility: 'auto' }}>
+      <div className="relative w-full bg-gray-900 px-4 py-6" style={{ contentVisibility: 'auto' }}>
         {/* Breadcrumbs kept for accessibility but hidden visually */}
         <nav className="sr-only" aria-label="Breadcrumb">
           <ol>
@@ -130,7 +130,7 @@ const ProjectHeroMobile = ({
         </div>
 
         {/* Info Bar */}
-        <div className="border border-yellow-400/60 bg-[#25526f] backdrop-blur-lg rounded-xl shadow-2xl p-4 max-w-md mx-auto">
+        <div className="border border-yellow-400/60 bg-black/80 backdrop-blur-lg rounded-xl shadow-2xl p-4 max-w-md mx-auto">
           <div className="grid grid-cols-2 gap-3">
             {/* Land Area */}
             <div className="text-center p-3 bg-white/5 rounded-lg border border-white/10 hover:bg-yellow-400/10 transition-all duration-300">
@@ -157,7 +157,7 @@ const ProjectHeroMobile = ({
               <div className="text-xs font-medium text-white/70 uppercase tracking-wider mb-1">
                 ABOUT PROJECT
               </div>
-              <div className="text-sm font-bold text-white leading-tight">
+              <div className="text-sm font-semibold text-white leading-tight">
                 {bottomInfo.aboutProject}
               </div>
             </div>

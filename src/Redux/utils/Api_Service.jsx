@@ -79,6 +79,55 @@ const Api_service = () => {
     }
   }, [dispatch]);
 
+  const getHomepageData = async () => {
+    const CACHE_KEY = "homepage_data_cache";
+    const CACHE_TIME = 5 * 60 * 1000; // 5 minutes
+
+    try {
+      const cached = localStorage.getItem(CACHE_KEY);
+      if (cached) {
+        const { data, time } = JSON.parse(cached);
+        if (Date.now() - time < CACHE_TIME) {
+          console.log("🚀 Serving homepage data from client cache");
+          // Dispatch to all relevant slices
+          dispatch(featured(data.featured));
+          dispatch(trending(data.trending));
+          dispatch(luxury(data.luxury));
+          dispatch(budget(data.budget));
+          dispatch(scoplots(data.sco));
+          dispatch(commercial(data.commercial));
+          dispatch(upcoming(data.upcoming));
+          dispatch(farmhouse(data.farmhouse));
+          return data;
+        }
+      }
+
+      console.log("📡 Fetching fresh homepage data from server");
+      const response = await api.get(`${API_ROUTES.projectsBase()}/homepage/data`);
+      const data = response.data.data;
+
+      // Update Redux
+      dispatch(featured(data.featured));
+      dispatch(trending(data.trending));
+      dispatch(luxury(data.luxury));
+      dispatch(budget(data.budget));
+      dispatch(scoplots(data.sco));
+      dispatch(commercial(data.commercial));
+      dispatch(upcoming(data.upcoming));
+      dispatch(farmhouse(data.farmhouse));
+
+      // Save to cache
+      localStorage.setItem(CACHE_KEY, JSON.stringify({
+        data,
+        time: Date.now()
+      }));
+
+      return data;
+    } catch (error) {
+      console.error("Error fetching homepage data:", error);
+    }
+  };
+
   const getFeatured = async () => {
     try {
       const response = await api.get(`${API_ROUTES.projectsBase()}/featured`);
@@ -134,7 +183,7 @@ const Api_service = () => {
     try {
       // Use dynamic project ordering
       const scoOrder = await getSCODesiredOrder();
-      await getProjectsByCategory('sco', scoOrder, scoplots);
+      await getProjectsByCategory('scoplots', scoOrder, scoplots);
     } catch (error) {
       console.error("Error fetching Sco data:", error);
     }
