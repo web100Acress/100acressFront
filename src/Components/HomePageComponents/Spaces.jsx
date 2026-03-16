@@ -254,7 +254,7 @@ function SpacesAvailable() {
                         <img
                           src={project.image}
                           alt={project.title}
-                          fetchPriority="high"
+                          fetchpriority="high"
                           className="card-image"
                           loading="lazy"
                         />

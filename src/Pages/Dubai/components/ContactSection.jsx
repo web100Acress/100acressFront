@@ -146,10 +146,6 @@ export const ContactSection = () => {
                 </div>
               </div> */}
             </div>
-
-           
-            
-            
           </div>
 
           {/* Right Side - Form */}

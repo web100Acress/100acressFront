@@ -4,6 +4,7 @@ import { useLocation } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import { useSelector } from "react-redux";
 import Api_Service from "../Redux/utils/Api_Service";
+import { staticData } from "../ProjectTypes/config/staticData";
 import ProjectSearching from "./ProjectSearching";
 import CommonProject from "../Utils/CommonProject";
 import Footer from "../Components/Actual_Components/Footer";
@@ -60,15 +61,10 @@ const ProjectStatusSearch = () => {
   const projectStatus = getProjectStatus();
   console.log('Detected project status:', projectStatus);
   
-  // Project status configurations with enhanced SEO
+  // Project status configurations from staticData
   const statusConfig = {
     upcoming: {
-      title: "UpComing Projects in Gurgaon",
-      description: "Explore best upcoming projects in Gurgaon with modern amenities. Find residential & commercial spaces customized to your lifestyle. Visit 100acress today!",
-      metaTitle: "Discover Upcoming Projects in Gurgaon - 100acress",
-      canonical: "https://www.100acress.com/projects/upcoming-projects-in-gurgaon/",
-      query: "allupcomingproject",
-      keywords: "upcoming projects gurgaon, new residential projects gurgaon, commercial projects gurgaon, gurgaon real estate, property investment gurgaon",
+      ...staticData.status.upcoming,
       structuredData: {
         "@context": "https://schema.org",
         "@type": "RealEstateAgent",
@@ -79,12 +75,7 @@ const ProjectStatusSearch = () => {
       }
     },
     underconstruction: {
-      title: "Under Construction Projects in Gurgaon",
-      description: "Under Construction Properties in Gurgaon include commercial and residential projects that will meet various requirements. These developments are equipped with modern amenities, great places close to business areas, as well as extensive green spaces. They're designed to meet the ever-changing demands of urban dwellers who want peace, convenience, and a vibrant lifestyle.",
-      metaTitle: "Property in UnderConstruction - Flats, Villas, House in gurugram.",
-      canonical: "https://www.100acress.com/under-construction-projects-in-gurgaon/",
-      query: "underconstruction",
-      keywords: "under construction projects gurgaon, ongoing projects gurgaon, construction status gurgaon, gurgaon property development",
+      ...staticData.status.underconstruction,
       structuredData: {
         "@context": "https://schema.org",
         "@type": "RealEstateAgent",
@@ -95,12 +86,7 @@ const ProjectStatusSearch = () => {
       }
     },
     readytomove: {
-      title: "Ready To Move Projects",
-      description: "Explore ready to move properties in Gurgaon with modern amenities. Find residential & commercial spaces ready for immediate possession.",
-      metaTitle: "Ready To Move Properties in Gurgaon - 100acress",
-      canonical: "https://www.100acress.com/projects-in-gurugram/property-ready-to-move/",
-      query: "readytomove",
-      keywords: "ready to move properties gurgaon, immediate possession gurgaon, completed projects gurgaon, gurgaon ready homes",
+      ...staticData.status.readytomove,
       structuredData: {
         "@context": "https://schema.org",
         "@type": "RealEstateAgent",
@@ -111,12 +97,7 @@ const ProjectStatusSearch = () => {
       }
     },
     newlaunch: {
-      title: "Projects in New Launch",
-      description: "Explore new launch projects in Gurgaon with modern amenities. Find the latest residential & commercial spaces.",
-      metaTitle: "New Launch Projects in Gurgaon - 100acress",
-      canonical: "https://www.100acress.com/projects-in-newlaunch/",
-      query: "newlaunch",
-      keywords: "new launch projects gurgaon, latest projects gurgaon, new residential projects gurgaon, gurgaon property launches",
+      ...staticData.status.newlaunch,
       structuredData: {
         "@context": "https://schema.org",
         "@type": "RealEstateAgent",
@@ -480,221 +461,18 @@ const ProjectStatusSearch = () => {
         
         {/* FAQ Schema */}
         <script type="application/ld+json">
-          {JSON.stringify(
-            projectStatus === 'upcoming' ? {
-              "@context": "https://schema.org",
-              "@type": "FAQPage",
-              "mainEntity": [{
-                "@type": "Question",
-                "name": "What are the top upcoming projects in Gurgaon?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "Some of the most sought-after upcoming projects in Gurgaon include Trident Realty 104, Satya Group 104, Central Park 104, AIPL Lake City, ArtTech The Story House, Max Estate 361, and Elan Sohna Road."
-                }
-              },{
-                "@type": "Question",
-                "name": "Which locations in Gurgaon are best for upcoming residential projects?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "Prime locations for upcoming projects include Dwarka Expressway, Southern Peripheral Road (SPR), Golf Course Extension Road, Sohna Road, and New Gurgaon, all offering strong connectivity and growth potential."
-                }
-              },{
-                "@type": "Question",
-                "name": "Are there affordable options among Gurgaon's upcoming projects?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "Yes, projects like Satya Group 104, ArtTech The Story House, and Wal Pravah Senior Living provide budget-friendly housing options while maintaining modern amenities."
-                }
-              },{
-                "@type": "Question",
-                "name": "What amenities do upcoming projects in Gurgaon usually offer?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "Most new launches come with swimming pools, clubhouses, gyms, landscaped gardens, sports courts, children's play areas, 24x7 security, and parking facilities, ensuring a premium lifestyle."
-                }
-              },{
-                "@type": "Question",
-                "name": "Which upcoming projects in Gurgaon offer luxury living?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "Luxury options include Trident Realty 104, Central Park 104, Elan Sohna Road, and Oberoi Realty Gurgaon, featuring spacious layouts, high-end amenities, and premium architecture."
-                }
-              },{
-                "@type": "Question",
-                "name": "What is the typical possession timeline for upcoming projects in Gurgaon?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "Most projects aim for possession within 3–4 years of launch. Buyers should always check the RERA-approved completion date before investing."
-                }
-              },{
-                "@type": "Question",
-                "name": "Why invest in upcoming projects in Gurgaon?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "Investing in upcoming projects in Gurgaon offers pre-launch pricing, modern amenities, strong connectivity, and excellent long-term appreciation, making them ideal for both homebuyers and investors."
-                }
-              }]
-            } : projectStatus === 'newlaunch' ? {
-              "@context": "https://schema.org",
-              "@type": "FAQPage",
-              "mainEntity": [{
-                "@type": "Question",
-                "name": "What makes new launch projects in Gurgaon a good investment?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "They offer lower prices, modern features, and great value growth thanks to Gurgaon's rapid development and strong business presence."
-                }
-              },{
-                "@type": "Question",
-                "name": "Which are the best areas to buy new launch projects in Gurgaon?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "Top localities include Dwarka Expressway, Golf Course Extension Road, Sohna Road, and New Gurgaon, known for premium developments and excellent connectivity."
-                }
-              },{
-                "@type": "Question",
-                "name": "How can I find RERA-approved new launch projects in Gurgaon?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "You can visit trusted real estate platforms like 100acress.com to explore verified, RERA-registered new launch projects with complete details."
-                }
-              },{
-                "@type": "Question",
-                "name": "What are the typical payment plans for new launch projects in Gurgaon?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "Most developers offer construction-linked plans or flexible installment options, letting you pay in stages as the project progresses, making it easier to manage finances."
-                }
-              },{
-                "@type": "Question",
-                "name": "Are new launch projects in Gurgaon suitable for end-users or investors?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "Both! End-users get modern, comfortable homes, while investors benefit from high ROI and rental demand in Gurgaon's fast-developing areas."
-                }
-              },{
-                "@type": "Question",
-                "name": "What amenities can I expect in Gurgaon's new launch projects?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "Most projects offer clubhouses, swimming pools, gyms, landscaped gardens, and smart home features, ensuring a premium living experience."
-                }
-              },{
-                "@type": "Question",
-                "name": "How do I choose the right new launch project in Gurgaon?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "Check the builder's reputation, location, RERA status, amenities, and future development plans around the area before investing."
-                }
-              }]
-            } : projectStatus === 'underconstruction' ? {
-              "@context": "https://schema.org",
-              "@type": "FAQPage",
-              "mainEntity": [{
-                "@type": "Question",
-                "name": "Which are the top under-construction projects in Gurgaon?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "Leading projects include DLF Privana South, Godrej Miraya, Elan The Presidential, M3M Mansion, Krisumi Waterfall, Signature Global Twin Tower, and Keystone Seasons."
-                }
-              },{
-                "@type": "Question",
-                "name": "What are the top luxury under-construction properties?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "Luxury projects feature smart layouts, wellness amenities, and include developments on Golf Course Road, Southern Peripheral Road, and Dwarka Expressway."
-                }
-              },{
-                "@type": "Question",
-                "name": "Is it cheaper to buy an under-construction property in Gurgaon?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "Yes, early-phase properties are more economical with lower prices, flexible payment plans, and potential capital appreciation."
-                }
-              },{
-                "@type": "Question",
-                "name": "What legal checks should I do before booking?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "Verify RERA registration, clear land titles, approved plans, commencement certificate, and the developer's track record."
-                }
-              },{
-                "@type": "Question",
-                "name": "Why is RERA registration important?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "RERA ensures legal transparency, protects buyer investments, and enforces builder commitments on delivery and amenities."
-                }
-              },{
-                "@type": "Question",
-                "name": "How do under-construction projects offer high ROI?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "Projects on key corridors like Dwarka Expressway and Golf Course Road have strong appreciation potential due to infrastructure growth."
-                }
-              },{
-                "@type": "Question",
-                "name": "Can buyers customize units in under-construction projects?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "Yes, many luxury projects allow customization of layouts, interiors, and finishes during early development."
-                }
-              }]
-            } : projectStatus === 'readytomove' ? {
-              "@context": "https://schema.org",
-              "@type": "FAQPage",
-              "mainEntity": [{
-                "@type": "Question",
-                "name": "Which are the best ready-to-move projects in Gurugram?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "Top projects include M3M St Andrews, Greenopolis, AMB Selfie Street, and Raheja Sampada offering premium amenities and immediate possession."
-                }
-              },{
-                "@type": "Question",
-                "name": "Where can I find affordable ready-to-move flats in Gurugram?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "Affordable options are available in sectors like Dwarka Expressway, New Gurgaon, and Sohna Road with good amenities and prices under ₹2 Cr."
-                }
-              },{
-                "@type": "Question",
-                "name": "What benefits come with buying ready-to-move properties?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "Immediate possession, no construction delays, GST savings on property price, and potential for instant rental income."
-                }
-              },{
-                "@type": "Question",
-                "name": "Are ready-to-move commercial properties available in Gurugram?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "Yes, projects like AIPL Joy Street and Trehan IRIS Broadway provide ready shops and office spaces for business use."
-                }
-              },{
-                "@type": "Question",
-                "name": "How do I verify the legal status of ready-to-move projects?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "Check the project's RERA registration and possession certificate on official state RERA websites for secure purchases."
-                }
-              },{
-                "@type": "Question",
-                "name": "Can I get home loans on ready-to-move properties?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "Yes, legally clear ready-to-move properties are eligible for home loans from banks and financial institutions."
-                }
-              },{
-                "@type": "Question",
-                "name": "What amenities are commonly included in ready-to-move projects?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "Swimming pools, gyms, parks, clubhouse, 24/7 security, and landscaped gardens are standard features in premium ready-to-move projects."
-                }
-              }]
-            } : {}
-          )}
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": (currentConfig.faqs || []).map(faq => ({
+              "@type": "Question",
+              "name": faq.question,
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": faq.answer
+              }
+            }))
+          })}
         </script>
         
         {/* Breadcrumb Structured Data */}

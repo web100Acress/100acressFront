@@ -99,49 +99,7 @@ const ShowPropertyDetails = ({ id, type }) => {
           const propertyData = res.data.data.postProperty;
           setRentViewDetails(propertyData);
           
-          // Check if property exists in the specified category
-          const checkPropertyInCategory = async () => {
-            try {
-              const endpoint = type === "rental" 
-                ? "/property/rent/viewAll"
-                : "/property/buy/ViewAll";
-              const categoryRes = await api.get(endpoint);
-              const categoryData = type === "rental" 
-                ? (Array.isArray(categoryRes?.data?.rentaldata) ? categoryRes.data.rentaldata : [])
-                : (Array.isArray(categoryRes?.data?.ResaleData) ? categoryRes.data.ResaleData : []);
-              
-              const propertyExists = categoryData.some(prop => prop._id === id);
-              
-              if (!propertyExists) {
-                // Property doesn't exist in this category, check the other category
-                const otherEndpoint = type === "rental" 
-                  ? "/property/buy/ViewAll"
-                  : "/property/rent/viewAll";
-                
-                const otherRes = await api.get(otherEndpoint);
-                const otherData = type === "rental" 
-                  ? (Array.isArray(otherRes?.data?.ResaleData) ? otherRes.data.ResaleData : [])
-                  : (Array.isArray(otherRes?.data?.rentaldata) ? otherRes.data.rentaldata : []);
-                
-                const existsInOther = otherData.some(prop => prop._id === id);
-                
-                if (existsInOther) {
-                  // Redirect to the correct category
-                  const correctType = type === "rental" ? "buy-properties" : "rental-properties";
-                  const propertyName = propertyData.propertyName ? propertyData.propertyName.replace(/\s+/g, '-') : 'property';
-                  navigate(`/${correctType}/${propertyName}/${id}/`, { replace: true });
-                  return;
-                }
-              }
-              
-              setPropertyType(type);
-            } catch (error) {
-              console.error("Error checking property category:", error);
-              setPropertyType(type); // Fallback to original type
-            }
-          };
-          
-          checkPropertyInCategory();
+          setPropertyType(type);
           
           setAgentDetails({
             agentName: res.data?.data?.agentName || "",
@@ -163,6 +121,7 @@ const ShowPropertyDetails = ({ id, type }) => {
           setLoading(false);
         } else {
             console.log("No data found");
+            setLoading(false);
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -170,7 +129,7 @@ const ShowPropertyDetails = ({ id, type }) => {
       }
     };
     fetchData();
-  }, [id, type, navigate]);
+  }, [id, type]);
 
   const handleShare = (project) => {
     if (navigator.share) {
@@ -248,11 +207,11 @@ const ShowPropertyDetails = ({ id, type }) => {
     }
   };
 
-  const fetchData = async () => {
+  const fetchRelatedProperties = async () => {
     try {
       const endpoint = propertyType === "rental" 
-        ? "/property/rent/viewAll"
-        : "/property/buy/ViewAll";
+        ? "/property/rent/viewAll?limit=6"
+        : "/property/buy/ViewAll?limit=6";
       
       const res = await api.get(endpoint);
       
@@ -268,7 +227,7 @@ const ShowPropertyDetails = ({ id, type }) => {
 
   useEffect(() => {
     if (propertyType) {
-      fetchData();
+      fetchRelatedProperties();
     }
   }, [propertyType]);
 

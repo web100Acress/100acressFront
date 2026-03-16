@@ -157,7 +157,7 @@ const MobileInsightBlog = () => {
     return `${minutes} min`;
   };
 
-  const blogLink = (post) => `/insights/blog/${post._id}`;
+  const blogLink = (post) => `/insights/blog/${post._id}/`;
 
   // Shimmering Skeletons
   const BlogSkeleton = () => (

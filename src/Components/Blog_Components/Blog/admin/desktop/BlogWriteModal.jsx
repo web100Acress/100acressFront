@@ -1,19 +1,20 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import Quill from 'quill';
 import api from '../../../../../config/apiClient';
-  import ReactQuill from 'react-quill';
+import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
- import ReactCrop from 'react-image-crop';
- import 'react-image-crop/dist/ReactCrop.css';
- import 'quill-emoji/dist/quill-emoji.css';
- import 'quill-emoji';
- import { useParams, useNavigate } from 'react-router-dom';
- import showToast from "../../../../../Utils/toastUtils";
- 
- import {
-   FileText,
-   Image as ImageIcon,
-   Edit3,
+import ReactCrop from 'react-image-crop';
+import 'react-image-crop/dist/ReactCrop.css';
+import 'quill-emoji/dist/quill-emoji.css';
+import 'quill-emoji';
+import { useParams, useNavigate } from 'react-router-dom';
+import showToast from "../../../../../Utils/toastUtils";
+import TableBuilder from './TableBuilder';
+
+import {
+  FileText,
+  Image as ImageIcon,
+  Edit3,
   Save,
   Upload,
   UploadCloud,
@@ -25,25 +26,30 @@ import 'react-quill/dist/quill.snow.css';
   Check,
   Monitor,
   Smartphone,
+  Eye,
   MessageSquare,
   History,
   Maximize2,
-  Minimize2
- } from 'lucide-react';
+  Minimize2,
+  ChevronDown,
+  Target,
+  BookOpen,
+  Search,
+  Zap,
+  BarChart3,
+  Share2,
+  Lightbulb
+} from 'lucide-react';
 
- const initialCategories = [
-  'Commercial Property',
-  'Residential Flats',
-  'SCO Plots',
-  'Deen Dayal Plots',
-  'Residential Plots',
-  'Independent Floors',
-  'Builder Floors',
-  'Affordable Homes',
- ];
+const initialCategories = [
+  'News',
+  'Lifestyle',
+  'Finance',
+  'Policies'
+];
 
- /** slugify helper */
- const slugify = (text = '') =>
+/** slugify helper */
+const slugify = (text = '') =>
   text
     .toString()
     .toLowerCase()
@@ -53,7 +59,7 @@ import 'react-quill/dist/quill.snow.css';
     .replace(/^-+|-+$/g, '')
     .slice(0, 100);
 
- const BlogWriteModal = () => {
+const BlogWriteModal = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   // Auth is handled by the shared axios client interceptor
@@ -68,12 +74,13 @@ import 'react-quill/dist/quill.snow.css';
   const [frontImage, setFrontImage] = useState(null); // File or URL string
   const [frontImagePreview, setFrontImagePreview] = useState('');
   const [categories, setCategories] = useState('');
-  const [categoryList, setCategoryList] = useState(initialCategories);
+  const categoryList = initialCategories;
   const [addedCategory, setAddedCategory] = useState('');
 
   // SEO
   const [metaTitle, setMetaTitle] = useState('');
   const [metaDescription, setMetaDescription] = useState('');
+  const [canonicalUrl, setCanonicalUrl] = useState('');
   const [slug, setSlug] = useState('');
   const [slugTouched, setSlugTouched] = useState(false); // if user edits slug manually
   const [slugChecking, setSlugChecking] = useState(false);
@@ -87,7 +94,14 @@ import 'react-quill/dist/quill.snow.css';
   const [newBlog, setNewBlog] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isPublished, setIsPublished] = useState(false);
+  const [isDraft, setIsDraft] = useState(false);
   const [views, setViews] = useState(0);
+
+  // SEO Analysis State
+  const [seoAnalysis, setSeoAnalysis] = useState(null);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [showSeoModal, setShowSeoModal] = useState(false);
+  const [focusKeyword, setFocusKeyword] = useState('');
 
   // Related projects state
   const [relatedProjects, setRelatedProjects] = useState([]);
@@ -100,10 +114,22 @@ import 'react-quill/dist/quill.snow.css';
   const [autoSuggestEnabled, setAutoSuggestEnabled] = useState(true);
   const [suggestedProjects, setSuggestedProjects] = useState([]);
   const [contentKeywords, setContentKeywords] = useState([]);
-  
+
   // FAQ state (no UI changes)
   const [enableFAQ, setEnableFAQ] = useState(false);
   const [faqs, setFaqs] = useState([{ question: '', answer: '' }]);
+
+  // Table blocks state for JSON table storage
+  const [tableBlocks, setTableBlocks] = useState([]);
+  const [showTableBuilder, setShowTableBuilder] = useState(false);
+  const [currentTableData, setCurrentTableData] = useState(null);
+
+  // Schema/Structured Data state
+  const [enableSchema, setEnableSchema] = useState(false);
+  const [schemaType, setSchemaType] = useState('BlogPosting'); // BlogPosting, Article, NewsArticle
+  const [customSchema, setCustomSchema] = useState('');
+  const [schemaSaving, setSchemaSaving] = useState(false);
+  const [schemaLastSaved, setSchemaLastSaved] = useState(null);
 
   // Cropper state for inline content images
   const [showCropper, setShowCropper] = useState(false);
@@ -120,6 +146,197 @@ import 'react-quill/dist/quill.snow.css';
   const [frontImageError, setFrontImageError] = useState(false);
   const [frontTriedProxy, setFrontTriedProxy] = useState(false);
   const originalFrontUrlRef = useRef('');
+
+  // Helper to generate schema/structured data
+  const generateSchema = () => {
+    if (!enableSchema) return null;
+
+    // Dynamic values from blog data
+    const currentDate = new Date();
+    const dynamicDescription = metaDescription || description.replace(/<[^>]*>/g, '').substring(0, 160);
+    const dynamicTitle = title || 'Untitled Blog';
+    const dynamicAuthor = author || '100acress.com';
+    const dynamicImage = frontImagePreview || '';
+
+    const baseSchema = {
+      "@context": "https://schema.org",
+      "@type": schemaType,
+      "headline": dynamicTitle,
+      "description": dynamicDescription,
+      "image": dynamicImage,
+      "author": {
+        "@type": "Person",
+        "name": dynamicAuthor
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "100acress.com",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://www.100acress.com/logo.png"
+        },
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "telephone": "+918500900100",
+          "contactType": "customer service",
+          "availableLanguage": ["en", "Hindi"]
+        },
+        "sameAs": [
+          "https://www.facebook.com/100Acress",
+          "https://x.com/100acressdotcom",
+          "https://www.instagram.com/official100acress/",
+          "https://www.youtube.com/@100acress",
+          "https://www.linkedin.com/company/100acress/"
+        ]
+      },
+      "datePublished": currentDate.toISOString(),
+      "dateModified": currentDate.toISOString()
+    };
+
+    // Add dynamic fields
+    if (categories) {
+      baseSchema.about = categories;
+      baseSchema.keywords = categories;
+    }
+
+    if (slug) {
+      baseSchema.url = `https://www.100acress.com/blog/${slug}/`;
+      baseSchema.identifier = `https://www.100acress.com/blog/${slug}/`;
+    } else if (id) {
+      baseSchema.url = `https://www.100acress.com/blog/view/${id}`;
+      baseSchema.identifier = `https://www.100acress.com/blog/view/${id}`;
+    }
+
+    if (description) {
+      const cleanContent = description.replace(/<[^>]*>/g, '').substring(0, 300);
+      baseSchema.articleBody = cleanContent;
+      const wordCount = description.replace(/<[^>]*>/g, ' ').split(/\s+/).filter(word => word.length > 0).length;
+      baseSchema.wordCount = wordCount;
+    }
+
+    baseSchema.inLanguage = "en-US";
+    baseSchema.isFamilyFriendly = true;
+
+    if (relatedProjects && relatedProjects.length > 0) {
+      baseSchema.mainEntityOfPage = {
+        "@type": "WebPage",
+        "name": dynamicTitle,
+        "url": baseSchema.url
+      };
+    }
+
+    if (customSchema) {
+      try {
+        const customParsed = JSON.parse(customSchema);
+        const mergedSchema = { ...baseSchema, ...customParsed };
+
+        // Ensure critical fields remain dynamic
+        mergedSchema.headline = dynamicTitle;
+        mergedSchema.description = dynamicDescription;
+        mergedSchema.image = dynamicImage;
+        mergedSchema.author = { "@type": "Person", name: dynamicAuthor };
+        mergedSchema.datePublished = currentDate.toISOString();
+        mergedSchema.dateModified = currentDate.toISOString();
+
+        return mergedSchema;
+      } catch (e) {
+        console.error('Invalid custom schema JSON:', e);
+        return baseSchema;
+      }
+    }
+
+    return baseSchema;
+  };
+
+  // SEO Analysis function
+  const handleAnalyzeSEO = async () => {
+    try {
+      setIsAnalyzing(true);
+      const res = await api.post('/blog/analyze-seo', {
+        title,
+        metaTitle,
+        metaDescription,
+        slug,
+        content: description,
+        focusKeyword
+      });
+      setSeoAnalysis(res.data);
+      setShowSeoModal(true);
+    } catch (error) {
+      console.error('SEO Analysis error:', error);
+      showToast.error('Failed to analyze SEO');
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
+
+  // Manual save schema function
+  const manualSaveSchema = async () => {
+    if (!id || !enableSchema) {
+      showToast.error('Please enable schema first');
+      return;
+    }
+
+    try {
+      setSchemaSaving(true);
+      const schemaData = generateSchema();
+      if (!schemaData) {
+        showToast.error('No schema data to save');
+        return;
+      }
+
+      console.log('=== SCHEMA SAVE DEBUG ===');
+      console.log('Blog ID:', id);
+      console.log('Enable Schema:', enableSchema);
+      console.log('Schema Type:', schemaType);
+      console.log('Generated Schema:', schemaData);
+      console.log('Custom Schema:', customSchema);
+
+      const formData = new FormData();
+      formData.append('enableSchema', enableSchema);
+      formData.append('schemaType', schemaType);
+      formData.append('schema', JSON.stringify(schemaData));
+
+      // Add required fields
+      formData.append('blog_Title', title || 'Schema Update');
+      formData.append('blog_Description', description || 'Schema Update');
+      formData.append('blog_Category', categories || 'Blog');
+      formData.append('author', author || 'Admin');
+
+      console.log('FormData contents:');
+      for (let [key, value] of formData.entries()) {
+        console.log(`${key}:`, value);
+      }
+
+      console.log('Sending API request to:', `/blog/update/${id}`);
+      const response = await api.put(`/blog/update/${id}`, formData);
+
+      console.log('API Response:', response);
+      console.log('Response status:', response.status);
+      console.log('Response data:', response.data);
+
+      if (response.status === 200) {
+        setSchemaLastSaved(new Date());
+        console.log('Schema manually saved successfully!');
+        showToast.success('Schema saved to backend successfully!');
+
+        // Refresh blog data to verify
+        setTimeout(() => {
+          console.log('Refreshing page to verify schema...');
+          window.location.reload();
+        }, 1000);
+      }
+    } catch (error) {
+      console.error('=== SCHEMA SAVE ERROR ===');
+      console.error('Error details:', error);
+      console.error('Error response:', error.response?.data);
+      console.error('Error status:', error.response?.status);
+      console.error('Error message:', error.message);
+      showToast.error('Failed to save schema: ' + (error.response?.data?.message || error.message));
+    } finally {
+      setSchemaSaving(false);
+    }
+  };
 
   // Helper to normalize image URLs from API (handle relative paths)
   const normalizeImageUrl = (u) => {
@@ -152,16 +369,20 @@ import 'react-quill/dist/quill.snow.css';
       return '';
     } catch { return ''; }
   };
-  
+
   // Initialize Quill instance
   const handleQuillChange = (content/*, delta, source, editor */) => {
-    setDescription(content);
+    // If the content change was just normal typing, update state
+    // Don't update if we are in the middle of a submission finalization
+    if (!isSubmitting) {
+      setDescription(content);
+    }
     // Always cache the real Quill instance from the ref (editor param is UnprivilegedEditor)
     try {
       if (quillRef.current && typeof quillRef.current.getEditor === 'function') {
         quillInstance.current = quillRef.current.getEditor();
       }
-    } catch {}
+    } catch { }
   };
 
   // Drag & Drop Featured Image
@@ -179,17 +400,17 @@ import 'react-quill/dist/quill.snow.css';
     }
   };
   const onFeaturedDragOver = (e) => { e.preventDefault(); };
-  
+
   // Safe accessor for Quill instance
   const safeGetQuill = () => {
     try {
       if (quillRef.current && typeof quillRef.current.getEditor === 'function') {
         return quillRef.current.getEditor();
       }
-    } catch {}
+    } catch { }
     return quillInstance.current || null;
   };
-  
+
   // Lightbox & preview helpers
   const [lightboxUrl, setLightboxUrl] = useState('');
   const [frontPreviewObjUrl, setFrontPreviewObjUrl] = useState('');
@@ -258,6 +479,63 @@ import 'react-quill/dist/quill.snow.css';
   const [collapsedFaqs, setCollapsedFaqs] = useState([false]);
   const dragIndexRef = useRef(null);
 
+  // Auto-save schema to backend in real-time
+  useEffect(() => {
+    if (!id || !enableSchema) return;
+
+    const autoSaveSchema = setTimeout(async () => {
+      try {
+        setSchemaSaving(true);
+        const schemaData = generateSchema();
+        if (!schemaData) return;
+
+        console.log('=== AUTO-SAVE SCHEMA DEBUG ===');
+        console.log('Blog ID:', id);
+        console.log('Enable Schema:', enableSchema);
+        console.log('Schema Type:', schemaType);
+        console.log('Generated Schema:', schemaData);
+
+        // Use main update endpoint to save schema
+        const formData = new FormData();
+        formData.append('enableSchema', enableSchema);
+        formData.append('schemaType', schemaType);
+        formData.append('schema', JSON.stringify(schemaData));
+
+        // Add minimal required fields to avoid validation errors
+        if (!title) formData.append('blog_Title', 'Auto-saving schema...');
+        if (!description) formData.append('blog_Description', 'Auto-saving schema...');
+        if (!categories) formData.append('blog_Category', 'Blog');
+        if (!author) formData.append('author', 'Auto-save');
+
+        console.log('Auto-save FormData:');
+        for (let [key, value] of formData.entries()) {
+          console.log(`${key}:`, value);
+        }
+
+        console.log('Auto-saving to endpoint:', `/blog/update/${id}`);
+        const response = await api.put(`/blog/update/${id}`, formData);
+
+        console.log('Auto-save Response:', response);
+        console.log('Auto-save Status:', response.status);
+
+        setSchemaLastSaved(new Date());
+        console.log('Schema auto-saved to backend via main endpoint');
+        showToast.success('Schema auto-saved successfully!');
+      } catch (error) {
+        console.error('=== AUTO-SAVE SCHEMA ERROR ===');
+        console.error('Error details:', error);
+        console.error('Error response:', error.response?.data);
+        console.error('Error status:', error.response?.status);
+        console.error('Error message:', error.message);
+        showToast.error('Failed to auto-save schema');
+      } finally {
+        setSchemaSaving(false);
+      }
+    }, 2000); // Auto-save after 2 seconds of inactivity
+
+    return () => clearTimeout(autoSaveSchema);
+  }, [enableSchema, schemaType, customSchema, title, metaDescription, frontImagePreview, author, id]);
+
   // Autosave & version history
   const draftKey = useMemo(() => `blogDraft:${id || 'new'}`, [id]);
   const historyKey = useMemo(() => `blogDraftHistory:${id || 'new'}`, [id]);
@@ -267,7 +545,7 @@ import 'react-quill/dist/quill.snow.css';
 
   // Register extra fonts in Quill
   const fontWhitelist = [
-    'inter','roboto','poppins','montserrat','lato','open-sans','raleway','nunito','merriweather','playfair','source-sans','ubuntu','work-sans','rubik','mulish','josefin','quicksand','dm-sans','pt-serif','arimo'
+    'inter', 'roboto', 'poppins', 'montserrat', 'lato', 'open-sans', 'raleway', 'nunito', 'merriweather', 'playfair', 'source-sans', 'ubuntu', 'work-sans', 'rubik', 'mulish', 'josefin', 'quicksand', 'dm-sans', 'pt-serif', 'arimo'
   ];
   const Font = Quill.import('formats/font');
   Font.whitelist = fontWhitelist;
@@ -299,81 +577,81 @@ import 'react-quill/dist/quill.snow.css';
       const details = {};
 
       // Title length
-      if (title.length >= 30 && title.length <= 65) { score += 10; details.title = 'Good'; insights.push({severity:'good', text:`Title length is optimal (${title.length} chars)`, section:'Title'}); }
-      else if (title.length > 0) { score += 6; details.title = 'Ok'; insights.push({severity:'warn', text:`Title length ${title.length}. Aim for 30–65 chars.`, section:'Title'}); }
-      else { insights.push({severity:'error', text:'Title is missing', section:'Title'}); }
+      if (title.length >= 30 && title.length <= 65) { score += 10; details.title = 'Good'; insights.push({ severity: 'good', text: `Title length is optimal (${title.length} chars)`, section: 'Title' }); }
+      else if (title.length > 0) { score += 6; details.title = 'Ok'; insights.push({ severity: 'warn', text: `Title length ${title.length}. Aim for 30–65 chars.`, section: 'Title' }); }
+      else { insights.push({ severity: 'error', text: 'Title is missing', section: 'Title' }); }
 
       // Meta Title presence (using same metaTitle as title if needed)
-      if (metaTitle && metaTitle.length) { score += 4; insights.push({severity:'good', text:'Meta title present', section:'Meta'}); }
-      else insights.push({severity:'warn', text:'Meta title missing (recommended)', section:'Meta'});
+      if (metaTitle && metaTitle.length) { score += 4; insights.push({ severity: 'good', text: 'Meta title present', section: 'Meta' }); }
+      else insights.push({ severity: 'warn', text: 'Meta title missing (recommended)', section: 'Meta' });
 
       // Meta Description length
-      if (metaDescription.length >= 120 && metaDescription.length <= 165) { score += 14; details.meta = 'Optimal'; insights.push({severity:'good', text:`Meta description optimal (${metaDescription.length}/160)`, section:'Meta'}); }
-      else if (metaDescription.length >= 80) { score += 9; details.meta = 'Ok'; insights.push({severity:'warn', text:`Meta description ${metaDescription.length}. Aim for 120–165 chars.`, section:'Meta'}); }
-      else { insights.push({severity:'error', text:'Meta description too short or missing', section:'Meta'}); }
+      if (metaDescription.length >= 120 && metaDescription.length <= 165) { score += 14; details.meta = 'Optimal'; insights.push({ severity: 'good', text: `Meta description optimal (${metaDescription.length}/160)`, section: 'Meta' }); }
+      else if (metaDescription.length >= 80) { score += 9; details.meta = 'Ok'; insights.push({ severity: 'warn', text: `Meta description ${metaDescription.length}. Aim for 120–165 chars.`, section: 'Meta' }); }
+      else { insights.push({ severity: 'error', text: 'Meta description too short or missing', section: 'Meta' }); }
 
       // Slug
       if (slug && slugAvailable !== false) { score += 6; details.slug = 'Ok'; }
-      else insights.push({severity:'error', text:'Slug is invalid or taken', section:'Slug'});
+      else insights.push({ severity: 'error', text: 'Slug is invalid or taken', section: 'Slug' });
 
       // Headings
-      if (h1s.length === 1) { score += 8; details.h1 = '1 H1'; insights.push({severity:'good', text:'Exactly one H1 found', section:'Headings'}); }
-      else if (h1s.length > 1) { score += 3; insights.push({severity:'warn', text:`${h1s.length} H1s found. Use only one.`, section:'Headings'}); }
-      else { insights.push({severity:'warn', text:'No H1 found. Add a primary heading.', section:'Headings'}); }
-      if (h2s.length >= 2) { score += 6; details.h2 = 'Has H2s'; insights.push({severity:'good', text:`${h2s.length} H2s found`, section:'Headings'}); }
-      else { insights.push({severity:'warn', text:'Add at least two H2 subheadings', section:'Headings'}); }
+      if (h1s.length === 1) { score += 8; details.h1 = '1 H1'; insights.push({ severity: 'good', text: 'Exactly one H1 found', section: 'Headings' }); }
+      else if (h1s.length > 1) { score += 3; insights.push({ severity: 'warn', text: `${h1s.length} H1s found. Use only one.`, section: 'Headings' }); }
+      else { insights.push({ severity: 'warn', text: 'No H1 found. Add a primary heading.', section: 'Headings' }); }
+      if (h2s.length >= 2) { score += 6; details.h2 = 'Has H2s'; insights.push({ severity: 'good', text: `${h2s.length} H2s found`, section: 'Headings' }); }
+      else { insights.push({ severity: 'warn', text: 'Add at least two H2 subheadings', section: 'Headings' }); }
 
       // Content length
-      if (wordCount >= 1000) { score += 14; details.length = '1000+'; insights.push({severity:'good', text:`Strong content length (${wordCount} words)`, section:'Content'}); }
-      else if (wordCount >= 600) { score += 10; details.length = '600+'; insights.push({severity:'good', text:`Good content length (${wordCount} words)`, section:'Content'}); }
-      else if (wordCount >= 300) { score += 6; details.length = '300+'; insights.push({severity:'warn', text:`Consider writing more content (currently ${wordCount} words)`, section:'Content'}); }
-      else { insights.push({severity:'error', text:'Very low content length (<300 words)', section:'Content'}); }
+      if (wordCount >= 1000) { score += 14; details.length = '1000+'; insights.push({ severity: 'good', text: `Strong content length (${wordCount} words)`, section: 'Content' }); }
+      else if (wordCount >= 600) { score += 10; details.length = '600+'; insights.push({ severity: 'good', text: `Good content length (${wordCount} words)`, section: 'Content' }); }
+      else if (wordCount >= 300) { score += 6; details.length = '300+'; insights.push({ severity: 'warn', text: `Consider writing more content (currently ${wordCount} words)`, section: 'Content' }); }
+      else { insights.push({ severity: 'error', text: 'Very low content length (<300 words)', section: 'Content' }); }
 
       // Readability (avg sentence length)
       const sentences = textNorm.split(/[.!?]+\s/).filter(Boolean);
       const avgWords = sentences.length ? Math.round(wordCount / sentences.length) : 0;
-      if (avgWords >= 10 && avgWords <= 24) { score += 10; details.readability = 'Good'; insights.push({severity:'good', text:`Readable sentence length (avg ${avgWords} words)`, section:'Readability'}); }
-      else if (avgWords > 0) { score += 5; details.readability = 'Ok'; insights.push({severity:'warn', text:`Average sentence length ${avgWords}. Aim for 10–24.`, section:'Readability'}); }
+      if (avgWords >= 10 && avgWords <= 24) { score += 10; details.readability = 'Good'; insights.push({ severity: 'good', text: `Readable sentence length (avg ${avgWords} words)`, section: 'Readability' }); }
+      else if (avgWords > 0) { score += 5; details.readability = 'Ok'; insights.push({ severity: 'warn', text: `Average sentence length ${avgWords}. Aim for 10–24.`, section: 'Readability' }); }
 
       // Images: count + alt attributes (content images)
-      if (imgs.length > 0) { score += 4; insights.push({severity:'good', text:`${imgs.length} images in content`, section:'Images'}); }
+      if (imgs.length > 0) { score += 4; insights.push({ severity: 'good', text: `${imgs.length} images in content`, section: 'Images' }); }
       const missingAlt = imgs.filter(im => !(im.getAttribute('alt') || '').trim()).length;
-      if (missingAlt > 0) insights.push({severity:'warn', text:`${missingAlt}/${imgs.length} images missing alt text`, section:'Images'});
+      if (missingAlt > 0) insights.push({ severity: 'warn', text: `${missingAlt}/${imgs.length} images missing alt text`, section: 'Images' });
       // Width/height attributes hint
       const missingDims = imgs.filter(im => !im.getAttribute('width') || !im.getAttribute('height')).length;
-      if (missingDims > 0) insights.push({severity:'warn', text:`${missingDims}/${imgs.length} images missing width/height attributes (CLS hint)`, section:'Images'});
+      if (missingDims > 0) insights.push({ severity: 'warn', text: `${missingDims}/${imgs.length} images missing width/height attributes (CLS hint)`, section: 'Images' });
       // Featured image presence
-      if (frontImagePreview) { score += 4; insights.push({severity:'good', text:'Featured image set', section:'Images'}); }
+      if (frontImagePreview) { score += 4; insights.push({ severity: 'good', text: 'Featured image set', section: 'Images' }); }
 
       // Links: internal/external
       const linkCount = links.length;
-      if (linkCount === 0) insights.push({severity:'warn', text:'No links in content. Add internal/external references.', section:'Links'});
-      else if (linkCount < 3) insights.push({severity:'warn', text:`Only ${linkCount} link(s) found. Consider adding more.`, section:'Links'});
-      else { score += 4; insights.push({severity:'good', text:`Good linking (${linkCount} links)`, section:'Links'}); }
+      if (linkCount === 0) insights.push({ severity: 'warn', text: 'No links in content. Add internal/external references.', section: 'Links' });
+      else if (linkCount < 3) insights.push({ severity: 'warn', text: `Only ${linkCount} link(s) found. Consider adding more.`, section: 'Links' });
+      else { score += 4; insights.push({ severity: 'good', text: `Good linking (${linkCount} links)`, section: 'Links' }); }
 
       // FAQs quality
       if (enableFAQ) {
-        const validFaqs = (faqs || []).filter(f => (f.question||'').trim() && (f.answer||'').trim());
-        if (validFaqs.length >= 2) { score += 6; insights.push({severity:'good', text:`${validFaqs.length} valid FAQs`, section:'FAQ'}); }
-        else insights.push({severity:'warn', text:'Add at least 2 well-formed FAQs (Q & A)', section:'FAQ'});
+        const validFaqs = (faqs || []).filter(f => (f.question || '').trim() && (f.answer || '').trim());
+        if (validFaqs.length >= 2) { score += 6; insights.push({ severity: 'good', text: `${validFaqs.length} valid FAQs`, section: 'FAQ' }); }
+        else insights.push({ severity: 'warn', text: 'Add at least 2 well-formed FAQs (Q & A)', section: 'FAQ' });
       }
 
       // Keyword presence in H1/H2/intro/alt
       const kMain = titleKeywords[0];
       if (kMain) {
         const intro = textNorm.slice(0, 150).toLowerCase();
-        const hasKInH1 = h1s.some(h => (h.textContent||'').toLowerCase().includes(kMain));
-        const hasKInH2 = h2s.some(h => (h.textContent||'').toLowerCase().includes(kMain));
+        const hasKInH1 = h1s.some(h => (h.textContent || '').toLowerCase().includes(kMain));
+        const hasKInH2 = h2s.some(h => (h.textContent || '').toLowerCase().includes(kMain));
         const hasKInIntro = intro.includes(kMain);
-        const hasKInAlts = imgs.some(im => (im.getAttribute('alt')||'').toLowerCase().includes(kMain));
+        const hasKInAlts = imgs.some(im => (im.getAttribute('alt') || '').toLowerCase().includes(kMain));
         let kwScore = 0;
         if (hasKInH1) kwScore += 3;
         if (hasKInH2) kwScore += 2;
         if (hasKInIntro) kwScore += 3;
         if (hasKInAlts) kwScore += 2;
         score += kwScore;
-        if (kwScore >= 6) insights.push({severity:'good', text:`Primary keyword appears in key places (H1/H2/intro/images)`, section:'Keywords'});
-        else insights.push({severity:'warn', text:`Use primary keyword in H1/H2/intro/image alts for better relevance`, section:'Keywords'});
+        if (kwScore >= 6) insights.push({ severity: 'good', text: `Primary keyword appears in key places (H1/H2/intro/images)`, section: 'Keywords' });
+        else insights.push({ severity: 'warn', text: `Use primary keyword in H1/H2/intro/image alts for better relevance`, section: 'Keywords' });
       }
 
       // Cap to 100 and set color/label
@@ -403,18 +681,18 @@ import 'react-quill/dist/quill.snow.css';
     const diversity = unique.size / tokenCount; // lower -> more AI-like
     const sentences = plain.split(/[.!?]+\s/).filter(Boolean);
     const lens = sentences.map(s => s.split(/\s+/).filter(Boolean).length);
-    const avg = lens.reduce((a,b)=>a+b,0) / (lens.length || 1);
-    const variance = lens.reduce((a,b)=>a + Math.pow(b-avg,2), 0) / (lens.length || 1);
+    const avg = lens.reduce((a, b) => a + b, 0) / (lens.length || 1);
+    const variance = lens.reduce((a, b) => a + Math.pow(b - avg, 2), 0) / (lens.length || 1);
     const burstiness = Math.sqrt(variance); // lower -> more uniform -> AI-like
     // Function words ratio
-    const functionWords = new Set(['the','is','are','was','were','of','and','to','in','for','with','on','that','this','as','by','at','from','it','an','a','or','be','can','will','has','have']);
+    const functionWords = new Set(['the', 'is', 'are', 'was', 'were', 'of', 'and', 'to', 'in', 'for', 'with', 'on', 'that', 'this', 'as', 'by', 'at', 'from', 'it', 'an', 'a', 'or', 'be', 'can', 'will', 'has', 'have']);
     const funcCount = tokens.filter(t => functionWords.has(t)).length;
     const funcRatio = funcCount / (tokenCount || 1);
     // Repetition via bigram frequency
     const bigrams = [];
-    for (let i=0;i<tokens.length-1;i++) bigrams.push(tokens[i] + ' ' + tokens[i+1]);
+    for (let i = 0; i < tokens.length - 1; i++) bigrams.push(tokens[i] + ' ' + tokens[i + 1]);
     const bgFreq = new Map();
-    for (const bg of bigrams) bgFreq.set(bg, (bgFreq.get(bg)||0)+1);
+    for (const bg of bigrams) bgFreq.set(bg, (bgFreq.get(bg) || 0) + 1);
     const maxBg = Math.max(0, ...Array.from(bgFreq.values()));
     // Punctuation variety (more variety tends to human)
     const puncts = (description.match(/[,:;()\-—]/g) || []).length;
@@ -440,7 +718,7 @@ import 'react-quill/dist/quill.snow.css';
     signals.push({ label: 'Avg sentence length', value: Math.round(avg), hint: avg >= 14 ? 'Longer sentences' : 'Short sentences' });
     signals.push({ label: 'Sentence burstiness', value: burstiness.toFixed(1), hint: burstiness <= 6 ? 'Uniform (AI-like)' : 'Varied (human-like)' });
     signals.push({ label: 'Max bigram freq', value: maxBg, hint: maxBg >= 4 ? 'Repetitive phrases' : 'OK' });
-    signals.push({ label: 'Function word ratio', value: (funcRatio*100).toFixed(1)+'%', hint: funcRatio >= 0.28 ? 'High (generic style)' : 'OK' });
+    signals.push({ label: 'Function word ratio', value: (funcRatio * 100).toFixed(1) + '%', hint: funcRatio >= 0.28 ? 'High (generic style)' : 'OK' });
     setAiSignals(signals);
   }, [title, description]);
 
@@ -466,10 +744,10 @@ import 'react-quill/dist/quill.snow.css';
         setPlagLoading(true);
         setPlagError('');
         // build shingles for current text
-        const toShingles = (t, n=3) => {
+        const toShingles = (t, n = 3) => {
           const tokens = t.split(/[^a-z0-9]+/).filter(Boolean).slice(0, 1200);
           const out = new Set();
-          for (let i=0;i<=tokens.length-n;i++) out.add(tokens.slice(i,i+n).join(' '));
+          for (let i = 0; i <= tokens.length - n; i++) out.add(tokens.slice(i, i + n).join(' '));
           return out;
         };
         const curSet = toShingles(text, 3);
@@ -484,7 +762,7 @@ import 'react-quill/dist/quill.snow.css';
         const topTokens = Array.from(curSet).slice(0, 50); // sample shingles
         const quickHas = (s) => {
           let c = 0;
-          for (let i=0;i<topTokens.length;i+=5) { // stride to reduce ops
+          for (let i = 0; i < topTokens.length; i += 5) { // stride to reduce ops
             if (s.includes(topTokens[i])) c++;
             if (c >= 2) return true;
           }
@@ -507,12 +785,12 @@ import 'react-quill/dist/quill.snow.css';
             matches.push({ id: b.id, title: b.title, slug: b.slug, score: sim });
           }
         }
-        matches.sort((a,b)=>b.score-a.score);
+        matches.sort((a, b) => b.score - a.score);
         const top = matches.slice(0, 5);
         const best = top[0]?.score || 0;
         if (!cancel) {
-          setPlagMatches(top.map(x => ({...x, percent: Math.round(x.score*100)})));
-          setPlagScore(Math.round(best*100));
+          setPlagMatches(top.map(x => ({ ...x, percent: Math.round(x.score * 100) })));
+          setPlagScore(Math.round(best * 100));
         }
       } catch (err) {
         if (!cancel) {
@@ -590,6 +868,8 @@ import 'react-quill/dist/quill.snow.css';
             setCategories(b.blog_Category || '');
             setAuthor(b.author || 'Admin');
             setViews(typeof b.views === 'number' ? b.views : 0);
+            setIsPublished(b.blog_Status === 'Published');
+            setIsDraft(b.blog_Status === 'Draft');
             setBlogId(b._id || '');
             setBlogToEdit(true);
             setNewBlog(false);
@@ -597,17 +877,108 @@ import 'react-quill/dist/quill.snow.css';
             // map SEO fields if your backend returns them with these keys
             setMetaTitle(b.metaTitle || '');
             setMetaDescription(b.metaDescription || '');
-            setSlug(b.slug || slugify(b.blog_Title || ''));
-            
+            setCanonicalUrl(b.canonicalUrl || '');
+            // If blog has a saved slug, mark as touched so auto-slug doesn't overwrite it
+            if (b.slug) {
+              setSlugTouched(true);
+              setSlug(b.slug);
+            } else {
+              setSlug(slugify(b.blog_Title || ''));
+            }
+
             // Load related projects if they exist
             setRelatedProjects(Array.isArray(b.relatedProjects) ? b.relatedProjects : []);
-            
+
             // Load FAQs
             setEnableFAQ(!!b.enableFAQ);
             setFaqs(Array.isArray(b.faqs) && b.faqs.length
               ? b.faqs.map(x => ({ question: x.question || '', answer: x.answer || '' }))
-              : [{ question: '', answer: '' }]
-            );
+              : [{ question: '', answer: '' }]);
+
+            // Load Table Blocks
+            setTableBlocks(Array.isArray(b.tableBlocks) ? b.tableBlocks : []);
+
+            // Load Table Data from dedicated field if available
+            if (b.tableData) {
+              try {
+                const parsed = JSON.parse(b.tableData);
+                setCurrentTableData(parsed);
+                setShowTableBuilder(true);
+                // The placeholder should be in the description already if saved correctly
+              } catch (e) {
+                console.error("Failed to parse tableData field:", e);
+              }
+            } else if (b.blog_Description && b.blog_Description.includes('<table')) {
+              // Fallback to recovery from HTML metadata
+              const tempDiv = document.createElement('div');
+              tempDiv.innerHTML = b.blog_Description;
+              const table = tempDiv.querySelector('table');
+              if (table) {
+                const configData = table.getAttribute('data-table-config');
+                if (configData) {
+                  try {
+                    const parsed = JSON.parse(decodeURIComponent(configData));
+                    setCurrentTableData(parsed);
+                    setShowTableBuilder(true);
+                  } catch (e) {
+                    console.error("Failed to recover table from attribute:", e);
+                  }
+                }
+              }
+            }
+
+            // Load Schema/Structured Data
+            setEnableSchema(!!b.enableSchema);
+            setSchemaType(b.schemaType || 'BlogPosting');
+            if (b.schema) {
+              try {
+                // If the schema is already a complete object, use it directly
+                if (typeof b.schema === 'object' && b.schema["@context"]) {
+                  setCustomSchema(JSON.stringify(b.schema, null, 2));
+                } else {
+                  setCustomSchema(JSON.stringify(b.schema, null, 2));
+                }
+              } catch (e) {
+                console.error('Error parsing schema:', e);
+                setCustomSchema('');
+              }
+            } else {
+              setCustomSchema('');
+            }
+
+            // Extract table data if it exists in description
+            if (b.blog_Description && b.blog_Description.includes('<table')) {
+              const tempDiv = document.createElement('div');
+              tempDiv.innerHTML = b.blog_Description;
+              const table = tempDiv.querySelector('table');
+
+              if (table) {
+                // Try to get data from metadata first
+                const configData = table.getAttribute('data-table-config');
+                if (configData) {
+                  try {
+                    const parsed = JSON.parse(decodeURIComponent(configData));
+                    setCurrentTableData(parsed);
+                    setShowTableBuilder(true);
+                  } catch (e) {
+                    console.error("Failed to parse table config:", e);
+                  }
+                } else {
+                  // Fallback to manual extraction
+                  const heading = tempDiv.querySelector('h3')?.textContent || '';
+                  const rows = Array.from(table.querySelectorAll('tr')).map(tr =>
+                    Array.from(tr.querySelectorAll('th, td')).map(td => td.textContent)
+                  );
+                  setCurrentTableData({ heading, rows });
+                  setShowTableBuilder(true);
+                }
+
+                // Replace table with placeholder for editing
+                const placeholder = `[TABLE_PLACEHOLDER_${Date.now()}]`;
+                const cleanContent = b.blog_Description.replace(/<div class="my-6 overflow-x-auto table-wrapper">[\s\S]*?<\/div>/, `<p>${placeholder}</p>`);
+                setDescription(cleanContent);
+              }
+            }
           } else {
             console.log('Blog not found');
           }
@@ -633,7 +1004,7 @@ import 'react-quill/dist/quill.snow.css';
       }
     };
 
-  
+
     fetchBlog();
   }, [id]);
 
@@ -644,7 +1015,7 @@ import 'react-quill/dist/quill.snow.css';
       setHasRestorable(!!raw);
       const histRaw = localStorage.getItem(historyKey);
       if (histRaw) setHistoryList(JSON.parse(histRaw));
-    } catch {}
+    } catch { }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -652,11 +1023,12 @@ import 'react-quill/dist/quill.snow.css';
   useEffect(() => {
     const t = setTimeout(() => {
       try {
+        const finalContentForDraft = finalizeContent(description);
         const snapshot = {
           ts: Date.now(),
-          title, description, frontImagePreview, categories,
-          metaTitle, metaDescription, slug, relatedProjects, enableFAQ, faqs,
-          author
+          title, description: finalContentForDraft, frontImagePreview, categories,
+          metaTitle, metaDescription, canonicalUrl, slug, relatedProjects, enableFAQ, faqs,
+          author, tableBlocks
         };
         localStorage.setItem(draftKey, JSON.stringify(snapshot));
         // Append to history (max 10)
@@ -666,10 +1038,20 @@ import 'react-quill/dist/quill.snow.css';
         localStorage.setItem(historyKey, JSON.stringify(hist));
         setHistoryList(hist);
         setHasRestorable(true);
-      } catch {}
+      } catch { }
     }, 1200);
     return () => clearTimeout(t);
-  }, [draftKey, historyKey, title, description, frontImagePreview, categories, metaTitle, metaDescription, slug, relatedProjects, enableFAQ, faqs, author]);
+  }, [draftKey, historyKey, title, description, frontImagePreview, categories, metaTitle, metaDescription, canonicalUrl, slug, relatedProjects, enableFAQ, faqs, author, tableBlocks]);
+
+  // Generate canonical URL in real-time based on slug
+  useEffect(() => {
+    if (slug) {
+      const baseUrl = 'https://www.100acress.com/';
+      setCanonicalUrl(`${baseUrl}${slug}`);
+    } else {
+      setCanonicalUrl('');
+    }
+  }, [slug]);
 
   // Convert the next 4 standalone images (from cursor) into a grid with inline styles
   const convertNextImagesToGrid = () => {
@@ -700,7 +1082,7 @@ import 'react-quill/dist/quill.snow.css';
     const imgStyle = `width:100%;height:${gridSizeToPx[gridImgSize]}px;object-fit:cover;display:block;`;
     const capStyle = 'padding:8px 10px;font-size:14px;color:#111;text-align:center;';
     const cards = urls.map((u, idx) => gridWithTitles
-      ? `<figure class=\"grid-card\" style=\"${cardStyle}\"><img style=\"${imgStyle}\" src=\"${u}\" alt=\"\" /><figcaption style=\"${capStyle}\" contenteditable=\"true\">Title ${idx+1}</figcaption></figure>`
+      ? `<figure class=\"grid-card\" style=\"${cardStyle}\"><img style=\"${imgStyle}\" src=\"${u}\" alt=\"\" /><figcaption style=\"${capStyle}\" contenteditable=\"true\">Title ${idx + 1}</figcaption></figure>`
       : `<figure class=\"grid-card\" style=\"${cardStyle}\"><img style=\"${imgStyle}\" src=\"${u}\" alt=\"\" /></figure>`
     ).join('');
     const gridCols = gridLayout === 'lastLarge' ? '1fr 1fr 1fr 1.6fr' : 'repeat(4, 1fr)';
@@ -791,7 +1173,7 @@ import 'react-quill/dist/quill.snow.css';
         return showToast.warning('Please select a crop area');
       }
       showToast.loading('Uploading cropped image...', { id: 'cropUpload' });
-      
+
       // Get the cropped blob
       const blob = await getCroppedBlob();
       const filename = (rawImageFile?.name || 'image.png').replace(/\.[^.]*$/, '') + '-cropped.png';
@@ -812,13 +1194,13 @@ import 'react-quill/dist/quill.snow.css';
 
       try {
         const res = await api.post(`/blog/upload-image`, fd, config);
-        
+
         // Handle different response formats
-        const imageUrl = res?.data?.url || 
-                        res?.data?.data?.url || 
-                        (typeof res?.data === 'string' ? res.data : '') || 
-                        '';
-                        
+        const imageUrl = res?.data?.url ||
+          res?.data?.data?.url ||
+          (typeof res?.data === 'string' ? res.data : '') ||
+          '';
+
         if (!imageUrl) {
           console.error('Unexpected response format:', res?.data);
           throw new Error('Upload succeeded but no URL was returned in the response');
@@ -854,29 +1236,7 @@ import 'react-quill/dist/quill.snow.css';
     }
   };
 
-  // Load categories from backend (merge with initial list, unique)
-  useEffect(() => {
-    const loadCategories = async () => {
-      try {
-        const res = await api.get(`/blog/categories`);
-        const apiCats = (res?.data?.data || []).map((c) => c.name).filter(Boolean);
-        // merge with initial and unique (case-sensitive keep first)
-        const merged = [...initialCategories];
-        for (const name of apiCats) {
-          if (!merged.includes(name)) merged.push(name);
-        }
-        setCategoryList(merged);
-        // ensure current selected category is preserved if present
-        if (categories && !merged.includes(categories)) {
-          setCategoryList((prev) => [...prev, categories]);
-        }
-      } catch (e) {
-        // silent fail, keep initial list
-        // console.warn('Failed to load categories', e);
-      }
-    };
-    loadCategories();
-  }, []);
+  // Categories are fixed to only show the 4 specified types
 
   // Load all projects for dropdown (paginate in batches of 100)
   useEffect(() => {
@@ -919,9 +1279,14 @@ import 'react-quill/dist/quill.snow.css';
         }
         console.log('[BlogWriteModal] Projects loaded (total):', all.length);
         setAllProjects(all);
+        
+        if (all.length === 0) {
+          showToast.warning('No projects found. The related projects feature requires projects to be available.');
+        }
       } catch (error) {
         console.error('Error fetching projects:', error);
-        showToast.error('Failed to load projects');
+        const errorMessage = error?.response?.data?.message || error?.message || 'Unknown error occurred';
+        showToast.error(`Failed to load projects: ${errorMessage}`);
       } finally {
         setIsLoadingProjects(false);
       }
@@ -981,7 +1346,7 @@ import 'react-quill/dist/quill.snow.css';
     const plain = (description || '').replace(/<[^>]+>/g, ' ').toLowerCase();
     const text = `${title || ''} ${categories || ''} ${plain}`.toLowerCase();
     const tokens = text.split(/[^a-z0-9]+/).filter(Boolean);
-    const stop = new Set(['the','and','for','with','from','that','this','your','you','are','our','was','were','have','has','had','in','on','of','to','a','an','by','is','it','as','or','at','be','can','will','we','us','they','their','them']);
+    const stop = new Set(['the', 'and', 'for', 'with', 'from', 'that', 'this', 'your', 'you', 'are', 'our', 'was', 'were', 'have', 'has', 'had', 'in', 'on', 'of', 'to', 'a', 'an', 'by', 'is', 'it', 'as', 'or', 'at', 'be', 'can', 'will', 'we', 'us', 'they', 'their', 'them']);
     const freq = new Map();
     for (const t of tokens) {
       if (t.length < 3) continue;
@@ -989,7 +1354,7 @@ import 'react-quill/dist/quill.snow.css';
       freq.set(t, (freq.get(t) || 0) + 1);
     }
     // Sort by frequency and keep top 15
-    const top = Array.from(freq.entries()).sort((a,b) => b[1]-a[1]).slice(0, 15).map(([w]) => w);
+    const top = Array.from(freq.entries()).sort((a, b) => b[1] - a[1]).slice(0, 15).map(([w]) => w);
     setContentKeywords(top);
   }, [title, description, categories]);
 
@@ -1067,7 +1432,7 @@ import 'react-quill/dist/quill.snow.css';
       .filter(p => !selectedSet.has(p.project_url))
       .map(p => ({ p, s: scoreProject(p) }))
       .filter(x => x.s > 0)
-      .sort((a,b) => b.s - a.s)
+      .sort((a, b) => b.s - a.s)
       .slice(0, 10)
       .map(x => x.p);
     setSuggestedProjects(ranked);
@@ -1099,7 +1464,7 @@ import 'react-quill/dist/quill.snow.css';
   const handleImageUrlChange = (e) => {
     const url = e.target.value;
     setFrontImage(url);
-    
+
     // Basic URL validation
     if (url && url.trim() !== '') {
       try {
@@ -1146,39 +1511,41 @@ import 'react-quill/dist/quill.snow.css';
       return;
     }
 
-    // Check image dimensions and aspect ratio (1200x628 = 300:157)
+    // Check image dimensions and aspect ratio (more flexible validation)
     const img = new Image();
-    img.onload = function() {
-      const expectedWidth = 1200;
-      const expectedHeight = 628;
-      const tolerance = 5; // Allow 5px tolerance
-      
-      if (Math.abs(this.width - expectedWidth) > tolerance || Math.abs(this.height - expectedHeight) > tolerance) {
-        showToast.error(`Image must be exactly ${expectedWidth} × ${expectedHeight} pixels (Current: ${this.width} × ${this.height})`);
+    img.onload = function () {
+      // More flexible dimension check - allow reasonable range
+      const minWidth = 800;
+      const maxWidth = 2000;
+      const minHeight = 400;
+      const maxHeight = 1200;
+
+      if (this.width < minWidth || this.width > maxWidth || this.height < minHeight || this.height > maxHeight) {
+        showToast.error(`Image dimensions should be between ${minWidth}-${maxWidth} × ${minHeight}-${maxHeight} pixels (Current: ${this.width} × ${this.height})`);
         e.target.value = '';
         return;
       }
-      
-      // Calculate aspect ratio
-      const expectedRatio = expectedWidth / expectedHeight;
-      const actualRatio = this.width / this.height;
-      const ratioTolerance = 0.01; // 1% tolerance
-      
-      if (Math.abs(actualRatio - expectedRatio) > ratioTolerance) {
-        showToast.error(`Image aspect ratio must be ${expectedWidth}:${expectedHeight} (300:157). Current ratio is ${this.width}:${this.height}`);
+
+      // More flexible aspect ratio check (allow common blog image ratios)
+      const aspectRatio = this.width / this.height;
+      const minRatio = 1.5; // 3:2
+      const maxRatio = 2.5; // 2.5:1
+
+      if (aspectRatio < minRatio || aspectRatio > maxRatio) {
+        showToast.error(`Image aspect ratio should be between 3:2 and 2.5:1. Current ratio is ${this.width}:${this.height}`);
         e.target.value = '';
         return;
       }
-      
+
       // If all validations pass, proceed with file processing
       processValidFile(file);
     };
-    
-    img.onerror = function() {
+
+    img.onerror = function () {
       showToast.error('Failed to load image. Please try a different file.');
       e.target.value = '';
     };
-    
+
     // Create object URL for validation
     const objUrl = URL.createObjectURL(file);
     img.src = objUrl;
@@ -1192,12 +1559,12 @@ import 'react-quill/dist/quill.snow.css';
 
     // Create object URL for preview
     const objUrl = URL.createObjectURL(file);
-    
+
     // Set states
     setFrontImage(file);
     setFrontPreviewObjUrl(objUrl);
     setFrontImagePreview(objUrl);
-    
+
     // Auto-set meta title from filename if empty
     if (!metaTitle) {
       const fileName = file.name.replace(/\.[^/.]+$/, ''); // Remove extension
@@ -1232,13 +1599,13 @@ import 'react-quill/dist/quill.snow.css';
     input.onchange = async () => {
       const file = input.files?.[0];
       if (!file) return;
-      
+
       // STRICT: Only WebP images allowed
       if (file.type !== 'image/webp') {
         showToast.error('Jab bola hai WebP me karne ko to karona aalsii WebP me karke wapis dalo.');
         return;
       }
-      
+
       // If SVG, bypass cropper to preserve vector quality
       if (file.type === 'image/svg+xml') {
         try {
@@ -1312,6 +1679,73 @@ import 'react-quill/dist/quill.snow.css';
     }
   };
 
+  const handleTableChange = (data) => {
+    console.log("Table data changed in Modal:", data);
+    setCurrentTableData(data);
+
+    // CRITICAL: Update the description whenever the table changes
+    // This ensures that the finalized content (with the table) is correctly
+    // generated during autosave or submission even if the user hasn't typed in Quill.
+    const quill = safeGetQuill();
+    if (quill) {
+      const currentHTML = quill.root.innerHTML;
+      if (currentHTML.includes('[TABLE_PLACEHOLDER_')) {
+        // Just trigger a state update to ensure components re-render with new table data
+        setDescription(currentHTML);
+      }
+    } else {
+      // Fallback if quill is not available
+      setDescription(prev => prev + ' ');
+      setTimeout(() => setDescription(prev => prev.trim()), 0);
+    }
+  };
+
+  const generateTableHTML = (data) => {
+    if (!data || !data.rows) return '';
+    console.log("Generating Table HTML for:", data);
+    let html = '<div class="my-6 overflow-x-auto table-wrapper">';
+    if (data.heading) {
+      html += `<h3 class="text-xl font-bold mb-3 table-heading">${data.heading}</h3>`;
+    }
+    html += '<table style="min-width: 100%; border-collapse: collapse; border: 1px solid #d1d5db; margin-bottom: 1rem;">';
+    data.rows.forEach((row, rowIndex) => {
+      html += '<tr>';
+      row.forEach(cell => {
+        if (rowIndex === 0) {
+          html += `<th style="border: 1px solid #d1d5db; padding: 12px; background-color: #f3f4f6; font-weight: bold; text-align: left;">${cell || ''}</th>`;
+        } else {
+          html += `<td style="border: 1px solid #d1d5db; padding: 12px; text-align: left;">${cell || ''}</td>`;
+        }
+      });
+      html += '</tr>';
+    });
+    html += '</table></div>';
+    return html;
+  };
+
+  const finalizeContent = (rawContent) => {
+    if (!rawContent) return '';
+
+    // Check if there's table data to process
+    // Improved regex to handle various ways the placeholder might be wrapped by Quill (e.g. <p>[...]</p>)
+    const placeholderRegex = /\[TABLE_PLACEHOLDER_\d+\]/;
+    const hasPlaceholder = placeholderRegex.test(rawContent);
+
+    if (currentTableData && currentTableData.rows && hasPlaceholder) {
+      console.log("Replacing placeholder in real-time...");
+      const tableHTML = generateTableHTML(currentTableData);
+      // Store currentTableData in a data attribute within the HTML 
+      const tableDataJSON = encodeURIComponent(JSON.stringify(currentTableData));
+      const tableWithMetadata = tableHTML.replace('<table ', `<table data-table-config="${tableDataJSON}" `);
+
+      // Use global replace to catch any duplicates
+      const finalized = rawContent.replace(new RegExp('\\[TABLE_PLACEHOLDER_\\d+\\]', 'g'), tableWithMetadata);
+      return finalized;
+    }
+
+    return rawContent;
+  };
+
   /** Submit (draft/publish) */
   const handleSubmit = async (e, publishStatus) => {
     const willPublish = publishStatus === true;
@@ -1342,6 +1776,15 @@ import 'react-quill/dist/quill.snow.css';
       return showToast.error('Please select a featured image');
     }
 
+    // Check if table data exists but no placeholder in content
+    if (currentTableData && currentTableData.rows && !description.includes('[TABLE_PLACEHOLDER_')) {
+      console.warn("Table data detected without placeholder. Inserting at end.");
+      const placeholder = `[TABLE_PLACEHOLDER_${Date.now()}]`;
+      const updatedDescription = description + `<p>${placeholder}</p>`;
+      setDescription(updatedDescription);
+      // We'll use the updated content for submission
+    }
+
     // File size validation (10MB limit)
     const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
     if (frontImage && frontImage.size > MAX_FILE_SIZE) {
@@ -1354,10 +1797,24 @@ import 'react-quill/dist/quill.snow.css';
 
     try {
       const formDataAPI = new FormData();
-      
+
       // Basic blog data
       formDataAPI.append('blog_Title', title.trim());
-      formDataAPI.append('blog_Description', description);
+
+      // CRITICAL: Re-read from Quill root to ensure we have latest content
+      const quill = safeGetQuill();
+      // If we just appended a placeholder because it was missing, description state might be fresher than quill root
+      const currentRaw = quill ? quill.root.innerHTML : description;
+      const latestRawContent = (!currentRaw.includes('[TABLE_PLACEHOLDER_') && description.includes('[TABLE_PLACEHOLDER_'))
+        ? description
+        : currentRaw;
+
+      const finalContent = finalizeContent(latestRawContent);
+
+      console.log("FINAL CONTENT BEING SENT TO DB:", finalContent);
+      console.log("TABLE DATA BEING SENT:", currentTableData);
+      formDataAPI.append('blog_Description', finalContent);
+      formDataAPI.append('blog_Content', finalContent); // Also send to blog_Content just in case
       formDataAPI.append('blog_Category', categories);
       formDataAPI.append('author', author || 'Admin');
       formDataAPI.append('isPublished', willPublish);
@@ -1366,19 +1823,37 @@ import 'react-quill/dist/quill.snow.css';
       if (metaTitle) formDataAPI.append('metaTitle', metaTitle.trim());
       if (metaDescription) formDataAPI.append('metaDescription', metaDescription.trim());
       if (slug) formDataAPI.append('slug', slug.trim());
+      if (canonicalUrl) formDataAPI.append('canonicalUrl', canonicalUrl.trim());
 
       // Related projects
       if (relatedProjects.length > 0) {
         formDataAPI.append('relatedProjects', JSON.stringify(relatedProjects));
       }
-      
+
       // FAQs
       formDataAPI.append('enableFAQ', enableFAQ);
       if (faqs && faqs.some(f => (f.question || '').trim() && (f.answer || '').trim())) {
-        const cleaned = faqs
-          .map(f => ({ question: (f.question || '').trim(), answer: (f.answer || '').trim() }))
-          .filter(f => f.question && f.answer);
-        if (cleaned.length) formDataAPI.append('faqs', JSON.stringify(cleaned));
+        formDataAPI.append('faqs', JSON.stringify(faqs.filter(f => (f.question || '').trim() && (f.answer || '').trim())));
+      }
+
+      // Table Blocks (JSON structure)
+      if (tableBlocks.length > 0) {
+        formDataAPI.append('tableBlocks', JSON.stringify(tableBlocks));
+      }
+
+      // CRITICAL: If we have real-time table builder data, also send it specifically
+      if (currentTableData) {
+        formDataAPI.append('tableData', JSON.stringify(currentTableData));
+      }
+
+      // Schema/Structured Data
+      formDataAPI.append('enableSchema', enableSchema);
+      if (enableSchema) {
+        const schemaData = generateSchema();
+        if (schemaData) {
+          formDataAPI.append('schema', JSON.stringify(schemaData));
+          formDataAPI.append('schemaType', schemaType);
+        }
       }
 
       // Handle file upload with better error handling
@@ -1388,13 +1863,13 @@ import 'react-quill/dist/quill.snow.css';
           if (frontImage.type !== 'image/webp') {
             throw new Error('Jab bola hai WebP me karne ko to karona aalsii WebP me karke wapis dalo.');
           }
-          
+
           // Validate file size (10MB limit)
           const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
           if (frontImage.size > MAX_FILE_SIZE) {
             throw new Error('File size exceeds 10MB limit. Please choose a smaller image.');
           }
-          
+
           // Process image if needed (compression/resizing)
           let processedFile;
           try {
@@ -1404,7 +1879,7 @@ import 'react-quill/dist/quill.snow.css';
             // Fallback to original file if processing fails
             processedFile = frontImage;
           }
-          
+
           formDataAPI.append('blog_Image', processedFile);
         } catch (fileError) {
           console.error('File processing error:', fileError);
@@ -1412,10 +1887,16 @@ import 'react-quill/dist/quill.snow.css';
         }
       }
 
+      const config = {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token') || ''}`
+        }
+      };
+
       if (blogToEdit) {
         showToast.loading('Updating the blog...', { id: 'updateloading' });
 
-        const res = await api.put(`/blog/update/${blogId}`, formDataAPI);
+        const res = await api.put(`/blog/update/${blogId}`, formDataAPI, config);
 
         showToast.dismiss('updateloading');
         if (res.status === 200) {
@@ -1428,7 +1909,7 @@ import 'react-quill/dist/quill.snow.css';
       } else {
         showToast.loading('Adding New Blog...', { id: 'loadingNewBlog' });
 
-        const res = await api.post(`/blog/insert`, formDataAPI);
+        const res = await api.post(`/blog/insert`, formDataAPI, config);
 
         showToast.dismiss('loadingNewBlog');
         if (res.status === 200) {
@@ -1445,13 +1926,13 @@ import 'react-quill/dist/quill.snow.css';
       showToast.dismiss('loadingNewBlog');
 
       let errorMessage = 'Error saving blog';
-      
+
       // More detailed error handling
       if (error.response) {
         // Server responded with error status code
         const { status, data } = error.response;
         console.error('Server error response:', { status, data });
-        
+
         if (status === 413) {
           errorMessage = 'File too large. Please upload an image smaller than 10MB.';
         } else if (status === 415) {
@@ -1469,7 +1950,7 @@ import 'react-quill/dist/quill.snow.css';
         // Other errors
         errorMessage = error.message;
       }
-      
+
       showToast.error(errorMessage);
     } finally {
       setIsSubmitting(false);
@@ -1487,6 +1968,7 @@ import 'react-quill/dist/quill.snow.css';
     setBlogId('');
     setMetaTitle('');
     setMetaDescription('');
+    setCanonicalUrl('');
     setSlug('');
     setSlugTouched(false);
     setRelatedProjects([]);
@@ -1497,27 +1979,53 @@ import 'react-quill/dist/quill.snow.css';
     setCollapsedFaqs([false]);
   };
 
+  // Add custom icon to Quill toolbar
+  useEffect(() => {
+    const icon = document.querySelector('.ql-table-icon');
+    if (icon && !icon.innerHTML) {
+      icon.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="3" y1="15" x2="21" y2="15"></line><line x1="9" y1="3" x2="9" y2="21"></line><line x1="15" y1="3" x2="15" y2="21"></line></svg>`;
+    }
+  }, []);
+
   // Quill toolbar config (no default image button; we add our own handlers)
-  const quillModules = {
+  const quillModules = useMemo(() => ({
     toolbar: {
       container: [
         [{ header: [1, 2, 3, 4, false] }],
-        // [{ font: fontWhitelist }],
         [{ size: ['small', false, 'large', 'huge'] }],
         ['bold', 'italic', 'underline', 'strike'],
         [{ color: [] }, { background: [] }],
         [{ list: 'ordered' }, { list: 'bullet' }],
         ['blockquote', 'code-block'],
         ['link', 'emoji'],
+        ['table-icon'],
         [{ align: [] }],
         ['clean'],
       ],
+      handlers: {
+        'table-icon': () => {
+          const quill = safeGetQuill();
+          if (quill) {
+            const range = quill.getSelection(true);
+            const placeholder = `[TABLE_PLACEHOLDER_${Date.now()}]`;
+            // Add extra space around placeholder to ensure it's not merged with other text
+            quill.insertText(range.index, `\n${placeholder}\n`);
+            quill.setSelection(range.index + placeholder.length + 2);
+
+            // CRITICAL: Immediately update state with the new content containing the placeholder
+            const newHTML = quill.root.innerHTML;
+            console.log("TABLE ICON CLICKED - New HTML with placeholder:", newHTML);
+            setDescription(newHTML);
+            setShowTableBuilder(true);
+          }
+        }
+      }
     },
     clipboard: { matchVisual: false },
     'emoji-toolbar': true,
     'emoji-textarea': false,
     'emoji-shortname': true,
-  };
+  }), []);
 
   // Explicit formats so custom fonts and toolbar options are honored
   const quillFormats = [
@@ -1604,7 +2112,7 @@ import 'react-quill/dist/quill.snow.css';
                 const MAX_DIMENSION = 2000;
                 let width = img.width;
                 let height = img.height;
-                
+
                 if (width > height && width > MAX_DIMENSION) {
                   height = Math.round((height * MAX_DIMENSION) / width);
                   width = MAX_DIMENSION;
@@ -1618,22 +2126,22 @@ import 'react-quill/dist/quill.snow.css';
                 canvas.width = width;
                 canvas.height = height;
                 const ctx = canvas.getContext('2d');
-                
+
                 if (!ctx) {
                   return reject(new Error('Canvas context not available'));
                 }
-                
+
                 // Set canvas properties for better quality
                 ctx.imageSmoothingEnabled = true;
                 ctx.imageSmoothingQuality = 'high';
-                
+
                 // Draw image with new dimensions
                 ctx.drawImage(img, 0, 0, width, height);
-                
+
                 // Convert to blob with quality based on file type
                 let quality = 0.8; // Default quality
                 let outputType = file.type;
-                
+
                 // Adjust quality and type based on file type
                 if (file.type === 'image/jpeg' || file.type === 'image/jpg') {
                   quality = 0.85;
@@ -1649,7 +2157,7 @@ import 'react-quill/dist/quill.snow.css';
                   quality = 0.85;
                   outputType = 'image/jpeg';
                 }
-                
+
                 // Convert to blob
                 canvas.toBlob(
                   (blob) => {
@@ -1657,17 +2165,17 @@ import 'react-quill/dist/quill.snow.css';
                       if (!blob) {
                         return reject(new Error('Canvas to blob conversion failed'));
                       }
-                      
+
                       // Create new file with original name but new content
-                      const fileExtension = outputType === 'image/png' ? '.png' : 
-                                          outputType === 'image/webp' ? '.webp' : '.jpg';
+                      const fileExtension = outputType === 'image/png' ? '.png' :
+                        outputType === 'image/webp' ? '.webp' : '.jpg';
                       const baseName = file.name.replace(/\.[^.]+$/, '');
                       const processedFile = new File(
                         [blob],
                         baseName + fileExtension,
                         { type: outputType }
                       );
-                      
+
                       console.log(`Image compressed from ${(file.size / 1024 / 1024).toFixed(2)}MB to ${(blob.size / 1024 / 1024).toFixed(2)}MB`);
                       resolve(processedFile);
                     } catch (blobError) {
@@ -1950,44 +2458,46 @@ import 'react-quill/dist/quill.snow.css';
 
           /* User-resizable area for the normal editor */
           .editor-resize{ resize: vertical; overflow:auto; min-height:16rem; max-height:75vh; }
+
+          /* Global table styles for blog content */
+          .blog-content-area table {
+            width: 100% !important;
+            border-collapse: collapse !important;
+            margin: 20px 0 !important;
+            border: 1px solid #d1d5db !important;
+            display: table !important;
+          }
+          .blog-content-area thead {
+            display: table-header-group !important;
+          }
+          .blog-content-area tbody {
+            display: table-row-group !important;
+          }
+          .blog-content-area tr {
+            display: table-row !important;
+            border: 1px solid #d1d5db !important;
+          }
+          .blog-content-area th, .blog-content-area td {
+            border: 1px solid #d1d5db !important;
+            padding: 12px !important;
+            text-align: left !important;
+            display: table-cell !important;
+          }
+          .blog-content-area th {
+            background-color: #f3f4f6 !important;
+            font-weight: bold !important;
+          }
         `}</style>
         {/* Top bar: SEO score, preview toggle, restore */}
         <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
           <div className="flex items-center gap-2">
-            <span className="text-sm font-medium">SEO Score:</span>
-            <span className="px-2.5 py-1 rounded-full text-white text-sm" style={{ backgroundColor: seoScore.color }}>
+            <span className="text-sm font-medium text-foreground">SEO Score:</span>
+            <span className="px-2.5 py-1 rounded-full text-white text-xs font-semibold" style={{ backgroundColor: seoScore.color }}>
               {seoScore.score} · {seoScore.label}
             </span>
           </div>
-        {/* Two-column section: left = SEO Insights, right = actions */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
-          <div>
-            {seoInsights?.length > 0 && (
-              <div className="bg-white rounded-xl border border-gray-100 shadow p-4 h-full">
-                <div className="flex items-center justify-between mb-2">
-                  <div className="font-semibold text-gray-900">SEO Insights</div>
-                  <button type="button" className="text-sm text-gray-600 hover:text-gray-800" onClick={()=>setShowSeoDetails(v=>!v)}>
-                    {showSeoDetails ? 'Hide' : 'Show'} details
-                  </button>
-                </div>
-                {showSeoDetails && (
-                  <ul className="space-y-1 max-h-56 overflow-auto pr-1">
-                    {seoInsights.map((it, i) => (
-                      <li key={i} className="text-sm flex items-start gap-2">
-                        <span className={`mt-1 inline-block w-2 h-2 rounded-full ${it.severity==='good'?'bg-emerald-500':it.severity==='warn'?'bg-yellow-500':'bg-red-500'}`}></span>
-                        <span className="text-gray-800">
-                          {it.text}
-                          {it.section && <span className="ml-2 text-xs text-gray-500">[{it.section}]</span>}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-            )}
-          </div>
-          <div className="bg-white rounded-xl border border-gray-100 shadow p-4 flex flex-wrap items-center gap-2 justify-end lg:justify-start">
-            <button type="button" onClick={() => setShowPreview(v=>!v)} className="px-3 py-2 rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50">
+          <div className="flex flex-wrap items-center gap-2 justify-end">
+            <button type="button" onClick={() => setShowPreview(v => !v)} className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2">
               {showPreview ? 'Hide Preview' : 'Show Preview'}
             </button>
             {hasRestorable && (
@@ -2002,43 +2512,39 @@ import 'react-quill/dist/quill.snow.css';
                   setCategories(s.categories || '');
                   setMetaTitle(s.metaTitle || '');
                   setMetaDescription(s.metaDescription || '');
+                  setCanonicalUrl(s.canonicalUrl || '');
                   setSlug(s.slug || '');
                   setRelatedProjects(Array.isArray(s.relatedProjects) ? s.relatedProjects : []);
                   setEnableFAQ(!!s.enableFAQ);
-                  setFaqs(Array.isArray(s.faqs) && s.faqs.length ? s.faqs : [{question:'',answer:''}]);
+                  setFaqs(Array.isArray(s.faqs) && s.faqs.length ? s.faqs : [{ question: '', answer: '' }]);
                   setAuthor(s.author || author);
+                  setTableBlocks(Array.isArray(s.tableBlocks) ? s.tableBlocks : []);
                   showToast.success('Draft restored');
-                } catch {}
-              }} className="px-3 py-2 rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50 flex items-center gap-2">
-                <History className="w-4 h-4" /> Restore Draft
-              </button>
-            )}
-            {historyList?.length > 0 && (
-              <button type="button" onClick={() => setShowHistory(true)} className="px-3 py-2 rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50 flex items-center gap-2">
-                <History className="w-4 h-4" /> History
+                  setShowHistory(false);
+                } catch { }
+              }} className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2">
+                Restore Draft
               </button>
             )}
           </div>
         </div>
-        </div>
-        {/* Load fonts */}
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Roboto:wght@300;400;700&family=Poppins:wght@300;400;600;700&family=Montserrat:wght@300;400;600;700&family=Lato:wght@300;400;700&family=Open+Sans:wght@300;400;700&family=Raleway:wght@300;400;700&family=Nunito:wght@300;400;700&family=Merriweather:wght@300;400;700&family=Playfair+Display:wght@400;700&family=Source+Sans+3:wght@300;400;700&family=Ubuntu:wght@300;400;700&family=Work+Sans:wght@300;400;700&family=Rubik:wght@300;400;700&family=Mulish:wght@300;400;700&family=Josefin+Sans:wght@300;400;700&family=Quicksand:wght@300;400;700&family=DM+Sans:wght@300;400;700&family=PT+Serif:wght@400;700&family=Arimo:wght@400;700&display=swap" />
+
         {/* Header */}
-        <div className="bg-white rounded-2xl shadow-xl p-6 mb-6 border border-gray-100">
+        <div className="mb-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
+              <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center shadow-sm">
                 {blogToEdit ? (
-                  <Edit3 className="w-6 h-6 text-white" />
+                  <Edit3 className="w-6 h-6 text-primary-foreground" />
                 ) : (
-                  <Plus className="w-6 h-6 text-white" />
+                  <Plus className="w-6 h-6 text-primary-foreground" />
                 )}
               </div>
               <div>
-                <h2 className="text-3xl font-bold text-gray-900">
+                <h2 className="text-2xl font-semibold tracking-tight">
                   {blogToEdit ? 'Edit Blog Post ' : 'Create New Blog'}
                 </h2>
-                <p className="text-gray-600 mt-1">
+                <p className="text-sm text-muted-foreground mt-1">
                   {blogToEdit
                     ? 'Update your blog content, SEO and settings'
                     : 'Write and publish your next blog post'}
@@ -2047,971 +2553,1979 @@ import 'react-quill/dist/quill.snow.css';
             </div>
             {blogToEdit && (
               <div className="flex items-center gap-3">
-                <span className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-gray-100 text-gray-700 border border-gray-200" title="Total views (all time)">Views: {views}</span>
+                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80" title="Total views (all time)">Views: {views}</span>
               </div>
             )}
             <button
               onClick={() => navigate('/seo/blogs')}
-              className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-all duration-200"
+              className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground h-9 w-9"
             >
-              <X className="w-6 h-6" />
+              <X className="w-5 h-5" />
             </button>
           </div>
         </div>
 
-        {/* Cropper Modal */}
-        {showCropper && (
-          <div
-            style={{
-              position: 'fixed',
-              inset: 0,
-              background: 'rgba(0,0,0,0.55)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              zIndex: 2000,
-            }}
-          >
-            <div style={{ background: '#fff', padding: 16, borderRadius: 8, width: 'min(95vw, 900px)' }}>
-              <h3 style={{ margin: '0 0 8px' }}>Crop Image</h3>
-              <div style={{ maxHeight: '70vh', overflow: 'auto' }}>
-                {rawImageUrl && (
-                  <ReactCrop crop={crop} onChange={(c) => setCrop(c)} onComplete={(c) => setCompletedCrop(c)} aspect={crop.aspect}>
-                    {/* eslint-disable-next-line jsx-a11y/alt-text */}
-                    <img
-                      ref={cropImgRef}
-                      src={rawImageUrl}
-                      onLoad={() => {
-                        if (!completedCrop) {
-                          setCrop((prev) => ({ ...prev }));
-                        }
-                      }}
-                      style={{ maxWidth: '100%' }}
-                    />
-                  </ReactCrop>
-                )}
-              </div>
-              <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end', marginTop: 12 }}>
-                <button type="button" onClick={closeCropper} style={{ padding: '6px 12px' }}>
-                  Cancel
-                </button>
-                <button
-                  type="button"
-                  onClick={confirmCropAndInsert}
-                  style={{ padding: '6px 12px', background: '#1677ff', color: '#fff', border: 'none', borderRadius: 4 }}
-                >
-                  Crop & Insert
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Form */}
-        <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
-          <form className="p-6 space-y-8">
-            {/* Title */}
-           <div className="space-y-2">
-  <div className="flex items-center justify-between">
-    <div className="flex items-center gap-2">
-      <FileText className="w-4 h-4 text-blue-600" />
-      <label htmlFor="title" className="text-sm font-medium text-gray-900">
-        Blog Title
-      </label>
-    </div>
-    {title && (
-      <div className="text-xs text-gray-500">
-        {title.length}/100
-      </div>
-    )}
-  </div>
-  <input
-    type="text"
-    id="title"
-    value={title}
-    onChange={(e) => setTitle(e.target.value.slice(0, 100))}
-    className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 transition-colors"
-    placeholder="Enter your blog title..."
-    required
-  />
-  {titleKeywords.length > 0 && (
-    <div className="flex flex-wrap gap-1.5 mt-1">
-      <span className="text-[10px] text-gray-500 self-center">Keywords:</span>
-      {titleKeywords.slice(0, 4).map((k, i) => (
-        <span
-          key={k + i}
-          className="px-1.5 py-0.5 rounded bg-blue-50 text-blue-700 text-[10px] border border-blue-100"
-        >
-          {k}
-        </span>
-      ))}
-      {titleKeywords.length > 4 && (
-        <span className="text-[10px] text-gray-400 self-center">
-          +{titleKeywords.length - 4} more
-        </span>
-      )}
-    </div>
-  )}
-</div>
-
-            {/* Slug + Meta */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-  {/* Slug URL */}
-  <div className="space-y-1.5">
-    <label className="text-xs font-medium text-gray-700">Slug URL</label>
-    <div className="flex rounded-lg border border-gray-200 overflow-hidden text-sm">
-      <span className="px-2 py-2 flex items-center text-gray-500 bg-gray-50 border-r border-gray-200 text-xs">
-        <LinkIcon className="w-3.5 h-3.5 mr-1.5" />
-        /blog/
-      </span>
-      <input
-        type="text"
-        value={slug}
-        onChange={(e) => {
-          setSlugTouched(true);
-          setSlug(slugify(e.target.value));
-        }}
-        className="flex-1 px-2 py-2 min-w-0 text-sm focus:outline-none"
-        placeholder="my-custom-slug"
-      />
-      <div className="flex">
-        <button
-          type="button"
-          onClick={() => {
-            setSlugTouched(false);
-            setSlug(slugify(title));
-          }}
-          className="px-2 text-xs bg-gray-50 hover:bg-gray-100 border-l border-gray-200 h-full"
-          title="Reset slug to match title"
-        >
-          ⟲
-        </button>
-        <button
-          type="button"
-          onClick={async () => {
-            try {
-              await navigator.clipboard.writeText(`/blog/${slug}`);
-              setSlugCopied(true);
-              setTimeout(() => setSlugCopied(false), 1200);
-            } catch {}
-          }}
-          className="px-2 text-xs bg-gray-50 hover:bg-gray-100 border-l border-gray-200 h-full flex items-center"
-          title="Copy full slug URL"
-        >
-          {slugCopied ? <Check className="w-3.5 h-3.5 text-green-600" /> : <Copy className="w-3.5 h-3.5" />}
-        </button>
-      </div>
-    </div>
-    <p className="text-[11px] text-gray-500">
-      Auto-generates from title
-    </p>
-    {slug && (
-      <div className="text-[11px] mt-0.5">
-        {slugChecking ? (
-          <span className="text-gray-500">{slugCheckMsg}</span>
-        ) : (
-          <span className={slugAvailable ? 'text-green-600' : 'text-red-600'}>
-            {slugCheckMsg || (slugAvailable ? 'Slug available' : 'Slug taken')}
-          </span>
-        )}
-      </div>
-    )}
-  </div>
-
-  {/* Meta Title */}
-  <div className="space-y-1.5">
-    <label className="text-xs font-medium text-gray-700">Meta Title</label>
-    <div className="relative">
-      <input
-        type="text"
-        value={metaTitle}
-        onChange={(e) => setMetaTitle(e.target.value.slice(0, 60))}
-        className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500"
-        placeholder="Up to 60 characters"
-      />
-      <div className="absolute right-2 bottom-1.5 text-[11px] text-gray-500">
-        {metaTitle.length}/60
-      </div>
-    </div>
-  </div>
-
-  {/* Meta Description */}
-  <div className="space-y-1.5">
-  <div className="flex items-center justify-between">
-    <label className="text-xs font-medium text-gray-700">Meta Description</label>
-    <div className={`text-[10px] font-medium ${
-      metaDescription.length >= 120 && metaDescription.length <= 160
-        ? 'text-green-600'
-        : metaDescription.length >= 80
-        ? 'text-yellow-600'
-        : 'text-red-600'
-    }`}>
-      {metaDescription.length}/160
-    </div>
-  </div>
-  <div className="relative">
-    <textarea
-      value={metaDescription}
-      onChange={(e) => setMetaDescription(e.target.value.slice(0, 160))}
-      className="w-full px-3 py-2 text-xs border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500"
-      placeholder="Up to 160 characters"
-      rows={2}
-    />
-    {titleKeywords.length > 0 && (
-      <div className="mt-1 flex flex-wrap gap-1.5">
-        <span className="text-[10px] text-gray-500 self-center">Keywords:</span>
-        {titleKeywords.slice(0, 3).map((k, i) => (
-          <button
-            key={k + i}
-            type="button"
-            className="px-1.5 py-0.5 rounded bg-gray-50 hover:bg-gray-100 text-[10px] border border-gray-200 text-gray-700"
-            onClick={() => setMetaDescription((v) => (v ? `${v} ${k}` : k).slice(0, 160))}
-          >
-            {k}
-          </button>
-        ))}
-        {titleKeywords.length > 3 && (
-          <span 
-            className="text-[10px] text-gray-400 self-center"
-            title={titleKeywords.slice(3).join(', ')}
-          >
-            +{titleKeywords.length - 3} more
-          </span>
-        )}
-      </div>
-    )}
-  </div>
-</div>
-</div>
-
-            {/* Featured Image */}
-          <div className="space-y-4">
-  {/* Featured Image Section */}
-  <div className="space-y-2">
-    <div className="flex items-center gap-2">
-      <ImageIcon className="w-4 h-4 text-green-600" />
-      <label className="text-sm font-medium text-gray-900">Featured Image </label>
-    </div>
-
-    {/* Two-column layout */}
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
-      {/* Image Preview */}
-      <div className="relative rounded-lg overflow-hidden border border-gray-200 bg-white">
-        {frontImagePreview ? (
-          <div className="relative">
-            <img
-              src={frontImagePreview}
-              alt="Featured preview"
-              className="w-full h-48 object-cover"
-              onError={(e) => {
-                if (!frontTriedProxy) {
-                  const src = originalFrontUrlRef.current || frontImagePreview;
-                  const stripProto = (u) => (u || '').replace(/^https?:\/\//i, '');
-                  const proxied = `https://images.weserv.nl/?url=${encodeURIComponent(stripProto(src))}`;
-                  setFrontImagePreview(proxied);
-                  setFrontTriedProxy(true);
-                } else {
-                  setFrontImageError(true);
-                }
-              }}
-            />
-            {frontImageError && (
-              <div className="absolute bottom-1 left-1 right-1 bg-white/90 backdrop-blur rounded p-1 border border-amber-200 text-xs flex flex-wrap gap-1">
-                <span className="text-amber-800 text-[10px]">Image failed to load</span>
-                <button 
-                  type="button" 
-                  className="px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 hover:bg-amber-200 text-[10px]"
-                  onClick={() => {
-                    setFrontImageError(false);
-                    setFrontImagePreview(originalFrontUrlRef.current || frontImagePreview);
-                  }}
-                >
-                  Retry
-                </button>
-              </div>
-            )}
-          </div>
-        ) : (
-          <div className="h-32 flex items-center justify-center text-gray-400 text-sm">
-            No image selected
-          </div>
-        )}
-      </div>
-
-      {/* Upload Controls */}
-      <div className="space-y-2">
-        <div 
-          className="relative border-2 border-dashed border-gray-200 rounded-lg p-3 text-center hover:border-blue-300 transition-colors"
-          onDragOver={onFeaturedDragOver}
-          onDrop={onFeaturedDrop}
-        >
-          <input
-            type="file"
-            id="featured-image-upload"
-            accept="image/webp"
-            onChange={handleFileChange}
-            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-          />
-          <div className="space-y-1">
-            <UploadCloud className="w-6 h-6 mx-auto text-gray-400" />
-            <p className="text-xs font-medium text-gray-700">
-              {frontImagePreview ? 'Click to change' : 'Upload WebP image'}
-            </p>
-            <p className="text-[10px] text-gray-500">
-              {frontImagePreview ? 'or drag & drop' : 'or paste URL below'}
-            </p>
-          </div>
-        </div>
-
-        <input
-          type="text"
-          className="w-full px-3 py-1.5 text-xs border border-gray-200 rounded-lg focus:ring-1 focus:ring-blue-500"
-          placeholder="Paste WebP URL"
-          onPaste={async (e) => {
-            try {
-              const pastedText = e.clipboardData.getData('text/plain');
-              if (pastedText) {
-                e.preventDefault();
-                handleImageUrlChange({ target: { value: pastedText } });
-              }
-            } catch (err) {
-              console.error('Error handling paste:', err);
-            }
-          }}
-          onChange={handleImageUrlChange}
-          value={frontImage || ''}
-        />
-      </div>
-    </div>
-  </div>
-
-  {/* Blog Category Section */}
-  <div className="space-y-2">
-    <div className="flex items-center gap-2">
-      <Tag className="w-4 h-4 text-purple-600" />
-      <label className="text-sm font-medium text-gray-900">Category</label>
-    </div>
-    
-    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-      <select
-        className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:ring-1 focus:ring-purple-500"
-        value={categories}
-        onChange={handleEditCategory}
-      >
-        <option value="">Select category</option>
-        {categoryList.map((c) => (
-          <option key={c} value={c}>{c}</option>
-        ))}
-        <option value="__other__">+ Add new</option>
-      </select>
-
-      {categories === '__other__' && (
-        <>
-          <input
-            type="text"
-            value={addedCategory}
-            onChange={(e) => setAddedCategory(e.target.value)}
-            className="px-3 py-2 text-sm border border-gray-200 rounded-lg focus:ring-1 focus:ring-purple-500"
-            placeholder="New category name"
-          />
-          <button
-            type="button"
-            onClick={addNewCategory}
-            className="px-3 py-2 text-sm rounded-lg bg-purple-600 text-white hover:bg-purple-700"
-            disabled={!addedCategory.trim()}
-          >
-            Add
-          </button>
-        </>
-      )}
-    </div>
-  </div>
-</div>
-
-            {/* Related Projects Section */}
-            <div className="space-y-3">
-  <div className="flex items-center justify-between">
-    <div className="flex items-center gap-2">
-      <LinkIcon className="w-4 h-4 text-indigo-600" />
-      <span className="text-sm font-medium text-gray-900">Related Projects</span>
-      <span className="text-xs text-gray-500">({relatedProjects.length}/5)</span>
-    </div>
-    {autoSuggestEnabled && suggestedProjects.length > 0 && (
-      <button
-        type="button"
-        className="px-2 py-1 text-xs rounded-lg bg-emerald-600 text-white hover:bg-emerald-700"
-        onClick={() => {
-          const toAdd = suggestedProjects.slice(0, Math.max(0, 5 - relatedProjects.length));
-          toAdd.forEach(addRelatedProject);
-        }}
-        disabled={relatedProjects.length >= 5}
-      >
-        Add Top {Math.min(3, suggestedProjects.length)} Suggested
-      </button>
-    )}
-  </div>
-
-  {/* Suggestions grid */}
-  {autoSuggestEnabled && suggestedProjects.length > 0 && (
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-      {suggestedProjects.slice(0, 4).map((p, idx) => (
-        <div key={`${p.project_url}-${idx}`} className="flex items-center justify-between p-2 bg-white border border-gray-100 rounded-lg">
-          <div className="flex items-center gap-2 min-w-0">
-            {p.thumbnail && (
-              <img 
-                src={p.thumbnail} 
-                alt="" 
-                className="w-8 h-8 rounded object-cover" 
-                onError={(e) => e.target.style.display='none'} 
-              />
-            )}
-            <div className="min-w-0">
-              <div className="text-xs font-medium text-gray-900 truncate">{p.projectName || 'Project'}</div>
-              <div className="text-[10px] text-gray-500 truncate">{p.builderName || p.city || ''}</div>
-            </div>
-          </div>
-          <button 
-            type="button" 
-            className="px-2 py-0.5 text-xs rounded bg-indigo-600 text-white hover:bg-indigo-700"
-            onClick={() => addRelatedProject(p)} 
-            disabled={relatedProjects.length >= 5}
-          >
-            Add
-          </button>
-        </div>
-      ))}
-    </div>
-  )}
-
-  {/* Project search */}
-  <div className="relative">
-    <input
-      type="text"
-      value={projectSearchTerm}
-      onChange={(e) => setProjectSearchTerm(e.target.value)}
-      placeholder="Search projects..."
-      className="w-full px-3 py-1.5 text-sm border border-gray-200 rounded-lg focus:ring-1 focus:ring-indigo-500"
-    />
-    {projectSearchTerm && (
-      <button
-        type="button"
-        onClick={() => setProjectSearchTerm('')}
-        className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-        title="Clear"
-      >
-        ×
-      </button>
-    )}
-  </div>
-
-  {/* Project dropdown */}
-  <div className="relative">
-    <select
-      className="w-full px-3 py-1.5 text-sm border border-gray-200 rounded-lg focus:ring-1 focus:ring-indigo-500"
-      onChange={(e) => {
-        const idx = Number(e.target.value);
-        const source = projectSearchTerm.trim().length >= 2 ? projectSearchResults : allProjects;
-        const list = source
-          .filter(project => !relatedProjects.find(rp => rp.project_url === project.project_url))
-          .filter(p => {
-            const q = (projectSearchTerm || '').trim().toLowerCase();
-            if (!q) return true;
-            const hay = `${p.projectName || ''} ${p.builderName || ''} ${p.location || ''} ${p.city || ''}`.toLowerCase();
-            return hay.includes(q);
-          });
-        if (!Number.isNaN(idx) && list[idx]) addRelatedProject(list[idx]);
-        e.target.value = '';
-      }}
-      defaultValue=""
-    >
-      <option value="" disabled>{isLoadingProjects ? 'Loading...' : 'Select a project to add'}</option>
-      {(projectSearchTerm.trim().length >= 2 ? projectSearchResults : allProjects)
-        .filter(project => !relatedProjects.find(rp => rp.project_url === project.project_url))
-        .filter(p => {
-          const q = (projectSearchTerm || '').trim().toLowerCase();
-          if (!q) return true;
-          const hay = `${p.projectName || ''} ${p.builderName || ''} ${p.location || ''} ${p.city || ''}`.toLowerCase();
-          return hay.includes(q);
-        })
-        .map((p, idx) => (
-          <option key={p.project_url || `${p.projectName}-${idx}`} value={idx}>
-            {p.projectName || `Project ${idx+1}`}
-            {p.builderName ? ` — ${p.builderName}` : ''}
-          </option>
-        ))}
-    </select>
-    {isLoadingProjects && (
-      <div className="absolute right-2 top-1/2 -translate-y-1/2">
-        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-indigo-600"></div>
-      </div>
-    )}
-  </div>
-
-  {/* Selected projects */}
-  {relatedProjects.length > 0 && (
-    <div className="space-y-1.5 mt-2">
-      <div className="text-xs font-medium text-gray-700">Selected Projects ({relatedProjects.length}/5):</div>
-      <div className="space-y-1.5">
-        {relatedProjects.map((project, index) => (
-          <div
-            key={index}
-            className="flex items-center justify-between p-2 bg-white border border-gray-100 rounded-lg"
-          >
-            <div className="flex items-center gap-2 min-w-0">
-              {project.thumbnail && (
-                <img
-                  src={project.thumbnail}
-                  alt=""
-                  className="w-6 h-6 object-cover rounded"
-                  onError={(e) => e.target.style.display = 'none'}
-                />
-              )}
-              <div className="min-w-0">
-                <p className="text-xs font-medium text-gray-900 truncate">
-                  {project.projectName || 'Project'}
-                </p>
-                <p className="text-[10px] text-indigo-600 truncate">
-                  {project.project_url?.replace(/^https?:\/\//, '')}
-                </p>
-              </div>
-            </div>
-            <button
-              type="button"
-              onClick={() => removeRelatedProject(project.project_url)}
-              className="p-0.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded"
-              title="Remove"
-            >
-              <X className="w-3.5 h-3.5" />
-            </button>
-          </div>
-        ))}
-      </div>
-    </div>
-  )}
-</div>
-
-            {/* Editor Controls */}
-          <div className="flex flex-wrap items-center gap-2">
-  <button
-    type="button"
-    onClick={uploadInlineImage}
-    className="px-3 py-1.5 text-xs rounded-lg bg-emerald-600 text-white hover:bg-emerald-700 flex items-center gap-1.5"
-    title="Upload image and insert at cursor"
-  >
-    <Upload className="w-3.5 h-3.5" />
-    Insert Image
-  </button>
-  
-  <button
-    type="button"
-    onClick={insertImageByUrl}
-    className="px-3 py-1.5 text-xs rounded-lg bg-sky-600 text-white hover:bg-sky-700 flex items-center gap-1.5"
-    title="Insert image by URL at cursor"
-  >
-    <ImageIcon className="w-3.5 h-3.5" />
-    Insert from URL
-  </button>
-  
-  <button
-    type="button"
-    onClick={async () => {
-      const input = document.createElement('input');
-      input.type = 'file';
-      input.accept = 'image/webp';
-      input.multiple = true;
-      input.onchange = async () => {
-        const files = Array.from(input.files || []).slice(0, 4);
-        if (!files.length) return;
-        
-        // STRICT: Check all files are WebP
-        const nonWebpFiles = files.filter(file => file.type !== 'image/webp');
-        if (nonWebpFiles.length > 0) {
-          showToast.error('Only WebP images are allowed');
-          return;
-        }
-        
-        showToast.loading('Uploading...', { id: 'gridUpload' });
-        try {
-          const urls = [];
-          for (const f of files) {
-            const fd = new FormData();
-            fd.append('image', f);
-            const r = await api.post(`/blog/upload-image`, fd);
-            const u = r?.data?.url || r?.data?.data?.url || r?.data?.imageUrl || '';
-            if (u) urls.push(u);
-          }
-          const cardStyle = 'background:#fff;border:1px solid #e5e7eb;border-radius:8px;overflow:hidden;display:flex;flex-direction:column;';
-          const imgStyle = `width:100%;height:${gridSizeToPx[gridImgSize]}px;object-fit:cover;display:block;`;
-          const cards = urls.map((u, idx) => 
-            `<figure class="grid-card" style="${cardStyle}">
-              <img style="${imgStyle}" src="${u}" alt="" />
-              ${gridWithTitles ? `<figcaption style="padding:4px 6px;font-size:12px;color:#4b5563;text-align:center;" contenteditable="true">Title ${idx+1}</figcaption>` : ''}
-            </figure>`
-          ).join('');
-          const gridCols = gridLayout === 'lastLarge' ? '1fr 1fr 1fr 1.6fr' : 'repeat(4, 1fr)';
-          const inner = `<div class="img-grid-4 layout-${gridLayout}" style="display:grid;grid-template-columns:${gridCols};gap:8px;margin:8px 0;">${cards}</div>`;
-          const html = gridWithTitles
-            ? `<section class="img-grid-4-frame" style="border:1px solid #e5e7eb;border-radius:8px;padding:8px;background:#f9fafb;">
-                <div class="grid-title" style="text-align:center;font-weight:600;margin:0 0 8px;font-size:13px;color:#374151;" contenteditable="true">Grid Title</div>
-                ${inner}
-              </section>` 
-            : `${inner}<p><br/></p>`;
-          const quill = safeGetQuill();
-          if (quill) {
-            const sel = quill.getSelection(true) || { index: quill.getLength(), length: 0 };
-            quill.clipboard.dangerouslyPasteHTML(sel.index, html, 'user');
-            quill.setSelection(sel.index + 1, 0);
-          }
-          showToast.success('Inserted image grid');
-        } catch (err) {
-          console.error(err);
-          showToast.error('Failed to insert grid');
-        } finally {
-          showToast.dismiss('gridUpload');
-        }
-      };
-      input.click();
-    }}
-    className="px-3 py-1.5 text-xs rounded-lg bg-purple-600 text-white hover:bg-purple-700"
-    title="Insert 4 images as a grid"
-  >
-    Insert 4-Image Grid
-  </button>
-  
-  <button
-    type="button"
-    onClick={() => setBwMode(v => !v)}
-    className="px-2.5 py-1.5 text-xs rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50"
-    title="Toggle Black & White mode for images"
-  >
-    {bwMode ? 'Color Mode' : 'B/W Mode'}
-  </button>
-</div>
-
-            {/* Content Editor */}
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <Edit3 className="w-5 h-5 text-orange-600" />
-                  <label className="text-lg font-semibold text-gray-900">
-                    Blog Content
-                  </label>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setEditorFullscreen(true)}
-                  className="px-2 py-1 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 flex items-center gap-1"
-                  title="Open editor in full screen"
-                >
-                  <Maximize2 className="w-4 h-4" />
-                  <span className="hidden sm:inline">Full screen</span>
-                </button>
-              </div>
-
-              {!editorFullscreen && (
-                <div className="quill-box border border-gray-200 rounded-xl mb-4 bg-white shadow-sm">
-                  <div className="quill-editor-container editor-resize">
-                    <ReactQuill
-                      ref={quillRef}
-                      theme="snow"
-                      value={description}
-                      onChange={handleQuillChange}
-                      className=""
-                      modules={quillModules}
-                      formats={quillFormats}
-                    />
+            {/* Cropper Modal */}
+            {showCropper && (
+              <div
+                style={{
+                  position: 'fixed',
+                  inset: 0,
+                  background: 'rgba(0,0,0,0.55)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  zIndex: 2000,
+                }}
+              >
+                <div style={{ background: '#fff', padding: 16, borderRadius: 8, width: 'min(95vw, 900px)' }}>
+                  <h3 style={{ margin: '0 0 8px' }}>Crop Image</h3>
+                  <div style={{ maxHeight: '70vh', overflow: 'auto' }}>
+                    {rawImageUrl && (
+                      <ReactCrop crop={crop} onChange={(c) => setCrop(c)} onComplete={(c) => setCompletedCrop(c)} aspect={crop.aspect}>
+                        {/* eslint-disable-next-line jsx-a11y/alt-text */}
+                        <img
+                          ref={cropImgRef}
+                          src={rawImageUrl}
+                          onLoad={() => {
+                            if (!completedCrop) {
+                              setCrop((prev) => ({ ...prev }));
+                            }
+                          }}
+                          style={{ maxWidth: '100%' }}
+                        />
+                      </ReactCrop>
+                    )}
                   </div>
-                </div>
-              )}
-              
-            </div>
-
-            {editorFullscreen && (
-              <div className="fixed inset-0 z-[5000] bg-white editor-fs-wrap">
-                <div className="flex items-center justify-between px-3 py-2 border-b">
-                  <div className="font-medium text-gray-800 truncate">Editing: {title || 'Untitled'}</div>
-                  <div className="flex items-center gap-2">
+                  <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end', marginTop: 12 }}>
+                    <button type="button" onClick={closeCropper} style={{ padding: '6px 12px' }}>
+                      Cancel
+                    </button>
                     <button
                       type="button"
-                      onClick={() => setEditorFullscreen(false)}
-                      className="px-2 py-1 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 flex items-center gap-1"
-                      title="Exit full screen"
+                      onClick={confirmCropAndInsert}
+                      style={{ padding: '6px 12px', background: '#1677ff', color: '#fff', border: 'none', borderRadius: 4 }}
                     >
-                      <Minimize2 className="w-4 h-4" />
-                      <span className="hidden sm:inline">Exit</span>
+                      Crop & Insert
                     </button>
                   </div>
-                </div>
-                <div className="editor-fs">
-                  <ReactQuill
-                    theme="snow"
-                    value={description}
-                    onChange={handleQuillChange}
-                    className=""
-                    modules={quillModules}
-                    formats={quillFormats}
-                  />
                 </div>
               </div>
             )}
 
-            {/* Live Preview */}
-            {showPreview && (
-              <div className="bg-white border border-gray-200 rounded-xl p-4">
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-2 text-sm text-gray-700">
-                    <span className="font-medium">Preview</span>
-                    <span className="text-gray-400">(updates in real-time)</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <button type="button" onClick={() => setPreviewMode('desktop')} className={`px-2.5 py-1.5 rounded-lg border ${previewMode==='desktop' ? 'bg-gray-900 text-white border-gray-900' : 'border-gray-300 text-gray-700'}`}>
-                      <Monitor className="w-4 h-4 inline mr-1" /> Desktop
-                    </button>
-                    <button type="button" onClick={() => setPreviewMode('mobile')} className={`px-2.5 py-1.5 rounded-lg border ${previewMode==='mobile' ? 'bg-gray-900 text-white border-gray-900' : 'border-gray-300 text-gray-700'}`}>
-                      <Smartphone className="w-4 h-4 inline mr-1" /> Mobile
-                    </button>
-                  </div>
-                </div>
-                <div className="flex justify-center">
-                  <div className={`rounded-xl border border-gray-200 shadow-sm overflow-hidden ${previewMode==='mobile' ? 'w-[390px]' : 'w-full'} max-w-[1024px]`}>
-                    {/* Featured image */}
-                    {frontImagePreview && (
-                      <img src={frontImagePreview} alt="preview" className="w-full max-h-72 object-cover" />
-                    )}
-                    <div className="p-4 sm:p-6">
-                      <h1 className="text-2xl sm:text-3xl font-bold mb-2">{title || 'Your blog title'}</h1>
-                      <div className="text-gray-500 text-sm mb-4">/{slug || 'my-custom-slug'}</div>
-                      <article className="prose max-w-none prose-img:rounded-lg prose-headings:scroll-mt-24" dangerouslySetInnerHTML={{ __html: description || '<p>Start writing content...</p>' }} />
+            {/* Form with Preview */}
+            <div className="bg-card text-card-foreground rounded-xl shadow-sm border overflow-hidden">
+              <div className="flex flex-col lg:flex-row">
+                {/* Left Side - Blog Preview */}
+                <div className="lg:w-2/5 lg:border-r border-border bg-muted/20">
+                  <div className="p-6 border-b border-border bg-background/50">
+                    <div className="flex items-center gap-2">
+                      <Monitor className="w-5 h-5 text-primary" />
+                      <h3 className="text-base font-semibold leading-none tracking-tight">Blog Preview</h3>
+                      <span className="text-xs text-muted-foreground">(Live SEO Preview)</span>
                     </div>
                   </div>
-                </div>
-              </div>
-            )}
-
-            {/* FAQ Section (collapsible + drag reorder) */}
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <label className="text-lg font-semibold text-gray-900">FAQs</label>
-                  <span className="text-sm text-gray-500">(Optional)</span>
-                </div>
-                <label className="inline-flex items-center gap-2 text-sm text-gray-700">
-                  <input
-                    type="checkbox"
-                    checked={enableFAQ}
-                    onChange={(e)=>setEnableFAQ(e.target.checked)}
-                  />
-                  Enable FAQ section
-                </label>
-              </div>
-
-              {enableFAQ && (
-                <div className="space-y-3">
-                  {faqs.map((f, idx) => (
-                    <div key={idx} className="bg-gray-50 border border-gray-200 rounded-xl"
-                         draggable
-                         onDragStart={() => { dragIndexRef.current = idx; }}
-                         onDragOver={(e) => e.preventDefault()}
-                         onDrop={() => {
-                           const from = dragIndexRef.current;
-                           const to = idx;
-                           if (from === null || from === to) return;
-                           setFaqs(prev => {
-                             const arr = [...prev];
-                             const [m] = arr.splice(from, 1);
-                             arr.splice(to, 0, m);
-                             return arr;
-                           });
-                           setCollapsedFaqs(prev => {
-                             const arr = [...prev];
-                             const [m] = arr.splice(from, 1);
-                             arr.splice(to, 0, m);
-                             return arr;
-                           });
-                         }}>
-                      <div className="flex items-center justify-between p-3 border-b border-gray-200">
+                  
+                  <div className="p-6 space-y-4">
+                    {/* SEO Info Bar */}
+                    <div className="bg-background rounded-lg border border-border p-4 space-y-3">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-medium text-foreground">SEO Information</span>
                         <div className="flex items-center gap-2">
-                          <span className="cursor-move text-gray-400" title="Drag to reorder">⋮⋮</span>
-                          <span className="text-sm font-medium text-gray-800">FAQ #{idx+1}</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <button type="button" className="text-gray-600 text-sm" onClick={() => setCollapsedFaqs(prev => {
-                            const arr = [...prev];
-                            arr[idx] = !arr[idx];
-                            return arr;
-                          })}>{collapsedFaqs[idx] ? 'Expand' : 'Collapse'}</button>
                           <button
                             type="button"
-                            onClick={()=>{
-                              setFaqs(prev=>prev.filter((_,i)=>i!==idx));
-                              setCollapsedFaqs(prev=>prev.filter((_,i)=>i!==idx));
-                            }}
-                            className="px-3 py-1 text-sm rounded-lg border border-red-200 text-red-600 hover:bg-red-50"
-                            title="Remove FAQ"
+                            onClick={() => setPreviewMode('desktop')}
+                            className={`inline-flex items-center justify-center rounded-md text-xs font-medium transition-all h-7 px-2 ${previewMode === 'desktop' ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground hover:text-foreground'}`}
                           >
-                            Remove
+                            <Monitor className="w-3 h-3 mr-1" /> Desktop
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setPreviewMode('mobile')}
+                            className={`inline-flex items-center justify-center rounded-md text-xs font-medium transition-all h-7 px-2 ${previewMode === 'mobile' ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground hover:text-foreground'}`}
+                          >
+                            <Smartphone className="w-3 h-3 mr-1" /> Mobile
                           </button>
                         </div>
                       </div>
-                      {!collapsedFaqs[idx] && (
-                        <div className="p-4">
-                          <div className="grid grid-cols-1 lg:grid-cols-10 gap-3 items-start">
-                            <div className="lg:col-span-4">
-                              <label className="block text-sm font-medium text-gray-700 mb-1">Question</label>
-                              <input
-                                type="text"
-                                value={f.question}
-                                onChange={(e)=>setFaqs(prev=>prev.map((x,i)=> i===idx ? { ...x, question:e.target.value } : x))}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                                placeholder="Enter question"
+                      
+                      <div className="space-y-2 text-xs">
+                        <div className="flex items-center justify-between">
+                          <span className="text-muted-foreground">Slug:</span>
+                          <div className="flex items-center gap-2">
+                            <code className="bg-muted px-2 py-1 rounded text-xs font-mono">/{slug || 'my-custom-slug'}</code>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                navigator.clipboard.writeText(slug || 'my-custom-slug');
+                                showToast.success('Slug copied!');
+                              }}
+                              className="text-muted-foreground hover:text-foreground transition-colors"
+                              title="Copy slug"
+                            >
+                              <Copy className="w-3 h-3" />
+                            </button>
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-center justify-between">
+                          <span className="text-muted-foreground">Canonical URL:</span>
+                          <div className="flex items-center gap-2 max-w-[200px]">
+                            <code className="bg-muted px-2 py-1 rounded text-xs font-mono truncate">
+                              {slug ? `blog/${slug}/` : `blog/view/${id || 'new'}`}
+                            </code>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const url = slug ? `https://100acress.com/blog/${slug}/` : `https://100acress.com/blog/view/${id || 'new'}`;
+                                navigator.clipboard.writeText(url);
+                                showToast.success('Canonical URL copied!');
+                              }}
+                              className="text-muted-foreground hover:text-foreground transition-colors flex-shrink-0"
+                              title="Copy canonical URL"
+                            >
+                              <Copy className="w-3 h-3" />
+                            </button>
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-center justify-between">
+                          <span className="text-muted-foreground">Meta Title:</span>
+                          <span className="text-xs font-medium truncate max-w-[200px]">
+                            {metaTitle || title || 'Not set'}
+                          </span>
+                        </div>
+                        
+                        <div className="flex items-center justify-between">
+                          <span className="text-muted-foreground">Meta Desc:</span>
+                          <span className="text-xs font-medium truncate max-w-[200px]">
+                            {metaDescription ? `${metaDescription.substring(0, 50)}...` : 'Not set'}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="space-y-6">
+                      {/* SEO Score Indicator */}
+                      <div className="bg-background rounded-lg border border-border p-4">
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-sm font-medium text-foreground">SEO Score</span>
+                          <div className="flex items-center gap-2">
+                            <button
+                              type="button"
+                              onClick={handleAnalyzeSEO}
+                              disabled={isAnalyzing}
+                              className="inline-flex items-center gap-1.5 px-2 py-1 bg-primary/10 text-primary hover:bg-primary/20 rounded text-[10px] font-bold uppercase transition-colors disabled:opacity-50"
+                            >
+                              {isAnalyzing ? (
+                                <div className="w-3 h-3 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
+                              ) : (
+                                <History className="w-3 h-3" />
+                              )}
+                              Analyze SEO
+                            </button>
+                            <span className="text-sm font-bold" style={{ color: seoScore.color }}>
+                              {seoScore.score}/100
+                            </span>
+                          </div>
+                        </div>
+                        <div className="w-full bg-muted rounded-full h-2">
+                          <div 
+                            className="h-2 rounded-full transition-all duration-300"
+                            style={{ 
+                              width: `${seoScore.score}%`,
+                              backgroundColor: seoScore.color
+                            }}
+                          />
+                        </div>
+                        <p className="text-xs text-muted-foreground mt-2">
+                          {seoScore.label} - {seoScore.details.title && `Title: ${seoScore.details.title}`}
+                        </p>
+                      </div>
+
+                      {/* Blog Preview */}
+                      <div className="bg-background rounded-lg border border-border overflow-hidden">
+                        <div className="p-3 border-b border-border bg-muted/30 flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <Eye className="w-4 h-4 text-primary" />
+                            <span className="text-sm font-medium">Live Preview</span>
+                          </div>
+                          <div className="flex items-center gap-1 bg-background rounded-md border p-0.5">
+                            <button
+                              type="button"
+                              onClick={() => setPreviewMode('desktop')}
+                              className={`p-1 rounded text-xs transition-colors ${previewMode === 'desktop' ? 'bg-primary text-primary-foreground' : 'hover:bg-muted'}`}
+                              title="Desktop view"
+                            >
+                              <Monitor className="w-3 h-3" />
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setPreviewMode('mobile')}
+                              className={`p-1 rounded text-xs transition-colors ${previewMode === 'mobile' ? 'bg-primary text-primary-foreground' : 'hover:bg-muted'}`}
+                              title="Mobile view"
+                            >
+                              <Smartphone className="w-3 h-3" />
+                            </button>
+                          </div>
+                        </div>
+                        <div className={`transition-all duration-300 ${previewMode === 'mobile' ? 'max-w-[390px] mx-auto ring-2 ring-muted rounded-lg' : ''}`}>
+                          {/* Featured Image */}
+                          {frontImagePreview && (
+                            <div className="relative">
+                              <img 
+                                src={frontImagePreview} 
+                                alt="Blog preview" 
+                                className={`w-full object-cover ${previewMode === 'mobile' ? 'h-48' : 'h-64'}`} 
                               />
+                              <div className="absolute top-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded">
+                                Featured Image
+                              </div>
                             </div>
-                            <div className="lg:col-span-6">
-                              <label className="block text-sm font-medium text-gray-700 mb-1">Answer</label>
-                              <textarea
-                                rows={3}
-                                value={f.answer}
-                                onChange={(e)=>setFaqs(prev=>prev.map((x,i)=> i===idx ? { ...x, answer:e.target.value } : x))}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                                placeholder="Enter answer"
-                              />
+                          )}
+                          
+                          {/* Blog Content Preview */}
+                          <div className="p-4 sm:p-6">
+                            <h1 className={`font-bold text-foreground mb-3 leading-tight ${previewMode === 'mobile' ? 'text-xl' : 'text-2xl'}`}>
+                              {title || 'Your blog title will appear here'}
+                            </h1>
+                            
+                            <div className="flex items-center gap-4 text-xs text-muted-foreground mb-4 pb-3 border-b border-border">
+                              <span>By {author || 'Admin'}</span>
+                              <span>•</span>
+                              <span>{new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                              <span>•</span>
+                              <span className="text-primary font-medium">/{slug || 'my-custom-slug'}</span>
+                            </div>
+                            
+                            {/* Content Preview */}
+                            <div className={`prose prose-sm max-w-none ${previewMode === 'mobile' ? 'text-xs' : 'text-sm'}`}>
+                              {description ? (
+                                <div 
+                                  className="text-muted-foreground leading-relaxed"
+                                  dangerouslySetInnerHTML={{
+                                    __html: description.replace(/<[^>]*>/g, '').substring(0, previewMode === 'mobile' ? 150 : 300) + '...'
+                                  }}
+                                />
+                              ) : (
+                                <p className="text-muted-foreground italic">
+                                  Start writing your blog content to see the preview here...
+                                </p>
+                              )}
+                            </div>
+                            
+                            {/* Categories */}
+                            {categories && (
+                              <div className="mt-4 pt-4 border-t border-border">
+                                <div className="flex flex-wrap gap-2">
+                                  {categories.split(',').map((cat, idx) => (
+                                    <span key={idx} className="inline-flex items-center px-2 py-1 bg-primary/10 text-primary text-xs rounded-full font-medium">
+                                      {cat.trim()}
+                                    </span>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+                            
+                            {/* Read more indicator */}
+                            <div className="mt-4 text-center">
+                              <button 
+                                type="button"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  e.stopPropagation();
+                                  // Store current scroll position
+                                  const scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+                                  setShowPreview(true);
+                                  // Restore scroll position after state update
+                                  requestAnimationFrame(() => {
+                                    window.scrollTo(0, scrollPosition);
+                                  });
+                                }}
+                                className="text-primary text-sm font-medium hover:text-primary/80 transition-colors"
+                              >
+                                Read full article →
+                              </button>
                             </div>
                           </div>
                         </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Right Side - Form */}
+                <div className="lg:w-3/5">
+                  <div className="p-6 border-b border-border bg-background/50 flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <FileText className="w-5 h-5 text-primary" />
+                      <h3 className="text-base font-semibold leading-none tracking-tight">Blog Editor</h3>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {isDraft && (
+                        <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-amber-100 text-amber-800 border border-amber-200">
+                          DRAFT
+                        </span>
+                      )}
+                      <span className="text-[10px] text-muted-foreground">ID: {id || 'New'}</span>
+                    </div>
+                  </div>
+
+                  <form className="p-6 space-y-8" onSubmit={(e) => e.preventDefault()}>
+                {/* Title */}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2 text-foreground">
+                      <FileText className="w-5 h-5 text-primary" />
+                      <label htmlFor="title" className="text-base font-semibold leading-none tracking-tight">
+                        Blog Title
+                      </label>
+                    </div>
+                    {title && (
+                      <div className="text-xs text-muted-foreground">
+                        {title.length}/100
+                      </div>
+                    )}
+                  </div>
+                  <input
+                    type="text"
+                    id="title"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value.slice(0, 100))}
+                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                    placeholder="Enter your blog title..."
+                    required
+                  />
+                  {titleKeywords.length > 0 && (
+                    <div className="flex flex-wrap gap-1.5 mt-1">
+                      <span className="text-[10px] text-muted-foreground self-center">Keywords:</span>
+                      {titleKeywords.slice(0, 4).map((k, i) => (
+                        <span
+                          key={k + i}
+                          className="inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80"
+                        >
+                          {k}
+                        </span>
+                      ))}
+                      {titleKeywords.length > 4 && (
+                        <span className="text-[10px] text-muted-foreground self-center">
+                          +{titleKeywords.length - 4} more
+                        </span>
                       )}
                     </div>
-                  ))}
+                  )}
+                </div>
 
-                  <div className="flex justify-between">
+                {/* Slug + Meta */}
+                <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+                  {/* Slug URL */}
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Slug URL</label>
+                    <div className="flex rounded-md border border-input bg-background overflow-hidden text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
+                      <span className="px-3 py-2 flex items-center text-muted-foreground bg-muted border-r border-input text-sm">
+                        <LinkIcon className="w-4 h-4 mr-2" />
+                        /blog/
+                      </span>
+                      <input
+                        type="text"
+                        value={slug}
+                        onChange={(e) => {
+                          setSlugTouched(true);
+                          // Allow raw input — only replace spaces with hyphens for UX
+                          const raw = e.target.value.toLowerCase().replace(/\s+/g, '-');
+                          setSlug(raw);
+                        }}
+                        onBlur={() => {
+                          // Clean up on blur: remove trailing/leading hyphens and collapse multiples
+                          setSlug(prev => prev.replace(/-+/g, '-').replace(/^-+|-+$/g, ''));
+                        }}
+                        className="flex-1 px-3 py-2 min-w-0 text-sm focus:outline-none bg-transparent"
+                        placeholder="my-custom-slug"
+                      />
+                      <div className="flex items-stretch">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setSlug(slugify(slug));
+                            setSlugTouched(true);
+                          }}
+                          className="px-3 py-2 text-xs bg-muted hover:bg-muted/80 border-l border-input transition-colors"
+                          title="Slugify current value (clean special chars)"
+                        >
+                          ✓
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setSlugTouched(false);
+                            setSlug(slugify(title));
+                          }}
+                          className="px-3 py-2 text-xs bg-muted hover:bg-muted/80 border-l border-input transition-colors"
+                          title="Reset slug to match title"
+                        >
+                          ⟲
+                        </button>
+                        <button
+                          type="button"
+                          onClick={async () => {
+                            try {
+                              await navigator.clipboard.writeText(`/blog/${slug}/`);
+                              setSlugCopied(true);
+                              setTimeout(() => setSlugCopied(false), 1200);
+                            } catch { }
+                          }}
+                          className="px-3 py-2 text-xs bg-muted hover:bg-muted/80 border-l border-input transition-colors flex items-center"
+                          title="Copy full slug URL"
+                        >
+                          {slugCopied ? <Check className="w-4 h-4 text-green-600" /> : <Copy className="w-4 h-4" />}
+                        </button>
+                      </div>
+                    </div>
+                    <p className="text-[11px] text-muted-foreground">
+                      Type your own slug or auto-generates from title • <span className="text-primary cursor-pointer hover:underline" onClick={() => { setSlugTouched(false); setSlug(slugify(title)); }}>Auto-generate</span>
+                    </p>
+                    {slug && (
+                      <div className="text-[11px] mt-1 font-medium">
+                        {slugChecking ? (
+                          <span className="text-muted-foreground">{slugCheckMsg}</span>
+                        ) : (
+                          <span className={slugAvailable ? 'text-green-600 dark:text-green-500' : 'text-destructive'}>
+                            {slugCheckMsg || (slugAvailable ? 'Slug available' : 'Slug taken')}
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Focus Keyword */}
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Focus Keyword</label>
+                    <div className="relative">
+                      <input
+                        type="text"
+                        value={focusKeyword}
+                        onChange={(e) => setFocusKeyword(e.target.value)}
+                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                        placeholder="Enter your focus keyword"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Meta Title */}
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Meta Title</label>
+                    <div className="relative">
+                      <input
+                        type="text"
+                        value={metaTitle}
+                        onChange={(e) => setMetaTitle(e.target.value.slice(0, 60))}
+                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                        placeholder="Up to 60 characters"
+                      />
+                      <div className="absolute right-3 bottom-2.5 text-xs text-muted-foreground">
+                        {metaTitle.length}/60
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Meta Description */}
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Meta Description</label>
+                      <div className={`text-[11px] font-medium ${metaDescription.length >= 120 && metaDescription.length <= 160
+                        ? 'text-green-600 dark:text-green-500'
+                        : metaDescription.length >= 80
+                          ? 'text-yellow-600 dark:text-yellow-500'
+                          : 'text-destructive'
+                        }`}>
+                        {metaDescription.length}/160
+                      </div>
+                    </div>
+                    <div className="relative">
+                      <textarea
+                        value={metaDescription}
+                        onChange={(e) => setMetaDescription(e.target.value.slice(0, 160))}
+                        className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                        placeholder="Up to 160 characters"
+                        rows={3}
+                      />
+                      {titleKeywords.length > 0 && (
+                        <div className="mt-2 flex flex-wrap gap-1.5">
+                          <span className="text-[10px] text-muted-foreground self-center">Keywords:</span>
+                          {titleKeywords.slice(0, 3).map((k, i) => (
+                            <button
+                              key={k + i}
+                              type="button"
+                              className="inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80"
+                              onClick={() => setMetaDescription((v) => (v ? `${v} ${k}` : k).slice(0, 160))}
+                            >
+                              {k}
+                            </button>
+                          ))}
+                          {titleKeywords.length > 3 && (
+                            <span
+                              className="text-[10px] text-muted-foreground self-center"
+                              title={titleKeywords.slice(3).join(', ')}
+                            >
+                              +{titleKeywords.length - 3} more
+                            </span>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Canonical URL */}
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Canonical URL</label>
+                      <div className="text-[11px] text-muted-foreground">
+                        Auto-generated
+                      </div>
+                    </div>
+                    <div className="relative">
+                      <input
+                        type="text"
+                        value={canonicalUrl}
+                        readOnly
+                        className="flex h-10 w-full rounded-md border border-input bg-muted/50 px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                        placeholder="https://www.100acress.com/your-blog-slug"
+                      />
+                      {canonicalUrl && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            navigator.clipboard.writeText(canonicalUrl);
+                            showToast.success('Canonical URL copied!');
+                          }}
+                          className="absolute right-3 bottom-2.5 text-muted-foreground hover:text-foreground transition-colors"
+                          title="Copy canonical URL"
+                        >
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                          </svg>
+                        </button>
+                      )}
+                    </div>
+                    {canonicalUrl && (
+                      <div className="text-[10px] text-green-600 dark:text-green-500">
+                        ✓ Canonical URL ready for SEO
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Featured Image */}
+                <div className="space-y-6 pt-4 border-t">
+                  {/* Featured Image Section */}
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2">
+                      <ImageIcon className="w-5 h-5 text-primary" />
+                      <label className="text-base font-semibold leading-none tracking-tight">Featured Image </label>
+                    </div>
+
+                    {/* Two-column layout */}
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                      {/* Image Preview */}
+                      <div className="relative rounded-md overflow-hidden border border-input bg-background shadow-sm">
+                        {frontImagePreview ? (
+                          <div className="relative group h-full">
+                            <img
+                              src={frontImagePreview}
+                              alt="Featured preview"
+                              className="w-full h-48 object-cover transition-opacity"
+                              onError={(e) => {
+                                if (!frontTriedProxy) {
+                                  const src = originalFrontUrlRef.current || frontImagePreview;
+                                  const stripProto = (u) => (u || '').replace(/^https?:\/\//i, '');
+                                  const proxied = `https://images.weserv.nl/?url=${encodeURIComponent(stripProto(src))}`;
+                                  setFrontImagePreview(proxied);
+                                  setFrontTriedProxy(true);
+                                } else {
+                                  setFrontImageError(true);
+                                }
+                              }}
+                            />
+                            {frontImageError && (
+                              <div className="absolute bottom-2 left-2 right-2 bg-background/95 backdrop-blur rounded p-2 border border-destructive/20 text-xs flex flex-wrap gap-2 items-center justify-between shadow-sm">
+                                <span className="text-destructive font-medium">Image failed to load</span>
+                                <button
+                                  type="button"
+                                  className="px-2 py-1 rounded-md bg-destructive/10 text-destructive hover:bg-destructive/20 transition-colors text-xs font-semibold"
+                                  onClick={() => {
+                                    setFrontImageError(false);
+                                    setFrontImagePreview(originalFrontUrlRef.current || frontImagePreview);
+                                  }}
+                                >
+                                  Retry
+                                </button>
+                              </div>
+                            )}
+                          </div>
+                        ) : (
+                          <div className="h-48 flex items-center justify-center text-muted-foreground text-sm bg-muted/30">
+                            No image selected
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Upload Controls */}
+                      <div className="space-y-3">
+                        <div
+                          className="relative flex flex-col items-center justify-center border-2 border-dashed border-muted-foreground/25 rounded-lg p-6 text-center hover:bg-muted/50 hover:border-primary/50 transition-colors h-[134px]"
+                          onDragOver={onFeaturedDragOver}
+                          onDrop={onFeaturedDrop}
+                        >
+                          <input
+                            type="file"
+                            id="featured-image-upload"
+                            accept="image/webp"
+                            onChange={handleFileChange}
+                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                          />
+                          <div className="space-y-2">
+                            <UploadCloud className="w-8 h-8 mx-auto text-muted-foreground/70" />
+                            <div className="text-sm font-medium">
+                              {frontImagePreview ? 'Click to change image' : 'Upload WebP image'}
+                            </div>
+                            <div className="text-xs text-muted-foreground">
+                              {frontImagePreview ? 'or drag & drop here' : 'or paste URL below'}
+                            </div>
+                          </div>
+                        </div>
+
+                        <input
+                          type="text"
+                          className="flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                          placeholder="Paste WebP URL"
+                          onPaste={async (e) => {
+                            try {
+                              const pastedText = e.clipboardData.getData('text/plain');
+                              if (pastedText) {
+                                e.preventDefault();
+                                handleImageUrlChange({ target: { value: pastedText } });
+                              }
+                            } catch (err) {
+                              console.error('Error handling paste:', err);
+                            }
+                          }}
+                          onChange={handleImageUrlChange}
+                          value={frontImage || ''}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Blog Category Section */}
+                  <div className="space-y-3 pt-4 border-t">
+                    <div className="flex items-center gap-2">
+                      <Tag className="w-5 h-5 text-primary" />
+                      <label className="text-base font-semibold leading-none tracking-tight">Category</label>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                      <select
+                        className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                        value={categories}
+                        onChange={handleEditCategory}
+                      >
+                        <option value="" disabled className="text-muted-foreground">Select category</option>
+                        {categoryList.map((c) => (
+                          <option key={c} value={c}>{c}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* Related Projects Section */}
+                  <div className="space-y-4 pt-4 border-t">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <LinkIcon className="w-5 h-5 text-primary" />
+                        <span className="text-base font-semibold leading-none tracking-tight">Related Projects</span>
+                        <span className="text-xs text-muted-foreground">({relatedProjects.length}/5)</span>
+                      </div>
+                      {autoSuggestEnabled && suggestedProjects.length > 0 && (
+                        <button
+                          type="button"
+                          className="inline-flex items-center justify-center rounded-md text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80 h-7 px-3"
+                          onClick={() => {
+                            const toAdd = suggestedProjects.slice(0, Math.max(0, 5 - relatedProjects.length));
+                            toAdd.forEach(addRelatedProject);
+                          }}
+                          disabled={relatedProjects.length >= 5}
+                        >
+                          Add Top {Math.min(3, suggestedProjects.length)} Suggested
+                        </button>
+                      )}
+                    </div>
+
+                    {/* Suggestions grid */}
+                    {autoSuggestEnabled && suggestedProjects.length > 0 && (
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        {suggestedProjects.slice(0, 4).map((p, idx) => (
+                          <div key={`${p.project_url}-${idx}`} className="flex items-center justify-between p-2.5 bg-background border border-input rounded-md shadow-sm">
+                            <div className="flex items-center gap-3 min-w-0">
+                              {p.thumbnail && (
+                                <img
+                                  src={p.thumbnail}
+                                  alt=""
+                                  className="w-10 h-10 rounded-sm object-cover"
+                                  onError={(e) => e.target.style.display = 'none'}
+                                />
+                              )}
+                              <div className="min-w-0">
+                                <div className="text-sm font-medium text-foreground truncate">{p.projectName || 'Project'}</div>
+                                <div className="text-xs text-muted-foreground truncate">{p.builderName || p.city || ''}</div>
+                              </div>
+                            </div>
+                            <button
+                              type="button"
+                              className="inline-flex items-center justify-center rounded-md text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-7 px-3 ml-2 shrink-0"
+                              onClick={() => addRelatedProject(p)}
+                              disabled={relatedProjects.length >= 5}
+                            >
+                              Add
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Project search */}
+                    <div className="relative">
+                      <input
+                        type="text"
+                        value={projectSearchTerm}
+                        onChange={(e) => setProjectSearchTerm(e.target.value)}
+                        placeholder="Search projects..."
+                        className="flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                      />
+                      {projectSearchTerm && (
+                        <button
+                          type="button"
+                          onClick={() => setProjectSearchTerm('')}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                          title="Clear"
+                        >
+                          <X className="w-4 h-4" />
+                        </button>
+                      )}
+                    </div>
+
+                    {/* Project dropdown */}
+                    <div className="relative">
+                      <select
+                        className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 appearance-none"
+                        onChange={(e) => {
+                          const idx = Number(e.target.value);
+                          const source = projectSearchTerm.trim().length >= 2 ? projectSearchResults : allProjects;
+                          const list = source
+                            .filter(project => !relatedProjects.find(rp => rp.project_url === project.project_url))
+                            .filter(p => {
+                              const q = (projectSearchTerm || '').trim().toLowerCase();
+                              if (!q) return true;
+                              const hay = `${p.projectName || ''} ${p.builderName || ''} ${p.location || ''} ${p.city || ''}`.toLowerCase();
+                              return hay.includes(q);
+                            });
+                          if (!Number.isNaN(idx) && list[idx]) addRelatedProject(list[idx]);
+                          e.target.value = '';
+                        }}
+                        defaultValue=""
+                      >
+                        <option value="" disabled className="text-muted-foreground">{isLoadingProjects ? 'Loading...' : 'Select a project to add'}</option>
+                        {(projectSearchTerm.trim().length >= 2 ? projectSearchResults : allProjects)
+                          .filter(project => !relatedProjects.find(rp => rp.project_url === project.project_url))
+                          .filter(p => {
+                            const q = (projectSearchTerm || '').trim().toLowerCase();
+                            if (!q) return true;
+                            const hay = `${p.projectName || ''} ${p.builderName || ''} ${p.location || ''} ${p.city || ''}`.toLowerCase();
+                            return hay.includes(q);
+                          })
+                          .map((p, idx) => (
+                            <option key={p.project_url || `${p.projectName}-${idx}`} value={idx}>
+                              {p.projectName || `Project ${idx + 1}`}
+                              {p.builderName ? ` — ${p.builderName}` : ''}
+                            </option>
+                          ))}
+                      </select>
+                      <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground">
+                        <ChevronDown className="w-4 h-4 opacity-50" />
+                      </div>
+                      {isLoadingProjects && (
+                        <div className="absolute right-10 top-1/2 -translate-y-1/2">
+                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Selected projects */}
+                    {relatedProjects.length > 0 && (
+                      <div className="space-y-2 mt-4">
+                        <div className="text-sm font-medium leading-none">Selected Projects ({relatedProjects.length}/5):</div>
+                        <div className="space-y-2">
+                          {relatedProjects.map((project, index) => (
+                            <div
+                              key={index}
+                              className="flex items-center justify-between p-3 bg-muted/30 border border-input rounded-md shadow-sm"
+                            >
+                              <div className="flex items-center gap-3 min-w-0">
+                                {project.thumbnail && (
+                                  <img
+                                    src={project.thumbnail}
+                                    alt=""
+                                    className="w-10 h-10 object-cover rounded-sm"
+                                    onError={(e) => e.target.style.display = 'none'}
+                                  />
+                                )}
+                                <div className="min-w-0">
+                                  <p className="text-sm font-medium text-foreground truncate">
+                                    {project.projectName || 'Project'}
+                                  </p>
+                                  <p className="text-xs text-muted-foreground truncate font-mono">
+                                    {project.project_url?.replace(/^https?:\/\//, '')}
+                                  </p>
+                                </div>
+                              </div>
+                              <button
+                                type="button"
+                                onClick={() => removeRelatedProject(project.project_url)}
+                                className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors hover:bg-destructive/10 hover:text-destructive h-8 w-8 ml-2 shrink-0"
+                                title="Remove"
+                              >
+                                <X className="w-4 h-4" />
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Editor Controls */}
+                  <div className="flex flex-wrap items-center gap-2 pt-4 border-t">
                     <button
                       type="button"
-                      onClick={()=>setFaqs(prev=>[...prev, { question:'', answer:'' }])}
-                      className="px-4 py-2 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700"
+                      onClick={uploadInlineImage}
+                      className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-9 px-4 gap-1.5"
+                      title="Upload image and insert at cursor"
                     >
-                      Add FAQ
+                      <Upload className="w-4 h-4" />
+                      Insert Image
                     </button>
+
                     <button
                       type="button"
-                      onClick={()=>{
-                        const topic = (title || categories || 'real estate').toLowerCase();
-                        const base = [
-                          { q: `What is ${topic}?`, a: `An overview of ${topic} and why it matters.` },
-                          { q: `How to choose the best ${topic}?`, a: `Key factors to consider when selecting ${topic}.` },
-                          { q: `Common mistakes in ${topic}`, a: `Avoid these pitfalls when dealing with ${topic}.` },
-                        ];
-                        setFaqs(prev => [...prev, ...base]);
-                        setCollapsedFaqs(prev => [...prev, false, false, false]);
-                      }}
-                      className="px-4 py-2 rounded-lg bg-emerald-600 text-white hover:bg-emerald-700 flex items-center gap-2"
+                      onClick={insertImageByUrl}
+                      className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-9 px-4 gap-1.5"
+                      title="Insert image by URL at cursor"
                     >
-                      <MessageSquare className="w-4 h-4" /> Add Suggested FAQs
+                      <ImageIcon className="w-4 h-4" />
+                      Insert from URL
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        const input = document.createElement('input');
+                        input.type = 'file';
+                        input.accept = 'image/webp';
+                        input.multiple = true;
+                        input.onchange = async () => {
+                          const files = Array.from(input.files || []).slice(0, 4);
+                          if (!files.length) return;
+
+                          // STRICT: Check all files are WebP
+                          const nonWebpFiles = files.filter(file => file.type !== 'image/webp');
+                          if (nonWebpFiles.length > 0) {
+                            showToast.error('Only WebP images are allowed');
+                            return;
+                          }
+
+                          showToast.loading('Uploading...', { id: 'gridUpload' });
+                          try {
+                            const urls = [];
+                            for (const f of files) {
+                              const fd = new FormData();
+                              fd.append('image', f);
+                              const r = await api.post(`/blog/upload-image`, fd);
+                              const u = r?.data?.url || r?.data?.data?.url || r?.data?.imageUrl || '';
+                              if (u) urls.push(u);
+                            }
+                            const cardStyle = 'background:hsl(var(--background));border:1px solid hsl(var(--border));border-radius:var(--radius);overflow:hidden;display:flex;flex-direction:column;';
+                            const imgStyle = `width:100%;height:${gridSizeToPx[gridImgSize]}px;object-fit:cover;display:block;`;
+                            const cards = urls.map((u, idx) =>
+                              `<figure class="grid-card" style="${cardStyle}">
+              <img style="${imgStyle}" src="${u}" alt="" />
+              ${gridWithTitles ? `<figcaption style="padding:4px 6px;font-size:12px;color:hsl(var(--muted-foreground));text-align:center;" contenteditable="true">Title ${idx + 1}</figcaption>` : ''}
+            </figure>`
+                            ).join('');
+                            const gridCols = gridLayout === 'lastLarge' ? '1fr 1fr 1fr 1.6fr' : 'repeat(4, 1fr)';
+                            const inner = `<div class="img-grid-4 layout-${gridLayout}" style="display:grid;grid-template-columns:${gridCols};gap:8px;margin:8px 0;">${cards}</div>`;
+                            const html = gridWithTitles
+                              ? `<section class="img-grid-4-frame" style="border:1px solid hsl(var(--border));border-radius:var(--radius);padding:8px;background:hsl(var(--muted)/0.3);">
+                <div class="grid-title" style="text-align:center;font-weight:600;margin:0 0 8px;font-size:13px;color:hsl(var(--foreground));" contenteditable="true">Grid Title</div>
+                ${inner}
+              </section>`
+                              : `${inner}<p><br/></p>`;
+                            const quill = safeGetQuill();
+                            if (quill) {
+                              const sel = quill.getSelection(true) || { index: quill.getLength(), length: 0 };
+                              quill.clipboard.dangerouslyPasteHTML(sel.index, html, 'user');
+                              quill.setSelection(sel.index + 1, 0);
+                            }
+                            showToast.success('Inserted image grid');
+                          } catch (err) {
+                            console.error(err);
+                            showToast.error('Failed to insert grid');
+                          } finally {
+                            showToast.dismiss('gridUpload');
+                          }
+                        };
+                        input.click();
+                      }}
+                      className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-9 px-4"
+                      title="Insert 4 images as a grid"
+                    >
+                      Insert 4-Image Grid
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setBwMode(v => !v)}
+                      className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 px-4 border border-input bg-background shadow-sm"
+                      title="Toggle Black & White mode for images"
+                    >
+                      {bwMode ? 'Color Mode' : 'B/W Mode'}
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const makeCell = (text = '') => ({ text, link: '', bgColor: '', textColor: '' });
+                        const newTable = {
+                          type: 'table',
+                          heading: '',
+                          rows: [
+                            [makeCell('Header 1'), makeCell('Header 2'), makeCell('Header 3')],
+                            [makeCell(''), makeCell(''), makeCell('')],
+                          ]
+                        };
+                        setTableBlocks([...tableBlocks, newTable]);
+                        showToast.success('Table builder added');
+                      }}
+                      className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-9 px-4 gap-1.5 ml-auto"
+                      title="Add Table Builder"
+                    >
+                      <Plus className="w-4 h-4" />
+                      Add Table
+                    </button>
+                  </div>
+
+                  {/* Content Editor */}
+                  <div className="space-y-4 pt-4 border-t">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-2">
+                        <Edit3 className="w-5 h-5 text-primary" />
+                        <label className="text-base font-semibold leading-none tracking-tight">
+                          Blog Content
+                        </label>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setEditorFullscreen(true)}
+                        className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-8 px-3 gap-1.5"
+                        title="Open editor in full screen"
+                      >
+                        <Maximize2 className="w-3.5 h-3.5" />
+                        <span className="hidden sm:inline">Full screen</span>
+                      </button>
+                    </div>
+
+                    {/* Table Blocks Section */}
+                    {tableBlocks.length > 0 && (
+                      <div className="space-y-6 mb-4">
+                        {tableBlocks.map((block, index) => (
+                          <div key={index} className="relative group">
+                            <TableBuilder
+                              initialData={block}
+                              onChange={(updatedTables) => {
+                                const updatedBlocks = [...tableBlocks];
+                                updatedBlocks[index] = { ...block, ...updatedTables[0] };
+                                setTableBlocks(updatedBlocks);
+                              }}
+                              onRemove={() => {
+                                const updatedBlocks = tableBlocks.filter((_, i) => i !== index);
+                                setTableBlocks(updatedBlocks);
+                              }}
+                              onInsert={(tableData) => {
+                                const quill = safeGetQuill();
+                                if (quill) {
+                                  const sel = quill.getSelection(true) || { index: quill.getLength(), length: 0 };
+                                  const insertAt = sel.index;
+                                  const html = generateTableHTML(tableData);
+
+                                  // Insert padding newlines and paste HTML
+                                  quill.insertText(insertAt, '\n', 'user');
+                                  quill.clipboard.dangerouslyPasteHTML(insertAt + 1, html);
+                                  quill.insertText(insertAt + 2, '\n', 'user');
+                                  quill.setSelection(insertAt + 3, 0);
+
+                                  showToast.success('Table inserted into editor!');
+                                } else {
+                                  showToast.error('Editor not ready');
+                                }
+                              }}
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {!editorFullscreen && (
+                      <div className="relative">
+                        <div className="quill-box border border-input rounded-md mb-4 bg-background shadow-sm overflow-hidden">
+                          <div className="quill-editor-container editor-resize">
+                            <ReactQuill
+                              ref={quillRef}
+                              theme="snow"
+                              value={description}
+                              onChange={handleQuillChange}
+                              className=""
+                              modules={quillModules}
+                              formats={quillFormats}
+                              placeholder="Write something amazing..."
+                            />
+                          </div>
+                        </div>
+
+                        {showTableBuilder && (
+                          <div className="mt-6 mb-8 border border-primary/20 rounded-xl p-4 bg-primary/5 shadow-md">
+                            <div className="flex justify-between items-center mb-4">
+                              <div className="flex items-center gap-2">
+                                <div className="w-8 h-8 bg-primary text-primary-foreground rounded-lg flex items-center justify-center">
+                                  <Monitor className="w-4 h-4" />
+                                </div>
+                                <h3 className="text-lg font-semibold tracking-tight text-foreground">Table Configuration</h3>
+                              </div>
+                              <button
+                                type="button"
+                                onClick={() => setShowTableBuilder(false)}
+                                className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground h-8 w-8"
+                              >
+                                <X className="w-4 h-4" />
+                              </button>
+                            </div>
+                            <TableBuilder
+                              initialData={currentTableData}
+                              onChange={(updatedTables) => handleTableChange(updatedTables?.[0] || updatedTables)}
+                              onRemove={() => {
+                                setShowTableBuilder(false);
+                                setCurrentTableData(null);
+                                setDescription(description.replace(/\[TABLE_PLACEHOLDER_\d+\]/g, ''));
+                              }}
+                              onInsert={(tableData) => {
+                                const quill = safeGetQuill();
+                                if (quill) {
+                                  const sel = quill.getSelection(true) || { index: quill.getLength(), length: 0 };
+                                  const insertAt = sel.index;
+                                  const html = generateTableHTML(tableData);
+
+                                  // Insert padding newlines and paste HTML
+                                  quill.insertText(insertAt, '\n', 'user');
+                                  quill.clipboard.dangerouslyPasteHTML(insertAt + 1, html);
+                                  quill.insertText(insertAt + 2, '\n', 'user');
+                                  quill.setSelection(insertAt + 3, 0);
+
+                                  // Remove placeholder to avoid double insertion on save
+                                  setDescription(prev => prev.replace(/\[TABLE_PLACEHOLDER_\d+\]/g, ''));
+                                  setShowTableBuilder(false);
+                                  setCurrentTableData(null);
+
+                                  showToast.success('Table inserted into editor!');
+                                }
+                              }}
+                            />
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+
+                  {editorFullscreen && (
+                    <div className="fixed inset-0 z-[5000] bg-background editor-fs-wrap">
+                      <div className="flex items-center justify-between px-4 py-3 border-b border-border bg-card text-card-foreground shadow-sm">
+                        <div className="font-semibold tracking-tight truncate">Editing: {title || 'Untitled'}</div>
+                        <div className="flex items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={() => setEditorFullscreen(false)}
+                            className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-9 px-4 gap-2"
+                            title="Exit full screen"
+                          >
+                            <Minimize2 className="w-4 h-4" />
+                            <span className="hidden sm:inline">Exit Full Screen</span>
+                          </button>
+                        </div>
+                      </div>
+                      <div className="editor-fs bg-background">
+                        <ReactQuill
+                          theme="snow"
+                          value={description}
+                          onChange={handleQuillChange}
+                          className=""
+                          modules={quillModules}
+                          formats={quillFormats}
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Live Preview */}
+                  {showPreview && (
+                    <div className="bg-card text-card-foreground border border-border rounded-xl p-4 md:p-6 shadow-sm mt-6">
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center gap-2">
+                          <span className="text-base font-semibold leading-none tracking-tight">Live Preview</span>
+                          <span className="text-xs text-muted-foreground hidden sm:inline-block">(updates in real-time)</span>
+                        </div>
+                        <div className="flex items-center gap-2 bg-muted/50 p-1 rounded-lg">
+                          <button type="button" onClick={() => setPreviewMode('desktop')} className={`inline-flex items-center justify-center rounded-md text-sm font-medium transition-all h-8 px-3 ${previewMode === 'desktop' ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}>
+                            <Monitor className="w-4 h-4 sm:mr-1.5" /> <span className="hidden sm:inline">Desktop</span>
+                          </button>
+                          <button type="button" onClick={() => setPreviewMode('mobile')} className={`inline-flex items-center justify-center rounded-md text-sm font-medium transition-all h-8 px-3 ${previewMode === 'mobile' ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}>
+                            <Smartphone className="w-4 h-4 sm:mr-1.5" /> <span className="hidden sm:inline">Mobile</span>
+                          </button>
+                        </div>
+                      </div>
+                      <div className="flex justify-center bg-muted/30 rounded-lg p-4 sm:p-8 min-h-[400px]">
+                        <div className={`bg-background rounded-xl border border-input shadow-sm overflow-hidden transition-all duration-300 w-full ${previewMode === 'mobile' ? 'max-w-[390px] ring-8 ring-muted' : 'max-w-[1024px]'}`}>
+                          {/* Featured image */}
+                          {frontImagePreview && (
+                            <img src={frontImagePreview} alt="preview" className="w-full h-48 sm:h-72 object-cover" />
+                          )}
+                          <div className="p-5 sm:p-8">
+                            <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight lg:text-5xl mb-3 text-foreground">{title || 'Your blog title'}</h1>
+                            <div className="text-muted-foreground text-sm mb-8 font-medium">/{slug || 'my-custom-slug'}</div>
+                            <article
+                              className="prose prose-slate dark:prose-invert max-w-none prose-img:rounded-lg prose-headings:scroll-mt-24 blog-content-area"
+                              dangerouslySetInnerHTML={{
+                                __html: finalizeContent(description) || '<p class="text-muted-foreground">Start writing content...</p>'
+                              }}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* FAQ Section (collapsible + drag reorder) */}
+                  <div className="space-y-4 pt-4 border-t">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-2">
+                        <label className="text-base font-semibold leading-none tracking-tight">FAQs</label>
+                        <span className="text-xs text-muted-foreground">(Optional)</span>
+                      </div>
+                      <label className="inline-flex items-center gap-2 text-sm font-medium leading-none cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={enableFAQ}
+                          onChange={(e) => setEnableFAQ(e.target.checked)}
+                          className="rounded border-input text-primary focus:ring-ring shrink-0 h-4 w-4"
+                        />
+                        Enable FAQ section
+                      </label>
+                    </div>
+
+                    {enableFAQ && (
+                      <div className="space-y-4">
+                        {faqs.map((f, idx) => (
+                          <div key={idx} className="bg-background border border-input rounded-xl shadow-sm overflow-hidden"
+                            draggable
+                            onDragStart={() => { dragIndexRef.current = idx; }}
+                            onDragOver={(e) => e.preventDefault()}
+                            onDrop={() => {
+                              const from = dragIndexRef.current;
+                              const to = idx;
+                              if (from === null || from === to) return;
+                              setFaqs(prev => {
+                                const arr = [...prev];
+                                const [m] = arr.splice(from, 1);
+                                arr.splice(to, 0, m);
+                                return arr;
+                              });
+                              setCollapsedFaqs(prev => {
+                                const arr = [...prev];
+                                const [m] = arr.splice(from, 1);
+                                arr.splice(to, 0, m);
+                                return arr;
+                              });
+                            }}>
+                            <div className="flex items-center justify-between p-3 border-b border-border bg-muted/20">
+                              <div className="flex items-center gap-2">
+                                <span className="cursor-move text-muted-foreground hover:text-foreground transition-colors px-1" title="Drag to reorder">⋮⋮</span>
+                                <span className="text-sm font-semibold tracking-tight">FAQ #{idx + 1}</span>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <button type="button" className="text-xs font-medium text-muted-foreground hover:text-foreground transition-colors" onClick={() => setCollapsedFaqs(prev => {
+                                  const arr = [...prev];
+                                  arr[idx] = !arr[idx];
+                                  return arr;
+                                })}>{collapsedFaqs[idx] ? 'Expand' : 'Collapse'}</button>
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    setFaqs(prev => prev.filter((_, i) => i !== idx));
+                                    setCollapsedFaqs(prev => prev.filter((_, i) => i !== idx));
+                                  }}
+                                  className="inline-flex items-center justify-center rounded-md text-xs font-medium transition-colors hover:bg-destructive/10 hover:text-destructive h-7 px-2"
+                                  title="Remove FAQ"
+                                >
+                                  Remove
+                                </button>
+                              </div>
+                            </div>
+                            {!collapsedFaqs[idx] && (
+                              <div className="p-4 bg-card text-card-foreground">
+                                <div className="grid grid-cols-1 lg:grid-cols-10 gap-4 items-start">
+                                  <div className="lg:col-span-4 space-y-1.5">
+                                    <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Question</label>
+                                    <input
+                                      type="text"
+                                      value={f.question}
+                                      onChange={(e) => setFaqs(prev => prev.map((x, i) => i === idx ? { ...x, question: e.target.value } : x))}
+                                      className="flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                                      placeholder="Enter question"
+                                    />
+                                  </div>
+                                  <div className="lg:col-span-6 space-y-1.5">
+                                    <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Answer</label>
+                                    <textarea
+                                      rows={3}
+                                      value={f.answer}
+                                      onChange={(e) => setFaqs(prev => prev.map((x, i) => i === idx ? { ...x, answer: e.target.value } : x))}
+                                      className="flex min-h-[80px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                                      placeholder="Enter answer"
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        ))}
+
+                        <div className="flex justify-between">
+                          <button
+                            type="button"
+                            onClick={() => setFaqs(prev => [...prev, { question: '', answer: '' }])}
+                            className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80 h-9 px-4"
+                          >
+                            <Plus className="w-4 h-4 mr-2" /> Add FAQ
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const topic = (title || categories || 'real estate').toLowerCase();
+                              const base = [
+                                { q: `What is ${topic}?`, a: `An overview of ${topic} and why it matters.` },
+                                { q: `How to choose the best ${topic}?`, a: `Key factors to consider when selecting ${topic}.` },
+                                { q: `Common mistakes in ${topic}`, a: `Avoid these pitfalls when dealing with ${topic}.` },
+                              ];
+                              setFaqs(prev => [...prev, ...base]);
+                              setCollapsedFaqs(prev => [...prev, false, false, false]);
+                            }}
+                            className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80 h-9 px-4"
+                          >
+                            <MessageSquare className="w-4 h-4 mr-2" /> Add Suggested FAQs
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Schema/Structured Data Section */}
+                  <div className="space-y-4 pt-4 border-t">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-2">
+                        <label className="text-base font-semibold leading-none tracking-tight">Schema / Structured Data</label>
+                        <span className="text-xs text-muted-foreground">(Optional)</span>
+                        {enableSchema && (
+                          <div className="flex items-center space-x-2">
+                            {schemaSaving ? (
+                              <span className="flex items-center text-xs text-primary animate-pulse">
+                                <div className="w-3 h-3 border-2 border-primary border-t-transparent rounded-full animate-spin mr-1.5"></div>
+                                Auto-saving...
+                              </span>
+                            ) : schemaLastSaved ? (
+                              <span className="text-xs text-green-600 dark:text-green-500 flex items-center gap-1">
+                                <Check className="w-3 h-3" /> Saved {schemaLastSaved.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                              </span>
+                            ) : null}
+                          </div>
+                        )}
+                      </div>
+                      <label className="inline-flex items-center gap-2 text-sm font-medium leading-none cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={enableSchema}
+                          onChange={(e) => setEnableSchema(e.target.checked)}
+                          className="rounded border-input text-primary focus:ring-ring shrink-0 h-4 w-4"
+                        />
+                        Enable Schema
+                      </label>
+                    </div>
+
+                    {enableSchema && (
+                      <div className="space-y-4 bg-muted/40 border border-border rounded-xl p-4 shadow-sm">
+                        <div className="space-y-2">
+                          <label className="text-sm font-medium leading-none">Schema Type</label>
+                          <select
+                            value={schemaType}
+                            onChange={(e) => setSchemaType(e.target.value)}
+                            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                          >
+                            <option value="BlogPosting">Blog Posting</option>
+                            <option value="Article">Article</option>
+                            <option value="NewsArticle">News Article</option>
+                          </select>
+                        </div>
+
+                        <div className="space-y-2">
+                          <label className="text-sm font-medium leading-none">
+                            Custom JSON Properties
+                            <span className="text-[10px] text-muted-foreground ml-2 font-normal">(Advanced)</span>
+                          </label>
+                          <textarea
+                            value={customSchema}
+                            onChange={(e) => setCustomSchema(e.target.value)}
+                            placeholder='{"additionalProperty": "value"}'
+                            className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 font-mono"
+                            rows={3}
+                          />
+                          <p className="text-[11px] text-muted-foreground">
+                            Merge extra properties with the base JSON-LD schema.
+                          </p>
+                        </div>
+
+                        <div className="bg-primary/5 border border-primary/10 rounded-lg p-3">
+                          <p className="text-xs text-foreground/80 leading-relaxed">
+                            <strong className="text-primary">SEO Tip:</strong> Schema helps search engines understand your content.
+                            {enableSchema && (
+                              <span className="block mt-1 font-medium text-primary/70">
+                                This will auto-generate title, description, image, author, and dates.
+                              </span>
+                            )}
+                          </p>
+                        </div>
+
+                        {/* Real-time Schema Preview */}
+                        <div className="border border-input rounded-lg overflow-hidden bg-zinc-950 shadow-inner">
+                          <div className="flex items-center justify-between px-3 py-2 bg-zinc-900 border-b border-zinc-800">
+                            <h4 className="text-[11px] font-bold uppercase tracking-wider text-zinc-400">JSON-LD Output</h4>
+                            <div className="flex gap-2">
+                              <button
+                                type="button"
+                                onClick={manualSaveSchema}
+                                disabled={schemaSaving}
+                                className="inline-flex items-center justify-center rounded-md text-[10px] font-bold uppercase tracking-tight transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80 h-6 px-2.5"
+                              >
+                                {schemaSaving ? 'Saving...' : 'Save Draft'}
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const schema = generateSchema();
+                                  if (schema) {
+                                    navigator.clipboard.writeText(JSON.stringify(schema, null, 2));
+                                    showToast.success('Schema copied to clipboard!');
+                                  }
+                                }}
+                                className="inline-flex items-center justify-center rounded-md text-[10px] font-bold uppercase tracking-tight transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring bg-primary text-primary-foreground shadow hover:bg-primary/90 h-6 px-2.5"
+                              >
+                                Copy JSON
+                              </button>
+                            </div>
+                          </div>
+                          <div className="p-3 max-h-64 overflow-auto custom-scrollbar">
+                            <pre className="text-[11px] font-mono text-emerald-400/90 leading-relaxed">
+                              {JSON.stringify(generateSchema(), null, 2)}
+                            </pre>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Submit Area */}
+                  <div className="flex flex-col sm:flex-row justify-end items-center gap-3 pt-6 border-t mt-8">
+                    <button
+                      type="button"
+                      className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-10 px-4 w-full sm:w-auto"
+                      onClick={() => navigate('/blog/admin/list')}
+                    >
+                      Cancel
+                    </button>
+                    {!blogToEdit && (
+                      <button
+                        type="button"
+                        className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-10 px-4 w-full sm:w-auto"
+                        disabled={isSubmitting}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleSubmit(e, false);
+                        }}
+                      >
+                        <Save className="w-4 h-4 mr-2" />
+                        <span>{
+                          isSubmitting && !isPublished ? 'Saving...' :
+                            isPublished ? 'Save as Draft' : 'Save as Draft'
+                        }</span>
+                      </button>
+                    )}
+                    <button
+                      type="submit"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        handleSubmit(e, true);
+                      }}
+                      disabled={isSubmitting}
+                      className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-10 px-8 w-full sm:w-auto min-w-[140px]"
+                    >
+                      {isSubmitting && isPublished ? (
+                        <>
+                          <div className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin mr-2" />
+                          <span>{blogToEdit ? 'Updating...' : 'Publishing...'}</span>
+                        </>
+                      ) : (
+                        <>
+                          <Plus className="w-4 h-4 mr-2" />
+                          <span>{blogToEdit ? 'Update Blog' : 'Publish Blog'}</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+            {/* History modal */}
+            {showHistory && (
+              <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-[4000] flex items-center justify-center" onClick={() => setShowHistory(false)}>
+                <div className="bg-card text-card-foreground border border-border shadow-lg rounded-xl p-6 w-[92vw] max-w-md flex flex-col gap-4" onClick={(e) => e.stopPropagation()}>
+                  <div className="flex items-center justify-between">
+                    <div className="text-lg font-semibold leading-none tracking-tight">Draft History</div>
+                    <button className="text-muted-foreground hover:text-foreground rounded-sm opacity-70 transition-opacity hover:opacity-100" onClick={() => setShowHistory(false)}>
+                      <X className="w-5 h-5" />
+                    </button>
+                  </div>
+                  {historyList?.length ? (
+                    <div className="max-h-[60vh] overflow-auto flex flex-col gap-2">
+                      {historyList.map((h, i) => (
+                        <React.Fragment key={i}>
+                          <div className="flex items-center justify-between p-3 border border-border rounded-lg bg-muted/40 hover:bg-muted/80 transition-colors">
+                            <div className="text-sm min-w-0 pr-4">
+                              <div className="font-medium truncate">{h.title || 'Untitled'}</div>
+                              <div className="text-xs text-muted-foreground mt-0.5">{new Date(h.ts).toLocaleString()}</div>
+                            </div>
+                            <button className="inline-flex items-center justify-center rounded-md text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-8 px-3 shrink-0" onClick={() => {
+                              try {
+                                const raw = localStorage.getItem(draftKey);
+                                if (!raw) return;
+                                const s = JSON.parse(raw);
+                                setTitle(s.title || '');
+                                setDescription(s.description || '');
+                                setFrontImagePreview(s.frontImagePreview || '');
+                                setCategories(s.categories || '');
+                                setMetaTitle(s.metaTitle || '');
+                                setMetaDescription(s.metaDescription || '');
+                                setCanonicalUrl(s.canonicalUrl || '');
+                                setSlug(s.slug || '');
+                                setRelatedProjects(Array.isArray(s.relatedProjects) ? s.relatedProjects : []);
+                                setEnableFAQ(!!s.enableFAQ);
+                                setFaqs(Array.isArray(s.faqs) && s.faqs.length ? s.faqs : [{ question: '', answer: '' }]);
+                                setAuthor(s.author || author);
+                                setTableBlocks(Array.isArray(s.tableBlocks) ? s.tableBlocks : []);
+                                showToast.success('Draft restored');
+                                setShowHistory(false);
+                              } catch { }
+                            }}>Restore</button>
+                          </div>
+                        </React.Fragment>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-sm text-muted-foreground py-4 text-center">No history yet.</div>
+                  )}
+                </div>
+              </div>
+            )}
+            {lightboxUrl && (
+              <div
+                onClick={() => setLightboxUrl('')}
+                style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.85)', zIndex: 3000, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'zoom-out' }}
+              >
+                {/* eslint-disable-next-line jsx-a11y/alt-text */}
+                <img src={lightboxUrl} style={{ maxWidth: '95vw', maxHeight: '95vh', objectFit: 'contain', borderRadius: 8 }} />
+              </div>
+            )}
+
+            {/* SEO Analysis Modal */}
+            {showSeoModal && seoAnalysis && (
+              <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-[5000] flex items-center justify-center p-4" onClick={() => setShowSeoModal(false)}>
+                <div 
+                  className="bg-card text-card-foreground border border-border shadow-2xl rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  {/* Header */}
+                  <div className="p-6 border-b border-border bg-muted/30 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 bg-primary/10 rounded-lg">
+                        <History className="w-5 h-5 text-primary" />
+                      </div>
+                      <div>
+                        <h2 className="text-xl font-bold">SEO Audit Report</h2>
+                        <p className="text-xs text-muted-foreground">Real-time analysis of your blog content</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="text-right">
+                        <div className="text-2xl font-bold text-primary">{seoAnalysis.overall_score || 0}</div>
+                        <div className="text-xs text-muted-foreground">Overall Score</div>
+                      </div>
+                      <button 
+                        onClick={() => setShowSeoModal(false)}
+                        className="p-2 hover:bg-muted rounded-full transition-colors"
+                      >
+                        <X className="w-5 h-5" />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Tabs / Navigation (Simplified) */}
+                  <div className="flex border-b border-border px-6 bg-muted/10">
+                    <div className="py-3 border-b-2 border-primary text-sm font-medium text-primary cursor-default">Overview</div>
+                  </div>
+
+                  {/* Content */}
+                  <div className="flex-1 overflow-auto p-6 space-y-8">
+                    {/* Google Snippet Preview */}
+                    <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20 rounded-xl p-5 border border-blue-200 dark:border-blue-800">
+                      <h3 className="font-bold flex items-center gap-2 mb-4">
+                        <Search className="w-4 h-4 text-blue-600" />
+                        Google Search Preview
+                      </h3>
+                      <div className="bg-white dark:bg-gray-900 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
+                        <div className="text-xs text-blue-600 dark:text-blue-400 mb-1 truncate">
+                          {seoAnalysis?.overview?.url?.value || `https://www.100acress.com/blog/${slug || 'your-post-slug'}/`}
+                        </div>
+                        <div className="text-lg text-blue-800 dark:text-blue-300 font-semibold mb-1 hover:underline cursor-pointer">
+                          {seoAnalysis?.overview?.title?.value || title || 'Untitled Blog'}
+                        </div>
+                        <div className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2">
+                          {seoAnalysis?.overview?.description?.value || metaDescription || 'No meta description available. This is how your blog will appear in Google search results.'}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* LSI Keywords */}
+                    {seoAnalysis?.lsi_keywords && seoAnalysis.lsi_keywords.length > 0 && (
+                      <div className="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-950/20 dark:to-pink-950/20 rounded-xl p-5 border border-purple-200 dark:border-purple-800">
+                        <h3 className="font-bold flex items-center gap-2 mb-4">
+                          <Zap className="w-4 h-4 text-purple-600" />
+                          LSI Keywords (Semantic SEO)
+                        </h3>
+                        <div className="flex flex-wrap gap-2">
+                          {seoAnalysis.lsi_keywords.map((keyword, i) => (
+                            <span key={i} className="px-3 py-1 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-full text-xs font-medium">
+                              {keyword}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Focus Keyword Analysis */}
+                    {seoAnalysis?.focus_keyword?.keyword && (
+                      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20 rounded-xl p-5 border border-blue-200 dark:border-blue-800">
+                        <h3 className="font-bold flex items-center gap-2 mb-4">
+                          <Target className="w-4 h-4 text-blue-600" />
+                          Focus Keyword Analysis
+                        </h3>
+                        <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+                          <div className={`text-center p-3 rounded-lg border ${seoAnalysis.focus_keyword.checks.in_title ? 'bg-green-50 border-green-200 text-green-700' : 'bg-red-50 border-red-200 text-red-700'}`}>
+                            <div className="text-xs font-semibold">In Title</div>
+                            <div className="text-lg">{seoAnalysis.focus_keyword.checks.in_title ? '✓' : '✗'}</div>
+                          </div>
+                          <div className={`text-center p-3 rounded-lg border ${seoAnalysis.focus_keyword.checks.in_meta_description ? 'bg-green-50 border-green-200 text-green-700' : 'bg-red-50 border-red-200 text-red-700'}`}>
+                            <div className="text-xs font-semibold">In Meta</div>
+                            <div className="text-lg">{seoAnalysis.focus_keyword.checks.in_meta_description ? '✓' : '✗'}</div>
+                          </div>
+                          <div className={`text-center p-3 rounded-lg border ${seoAnalysis.focus_keyword.checks.in_url ? 'bg-green-50 border-green-200 text-green-700' : 'bg-red-50 border-red-200 text-red-700'}`}>
+                            <div className="text-xs font-semibold">In URL</div>
+                            <div className="text-lg">{seoAnalysis.focus_keyword.checks.in_url ? '✓' : '✗'}</div>
+                          </div>
+                          <div className={`text-center p-3 rounded-lg border ${seoAnalysis.focus_keyword.checks.in_content ? 'bg-green-50 border-green-200 text-green-700' : 'bg-red-50 border-red-200 text-red-700'}`}>
+                            <div className="text-xs font-semibold">In Content</div>
+                            <div className="text-lg">{seoAnalysis.focus_keyword.checks.in_content ? '✓' : '✗'}</div>
+                          </div>
+                          <div className={`text-center p-3 rounded-lg border ${0.5 <= seoAnalysis.focus_keyword.checks.density <= 2.5 ? 'bg-green-50 border-green-200 text-green-700' : 'bg-amber-50 border-amber-200 text-amber-700'}`}>
+                            <div className="text-xs font-semibold">Density</div>
+                            <div className="text-lg">{seoAnalysis.focus_keyword.checks.density}%</div>
+                          </div>
+                        </div>
+                        <div className="mt-3 text-right">
+                          <span className="text-sm font-semibold text-blue-600">Score: {seoAnalysis.focus_keyword.score}/100</span>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Readability Analysis */}
+                    <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20 rounded-xl p-5 border border-green-200 dark:border-green-800">
+                      <h3 className="font-bold flex items-center gap-2 mb-4">
+                        <BookOpen className="w-4 h-4 text-green-600" />
+                        Readability Analysis
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <div className="text-sm text-muted-foreground mb-1">Flesch Reading Ease Score</div>
+                          <div className="text-2xl font-bold text-green-600">{seoAnalysis?.readability?.flesch_score || 0}</div>
+                          <div className="text-sm text-muted-foreground">{seoAnalysis?.readability?.status || 'Unknown'}</div>
+                        </div>
+                        <div className="flex items-center justify-center">
+                          <div className="relative w-32 h-32">
+                            <svg className="transform -rotate-90 w-32 h-32">
+                              <circle cx="64" cy="64" r="56" stroke="currentColor" strokeWidth="8" fill="none" className="text-green-200"></circle>
+                              <circle cx="64" cy="64" r="56" stroke="currentColor" strokeWidth="8" fill="none" strokeDasharray={`${2 * Math.PI * 56}`} strokeDashoffset={`${2 * Math.PI * 56 * (1 - (seoAnalysis?.readability?.score || 0) / 100)}`} className="text-green-600 transition-all duration-500"></circle>
+                            </svg>
+                            <div className="absolute inset-0 flex items-center justify-center">
+                                      <span className="text-xl font-bold text-green-600">{seoAnalysis?.readability?.score || 0}</span>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                    {/* Top Stats */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      {/* Title Audit */}
+                      <div className="bg-muted/30 rounded-xl p-5 border border-border">
+                        <div className="flex items-center justify-between mb-4">
+                          <div className="flex items-center gap-2">
+                            <FileText className="w-4 h-4 text-primary" />
+                            <span className="font-semibold">Title</span>
+                          </div>
+                          <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${seoAnalysis?.overview?.title?.status === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                            {seoAnalysis?.overview?.title?.message || 'No title'}
+                          </span>
+                        </div>
+                        <p className="text-sm text-foreground break-words">{seoAnalysis?.overview?.title?.value || 'Missing Title'}</p>
+                      </div>
+
+                      {/* Description Audit */}
+                      <div className="bg-muted/30 rounded-xl p-5 border border-border">
+                        <div className="flex items-center justify-between mb-4">
+                          <div className="flex items-center gap-2">
+                            <MessageSquare className="w-4 h-4 text-primary" />
+                            <span className="font-semibold">Description</span>
+                          </div>
+                          <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${seoAnalysis?.overview?.description?.status === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                            {seoAnalysis?.overview?.description?.message || 'No description'}
+                          </span>
+                        </div>
+                        <p className="text-sm text-foreground break-words line-clamp-2">{seoAnalysis?.overview?.description?.value || 'Missing Meta Description'}</p>
+                      </div>
+
+                      {/* URL Audit */}
+                      <div className="bg-muted/30 rounded-xl p-5 border border-border">
+                        <div className="flex items-center justify-between mb-4">
+                          <div className="flex items-center gap-2">
+                            <LinkIcon className="w-4 h-4 text-primary" />
+                            <span className="font-semibold">URL</span>
+                          </div>
+                          <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${seoAnalysis?.overview?.url?.status === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                            {seoAnalysis?.overview?.url?.message || 'No URL'}
+                          </span>
+                        </div>
+                        <p className="text-xs font-mono text-muted-foreground break-all">{seoAnalysis?.overview?.url?.value || 'Missing URL'}</p>
+                      </div>
+
+                      {/* Canonical Audit */}
+                      <div className="bg-muted/30 rounded-xl p-5 border border-border">
+                        <div className="flex items-center justify-between mb-4">
+                          <div className="flex items-center gap-2">
+                            <Tag className="w-4 h-4 text-primary" />
+                            <span className="font-semibold">Canonical</span>
+                          </div>
+                          <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${seoAnalysis?.overview?.canonical?.status === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                            {seoAnalysis?.overview?.canonical?.message || 'No canonical'}
+                          </span>
+                        </div>
+                        <p className="text-xs font-mono text-muted-foreground break-all">{seoAnalysis?.overview?.canonical?.value || 'Missing canonical'}</p>
+                      </div>
+                    </div>
+
+                    {/* Detailed Analysis */}
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                      {/* Headings */}
+                      <div className="lg:col-span-1 space-y-4">
+                        <h3 className="font-bold flex items-center gap-2">
+                          <FileText className="w-4 h-4 text-primary" />
+                          Headings ({seoAnalysis?.headings?.length || 0})
+                        </h3>
+                        <div className="bg-muted/20 rounded-xl border border-border overflow-hidden divide-y divide-border">
+                          {seoAnalysis?.headings && seoAnalysis.headings.length > 0 ? seoAnalysis.headings.map((h, i) => (
+                            <div key={i} className="p-3 text-xs flex gap-3">
+                              <span className="font-bold text-primary shrink-0">{h.type}</span>
+                              <span className="text-foreground line-clamp-2">{h.text}</span>
+                            </div>
+                          )) : (
+                            <div className="p-4 text-center text-xs text-muted-foreground">No headings found</div>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Images & Links */}
+                      <div className="lg:col-span-2 space-y-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          {/* Images Summary */}
+                          <div className="space-y-4">
+                            <h3 className="font-bold flex items-center gap-2 text-sm">
+                              <ImageIcon className="w-4 h-4 text-primary" />
+                              Images ({seoAnalysis?.images?.total || 0})
+                            </h3>
+                            <div className="bg-muted/20 rounded-xl border border-border p-4">
+                              <div className="flex items-center justify-between text-xs mb-2">
+                                <span>Missing Alt Tags</span>
+                                <span className={(seoAnalysis?.images?.missing_alt || 0) > 0 ? "text-red-600 font-bold" : "text-green-600 font-bold"}>
+                                  {seoAnalysis?.images?.missing_alt || 0}
+                                </span>
+                              </div>
+                              <div className="w-full bg-muted rounded-full h-1.5 overflow-hidden">
+                                <div 
+                                  className="h-full bg-red-500 transition-all" 
+                                  style={{ width: `${((seoAnalysis?.images?.missing_alt || 0) / (seoAnalysis?.images?.total || 1)) * 100}%` }}
+                                />
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Links Summary */}
+                          <div className="space-y-4">
+                            <h3 className="font-bold flex items-center gap-2 text-sm">
+                              <LinkIcon className="w-4 h-4 text-primary" />
+                              Links ({seoAnalysis?.links?.total || 0})
+                            </h3>
+                            <div className="bg-muted/20 rounded-xl border border-border p-4 flex justify-between gap-4">
+                              <div className="text-center flex-1">
+                                <div className="text-lg font-bold text-primary">{seoAnalysis?.links?.internal || 0}</div>
+                                <div className="text-[10px] text-muted-foreground uppercase font-semibold">Internal</div>
+                              </div>
+                              <div className="w-px bg-border self-stretch" />
+                              <div className="text-center flex-1">
+                                <div className="text-lg font-bold text-primary">{seoAnalysis?.links?.external || 0}</div>
+                                <div className="text-[10px] text-muted-foreground uppercase font-semibold">External</div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Word Count */}
+                        <div className="bg-primary/5 border border-primary/20 rounded-xl p-4 flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <div className="p-2 bg-primary/10 rounded-lg">
+                              <FileText className="w-4 h-4 text-primary" />
+                            </div>
+                            <div>
+                              <div className="text-sm font-bold">{seoAnalysis?.content?.wordCount || 0} Words</div>
+                              <p className="text-[10px] text-muted-foreground">Estimated reading time: {Math.ceil((seoAnalysis?.content?.wordCount || 0) / 200)} min</p>
+                            </div>
+                          </div>
+                          <span className={`px-2 py-1 rounded text-[10px] font-bold ${seoAnalysis?.content?.status === 'success' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'}`}>
+                            {seoAnalysis?.content?.status === 'success' ? 'GOOD LENGTH' : 'THIN CONTENT'}
+                          </span>
+                        </div>
+
+                        {/* H1 Validation */}
+                        <div className={`rounded-xl p-4 border ${seoAnalysis?.h1_validation?.status === 'success' ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'}`}>
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                              <div className={`p-2 rounded-lg ${seoAnalysis?.h1_validation?.status === 'success' ? 'bg-green-100' : 'bg-red-100'}`}>
+                                <FileText className={`w-4 h-4 ${seoAnalysis?.h1_validation?.status === 'success' ? 'text-green-600' : 'text-red-600'}`} />
+                              </div>
+                              <div>
+                                <div className="text-sm font-bold">H1 Tags</div>
+                                <p className="text-[10px] text-muted-foreground">{seoAnalysis?.h1_validation?.message || 'No H1 analysis'}</p>
+                              </div>
+                            </div>
+                            <span className="text-sm font-semibold text-muted-foreground">Score: {seoAnalysis?.h1_validation?.score || 0}/100</span>
+                          </div>
+                        </div>
+
+                        {/* Paragraph Length */}
+                        <div className={`rounded-xl p-4 border ${seoAnalysis?.paragraphs?.status === 'success' ? 'bg-green-50 border-green-200' : 'bg-amber-50 border-amber-200'}`}>
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                              <div className={`p-2 rounded-lg ${seoAnalysis?.paragraphs?.status === 'success' ? 'bg-green-100' : 'bg-amber-100'}`}>
+                                <FileText className={`w-4 h-4 ${seoAnalysis?.paragraphs?.status === 'success' ? 'text-green-600' : 'text-amber-600'}`} />
+                              </div>
+                              <div>
+                                <div className="text-sm font-bold">Paragraph Length</div>
+                                <p className="text-[10px] text-muted-foreground">{seoAnalysis?.paragraphs?.message || 'No paragraph analysis'}</p>
+                              </div>
+                            </div>
+                            <span className="text-sm font-semibold text-muted-foreground">Score: {seoAnalysis?.paragraphs?.score || 0}/100</span>
+                          </div>
+                        </div>
+
+                        {/* Internal Links */}
+                        <div className={`rounded-xl p-4 border ${seoAnalysis?.links?.status === 'success' ? 'bg-green-50 border-green-200' : 'bg-amber-50 border-amber-200'}`}>
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                              <div className={`p-2 rounded-lg ${seoAnalysis?.links?.status === 'success' ? 'bg-green-100' : 'bg-amber-100'}`}>
+                                <LinkIcon className={`w-4 h-4 ${seoAnalysis?.links?.status === 'success' ? 'text-green-600' : 'text-amber-600'}`} />
+                              </div>
+                              <div>
+                                <div className="text-sm font-bold">Internal Links</div>
+                                <p className="text-[10px] text-muted-foreground">{seoAnalysis?.links?.message || 'No link analysis'}</p>
+                              </div>
+                            </div>
+                            <span className="text-sm font-semibold text-muted-foreground">Score: {(seoAnalysis?.links?.internal >= 3 && seoAnalysis?.links?.internal <= 5) ? '100/100' : (seoAnalysis?.links?.internal >= 1) ? '70/100' : '0/100'}</span>
+                          </div>
+                        </div>
+
+                        {/* Image SEO */}
+                        <div className={`rounded-xl p-4 border ${seoAnalysis?.images?.status === 'success' ? 'bg-green-50 border-green-200' : 'bg-amber-50 border-amber-200'}`}>
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                              <div className={`p-2 rounded-lg ${seoAnalysis?.images?.status === 'success' ? 'bg-green-100' : 'bg-amber-100'}`}>
+                                <ImageIcon className={`w-4 h-4 ${seoAnalysis?.images?.status === 'success' ? 'text-green-600' : 'text-amber-600'}`} />
+                              </div>
+                              <div>
+                                <div className="text-sm font-bold">Image SEO</div>
+                                <p className="text-[10px] text-muted-foreground">{seoAnalysis?.images?.message || 'No image analysis'}</p>
+                              </div>
+                            </div>
+                            <span className="text-sm font-semibold text-muted-foreground">Score: {seoAnalysis?.images?.score || 0}/100</span>
+                          </div>
+                        </div>
+
+                        {/* Schema Markup */}
+                        <div className={`rounded-xl p-4 border ${seoAnalysis?.schema?.status === 'success' ? 'bg-green-50 border-green-200' : 'bg-amber-50 border-amber-200'}`}>
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                              <div className={`p-2 rounded-lg ${seoAnalysis?.schema?.status === 'success' ? 'bg-green-100' : 'bg-amber-100'}`}>
+                                <Tag className={`w-4 h-4 ${seoAnalysis?.schema?.status === 'success' ? 'text-green-600' : 'text-amber-600'}`} />
+                              </div>
+                              <div>
+                                <div className="text-sm font-bold">Schema Markup</div>
+                                <p className="text-[10px] text-muted-foreground">{seoAnalysis?.schema?.message || 'No schema analysis'}</p>
+                              </div>
+                            </div>
+                            <span className="text-sm font-semibold text-muted-foreground">Score: {seoAnalysis?.schema?.score || 0}/100</span>
+                          </div>
+                        </div>
+
+                        {/* Content Structure */}
+                        <div className={`rounded-xl p-4 border ${seoAnalysis?.content_structure?.status === 'success' ? 'bg-green-50 border-green-200' : seoAnalysis?.content_structure?.status === 'warning' ? 'bg-amber-50 border-amber-200' : 'bg-red-50 border-red-200'}`}>
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                              <div className={`p-2 rounded-lg ${seoAnalysis?.content_structure?.status === 'success' ? 'bg-green-100' : seoAnalysis?.content_structure?.status === 'warning' ? 'bg-amber-100' : 'bg-red-100'}`}>
+                                <BarChart3 className={`w-4 h-4 ${seoAnalysis?.content_structure?.status === 'success' ? 'text-green-600' : seoAnalysis?.content_structure?.status === 'warning' ? 'text-amber-600' : 'text-red-600'}`} />
+                              </div>
+                              <div>
+                                <div className="text-sm font-bold">Content Structure</div>
+                                <p className="text-[10px] text-muted-foreground">Lists: {seoAnalysis?.content_structure?.lists || 0}, Tables: {seoAnalysis?.content_structure?.tables || 0}, Quotes: {seoAnalysis?.content_structure?.quotes || 0}</p>
+                              </div>
+                            </div>
+                            <span className="text-sm font-semibold text-muted-foreground">Score: {seoAnalysis?.content_structure?.score || 0}/100</span>
+                          </div>
+                        </div>
+
+                        {/* Keyword Position */}
+                        <div className={`rounded-xl p-4 border ${seoAnalysis?.keyword_position?.status === 'success' ? 'bg-green-50 border-green-200' : seoAnalysis?.keyword_position?.status === 'warning' ? 'bg-amber-50 border-amber-200' : 'bg-red-50 border-red-200'}`}>
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                              <div className={`p-2 rounded-lg ${seoAnalysis?.keyword_position?.status === 'success' ? 'bg-green-100' : seoAnalysis?.keyword_position?.status === 'warning' ? 'bg-amber-100' : 'bg-red-100'}`}>
+                                <Target className={`w-4 h-4 ${seoAnalysis?.keyword_position?.status === 'success' ? 'text-green-600' : seoAnalysis?.keyword_position?.status === 'warning' ? 'text-amber-600' : 'text-red-600'}`} />
+                              </div>
+                              <div>
+                                <div className="text-sm font-bold">Keyword Position</div>
+                                <p className="text-[10px] text-muted-foreground">First Para: {seoAnalysis?.keyword_position?.firstParagraph ? '✓' : '✗'}, H2: {seoAnalysis?.keyword_position?.h2Headings ? '✓' : '✗'}, Image Alt: {seoAnalysis?.keyword_position?.imageAlt ? '✓' : '✗'}</p>
+                              </div>
+                            </div>
+                            <span className="text-sm font-semibold text-muted-foreground">Score: {seoAnalysis?.keyword_position?.score || 0}/100</span>
+                          </div>
+                        </div>
+
+                        {/* Social Tags */}
+                        <div className={`rounded-xl p-4 border ${seoAnalysis?.social_tags?.status === 'success' ? 'bg-green-50 border-green-200' : seoAnalysis?.social_tags?.status === 'warning' ? 'bg-amber-50 border-amber-200' : 'bg-red-50 border-red-200'}`}>
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                              <div className={`p-2 rounded-lg ${seoAnalysis?.social_tags?.status === 'success' ? 'bg-green-100' : seoAnalysis?.social_tags?.status === 'warning' ? 'bg-amber-100' : 'bg-red-100'}`}>
+                                <Share2 className={`w-4 h-4 ${seoAnalysis?.social_tags?.status === 'success' ? 'text-green-600' : seoAnalysis?.social_tags?.status === 'warning' ? 'text-amber-600' : 'text-red-600'}`} />
+                              </div>
+                              <div>
+                                <div className="text-sm font-bold">Social Media Tags</div>
+                                <p className="text-[10px] text-muted-foreground">OG: {seoAnalysis?.social_tags?.ogTitle ? '✓' : '✗'} {seoAnalysis?.social_tags?.ogDescription ? '✓' : '✗'} {seoAnalysis?.social_tags?.ogImage ? '✓' : '✗'}, Twitter: {seoAnalysis?.social_tags?.twitterCard ? '✓' : '✗'}</p>
+                              </div>
+                            </div>
+                            <span className="text-sm font-semibold text-muted-foreground">Score: {seoAnalysis?.social_tags?.score || 0}/100</span>
+                          </div>
+                        </div>
+
+                        {/* Internal Link Suggestions */}
+                        {seoAnalysis?.internal_link_suggestions && seoAnalysis.internal_link_suggestions.length > 0 && (
+                          <div className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/20 dark:to-orange-950/20 rounded-xl p-5 border border-amber-200 dark:border-amber-800">
+                            <h3 className="font-bold flex items-center gap-2 mb-4">
+                              <Lightbulb className="w-4 h-4 text-amber-600" />
+                              Internal Link Suggestions
+                            </h3>
+                            <div className="space-y-2">
+                              {seoAnalysis.internal_link_suggestions.map((link, i) => (
+                                <div key={i} className="flex items-center gap-2 text-sm">
+                                  <LinkIcon className="w-3 h-3 text-amber-600" />
+                                  <span className="text-amber-700 dark:text-amber-300">{link}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Competitor Benchmark */}
+                        <div className={`rounded-xl p-4 border ${seoAnalysis?.competitor_benchmark?.status === 'success' ? 'bg-green-50 border-green-200' : seoAnalysis?.competitor_benchmark?.status === 'warning' ? 'bg-amber-50 border-amber-200' : 'bg-red-50 border-red-200'}`}>
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                              <div className={`p-2 rounded-lg ${seoAnalysis?.competitor_benchmark?.status === 'success' ? 'bg-green-100' : seoAnalysis?.competitor_benchmark?.status === 'warning' ? 'bg-amber-100' : 'bg-red-100'}`}>
+                                <BarChart3 className={`w-4 h-4 ${seoAnalysis?.competitor_benchmark?.status === 'success' ? 'text-green-600' : seoAnalysis?.competitor_benchmark?.status === 'warning' ? 'text-amber-600' : 'text-red-600'}`} />
+                              </div>
+                              <div>
+                                <div className="text-sm font-bold">Competitor Benchmark</div>
+                                <p className="text-[10px] text-muted-foreground">Your: {seoAnalysis?.competitor_benchmark?.yourWordCount || 0} vs Avg: {seoAnalysis?.competitor_benchmark?.avgWordCount || 0} words</p>
+                                <p className="text-[10px] text-muted-foreground">{seoAnalysis?.competitor_benchmark?.suggestion || 'No suggestion available'}</p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Footer */}
+                  <div className="p-4 border-t border-border bg-muted/30 flex justify-end">
+                    <button
+                      onClick={() => setShowSeoModal(false)}
+                      className="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors"
+                    >
+                      Done
                     </button>
                   </div>
                 </div>
-              )}
-            </div>
-
-            {/* Actions */}
-            <div className="flex justify-end space-x-4 pt-6 border-t border-gray-200">
-              {!blogToEdit && (
-                <button
-                type="button"
-                className="px-6 py-3 text-gray-700 bg-gray-100 rounded-xl hover:bg-gray-200 transition-all duration-200 font-medium flex items-center space-x-2"
-                disabled={isSubmitting}
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleSubmit(e, false);
-                }}
-              >
-                <Save className="w-4 h-4" />
-                <span>{
-                  isSubmitting && !isPublished ? 'Saving...' : 
-                  isPublished ? 'Save as Draft' : 'Save as Draft'
-                }</span>
-              </button>
-              )}
-
-              <button
-                type="button"
-                className="px-8 py-3 text-white bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl hover:from-blue-700 hover:to-indigo-700 transition duration-200 font-medium flex items-center space-x-2 shadow-lg hover:shadow-xl"
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleSubmit(e, true);
-                }}
-                disabled={isSubmitting}
-              >
-                {isSubmitting && isPublished ? (
-                  <>
-                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                    <span>{blogToEdit ? 'Updating...' : 'Publishing...'}</span>
-                  </>
-                ) : (
-                  <>
-                    <Plus className="w-4 h-4" />
-                    <span>{blogToEdit ? 'Update Blog' : 'Publish Blog'}</span>
-                  </>
-                )}
-              </button>
-            </div>
-          </form>
-        </div>
-        {/* History modal */}
-        {showHistory && (
-          <div className="fixed inset-0 bg-black/50 z-[4000] flex items-center justify-center" onClick={()=>setShowHistory(false)}>
-            <div className="bg-white rounded-xl shadow-xl p-4 w-[92vw] max-w-[520px]" onClick={(e)=>e.stopPropagation()}>
-              <div className="flex items-center justify-between mb-2">
-                <div className="font-semibold">Draft History</div>
-                <button className="text-gray-600" onClick={()=>setShowHistory(false)}><X className="w-5 h-5"/></button>
               </div>
-              {historyList?.length ? (
-                <div className="max-h-[60vh] overflow-auto divide-y">
-                  {historyList.map((h, i) => (
-                    <div key={i} className="py-2 flex items-center justify-between">
-                      <div className="text-sm">
-                        <div className="font-medium">{h.title || 'Untitled'}</div>
-                        <div className="text-gray-500">{new Date(h.ts).toLocaleString()}</div>
-                      </div>
-                      <button className="px-3 py-1.5 rounded-lg border border-gray-300 hover:bg-gray-50" onClick={()=>{
-                        try {
-                          const raw = localStorage.getItem(draftKey);
-                          if (!raw) return;
-                          const s = JSON.parse(raw);
-                          setTitle(s.title || '');
-                          setDescription(s.description || '');
-                          setFrontImagePreview(s.frontImagePreview || '');
-                          setCategories(s.categories || '');
-                          setMetaTitle(s.metaTitle || '');
-                          setMetaDescription(s.metaDescription || '');
-                          setSlug(s.slug || '');
-                          setRelatedProjects(Array.isArray(s.relatedProjects) ? s.relatedProjects : []);
-                          setEnableFAQ(!!s.enableFAQ);
-                          setFaqs(Array.isArray(s.faqs) && s.faqs.length ? s.faqs : [{question:'',answer:''}]);
-                          setAuthor(s.author || author);
-                          showToast.success('Draft restored');
-                          setShowHistory(false);
-                        } catch {}
-                      }}>Restore</button>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="text-sm text-gray-600">No history yet.</div>
-              )}
-            </div>
+            )}
           </div>
-        )}
-        {/* Lightbox Overlay */}
-        {lightboxUrl && (
-          <div
-            onClick={() => setLightboxUrl('')}
-            style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.85)', zIndex: 3000, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'zoom-out' }}
-          >
-            {/* eslint-disable-next-line jsx-a11y/alt-text */}
-            <img src={lightboxUrl} style={{ maxWidth: '95vw', maxHeight: '95vh', objectFit: 'contain', borderRadius: 8 }} />
-          </div>
-        )}
+        </div>
       </div>
-    </div>
+    // </div>
   );
 };
 

@@ -424,7 +424,7 @@ export default function HeroWithFilters() {
           src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=2000&q=80"
           alt="Luxury Properties Hero Banner"
           decoding="async"
-          fetchPriority="high"
+          fetchpriority="high"
           loading="eager"
           className="absolute inset-0 w-full h-full object-cover"
         />
@@ -438,7 +438,7 @@ export default function HeroWithFilters() {
             src={heroSrc}
             alt="Hero banner"
             decoding="async"
-            fetchPriority="high"
+            fetchpriority="high"
             loading="eager"
             className={`absolute inset-0 w-full h-full object-cover ${heroLoaded ? 'opacity-100' : 'opacity-0'} ${reducedMotion ? '' : 'transition-opacity duration-500'}`}
             onLoad={() => setHeroLoaded(true)}

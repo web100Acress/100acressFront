@@ -246,7 +246,7 @@ export default function FeaturedGrid() {
     const isFav = favorites.has(id);
 
     return (
-      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 group">
+      <div className="bg-[#25526f] rounded-xl border border-yellow-400/30 overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 group">
         <Link to={`/${project.project_url}/`} target="_top" className="block">
           <div className="relative">
             <div className="w-full h-28 lg:h-32">
@@ -273,11 +273,11 @@ export default function FeaturedGrid() {
           </div>
 
           <div className="p-2">
-            <h3 className="font-bold text-sm text-gray-900 mb-0 line-clamp-1">
+            <h3 className="font-bold text-sm text-white mb-0 line-clamp-1">
               {project.projectName}
             </h3>
 
-            <p className="text-xs text-gray-600 mb-1">
+            <p className="text-xs text-white mb-1">
               {getPropertyType(project)}
             </p>
 
@@ -285,7 +285,7 @@ export default function FeaturedGrid() {
               <svg className="w-4 h-4 text-gray-400 mt-0.5 mr-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
               </svg>
-              <p className="text-sm text-gray-500 line-clamp-2">
+              <p className="text-sm text-white line-clamp-2">
                 {project.projectAddress || `${project.city}, ${project.state}`}
               </p>
             </div>
@@ -323,7 +323,7 @@ export default function FeaturedGrid() {
     const isFav = favorites.has(id);
 
     return (
-      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 group">
+      <div className="bg-[#25526f] rounded-xl border border-yellow-400/30 overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 group">
         <Link to={`/${project.project_url}/`} target="_top" className="block">
           <div className="relative">
             <div className="w-full h-28 lg:h-32">
@@ -350,11 +350,11 @@ export default function FeaturedGrid() {
           </div>
 
           <div className="p-2">
-            <h3 className="font-bold text-sm text-gray-900 mb-0 line-clamp-1">
+            <h3 className="font-bold text-sm text-white mb-0 line-clamp-1">
               {project.projectName}
             </h3>
 
-            <p className="text-xs text-gray-600 mb-1">
+            <p className="text-xs text-white mb-1">
               {getPropertyType(project)}
             </p>
 
@@ -362,7 +362,7 @@ export default function FeaturedGrid() {
               <svg className="w-4 h-4 text-gray-400 mt-0.5 mr-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
               </svg>
-              <p className="text-sm text-gray-500 line-clamp-2">
+              <p className="text-sm text-white line-clamp-2">
                 {project.projectAddress || `${project.city}, ${project.state}`}
               </p>
             </div>
@@ -406,7 +406,7 @@ export default function FeaturedGrid() {
     return (
       <section className="max-w-screen-xl mx-auto px-4 md:px-6 mt-12 md:mt-20">
         <div className="mx-auto max-w-5xl text-center mb-3 md:mb-4">
-          <h2 className="text-2xl md:text-3xl font-extrabold text-[#0c0a09] tracking-tight">Discover your featured property</h2>
+          <h2 className="text-2xl md:text-3xl font-extrabold text-white tracking-tight">Discover your featured property</h2>
           <p className="text-gray-500 text-sm md:text-base mt-1">Loading projects...</p>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
@@ -424,7 +424,7 @@ export default function FeaturedGrid() {
       <div className="flex justify-center">
         <div className="w-full max-w-screen-xl px-4 md:px-6">
           <div className="mx-auto max-w-5xl text-center mb-3 md:mb-4">
-            <h2 className="text-2xl md:text-3xl font-extrabold text-[#0c0a09] tracking-tight">
+            <h2 className="text-2xl md:text-3xl font-extrabold text-white tracking-tight">
               Premium {activeFilter} Properties in Delhi NCR
             </h2>
             <p className="text-gray-500 text-sm md:text-base mt-1">Discover handpicked properties that match your lifestyle and investment goals</p>
@@ -549,7 +549,7 @@ export default function FeaturedGrid() {
               {/* Upcoming Projects */}
               <div>
                 <div className="mx-auto max-w-5xl text-center mb-3 md:mb-4">
-                  <h3 className="text-xl md:text-2xl font-extrabold text-[#0c0a09] tracking-tight">
+                  <h3 className="text-xl md:text-2xl font-extrabold text-white tracking-tight">
                     New Upcoming Housing Projects in Gurgaon 2025
                   </h3>
                 </div>
@@ -571,7 +571,7 @@ export default function FeaturedGrid() {
               {/* Luxury Projects */}
               <div>
                 <div className="mx-auto max-w-5xl text-center mb-3 md:mb-4">
-                  <h3 className="text-xl md:text-2xl font-extrabold text-[#0c0a09] tracking-tight">
+                  <h3 className="text-xl md:text-2xl font-extrabold text-white tracking-tight">
                     Top Luxury Apartments For You
                   </h3>
                 </div>
@@ -593,7 +593,7 @@ export default function FeaturedGrid() {
               {/* Budget Projects */}
               <div>
                 <div className="mx-auto max-w-5xl text-center mb-3 md:mb-4">
-                  <h3 className="text-xl md:text-2xl font-extrabold text-[#0c0a09] tracking-tight">
+                  <h3 className="text-xl md:text-2xl font-extrabold text-white tracking-tight">
                     Best Budget Projects in Gurugram
                   </h3>
                 </div>
@@ -615,7 +615,7 @@ export default function FeaturedGrid() {
               {/* SCO Projects */}
               <div>
                 <div className="mx-auto max-w-5xl text-center mb-3 md:mb-4">
-                  <h3 className="text-xl md:text-2xl font-extrabold text-[#0c0a09] tracking-tight">
+                  <h3 className="text-xl md:text-2xl font-extrabold text-white tracking-tight">
                     SCO Projects in Gurugram
                   </h3>
                 </div>

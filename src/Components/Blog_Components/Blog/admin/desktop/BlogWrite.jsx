@@ -2,13 +2,16 @@ import React, { useState, Suspense, useContext, useMemo } from 'react';
 import { lazy } from 'react';
 const ReactQuill = lazy(() => import('react-quill'));
 import 'react-quill/dist/quill.snow.css';
+import TableBuilder from './TableBuilder';
 import api from "../../../../../config/apiClient";
 import { AuthContext } from "../../../../../AuthContext";
 import showToast from "../../../../../Utils/toastUtils";
 
 const BlogWrite = () => {
   const [content, setContent] = useState('');
-  const { agentData } = useContext(AuthContext) || {};
+  const [showTableBuilder, setShowTableBuilder] = useState(false);
+  const [tableData, setTableData] = useState(null);
+  const quillRef = React.useRef(null);
   const localAgent = useMemo(() => {
     try { return JSON.parse(window.localStorage.getItem('agentData') || 'null'); } catch { return null; }
   }, []);
@@ -18,8 +21,69 @@ const BlogWrite = () => {
   
 
   const handleContent = (value) => {
-    console.log(value, "value");
     setContent(value);
+  };
+
+  const handleInsertTable = () => {
+    const quill = quillRef.current?.getEditor();
+    if (quill) {
+      const range = quill.getSelection(true);
+      const placeholder = `[TABLE_PLACEHOLDER_${Date.now()}]`;
+      quill.insertText(range.index, `\n${placeholder}\n`);
+      quill.setSelection(range.index + placeholder.length + 2);
+      setShowTableBuilder(true);
+    } else {
+      // Fallback if quill is not ready
+      const placeholder = `[TABLE_PLACEHOLDER_${Date.now()}]`;
+      setContent(content + `<p>${placeholder}</p>`);
+      setShowTableBuilder(true);
+    }
+  };
+
+  const handleTableChange = (data) => {
+    setTableData(data);
+  };
+
+  const generateTableHTML = (data) => {
+    if (!data || !data.rows) return '';
+    let html = '<div class="my-6 overflow-x-auto">';
+    if (data.heading) {
+      html += `<h3 class="text-xl font-bold mb-3">${data.heading}</h3>`;
+    }
+    html += '<table class="min-w-full border-collapse border border-gray-300">';
+    data.rows.forEach((row, rowIndex) => {
+      html += '<tr>';
+      row.forEach(cell => {
+        if (rowIndex === 0) {
+          html += `<th class="border border-gray-300 p-3 bg-gray-100 font-bold text-left">${cell}</th>`;
+        } else {
+          html += `<td class="border border-gray-300 p-3 text-left">${cell}</td>`;
+        }
+      });
+      html += '</tr>';
+    });
+    html += '</table></div>';
+    return html;
+  };
+
+  const finalizeContent = (rawContent) => {
+    if (!tableData || !tableData.rows) {
+      console.log("No table data found to finalize");
+      return rawContent;
+    }
+    const tableHTML = generateTableHTML(tableData);
+    console.log("Generated Table HTML:", tableHTML);
+    
+    // Check if the placeholder exists in the content
+    if (!rawContent.includes('[TABLE_PLACEHOLDER_')) {
+      console.warn("Placeholder [TABLE_PLACEHOLDER_] not found in content!");
+      // If no placeholder, maybe append to the end? Or just return raw
+      return rawContent;
+    }
+
+    const finalized = rawContent.replace(/\[TABLE_PLACEHOLDER_\d+\]/g, tableHTML);
+    console.log("Finalized content with table:", finalized);
+    return finalized;
   };
   
   const [fileData, setFileData] = useState({
@@ -86,7 +150,9 @@ const BlogWrite = () => {
     formDataAPI.append("blogImage", fileData.blog_Image);
     
     // Add the HTML content from the editor
-    formDataAPI.append("blog_Description", content);
+    const finalContent = finalizeContent(content);
+    console.log("Final Content to be sent:", finalContent); // Debugging
+    formDataAPI.append("blog_Description", finalContent);
 
     try {
       const response = await api.post(apiEndpoint, formDataAPI);
@@ -175,6 +241,8 @@ const BlogWrite = () => {
       blog_Category: "",
     });
     setContent('');
+    setTableData(null);
+    setShowTableBuilder(false);
     setFileData({
       blog_Image: null
     });
@@ -199,9 +267,19 @@ const BlogWrite = () => {
                 />
 
                 <div className="mb-4">
-                  <label htmlFor="content" className="block mb-2 text-sm font-medium text-gray-900">Content:</label>
+                  <div className="flex justify-between items-center mb-2">
+                    <label htmlFor="content" className="block text-sm font-medium text-gray-900">Content:</label>
+                    <button
+                      type="button"
+                      onClick={handleInsertTable}
+                      className="text-xs bg-indigo-500 text-white px-2 py-1 rounded hover:bg-indigo-600 transition-colors flex items-center gap-1"
+                    >
+                      + Add Table Here
+                    </button>
+                  </div>
                   <Suspense fallback={<LoadingEditor />}>
                     <ReactQuill 
+                      ref={quillRef}
                       theme="snow" 
                       modules={modules}
                       value={content} 
@@ -210,6 +288,28 @@ const BlogWrite = () => {
                     />
                   </Suspense>
                 </div>
+
+                {showTableBuilder && (
+                  <div className="mt-6 mb-8 border-2 border-indigo-100 rounded-xl p-4 bg-indigo-50/30">
+                    <div className="flex justify-between items-center mb-4">
+                      <h3 className="text-lg font-semibold text-indigo-900">Configure Table</h3>
+                      <button 
+                        onClick={() => setShowTableBuilder(false)}
+                        className="text-gray-400 hover:text-gray-600"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                    <TableBuilder 
+                      onChange={handleTableChange}
+                      onRemove={() => {
+                        setShowTableBuilder(false);
+                        setTableData(null);
+                        setContent(content.replace(/\[TABLE_PLACEHOLDER_\d+\]/g, ''));
+                      }}
+                    />
+                  </div>
+                )}
 
                 <select
                   className="text-black border-2 p-2 outline-none w-full border-gray-200 mt-4 rounded-md"

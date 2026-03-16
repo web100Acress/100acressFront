@@ -1,0 +1,75 @@
+/* CustomNotification Component Styles */
+
+.custom-notification {
+  position: fixed;
+  top: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 99999;
+  transition: all 0.3s ease-in-out;
+}
+
+.custom-notification.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.custom-notification.hide {
+  opacity: 0;
+  transform: translateY(-0.5rem);
+}
+
+.custom-notification-content {
+  color: #ffffff;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 300px;
+  max-width: 28rem;
+}
+
+.custom-notification-content.success {
+  background-color: #22c55e;
+}
+
+.custom-notification-content.error {
+  background-color: #ef4444;
+}
+
+.custom-notification-icon {
+  flex-shrink: 0;
+}
+
+.custom-notification-icon svg {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: #ffffff;
+}
+
+.custom-notification-message {
+  flex: 1;
+  font-weight: 500;
+}
+
+.custom-notification-close {
+  flex-shrink: 0;
+  margin-left: 1rem;
+  color: rgba(255, 255, 255, 0.8);
+  transition: color 0.2s;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.custom-notification-close:hover {
+  color: #ffffff;
+}
+
+.custom-notification-close svg {
+  width: 1rem;
+  height: 1rem;
+}

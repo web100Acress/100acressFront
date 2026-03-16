@@ -27,15 +27,28 @@ import 'swiper/css/navigation';
 
 const ModernRecommendedSection = () => {
   const [showAuth, setShowAuth] = useState(false);
+  const [loading, setLoading] = useState(true);
   const spotlight = useSelector(store => store?.project?.spotlight);
   const [hoveredCard, setHoveredCard] = useState(null);
   const [favTick, setFavTick] = useState(0);
   const swiperRef = useRef(null);
   const { getSpotlight } = Api_Service();
-  const { isAuthenticated } = useContext(AuthContext);
+  const auth = useContext(AuthContext);
+  const isAuthenticated = auth?.isAuthenticated;
 
   useEffect(() => {
-    getSpotlight();
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        await getSpotlight();
+      } catch (error) {
+        console.error('Error fetching spotlight:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchData();
   }, [getSpotlight]);
 
   useEffect(() => {
@@ -122,12 +135,14 @@ const ModernRecommendedSection = () => {
     return null;
   };
 
-  if (!displayData || displayData.length === 0) {
+  if (loading || (!displayData || displayData.length === 0)) {
     return (
       <SectionWrapper>
         <div className="container mx-auto px-4 py-4">
           <div className="text-center">
-            <h3 className="text-xl font-semibold text-gray-600 mb-4">Loading Recommended Properties...</h3>
+            <h3 className="text-xl font-semibold text-gray-600 mb-4">
+              {loading ? 'Loading Recommended Properties...' : 'No Properties Available'}
+            </h3>
             <Skeleton active />
           </div>
         </div>
@@ -349,8 +364,13 @@ const PropertyCard = ({
           alt={project?.projectName}
           className={`property-image ${imageLoaded ? 'loaded' : ''}`}
           onLoad={() => setImageLoaded(true)}
+          onError={(e) => {
+            e.target.src = '/placeholder-property.jpg';
+            setImageLoaded(true);
+          }}
           loading="lazy"
           decoding="async"
+          fetchpriority="high"
         />
       </div>
 
@@ -643,50 +663,50 @@ const CardWrapper = styled.div`
     height: 100%;
     overflow: hidden;
     background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
-    min-height: 240px; /* Ensure minimum height */
-    max-height: 380px; /* Limit maximum height */
+    min-height: 240px;
+    max-height: 380px;
+  }
 
-    .image-overlay {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 220px;
-      background: linear-gradient(
-        to top,
-        rgba(0, 0, 0, 0.95) 0%,
-        rgba(0, 0, 0, 0.88) 15%,
-        rgba(0, 0, 0, 0.75) 30%,
-        rgba(0, 0, 0, 0.6) 45%,
-        rgba(0, 0, 0, 0.4) 60%,
-        rgba(0, 0, 0, 0.2) 75%,
-        rgba(0, 0, 0, 0) 100%
-      );
-      z-index: 2;
-      transition: opacity 0.5s ease;
-      pointer-events: none;
-      opacity: 1;
-    }
+  .image-container .image-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 220px;
+    background: linear-gradient(
+      to top,
+      rgba(0, 0, 0, 0.95) 0%,
+      rgba(0, 0, 0, 0.88) 15%,
+      rgba(0, 0, 0, 0.75) 30%,
+      rgba(0, 0, 0, 0.6) 45%,
+      rgba(0, 0, 0, 0.4) 60%,
+      rgba(0, 0, 0, 0.2) 75%,
+      rgba(0, 0, 0, 0) 100%
+    );
+    z-index: 2;
+    transition: opacity 0.5s ease;
+    pointer-events: none;
+    opacity: 1;
+  }
 
-    .property-image {
-      position: relative;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      min-height: 240px;
-      max-height: 380px;
-      object-fit: cover;
-      object-position: center;
-      transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-      opacity: 0;
-      z-index: 1;
-      display: block;
-      
-      &.loaded {
-        opacity: 1;
-      }
-    }
+  .image-container .property-image {
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    min-height: 240px;
+    max-height: 380px;
+    object-fit: cover;
+    object-position: center;
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 0;
+    z-index: 1;
+    display: block;
+  }
+
+  .image-container .property-image.loaded {
+    opacity: 1;
   }
 
   .content-overlay {

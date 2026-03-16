@@ -1,0 +1,419 @@
+/* Desktop Floor Plan Component Styles */
+
+/* Main section container */
+.desktop-floorplan-section {
+  padding: 2.5rem 0;
+  background-color: transparent;
+  color: #ffffff;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Background decorative lines */
+.desktop-floorplan-bg-decoration {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 0;
+  opacity: 0.2;
+}
+
+/* Main container */
+.desktop-floorplan-container {
+  margin: 0 auto;
+  max-width: 80rem;
+  padding: 0 1rem 0 1.5rem 0 2rem;
+  z-index: 10;
+  position: relative;
+}
+
+/* Header section */
+.desktop-floorplan-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.desktop-floorplan-title {
+  color: #ffffff;
+  font-size: 1.875rem;
+  line-height: 1.2;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+}
+
+@media (min-width: 768px) {
+  .desktop-floorplan-title {
+    font-size: 2.25rem;
+  }
+}
+
+.desktop-floorplan-accent-line {
+  width: 6rem;
+  height: 0.25rem;
+  background: linear-gradient(to right, #d97706, #f59e0b);
+  border-radius: 9999px;
+  margin: 1rem auto 0;
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.desktop-floorplan-subtitle {
+  color: #d1d5db;
+  font-size: 0.875rem;
+  margin-top: 1rem;
+  max-width: 42rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Main content wrapper */
+.desktop-floorplan-content-wrapper {
+  background-color: rgba(31, 41, 55, 0.3);
+  padding: 2rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(55, 65, 81, 0.5);
+  backdrop-filter: blur(4px);
+}
+
+/* Grid layout */
+.desktop-floorplan-grid {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 3rem;
+  align-items: start;
+}
+
+@media (min-width: 1024px) {
+  .desktop-floorplan-grid {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+/* Left side - Floor plan preview */
+.desktop-floorplan-preview {
+  position: relative;
+}
+
+@media (min-width: 1024px) {
+  .desktop-floorplan-preview {
+    grid-column: span 4;
+  }
+}
+
+.desktop-floorplan-preview-container {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1rem;
+  background: linear-gradient(to bottom right, rgba(17, 24, 39, 0.5), rgba(31, 41, 55, 0.5));
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+/* Floor plan image container */
+.desktop-floorplan-image-container {
+  position: relative;
+  height: 24rem;
+  overflow: hidden;
+}
+
+.desktop-floorplan-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: scale(1);
+}
+
+.desktop-floorplan-preview-container:hover .desktop-floorplan-image {
+  transform: scale(1.05);
+}
+
+.desktop-floorplan-image.blurred {
+  filter: blur(1rem);
+}
+
+/* Glassmorphism overlay */
+.desktop-floorplan-overlay {
+  position: absolute;
+  inset: 0;
+  background: #25526f;
+  backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.desktop-floorplan-overlay-vignette-1 {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.5), transparent, rgba(0, 0, 0, 0.5));
+  pointer-events: none;
+}
+
+.desktop-floorplan-overlay-vignette-2 {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to left, rgba(0, 0, 0, 0.3), transparent, rgba(0, 0, 0, 0.3));
+  pointer-events: none;
+}
+
+.desktop-floorplan-overlay-vignette-3 {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.3), transparent, rgba(0, 0, 0, 0.3));
+  pointer-events: none;
+}
+
+/* Overlay content */
+.desktop-floorplan-overlay-content {
+  position: relative;
+  z-index: 10;
+  text-align: center;
+  padding: 0 2rem;
+}
+
+.desktop-floorplan-overlay-title {
+  color: #ffffff;
+  font-size: 1.875rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  line-height: 1.2;
+}
+
+@media (min-width: 768px) {
+  .desktop-floorplan-overlay-title {
+    font-size: 2.25rem;
+  }
+}
+
+.desktop-floorplan-overlay-description {
+  color: #e5e7eb;
+  font-size: 1.125rem;
+  max-width: 32rem;
+  margin: 0 auto;
+}
+
+.desktop-floorplan-unlock-button {
+  background: linear-gradient(to right, #f59e0b, #d97706, #b45309);
+  color: #000000;
+  font-weight: 700;
+  padding: 1rem 2rem;
+  border-radius: 9999px;
+  box-shadow: 0 25px 50px -12px rgba(245, 158, 11, 0.25);
+  transform: scale(1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin: 0 auto;
+  border: none;
+  cursor: pointer;
+}
+
+.desktop-floorplan-unlock-button:hover {
+  box-shadow: 0 25px 50px -12px rgba(245, 158, 11, 0.25);
+  transform: scale(1.05);
+}
+
+.desktop-floorplan-unlock-button svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+/* Navigation controls */
+.desktop-floorplan-navigation {
+  position: absolute;
+  bottom: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  border-radius: 9999px;
+  padding: 0.5rem 1rem;
+}
+
+.desktop-floorplan-nav-button {
+  padding: 0.5rem;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  transition: background-color 0.3s;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.desktop-floorplan-nav-button:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.desktop-floorplan-nav-button svg {
+  width: 1rem;
+  height: 1rem;
+  color: #ffffff;
+}
+
+.desktop-floorplan-nav-counter {
+  color: #ffffff;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin: 0 0.75rem;
+}
+
+/* Right side - BHK configuration cards */
+.desktop-floorplan-configurations {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+@media (min-width: 1024px) {
+  .desktop-floorplan-configurations {
+    grid-column: span 1;
+  }
+}
+
+.desktop-floorplan-configurations-title {
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 1.125rem;
+  margin-bottom: 1rem;
+}
+
+.desktop-floorplan-cards-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-height: 20rem;
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.desktop-floorplan-cards-container::-webkit-scrollbar {
+  display: none;
+}
+
+/* BHK Card */
+.desktop-floorplan-bhk-card {
+  padding: 1rem;
+  border-radius: 0.75rem;
+  border: 1px solid;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: scale(1);
+}
+
+.desktop-floorplan-bhk-card:hover {
+  transform: scale(1.02);
+}
+
+.desktop-floorplan-bhk-card.selected {
+  background: linear-gradient(to right, rgba(217, 119, 6, 0.2), rgba(180, 83, 9, 0.2));
+  border-color: rgba(245, 158, 11, 0.5);
+  box-shadow: 0 10px 15px -3px rgba(245, 158, 11, 0.2);
+  transform: scale(1.05);
+}
+
+.desktop-floorplan-bhk-card:not(.selected) {
+  background-color: rgba(31, 41, 55, 0.5);
+  border-color: rgba(55, 65, 81, 0.5);
+}
+
+.desktop-floorplan-bhk-card:not(.selected):hover {
+  background-color: rgba(55, 65, 81, 0.7);
+  border-color: rgba(75, 85, 99, 0.5);
+}
+
+.desktop-floorplan-bhk-card-content {
+  text-align: center;
+}
+
+.desktop-floorplan-bhk-type {
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 1.125rem;
+  margin-bottom: 0.5rem;
+}
+
+.desktop-floorplan-bhk-area {
+  color: #d1d5db;
+  font-size: 0.875rem;
+  margin-bottom: 0.75rem;
+}
+
+.desktop-floorplan-bhk-status {
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  display: inline-block;
+}
+
+.desktop-floorplan-bhk-status.selected {
+  background-color: #f59e0b;
+  color: #000000;
+}
+
+.desktop-floorplan-bhk-status:not(.selected) {
+  background-color: #374151;
+  color: #d1d5db;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1023px) {
+  .desktop-floorplan-content-wrapper {
+    padding: 1.5rem;
+  }
+  
+  .desktop-floorplan-image-container {
+    height: 20rem;
+  }
+  
+  .desktop-floorplan-overlay-content {
+    padding: 0 1.5rem;
+  }
+}
+
+@media (max-width: 767px) {
+  .desktop-floorplan-section {
+    padding: 2rem 0;
+  }
+  
+  .desktop-floorplan-title {
+    font-size: 1.5rem;
+  }
+  
+  .desktop-floorplan-content-wrapper {
+    padding: 1rem;
+  }
+  
+  .desktop-floorplan-image-container {
+    height: 16rem;
+  }
+  
+  .desktop-floorplan-overlay-title {
+    font-size: 1.5rem;
+  }
+  
+  .desktop-floorplan-overlay-description {
+    font-size: 1rem;
+  }
+  
+  .desktop-floorplan-unlock-button {
+    padding: 0.75rem 1.5rem;
+    font-size: 0.875rem;
+  }
+}

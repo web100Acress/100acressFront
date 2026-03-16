@@ -1,17 +1,17 @@
 import { useState, useEffect, useContext } from "react";
 import api from "../../../../../config/apiClient";
 import { getApiBase, setApiBase } from "../../../../../config/apiBase";
-import { 
-  Eye, 
-  ThumbsUp, 
-  Share2, 
-  MessageCircle, 
-  TrendingUp, 
-  BarChart3, 
-  FileText, 
-  Calendar, 
-  User, 
-  Clock, 
+import {
+  Eye,
+  ThumbsUp,
+  Share2,
+  MessageCircle,
+  TrendingUp,
+  BarChart3,
+  FileText,
+  Calendar,
+  User,
+  Clock,
   Activity,
   Plus,
   Edit,
@@ -36,7 +36,8 @@ import {
   Tablet,
   Download,
   X,
-  
+  Search as SearchIcon
+
 } from "lucide-react";
 // Removed all Ant Design imports - using simple JSX with Tailwind CSS
 import { Link, useNavigate } from "react-router-dom";
@@ -57,8 +58,8 @@ const getSlugFromTitle = (title) =>
 
 // Prefer slug-based blog link with fallback to legacy title/id route
 const blogLink = (blog) => {
-  if (blog?.slug) return `/blog/${blog.slug}`;
-  return `/blog/${getSlugFromTitle(blog?.blog_Title)}/${blog?._id}`;
+  if (blog?.slug) return `/blog/${blog.slug}/`;
+  return `/blog/${getSlugFromTitle(blog?.blog_Title)}/${blog?._id}/`;
 };
 
 export default function BlogDashboard() {
@@ -125,6 +126,12 @@ export default function BlogDashboard() {
     pageSpeed: 0
   });
 
+  // SEO Analysis states
+  const [seoAnalysis, setSeoAnalysis] = useState(null);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [showSeoModal, setShowSeoModal] = useState(false);
+  const [selectedBlogForSeo, setSelectedBlogForSeo] = useState(null);
+
   // Remove pagination state variables since we're fetching all blogs
   // const [currentPage, setCurrentPage] = useState(1);
   // const [totalPages, setTotalPages] = useState(1);
@@ -151,7 +158,7 @@ export default function BlogDashboard() {
       setFilteredBlogs(blogs);
     } else {
       const searchTerm = searchQuery.toLowerCase();
-      const filtered = blogs.filter(blog => 
+      const filtered = blogs.filter(blog =>
         blog.blog_Title?.toLowerCase().includes(searchTerm) ||
         blog.author?.toLowerCase().includes(searchTerm) ||
         blog.authorEmail?.toLowerCase().includes(searchTerm) ||
@@ -165,13 +172,36 @@ export default function BlogDashboard() {
     }
   }, [blogs, searchQuery]);
 
+  // SEO Analysis function
+  const handleAnalyzeSEO = async (blog) => {
+    try {
+      setIsAnalyzing(true);
+      setSelectedBlogForSeo(blog);
+      const res = await api.post('/blog/analyze-seo', {
+        title: blog.blog_Title,
+        metaTitle: blog.metaTitle || blog.blog_Title,
+        metaDescription: blog.metaDescription || blog.blog_Description,
+        slug: blog.slug,
+        content: blog.blog_Content,
+        focusKeyword: blog.focusKeyword || ''
+      });
+      setSeoAnalysis(res.data);
+      setShowSeoModal(true);
+    } catch (error) {
+      console.error('SEO Analysis error:', error);
+      alert('Failed to analyze SEO');
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
+
   const fetchDashboardData = async () => {
     try {
       setLoading(true);
       // Try multiple approaches to fetch all blogs
       const listPath = isAdmin ? `/blog/admin/view` : `/blog/view`;
       console.log('API endpoint being called:', `${listPath}?limit=10000&page=1`);
-      
+
       // Try with both limit and page parameters
       let res;
       try {
@@ -182,9 +212,9 @@ export default function BlogDashboard() {
         // If that fails, try without page parameter
         res = await api.get(`${listPath}?limit=10000`);
       }
-      
+
       const fetchedBlogs = res.data.data || [];
-      
+
       console.log('=== BLOG FETCH DEBUG ===');
       console.log('Total blogs fetched from API:', fetchedBlogs.length);
       console.log('API Response structure:', res.data);
@@ -194,12 +224,12 @@ export default function BlogDashboard() {
         totalBlogs: res.data.totalBlogs,
         hasMore: res.data.hasMore
       });
-      
+
       // If we didn't get all blogs, try to fetch more pages
       if (res.data.totalPages && res.data.totalPages > 1) {
         console.log('Multiple pages detected, fetching all pages...');
         const allBlogs = [...fetchedBlogs];
-        
+
         for (let page = 2; page <= res.data.totalPages; page++) {
           try {
             console.log(`Fetching page ${page}...`);
@@ -211,14 +241,14 @@ export default function BlogDashboard() {
             console.error(`Error fetching page ${page}:`, pageError);
           }
         }
-        
+
         console.log('Total blogs after fetching all pages:', allBlogs.length);
         fetchedBlogs.splice(0, fetchedBlogs.length, ...allBlogs);
       }
-      
+
       // Log all Khushi Singh blogs specifically
-      const khushiBlogs = fetchedBlogs.filter(blog => 
-        blog.author?.toLowerCase().includes('khushi') || 
+      const khushiBlogs = fetchedBlogs.filter(blog =>
+        blog.author?.toLowerCase().includes('khushi') ||
         blog.authorEmail?.toLowerCase().includes('khushi')
       );
       console.log('Khushi Singh blogs found:', khushiBlogs.length);
@@ -229,7 +259,7 @@ export default function BlogDashboard() {
         createdAt: b.createdAt,
         isPublished: b.isPublished
       })));
-      
+
       // Scope: if not Admin, show only my blogs
       const myBlogs = (isAdmin ? fetchedBlogs : fetchedBlogs.filter((b) => {
         const authorName = (b?.author || "").toString().trim();
@@ -238,7 +268,7 @@ export default function BlogDashboard() {
         const nameMatch = currentUserName && authorName && authorName.toLowerCase() === currentUserName.toLowerCase();
         const emailMatch = currentUserEmail && authorEmail && authorEmail === currentUserEmail;
         const idMatch = currentUserId && authorId && authorId === currentUserId;
-        
+
         console.log('Blog filter check:', {
           blogTitle: b.blog_Title,
           blogAuthor: authorName,
@@ -250,15 +280,15 @@ export default function BlogDashboard() {
           idMatch,
           finalMatch: nameMatch || emailMatch || idMatch
         });
-        
+
         return nameMatch || emailMatch || idMatch;
       }));
-      
+
       console.log('Filtered blogs for current user:', myBlogs.length);
       console.log('Current user name:', currentUserName);
       console.log('Current user email:', currentUserEmail);
       console.log('Is admin:', isAdmin);
-      
+
       // If no blogs match current user (common when author fields are missing), show all as a fallback
       const listToShow = (isAdmin || myBlogs.length > 0) ? myBlogs : fetchedBlogs;
 
@@ -298,11 +328,11 @@ export default function BlogDashboard() {
     const totalLikes = blogData.reduce((sum, blog) => sum + (blog.likes || 0), 0);
     const totalShares = blogData.reduce((sum, blog) => sum + (blog.shares || 0), 0);
     const totalComments = blogData.reduce((sum, blog) => sum + getCommentCount(blog), 0);
-    
+
     const publishedBlogs = blogData.filter(blog => blog.isPublished);
     const draftBlogs = blogData.filter(blog => !blog.isPublished);
     const averageViews = publishedBlogs.length > 0 ? totalViews / publishedBlogs.length : 0;
-    
+
     const topPerformingBlog = blogData.reduce((top, blog) => {
       const blogScore = (blog.views || 0) + (blog.likes || 0) * 2 + (blog.shares || 0) * 3 + getCommentCount(blog) * 1;
       const topScore = (top?.views || 0) + (top?.likes || 0) * 2 + (top?.shares || 0) * 3 + (
@@ -311,7 +341,7 @@ export default function BlogDashboard() {
       return blogScore > topScore ? blog : top;
     }, null);
 
-    const engagementRate = totalViews > 0 ? 
+    const engagementRate = totalViews > 0 ?
       ((totalLikes + totalShares + totalComments) / totalViews) * 100 : 0;
 
     const conversionRate = totalViews > 0 ? (totalLikes / totalViews) * 100 : 0;
@@ -356,8 +386,8 @@ export default function BlogDashboard() {
           blog._id === blogId ? { ...blog, isPublished: checked } : blog
         );
         setBlogs(updatedBlogs);
-        setFilteredBlogs(updatedBlogs.filter(blog => 
-          !searchQuery.trim() || 
+        setFilteredBlogs(updatedBlogs.filter(blog =>
+          !searchQuery.trim() ||
           blog.blog_Title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
           blog.author?.toLowerCase().includes(searchQuery.toLowerCase()) ||
           blog.blog_Content?.toLowerCase().includes(searchQuery.toLowerCase())
@@ -377,14 +407,14 @@ export default function BlogDashboard() {
       const response = await api.delete(
         `/blog/delete/${blogId}`
       );
-      
+
       console.log('Delete response:', response.data);
-      
+
       if (response.status >= 200 && response.status < 300) {
         const updatedBlogs = blogs.filter(blog => blog._id !== blogId);
         setBlogs(updatedBlogs);
-        setFilteredBlogs(updatedBlogs.filter(blog => 
-          !searchQuery.trim() || 
+        setFilteredBlogs(updatedBlogs.filter(blog =>
+          !searchQuery.trim() ||
           blog.blog_Title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
           blog.author?.toLowerCase().includes(searchQuery.toLowerCase()) ||
           blog.blog_Content?.toLowerCase().includes(searchQuery.toLowerCase())
@@ -392,20 +422,20 @@ export default function BlogDashboard() {
         calculateAnalytics(updatedBlogs);
         setDeleteModalVisible(false);
         setSelectedBlog(null);
-        
+
         // Show success message
         console.log('Blog deleted successfully');
       }
     } catch (error) {
       console.error("Error deleting blog:", error);
-      
+
       let errorMessage = 'Failed to delete blog';
       if (error.response) {
         errorMessage = error.response.data?.message || `Server error: ${error.response.status}`;
       } else if (error.request) {
         errorMessage = 'Network error. Please check your connection.';
       }
-      
+
       console.error(errorMessage);
     }
   };
@@ -566,7 +596,7 @@ export default function BlogDashboard() {
       blogs: filteredBlogs,
       timestamp: new Date().toISOString()
     };
-    
+
     if (exportFormat === 'pdf') {
       // Mock PDF export
       console.log('PDF export started');
@@ -612,8 +642,8 @@ export default function BlogDashboard() {
                       e.target.nextSibling.style.display = 'flex';
                     }}
                   />
-                  <div 
-                    className="w-16 h-12 rounded-md border border-gray-200 bg-gray-100 flex items-center justify-center text-xs text-gray-500" 
+                  <div
+                    className="w-16 h-12 rounded-md border border-gray-200 bg-gray-100 flex items-center justify-center text-xs text-gray-500"
                     style={{ display: 'none' }}
                   >
                     No Image
@@ -703,189 +733,181 @@ export default function BlogDashboard() {
       },
       render: (_, record) => (
         <div className="flex items-center space-x-3">
-          <Tooltip title={`${record.likes || 0} Likes`}>
-            <div className="flex items-center space-x-1 text-green-600">
-              <ThumbsUp size={16} />
-              <span className="text-sm font-medium">{record.likes || 0}</span>
-            </div>
-          </Tooltip>
-          <Tooltip title={`${record.shares || 0} Shares`}>
-            <div className="flex items-center space-x-1 text-purple-600">
-              <Share2 size={16} />
-              <span className="text-sm font-medium">{record.shares || 0}</span>
-            </div>
-          </Tooltip>
-          <Tooltip title={`${record.commentsCount || 0} Comments`}>
-            <div className="flex items-center space-x-1 text-red-600">
-              <MessageCircle size={16} />
-              <span className="text-sm font-medium">{record.commentsCount || 0}</span>
-            </div>
-          </Tooltip>
+          <div title={`${record.likes || 0} Likes`} className="flex items-center space-x-1 text-green-600">
+            <ThumbsUp size={16} />
+            <span className="text-sm font-medium">{record.likes || 0}</span>
+          </div>
+          <div title={`${record.shares || 0} Shares`} className="flex items-center space-x-1 text-purple-600">
+            <Share2 size={16} />
+            <span className="text-sm font-medium">{record.shares || 0}</span>
+          </div>
+          <div title={`${record.commentsCount || 0} Comments`} className="flex items-center space-x-1 text-red-600">
+            <MessageCircle size={16} />
+            <span className="text-sm font-medium">{record.commentsCount || 0}</span>
+          </div>
         </div>
       ),
     },
     {
       title: 'Actions',
       key: 'actions',
-      width: 220,
+      width: 280,
       fixed: 'right',
       render: (_, record) => (
-        <Space size="small">
-          <Tooltip title="View Blog">
-            <Button
-              type="text"
-              icon={<Eye size={18} />}
-              onClick={() => history(blogLink(record))}
-              className="text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-full"
-            />
-          </Tooltip>
+        <div className="flex items-center gap-1">
+          <button
+            type="button"
+            title="View Blog"
+            className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-blue-50 hover:text-blue-800 text-blue-600 h-8 w-8 p-0 rounded-full"
+            onClick={() => history(blogLink(record))}
+          >
+            <Eye size={18} />
+          </button>
 
-          <Tooltip title="Edit Blog">
-            <Button
-              type="text"
-              icon={<Edit size={18} />}
-              className="text-indigo-600 hover:text-indigo-800 hover:bg-indigo-50 rounded-full"
-              onClick={(e) => {
-                if (!isOwnedByMe(record)) {
-                  e.preventDefault();
-                  console.warn('For edit, contact admin');
-                  return;
-                }
-                history(`/seo/blogs/edit/${record._id}`);
-              }}
-            />
-          </Tooltip>
-          <Tooltip title={record.isPublished ? "Click to Unpublish" : "Click to Publish"}>
-  <div className="flex items-center gap-2">
-    <div
-      className={`relative flex items-center cursor-pointer select-none transition-all duration-300 
+          <button
+            type="button"
+            title="Edit Blog"
+            className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-indigo-50 hover:text-indigo-800 text-indigo-600 h-8 w-8 p-0 rounded-full"
+            onClick={(e) => {
+              if (!isOwnedByMe(record)) {
+                e.preventDefault();
+                console.warn('For edit, contact admin');
+                return;
+              }
+              history(`/seo/blogs/edit/${record._id}`);
+            }}
+          >
+            <Edit size={18} />
+          </button>
+
+          <button
+            type="button"
+            title="Analyze SEO"
+            className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-green-500 text-white hover:bg-green-600 h-8 w-8 p-0 rounded-full shadow-sm"
+            onClick={() => handleAnalyzeSEO(record)}
+            disabled={isAnalyzing && selectedBlogForSeo?._id === record._id}
+          >
+            {isAnalyzing && selectedBlogForSeo?._id === record._id ? (
+              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+            ) : (
+              <Search size={18} />
+            )}
+          </button>
+          <div title={record.isPublished ? "Click to Unpublish" : "Click to Publish"} className="flex items-center gap-2">
+            <div
+              className={`relative flex items-center cursor-pointer select-none transition-all duration-300 
         ${isOwnedByMe(record) ? 'opacity-100' : 'opacity-60 cursor-not-allowed'}
       `}
-      onClick={() => {
-        if (!isOwnedByMe(record)) {
-          console.warn('For publish/unpublish, contact admin');
-          return;
-        }
-        setSelectedBlog(record);
-        handlePublishToggle(!record.isPublished, record._id);
-      }}
-    >
-      {/* Smooth Toggle Base */}
-      <div
-        className={`w-11 h-6 rounded-full transition-colors duration-300 ease-in-out 
-          ${record.isPublished ? 'bg-green-500 shadow-md shadow-green-300/40' : 'bg-gray-300'}
-        `}
-      />
-      {/* Toggle Circle */}
-      <div
-        className={`absolute left-0 top-0 w-6 h-6 bg-white rounded-full shadow-sm transform transition-transform duration-300
-          ${record.isPublished ? 'translate-x-5' : 'translate-x-0'}
-        `}
-      />
-    </div>
-
-    {/* Label */}
-    <span
-      className={`text-xs font-medium transition-all duration-300 ${
-        record.isPublished ? 'text-green-600' : 'text-gray-500'
-      }`}
-    >
-      {record.isPublished ? 'Published' : 'Draft'}
-    </span>
-  </div>
-</Tooltip>
-
-          <Tooltip title="Delete Blog">
-            <Button
-              type="text"
-              danger
-              icon={<Trash2 size={18} />}
               onClick={() => {
-                // Always block deletion: require contacting admin
-                console.warn('For delete, contact admin');
-                return;
+                if (!isOwnedByMe(record)) {
+                  console.warn('For publish/unpublish, contact admin');
+                  return;
+                }
+                togglePublish(record._id);
               }}
-              className="hover:bg-red-50 rounded-full"
-            />
-          </Tooltip>
-        </Space>
+            >
+              <div className={`relative w-11 h-6 ${record.isPublished ? 'bg-green-500' : 'bg-gray-300'} rounded-full transition-colors duration-300`}>
+                <div className={`absolute top-0.5 ${record.isPublished ? 'left-6' : 'left-0.5'} w-5 h-5 bg-white rounded-full shadow-md transition-all duration-300`} />
+              </div>
+              <span
+                className={`text-xs font-medium transition-all duration-300 ${record.isPublished ? 'text-green-600' : 'text-gray-500'
+                  }`}
+              >
+                {record.isPublished ? 'Published' : 'Draft'}
+              </span>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            title="Delete Blog"
+            className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-red-50 hover:text-red-800 text-red-600 h-8 w-8 p-0 rounded-full"
+            onClick={() => {
+              // Always block deletion: require contacting admin
+              console.warn('For delete, contact admin');
+              return;
+            }}
+          >
+            <Trash2 size={18} />
+          </button>
+        </div>
       ),
     },
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 p-2 sm:p-3 lg:p-4">
+    <div className="min-h-screen bg-background">
       <div className="w-full max-w-7xl mx-auto">
         {/* Professional Header */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-3 sm:p-4 mb-2 border border-gray-100 dark:border-gray-700 backdrop-blur-sm bg-opacity-90 dark:bg-opacity-90">
-  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-    <div className="space-y-1">
-      <div className="flex items-center space-x-2">
-        <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-md flex items-center justify-center">
-          <BarChart3 size={16} className="text-white" />
+        <div className="bg-card border-border rounded-lg shadow-sm p-4 mb-4 border backdrop-blur-sm">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+            <div className="space-y-1">
+              <div className="flex items-center space-x-2">
+                <div className="w-8 h-8 bg-primary rounded-md flex items-center justify-center">
+                  <BarChart3 size={16} className="text-primary-foreground" />
+                </div>
+                <div>
+                  <h2 className="text-lg sm:text-xl font-bold mb-0">
+                    Blog Analytics
+                  </h2>
+                  <p className="text-xs sm:text-sm text-muted-foreground">
+                    Professional insights overview
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto mt-2 sm:mt-0">
+              <select
+                value={timeRange}
+                onChange={(e) => setTimeRange(e.target.value)}
+                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              >
+                <option value="7d">7d</option>
+                <option value="30d">30d</option>
+                <option value="90d">90d</option>
+                <option value="1y">1y</option>
+              </select>
+              <select
+                value={apiBase.includes("localhost") ? "local" : "prod"}
+                onChange={(e) => handleApiBaseChange(e.target.value)}
+                className="text-xs sm:text-sm px-2 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-orange-500 focus:border-orange-500"
+                title={`Current API: ${apiBase}`}
+              >
+                <option value="local">API: Local</option>
+                <option value="prod">API: Production</option>
+              </select>
+              <button
+                onClick={() => {
+                  setShowAutoModal(true);
+                  setAutoError("");
+                  setAutoSuccess("");
+                }}
+                className="flex items-center justify-center space-x-1 sm:space-x-2 w-full sm:w-auto text-xs sm:text-sm px-3 py-1.5 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-md shadow hover:shadow-md transition-all duration-200"
+              >
+                <Zap size={14} />
+                <span>Auto Generate</span>
+              </button>
+              <Link to="/seo/blogs/write" className="flex-1 sm:flex-none">
+                <button className="flex items-center justify-center space-x-1 sm:space-x-2 w-full sm:w-auto text-xs sm:text-sm px-3 py-1.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-md shadow hover:shadow-md transition-all duration-200">
+                  <Plus size={14} />
+                  <span>New Blog</span>
+                </button>
+              </Link>
+              <Link to="/seo/blogs/profile" className="flex-1 sm:flex-none">
+                <button className="flex items-center justify-center space-x-1 sm:space-x-2 w-full sm:w-auto text-xs sm:text-sm px-3 py-1.5 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-md shadow hover:shadow-md transition-all duration-200">
+                  <User size={14} />
+                  <span>Profile</span>
+                </button>
+              </Link>
+              <Link to="/seo/blogs/manage" className="flex-1 sm:flex-none">
+                <button className="flex items-center justify-center space-x-1 sm:space-x-2 w-full sm:w-auto text-xs sm:text-sm px-3 py-1.5 border border-gray-300 text-gray-700 rounded-md hover:border-blue-500 hover:text-blue-500 transition-all duration-200">
+                  <FileText size={14} />
+                  <span>Manage</span>
+                </button>
+              </Link>
+            </div>
+          </div>
         </div>
-        <div>
-          <h2 className="text-lg sm:text-xl font-bold mb-0 bg-gradient-to-r from-gray-800 via-blue-600 to-indigo-600 dark:from-gray-100 dark:via-blue-400 dark:to-indigo-400 bg-clip-text text-transparent">
-            Blog Analytics
-          </h2>
-          <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300">
-            Professional insights overview
-          </p>
-        </div>
-      </div>
-    </div>
-    <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto mt-2 sm:mt-0">
-      <select
-        value={timeRange}
-        onChange={(e) => setTimeRange(e.target.value)}
-        className="text-xs sm:text-sm px-2 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-      >
-        <option value="7d">7d</option>
-        <option value="30d">30d</option>
-        <option value="90d">90d</option>
-        <option value="1y">1y</option>
-      </select>
-    <select
-      value={apiBase.includes("localhost") ? "local" : "prod"}
-      onChange={(e) => handleApiBaseChange(e.target.value)}
-      className="text-xs sm:text-sm px-2 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-orange-500 focus:border-orange-500"
-      title={`Current API: ${apiBase}`}
-    >
-      <option value="local">API: Local</option>
-      <option value="prod">API: Production</option>
-    </select>
-      <button
-        onClick={() => {
-          setShowAutoModal(true);
-          setAutoError("");
-          setAutoSuccess("");
-        }}
-        className="flex items-center justify-center space-x-1 sm:space-x-2 w-full sm:w-auto text-xs sm:text-sm px-3 py-1.5 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-md shadow hover:shadow-md transition-all duration-200"
-      >
-        <Zap size={14} />
-        <span>Auto Generate</span>
-      </button>
-      <Link to="/seo/blogs/write" className="flex-1 sm:flex-none">
-        <button className="flex items-center justify-center space-x-1 sm:space-x-2 w-full sm:w-auto text-xs sm:text-sm px-3 py-1.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-md shadow hover:shadow-md transition-all duration-200">
-          <Plus size={14} />
-          <span>New Blog</span>
-        </button>
-      </Link>
-      <Link to="/seo/blogs/profile" className="flex-1 sm:flex-none">
-        <button className="flex items-center justify-center space-x-1 sm:space-x-2 w-full sm:w-auto text-xs sm:text-sm px-3 py-1.5 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-md shadow hover:shadow-md transition-all duration-200">
-          <User size={14} />
-          <span>Profile</span>
-        </button>
-      </Link>
-      <Link to="/seo/blogs/manage" className="flex-1 sm:flex-none">
-        <button className="flex items-center justify-center space-x-1 sm:space-x-2 w-full sm:w-auto text-xs sm:text-sm px-3 py-1.5 border border-gray-300 text-gray-700 rounded-md hover:border-blue-500 hover:text-blue-500 transition-all duration-200">
-          <FileText size={14} />
-          <span>Manage</span>
-        </button>
-      </Link>
-    </div>
-  </div>
-</div>
 
         {/* Enhanced Blog Statistics */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 mb-3">
@@ -975,28 +997,28 @@ export default function BlogDashboard() {
               <span className="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full">Best Performer</span>
             </div>
             <div className="flex flex-col lg:flex-row items-center lg:items-start space-y-3 lg:space-y-0 lg:space-x-4">
-               <div className="relative">
-                 {(() => {
-                   const img = analytics.topPerformingBlog.blog_Image || {};
-                   const cdn = typeof img.cdn_url === 'string' && img.cdn_url.trim();
-                   const direct = typeof img.url === 'string' && img.url.trim();
-                   const src = cdn || direct || (typeof img === 'string' ? img : '');
-                   return src ? (
-                     <img
-                       src={src}
-                       alt={analytics.topPerformingBlog.blog_Title || "Top Blog Image"}
-                       className="w-24 h-18 object-cover rounded-lg shadow-md border border-gray-200 flex-shrink-0"
-                     />
-                   ) : (
-                     <div className="w-24 h-18 rounded-lg border border-gray-200 bg-gray-100 flex-shrink-0" />
-                   );
-                 })()}
-                 <div className="absolute -top-1 -right-1 w-5 h-5 bg-yellow-500 rounded-full flex items-center justify-center">
-                   <Award size={10} className="text-white" />
-                 </div>
-               </div>
+              <div className="relative">
+                {(() => {
+                  const img = analytics.topPerformingBlog.blog_Image || {};
+                  const cdn = typeof img.cdn_url === 'string' && img.cdn_url.trim();
+                  const direct = typeof img.url === 'string' && img.url.trim();
+                  const src = cdn || direct || (typeof img === 'string' ? img : '');
+                  return src ? (
+                    <img
+                      src={src}
+                      alt={analytics.topPerformingBlog.blog_Title || "Top Blog Image"}
+                      className="w-24 h-18 object-cover rounded-lg shadow-md border border-gray-200 flex-shrink-0"
+                    />
+                  ) : (
+                    <div className="w-24 h-18 rounded-lg border border-gray-200 bg-gray-100 flex-shrink-0" />
+                  );
+                })()}
+                <div className="absolute -top-1 -right-1 w-5 h-5 bg-yellow-500 rounded-full flex items-center justify-center">
+                  <Award size={10} className="text-white" />
+                </div>
+              </div>
               <div className="flex-1 text-center lg:text-left">
-                <Link to={`/blog/${analytics.topPerformingBlog.blog_Title?.replace(/\s+/g, '-').replace(/[?!,\.;:\{\}\(\)\$\@]+/g, '')}/${analytics.topPerformingBlog._id}`}>
+                <Link to={`/blog/${analytics.topPerformingBlog.blog_Title?.replace(/\s+/g, '-').replace(/[?!,\.;:\{\}\(\)\$\@]+/g, '')}/${analytics.topPerformingBlog._id}/`}>
                   <h3 className="text-sm font-semibold mb-1 hover:text-blue-600 transition-colors duration-200 cursor-pointer">
                     {analytics.topPerformingBlog.blog_Title}
                   </h3>
@@ -1128,12 +1150,12 @@ export default function BlogDashboard() {
                             )}
                           </div>
                           <div className="min-w-0 flex-1">
-                            <div 
+                            <div
                               className="text-sm font-medium text-gray-900 cursor-pointer"
                               title={blog.blog_Title}
                             >
-                              {blog.blog_Title && blog.blog_Title.length > 25 
-                                ? `${blog.blog_Title.substring(0, 25)}...` 
+                              {blog.blog_Title && blog.blog_Title.length > 25
+                                ? `${blog.blog_Title.substring(0, 25)}...`
                                 : blog.blog_Title
                               }
                             </div>
@@ -1146,32 +1168,30 @@ export default function BlogDashboard() {
                           </div>
                         </div>
                       </td>
-                      
+
                       {/* Status Column */}
                       <td className="px-3 py-2 whitespace-nowrap">
-                        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                          blog.isPublished 
-                            ? 'bg-green-100 text-green-800' 
+                        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${blog.isPublished
+                            ? 'bg-green-100 text-green-800'
                             : 'bg-yellow-100 text-yellow-800'
-                        }`}>
+                          }`}>
                           {blog.isPublished ? 'Published' : 'Draft'}
                         </span>
                       </td>
-                      
+
                       {/* Performance Column */}
                       <td className="px-3 py-2 whitespace-nowrap">
                         <div className="flex items-center">
-                          <div className={`w-2 h-2 rounded-full mr-2 ${
-                            (blog.views || 0) > 100 ? 'bg-green-500' : 
-                            (blog.views || 0) > 50 ? 'bg-yellow-500' : 'bg-red-500'
-                          }`}></div>
+                          <div className={`w-2 h-2 rounded-full mr-2 ${(blog.views || 0) > 100 ? 'bg-green-500' :
+                              (blog.views || 0) > 50 ? 'bg-yellow-500' : 'bg-red-500'
+                            }`}></div>
                           <span className="text-xs font-medium">
-                            {(blog.views || 0) > 100 ? 'High' : 
-                             (blog.views || 0) > 50 ? 'Medium' : 'Low'}
+                            {(blog.views || 0) > 100 ? 'High' :
+                              (blog.views || 0) > 50 ? 'Medium' : 'Low'}
                           </span>
                         </div>
                       </td>
-                      
+
                       {/* Views Column */}
                       <td className="px-3 py-2 whitespace-nowrap">
                         <div className="flex items-center text-sm">
@@ -1179,7 +1199,7 @@ export default function BlogDashboard() {
                           <span>{blog.views || 0}</span>
                         </div>
                       </td>
-                      
+
                       {/* Engagement Column */}
                       <td className="px-3 py-2 whitespace-nowrap">
                         <div className="flex items-center space-x-2 text-xs">
@@ -1197,38 +1217,37 @@ export default function BlogDashboard() {
                           </div>
                         </div>
                       </td>
-                      
+
                       {/* Actions Column */}
                       <td className="px-3 py-2 whitespace-nowrap text-right text-sm font-medium">
                         <div className="flex items-center space-x-1">
-                          <Link 
+                          <Link
                             to={blogLink(blog)}
                             className="text-blue-600 hover:text-blue-800 p-1 rounded"
                             title="View Blog"
                           >
                             <Eye size={14} />
                           </Link>
-                             <button
-                          onClick={() => {
-                            if (!isOwnedByMe(blog)) {
-                              message.warning("For edit, contact admin");
-                              return;
-                            }
-                            history(`/seo/blogs/edit/${blog._id}`);
-                          }}
-                          className="group p-0.25 rounded-full transition-all duration-300 hover:scale-110"
-                          title="Edit Blog"
-                        >
-                          <Edit
-                            size={10}
-                            className="text-indigo-600 group-hover:text-indigo-700 transition-colors duration-300"
-                          />
-                        </button>
+                          <button
+                            onClick={() => {
+                              if (!isOwnedByMe(blog)) {
+                                message.warning("For edit, contact admin");
+                                return;
+                              }
+                              history(`/seo/blogs/edit/${blog._id}`);
+                            }}
+                            className="group p-0.25 rounded-full transition-all duration-300 hover:scale-110"
+                            title="Edit Blog"
+                          >
+                            <Edit
+                              size={10}
+                              className="text-indigo-600 group-hover:text-indigo-700 transition-colors duration-300"
+                            />
+                          </button>
                           <div className="relative">
                             <div
-                              className={`w-8 h-4 rounded-full transition-colors duration-300 cursor-pointer ${
-                                blog.isPublished ? 'bg-green-500' : 'bg-gray-300'
-                              }`}
+                              className={`w-8 h-4 rounded-full transition-colors duration-300 cursor-pointer ${blog.isPublished ? 'bg-green-500' : 'bg-gray-300'
+                                }`}
                               onClick={() => {
                                 setSelectedBlog(blog);
                                 handlePublishToggle(!blog.isPublished, blog._id);
@@ -1236,9 +1255,8 @@ export default function BlogDashboard() {
                               title={blog.isPublished ? "Click to Unpublish" : "Click to Publish"}
                             >
                               <div
-                                className={`w-4 h-4 bg-white rounded-full shadow transform transition-transform duration-300 ${
-                                  blog.isPublished ? 'translate-x-4' : 'translate-x-0'
-                                }`}
+                                className={`w-4 h-4 bg-white rounded-full shadow transform transition-transform duration-300 ${blog.isPublished ? 'translate-x-4' : 'translate-x-0'
+                                  }`}
                               ></div>
                             </div>
                           </div>
@@ -1259,7 +1277,7 @@ export default function BlogDashboard() {
                 </tbody>
               </table>
             )}
-            
+
             {/* Pagination */}
             {filteredBlogs.length > 10 && (
               <div className="flex items-center justify-between px-4 py-3 bg-white border-t border-gray-200">
@@ -1324,7 +1342,7 @@ export default function BlogDashboard() {
                     className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-1 focus:ring-orange-500 focus:border-orange-500"
                   />
                 </div>
-                
+
                 {/* Target Links Section */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -1371,7 +1389,7 @@ export default function BlogDashboard() {
                     These links will be incorporated into the generated blog content
                   </p>
                 </div>
-                
+
                 <label className="inline-flex items-center space-x-2 text-sm text-gray-700">
                   <input
                     type="checkbox"
@@ -1417,20 +1435,20 @@ export default function BlogDashboard() {
         {deleteModalVisible && (
           <div className="fixed inset-0 z-50 flex items-center justify-center">
             {/* Backdrop */}
-            <div 
+            <div
               className="fixed inset-0 bg-black bg-opacity-50 transition-opacity"
               onClick={() => {
                 setDeleteModalVisible(false);
                 setSelectedBlog(null);
               }}
             ></div>
-            
+
             {/* Modal Content */}
             <div className="relative bg-white rounded-lg shadow-xl max-w-md w-full mx-4 p-6 z-10">
               {/* Header */}
               <div className="flex items-center justify-between mb-4">
                 <span className="text-red-600 flex items-center text-lg font-semibold">
-                  <Trash2 size={24} className="mr-2"/>
+                  <Trash2 size={24} className="mr-2" />
                   Confirm Deletion
                 </span>
                 <button
@@ -1443,7 +1461,7 @@ export default function BlogDashboard() {
                   <X className="w-5 h-5" />
                 </button>
               </div>
-              
+
               {/* Content */}
               <div className="py-4 text-center">
                 <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -1458,7 +1476,7 @@ export default function BlogDashboard() {
                   ". This action cannot be undone.
                 </p>
               </div>
-              
+
               {/* Footer */}
               <div className="flex justify-end space-x-3 mt-6">
                 <button
@@ -1484,6 +1502,114 @@ export default function BlogDashboard() {
           </div>
         )}
       </div>
+
+      {/* SEO Analysis Modal */}
+      {showSeoModal && seoAnalysis && (
+        <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-[5000] flex items-center justify-center p-4" onClick={() => setShowSeoModal(false)}>
+          <div className="bg-background rounded-lg shadow-lg w-full max-w-4xl max-h-[90vh] overflow-hidden border border-border" onClick={(e) => e.stopPropagation()}>
+            {/* Header */}
+            <div className="flex items-center justify-between p-6 border-b border-border">
+              <div>
+                <h2 className="text-xl font-semibold">SEO Analysis Report</h2>
+                <p className="text-sm text-muted-foreground mt-1">
+                  {selectedBlogForSeo?.blog_Title}
+                </p>
+              </div>
+              <button
+                onClick={() => setShowSeoModal(false)}
+                className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-8 w-8 p-0"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+
+            {/* Content */}
+            <div className="flex-1 overflow-auto p-6">
+              <div className="text-center mb-6">
+                <div className={`inline-flex items-center justify-center w-16 h-16 rounded-full mb-4 ${
+                  seoAnalysis.overall_score >= 80 ? 'bg-green-100' :
+                  seoAnalysis.overall_score >= 60 ? 'bg-amber-100' : 'bg-red-100'
+                }`}>
+                  <span className={`text-2xl font-bold ${
+                    seoAnalysis.overall_score >= 80 ? 'text-green-600' :
+                    seoAnalysis.overall_score >= 60 ? 'text-amber-600' : 'text-red-600'
+                  }`}>
+                    {seoAnalysis.overall_score}
+                  </span>
+                </div>
+                <h3 className="text-lg font-semibold">Overall SEO Score</h3>
+                <p className="text-sm text-muted-foreground">
+                  {seoAnalysis.overall_score >= 80 ? 'Excellent' :
+                   seoAnalysis.overall_score >= 60 ? 'Good' : 'Needs Improvement'}
+                </p>
+              </div>
+
+              {/* Basic Metrics */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                <div className="bg-card border-border rounded-lg p-4 border">
+                  <div className="text-2xl font-bold text-primary">{seoAnalysis.content?.wordCount || 0}</div>
+                  <div className="text-sm text-muted-foreground">Words</div>
+                </div>
+                <div className="bg-card border-border rounded-lg p-4 border">
+                  <div className="text-2xl font-bold text-primary">{seoAnalysis.readability?.flesch_score || 0}</div>
+                  <div className="text-sm text-muted-foreground">Readability</div>
+                </div>
+                <div className="bg-card border-border rounded-lg p-4 border">
+                  <div className="text-2xl font-bold text-primary">{seoAnalysis.images?.total || 0}</div>
+                  <div className="text-sm text-muted-foreground">Images</div>
+                </div>
+                <div className="bg-card border-border rounded-lg p-4 border">
+                  <div className="text-2xl font-bold text-primary">{seoAnalysis.links?.total || 0}</div>
+                  <div className="text-sm text-muted-foreground">Links</div>
+                </div>
+              </div>
+
+              {/* Issues and Suggestions */}
+              <div className="space-y-4">
+                {seoAnalysis.h1_validation?.status !== 'success' && (
+                  <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                    <div className="flex items-center gap-2 text-red-600">
+                      <X className="w-4 h-4" />
+                      <span className="font-medium">H1 Tag Issue</span>
+                    </div>
+                    <p className="text-sm text-red-700 mt-1">{seoAnalysis.h1_validation?.message}</p>
+                  </div>
+                )}
+
+                {seoAnalysis.images?.missing_alt > 0 && (
+                  <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+                    <div className="flex items-center gap-2 text-amber-600">
+                      <X className="w-4 h-4" />
+                      <span className="font-medium">Missing Alt Tags</span>
+                    </div>
+                    <p className="text-sm text-amber-700 mt-1">{seoAnalysis.images?.missing_alt} images missing alt text</p>
+                  </div>
+                )}
+
+                {seoAnalysis.content_structure?.status !== 'success' && (
+                  <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+                    <div className="flex items-center gap-2 text-amber-600">
+                      <X className="w-4 h-4" />
+                      <span className="font-medium">Content Structure</span>
+                    </div>
+                    <p className="text-sm text-amber-700 mt-1">Add more lists, tables, or quotes to improve readability</p>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div className="p-4 border-t border-border flex justify-end">
+              <button
+                onClick={() => setShowSeoModal(false)}
+                className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-4 py-2"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

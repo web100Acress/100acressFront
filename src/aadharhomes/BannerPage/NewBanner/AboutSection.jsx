@@ -37,6 +37,7 @@ const AboutSection = ({
                 src={projectViewDetails.projectGallery[0].url}
                 alt={projectViewDetails.projectName}
                 className="nb-about-image"
+                crossOrigin="anonymous"
                 style={{ minHeight: '400px', animation: 'kenBurnsSlow 18s ease-in-out infinite alternate', transformOrigin: 'center center', willChange: 'transform' }}
               />
               <div className="nb-about-image-overlay"></div>

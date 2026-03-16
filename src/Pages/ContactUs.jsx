@@ -125,10 +125,10 @@ const ContactUs = () => {
   return (
     <div className="overflow-x-hidden min-h-screen bg-gradient-to-br from-red-50 via-red-100 to-red-200">
       <Helmet>
-        <title>Contact Us | Reach Out to 100acress.com Experts Guidance</title>
+        <title>Contact 100acress | Get in Touch for Property in Gurgaon</title>
         <meta
           name="description"
-          content="Have questions or need assistance? Contact the 100acress.com team for support with property listings, buying, selling, or renting. We're here to help!"
+          content="Contact 100acress.com for property inquiries, site visits, and real estate assistance in Gurgaon. Connect with our experts for buying, selling, or investing in premium properties."
         />
         <link
           rel="canonical"

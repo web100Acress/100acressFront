@@ -67,7 +67,7 @@ const InsightsNewsMobile = () => {
     return `${minutes} min`;
   };
 
-  const blogLink = (id) => `/insights/blog/${id}`;
+  const blogLink = (id) => `/insights/blog/${id}/`;
 
   const SkeletonCard = () => (
     <div className="bg-white rounded-2xl border border-slate-100 p-4 animate-pulse mb-4">

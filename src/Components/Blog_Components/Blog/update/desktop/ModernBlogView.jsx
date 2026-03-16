@@ -2,17 +2,19 @@ import React, { useContext, useEffect, useState, useRef } from "react";
 import { useParams, Link } from "react-router-dom";
 import api from "../../../../../config/apiClient";
 import { DataContext } from "../../../../../MyContext";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { Helmet } from "react-helmet";
 import DOMPurify from 'dompurify';
 import { Calendar, Clock, Eye, User, X, Phone, Send } from 'lucide-react';
 import { FALLBACK_IMG } from '../../../../../Utils/imageUtils';
 import Footer from "../../../../../Home/Footer/CrimsonEleganceFooter";
 import FAQSection from "../../../../Actual_Components/FAQSection";
-
+// import { brandedresidences } from "../../../../../Redux/slice/AllSectionData.jsx";
 const ModernBlogView = () => {
   const { allupcomingProject } = useContext(DataContext);
+  const dispatch = useDispatch();
   const spotlight = useSelector(store => store?.project?.spotlight);
+  const brandedResidencesData = useSelector(store => store?.allsectiondata?.brandedresidences || []);
   const [data, setData] = useState({});
   const [loadError, setLoadError] = useState("");
   const [isLoading, setIsLoading] = useState(true);
@@ -27,8 +29,38 @@ const ModernBlogView = () => {
   const [isQuickSubmitting, setIsQuickSubmitting] = useState(false);
   const [countryCode, setCountryCode] = useState('+91'); // Default to India
   const [isCountryDropdownOpen, setIsCountryDropdownOpen] = useState(false);
+  const [activeHeading, setActiveHeading] = useState(null);
+  const [blogCategories, setBlogCategories] = useState([]);
+  const [tableBlocks, setTableBlocks] = useState([]);
   const countryDropdownRef = useRef(null);
   const { id, slug } = useParams();
+
+  // // Fetch branded residences data using dedicated utility
+  // useEffect(() => {
+  //   const fetchBrandedResidences = async () => {
+  //     try {
+  //       console.log('🏢 ModernBlogView: Fetching branded residences data...');
+  //       const projects = await getBrandedResidences();
+  //       if (projects && projects.length > 0) {
+  //         console.log('🏢 ModernBlogView: Branded residences data fetched successfully:', projects.length);
+  //         dispatch(brandedresidences(projects));
+  //       } else {
+  //         console.log('🏢 ModernBlogView: No branded residences data found, falling back to general projects');
+  //         await getAllProjects('brandedresidences', 4);
+  //       }
+  //     } catch (error) {
+  //       console.error('🏢 ModernBlogView: Error fetching branded residences:', error);
+  //       // Attempt fallback to general API service
+  //       try {
+  //         await getAllProjects('brandedresidences', 4);
+  //       } catch (fallbackError) {
+  //         console.error('🏢 ModernBlogView: Fallback also failed:', fallbackError);
+  //       }
+  //     }
+  //   };
+
+  //   fetchBrandedResidences();
+  // }, [dispatch, getAllProjects]);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -282,38 +314,46 @@ const ModernBlogView = () => {
 
   const selectedCountry = countryCodes.find(c => c.code === countryCode) || countryCodes[0];
 
-  // Extract headings from HTML content
+  // Extract headings from HTML content and add IDs to actual content
   const extractHeadings = (htmlContent) => {
     if (!htmlContent) return [];
-    
+
     const tempDiv = document.createElement('div');
     tempDiv.innerHTML = htmlContent;
-    
+
     const headingElements = tempDiv.querySelectorAll('h1, h2, h3');
     const extractedHeadings = [];
     let h1Count = 0;
     let h2Count = 0;
-    
+    let h3Count = 0;
+    let currentH1 = 0;
+    let currentH2 = 0;
+
     headingElements.forEach((heading, index) => {
       const level = parseInt(heading.tagName[1]);
       const text = heading.textContent.trim();
       const id = `heading-${index}`;
-      
+
       // Set ID on original heading for linking
       heading.id = id;
-      
+
       let number = '';
       if (level === 1) {
         h1Count++;
         h2Count = 0;
+        h3Count = 0;
+        currentH1 = h1Count;
         number = `${h1Count}`;
       } else if (level === 2) {
         h2Count++;
-        number = `${h1Count}.${h2Count}`;
+        h3Count = 0;
+        currentH2 = h2Count;
+        number = `${h2Count}`;
       } else if (level === 3) {
-        number = `${h1Count}.${h2Count}.${h2Count}`;
+        h3Count++;
+        number = `${currentH2}.${h3Count}`;
       }
-      
+
       extractedHeadings.push({
         id,
         text,
@@ -321,9 +361,26 @@ const ModernBlogView = () => {
         number
       });
     });
-    
+
     return extractedHeadings;
   };
+
+  // Add IDs to headings in the actual content
+  const addHeadingIds = (htmlContent) => {
+    if (!htmlContent) return htmlContent;
+
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = htmlContent;
+
+    const headingElements = tempDiv.querySelectorAll('h1, h2, h3');
+    headingElements.forEach((heading, index) => {
+      heading.id = `heading-${index}`;
+    });
+
+    return tempDiv.innerHTML;
+  };
+
+
 
   // Fetch blog data
   useEffect(() => {
@@ -331,45 +388,148 @@ const ModernBlogView = () => {
       setIsLoading(true);
       try {
         let response;
-        
+        console.log('Fetching blog with slug:', slug);
+        console.log('Fetching blog with id:', id);
+
+        // Determine if the parameter is a slug or ID
+        let isSlug = false;
+        let isId = false;
+
         if (slug) {
-          response = await api.get(`blog/by-slug/${encodeURIComponent(slug)}`);
-        } else if (id) {
-          response = await api.get(`blog/by-slug/${encodeURIComponent(id)}`);
+          // Check if slug looks like a MongoDB ObjectId (24 hex chars)
+          isSlug = !/^[0-9a-fA-F]{24}$/.test(slug);
         }
-        
-        if (response.data?.data) {
-          setData(response.data.data);
+
+        if (id) {
+          // Check if id looks like a MongoDB ObjectId
+          isId = /^[0-9a-fA-F]{24}$/.test(id);
+        }
+
+        console.log('Parameter detection:', { slug, isSlug, id, isId });
+
+        if (slug && isSlug) {
+          // Try to fetch by slug first
+          try {
+            response = await api.get(`blog/by-slug/${encodeURIComponent(slug)}`);
+            console.log('Successfully fetched by slug');
+          } catch (slugError) {
+            console.log('Slug fetch failed, trying as ID:', slugError.message);
+            // If slug fetch fails, try treating it as an ID
+            response = await api.get(`blog/view/${slug}`);
+            console.log('Successfully fetched by ID (fallback)');
+          }
+        } else if (id && isId) {
+          response = await api.get(`blog/view/${id}`);
+          console.log('Successfully fetched by ID');
+        } else if (slug && !isSlug) {
+          // Slug looks like an ID, treat it as ID
+          response = await api.get(`blog/view/${slug}`);
+          console.log('Successfully fetched by ID (slug looked like ID)');
         } else {
-          setLoadError("Blog post not found");
+          console.log('Invalid parameters, trying slug first');
+          response = await api.get(`blog/by-slug/${encodeURIComponent(slug || id)}`);
         }
-        setIsLoading(false);
+
+        const b = response?.data?.data;
+        console.log('Blog response:', b);
+
+        if (b) {
+          setData(b);
+          setHeadings(extractHeadings(b.blog_Content || b.blog_Description));
+          setTableBlocks(Array.isArray(b.tableBlocks) ? b.tableBlocks : []);
+
+          // Check if schema exists
+          if (b.schema) {
+            console.log('Schema found:', b.schema);
+            console.log('Schema type:', b.schema["@type"]);
+          } else {
+            console.log('No schema found in blog data');
+          }
+
+          // Auto-open enquiry form after 15 seconds
+          const timer = setTimeout(() => {
+            setShowEnquiryModal(true);
+          }, 15000);
+
+          const interval = setInterval(() => {
+            setShowEnquiryModal((prev) => (prev ? prev : true));
+          }, 15000);
+
+          return () => {
+            clearTimeout(timer);
+            clearInterval(interval);
+          };
+        } else {
+          console.log('Blog not found in response');
+          setLoadError("Blog not found. Please check the URL and try again.");
+        }
       } catch (error) {
-        setLoadError("Failed to load blog post");
+        console.error('Error fetching blog:', error);
+        setLoadError('Blog not found. Please check the URL and try again.');
+      } finally {
         setIsLoading(false);
       }
     };
 
     if (id || slug) {
       fetchBlog();
-      // Auto-open enquiry form after a short delay once blog starts loading
-      const timer = setTimeout(() => {
-        setShowEnquiryModal(true);
-      }, 1000); // 1 second delay
-
-      const interval = setInterval(() => {
-        setShowEnquiryModal((prev) => (prev ? prev : true));
-      }, 15000); // re-open after every 15 seconds
-
-      return () => {
-        clearTimeout(timer);
-        clearInterval(interval);
-      };
     } else {
       setLoadError("No blog post specified");
       setIsLoading(false);
     }
   }, [id, slug]);
+
+  // Load blog categories with counts from database
+  useEffect(() => {
+    const loadBlogCategories = async () => {
+      try {
+        // Fetch all blogs with pagination to get complete data
+        let allBlogs = [];
+        let page = 1;
+        const limit = 100;
+        let hasMore = true;
+
+        while (hasMore) {
+          const response = await api.get('blog/view', {
+            params: { page, limit }
+          });
+
+          if (response.data?.data && response.data.data.length > 0) {
+            allBlogs = [...allBlogs, ...response.data.data];
+
+            // If we got less than limit, we're done
+            if (response.data.data.length < limit) {
+              hasMore = false;
+            } else {
+              page++;
+            }
+          } else {
+            hasMore = false;
+          }
+        }
+
+        // Count blogs per category
+        const categoryCounts = {};
+        allBlogs.forEach(blog => {
+          const category = blog.blog_Category || 'Uncategorized';
+          // Only count specified categories
+          if (['News', 'Lifestyle', 'Finance', 'Policies'].includes(category)) {
+            categoryCounts[category] = (categoryCounts[category] || 0) + 1;
+          }
+        });
+
+        // Convert to array format
+        const categoriesWithCounts = Object.entries(categoryCounts)
+          .map(([name, count]) => ({ name, count }))
+          .sort((a, b) => b.count - a.count); // Sort by count descending
+
+        setBlogCategories(categoriesWithCounts);
+      } catch (error) {
+        console.error('Failed to load blog categories:', error);
+      }
+    };
+    loadBlogCategories();
+  }, []);
 
   // Extract headings when data changes
   useEffect(() => {
@@ -391,7 +551,7 @@ const ModernBlogView = () => {
             sortOrder: 'desc'
           }
         });
-        
+
         if (response?.data?.data) {
           // Filter out current blog and take first 6
           const filtered = response.data.data.filter(blog => blog._id !== data._id).slice(0, 6);
@@ -407,25 +567,54 @@ const ModernBlogView = () => {
     }
   }, [data._id]);
 
-  // Scroll handler for sticky header
+  // Track active heading based on scroll position
+  useEffect(() => {
+    if (headings.length === 0) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setActiveHeading(entry.target.id);
+          }
+        });
+      },
+      {
+        rootMargin: '-20% 0px -60% 0px',
+        threshold: 0
+      }
+    );
+
+    // Observe all heading elements
+    headings.forEach((heading) => {
+      const element = document.getElementById(heading.id);
+      if (element) {
+        observer.observe(element);
+      }
+    });
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [headings]);
   useEffect(() => {
     const handleScroll = () => {
       const scrollY = window.scrollY;
       const windowHeight = window.innerHeight;
       const documentHeight = document.documentElement.scrollHeight;
-      
+
       // Calculate hero section height (approximately 60vh + padding)
       const heroSection = document.querySelector('section.relative.overflow-hidden');
       const heroHeight = heroSection ? heroSection.offsetHeight : windowHeight * 0.6;
       const triggerPoint = heroHeight * 0.4; // 40% of hero section
-      
+
       // Show/hide sticky header
       if (scrollY > triggerPoint) {
         setShowStickyHeader(true);
       } else {
         setShowStickyHeader(false);
       }
-      
+
       // Calculate scroll progress
       const progress = ((scrollY - triggerPoint) / (documentHeight - triggerPoint - windowHeight)) * 100;
       setScrollProgress(Math.min(Math.max(progress, 0), 100));
@@ -433,22 +622,22 @@ const ModernBlogView = () => {
 
     window.addEventListener('scroll', handleScroll);
     handleScroll(); // Initial check
-    
+
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   // Image handling
-  const blogImage = data.blog_Image?.cdn_url || 
-                   data.blog_Image?.url || 
-                   data.blog_Image?.Location || 
-                   FALLBACK_IMG;
+  const blogImage = data.blog_Image?.cdn_url ||
+    data.blog_Image?.url ||
+    data.blog_Image?.Location ||
+    FALLBACK_IMG;
 
   // Format date
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleDateString("en-US", {
       month: "long",
-      day: "numeric", 
+      day: "numeric",
       year: "numeric",
     });
   };
@@ -460,9 +649,25 @@ const ModernBlogView = () => {
     return `${minutes} min read`;
   };
 
-  // Blog link helper
+  // Handle smooth scroll to heading
+  const scrollToHeading = (e, headingId) => {
+    e.preventDefault();
+    const element = document.getElementById(headingId);
+    if (element) {
+      const offset = 100; // Account for sticky header
+      const elementPosition = element.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - offset;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+
+      setActiveHeading(headingId);
+    }
+  };
   const blogLink = (blog) => {
-    if (blog?.slug) return `/blog/${blog.slug}`;
+    if (blog?.slug) return `/blog/${blog.slug}/`;
     const slug = (blog.blog_Title || '')
       .toString()
       .toLowerCase()
@@ -471,7 +676,7 @@ const ModernBlogView = () => {
       .replace(/\s+/g, '-')
       .replace(/-+/g, '-')
       .replace(/^-+|-+$/g, '');
-    return `/blog/${slug}/${blog._id}`;
+    return `/blog/${slug}/${blog._id}/`;
   };
 
   const handleEnquirySubmit = async (e) => {
@@ -548,8 +753,8 @@ const ModernBlogView = () => {
         <div className="text-center">
           <h2 className="text-2xl font-bold text-gray-900 mb-4" style={{ fontFamily: "'Open Sans', sans-serif" }}>Blog Post Not Found</h2>
           <p className="text-gray-600 mb-6">The blog post you are looking for does not exist.</p>
-          <Link 
-            to="/blog" 
+          <Link
+            to="/blog"
             className="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-medium rounded-full hover:bg-blue-700 transition-colors"
           >
             Back to Blog
@@ -572,18 +777,18 @@ const ModernBlogView = () => {
       {/* Enquiry Modal */}
       {showEnquiryModal && (
         <div className="fixed inset-0 z-[2000] flex items-center justify-center p-4">
-          <div 
+          <div
             className="absolute inset-0 bg-black/60 backdrop-blur-sm"
             onClick={() => setShowEnquiryModal(false)}
           ></div>
           <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden transform transition-all animate-in fade-in zoom-in duration-300">
-            <button 
+            <button
               onClick={() => setShowEnquiryModal(false)}
               className="absolute right-3 top-3 p-1.5 hover:bg-gray-100 rounded-full transition-colors z-10"
             >
               <X className="w-4 h-4 text-gray-400" />
             </button>
-            
+
             <div className="p-6">
               <div className="text-center mb-6">
                 <div className="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center mx-auto mb-3">
@@ -683,14 +888,53 @@ const ModernBlogView = () => {
           </div>
         </div>
       )}
+      {/* Blog Schema - Inject as first schema tag */}
+      {data?.schema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(data.schema)
+          }}
+        />
+      )}
+
+      {/* Debug Schema Display - Remove in production */}
+      {process.env.NODE_ENV === 'development' && data?.schema && (
+        <div className="fixed bottom-4 right-4 bg-gray-900 text-green-400 p-4 rounded-lg max-w-sm max-h-64 overflow-auto text-xs z-50">
+          <div className="flex justify-between items-center mb-2">
+            <span className="text-white font-bold">Blog Schema Debug</span>
+            <button
+              onClick={() => {
+                console.log('Blog Schema:', data.schema);
+                // Also check all schema tags on page
+                const allSchemas = document.querySelectorAll('script[type="application/ld+json"]');
+                console.log('All Schema Tags:', allSchemas);
+                allSchemas.forEach((schema, index) => {
+                  console.log(`Schema ${index + 1}:`, JSON.parse(schema.textContent));
+                });
+              }}
+              className="text-blue-400 hover:text-blue-300"
+            >
+              Log All Schemas
+            </button>
+          </div>
+          <div className="mb-2 text-yellow-400">
+            Type: {data.schema["@type"]} | ID: {data._id?.slice(-8)}
+          </div>
+          <pre>{JSON.stringify(data.schema, null, 2)}</pre>
+        </div>
+      )}
+
       <Helmet>
         <title>{data.blog_Title || 'Blog Post'}</title>
         <meta name="description" content={data.metaDescription || data.blog_Description?.substring(0, 160)} />
         <meta property="og:title" content={data.blog_Title || 'Blog Post'} />
         <meta property="og:description" content={data.metaDescription || data.blog_Description?.substring(0, 160)} />
         <meta property="og:image" content={data.blog_Image?.display || FALLBACK_IMG} />
+        <meta property="og:url" content={`https://www.100acress.com${window.location.pathname}`} />
         <meta name="twitter:card" content="summary_large_image" />
         {data.blog_Image?.url && <meta name="twitter:image" content={data.blog_Image.url} />}
+        <link rel="canonical" href={`https://www.100acress.com${window.location.pathname}`} />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
@@ -699,9 +943,9 @@ const ModernBlogView = () => {
       {/* Hero Section */}
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-red-50 via-white to-gray-100" />
-        
-        <div className="relative max-w-7xl mx-auto px-6 py-16">
-          
+
+        <div className="relative max-w-7xl mx-auto px-4 py-16">
+
           {/* Metadata Section */}
           <div className="max-w-4xl mx-auto mb-8 pt-8">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -713,7 +957,7 @@ const ModernBlogView = () => {
                   </div>
                 )}
                 {data.author && (
-                  <Link 
+                  <Link
                     to={`/author/${encodeURIComponent(data.author)}`}
                     className="inline-flex items-center space-x-2 px-3 py-1 bg-gray-100 border border-gray-300 rounded-full hover:bg-gray-200 transition-colors cursor-pointer"
                   >
@@ -732,10 +976,10 @@ const ModernBlogView = () => {
                   title="Share on Facebook"
                 >
                   <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
                   </svg>
                 </a>
-                
+
                 <a
                   href={`https://twitter.com/intent/tweet?url=${typeof window !== 'undefined' ? window.location.href : ''}&text=${data.blog_Title || ''}`}
                   target="_blank"
@@ -744,10 +988,10 @@ const ModernBlogView = () => {
                   title="Share on X"
                 >
                   <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
                   </svg>
                 </a>
-                
+
                 <a
                   href={`https://www.linkedin.com/sharing/share-offsite/?url=${typeof window !== 'undefined' ? window.location.href : ''}`}
                   target="_blank"
@@ -756,10 +1000,10 @@ const ModernBlogView = () => {
                   title="Share on LinkedIn"
                 >
                   <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
                   </svg>
                 </a>
-                
+
                 <a
                   href={`https://wa.me/?text=${data.blog_Title || ''} ${typeof window !== 'undefined' ? window.location.href : ''}`}
                   target="_blank"
@@ -768,10 +1012,10 @@ const ModernBlogView = () => {
                   title="Share on WhatsApp"
                 >
                   <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.149-.67.149-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.149-.67.149-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" />
                   </svg>
                 </a>
-                
+
                 <a
                   href={`mailto:?subject=${data.blog_Title || ''}&body=Check out this article: ${typeof window !== 'undefined' ? window.location.href : ''}`}
                   className="w-8 h-8 bg-gray-600 text-white rounded-full flex items-center justify-center hover:bg-gray-700 transition-colors"
@@ -820,44 +1064,50 @@ const ModernBlogView = () => {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-gray-900/10 via-transparent to-transparent" />
               </div>
+
+              {/* Publication Date */}
+              {data.createdAt && (
+                <div className="mt-4 text-left">
+                  <p className="text-sm text-gray-600 font-bold" style={{ fontFamily: "Georgia, 'Times New Roman', Times, serif" }}>
+                    Published on {formatDate(data.createdAt)}
+                  </p>
+                </div>
+              )}
             </div>
 
             {/* Right Column - 40% (Table of Contents) */}
             <div className="lg:col-span-4">
-              <div className="bg-gray-50 rounded-lg border border-gray-200 p-6 shadow-sm sticky top-24">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-bold text-gray-900" style={{ fontFamily: "'Open Sans', sans-serif" }}>
-                    Contents
-                  </h3>
-                  <button className="text-gray-400 hover:text-gray-600">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
-                    </svg>
-                  </button>
-                </div>
-                
-                <div className="overflow-y-auto max-h-96 pr-2">
+              <div className="bg-white rounded-lg border border-gray-200 p-6 shadow-sm sticky top-24">
+                <h3 className="text-2xl font-bold text-gray-900 mb-3" style={{ fontFamily: "Georgia, 'Times New Roman', Times, serif" }}>
+                  Table of Content
+                </h3>
+
+                <div className="overflow-y-auto max-h-64 pr-2">
                   {headings.length > 0 ? (
-                    <nav className="space-y-1 text-sm">
-                      {headings.map((heading) => (
-                        <a
-                          key={heading.id}
-                          href={`#${heading.id}`}
-                          className={`flex items-center text-red-600 hover:text-red-700 transition-colors whitespace-nowrap overflow-hidden text-ellipsis ${
-                            heading.level === 1 ? 'font-semibold py-1' :
-                            heading.level === 2 ? 'font-medium py-0.5 ml-4' :
-                            'py-0.5 ml-8'
-                          }`}
-                          title={heading.text}
-                        >
-                          {heading.level === 3 ? (
-                            <span className="flex-shrink-0 mr-2 w-1 h-1 rounded-full bg-red-600"></span>
-                          ) : (
-                            <span className="flex-shrink-0 mr-2">{heading.number}.</span>
-                          )}
-                          <span className="overflow-hidden text-ellipsis">{heading.text}</span>
-                        </a>
-                      ))}
+                    <nav className="space-y-3">
+                      {headings.map((heading, index) => {
+                        const isSubHeading = heading.level === 3; // Only H3 are sub-headings now
+                        return (
+                          <a
+                            key={heading.id}
+                            href={`#${heading.id}`}
+                            onClick={(e) => scrollToHeading(e, heading.id)}
+                            className={`flex items-start transition-colors cursor-pointer ${activeHeading === heading.id
+                                ? 'text-gray-900 font-semibold'
+                                : 'text-gray-700 hover:text-gray-900'
+                              } ${isSubHeading ? 'ml-4' : ''}`}
+                            style={{
+                              fontFamily: "Georgia, 'Times New Roman', Times, serif",
+                              fontSize: isSubHeading ? '0.875rem' : '1rem'
+                            }}
+                            title={heading.text}
+                          >
+                            <span className={`flex-shrink-0 mr-3 font-semibold text-gray-900 ${isSubHeading ? 'text-xs' : ''
+                              }`}>{heading.number}</span>
+                            <span className="leading-relaxed hover:underline hover:underline-offset-4 hover:decoration-2 hover:decoration-blue-600">{heading.text}</span>
+                          </a>
+                        );
+                      })}
                     </nav>
                   ) : (
                     <p className="text-sm text-gray-500">No headings found in this article.</p>
@@ -870,84 +1120,122 @@ const ModernBlogView = () => {
       </section>
 
       {/* Main Content with Sidebars */}
-      <main className="max-w-7xl mx-auto px-6 py-16">
+      <main className="max-w-7xl mx-auto px-4 py-4">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
           {/* Left Sidebar - Recommended Projects */}
           <aside className="lg:col-span-3">
             <div className="sticky top-24">
-              <h3 className="text-xl font-bold text-gray-900 mb-6" style={{ fontFamily: "'Open Sans', sans-serif" }}>
-                Recommended Projects
-              </h3>
-              
-              <div className="space-y-3">
-                {spotlight?.slice(0, 4).map((project) => (
-                  <Link
-                    key={project._id}
-                    to={`/projects/${project.slug || project._id}`}
-                    className="block hover:shadow-md transition-all duration-300 group"
-                  >
-                    <div className="flex gap-3 p-2">
-                      {/* Project Image */}
-                      <div className="relative w-20 h-20 rounded-md overflow-hidden flex-shrink-0">
-                        <img
-                          src={project?.thumbnailImage?.url || project?.frontImage?.url || FALLBACK_IMG}
-                          alt={project?.projectName || project.project_Title || 'Project'}
-                          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                          onError={(e) => {
-                            e.target.src = FALLBACK_IMG;
-                          }}
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
-                      </div>
-                      
-                      {/* Project Info */}
-                      <div className="flex-1 min-w-0">
-                        <h4 className="font-semibold text-gray-900 text-sm mb-1 line-clamp-2 group-hover:text-red-600 transition-colors">
-                          {project?.projectName || project.project_Title || project.name}
-                        </h4>
-                        
-                        {/* Price */}
-                        {(project?.minPrice || project?.price) && (
-                          <p className="text-red-600 font-bold text-xs mb-1">
-                            ₹{(project?.minPrice || project?.price)?.toLocaleString()}*
-                          </p>
-                        )}
-                        
-                        {/* Location */}
-                        {project.projectAddress && (
-                          <p className="text-gray-500 text-xs flex items-center">
-                            <svg className="w-3 h-3 mr-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                            </svg>
-                            <span className="truncate">{project.projectAddress}</span>
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-              
-              {/* View All Projects Button */}
-              <Link
-                to="/projects-in-gurugram/"
-                className="block w-full mt-6 text-center px-4 py-2 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 transition-colors"
-              >
-                View All Projects
-              </Link>
+              {/* Blog Categories */}
+              {/* <div className="mt-6 bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+                <h3
+                  className="text-lg font-semibold text-orange-500 mb-4"
+                  style={{ fontFamily: "'Open Sans', sans-serif" }}
+                >
+                  Blog Categories
+                </h3>
+
+                <div className="space-y-3">
+                  {blogCategories.length > 0 ? (
+                    blogCategories.map((category) => (
+                      <button
+                        key={category.name || category}
+                        onClick={() => {
+                          // Filter blogs by category and navigate to main blog page with filter
+                          const categoryName = category.name || category;
+                          window.location.href = `/blog?category=${encodeURIComponent(categoryName)}`;
+                        }}
+                        className="flex items-center justify-between group w-full text-left"
+                      >
+                        <div className="flex items-center gap-3">
+                          <span className="w-4 h-4 border-2 border-orange-400 rounded-sm group-hover:bg-orange-500 transition"></span>
+                          <span className="text-gray-700 text-sm group-hover:text-orange-600">
+                            {category.name || category}
+                          </span>
+                        </div>
+
+                        <span className="bg-gray-100 text-gray-600 text-xs px-2.5 py-1 rounded-full">
+                          {category.count} {category.count === 1 ? 'blog' : 'blogs'}
+                        </span>
+                      </button>
+                    ))
+                  ) : (
+                    <p className="text-sm text-gray-500">Loading categories...</p>
+                  )}
+                </div>
+              </div> */}
             </div>
           </aside>
 
           {/* Main Content */}
           <div className="lg:col-span-6">
+            <style>{`
+              .blog-content-area table {
+                width: 100% !important;
+                border-collapse: collapse !important;
+                margin: 20px 0 !important;
+                border: 1px solid #d1d5db !important;
+                display: table !important;
+              }
+              .blog-content-area tr {
+                display: table-row !important;
+                border: 1px solid #d1d5db !important;
+              }
+              .blog-content-area th, .blog-content-area td {
+                border: 1px solid #d1d5db !important;
+                padding: 12px !important;
+                text-align: left !important;
+                display: table-cell !important;
+              }
+              .blog-content-area th {
+                background-color: #f3f4f6 !important;
+                font-weight: bold !important;
+              }
+            `}</style>
             <article className="prose prose-lg max-w-none">
-              <div 
-                className="text-gray-800 leading-relaxed space-y-6"
-                dangerouslySetInnerHTML={{ 
-                  __html: DOMPurify.sanitize(data.blog_Content || data.blog_Description) 
+              <div
+                className="text-gray-800 leading-relaxed space-y-6 blog-content-area"
+                dangerouslySetInnerHTML={{
+                  __html: DOMPurify.sanitize(addHeadingIds(data.blog_Content || data.blog_Description), {
+                    ADD_TAGS: ['table', 'thead', 'tbody', 'tr', 'th', 'td', 'div', 'h3', 'section', 'figure', 'figcaption'],
+                    ADD_ATTR: ['class', 'id', 'style', 'contenteditable', 'src', 'alt']
+                  })
                 }}
               />
+              
+              {/* Render Table Blocks */}
+              {tableBlocks.length > 0 && (
+                <div className="mt-12 space-y-8">
+                  {tableBlocks.map((block, index) => (
+                    <div key={index} className="overflow-x-auto my-8 shadow-sm border border-gray-200 rounded-xl">
+                      <table className="min-w-full divide-y divide-gray-200">
+                        <thead className="bg-gray-50">
+                          <tr>
+                            {block.rows[0].map((header, hIdx) => (
+                              <th 
+                                key={hIdx} 
+                                className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider border-b border-gray-200"
+                              >
+                                {header}
+                              </th>
+                            ))}
+                          </tr>
+                        </thead>
+                        <tbody className="bg-white divide-y divide-gray-200">
+                          {block.rows.slice(1).map((row, rIdx) => (
+                            <tr key={rIdx} className={rIdx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                              {row.map((cell, cIdx) => (
+                                <td key={cIdx} className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 border-b border-gray-100">
+                                  {cell}
+                                </td>
+                              ))}
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  ))}
+                </div>
+              )}
             </article>
 
             {/* FAQs Section */}
@@ -990,9 +1278,9 @@ const ModernBlogView = () => {
                     <span className="text-sm font-medium">Share</span>
                   </button>
                 </div>
-                
-                <Link 
-                  to="/blog" 
+
+                <Link
+                  to="/blog"
                   className="inline-flex items-center space-x-2 px-6 py-3 bg-red-600 text-white font-medium rounded-full hover:bg-red-700 transition-colors"
                 >
                   <span>Read More Stories</span>
@@ -1005,8 +1293,8 @@ const ModernBlogView = () => {
               <div className="relative">
                 {/* Background gradient */}
                 <div className="absolute inset-0 bg-gradient-to-r from-red-600 via-red-700 to-red-800 rounded-3xl opacity-90"></div>
-                
-                
+
+
               </div>
             </section>
           </div>
@@ -1016,56 +1304,64 @@ const ModernBlogView = () => {
             <div className="sticky top-24 space-y-4">
               {/* What People Are Exploring */}
               <div>
-                <h3 className="text-lg font-bold text-gray-900 mb-3" style={{ fontFamily: "'Open Sans', sans-serif" }}>
+                <h3 className="text-lg font-bold text-gray-900 mb-3" style={{ fontFamily: "'Poppins', sans-serif", fontWeight: 600 }}>
                   What People Are Exploring
                 </h3>
-                
+
                 <div className="space-y-1">
                   <Link
                     to="/projects-in-gurugram/"
                     className="block px-2 py-1 text-sm text-gray-700 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
+                    style={{ fontFamily: "'Poppins', sans-serif" }}
                   >
                     Projects in Gurugram
                   </Link>
                   <Link
                     to="/projects-in-delhi/"
                     className="block px-2 py-1 text-sm text-gray-700 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
+                    style={{ fontFamily: "'Poppins', sans-serif" }}
                   >
                     Projects in Delhi
                   </Link>
                   <Link
                     to="/projects-in-noida/"
                     className="block px-2 py-1 text-sm text-gray-700 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
+                    style={{ fontFamily: "'Poppins', sans-serif" }}
                   >
                     Projects in Noida
                   </Link>
                   <Link
                     to="/projects-in-gurugram/budget"
                     className="block px-2 py-1 text-sm text-gray-700 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
+                    style={{ fontFamily: "'Poppins', sans-serif" }}
                   >
                     Property under 1 Cr
                   </Link>
                   <Link
                     to="/projects/upcoming/"
                     className="block px-2 py-1 text-sm text-gray-700 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
+                    style={{ fontFamily: "'Poppins', sans-serif" }}
                   >
                     Upcoming Projects
                   </Link>
                   <Link
                     to="/projects/new-launch/"
                     className="block px-2 py-1 text-sm text-gray-700 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
+                    style={{ fontFamily: "'Poppins', sans-serif" }}
                   >
                     New Launch Projects
                   </Link>
                   <Link
                     to="/projects/sco-plots/"
                     className="block px-2 py-1 text-sm text-gray-700 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
+                    style={{ fontFamily: "'Poppins', sans-serif" }}
                   >
                     SCO Plots
                   </Link>
                   <Link
                     to="/projects/commercial/"
                     className="block px-2 py-1 text-sm text-gray-700 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
+                    style={{ fontFamily: "'Poppins', sans-serif" }}
                   >
                     Commercial Projects
                   </Link>
@@ -1077,7 +1373,7 @@ const ModernBlogView = () => {
                 <h3 className="text-lg font-bold text-white mb-3" style={{ fontFamily: "'Open Sans', sans-serif" }}>
                   Quick Enquiry
                 </h3>
-                
+
                 <form className="space-y-3" onSubmit={handleQuickEnquirySubmit}>
                   <div>
                     <label className="block text-sm font-medium text-white mb-1">Name</label>
@@ -1089,7 +1385,7 @@ const ModernBlogView = () => {
                       onChange={(e) => setQuickFormData({ ...quickFormData, name: e.target.value })}
                     />
                   </div>
-                  
+
                   <div>
                     <label className="block text-sm font-medium text-white mb-1">Mobile Number</label>
                     <input
@@ -1101,7 +1397,7 @@ const ModernBlogView = () => {
                       onChange={(e) => setQuickFormData({ ...quickFormData, mobile: e.target.value })}
                     />
                   </div>
-                  
+
                   <button
                     type="submit"
                     disabled={isQuickSubmitting}
@@ -1115,19 +1411,19 @@ const ModernBlogView = () => {
           </aside>
         </div>
       </main>
-      
+
       {/* Explore More Stories Section */}
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-6">
           <h2 className="text-3xl font-bold text-gray-900 mb-12 text-center" style={{ fontFamily: "'Open Sans', sans-serif" }}>
             Explore More Stories
           </h2>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {relatedBlogs.map((blog) => (
               <div key={blog._id} className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
                 <div className="h-48 bg-gray-200 rounded-t-lg overflow-hidden">
-                  <img 
+                  <img
                     src={blog.blog_Image?.cdn_url || blog.blog_Image?.url || blog.blog_Image?.Location || FALLBACK_IMG}
                     alt={blog.blog_Title || 'Blog story'}
                     className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
@@ -1157,7 +1453,7 @@ const ModernBlogView = () => {
                     <span className="text-xs text-gray-500">
                       {blog.views || Math.floor(Math.random() * 900) + 100} views
                     </span>
-                    <Link 
+                    <Link
                       to={blogLink(blog)}
                       className="text-red-600 hover:text-red-700 text-sm font-medium transition-colors"
                     >
@@ -1168,10 +1464,10 @@ const ModernBlogView = () => {
               </div>
             ))}
           </div>
-          
+
           <div className="text-center mt-12">
-            <Link 
-              to="/blog" 
+            <Link
+              to="/blog"
               className="inline-flex items-center space-x-2 px-8 py-3 bg-red-600 text-white font-medium rounded-full hover:bg-red-700 transition-colors"
             >
               <span>View All Stories</span>
@@ -1179,9 +1475,9 @@ const ModernBlogView = () => {
           </div>
         </div>
       </section>
-      
-      
-      
+
+
+
       <Footer />
     </div>
   );

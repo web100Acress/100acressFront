@@ -39,7 +39,8 @@ const ProjectOrderManagement = () => {
     recommended: [],
     desiredLuxury: [],
     budgetPlots: [],
-    farm: []
+    farm: [],
+    brandedresidences: []
   });
 
   const [activeTab, setActiveTab] = useState('luxury');
@@ -66,7 +67,8 @@ const ProjectOrderManagement = () => {
     { key: 'recommended', label: 'Recommended Projects', icon: MdStar, color: 'text-pink-600' },
     { key: 'desiredLuxury', label: 'Desired Luxury', icon: MdStar, color: 'text-red-600' },
     { key: 'budgetPlots', label: 'Budget Plots', icon: MdHome, color: 'text-teal-600' },
-    { key: 'farm', label: 'Farm Management', icon: MdLandscape, color: 'text-green-700' }
+    { key: 'farm', label: 'Farm Management', icon: MdLandscape, color: 'text-green-700' },
+    { key: 'brandedresidences', label: 'Branded Residences', icon: MdStar, color: 'text-indigo-700' }
   ];
 
   // Load data from localStorage or API

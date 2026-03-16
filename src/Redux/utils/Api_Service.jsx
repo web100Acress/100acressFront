@@ -1,7 +1,7 @@
 import { useDispatch } from "react-redux";
 import { spotlight, trending, featured, upcoming, affordable, luxury, scoplots, commercial, budget, projectindelhi } from "../slice/projectSlice";
 import { gurugram, delhi, noida, goa, ayodhya, mumbai, panipat, panchkula, kasauli, karnal, jalandhar, sonipat, alwar, dubai, pushkar, pune } from "../slice/StateProject";
-import { allupcomingproject, builderindependentfloor, commercialProjectAll, deendayalplots, dlfsco, luxuryAll, luxuryvillas, newlaunch, readytomove, residential, scoplotsall, underconstruction, possessionafter2026, plotsingurugram, farmhouse, industrialplots, industrialprojects, seniorliving } from "../slice/AllSectionData";
+import { allupcomingproject, builderindependentfloor, commercialProjectAll, deendayalplots, dlfsco, luxuryAll, luxuryvillas, newlaunch, readytomove, residential, scoplotsall, underconstruction, possessionafter2026, plotsingurugram, farmhouse, industrialplots, industrialprojects, seniorliving, brandedresidences } from "../slice/AllSectionData";
 import { signatureglobal, m3m, dlf, experion, elan, bptp, adani, smartworld, trevoc, indiabulls, centralpark, emaarindia, godrej, whiteland, aipl, birla, sobha, trump, puri, aarize, maxestates, shapoorji, satya, danube, bnw, binghatti, sobharealty, damac, nakheel, meraas, aldar, omniyat } from "../slice/BuilderSlice";
 import { Possessionin2025, Possessionin2026 } from "../slice/PossessionSlice";
 import { bptpplots, orrisplots } from "../slice/ProjectOverviewSlice";
@@ -79,6 +79,55 @@ const Api_service = () => {
     }
   }, [dispatch]);
 
+  const getHomepageData = async () => {
+    const CACHE_KEY = "homepage_data_cache";
+    const CACHE_TIME = 5 * 60 * 1000; // 5 minutes
+
+    try {
+      const cached = localStorage.getItem(CACHE_KEY);
+      if (cached) {
+        const { data, time } = JSON.parse(cached);
+        if (Date.now() - time < CACHE_TIME) {
+          console.log("🚀 Serving homepage data from client cache");
+          // Dispatch to all relevant slices
+          dispatch(featured(data.featured));
+          dispatch(trending(data.trending));
+          dispatch(luxury(data.luxury));
+          dispatch(budget(data.budget));
+          dispatch(scoplots(data.sco));
+          dispatch(commercial(data.commercial));
+          dispatch(upcoming(data.upcoming));
+          dispatch(farmhouse(data.farmhouse));
+          return data;
+        }
+      }
+
+      console.log("📡 Fetching fresh homepage data from server");
+      const response = await api.get(`${API_ROUTES.projectsBase()}/homepage/data`);
+      const data = response.data.data;
+
+      // Update Redux
+      dispatch(featured(data.featured));
+      dispatch(trending(data.trending));
+      dispatch(luxury(data.luxury));
+      dispatch(budget(data.budget));
+      dispatch(scoplots(data.sco));
+      dispatch(commercial(data.commercial));
+      dispatch(upcoming(data.upcoming));
+      dispatch(farmhouse(data.farmhouse));
+
+      // Save to cache
+      localStorage.setItem(CACHE_KEY, JSON.stringify({
+        data,
+        time: Date.now()
+      }));
+
+      return data;
+    } catch (error) {
+      console.error("Error fetching homepage data:", error);
+    }
+  };
+
   const getFeatured = async () => {
     try {
       const response = await api.get(`${API_ROUTES.projectsBase()}/featured`);
@@ -134,7 +183,7 @@ const Api_service = () => {
     try {
       // Use dynamic project ordering
       const scoOrder = await getSCODesiredOrder();
-      await getProjectsByCategory('sco', scoOrder, scoplots);
+      await getProjectsByCategory('scoplots', scoOrder, scoplots);
     } catch (error) {
       console.error("Error fetching Sco data:", error);
     }
@@ -243,9 +292,9 @@ const Api_service = () => {
     }
   }
 
-  const getResaleProperties = async () => {
+  const getResaleProperties = async (page = 1, limit = 18) => {
     try {
-      const res = await api.get(`property/buy/ViewAll`);
+      const res = await api.get(`property/buy/ViewAll?page=${page}&limit=${limit}`);
       const responsedata = res.data.ResaleData;
       dispatch(resale(responsedata));
     } catch (error) {
@@ -329,7 +378,7 @@ const Api_service = () => {
     try {
       let response;
       // Mirroring Admin Panel Logic: Fetch all and filter client-side for strict type matching
-      if (query === "farmhouse" || query === "industrialplots" || query === "industrialprojects" || query === "seniorliving") {
+      if (query === "farmhouse" || query === "industrialplots" || query === "industrialprojects" || query === "seniorliving" || query === "brandedresidences") {
         console.log(`🏡 Fetching ALL projects to filter for ${query}...`);
         // We use the viewAll endpoint just like the Admin panel to ensure consistency
         response = await api.get(`${API_ROUTES.projectsBase()}/viewAll/data`);
@@ -387,6 +436,11 @@ const Api_service = () => {
         filteredData = allData.filter(item => item?.type === "Senior Living");
         console.log(`👴 Filtered ${filteredData.length} Senior Living projects`);
         dispatch(seniorliving(filteredData.slice(0, limit > 0 ? limit : undefined)));
+        return;
+      } else if (query === "brandedresidences") {
+        filteredData = allData.filter(item => item?.type === "Branded Residences");
+        console.log(`🏢 Filtered ${filteredData.length} Branded Residences projects`);
+        dispatch(brandedresidences(filteredData.slice(0, limit > 0 ? limit : undefined)));
         return;
       } else {
         // For other queries, use the direct API response
@@ -595,6 +649,7 @@ const Api_service = () => {
           dispatch(satya(BuilderbyQuery));
           console.log('✅ Satya Group data dispatched to Redux');
           break;
+        case 'bptp limited':
         case 'bptp ltd':
         case 'bptp':
           dispatch(bptp(BuilderbyQuery));
@@ -608,6 +663,7 @@ const Api_service = () => {
         case 'trevoc group':
           dispatch(trevoc(BuilderbyQuery));
           break;
+        case 'indiabulls real estate':
         case 'indiabulls':
           dispatch(indiabulls(BuilderbyQuery));
           break;
@@ -629,18 +685,22 @@ const Api_service = () => {
           dispatch(aipl(BuilderbyQuery));
           break;
         case 'birla estate':
+        case 'birla estates':
           dispatch(birla(BuilderbyQuery));
           break;
         case 'sobha developers':
+        case 'sobha':
           dispatch(sobha(BuilderbyQuery));
           break;
         case 'trump towers':
           dispatch(trump(BuilderbyQuery));
           break;
         case 'puri developers':
+        case 'puri constructions':
           dispatch(puri(BuilderbyQuery));
           break;
         case 'aarize developers':
+        case 'aarize group':
           dispatch(aarize(BuilderbyQuery));
           break;
         case 'max estates':

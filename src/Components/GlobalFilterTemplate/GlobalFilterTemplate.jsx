@@ -5,6 +5,7 @@ import { allupcomingproject, newlaunch, underconstruction, readytomove } from ".
 import Api_Service from "../../Redux/utils/Api_Service.jsx";
 import { getProjectOrderData } from "../../Utils/ProjectOrderData";
 import Footer from "../Actual_Components/Footer";
+import Navbar from "../../aadharhomes/navbar/Navbar";
 import { DataContext } from "../../MyContext.jsx";
 import { Helmet } from "react-helmet";
 
@@ -14,6 +15,8 @@ import FilterBar from "../../Pages/ProjectStatusSearch/FilterBar";
 import ProjectCard from "../../Pages/ProjectStatusSearch/ProjectCard";
 import CompareBar from "../../Pages/ProjectStatusSearch/CompareBar";
 import FAQAccordion from "../../Pages/ProjectStatusSearch/FAQAccordion";
+import GlobalLoadingButton from "../GlobalLoadingButton";
+import { staticData } from "../../ProjectTypes/config/staticData";
 import { getPageDataFromURL } from "../../ProjectTypes/config/staticDataExample";
 
 const GlobalFilterTemplate = ({
@@ -24,6 +27,9 @@ const GlobalFilterTemplate = ({
   // Data
   projects = [],
   isLoading = false,
+  loadingMore = false,
+  hasMoreProjects = false,
+  onLoadMore = null,
 
   // SEO Data (preserved exactly as provided)
   metaTitle,
@@ -36,6 +42,17 @@ const GlobalFilterTemplate = ({
   children,
   ...additionalProps
 }) => {
+  console.log('🏗️ GlobalFilterTemplate: Initialized with:', {
+    pageType,
+    projectsCount: projects.length,
+    isLoading,
+    pathname: typeof window !== 'undefined' ? window.location.pathname : 'N/A',
+    projectSample: projects.slice(0, 3).map(p => ({
+      name: p.projectName || p.title,
+      city: p.city,
+      id: p._id
+    }))
+  });
   const { allProjectData } = useContext(DataContext);
   const location = useLocation();
   const [filteredProjects, setFilteredProjects] = useState([]);
@@ -72,6 +89,18 @@ const GlobalFilterTemplate = ({
     const path = location.pathname;
     console.log('Current path:', path);
 
+    // Check for senior living specifically
+    if (path.includes('/projects/senior-living/')) {
+      console.log('Detected senior living page');
+      return 'senior-living';
+    }
+
+    // Check for branded residences URL
+    if (path.includes('/branded-residences')) {
+      console.log('Detected branded residences page');
+      return 'brandedresidences';
+    }
+
     // Check for new unified status URLs: projects/{status}
     if (path.includes('/projects/') && !path.includes('/projects-in-')) {
       const filter = path.split('/projects/')[1]?.replace('/', '');
@@ -101,19 +130,23 @@ const GlobalFilterTemplate = ({
   const projectStatus = getProjectStatus();
   console.log('Detected project status:', projectStatus);
 
+  // Detect BHK type from URL for BHK flats pages
+  const getBhkType = () => {
+    const path = location.pathname;
+    const bhkMatch = path.match(/(\d)-bhk-flats-in-gurgaon/);
+    return bhkMatch ? bhkMatch[1] : null;
+  };
+
+  const bhkType = getBhkType();
+  console.log('Detected BHK type:', bhkType);
+
   // Get page data from static data based on URL
   const searchParams = new URLSearchParams(location.search);
   const searchParamsObj = Object.fromEntries(searchParams.entries());
   const staticPageData = getPageDataFromURL(location.pathname, searchParamsObj);
 
-  // Debug logging (can be removed in production)
-  console.log('Current pathname:', location.pathname);
-  console.log('Static page data:', staticPageData);
-  console.log('Page config:', pageConfig);
-  console.log('Budget page loaded successfully - no custom filtering needed');
-
   // Use pageConfig first, then static data, then fallback to default config
-  const currentConfig = pageConfig || staticPageData || {
+  const baseConfig = pageConfig || staticPageData || {
     title: "Discover Projects",
     description: "Premium projects crafted with quality, sustainability, and exceptional after‑sales service.",
     metaTitle: "Discover Projects - 100acress",
@@ -130,7 +163,10 @@ const GlobalFilterTemplate = ({
     }
   };
 
-  console.log('Final currentConfig:', currentConfig);
+  // Final config with status-based overrides from staticData
+  const currentConfig = (projectStatus && staticData.status[projectStatus]) 
+    ? { ...baseConfig, ...staticData.status[projectStatus] }
+    : baseConfig;
 
   const { getAllProjects } = Api_Service();
 
@@ -435,6 +471,15 @@ const GlobalFilterTemplate = ({
   };
 
   const handleSearch = (searchQueryOrResetPagination = true) => {
+    console.log('🔍 handleSearch: Starting with:', {
+      searchQueryOrResetPagination,
+      memoizedProjectDataLength: memoizedProjectData?.length,
+      sort,
+      filters,
+      pathname: location.pathname,
+      isBrandedResidences: location.pathname.includes('/branded-residences')
+    });
+
     // Handle both search query string and resetPagination boolean
     let searchQuery = '';
     let resetPagination = true;
@@ -447,12 +492,17 @@ const GlobalFilterTemplate = ({
     }
 
     const dataToFilter = memoizedProjectData || [];
-    console.log('handleSearch - dataToFilter length:', dataToFilter.length);
-    console.log('handleSearch - current filters:', filters);
-    console.log('handleSearch - search query:', searchQuery);
+    console.log('🔍 handleSearch: Data to filter:', {
+      totalItems: dataToFilter.length,
+      sampleItems: dataToFilter.slice(0, 3).map(p => ({
+        name: p.projectName || p.title,
+        city: p.city,
+        id: p._id
+      }))
+    });
 
-    let filtered = dataToFilter.filter((item) => {
-      // Text search filter - searches across multiple fields
+    // Apply filtering
+    let filtered = dataToFilter.filter(item => {
       const matchesSearchQuery = searchQuery === '' || (
         (item.projectName && item.projectName.toLowerCase().includes(searchQuery.toLowerCase())) ||
         (item.city && item.city.toLowerCase().includes(searchQuery.toLowerCase())) ||
@@ -462,21 +512,45 @@ const GlobalFilterTemplate = ({
         (item.project_discripation && item.project_discripation.toLowerCase().includes(searchQuery.toLowerCase()))
       );
 
-      return matchesSearchQuery && (
-        (filters.city === "" || (item.city && item.city.toLowerCase().includes(filters.city.toLowerCase()))) &&
-        (filters.location === "" || (item.projectAddress && item.projectAddress.toLowerCase().includes(filters.location.toLowerCase()))) &&
-        (filters.projectType === "" || (item.type && item.type.toLowerCase().includes(filters.projectType.toLowerCase()))) &&
-        (filters.price === "" || (() => {
-          if (filters.price === "") return true;
-          const [min, max] = filters.price.split(",").map(v => v === "Infinity" ? Infinity : parseFloat(v));
-          return item.minPrice >= min && item.maxPrice <= max;
-        })())
-      );
+      const cityFilterPass = pageType === 'status' && location.pathname.includes('/branded-residences') ? true : 
+        (filters.city === "" || (item.city && item.city.toLowerCase().includes(filters.city.toLowerCase())));
+
+      const locationFilterPass = filters.location === "" || (item.projectAddress && item.projectAddress.toLowerCase().includes(filters.location.toLowerCase()));
+      const projectTypeFilterPass = filters.projectType === "" || (item.type && item.type.toLowerCase().includes(filters.projectType.toLowerCase()));
+      const priceFilterPass = filters.price === "" || (() => {
+        if (filters.price === "") return true;
+        const [min, max] = filters.price.split(",").map(v => v === "Infinity" ? Infinity : parseFloat(v));
+        return item.minPrice >= min && item.maxPrice <= max;
+      })();
+
+      const passesAllFilters = matchesSearchQuery && cityFilterPass && locationFilterPass && projectTypeFilterPass && priceFilterPass;
+
+      if (item.projectName && item.projectName.includes('SmartWorld')) {
+        console.log('🔍 handleSearch - SmartWorld project filtering:', {
+          name: item.projectName,
+          matchesSearchQuery,
+          cityFilterPass,
+          locationFilterPass,
+          projectTypeFilterPass,
+          priceFilterPass,
+          passesAllFilters,
+          city: item.city,
+          filtersCity: filters.city
+        });
+      }
+
+      return passesAllFilters;
     });
 
-    console.log('handleSearch - filtered length:', filtered.length);
-
-    // Apply custom project order if available and no explicit sort is selected
+    console.log('🔍 handleSearch - filtered length:', filtered.length);
+    console.log('🔍 handleSearch - filtered projects structure:', filtered.map(p => ({
+      hasProjectName: !!p.projectName,
+      hasTitle: !!p.title,
+      projectName: p.projectName,
+      title: p.title,
+      city: p.city,
+      id: p._id
+    })));
     if (sort === 'newest' && projectOrders && !projectOrdersLoading) {
       // Determine which city to use based on filters or page type
       let orderCity = null;
@@ -562,6 +636,8 @@ const GlobalFilterTemplate = ({
           orderStatus = 'underconstruction';
         } else if (path.includes('/projects/readytomove')) {
           orderStatus = 'readytomove';
+        } else if (path.includes('/branded-residences')) {
+          orderStatus = 'brandedresidences';
         }
       }
 
@@ -573,7 +649,7 @@ const GlobalFilterTemplate = ({
         console.log(`Status orders for ${orderStatus}:`, statusOrders);
 
         const desiredOrder = Array.isArray(statusOrders)
-          ? statusOrders.filter(item => item.isActive).map(item => item.name.toLowerCase())
+          ? statusOrders.filter(item => item.isActive).map(item => item.name.toLowerCase().replace(/\s+/g, ''))
           : [];
 
         console.log(`Applying custom order for status: ${orderStatus}`, desiredOrder);
@@ -584,20 +660,43 @@ const GlobalFilterTemplate = ({
           const unorderedProjects = [];
 
           filtered.forEach(project => {
-            const projectName = (project.projectName || '').toLowerCase();
-            const orderIndex = desiredOrder.indexOf(projectName);
+            const projectName = (project.projectName || project.title || '').toLowerCase().replace(/\s+/g, '');
+            const orderIndex = desiredOrder.findIndex(orderName => 
+              orderName.replace(/\s+/g, '') === projectName
+            );
+
+            console.log('🔄 Status sorting comparison:', {
+              originalProjectName: project.projectName,
+              originalTitle: project.title,
+              normalizedProjectName: projectName,
+              desiredOrder,
+              orderIndex,
+              found: orderIndex !== -1,
+              fullProject: project
+            });
 
             if (orderIndex !== -1) {
-              orderedProjects[orderIndex] = project;
+              orderedProjects.push({ project, orderIndex });
             } else {
               unorderedProjects.push(project);
             }
           });
 
-          // Combine: ordered projects first (in exact order), then unordered
-          filtered = [...orderedProjects.filter(Boolean), ...unorderedProjects];
+          // Sort ordered projects by their orderIndex
+          orderedProjects.sort((a, b) => a.orderIndex - b.orderIndex);
 
-          console.log('Applied status custom order, first 5 projects:', filtered.slice(0, 5).map(p => p.projectName));
+          // Combine: ordered projects first (in exact order), then unordered
+          filtered = [...orderedProjects.map(item => item.project), ...unorderedProjects];
+
+          console.log('Applied status custom order, first 5 projects:', filtered.slice(0, 5).map(p => ({
+      projectName: p.projectName,
+      title: p.title,
+      name: p.name,
+      id: p._id,
+      hasProjectName: !!p.projectName,
+      hasTitle: !!p.title,
+      hasName: !!p.name
+    })));
         }
       }
     } else if (sort === 'price') {
@@ -631,6 +730,16 @@ const GlobalFilterTemplate = ({
   // Update displayed projects (now just shows all projects)
   const updateDisplayedProjects = (projectsToDisplay) => {
     console.log('updateDisplayedProjects - projectsToDisplay length:', projectsToDisplay.length);
+    console.log('updateDisplayedProjects - projectsToDisplay sample:', projectsToDisplay.slice(0, 3).map(p => ({
+      hasProjectName: !!p.projectName,
+      hasTitle: !!p.title,
+      projectName: p.projectName,
+      title: p.title,
+      city: p.city,
+      id: p._id,
+      isUndefined: p === undefined,
+      isNull: p === null
+    })));
     setDisplayedProjects(projectsToDisplay);
   };
 
@@ -656,14 +765,43 @@ const GlobalFilterTemplate = ({
   }, [currentConfig.query, throttledGetAllProjects]);
 
   useEffect(() => {
+    if (!projectData) return;
+    
     console.log('Project data updated:', projectData?.length, 'for status:', projectStatus, 'pageType:', pageType);
-    setDatafromsearch({ [projectStatus]: projectData });
-    // Clear filtered results when underlying data changes (from refetch)
-    // But don't clear for budget pages as they handle their own filtering
+    
+    // Check if the property already exists and is the same to avoid infinite loops
+    const currentData = datafromsearch[projectStatus];
+    if (JSON.stringify(currentData) !== JSON.stringify(projectData)) {
+      setDatafromsearch(prev => ({ ...prev, [projectStatus]: projectData }));
+    }
+  }, [projectData, projectStatus]);
+
+  // Handle clearing filtered projects separately to break the loop
+  useEffect(() => {
     if (pageType !== 'budget') {
       setFilteredProjects([]);
     }
-  }, [projectData, projectStatus, pageType]);
+  }, [projectStatus, pageType]);
+
+  useEffect(() => {
+    console.log('🏗️ GlobalFilterTemplate: Projects changed, processing:', {
+      projectsCount: projects.length,
+      isLoading,
+      projectSample: projects.slice(0, 3).map(p => ({
+        name: p.projectName || p.title,
+        city: p.city,
+        id: p._id
+      }))
+    });
+
+    if (!isLoading && projects.length > 0) {
+      // Apply initial filtering and sorting
+      handleSearch(true); // true means reset pagination
+    } else if (!isLoading && projects.length === 0) {
+      console.log('🏗️ GlobalFilterTemplate: No projects available');
+      setFilteredProjects([]);
+    }
+  }, [projects, isLoading]);
 
   // Force re-render when project status changes
   useEffect(() => {
@@ -693,22 +831,28 @@ const GlobalFilterTemplate = ({
   useEffect(() => {
     if (memoizedProjectData && memoizedProjectData.length > 0 && !projectOrdersLoading) {
       // Only auto-filter if filters or sort have been set (not on initial data load)
-      if (Object.keys(filters).some(key => filters[key] !== '') || sort) {
+      const hasActiveFilters = Object.values(filters).some(value => value !== '');
+      if (hasActiveFilters || sort) {
         handleSearch(false); // Don't reset pagination for auto-filter
       }
     }
-  }, [filters, sort, projectOrders, projectOrdersLoading]);
+  }, [filters, sort, projectOrdersLoading]); // Removed projectOrders to avoid possible object reference instability loop
 
   // Initialize displayed projects when data loads
   useEffect(() => {
     console.log('Initialize displayed projects effect - memoizedProjectData:', memoizedProjectData?.length, 'pageType:', pageType, 'isLoading:', isLoading);
     if (memoizedProjectData && memoizedProjectData.length > 0) {
       console.log('Setting displayed projects from memoizedProjectData:', memoizedProjectData.length);
-      updateDisplayedProjects(memoizedProjectData);
-      setFilteredProjects(memoizedProjectData);
+      // Avoid redundant state updates if data is already set correctly
+      setDisplayedProjects(prev => {
+        if (JSON.stringify(prev) === JSON.stringify(memoizedProjectData)) return prev;
+        return memoizedProjectData;
+      });
+      setFilteredProjects(prev => {
+        if (JSON.stringify(prev) === JSON.stringify(memoizedProjectData)) return prev;
+        return memoizedProjectData;
+      });
     } else if (!isLoading) {
-      // Only reset displayed projects when no data AND not loading
-      // This prevents clearing during initial load
       console.log('Resetting displayed projects - no data and not loading');
       setDisplayedProjects([]);
       setFilteredProjects([]);
@@ -766,17 +910,16 @@ const GlobalFilterTemplate = ({
   return (
     <>
       <Helmet>
-        {/* Basic Meta Tags */}
-        <title>{metaTitle || currentConfig.metaTitle}</title>
-        <meta name="description" content={metaDescription || currentConfig.description} />
-        <meta name="keywords" content={keywords || currentConfig.keywords} />
-        <link rel="canonical" href={canonical || currentConfig.canonical} />
+    <title>{metaTitle || currentConfig.metaTitle}</title>
+    <meta name="description" content={metaDescription || currentConfig.description} />
+    <meta name="keywords" content={keywords || currentConfig.keywords} />
+    <link rel="canonical" href={`https://www.100acress.com${location.pathname}`} />
 
-        {/* Open Graph Tags */}
-        <meta property="og:title" content={metaTitle || currentConfig.metaTitle} />
-        <meta property="og:description" content={metaDescription || currentConfig.description} />
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content={canonical || currentConfig.canonical} />
+    {/* Open Graph Tags */}
+    <meta property="og:title" content={metaTitle || currentConfig.metaTitle} />
+    <meta property="og:description" content={metaDescription || currentConfig.description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={`https://www.100acress.com${location.pathname}`} />
         <meta property="og:image" content="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/logo.webp" />
         <meta property="og:site_name" content="100acress" />
         <meta property="og:locale" content="en_IN" />
@@ -1065,7 +1208,41 @@ const GlobalFilterTemplate = ({
             ]
           })}
         </script>
+
+        {/* Product Schema for Senior Living */}
+        {projectStatus === 'senior-living' && (
+          <script type="application/ld+json">
+            {JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Product",
+              "name": "Senior Living in Gurgaon",
+              "description": "Explore senior living in Gurgaon designed for safety, comfort, and independent lifestyles. Peaceful communities with healthcare access and daily support.",
+              "sku": "projects-in-dubai-uae",
+              "image": "https://www.100acress.com/Images/mainog.png",
+              "brand": {
+                "@type": "Brand",
+                "name": "Senior Living in Gurgaon"
+              },
+              "offers": {
+                "@type": "AggregateOffer",
+                "priceCurrency": "INR",
+                "lowPrice": "9600000",
+                "availability": "https://schema.org/InStock",
+                "url": "https://www.100acress.com/projects/senior-living/"
+              },
+              "aggregateRating": {
+                "@type": "AggregateRating",
+                "ratingValue": "4.9",
+                "reviewCount": "1989"
+              },
+              "url": "https://www.100acress.com/projects/senior-living/"
+            })}
+          </script>
+        )}
       </Helmet>
+
+      {/* Navbar */}
+      <Navbar />
 
       {/* Hero Section */}
       <Hero
@@ -1125,9 +1302,19 @@ const GlobalFilterTemplate = ({
                     <p className="text-sm leading-relaxed mb-4 text-gray-600">
                       {currentConfig.description}
                     </p>
+                    <p className="text-sm leading-relaxed mb-4 text-gray-600">
+                      {projectStatus === 'brandedresidences' ? 
+                        "Branded residences represent a new chapter in modern luxury living. These homes are created when experienced real estate developers collaborate with globally recognized design and lifestyle partners. The result is a residence where architecture, interiors, and everyday comfort are thoughtfully planned together. From carefully selected materials to elegant layouts, every detail reflects a refined standard of living." :
+                        `Browse through our curated collection of ${projectStatus === 'upcoming' ? 'upcoming' : projectStatus === 'underconstruction' ? 'under construction' : projectStatus === 'readytomove' ? 'ready to move' : 'new launch'} properties in Gurgaon.
+                      Each project is carefully selected to meet modern living standards.`
+                      }
+                    </p>
                     <p className="text-sm leading-relaxed mb-6 text-gray-600">
-                      Browse through our curated collection of {projectStatus === 'upcoming' ? 'upcoming' : projectStatus === 'underconstruction' ? 'under construction' : projectStatus === 'readytomove' ? 'ready to move' : 'new launch'} properties in Gurgaon.
-                      Each project is carefully selected to meet modern living standards.
+                      {projectStatus === 'brandedresidences' ? 
+                        "Compared to conventional housing, branded homes are aimed at design consistency, high-quality construction, and well curated lifestyle experience. Premium services, caring services and serene living conditions are usually taken by the residents to enable them to live in comfort and privacy. These residences are being developed in Gurugram and Noida, cities known for their modern skyline and growing demand for premium residential living." :
+                        `Browse through our curated collection of ${projectStatus === 'upcoming' ? 'upcoming' : projectStatus === 'underconstruction' ? 'under construction' : projectStatus === 'readytomove' ? 'ready to move' : 'new launch'} properties in Gurgaon.
+                      Each project is carefully selected to meet modern living standards.`
+                      }
                     </p>
 
                     {/* Enhanced Feature Cards */}
@@ -1256,6 +1443,20 @@ const GlobalFilterTemplate = ({
                 </div>
               )}
 
+              {/* Load More Button - Global Component */}
+              <GlobalLoadingButton
+                isLoading={loadingMore}
+                hasMore={hasMoreProjects}
+                onLoadMore={onLoadMore}
+                loadedCount={displayedProjects.length}
+                totalCount={null}
+                loadingText="Loading more projects..."
+                loadMoreText="Load More Projects"
+                variant="primary"
+                size="medium"
+                showProgress={true}
+              />
+
 
               {/* Empty State */}
               {(!filteredProjects.length && !memoizedProjectData?.length) && (
@@ -1306,15 +1507,8 @@ const GlobalFilterTemplate = ({
                       <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4">
                         {section.title}
                       </h3>
-                      <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4">
-                        {section.title}
-                      </h3>
-
-
-
                       <div className="text-gray-600 leading-relaxed whitespace-pre-line">
                         {section.content}
-                        {/* content */}
                       </div>
                     </div>
                   ))}
@@ -1322,73 +1516,98 @@ const GlobalFilterTemplate = ({
               </div>
             </div>
           )}
-          {/* Know More About Upcoming Projects Section */}
+          {/* Know More About BHK Flats Section */}
           {projectStatus === 'upcoming' && (
             <div className="mt-12 sm:mt-16 bg-gradient-to-br from-blue-50 to-indigo-50 py-12 sm:py-16 px-4 sm:px-6 lg:px-8">
               <div className="max-w-6xl mx-auto">
                 <div className="text-center mb-8 sm:mb-12">
                   <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-                    Know More About <span className="text-blue-600 text-4xl sm:text-5xl">Upcoming Projects</span>
+                    Know More About <span className="text-blue-600 text-4xl sm:text-5xl">
+                      {bhkType === '1' && '1BHK Flats'}
+                      {bhkType === '2' && '2 BHK Flats'}
+                      {bhkType === '3' && '3 BHK Flats'}
+                      {bhkType === '4' && '4 BHK Flats'}
+                      {bhkType === '5' && '5 BHK Flats'}
+                      {!bhkType && 'Upcoming Projects'}
+                    </span>
                   </h2>
                   <div className="w-24 h-1 bg-blue-600 mx-auto mb-6"></div>
                   <p className="text-lg text-gray-600 max-w-4xl mx-auto">
-                    <a href="https://www.100acress.com/projects/upcoming/" className="text-blue-600 hover:underline font-medium">Upcoming projects in Gurgaon</a>: Explore verified upcoming 2BHK projects in Gurgaon offering smart layouts, modern designs, and affordable pricing. These newly launched 2BHK apartments are ideal for first-time homebuyers, young professionals, and smart investors looking for the best deals in 2026. Located across high-growth zones like Dwarka Expressway and New Gurgaon, these upcoming 2BHK residential projects come with world-class amenities, excellent metro connectivity, and strong appreciation potential.
+                    {bhkType === '1' && (
+                      <>
+                        Explore a range of 1 BHK flats in Gurgaon located in different parts of the city. These homes are a practical option for working professionals, couples, and small families. Many projects are close to offices, metro stations, and daily essentials to make everyday life more convenient. With options across several neighborhoods, these 1-bedroom apartments in Gurgaon offer a simple and comfortable way to live in the city.
+                      </>
+                    )}
+                    {bhkType === '2' && (
+                      <>
+                        Explore 2 BHK flats in Gurgaon that offer a comfortable balance of space and budget. These homes are suitable for families or professionals who need a little extra room. Many projects are located in well-planned areas with good road and metro connectivity. From affordable sectors to more premium neighborhoods, buyers can find homes that match different budgets and everyday living needs.
+                      </>
+                    )}
+                    {bhkType === '3' && (
+                      <>
+                        Explore a city that has quietly become one of the best places to settle down with your family. 3 BHK flats in Gurgaon offer the right mix of space, comfort, and convenience, from good schools and hospitals to well-connected roads and markets. The city suits different budgets too, making it a practical choice for families who want a better lifestyle without moving too far from Delhi.
+                      </>
+                    )}
+                    {bhkType === '4' && (
+                      <>
+                        Find your comfort in a big house for your whole family. 4 BHK flats in Gurgaon offer 4 bedrooms, a large living area, and ample space for you and your family. Gurgaon is connected to Delhi and has schools, hospitals, and markets in close proximity. The perfect home for a growing family or a family that needs more space.
+                      </>
+                    )}
+                    {bhkType === '5' && (
+                      <>
+                        Explore what it feels like to live in a home that truly has enough space for everyone. 5 BHK flats in Gurgaon give you five bedrooms, large living areas, and room for family, guests, and even a home office. Gurgaon has good schools, hospitals, and workplaces all nearby, making everyday life convenient. If you have a big family or simply want extra space, these homes are worth a closer look.
+                      </>
+                    )}
+                    {!bhkType && (
+                      <>
+                        Explore verified upcoming projects in Gurgaon featuring luxury apartments, modern residences, and affordable housing options across Dwarka Expressway and New Gurgaon. These upcoming residential projects in Gurgaon 2025 are designed with world-class amenities, excellent road and metro connectivity, and strong future appreciation potential. Filter projects by location, price, and property type to find your ideal home.
+                      </>
+                    )}
                   </p>
                 </div>
 
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mb-8 sm:mb-12">
-                  <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8 hover:shadow-xl transition-shadow duration-300">
-                    <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 text-blue-600">
-                      Why Is the Gurgaon Real Estate Keeps Growing in 2026
-                    </h3>
+                {/* BHK-specific content - only show when BHK type is selected */}
+                {bhkType && (
+                  <>
+                    <div className="grid md:grid-cols-2 gap-6 sm:gap-8 mb-8 sm:mb-12">
+                      <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8 hover:shadow-xl transition-shadow duration-300">
+                        <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 text-blue-600">
+                          Why Gurgaon Real Estate Keeps Growing in 2026
+                        </h3>
                     <div className="text-gray-600 leading-relaxed">
                       <p className="mb-4">
-                        Gurgaon's growth is not due to chance. Hundred of MNCs, IT corridors, and a continuously explanding workforce have created a housing demand that the city has not been able to fully meet, and this gap is precisely where buyers find opportunity.
+                        Gurgaon's growth is not due to chance. Hundreds of MNCs, packed IT corridors, and a continuously expanding workforce have created a housing demand that the city has not been able to fully meet, and this gap is precisely where buyers find opportunity.
+                      </p>
+                      <p className="mb-4">
+                        New infrastructure is accelerating things further. The Dwarka Expressway is now fully operational. The Delhi-Mumbai Expressway has slashed travel times to southern zones. Metro lines are pushing deeper into New Gurgaon sectors that were considered "too far" just three years ago.
                       </p>
                       <p>
-                       New infrastructure is accelerating things further. The Dwarka Expressway is now fully operational. The Delhi-Mumbai Expressway has slashed travel times to southern zones. Metro lines are pushing deeper into New Gurgaon sectors that were considered "too far" just three years ago.
+                        In 2026, buyers are choosing Gurgaon for its modern townships, premium gated communities, better air quality in South Gurgaon, and high-ROI investment opportunities. Property appreciation has been rising because of the perfect mix of lifestyle upgrades, infrastructure push, and large-scale residential launches by top developers.
                       </p>
                     </div>
                   </div>
 
                   <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8 hover:shadow-xl transition-shadow duration-300">
                     <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 text-blue-600">
-                      Why Invest in Upcoming Projects in Gurgaon?
-                    </h3>
-                    <div className="text-gray-600 leading-relaxed">
-                      <p className="mb-4">
-                        Investing in upcoming projects provides multiple advantages, especially in a high-growth market like Gurgaon:
-                      </p>
-                      <ul className="list-disc pl-5 space-y-2">
-                        <li><strong>Wide Property Choices:</strong> Upcoming projects in Gurgaon offer a diverse range of housing options, including smartly designed 2 BHK homes and expansive 3 & 4 BHK luxury residences, ensuring choices for different budgets and lifestyle needs.</li>
-                        <li><strong>Infrastructure Growth:</strong> Improved road networks, metro connectivity, and new commercial hubs are driving property appreciation.</li>
-                        <li><strong>High Appreciation Potential:</strong> Early investment in upcoming projects in 2025 often results in better price appreciation by possession.</li>
-                        <li><strong>Strong Rental Demand:</strong> Gurgaon's corporate ecosystem ensures consistent rental demand across major locations.</li>
-                      </ul>
-                    </div>
-                  </div>
-
-                  <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8 hover:shadow-xl transition-shadow duration-300">
-                    <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 text-blue-600">
-                        Best Aeras to Buy 1 BHK Flat in Gurugaon 
+                      Top Locations for Buying a Good Flat in Gurgaon
                     </h3>
                     <div className="text-gray-600 leading-relaxed">
                       <div className="space-y-4">
                         <div>
                           <h4 className="font-semibold text-gray-900 mb-2">Dwarka Expressway</h4>
-                          <p className="text-sm">Dwarka Expressway is currently the fastest-growing residential belt in Gurgaon. Direct connectivity to Delhi, IGI Airport, and NH-48 makes it a top pick for working professionals. 1 BHK flat prices here are still competitive but rising steadily with every new possession. </p>
+                          <p className="text-sm">One of the fastest-growing residential corridors, offering seamless connectivity to Delhi, IGI Airport, and NH-48.</p>
                         </div>
                         <div>
-                          <h4 className="font-semibold text-gray-900 mb-2">New Gurgaon</h4>
-                          <p className="text-sm">Planned layouts, wider roads, and peaceful surroundings make New Gurgaon the best area to buy a 1 BHK in Gurgaon for families. Affordable flat rates in Gurgaon's new sectors with strong long-term appreciation.</p>
+                          <h4 className="font-semibold text-gray-900 mb-2">New Gurgaon (Sectors 82–95)</h4>
+                          <p className="text-sm">Planned roads, calm surroundings & strong appreciation. A family-friendly pocket that keeps delivering.</p>
                         </div>
                         <div>
                           <h4 className="font-semibold text-gray-900 mb-2">Golf Course Extension Road</h4>
-                          <p className="text-sm">Gurgaon's Golf Course Extension Road offers premimum living  without the exorbitant prices tag. Upsacle apartment, top schools, and a mature social infrastructure. This location is ideal for buyer seeking to combine  lifestyle and investment in a single address </p>
+                          <p className="text-sm">Premium lifestyle without the premium price tag. Upscale residential towers, reputable schools, and established social infrastructure make it perfect for buyers balancing their lives.</p>
                         </div>
                         <div>
-                          <h4 className="font-semibold text-gray-900 mb-2">Southern Peripheral Road (SPR)</h4>
-                          <p className="text-sm">SPR strategically connects key Gurgaon sectors and offers upcoming residential projects at mid-range flat rates. Strong rental demand from nearby corporate campuses makes it a smart investor choice.</p>
+                          <h4 className="font-semibold text-gray-900 mb-2">Sohna Road</h4>
+                          <p className="text-sm">A value-driven corridor offering budget-friendly and mid-range studio to 5 BHK apartments. Leading educational institutions keep this location consistently popular among end-users and investors alike.</p>
                         </div>
                       </div>
                     </div>
@@ -1398,39 +1617,343 @@ const GlobalFilterTemplate = ({
                 <div className="grid md:grid-cols-2 gap-6 sm:gap-8 mb-8 sm:mb-12">
                   <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8 hover:shadow-xl transition-shadow duration-300">
                     <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 text-blue-600">
-                      Amenities Offered in Upcoming Projects 2025
+                      {bhkType === '1' && 'Best Amenities in 1 BHK Flats'}
+                      {bhkType === '2' && 'What Amenities Do You Get in a 2 BHK Flat in Gurgaon?'}
+                      {bhkType === '3' && 'What Amenities Do You Get in a 3 BHK Flat in Gurgaon?'}
+                      {bhkType === '4' && 'Best Amenities in 4 BHK Flats'}
+                      {bhkType === '5' && 'What Amenities Do You Get in a 5 BHK Flat in Gurgaon?'}
+                      {!bhkType && 'Amenities Offered in Upcoming Projects 2026'}
                     </h3>
                     <div className="text-gray-600 leading-relaxed">
-                      <p className="mb-4">
-                        Most upcoming projects in Gurgaon are designed to deliver a modern lifestyle, featuring:
-                      </p>
-                      <ul className="list-disc pl-5 space-y-2">
-                        <li>Clubhouse and swimming pool</li>
-                        <li>Gymnasium and wellness zones</li>
-                        <li>Landscaped gardens and jogging tracks</li>
-                        <li>Children's play areas and sports facilities</li>
-                        <li>24×7 security and smart access systems</li>
-                      </ul>
-                      <p className="mt-4">
-                        These amenities enhance both living comfort and property value.
-                      </p>
+                      {bhkType === '1' && (
+                        <ul className="list-disc pl-5 space-y-2">
+                          <li>Fully equipped clubhouse and swimming pool</li>
+                          <li>Gymnasium and dedicated wellness zones</li>
+                          <li>Landscaped green gardens with jogging tracks</li>
+                          <li>Children's play areas and multi-sport courts</li>
+                          <li>Round-the-clock security with smart access systems</li>
+                        </ul>
+                      )}
+                      {bhkType === '2' && (
+                        <ul className="list-disc pl-5 space-y-2">
+                          <li>Clubhouse — A common space for events, gatherings, and relaxation</li>
+                          <li>Swimming Pool — For daily fitness and weekend unwinding</li>
+                          <li>Gymnasium — Fully equipped gym inside your own society</li>
+                          <li>Children's Play Area — Safe and fun outdoor space for kids</li>
+                          <li>Sports Facilities—Badminton, basketball, and more</li>
+                          <li>24×7 Security — CCTV, guards, and smart entry systems</li>
+                          <li>Community Hall — For family functions and social gatherings</li>
+                        </ul>
+                      )}
+                      {bhkType === '3' && (
+                        <ul className="list-disc pl-5 space-y-2">
+                          <li>Fully Equipped Clubhouse & Swimming Pool</li>
+                          <li>Modern Gymnasium & Yoga Wellness Zone</li>
+                          <li>Landscaped Gardens & Jogging Track</li>
+                          <li>Safe Children's Play Area & Sports Courts</li>
+                          <li>24×7 Smart Security & CCTV Surveillance</li>
+                          <li>Covered Parking & EV Charging Points</li>
+                        </ul>
+                      )}
+                      {(bhkType === '4' || bhkType === '5') && (
+                        <ul className="list-disc pl-5 space-y-2">
+                          <li>Fully Equipped Clubhouse & Swimming Pool</li>
+                          <li>Modern Gymnasium & Yoga Wellness Zone</li>
+                          <li>Landscaped Gardens & Jogging Track</li>
+                          <li>Safe Children's Play Area & Sports Courts</li>
+                          <li>24×7 Smart Security & CCTV Surveillance</li>
+                          <li>Covered Parking & EV Charging Points</li>
+                        </ul>
+                      )}
+                      {!bhkType && (
+                        <>
+                          <p className="mb-4">
+                            Most upcoming projects in Gurgaon are designed to deliver a modern lifestyle, featuring:
+                          </p>
+                          <ul className="list-disc pl-5 space-y-2">
+                            <li>Clubhouse and swimming pool</li>
+                            <li>Gymnasium and wellness zones</li>
+                            <li>Landscaped gardens and jogging tracks</li>
+                            <li>Children's play areas and sports facilities</li>
+                            <li>24×7 security and smart access systems</li>
+                          </ul>
+                          <p className="mt-4">
+                            These amenities enhance both living comfort and property value.
+                          </p>
+                        </>
+                      )}
                     </div>
                   </div>
 
                   <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8 hover:shadow-xl transition-shadow duration-300">
                     <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 text-blue-600">
-                      Investment Tips for Upcoming Projects in Gurgaon
+                      {bhkType === '1' && 'What to Check Before Buying a Flat in Gurgaon'}
+                      {(bhkType === '3' || bhkType === '4' || bhkType === '5') && 'Key Things to Check Before Buying a Flat in Gurgaon'}
+                      {!bhkType && 'Investment Tips for Upcoming Projects in Gurgaon'}
+                      {bhkType === '2' && 'Investment Tips for Upcoming Projects in Gurgaon'}
                     </h3>
                     <div className="text-gray-600 leading-relaxed">
-                      <ul className="list-disc pl-5 space-y-3">
-                        <li><strong>Check RERA Registration:</strong> Always verify that the upcoming project is RERA-approved for transparency and legal safety.</li>
-                        <li><strong>Understand the Offering:</strong> Review carpet area, project density, and amenities rather than relying only on brochures.</li>
-                        <li><strong>Site Visit Matters:</strong> Visiting the project location helps evaluate connectivity, surroundings, and future growth.</li>
-                        <li><strong>Choose the Right Timing:</strong> Pre-launch and early-stage upcoming projects in 2025 usually offer better pricing, while near-possession projects suit buyers needing immediate occupancy.</li>
-                      </ul>
+                      {(bhkType === '1' || bhkType === '3' || bhkType === '4' || bhkType === '5') ? (
+                        <ul className="list-disc pl-5 space-y-3">
+                          <li><strong>Check RERA First:</strong> Never skip RERA verification it protects your money, ensures builder accountability, and keeps your investment 100% legally safe.</li>
+                          <li><strong>Look Beyond the Brochure:</strong> Check the real carpet area, ventilation, floor density, and amenities before you decide. What looks good on paper should hold up in reality.</li>
+                          <li><strong>Visit Before You Commit:</strong> A quick site visit reveals road access, nearby schools, markets, and metro connectivity—things that directly impact your property's future value.</li>
+                          <li><strong>Buy at the Right Time:</strong> Early-stage projects in Gurgaon 2026 offer the best pricing. If you need faster possession, ready-to-move compact flats in Gurgaon are your smartest pick.</li>
+                        </ul>
+                      ) : (
+                        <ul className="list-disc pl-5 space-y-3">
+                          <li><strong>Check RERA Registration:</strong> Always verify that the upcoming project is RERA-approved for transparency and legal safety.</li>
+                          <li><strong>Understand the Offering:</strong> Review carpet area, project density, and amenities rather than relying only on brochures.</li>
+                          <li><strong>Site Visit Matters:</strong> Visiting the project location helps evaluate connectivity, surroundings, and future growth.</li>
+                          <li><strong>Choose the Right Timing:</strong> Pre-launch and early-stage upcoming projects in 2026 usually offer better pricing, while near-possession projects suit buyers needing immediate occupancy.</li>
+                        </ul>
+                      )}
                     </div>
                   </div>
                 </div>
+
+                {/* Close BHK-specific content */}
+                </>
+                )}
+
+                {/* Comprehensive Section - Only show for general upcoming projects (!bhkType) */}
+                {!bhkType && (
+                  <div className="mt-12 bg-white rounded-xl shadow-lg p-8 sm:p-10 max-w-7xl mx-auto">
+                    <div className="mb-10">
+                      <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-6 text-blue-600">
+                        Why Is the Gurgaon Real Estate Market Booming?
+                      </h3>
+                      <div className="text-gray-600 leading-relaxed space-y-4">
+                        <p>
+                          Over the last decade, Gurgaon has transformed into one of India's fastest-growing real estate destinations. With the presence of leading MNCs, IT hubs, and commercial corridors, the demand for quality housing has increased significantly. This rapid urban growth has led to a surge in upcoming projects in Gurgaon, offering buyers modern homes with better layouts and infrastructure.
+                        </p>
+                        <p>
+                          Key developments such as the Dwarka Expressway, Delhi-Mumbai Expressway, Metro expansion, and upcoming business districts are reshaping the city. These factors make upcoming projects in Gurgaon 2025 highly attractive for professionals, families, and long-term investors.
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="mb-10">
+                      <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-6 text-blue-600">
+                        Why Invest in Upcoming Projects in Gurgaon?
+                      </h3>
+                      <p className="text-gray-600 mb-6">
+                        Investing in upcoming projects provides multiple advantages, especially in a high-growth market like Gurgaon:
+                      </p>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                          <div className="flex items-start mb-4">
+                            <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1 mr-3">
+                              <span className="text-blue-600 text-sm font-bold">✓</span>
+                            </div>
+                            <h4 className="font-semibold text-gray-900 mb-2">Wide Property Choices</h4>
+                          </div>
+                          <p className="text-gray-600 text-sm ml-9">
+                            Upcoming projects in Gurgaon offer a diverse range of housing options, including smartly designed 2 BHK homes and expansive 3 & 4 BHK luxury residences, ensuring choices for different budgets and lifestyle needs.
+                          </p>
+                        </div>
+                        <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                          <div className="flex items-start mb-4">
+                            <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1 mr-3">
+                              <span className="text-blue-600 text-sm font-bold">✓</span>
+                            </div>
+                            <h4 className="font-semibold text-gray-900 mb-2">Infrastructure Growth</h4>
+                          </div>
+                          <p className="text-gray-600 text-sm ml-9">
+                            Improved road networks, metro connectivity, and new commercial hubs are driving property appreciation.
+                          </p>
+                        </div>
+                        <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                          <div className="flex items-start mb-4">
+                            <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1 mr-3">
+                              <span className="text-blue-600 text-sm font-bold">✓</span>
+                            </div>
+                            <h4 className="font-semibold text-gray-900 mb-2">High Appreciation Potential</h4>
+                          </div>
+                          <p className="text-gray-600 text-sm ml-9">
+                            Early investment in upcoming projects in 2025 often results in better price appreciation by possession.
+                          </p>
+                        </div>
+                        <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                          <div className="flex items-start mb-4">
+                            <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1 mr-3">
+                              <span className="text-blue-600 text-sm font-bold">✓</span>
+                            </div>
+                            <h4 className="font-semibold text-gray-900 mb-2">Strong Rental Demand</h4>
+                          </div>
+                          <p className="text-gray-600 text-sm ml-9">
+                            Gurgaon's corporate ecosystem ensures consistent rental demand across major locations.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="mb-10">
+                      <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-6 text-blue-600">
+                        Top Locations for Upcoming Projects in Gurgaon
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                          <div className="flex items-start mb-4">
+                            <div className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center flex-shrink-0 mt-1 mr-3">
+                              <span className="text-sm font-bold">1</span>
+                            </div>
+                            <h4 className="font-semibold text-gray-900 mb-2 text-lg">Dwarka Expressway</h4>
+                          </div>
+                          <p className="text-gray-600 text-sm ml-11">
+                            One of the most promising real estate corridors, Dwarka Expressway offers excellent connectivity to Delhi and IGI Airport. Many luxury upcoming projects in Gurgaon are launching here with premium amenities.
+                          </p>
+                        </div>
+                        <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                          <div className="flex items-start mb-4">
+                            <div className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center flex-shrink-0 mt-1 mr-3">
+                              <span className="text-sm font-bold">2</span>
+                            </div>
+                            <h4 className="font-semibold text-gray-900 mb-2 text-lg">New Gurgaon</h4>
+                          </div>
+                          <p className="text-gray-600 text-sm ml-11">
+                            Known for planned infrastructure and peaceful surroundings, New Gurgaon is ideal for families seeking value-driven upcoming residential projects.
+                          </p>
+                        </div>
+                        <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                          <div className="flex items-start mb-4">
+                            <div className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center flex-shrink-0 mt-1 mr-3">
+                              <span className="text-sm font-bold">3</span>
+                            </div>
+                            <h4 className="font-semibold text-gray-900 mb-2 text-lg">Golf Course Extension Road</h4>
+                          </div>
+                          <p className="text-gray-600 text-sm ml-11">
+                            This location is preferred for premium living, offering upscale apartments, social infrastructure, and strong appreciation prospects.
+                          </p>
+                        </div>
+                        <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                          <div className="flex items-start mb-4">
+                            <div className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center flex-shrink-0 mt-1 mr-3">
+                              <span className="text-sm font-bold">4</span>
+                            </div>
+                            <h4 className="font-semibold text-gray-900 mb-2 text-lg">Southern Peripheral Road (SPR)</h4>
+                          </div>
+                          <p className="text-gray-600 text-sm ml-11">
+                            SPR connects key sectors of Gurgaon and hosts several upcoming projects in 2025 with a balance of lifestyle and investment benefits.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="mb-10">
+                      <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-6 text-blue-600">
+                        Amenities Offered in Upcoming Projects 2025
+                      </h3>
+                      <p className="text-gray-600 mb-6">
+                        Most upcoming projects in Gurgaon are designed to deliver a modern lifestyle, featuring:
+                      </p>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                          <div className="flex items-center mb-4">
+                            <div className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center mr-3">
+                              <span className="text-white text-xs">✓</span>
+                            </div>
+                            <h4 className="font-semibold text-gray-900">Clubhouse and swimming pool</h4>
+                          </div>
+                          <p className="text-gray-600 text-sm ml-8">
+                            Modern clubhouse facilities with swimming pool for recreational activities and social gatherings.
+                          </p>
+                        </div>
+                        <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                          <div className="flex items-center mb-4">
+                            <div className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center mr-3">
+                              <span className="text-white text-xs">✓</span>
+                            </div>
+                            <h4 className="font-semibold text-gray-900">Gymnasium and wellness zones</h4>
+                          </div>
+                          <p className="text-gray-600 text-sm ml-8">
+                            State-of-the-art fitness center and dedicated wellness areas for health-conscious residents.
+                          </p>
+                        </div>
+                        <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                          <div className="flex items-center mb-4">
+                            <div className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center mr-3">
+                              <span className="text-white text-xs">✓</span>
+                            </div>
+                            <h4 className="font-semibold text-gray-900">Landscaped gardens and jogging tracks</h4>
+                          </div>
+                          <p className="text-gray-600 text-sm ml-8">
+                            Beautifully designed green spaces and dedicated tracks for morning walks and jogging.
+                          </p>
+                        </div>
+                        <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                          <div className="flex items-center mb-4">
+                            <div className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center mr-3">
+                              <span className="text-white text-xs">✓</span>
+                            </div>
+                            <h4 className="font-semibold text-gray-900">Children's play areas and sports facilities</h4>
+                          </div>
+                          <p className="text-gray-600 text-sm ml-8">
+                            Safe play zones for kids and sports facilities for various outdoor activities.
+                          </p>
+                        </div>
+                        <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                          <div className="flex items-center mb-4">
+                            <div className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center mr-3">
+                              <span className="text-white text-xs">✓</span>
+                            </div>
+                            <h4 className="font-semibold text-gray-900">24×7 security and smart access systems</h4>
+                          </div>
+                          <p className="text-gray-600 text-sm ml-8">
+                            Advanced security features with smart access control for enhanced safety.
+                          </p>
+                        </div>
+                      </div>
+                      <p className="text-gray-600 mt-6 italic text-center">
+                        These amenities enhance both living comfort and property value.
+                      </p>
+                    </div>
+
+                    <div className="mb-10">
+                      <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-6 text-blue-600">
+                        Investment Tips for Upcoming Projects in Gurgaon
+                      </h3>
+                      <div className="space-y-4">
+                        <div className="flex items-start">
+                          <div className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 mr-4">
+                            <span className="text-sm font-bold">1</span>
+                          </div>
+                          <div>
+                            <h4 className="font-semibold text-gray-900 mb-2">Check RERA Registration</h4>
+                            <p className="text-gray-600 text-sm">Always verify that the upcoming project is RERA-approved for transparency and legal safety.</p>
+                          </div>
+                        </div>
+                        <div className="flex items-start">
+                          <div className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 mr-4">
+                            <span className="text-sm font-bold">2</span>
+                          </div>
+                          <div>
+                            <h4 className="font-semibold text-gray-900 mb-2">Understand the Offering</h4>
+                            <p className="text-gray-600 text-sm">Review carpet area, project density, and amenities rather than relying only on brochures.</p>
+                          </div>
+                        </div>
+                        <div className="flex items-start">
+                          <div className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 mr-4">
+                            <span className="text-sm font-bold">3</span>
+                          </div>
+                          <div>
+                            <h4 className="font-semibold text-gray-900 mb-2">Site Visit Matters</h4>
+                            <p className="text-gray-600 text-sm">Visiting the project location helps evaluate connectivity, surroundings, and future growth.</p>
+                          </div>
+                        </div>
+                        <div className="flex items-start">
+                          <div className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 mr-4">
+                            <span className="text-sm font-bold">4</span>
+                          </div>
+                          <div>
+                            <h4 className="font-semibold text-gray-900 mb-2">Choose the Right Timing</h4>
+                            <p className="text-gray-600 text-sm">Pre-launch and early-stage upcoming projects in 2025 usually offer better pricing, while near-possession projects suit buyers needing immediate occupancy.</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
 
                 <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl p-6 sm:p-8 text-white text-center">
                   <h3 className="text-2xl sm:text-3xl font-bold mb-4">
@@ -1452,24 +1975,21 @@ const GlobalFilterTemplate = ({
 
           {/* Know More About New Launch Projects Section */}
           {projectStatus === 'newlaunch' && (
-            <div className="mt-12 sm:mt-16 bg-gradient-to-br from-green-50 to-emerald-50 py-12 sm:py-16 px-4 sm:px-6 lg:px-8">
+            <div className="mt-12 sm:mt-16 bg-gradient-to-br from-blue-50 to-indigo-50 py-12 sm:py-16 px-4 sm:px-6 lg:px-8">
               <div className="max-w-6xl mx-auto">
                 <div className="text-center mb-8 sm:mb-12">
                   <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-                    Discover <span className="text-green-600 text-4xl sm:text-5xl">New Launch Projects</span>
+                    Discover <span className="text-blue-600 text-4xl sm:text-5xl">New Launch Projects</span>
                   </h2>
-                  <div className="w-24 h-1 bg-green-600 mx-auto mb-6"></div>
+                  <div className="w-24 h-1 bg-blue-600 mx-auto mb-6"></div>
                   <p className="text-lg text-gray-600 max-w-4xl mx-auto">
-                    <a href="https://www.100acress.com/projects/newlaunch/" className="text-green-600 hover:underline font-medium">New launch projects in Gurgaon</a>: Discover the latest new launch projects in Gurgaon that combine smart planning, modern architecture, and excellent connectivity. These new launch residential projects are well-suited for buyers seeking contemporary homes and investors looking to benefit from early-stage pricing advantages. From premium apartments to value-driven housing options, new launch projects in Gurgaon 2025 offer choices for different budgets and lifestyle needs.
-                  </p>
-                  <p className="text-lg text-gray-600 max-w-4xl mx-auto mt-4">
-                    With ongoing infrastructure upgrades, improved metro access, and a strong corporate ecosystem, Gurgaon continues to witness consistent demand for new residential developments. Investing in new launch projects allows buyers to enjoy flexible payment plans, wider unit selection, and promising long-term appreciation.
+                    Explore verified upcoming projects in Gurgaon featuring luxury apartments, modern residences, and affordable housing options across Dwarka Expressway and New Gurgaon. These upcoming residential projects in Gurgaon 2025 are designed with world-class amenities, excellent road and metro connectivity, and strong future appreciation potential. Filter projects by location, price, and property type to find your ideal home.
                   </p>
                 </div>
 
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mb-8 sm:mb-12">
                   <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8 hover:shadow-xl transition-shadow duration-300">
-                    <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 text-green-600">
+                    <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 text-blue-600">
                       Why Invest in New Launch Projects in Gurgaon?
                     </h3>
                     <div className="text-gray-600 leading-relaxed">
@@ -1477,7 +1997,7 @@ const GlobalFilterTemplate = ({
                         Gurgaon remains one of the most attractive real estate markets in NCR. Opting for new launch projects in Gurgaon comes with multiple benefits:
                       </p>
                       <ul className="list-disc pl-5 space-y-2">
-                        <li><strong>Attractive Launch Pricing:</strong> Properties launched in 2025 are often available at lower prices compared to ready-to-move options.</li>
+                        <li><strong>Attractive Launch Pricing:</strong> Properties launched in 2026 are often available at lower prices compared to ready-to-move options.</li>
                         <li><strong>Contemporary Design:</strong> New developments feature efficient layouts, sustainable construction, and upgraded lifestyle features.</li>
                         <li><strong>Growth Potential:</strong> Early investments generally experience strong appreciation by the time of possession.</li>
                         <li><strong>Rental Demand:</strong> Proximity to IT parks, commercial hubs, and business districts ensures steady rental returns.</li>
@@ -1486,7 +2006,7 @@ const GlobalFilterTemplate = ({
                   </div>
 
                   <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8 hover:shadow-xl transition-shadow duration-300">
-                    <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 text-green-600">
+                    <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 text-blue-600">
                       Prime Locations for New Launch Projects in Gurgaon
                     </h3>
                     <div className="text-gray-600 leading-relaxed">
@@ -1505,15 +2025,15 @@ const GlobalFilterTemplate = ({
                         </div>
                         <div>
                           <h4 className="font-semibold text-gray-900 mb-2">Southern Peripheral Road (SPR)</h4>
-                          <p className="text-sm">SPR connects key parts of the city and features multiple new launch projects in 2025 that balance lifestyle comfort with investment growth.</p>
+                          <p className="text-sm">SPR connects key parts of the city and features multiple new launch projects in 2026 that balance lifestyle comfort with investment growth.</p>
                         </div>
                       </div>
                     </div>
                   </div>
 
                   <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8 hover:shadow-xl transition-shadow duration-300">
-                    <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 text-green-600">
-                      Lifestyle Amenities in New Launch Projects 2025
+                    <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 text-blue-600">
+                      Lifestyle Amenities in New Launch Projects 2026
                     </h3>
                     <div className="text-gray-600 leading-relaxed">
                       <p className="mb-4">
@@ -1535,7 +2055,7 @@ const GlobalFilterTemplate = ({
 
                 <div className="grid md:grid-cols-2 gap-6 sm:gap-8 mb-8 sm:mb-12">
                   <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8 hover:shadow-xl transition-shadow duration-300">
-                    <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 text-green-600">
+                    <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 text-blue-600">
                       Key Factors to Consider Before Buying
                     </h3>
                     <div className="text-gray-600 leading-relaxed">
@@ -1549,7 +2069,7 @@ const GlobalFilterTemplate = ({
                   </div>
 
                   <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8 hover:shadow-xl transition-shadow duration-300">
-                    <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 text-green-600">
+                    <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 text-blue-600">
                       Why Choose 100acress for New Launch Projects?
                     </h3>
                     <div className="text-gray-600 leading-relaxed">
@@ -1557,13 +2077,13 @@ const GlobalFilterTemplate = ({
                         100acress provides access to verified and RERA-approved new launch projects in Gurgaon, backed by trusted developers. With accurate information, professional insights, and personalized support, we simplify the property search process.
                       </p>
                       <p>
-                        Whether you are purchasing your first home or investing in new launch projects 2025, our platform helps you make confident and informed decisions.
+                        Whether you are purchasing your first home or investing in new launch projects 2026, our platform helps you make confident and informed decisions.
                       </p>
                     </div>
                   </div>
                 </div>
 
-                <div className="bg-gradient-to-r from-green-600 to-emerald-600 rounded-xl p-6 sm:p-8 text-white text-center">
+                <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl p-6 sm:p-8 text-white text-center">
                   <h3 className="text-2xl sm:text-3xl font-bold mb-4">
                     Explore New Launch Projects Today
                   </h3>
@@ -1572,7 +2092,7 @@ const GlobalFilterTemplate = ({
                   </p>
                   <a
                     href="https://www.100acress.com/projects/newlaunch/"
-                    className="inline-block bg-white text-green-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors duration-300"
+                    className="inline-block bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors duration-300"
                   >
                     View New Launch Projects
                   </a>
@@ -1583,24 +2103,22 @@ const GlobalFilterTemplate = ({
 
           {/* Know More About Under Construction Projects Section */}
           {projectStatus === 'underconstruction' && (
-            <div className="mt-12 sm:mt-16 bg-gradient-to-br from-orange-50 to-amber-50 py-12 sm:py-16 px-4 sm:px-6 lg:px-8">
+            <div className="mt-12 sm:mt-16 bg-gradient-to-br from-blue-50 to-indigo-50 py-12 sm:py-16 px-4 sm:px-6 lg:px-8">
               <div className="max-w-6xl mx-auto">
                 <div className="text-center mb-8 sm:mb-12">
                   <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-                    Explore <span className="text-orange-600 text-4xl sm:text-5xl">Under Construction Projects</span>
+                    Explore <span className="text-blue-600 text-4xl sm:text-5xl">Under Construction Projects</span>
                   </h2>
-                  <div className="w-24 h-1 bg-orange-600 mx-auto mb-6"></div>
+                  <div className="w-24 h-1 bg-blue-600 mx-auto mb-6"></div>
                   <p className="text-lg text-gray-600 max-w-4xl mx-auto">
-                    <a href="https://www.100acress.com/projects/underconstruction/" className="text-orange-600 hover:underline font-medium">Under construction projects in Gurgaon</a>: Explore the best under construction projects in Gurgaon designed for modern living and long-term investment. Under construction residential projects offer an ideal opportunity to purchase properties at early-stage prices while benefiting from future appreciation. These projects feature contemporary layouts, advanced amenities, and are located across well-connected sectors of Gurgaon.
+                    Explore verified upcoming projects in Gurgaon featuring luxury apartments, modern residences, and affordable housing options across Dwarka Expressway and New Gurgaon. These upcoming residential projects in Gurgaon 2025 are designed with world-class amenities, excellent road and metro connectivity, and strong future appreciation potential. Filter projects by location, price, and property type to find your ideal home.
                   </p>
-                  <p className="text-lg text-gray-600 max-w-4xl mx-auto mt-4">
-                    With strong infrastructure growth and expanding commercial hubs, under construction projects in Gurgaon 2025 continue to attract both end-users and investors. Buyers can choose from a wide range of apartments and residential developments that align with different budgets and lifestyle requirements.
-                  </p>
+                 
                 </div>
 
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mb-8 sm:mb-12">
                   <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8 hover:shadow-xl transition-shadow duration-300">
-                    <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 text-orange-600">
+                    <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 text-blue-600">
                       Why Invest in Under Construction Projects in Gurgaon?
                     </h3>
                     <div className="text-gray-600 leading-relaxed">
@@ -1618,7 +2136,7 @@ const GlobalFilterTemplate = ({
                   </div>
 
                   <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8 hover:shadow-xl transition-shadow duration-300">
-                    <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 text-orange-600">
+                    <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 text-blue-600">
                       Top Locations for Under Construction Projects in Gurgaon
                     </h3>
                     <div className="text-gray-600 leading-relaxed">
@@ -1637,15 +2155,15 @@ const GlobalFilterTemplate = ({
                         </div>
                         <div>
                           <h4 className="font-semibold text-gray-900 mb-2">Southern Peripheral Road (SPR)</h4>
-                          <p className="text-sm">SPR connects major residential and commercial zones of Gurgaon and features several under construction projects in 2025 that balance lifestyle convenience and investment returns.</p>
+                          <p className="text-sm">SPR connects major residential and commercial zones of Gurgaon and features several under construction projects in 2026 that balance lifestyle convenience and investment returns.</p>
                         </div>
                       </div>
                     </div>
                   </div>
 
                   <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8 hover:shadow-xl transition-shadow duration-300">
-                    <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 text-orange-600">
-                      Amenities Offered in Under Construction Projects 2025
+                    <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 text-blue-600">
+                      Amenities Offered in Under Construction Projects 2026
                     </h3>
                     <div className="text-gray-600 leading-relaxed">
                       <p className="mb-4">
@@ -1668,7 +2186,7 @@ const GlobalFilterTemplate = ({
 
                 <div className="grid md:grid-cols-2 gap-6 sm:gap-8 mb-8 sm:mb-12">
                   <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8 hover:shadow-xl transition-shadow duration-300">
-                    <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 text-orange-600">
+                    <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 text-blue-600">
                       Things to Check Before Buying Under Construction Projects
                     </h3>
                     <div className="text-gray-600 leading-relaxed">
@@ -1683,7 +2201,7 @@ const GlobalFilterTemplate = ({
                   </div>
 
                   <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8 hover:shadow-xl transition-shadow duration-300">
-                    <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 text-orange-600">
+                    <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 text-blue-600">
                       Why Choose 100acress for Under Construction Projects?
                     </h3>
                     <div className="text-gray-600 leading-relaxed">
@@ -1691,13 +2209,13 @@ const GlobalFilterTemplate = ({
                         100acress is a trusted real estate platform offering verified and RERA-approved under construction projects in Gurgaon. We collaborate with reputed developers and provide accurate project information, expert insights, and personalized assistance.
                       </p>
                       <p>
-                        Whether you are buying your first home or investing in under construction projects 2025, our platform helps you make confident and informed property decisions.
+                        Whether you are buying your first home or investing in under construction projects 2026, our platform helps you make confident and informed property decisions.
                       </p>
                     </div>
                   </div>
                 </div>
 
-                <div className="bg-gradient-to-r from-orange-600 to-amber-600 rounded-xl p-6 sm:p-8 text-white text-center">
+                <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl p-6 sm:p-8 text-white text-center">
                   <h3 className="text-2xl sm:text-3xl font-bold mb-4">
                     Discover Under Construction Projects Today
                   </h3>
@@ -1706,7 +2224,7 @@ const GlobalFilterTemplate = ({
                   </p>
                   <a
                     href="https://www.100acress.com/projects/underconstruction/"
-                    className="inline-block bg-white text-orange-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors duration-300"
+                    className="inline-block bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors duration-300"
                   >
                     View Under Construction Projects
                   </a>
@@ -1717,24 +2235,22 @@ const GlobalFilterTemplate = ({
 
           {/* Know More About Ready to Move Projects Section */}
           {projectStatus === 'readytomove' && (
-            <div className="mt-12 sm:mt-16 bg-gradient-to-br from-purple-50 to-pink-50 py-12 sm:py-16 px-4 sm:px-6 lg:px-8">
+            <div className="mt-12 sm:mt-16 bg-gradient-to-br from-blue-50 to-indigo-50 py-12 sm:py-16 px-4 sm:px-6 lg:px-8">
               <div className="max-w-6xl mx-auto">
                 <div className="text-center mb-8 sm:mb-12">
                   <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-                    Discover <span className="text-purple-600 text-4xl sm:text-5xl">Ready to Move Projects</span>
+                    Discover <span className="text-blue-600 text-4xl sm:text-5xl">Ready to Move Projects</span>
                   </h2>
-                  <div className="w-24 h-1 bg-purple-600 mx-auto mb-6"></div>
+                  <div className="w-24 h-1 bg-blue-600 mx-auto mb-6"></div>
                   <p className="text-lg text-gray-600 max-w-4xl mx-auto">
-                    <a href="https://www.100acress.com/projects/ready-to-move/" className="text-purple-600 hover:underline font-medium">Ready to move projects in Gurgaon</a>: Introduce Ready to Move Projects in Gurgaon - Gurgaon is growing very fast and has become one of the top real estate cities in India. It is no longer just a corporate hub; today, many people want to live here because of good jobs, modern lifestyle, and strong infrastructure. Due to this growth, ready to move projects in Gurgaon are in very high demand.
+                    Explore verified upcoming projects in Gurgaon featuring luxury apartments, modern residences, and affordable housing options across Dwarka Expressway and New Gurgaon. These upcoming residential projects in Gurgaon 2025 are designed with world-class amenities, excellent road and metro connectivity, and strong future appreciation potential. Filter projects by location, price, and property type to find your ideal home.
                   </p>
-                  <p className="text-lg text-gray-600 max-w-4xl mx-auto mt-4">
-                    Whether you want to buy a home for your family or invest your money safely, ready to move properties are a smart choice. These homes are already completed, so there is no waiting time. In this page, we will explain why ready to move projects in Gurugram are popular and how you can choose the best one.
-                  </p>
+                  
                 </div>
 
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mb-8 sm:mb-12">
                   <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8 hover:shadow-xl transition-shadow duration-300">
-                    <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 text-purple-600">
+                    <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 text-blue-600">
                       Why Is the Demand Increasing for Ready to Move Projects in Gurgaon?
                     </h3>
                     <div className="text-gray-600 leading-relaxed">
@@ -1751,7 +2267,7 @@ const GlobalFilterTemplate = ({
                   </div>
 
                   <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8 hover:shadow-xl transition-shadow duration-300">
-                    <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 text-purple-600">
+                    <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 text-blue-600">
                       Why Invest in Ready to Move Projects in Gurugram?
                     </h3>
                     <div className="text-gray-600 leading-relaxed">
@@ -1771,7 +2287,7 @@ const GlobalFilterTemplate = ({
                   </div>
 
                   <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8 hover:shadow-xl transition-shadow duration-300">
-                    <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 text-purple-600">
+                    <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 text-blue-600">
                       Types of Ready to Move Properties Available in Gurgaon
                     </h3>
                     <div className="text-gray-600 leading-relaxed">
@@ -1794,7 +2310,7 @@ const GlobalFilterTemplate = ({
 
                 <div className="grid md:grid-cols-2 gap-6 sm:gap-8 mb-8 sm:mb-12">
                   <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8 hover:shadow-xl transition-shadow duration-300">
-                    <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 text-purple-600">
+                    <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 text-blue-600">
                       Best Locations for Ready to Move Projects in Gurgaon
                     </h3>
                     <div className="text-gray-600 leading-relaxed">
@@ -1826,7 +2342,7 @@ const GlobalFilterTemplate = ({
                   </div>
 
                   <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8 hover:shadow-xl transition-shadow duration-300">
-                    <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 text-purple-600">
+                    <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 text-blue-600">
                       Important Tips Before Buying Ready to Move Projects in Gurgaon
                     </h3>
                     <div className="text-gray-600 leading-relaxed">
@@ -1845,7 +2361,7 @@ const GlobalFilterTemplate = ({
 
                 <div className="grid md:grid-cols-2 gap-6 sm:gap-8 mb-8 sm:mb-12">
                   <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8 hover:shadow-xl transition-shadow duration-300">
-                    <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 text-purple-600">
+                    <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 text-blue-600">
                       Why Buy Ready to Move Properties from 100acress.com?
                     </h3>
                     <div className="text-gray-600 leading-relaxed">
@@ -1883,7 +2399,7 @@ const GlobalFilterTemplate = ({
                   </div>
                 </div>
 
-                <div className="bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl p-6 sm:p-8 text-white text-center">
+                <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl p-6 sm:p-8 text-white text-center">
                   <h3 className="text-2xl sm:text-3xl font-bold mb-4">
                     Find Your Ready to Move Home Today
                   </h3>
@@ -1892,7 +2408,7 @@ const GlobalFilterTemplate = ({
                   </p>
                   <a
                     href="https://www.100acress.com/projects/ready-to-move/"
-                    className="inline-block bg-white text-purple-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors duration-300"
+                    className="inline-block bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors duration-300"
                   >
                     View Ready to Move Projects
                   </a>

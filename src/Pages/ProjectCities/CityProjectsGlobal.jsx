@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import Api_service from "../../Redux/utils/Api_Service";
@@ -53,27 +53,97 @@ const CityProjectsGlobal = () => {
   const [filtereddata, setFilteredData] = useState([]);
   const [datafromsearch, setDatafromsearch] = useState({});
   const [isLoading, setIsLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [hasMoreProjects, setHasMoreProjects] = useState(true);
   
   function handleDatafromSearch(data){
     setFilteredData(data);
   }
 
   useEffect(() => {
-    if (!Array.isArray(cityData) || cityData.length === 0) {
-      setIsLoading(true);
-      getProjectbyState(city, 0);
-    } else {
+    // Always reload with limit to ensure we don't use unlimited cached data
+    setIsLoading(true);
+    setCurrentPage(1);
+    setHasMoreProjects(true);
+    // Load initial batch with reasonable limit for fast loading
+    const initialLimit = 25; // Universal limit for all cities to ensure fast load
+    console.log(`🚀 City Performance fix: Loading ${city} projects with initial limit ${initialLimit} (forcing reload)`);
+    
+    // Add timeout for very slow responses
+    const timeout = setTimeout(() => {
+      console.log(`⚠️ Timeout: ${city} projects taking too long to load, showing minimal data`);
       setIsLoading(false);
-    }
+      setHasMoreProjects(true); // Allow user to try loading more
+    }, 5000); // 5 second timeout for faster fallback
+    
+    getProjectbyState(city, initialLimit).finally(() => {
+      clearTimeout(timeout);
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cityKey]);
 
   useEffect(() => {
     setDatafromsearch({ [cityKey]: cityData });
+    console.log(`📊 City data update for ${city}:`, {
+      cityKey,
+      dataLength: cityData?.length || 0,
+      hasData: cityData && cityData.length > 0,
+      sampleData: cityData?.slice(0, 2).map(p => ({ name: p.projectName, id: p._id }))
+    });
     if (cityData && cityData.length > 0) {
       setIsLoading(false);
+      // Update hasMoreProjects based on data length
+      const pageSize = 25;
+      setHasMoreProjects(cityData.length === pageSize);
+      console.log(`✅ ${city} data loaded successfully, hasMore: ${cityData.length === pageSize}`);
     }
   }, [cityKey, cityData]);
+
+  // Load more projects function
+  const loadMoreProjects = useCallback(async () => {
+    if (loadingMore || !hasMoreProjects) return;
+    
+    setLoadingMore(true);
+    try {
+      const nextPage = currentPage + 1;
+      const pageSize = 25;
+      const offset = nextPage * pageSize;
+      
+      console.log(`🔄 Loading more ${city} projects: page ${nextPage}, offset ${offset}`);
+      
+      // Call API with offset for next batch
+      await getProjectbyState(city, offset);
+      setCurrentPage(nextPage);
+      
+      // Update hasMore based on whether we got a full page
+      // This will be updated in the next useEffect cycle
+    } catch (error) {
+      console.error('Error loading more projects:', error);
+      setHasMoreProjects(false);
+    } finally {
+      setLoadingMore(false);
+    }
+  }, [loadingMore, hasMoreProjects, city, currentPage, getProjectbyState]);
+
+  // Scroll detection for lazy loading
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!hasMoreProjects || loadingMore) return;
+      
+      const scrollHeight = document.documentElement.scrollHeight;
+      const scrollTop = document.documentElement.scrollTop;
+      const clientHeight = document.documentElement.clientHeight;
+      
+      // Load more when user is 500px from bottom
+      if (scrollTop + clientHeight >= scrollHeight - 500) {
+        loadMoreProjects();
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [hasMoreProjects, loadingMore, loadMoreProjects]);
 
   const pageTitle = `Best Real Estate Projects in ${displayCity} - 100acress`;
   const pageDesc = `Upgrade your lifestyle with best real estate projects in ${displayCity}. Browse modern apartments, villas, and investment-ready properties at 100acress.`;
@@ -137,6 +207,10 @@ const CityProjectsGlobal = () => {
         pageType="city"
         projects={results || []}
         isLoading={isLoading}
+        loadingMore={loadingMore}
+        hasMoreProjects={hasMoreProjects}
+        onLoadMore={loadMoreProjects}
+        pageConfig={pageConfig}
       />
     </>
   );

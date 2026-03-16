@@ -19,7 +19,7 @@ const DubaiPageContent = () => {
   // Update meta tags when emirate changes (but keep same page title)
   useEffect(() => {
     // Keep static page title since it's a single page
-    document.title = "New & Upcoming Real Estate Projects in Dubai 2026 | 100Acress";
+    document.title = "Top Projects in Dubai UAE | Luxury & Investment Properties";
     
     // Update or create meta description
     let metaDescription = document.querySelector('meta[name="description"]');
@@ -28,7 +28,7 @@ const DubaiPageContent = () => {
       metaDescription.name = 'description';
       document.head.appendChild(metaDescription);
     }
-    metaDescription.content = "Explore 100+ verified New & upcoming real estate projects in Dubai 2026, from affordable JVC apartments to luxury waterfront villas. View Prices & Payment Plans Now.";
+    metaDescription.content = "Explore the best projects in Dubai UAE including luxury apartments, villas, and off-plan properties. Discover top investment opportunities in Dubai.";
     
     // Update or create canonical URL
     let canonicalLink = document.querySelector('link[rel="canonical"]');
@@ -40,8 +40,8 @@ const DubaiPageContent = () => {
     canonicalLink.href = "https://www.100acress.com/global/projects-in-dubai-uae/";
     
     // Update Open Graph meta tags for social sharing
-    updateMetaTag('og:title', "New & Upcoming Real Estate Projects in Dubai 2026 | 100Acress");
-    updateMetaTag('og:description', "Explore 100+ verified New & upcoming real estate projects in Dubai 2026, from affordable JVC apartments to luxury waterfront villas. View Prices & Payment Plans Now.");
+    updateMetaTag('og:title', "Top Projects in Dubai UAE | Luxury & Investment Properties");
+    updateMetaTag('og:description', "Explore the best projects in Dubai UAE including luxury apartments, villas, and off-plan properties. Discover top investment opportunities in Dubai.");
     updateMetaTag('og:url', "https://www.100acress.com/global/projects-in-dubai-uae/");
 
     // Add JSON-LD Schema (Breadcrumb and FAQ)
@@ -98,20 +98,20 @@ const DubaiPageContent = () => {
               "name": "Which are the best real estate developments currently underway in Dubai?",
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "The best real estate projects in Dubai currently underway include major developments by Binghatti, Danube, and DAMAC, known for high construction quality."
+                "text": "The best real estate projects currently underway in Dubai include major developments by Binghatti, Danube, and DAMAC, known for high construction quality."
               }
             },
             {
               "@type": "Question",
-              "name": "What are the top luxury waterfront real estate projects in Dubai?",
+              "name": "What are the top luxury waterfront real estate properties in Dubai?",
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Top luxury waterfront developments are located in Dubai Islands and Palm Jebel Ali, representing the best upcoming real estate projects in Dubai for coastal living."
+                "text": "Top luxury waterfront developments are located in Dubai Islands and Palm Jebel Ali, representing the best upcoming real estate properties in Dubai for coastal living."
               }
             },
             {
               "@type": "Question",
-              "name": "How many real estate projects in Dubai are currently available?",
+              "name": "How many real estate projects are currently available in Dubai?",
               "acceptedAnswer": {
                 "@type": "Answer",
                 "text": "While hundreds of developments exist, 100acress provides a verified list of 100+ top projects to help investors navigate the vast Dubai market."
@@ -127,13 +127,37 @@ const DubaiPageContent = () => {
             },
             {
               "@type": "Question",
-              "name": "How do I identify the best upcoming real estate projects in Dubai?",
+              "name": "How do I identify the best upcoming Dubai real estate projects?",
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Focus on projects near transit hubs. 100acress lists the best upcoming real estate projects in Dubai 2026 with detailed ROI insights."
+                "text": "Focus on projects near transit hubs. 100acress lists the best upcoming real estate projects in Dubai with detailed ROI insights."
               }
             }
           ]
+        },
+        {
+          "@type": "Product",
+          "name": "Top Projects in Dubai UAE",
+          "description": "Explore the best projects in Dubai UAE including luxury apartments, villas, and off-plan properties. Discover top investment opportunities in Dubai.",
+          "sku": "projects-in-dubai-uae",
+          "image": "https://www.100acress.com/Images/mainog.png",
+          "brand": {
+            "@type": "Brand",
+            "name": "Dubai RealEstate"
+          },
+          "offers": {
+            "@type": "AggregateOffer",
+            "priceCurrency": "INR",
+            "lowPrice": "15600000",
+            "availability": "https://schema.org/InStock",
+            "url": "https://www.100acress.com/global/projects-in-dubai-uae/"
+          },
+          "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": "4.9",
+            "reviewCount": "2084"
+          },
+          "url": "https://www.100acress.com/global/projects-in-dubai-uae/"
         }
       ]
     });

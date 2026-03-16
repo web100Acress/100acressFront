@@ -6,7 +6,7 @@ const OptimizedImage = ({
   className = '', 
   placeholder = 'blur',
   loading = 'lazy',
-  fetchPriority = 'auto',
+  fetchpriority = 'auto',
   width,
   height,
   ...props 
@@ -64,7 +64,7 @@ const OptimizedImage = ({
             src={hasError ? '/placeholder-image.jpg' : src}
             alt={alt}
             loading={loading}
-            fetchPriority={fetchPriority}
+            fetchpriority={fetchpriority}
             decoding="async"
             width={width}
             height={height}

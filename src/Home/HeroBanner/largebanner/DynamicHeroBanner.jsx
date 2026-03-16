@@ -311,7 +311,7 @@ const DynamicHeroBanner = () => {
                     prevSlide();
                   }}
                 >
-                  <span className="carousel-control-prev-icon" aria-hidden="true"></span>
+                  <span className="carousel-control-prev-icon"></span>
                   <span className="sr-only">Previous</span>
                 </a>
                 <a 
@@ -324,7 +324,7 @@ const DynamicHeroBanner = () => {
                     nextSlide();
                   }}
                 >
-                  <span className="carousel-control-next-icon" aria-hidden="true"></span>
+                  <span className="carousel-control-next-icon"></span>
                   <span className="sr-only">Next</span>
                 </a>
                 

@@ -35,20 +35,24 @@ export default function Hero({
       setPlaceholderIndex((prev) => (prev + 1) % placeholderTexts.length);
     }, 3000);
     return () => clearInterval(interval);
-  }, []);
+  }, [placeholderTexts.length]);
   
   useEffect(() => {
     let currentIndex = 0;
+    const currentText = placeholderTexts[placeholderIndex];
     const typeInterval = setInterval(() => {
-      if (currentIndex <= placeholderTexts[placeholderIndex].length) {
-        setPlaceholder(placeholderTexts[placeholderIndex].slice(0, currentIndex));
+      if (currentIndex <= currentText.length) {
+        setPlaceholder(currentText.slice(0, currentIndex));
         currentIndex++;
       } else {
         clearInterval(typeInterval);
       }
     }, 50);
-    return () => clearInterval(typeInterval);
-  }, [placeholderIndex]);
+    return () => {
+      clearInterval(typeInterval);
+      setPlaceholder(''); // Reset placeholder when index changes to avoid flickers
+    };
+  }, [placeholderIndex, placeholderTexts]);
   
   // Debounce timer ref
   const debounceTimer = useRef(null);
@@ -84,6 +88,11 @@ export default function Hero({
   
   // Dynamic headlines based on project status
   const getDynamicTitle = () => {
+    // Special case for senior living
+    if (projectStatus === 'senior-living') {
+      return 'Senior Living in Gurgaon';
+    }
+    
     // If title prop is provided and not default, use it
     if (title && title !== 'Project Status Search') {
       return title;
@@ -100,6 +109,11 @@ export default function Hero({
   };
   
   const getDynamicSubtitle = () => {
+    // Special case for senior living
+    if (projectStatus === 'senior-living') {
+      return 'If you are looking for luxury and independent senior living in Gurgaon, your search ends here. We provide the best senior living facilities where elders receive 24/7 medical support, an active community, and a home-like environment. Our safe retirement homes are designed keeping your every need in mind.';
+    }
+    
     // If subtitle prop is provided and not default, use it
     if (subtitle && subtitle !== 'Premium projects crafted with quality, sustainability, and exceptional after‑sales service.') {
       return subtitle;

@@ -8,6 +8,7 @@ import { getBudgetPlots } from "../Utils/ProjectOrderData";
 
 const BudgetPlotsInGurugraon = () => {
   const [budgetPlots, setBudgetPlots] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const scrollRef = useRef(null);
   const [showLeftButton, setShowLeftButton] = useState(false);
@@ -73,21 +74,30 @@ const BudgetPlotsInGurugraon = () => {
   useEffect(() => {
     const loadBudgetPlots = async () => {
       try {
-        const plots = await getBudgetPlots();
+        setIsLoading(true);
+        // Add timeout to prevent hanging
+        const timeoutPromise = new Promise((_, reject) => 
+          setTimeout(() => reject(new Error('Loading timeout')), 5000)
+        );
+        
+        const plots = await Promise.race([getBudgetPlots(), timeoutPromise]);
         console.log('📊 Budget plots loaded:', plots);
-        console.log('📸 Image URLs being used:');
-        plots.forEach((plot, idx) => {
-          console.log(`  ${idx + 1}. ${plot.title}:`, plot.image);
-          console.log(`     - Thumbnail: ${plot.thumbnailImage}`);
-          console.log(`     - Front: ${plot.frontImage}`);
-        });
         setBudgetPlots(plots);
       } catch (error) {
         console.error('❌ Error loading budget plots:', error);
-        setBudgetPlots([]);
+        // Set fallback data immediately on error
+        setBudgetPlots([
+          { title: "Reliance Met City", link: "/reliance-met-city/", image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/reliance-met-city.webp" },
+          { title: "Signature City Of Colours", link: "/signature-global-plots/", image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/budgetplots/colors.jpg" },
+          { title: "Trevoc Plots Sonipat", link: "/bptp-plots-gurugram/", image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/budgetplots/bptp.webp" },
+          { title: "JMS The Pearl", link: "/jms-the-pearl/", image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/budgetplots/Orris.jpg" }
+        ]);
+      } finally {
+        setIsLoading(false);
       }
     };
 
+    // Load immediately without delay
     loadBudgetPlots();
   }, []);
 
@@ -113,7 +123,7 @@ const BudgetPlotsInGurugraon = () => {
   if (!isMobile) {
     return (
       <Wrapper className="section">
-        <div data-aos="zoom-in-up" className="container" style={{ boxShadow: "0px 0px 0px 0px #0000001a" }}>
+        <div data-aos="fade-up" className="container" style={{ boxShadow: "0px 0px 0px 0px #0000001a" }}>
           <div className="flex items-center justify-between mb-4 mt-6">
             <h2 className="text-3xl xl:text-4xl lg:text-3xl md:text-2xl font-extrabold mb-3 text-neutral-900 pl-4 text-left">
                       <span className="bg-gradient-to-r from-[#f43f5e] to-[#dc2626] bg-clip-text text-transparent">Best Budget</span>
@@ -128,13 +138,20 @@ const BudgetPlotsInGurugraon = () => {
               </Link>
             </div>
           </div>
-          <div className="grid  lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-1 grid-cols-1 mx-0 gap-3 lg:gap-4 pb-2 pt-3">
-            {budgetPlots.length === 0 ? (
-              <div className="col-span-full text-center py-8">
-                <div className="text-gray-500">Loading budget plots...</div>
-              </div>
-            ) : (
-              budgetPlots.slice(0, 4).map((project, index) => (
+          
+          {isLoading && budgetPlots.length === 0 ? (
+            <div className="grid  lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-1 grid-cols-1 mx-0 gap-3 lg:gap-4 pb-2 pt-3">
+              {[1, 2, 3, 4].map((i) => (
+                <div key={i} className="animate-pulse">
+                  <div className="bg-gray-200 h-32 rounded-lg mb-2"></div>
+                  <div className="bg-gray-200 h-4 rounded mb-1"></div>
+                  <div className="bg-gray-200 h-4 rounded w-3/4"></div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="grid  lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-1 grid-cols-1 mx-0 gap-3 lg:gap-4 pb-2 pt-3">
+              {budgetPlots.slice(0, 4).map((project, index) => (
                 <Link to={project.link} key={index} className="card group" aria-label={project.title}>
                   <div className="card-image-wrapper">
                     <img
@@ -148,11 +165,11 @@ const BudgetPlotsInGurugraon = () => {
                       }}
                     />
                   </div>
-                  <button className="card-button bg-red-600 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-500/30 transition-all duration-300">{project.title}</button>
+                  <button className={`card-button bg-red-600 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-500/30 transition-all duration-300`}>{project.title}</button>
                 </Link>
-              ))
-            )}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       </Wrapper>
     );
@@ -178,7 +195,17 @@ const BudgetPlotsInGurugraon = () => {
             style={{ width: '100%', scrollBehavior: 'smooth' }}
           >
             <div className="flex gap-3">
-              {budgetPlots.length === 0 ? (
+              {isLoading && budgetPlots.length === 0 ? (
+                <div className="flex gap-3">
+                  {[1, 2, 3, 4].map((i) => (
+                    <div key={i} className="flex-shrink-0 w-64 animate-pulse">
+                      <div className="bg-gray-200 h-32 rounded-lg mb-2"></div>
+                      <div className="bg-gray-200 h-4 rounded mb-1"></div>
+                      <div className="bg-gray-200 h-4 rounded w-3/4"></div>
+                    </div>
+                  ))}
+                </div>
+              ) : budgetPlots.length === 0 ? (
                 <div className="text-center py-8 px-4">
                   <div className="text-gray-500">Loading budget plots...</div>
                 </div>
@@ -198,7 +225,7 @@ const BudgetPlotsInGurugraon = () => {
                           }}
                         />
                       </div>
-                      <button className="card-button bg-red-600 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-500/30 transition-all duration-300">{project.title}</button>
+                      <button className={`card-button bg-red-600 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-500/30 transition-all duration-300`}>{project.title}</button>
                     </Link>
                   </div>
                 ))

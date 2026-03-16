@@ -67,7 +67,7 @@ export default function DesktopInsightsHeader() {
             >
                 {/* Left: Branding & Context */}
                 <div className="flex items-center gap-4">
-                    <Link to="/real-estate-insights">
+                    <Link to="/real-estate-insights/">
                         <div className="flex items-center gap-2">
                             <div className="w-8 h-8 bg-[#e53e3e] rounded-lg flex items-center justify-center p-1.5 shadow-sm">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" className="w-full h-full">

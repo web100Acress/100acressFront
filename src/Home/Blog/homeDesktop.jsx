@@ -30,8 +30,8 @@ const HomeDesktopBlog = () => {
       .replace(/^-+|-+$/g, '');       // Trim leading/trailing hyphens
 
   const blogLink = (blog) => {
-    if (blog?.slug) return `/blog/${blog.slug}`;
-    return `/blog/${getSlug(blog.blog_Title)}/${blog._id}`;
+    if (blog?.slug) return `/blog/${blog.slug}/`;
+    return `/blog/${getSlug(blog.blog_Title)}/${blog._id}/`;
   };
 
   useEffect(() => {

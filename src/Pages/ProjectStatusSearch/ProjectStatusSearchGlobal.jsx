@@ -4,7 +4,9 @@ import { useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import Api_Service from "../../Redux/utils/Api_Service";
 import GlobalFilterTemplate from "../../Components/GlobalFilterTemplate/GlobalFilterTemplate";
+import { staticData } from "../../ProjectTypes/config/staticData.jsx";
 import { statusConfigs } from "../../ProjectTypes/config/pageConfigs.js";
+import { getBrandedResidencesDesiredOrder, getBrandedResidences } from "../../Utils/ProjectOrderData.js";
 
 const ProjectStatusSearchGlobal = () => {
   const { allProjectData } = useContext(DataContext);
@@ -23,10 +25,24 @@ const ProjectStatusSearchGlobal = () => {
     setComponentKey(prev => prev + 1);
   }, [location.pathname]);
 
+  // State for branded residences
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [hasMoreProjects, setHasMoreProjects] = useState(true);
+  const [brandedResidencesOrder, setBrandedResidencesOrder] = useState([]);
+  const [brandedResidencesProjects, setBrandedResidencesProjects] = useState([]);
+
   // Get project status from URL or props
   const getProjectStatus = () => {
     const path = location.pathname;
     console.log('Current path:', path);
+
+    // Check for branded-residences URL
+    if (path.includes('/branded-residences')) {
+      console.log('Detected branded residences URL');
+      return 'brandedresidences';
+    }
 
     // Check for new unified status URLs: projects/{status}
     if (path.includes('/projects/') && !path.includes('/projects-in-')) {
@@ -66,6 +82,7 @@ const ProjectStatusSearchGlobal = () => {
       case 'underconstruction': return underConstructionProjects;
       case 'readytomove': return readyToMoveProjects;
       case 'newlaunch': return newLaunchProjects;
+      case 'brandedresidences': return brandedResidencesProjects.length > 0 ? brandedResidencesProjects : allProjectData;
       default: return [];
     }
   };
@@ -77,15 +94,10 @@ const ProjectStatusSearchGlobal = () => {
     return projectData;
   }, [projectData]);
 
-  // Project status configurations with enhanced SEO
+  // Project status configurations from staticData
   const statusConfig = {
     upcoming: {
-      title: "UpComing Projects in Gurgaon",
-      description: "Explore best upcoming projects in Gurgaon with modern amenities. Find residential & commercial spaces customized to your lifestyle. Visit 100acress today!",
-      metaTitle: "Discover Upcoming Projects in Gurgaon - 100acress",
-      canonical: "https://www.100acress.com/projects/upcoming/",
-      query: "allupcomingproject",
-      keywords: "upcoming projects gurgaon, new residential projects gurgaon, commercial projects gurgaon, gurgaon real estate, property investment gurgaon",
+      ...staticData.status.upcoming,
       structuredData: {
         "@context": "https://schema.org",
         "@type": "RealEstateAgent",
@@ -96,12 +108,7 @@ const ProjectStatusSearchGlobal = () => {
       }
     },
     underconstruction: {
-      title: "Under Construction Projects in Gurgaon",
-      description: "Under Construction Properties in Gurgaon include commercial and residential projects that will meet various requirements. These developments are equipped with modern amenities, great places close to business areas, as well as extensive green spaces. They're designed to meet the ever-changing demands of urban dwellers who want peace, convenience, and a vibrant lifestyle.",
-      metaTitle: "Property in UnderConstruction - Flats, Villas, House in gurugram.",
-      canonical: "https://www.100acress.com/projects/underconstruction/",
-      query: "underconstruction",
-      keywords: "under construction projects gurgaon, ongoing projects gurgaon, construction status gurgaon, gurgaon property development",
+      ...staticData.status.underconstruction,
       structuredData: {
         "@context": "https://schema.org",
         "@type": "RealEstateAgent",
@@ -112,12 +119,7 @@ const ProjectStatusSearchGlobal = () => {
       }
     },
     readytomove: {
-      title: "Ready To Move Projects",
-      description: "Explore ready to move properties in Gurgaon with modern amenities. Find residential & commercial spaces ready for immediate possession.",
-      metaTitle: "Ready To Move Properties in Gurgaon - 100acress",
-      canonical: "https://www.100acress.com/projects/ready-to-move/",
-      query: "readytomove",
-      keywords: "ready to move properties gurgaon, immediate possession gurgaon, completed projects gurgaon, gurgaon ready homes",
+      ...staticData.status.readytomove,
       structuredData: {
         "@context": "https://schema.org",
         "@type": "RealEstateAgent",
@@ -128,12 +130,7 @@ const ProjectStatusSearchGlobal = () => {
       }
     },
     newlaunch: {
-      title: "Projects in New Launch",
-      description: "Explore new launch projects in Gurgaon with modern amenities. Find the latest residential & commercial spaces.",
-      metaTitle: "New Launch Projects in Gurgaon - 100acress",
-      canonical: "https://www.100acress.com/projects/newlaunch/",
-      query: "newlaunch",
-      keywords: "new launch projects gurgaon, latest projects gurgaon, new residential projects gurgaon, gurgaon property launches",
+      ...staticData.status.newlaunch,
       structuredData: {
         "@context": "https://schema.org",
         "@type": "RealEstateAgent",
@@ -142,6 +139,17 @@ const ProjectStatusSearchGlobal = () => {
         "url": "https://www.100acress.com",
         "areaServed": "Gurgaon, Haryana, India"
       }
+    },
+    brandedresidences: {
+      ...staticData.status.brandedresidences,
+      structuredData: {
+        "@context": "https://schema.org",
+        "@type": "RealEstateAgent",
+        "name": "100acress",
+        "description": "Branded residences represent a new chapter in modern luxury living. These homes are created when experienced real estate developers collaborate with globally recognized design and lifestyle partners. The result is a residence where architecture, interiors, and everyday comfort are thoughtfully planned together. From carefully selected materials to elegant layouts, every detail reflects a refined standard of living. Compared to conventional housing, branded homes are aimed at design consistency, high-quality construction, and well curated lifestyle experience. Premium services, caring services and serene living conditions are usually taken by residents to enable them to live in comfort and privacy. These residences are being developed in Gurugram and Noida, cities known for their modern skyline and growing demand for premium residential living.",
+        "url": "https://www.100acress.com",
+        "areaServed": "India"
+      },
     }
   };
 
@@ -151,8 +159,37 @@ const ProjectStatusSearchGlobal = () => {
   // Debounce timer ref
   const debounceTimer = useRef(null);
 
-  // Loading state
-  const [isLoading, setIsLoading] = useState(true);
+  // Load branded residences data
+  useEffect(() => {
+    if (projectStatus === 'brandedresidences') {
+      setIsLoading(true);
+      
+      // Load order data
+      getBrandedResidencesDesiredOrder().then(order => {
+        console.log('🏠 ProjectStatusSearch: Branded residences order:', order);
+        setBrandedResidencesOrder(order);
+      });
+      
+      // Load actual project data
+      getBrandedResidences().then(projects => {
+        console.log('🏠 ProjectStatusSearch: Branded residences projects loaded:', projects);
+        setBrandedResidencesProjects(projects);
+        setIsLoading(false);
+      }).catch(error => {
+        console.error('🏠 ProjectStatusSearch: Error loading branded residences:', error);
+        setIsLoading(false);
+      });
+    }
+  }, [projectStatus]);
+
+  // Log when project data changes
+  useEffect(() => {
+    console.log('🏠 ProjectStatusSearch: Project data changed:', {
+      projectStatus,
+      dataLength: projectData?.length,
+      dataSample: projectData?.slice(0, 3).map(p => ({ name: p.projectName || p.title, city: p.city }))
+    });
+  }, [projectData, projectStatus]);
 
   // Throttled API call function
   const throttledGetAllProjects = useCallback(async (query, limit) => {
@@ -208,8 +245,13 @@ const ProjectStatusSearchGlobal = () => {
 
     // Set loading to true initially when status/query changes
     setIsLoading(true);
+    setCurrentPage(1);
+    setHasMoreProjects(true);
     if (currentConfig?.query) {
-      throttledGetAllProjects(currentConfig.query, 0);
+      // Load initial batch with reasonable limit for fast loading
+      const initialLimit = (projectStatus === 'upcoming' || projectStatus === 'newlaunch' || projectStatus === 'underconstruction' || projectStatus === 'readytomove') ? 50 : 30; // Higher limit for popular pages
+      console.log(`🚀 Performance fix: Loading ${projectStatus} projects with initial limit ${initialLimit}`);
+      throttledGetAllProjects(currentConfig.query, initialLimit);
     }
   }, [projectStatus, currentConfig?.query, throttledGetAllProjects, location.pathname, componentKey]);
 
@@ -217,8 +259,56 @@ const ProjectStatusSearchGlobal = () => {
   useEffect(() => {
     if (memoizedProjectData && memoizedProjectData.length > 0) {
       setIsLoading(false);
+      // Check if there might be more data
+      const pageSize = (projectStatus === 'upcoming' || projectStatus === 'newlaunch' || projectStatus === 'underconstruction' || projectStatus === 'readytomove') ? 50 : 30;
+      setHasMoreProjects(memoizedProjectData.length === pageSize);
     }
-  }, [memoizedProjectData]);
+  }, [memoizedProjectData, projectStatus]);
+
+  // Load more projects function
+  const loadMoreProjects = useCallback(async () => {
+    if (loadingMore || !hasMoreProjects || !currentConfig?.query) return;
+    
+    setLoadingMore(true);
+    try {
+      const nextPage = currentPage + 1;
+      const pageSize = (projectStatus === 'upcoming' || projectStatus === 'newlaunch' || projectStatus === 'underconstruction' || projectStatus === 'readytomove') ? 50 : 30;
+      const offset = nextPage * pageSize;
+      
+      console.log(`🔄 Loading more ${projectStatus} projects: page ${nextPage}, offset ${offset}`);
+      
+      // Call API with offset for next batch
+      await getAllProjects(currentConfig.query, offset);
+      setCurrentPage(nextPage);
+      
+      // Update hasMore based on whether we got a full page
+      // This will be updated in the next useEffect cycle
+    } catch (error) {
+      console.error('Error loading more projects:', error);
+      setHasMoreProjects(false);
+    } finally {
+      setLoadingMore(false);
+    }
+  }, [loadingMore, hasMoreProjects, currentConfig, currentPage, projectStatus, getAllProjects]);
+
+  // Scroll detection for lazy loading
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!hasMoreProjects || loadingMore) return;
+      
+      const scrollHeight = document.documentElement.scrollHeight;
+      const scrollTop = document.documentElement.scrollTop;
+      const clientHeight = document.documentElement.clientHeight;
+      
+      // Load more when user is 500px from bottom
+      if (scrollTop + clientHeight >= scrollHeight - 500) {
+        loadMoreProjects();
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [hasMoreProjects, loadingMore, loadMoreProjects]);
 
   // Cleanup on unmount
   useEffect(() => {
@@ -274,7 +364,54 @@ const ProjectStatusSearchGlobal = () => {
     itemsPerPage: 40,
     badgeColor: statusConfigs[projectStatus]?.badgeColor || 'bg-blue-500',
     badgeText: statusConfigs[projectStatus]?.badgeText || 'Featured',
-    typeFilter: (project) => true // Show all projects for status pages
+    typeFilter: projectStatus === 'brandedresidences' ? (project) => {
+      console.log('🔍 ProjectStatusSearch: Filtering branded residences project:', {
+        name: project.projectName || project.title,
+        city: project.city,
+        hasBrandedProjects: brandedResidencesProjects.length > 0
+      });
+      
+      // If we have branded residences projects from Project Order Management, show only those
+      if (brandedResidencesProjects.length > 0) {
+        const shouldShow = true; // Show all projects from the branded residences array
+        console.log('🔍 ProjectStatusSearch: Branded residences mode - showing project:', shouldShow);
+        return shouldShow;
+      }
+      
+      // Fallback filtering for all projects
+      const projectName = project.projectName || '';
+      const description = project.project_discripation?.toLowerCase() || project.description?.toLowerCase() || '';
+      const type = project.type?.toLowerCase() || '';
+      const projectType = project.projectType?.toLowerCase() || '';
+      
+      // Keywords that indicate branded residences
+      const brandedKeywords = [
+        'branded', 'luxury', 'premium', 'exclusive', 'signature', 'ultra luxury',
+        'ultra-luxury', 'high-end', 'bespoke', 'designer', 'collection', 'estate',
+        'residence', 'tower', 'grand', 'imperial', 'royal', 'platinum', 'gold',
+        'diamond', 'emerald', 'pearl', 'crystal', 'marble', 'penthouse'
+      ];
+      
+      const hasKeyword = brandedKeywords.some(keyword => 
+        projectName.toLowerCase().includes(keyword) || 
+        description.includes(keyword) ||
+        type.includes(keyword) ||
+        projectType.includes(keyword)
+      );
+      
+      console.log('🔍 ProjectStatusSearch: Keyword filtering result:', {
+        projectName,
+        hasKeyword,
+        keywords: brandedKeywords.filter(k => 
+          projectName.toLowerCase().includes(k) || 
+          description.includes(k) ||
+          type.includes(k) ||
+          projectType.includes(k)
+        )
+      });
+      
+      return hasKeyword;
+    } : (project) => true // Show all projects for other status pages
   };
 
   return (
@@ -284,6 +421,10 @@ const ProjectStatusSearchGlobal = () => {
         pageType="status"
         projects={memoizedProjectData || []}
         isLoading={isLoading}
+        loadingMore={loadingMore}
+        hasMoreProjects={hasMoreProjects}
+        onLoadMore={loadMoreProjects}
+        pageConfig={currentConfig}
       />
     </>
   );
