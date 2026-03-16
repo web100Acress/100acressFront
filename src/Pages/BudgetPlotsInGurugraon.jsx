@@ -75,18 +75,23 @@ const BudgetPlotsInGurugraon = () => {
     const loadBudgetPlots = async () => {
       try {
         setIsLoading(true);
-        const plots = await getBudgetPlots();
+        // Add timeout to prevent hanging
+        const timeoutPromise = new Promise((_, reject) => 
+          setTimeout(() => reject(new Error('Loading timeout')), 5000)
+        );
+        
+        const plots = await Promise.race([getBudgetPlots(), timeoutPromise]);
         console.log('📊 Budget plots loaded:', plots);
-        console.log('📸 Image URLs being used:');
-        plots.forEach((plot, idx) => {
-          console.log(`  ${idx + 1}. ${plot.title}:`, plot.image);
-          console.log(`     - Thumbnail: ${plot.thumbnailImage}`);
-          console.log(`     - Front: ${plot.frontImage}`);
-        });
         setBudgetPlots(plots);
       } catch (error) {
         console.error('❌ Error loading budget plots:', error);
-        setBudgetPlots([]);
+        // Set fallback data immediately on error
+        setBudgetPlots([
+          { title: "Reliance Met City", link: "/reliance-met-city/", image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/reliance-met-city.webp" },
+          { title: "Signature City Of Colours", link: "/signature-global-plots/", image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/budgetplots/colors.jpg" },
+          { title: "Trevoc Plots Sonipat", link: "/bptp-plots-gurugram/", image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/budgetplots/bptp.webp" },
+          { title: "JMS The Pearl", link: "/jms-the-pearl/", image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/budgetplots/Orris.jpg" }
+        ]);
       } finally {
         setIsLoading(false);
       }

@@ -1043,10 +1043,8 @@ const Home = () => {
           100acress.com - Buy Property in India & Dubai | Trusted Real Estate Platform
         </title>
         <link rel="canonical" href="https://www.100acress.com/" />
-        {/* Preconnect to critical domains */}
+        {/* Preconnect to critical domains - only unique ones */}
         <link rel="preconnect" href="https://d16gdc5rm7f21b.cloudfront.net" />
-        <link rel="dns-prefetch" href="https://d16gdc5rm7f21b.cloudfront.net" />
-        <link rel="preconnect" href="https://www.100acress.com" />
       </Helmet>
       {/* Visually hidden H1 for correct heading order without affecting layout */}
       <h1 className="sr-only">100acress Real Estate in Gurgaon – Buy, Rent, Sell & New Launch Projects</h1>
