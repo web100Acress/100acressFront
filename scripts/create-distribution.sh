@@ -1,0 +1,63 @@
+#!/bin/bash
+
+# Simple CloudFront distribution creation for 100acress.com
+
+echo "🚀 Creating CloudFront distribution..."
+
+# Use existing OAC ID
+OAC_ID="E1Z5FWO9M4I04K"
+
+# Create distribution
+aws cloudfront create-distribution \
+    --distribution-config '{
+        "CallerReference": "100acress-cdn-'$(date +%s)",
+        "Comment": "100acress.com CDN - Production",
+        "DefaultRootObject": "",
+        "Origins": {
+            "Quantity": 1,
+            "Items": [
+                {
+                    "Id": "S3-100acress-images",
+                    "DomainName": "100acress-images.s3.ap-south-1.amazonaws.com",
+                    "S3OriginConfig": {
+                        "OriginAccessControlId": "'$OAC_ID'"
+                    }
+                }
+            ]
+        },
+        "DefaultCacheBehavior": {
+            "TargetOriginId": "S3-100acress-images",
+            "ViewerProtocolPolicy": "redirect-to-https",
+            "TrustedSigners": {
+                "Enabled": false,
+                "Quantity": 0
+            },
+            "ForwardedValues": {
+                "QueryString": true,
+                "Cookies": {
+                    "Forward": "none"
+                }
+            },
+            "MinTTL": 0,
+            "DefaultTTL": 86400,
+            "MaxTTL": 31536000,
+            "Compress": true
+        },
+        "CacheBehaviors": {
+            "Quantity": 0
+        },
+        "Enabled": true,
+        "PriceClass": "PriceClass_100",
+        "ViewerCertificate": {
+            "CloudFrontDefaultCertificate": true,
+            "MinimumProtocolVersion": "TLSv1.2_2021"
+        },
+        "Restrictions": {
+            "GeoRestriction": {
+                "RestrictionType": "none",
+                "Quantity": 0
+            }
+        }
+    }' \
+    --query 'Distribution.Id' \
+    --output text

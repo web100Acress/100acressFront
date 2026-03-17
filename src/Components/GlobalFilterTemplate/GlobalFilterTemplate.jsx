@@ -249,7 +249,7 @@ const GlobalFilterTemplate = ({
   }, (left, right) => JSON.stringify(left) === JSON.stringify(right));
 
   // Get the appropriate project data based on status
-  const getProjectData = () => {
+  const getProjectData = useCallback(() => {
     console.log('Getting project data for status:', projectStatus);
     console.log('Page type:', pageType);
     console.log('Available data:', {
@@ -322,7 +322,7 @@ const GlobalFilterTemplate = ({
         console.log('No matching status, returning empty array');
         return [];
     }
-  };
+  }, [projectStatus, pageType, projects, pageConfig, activeQuery, typeProjects, upcomingProjects, underConstructionProjects, readyToMoveProjects, newLaunchProjects]);
 
   const projectData = getProjectData();
 
@@ -849,21 +849,15 @@ const GlobalFilterTemplate = ({
     console.log('Initialize displayed projects effect - memoizedProjectData:', memoizedProjectData?.length, 'pageType:', pageType, 'isLoading:', isLoading);
     if (memoizedProjectData && memoizedProjectData.length > 0) {
       console.log('Setting displayed projects from memoizedProjectData:', memoizedProjectData.length);
-      // Avoid redundant state updates if data is already set correctly
-      setDisplayedProjects(prev => {
-        if (JSON.stringify(prev) === JSON.stringify(memoizedProjectData)) return prev;
-        return memoizedProjectData;
-      });
-      setFilteredProjects(prev => {
-        if (JSON.stringify(prev) === JSON.stringify(memoizedProjectData)) return prev;
-        return memoizedProjectData;
-      });
+      // Use a simple length check to avoid JSON.stringify in useEffect
+      setDisplayedProjects(memoizedProjectData);
+      setFilteredProjects(memoizedProjectData);
     } else if (!isLoading) {
       console.log('Resetting displayed projects - no data and not loading');
       setDisplayedProjects([]);
       setFilteredProjects([]);
     }
-  }, [memoizedProjectData, isLoading, pageType]);
+  }, [memoizedProjectData?.length, isLoading, pageType]); // Use length instead of full array
 
   // Cleanup on unmount
   useEffect(() => {
