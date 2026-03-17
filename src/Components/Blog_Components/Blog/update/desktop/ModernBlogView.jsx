@@ -738,12 +738,69 @@ const ModernBlogView = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600 mb-4"></div>
-          <p className="text-gray-600">Loading blog post...</p>
+    <div className="min-h-screen bg-white">
+      <Helmet>
+        <title>Loading... | 100acress</title>
+      </Helmet>
+      
+      {/* Optimized Skeleton Loader */}
+      <div className="animate-pulse">
+        {/* Top Navbar Placeholder */}
+        <div className="h-16 bg-gray-50 border-b border-gray-100 mb-4 md:mb-8" />
+        
+        {/* Skeleton Hero Section */}
+        <div className="max-w-7xl mx-auto px-4">
+          {/* Breadcrumb Placeholder */}
+          <div className="h-4 w-32 bg-gray-100 rounded mb-6 hidden md:block" />
+          
+          <div className="flex flex-col lg:flex-row gap-8 lg:items-start">
+            {/* Left Content Skeleton */}
+            <div className="flex-1">
+              <div className="h-4 w-24 bg-red-100 rounded-full mb-4" />
+              <div className="h-10 md:h-14 w-full bg-gray-200 rounded-lg mb-6" />
+              
+              <div className="flex items-center space-x-4 mb-8">
+                <div className="w-12 h-12 bg-gray-200 rounded-full" />
+                <div className="space-y-2">
+                  <div className="h-4 w-32 bg-gray-200 rounded" />
+                  <div className="h-3 w-20 bg-gray-100 rounded" />
+                </div>
+              </div>
+
+              {/* Main Image Skeleton */}
+              <div className="aspect-[16/9] bg-gray-200 rounded-2xl shadow-md mb-8" />
+              
+              {/* Content Paragraphs */}
+              <div className="space-y-4">
+                <div className="h-4 bg-gray-100 rounded w-full" />
+                <div className="h-4 bg-gray-100 rounded w-full" />
+                <div className="h-4 bg-gray-100 rounded w-4/5" />
+                <div className="h-4 bg-gray-100 rounded w-full mt-8" />
+                <div className="h-4 bg-gray-100 rounded w-11/12" />
+              </div>
+            </div>
+
+            {/* Sidebar Skeleton (Visible on Desktop) */}
+            <div className="hidden lg:block w-80 shrink-0">
+              <div className="bg-gray-50 rounded-2xl p-6 border border-gray-100 sticky top-24">
+                <div className="h-6 bg-gray-200 rounded w-1/2 mb-6" />
+                <div className="space-y-5">
+                  {[1, 2, 3, 4, 5, 6].map((i) => (
+                    <div key={i} className="flex items-center space-x-3">
+                      <div className="w-2 h-2 bg-gray-200 rounded-full" />
+                      <div className="h-3 bg-gray-200 rounded flex-1" />
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-8 pt-8 border-t border-gray-200">
+                  <div className="h-10 bg-blue-100 rounded-xl w-full" />
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
+    </div>
     );
   }
 
@@ -1058,6 +1115,9 @@ const ModernBlogView = () => {
                   src={blogImage}
                   alt={data.blog_Title || 'Blog post'}
                   className="w-full h-auto object-contain transition-all duration-700 hover:scale-105"
+                  loading="eager"
+                  fetchpriority="high"
+                  decoding="async"
                   onError={(e) => {
                     e.target.src = FALLBACK_IMG;
                   }}

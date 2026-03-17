@@ -6,7 +6,7 @@ const UpcomingProjects = () => {
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "RealEstateListing",
-    "name": "Upcoming Projects in Gurgaon 2025",
+    "name": "Upcoming Projects in Gurgaon 2026",
     "description": "Explore verified upcoming projects in Gurgaon featuring luxury apartments, modern residences, and affordable housing options across Dwarka Expressway and New Gurgaon with world-class amenities.",
     "url": "https://www.100acress.com/projects/upcoming/",
     "provider": {
@@ -34,30 +34,30 @@ const UpcomingProjects = () => {
     <>
       <Helmet>
         {/* Primary Meta Tags */}
-        <title>Upcoming Projects in Gurgaon 2025 | New Launches & Pre-Launch Offers | 100acress</title>
-        <meta name="description" content="Explore verified upcoming projects in Gurgaon 2025 featuring luxury apartments, modern residences, and affordable housing options across Dwarka Expressway and New Gurgaon. Pre-launch pricing, RERA approved, world-class amenities." />
-        <meta name="keywords" content="upcoming projects in Gurgaon 2025, new launches Gurgaon, pre-launch projects, future developments Gurgaon, Dwarka Expressway projects, New Gurgaon projects, luxury apartments Gurgaon, affordable housing Gurgaon, RERA approved projects, real estate investment Gurgaon" />
+        <title>Upcoming Projects in Gurgaon 2026 | New Launches & Pre-Launch Offers | 100acress</title>
+        <meta name="description" content="Explore verified upcoming projects in Gurgaon 2026 featuring luxury apartments, modern residences, and affordable housing options across Dwarka Expressway and New Gurgaon. Pre-launch pricing, RERA approved, world-class amenities." />
+        <meta name="keywords" content="upcoming projects in Gurgaon 2026, new launches Gurgaon, pre-launch projects, future developments Gurgaon, Dwarka Expressway projects, New Gurgaon projects, luxury apartments Gurgaon, affordable housing Gurgaon, RERA approved projects, real estate investment Gurgaon" />
         
         {/* Canonical URL */}
         <link rel="canonical" href="https://www.100acress.com/projects/upcoming/" />
         
         {/* Open Graph Meta Tags */}
-        <meta property="og:title" content="Upcoming Projects in Gurgaon 2025 | New Launches & Pre-Launch Offers" />
+        <meta property="og:title" content="Upcoming Projects in Gurgaon 2026 | New Launches & Pre-Launch Offers" />
         <meta property="og:description" content="Discover verified upcoming projects in Gurgaon with exclusive pre-launch pricing. Luxury apartments, modern residences across Dwarka Expressway and New Gurgaon." />
         <meta property="og:url" content="https://www.100acress.com/projects/upcoming/" />
         <meta property="og:type" content="website" />
         <meta property="og:site_name" content="100acress" />
         <meta property="og:image" content="https://www.100acress.com/images/upcoming-projects-gurgaon.jpg" />
-        <meta property="og:image:alt" content="Upcoming Projects in Gurgaon 2025" />
+        <meta property="og:image:alt" content="Upcoming Projects in Gurgaon 2026" />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
         
         {/* Twitter Card Meta Tags */}
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Upcoming Projects in Gurgaon 2025 | New Launches & Pre-Launch Offers" />
+        <meta name="twitter:title" content="Upcoming Projects in Gurgaon 2026 | New Launches & Pre-Launch Offers" />
         <meta name="twitter:description" content="Explore verified upcoming projects in Gurgaon with exclusive pre-launch pricing. RERA approved projects across prime locations." />
         <meta name="twitter:image" content="https://www.100acress.com/images/upcoming-projects-gurgaon.jpg" />
-        <meta name="twitter:image:alt" content="Upcoming Projects in Gurgaon 2025" />
+        <meta name="twitter:image:alt" content="Upcoming Projects in Gurgaon 2026" />
         
         {/* Additional SEO Meta Tags */}
         <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
@@ -110,7 +110,7 @@ const UpcomingProjects = () => {
       <div className="branded-residences-container">
         <header className="hero-section" style={{minHeight: '300px'}}>
           <div className="hero-content">
-            <h1 className="hero-title">Upcoming Projects in Gurgaon 2025</h1>
+            <h1 className="hero-title">Upcoming Projects in Gurgaon 2026</h1>
             <p className="hero-subtitle">Future Developments & Pre-Launch Opportunities | RERA Approved</p>
           </div>
         </header>
@@ -121,7 +121,7 @@ const UpcomingProjects = () => {
               <h2 className="section-title">Upcoming Projects in Gurgaon</h2>
               <div className="w-32 h-1 bg-gradient-to-r from-blue-600 to-indigo-600 mx-auto mb-4"></div>
               <p className="text-xl text-gray-600 max-w-5xl mx-auto leading-relaxed">
-                Explore verified upcoming projects in Gurgaon featuring luxury apartments, modern residences, and affordable housing options across Dwarka Expressway and New Gurgaon. These upcoming residential projects in Gurgaon 2025 are designed with world-class amenities, excellent road and metro connectivity, and strong future appreciation potential.
+                Explore verified upcoming projects in Gurgaon featuring luxury apartments, modern residences, and affordable housing options across Dwarka Expressway and New Gurgaon. These upcoming residential projects in Gurgaon 2026 are designed with world-class amenities, excellent road and metro connectivity, and strong future appreciation potential.
               </p>
             </section>
             
@@ -138,7 +138,7 @@ const UpcomingProjects = () => {
                   </div>
                   <div>
                     <p className="description-paragraph text-base leading-relaxed">
-                      Key developments such as the Dwarka Expressway, Delhi-Mumbai Expressway, Metro expansion, and upcoming business districts are reshaping the city. These factors make upcoming projects in Gurgaon 2025 highly attractive for professionals, families, and long-term investors.
+                      Key developments such as the Dwarka Expressway, Delhi-Mumbai Expressway, Metro expansion, and upcoming business districts are reshaping the city. These factors make upcoming projects in Gurgaon 2026 highly attractive for professionals, families, and long-term investors.
                     </p>
                   </div>
                 </div>
@@ -185,7 +185,7 @@ const UpcomingProjects = () => {
                       <h4 className="text-lg font-bold text-gray-900">High Appreciation Potential</h4>
                     </div>
                     <p className="description-paragraph text-sm text-gray-700">
-                      Early investment in upcoming projects in 2025 often results in better price appreciation by possession, maximizing your returns.
+                      Early investment in upcoming projects in 2026 often results in better price appreciation by possession, maximizing your returns.
                     </p>
                   </div>
                   
@@ -253,7 +253,7 @@ const UpcomingProjects = () => {
                       <h4 className="text-lg font-bold text-gray-900">Southern Peripheral Road (SPR)</h4>
                     </div>
                     <p className="description-paragraph text-sm text-gray-700">
-                      SPR connects key sectors of Gurgaon and hosts several upcoming projects in 2025 with a balance of lifestyle and investment benefits.
+                      SPR connects key sectors of Gurgaon and hosts several upcoming projects in 2026 with a balance of lifestyle and investment benefits.
                     </p>
                   </div>
                 </div>
@@ -261,7 +261,7 @@ const UpcomingProjects = () => {
 
               <article className="bg-white rounded-xl shadow-lg p-4 mb-6 border border-gray-100">
                 <h3 className="feature-title text-2xl font-bold text-gray-900 mb-4 text-center">
-                  🏊 Amenities Offered in Upcoming Projects 2025
+                  🏊 Amenities Offered in Upcoming Projects 2026
                 </h3>
                 <p className="description-paragraph text-base text-center mb-4 max-w-4xl mx-auto">
                   Most upcoming projects in Gurgaon are designed to deliver a modern lifestyle, featuring:
@@ -339,7 +339,7 @@ const UpcomingProjects = () => {
                       <h4 className="text-lg font-bold text-gray-900">Choose the Right Timing</h4>
                     </div>
                     <p className="description-paragraph text-sm text-gray-700">
-                      Pre-launch and early-stage upcoming projects in 2025 usually offer better pricing, while near-possession projects suit buyers needing immediate occupancy.
+                      Pre-launch and early-stage upcoming projects in 2026 usually offer better pricing, while near-possession projects suit buyers needing immediate occupancy.
                     </p>
                   </div>
                 </div>

@@ -204,13 +204,13 @@ const BUILDER_QUERIES = {
   'signature-global': 'Signature Global',
   'dlf-homes': 'DLF Homes',
   'whiteland': 'whiteland',
-  'aipl': 'aipl',
+  'aipl': 'AIPL',
   'elan-group': 'Elan Group',
   'bptp-limited': 'BPTP LTD',
   'trevoc-group': 'Trevoc Group',
   'indiabulls-real-estate': 'Indiabulls',
   'smartworld-developers': 'Smartworld',
-  'central-park': 'central park',
+  'central-park': 'Central Park',
   'godrej-properties': 'Godrej Properties',
   'birla-estate': 'Birla Estates',
   'sobha-developers': 'Sobha',
@@ -460,6 +460,7 @@ const BuilderPage = React.memo(() => {
   const Trevoc = useSelector(store => store?.builder?.trevoc);
   const IndiaBulls = useSelector(store => store?.builder?.indiabulls);
   const centralpark = useSelector(store => store?.builder?.centralpark);
+  console.log(`📊 [CentralParkDebug] centralpark data from Redux:`, centralpark);
   const emaarindia = useSelector(store => store?.builder?.emaarindia);
   const godrej = useSelector(store => store?.builder?.godrej);
   const whiteland = useSelector(store => store?.builder?.whiteland);
@@ -524,6 +525,7 @@ const BuilderPage = React.memo(() => {
     'omniyat-properties': omniyatBuilder
   };
   const builderProjects = buildersData[builderName] || [];
+  console.log(`📊 [BuilderPageDebug] builderName: ${builderName}, builderProjects:`, builderProjects);
 
   const filteredBuilderProjects = builderName === 'birla-estate'
     ? (builderProjects || []).filter(
@@ -786,33 +788,60 @@ const BuilderPage = React.memo(() => {
                 </div>
                 <div className="lg:col-span-7">
                   <div className={`${view === 'grid' ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4' : 'space-y-3'}`}>
-                    {visibleProjects?.map((item, index) => (
-                      <ProjectCard
-                        key={item._id || item.id || index}
-                        project={item}
-                        view={view}
-                        onExplore={onExplore}
-                        onFavorite={onFavorite}
-                        onShare={handleShare}
-                        isFav={isFavorite(item._id || item.id || item.slug)}
-                      />
-                    ))}
+                    {orderedProjects?.length > 0 ? (
+                      orderedProjects?.map((item, index) => (
+                        <ProjectCard
+                          key={item._id || item.id || index}
+                          project={item}
+                          view={view}
+                          onExplore={onExplore}
+                          onFavorite={onFavorite}
+                          onShare={handleShare}
+                          isFav={isFavorite(item._id || item.id || item.slug)}
+                        />
+                      ))
+                    ) : (
+                      <div className="col-span-full text-center py-8">
+                        <div className="text-gray-400 text-4xl mb-2">🏢</div>
+                        <p className="text-gray-500">
+                          {loading ? 'Loading projects...' : `No projects found for ${displayName}`}
+                        </p>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
             ) : (
               <div className={`${view === 'grid' ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4' : 'space-y-3'}`}>
-                {visibleProjects?.map((item, index) => (
-                  <ProjectCard
-                    key={item._id || item.id || index}
-                    project={item}
-                    view={view}
-                    onExplore={onExplore}
-                    onFavorite={onFavorite}
-                    onShare={handleShare}
-                    isFav={isFavorite(item._id || item.id || item.slug)}
-                  />
-                ))}
+                {orderedProjects?.length > 0 ? (
+                  orderedProjects?.map((item, index) => (
+                    <ProjectCard
+                      key={item._id || item.id || index}
+                      project={item}
+                      view={view}
+                      onExplore={onExplore}
+                      onFavorite={onFavorite}
+                      onShare={handleShare}
+                      isFav={isFavorite(item._id || item.id || item.slug)}
+                    />
+                  ))
+                ) : (
+                  <div className="col-span-full text-center py-12">
+                    <div className="text-gray-400 text-6xl mb-4">🏢</div>
+                    <h3 className="text-xl font-semibold text-gray-700 mb-2">No Projects Found</h3>
+                    <p className="text-gray-500">
+                      {loading ? 'Loading projects...' : `There are currently no projects available for ${displayName}.`}
+                    </p>
+                    {!loading && (
+                      <button
+                        onClick={() => window.location.href = '/'}
+                        className="mt-4 px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                      >
+                        Explore Other Projects
+                      </button>
+                    )}
+                  </div>
+                )}
               </div>
             )}
           </div>

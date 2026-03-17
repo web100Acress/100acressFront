@@ -377,11 +377,11 @@ const Api_service = () => {
 
     try {
       let response;
-      // Mirroring Admin Panel Logic: Fetch all and filter client-side for strict type matching
+      // Optimized: Use pagination for better performance
       if (query === "farmhouse" || query === "industrialplots" || query === "industrialprojects" || query === "seniorliving" || query === "brandedresidences") {
-        console.log(`🏡 Fetching ALL projects to filter for ${query}...`);
-        // We use the viewAll endpoint just like the Admin panel to ensure consistency
-        response = await api.get(`${API_ROUTES.projectsBase()}/viewAll/data`);
+        console.log(`🏡 Fetching paginated projects for ${query}...`);
+        // Use paginated endpoint instead of loading all projects
+        response = await api.get(`${API_ROUTES.projectsBase()}/viewAll/data?page=1&limit=50`);
       } else {
         // Original logic for other queries
         response = await api.get(`${API_ROUTES.projectsBase()}/projectsearch?${query}=1&limit=${limit}`);
@@ -668,6 +668,7 @@ const Api_service = () => {
           dispatch(indiabulls(BuilderbyQuery));
           break;
         case 'central park':
+        case 'Central Park':
           dispatch(centralpark(BuilderbyQuery));
           break;
         case 'emaar india':
@@ -682,6 +683,7 @@ const Api_service = () => {
           dispatch(whiteland(BuilderbyQuery));
           break;
         case 'aipl':
+        case 'AIPL':
           dispatch(aipl(BuilderbyQuery));
           break;
         case 'birla estate':

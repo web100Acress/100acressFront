@@ -22,13 +22,13 @@ export default function Hero({
   const [placeholder, setPlaceholder] = useState('');
   const [placeholderIndex, setPlaceholderIndex] = useState(0);
   
-  // Animated placeholder text
-  const placeholderTexts = [
+  // Memoize placeholder texts to prevent re-renders
+  const placeholderTexts = useMemo(() => [
     "Search Gurgaon, Delhi, Mumbai...",
     "Find properties in Noida, Bangalore...",
     "Discover homes in Pune, Chennai...",
     "Explore projects in Hyderabad, Kolkata..."
-  ];
+  ], []);
   
   useEffect(() => {
     const interval = setInterval(() => {
@@ -57,11 +57,16 @@ export default function Hero({
   // Debounce timer ref
   const debounceTimer = useRef(null);
   
+  // Memoize onSearch to prevent infinite re-renders
+  const memoizedOnSearch = useCallback((query) => {
+    if (onSearch) onSearch(query);
+  }, [onSearch]);
+  
   const handleSearch = useCallback(() => {
     const q = (text || '').trim();
-    // Call onSearch with the query (even if empty, to trigger filter-based search)
-    if (onSearch) onSearch(q);
-  }, [text, onSearch]);
+    // Call memoized onSearch with the query (even if empty, to trigger filter-based search)
+    memoizedOnSearch(q);
+  }, [text, memoizedOnSearch]);
   
   // Auto-search with debounce when text changes
   useEffect(() => {
@@ -72,10 +77,7 @@ export default function Hero({
     
     // Set new timer to search after 400ms of no typing
     debounceTimer.current = setTimeout(() => {
-      if (onSearch) {
-        const q = (text || '').trim();
-        onSearch(q);
-      }
+      memoizedOnSearch((text || '').trim());
     }, 400);
     
     // Cleanup on unmount
@@ -84,7 +86,7 @@ export default function Hero({
         clearTimeout(debounceTimer.current);
       }
     };
-  }, [text, onSearch]);
+  }, [text, memoizedOnSearch]);
   
   // Dynamic headlines based on project status
   const getDynamicTitle = () => {

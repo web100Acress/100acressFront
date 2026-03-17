@@ -34,88 +34,59 @@ const BhkFlatsGurgaon = ({ bhkType }) => {
   const [filteredProjects, setFilteredProjects] = useState([]);
 
   useEffect(() => {
-    // Filter projects by BHK type
+    // Optimized BHK filtering with early return
     if (projects && projects.length > 0) {
       console.log('Filtering projects for BHK type:', bhkType);
       console.log('Total projects available:', projects.length);
 
-      // Helper function to extract BHK number from string
+      // Optimized BHK extraction function
       const extractBhkNumber = (bhkString) => {
         if (!bhkString) return null;
-
         const str = bhkString.toString().trim();
-
-        // Extract number at the beginning of the string
         const match = str.match(/^(\d+(?:\.\d+)?)/);
-        if (match) {
-          return parseFloat(match[1]);
-        }
-
-        // Extract number before "BHK"
+        if (match) return parseFloat(match[1]);
         const bhkMatch = str.match(/(\d+(?:\.\d+)?)\s*BHK/i);
-        if (bhkMatch) {
-          return parseFloat(bhkMatch[1]);
-        }
-
+        if (bhkMatch) return parseFloat(bhkMatch[1]);
         return null;
       };
 
+      const targetBhk = parseInt(bhkType);
+      
+      // Optimized filtering with early returns
       const filtered = projects.filter(project => {
-        // Check multiple possible BHK fields
+        // Check simple fields first (most likely to match)
         const projectBhk = project.bhk || project.beds || project.bedrooms;
-        const bhkTypeStr = project.bhkType || project.configuration || project.unitType;
-
-        // Check if project has BHK information in simple fields
         if (projectBhk !== undefined && projectBhk !== null) {
           const bhkNumber = extractBhkNumber(projectBhk);
-          if (bhkNumber !== null) {
-            const matches = bhkNumber === parseInt(bhkType);
-            if (matches) {
-              console.log('Match found in simple fields:', project.projectName, projectBhk);
-            }
-            return matches;
+          if (bhkNumber !== null && bhkNumber === targetBhk) {
+            return true;
           }
         }
 
-        // Check BHK in string fields
+        // Check string fields
+        const bhkTypeStr = project.bhkType || project.configuration || project.unitType;
         if (bhkTypeStr) {
           const bhkNumber = extractBhkNumber(bhkTypeStr);
-          if (bhkNumber !== null) {
-            const matches = bhkNumber === parseInt(bhkType);
-            if (matches) {
-              console.log('Match found in string fields:', project.projectName, bhkTypeStr);
-            }
-            return matches;
+          if (bhkNumber !== null && bhkNumber === targetBhk) {
+            return true;
           }
         }
 
-        // Check BHK in nested BhK_Details array
+        // Check nested array only if needed (most expensive operation)
         if (project.BhK_Details && Array.isArray(project.BhK_Details)) {
-          const hasBhkType = project.BhK_Details.some(bhkDetail => {
-            const detailBhkType = bhkDetail.bhk_type;
-            if (detailBhkType) {
-              const bhkNumber = extractBhkNumber(detailBhkType);
-              if (bhkNumber !== null) {
-                const matches = bhkNumber === parseInt(bhkType);
-                if (matches) {
-                  console.log('Match found in BhK_Details:', project.projectName, detailBhkType);
-                }
-                return matches;
-              }
+          return project.BhK_Details.some(bhkDetail => {
+            if (bhkDetail.bhk_type) {
+              const bhkNumber = extractBhkNumber(bhkDetail.bhk_type);
+              return bhkNumber !== null && bhkNumber === targetBhk;
             }
             return false;
           });
-          if (hasBhkType) {
-            return true;
-          }
         }
 
         return false;
       });
 
       console.log('Filtered projects count:', filtered.length);
-      console.log('Filtered projects:', filtered.map(p => p.projectName));
-
       setFilteredProjects(filtered);
       setIsLoading(false);
     } else {

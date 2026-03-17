@@ -600,7 +600,6 @@ function App() {
                         <Route path="/knowabouts" element={<PropertyKnow />} />
 
                         <Route path="/test-sales-head" element={<LazyLoad><TestSalesHead /></LazyLoad>} />
-                        {/* <Route path="/:pUrl/" element={<ProjectLayout2 />} /> */}
 
                         <Route
                           path="/userviewproperty/:id"
@@ -612,7 +611,6 @@ function App() {
                           element={<GurugramPrimeLocation />}
                         />
                         <Route path="/searchdata/:key" element={<SearchData />} />
-                        <Route path="*" element={<PageNotFound />} />
                         <Route path="/contactmainpage" element={<ContactPage />} />
                         <Route path="/bptp-plots-gurugram/" element={<Navigate to="/" replace />} />
                         {/* <Route path="/orris-plots-gurugram/" element={<Orris />} /> */}
@@ -648,6 +646,9 @@ function App() {
                         <Route path="/property-types/sco-plots-gurgaon/" element={<SCOPlotsGurgaon />} />
                         <Route path="/property-types/shop-cum-office-plots-gurgaon/" element={<ShopCumOfficePlotsGurgaon />} />
                       </Route>
+
+                      {/* Project Detail Pages - Must be before admin routes */}
+                      <Route path="/:pUrl/" element={<ProjectLayout2 />} />
 
                       {/* Admin Routing */}
                       <Route path="/admin" element={<PrivateRoute />}>
@@ -829,7 +830,6 @@ function App() {
                           <Route path="drafts" element={<DraftManagement />} />
                         </Route>
                       </Route>
-                      <Route path="/:pUrl/" element={<ProjectLayout2 />} />
                     </Routes>
                   </Suspense>
                 </ErrorBoundary>

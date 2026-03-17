@@ -181,6 +181,196 @@ export const contentDisplayConfig = {
       theme: 'modern'
     }
   },
+
+  // 1 BHK Flats Configuration
+  oneBhkFlats: {
+    // URL paths where 1 BHK flats should be displayed
+    displayPaths: [
+      '/1-bhk-flats-in-gurgaon',
+      '/1-bhk-flats-in-gurgaon/',
+      '/1-bhk-flats',
+      '/1-bhk-flats/'
+    ],
+    
+    // Component display settings
+    settings: {
+      showAfterLoadMore: true,
+      marginTop: 'mt-8',
+      conditionalRender: true, // Use conditional rendering based on URL
+      fullWidth: false,
+      showOnMobile: true,
+      showOnDesktop: true
+    },
+    
+    // Content sections to display
+    sections: {
+      hero: true,
+      description: true,
+      features: true,
+      locations: true,
+      amenities: true,
+      investment: true
+    },
+    
+    // Custom styling overrides
+    customStyles: {
+      containerClass: 'one-bhk-flats-wrapper',
+      enableAnimations: true,
+      theme: 'affordable'
+    }
+  },
+
+  // 2 BHK Flats Configuration
+  twoBhkFlats: {
+    // URL paths where 2 BHK flats should be displayed
+    displayPaths: [
+      '/2-bhk-flats-in-gurgaon',
+      '/2-bhk-flats-in-gurgaon/',
+      '/2-bhk-flats',
+      '/2-bhk-flats/'
+    ],
+    
+    // Component display settings
+    settings: {
+      showAfterLoadMore: true,
+      marginTop: 'mt-8',
+      conditionalRender: true, // Use conditional rendering based on URL
+      fullWidth: false,
+      showOnMobile: true,
+      showOnDesktop: true
+    },
+    
+    // Content sections to display
+    sections: {
+      hero: true,
+      description: true,
+      features: true,
+      locations: true,
+      amenities: true,
+      investment: true
+    },
+    
+    // Custom styling overrides
+    customStyles: {
+      containerClass: 'two-bhk-flats-wrapper',
+      enableAnimations: true,
+      theme: 'family'
+    }
+  },
+
+  // 3 BHK Flats Configuration
+  threeBhkFlats: {
+    // URL paths where 3 BHK flats should be displayed
+    displayPaths: [
+      '/3-bhk-flats-in-gurgaon',
+      '/3-bhk-flats-in-gurgaon/',
+      '/3-bhk-flats',
+      '/3-bhk-flats/'
+    ],
+    
+    // Component display settings
+    settings: {
+      showAfterLoadMore: true,
+      marginTop: 'mt-8',
+      conditionalRender: true, // Use conditional rendering based on URL
+      fullWidth: false,
+      showOnMobile: true,
+      showOnDesktop: true
+    },
+    
+    // Content sections to display
+    sections: {
+      hero: true,
+      description: true,
+      features: true,
+      locations: true,
+      amenities: true,
+      investment: true
+    },
+    
+    // Custom styling overrides
+    customStyles: {
+      containerClass: 'three-bhk-flats-wrapper',
+      enableAnimations: true,
+      theme: 'luxury'
+    }
+  },
+
+  // 4 BHK Flats Configuration
+  fourBhkFlats: {
+    // URL paths where 4 BHK flats should be displayed
+    displayPaths: [
+      '/4-bhk-flats-in-gurgaon',
+      '/4-bhk-flats-in-gurgaon/',
+      '/4-bhk-flats',
+      '/4-bhk-flats/'
+    ],
+    
+    // Component display settings
+    settings: {
+      showAfterLoadMore: true,
+      marginTop: 'mt-8',
+      conditionalRender: true, // Use conditional rendering based on URL
+      fullWidth: false,
+      showOnMobile: true,
+      showOnDesktop: true
+    },
+    
+    // Content sections to display
+    sections: {
+      hero: true,
+      description: true,
+      features: true,
+      locations: true,
+      amenities: true,
+      investment: true
+    },
+    
+    // Custom styling overrides
+    customStyles: {
+      containerClass: 'four-bhk-flats-wrapper',
+      enableAnimations: true,
+      theme: 'ultra-luxury'
+    }
+  },
+
+  // 5 BHK Flats Configuration
+  fiveBhkFlats: {
+    // URL paths where 5 BHK flats should be displayed
+    displayPaths: [
+      '/5-bhk-flats-in-gurgaon',
+      '/5-bhk-flats-in-gurgaon/',
+      '/5-bhk-flats',
+      '/5-bhk-flats/'
+    ],
+    
+    // Component display settings
+    settings: {
+      showAfterLoadMore: true,
+      marginTop: 'mt-8',
+      conditionalRender: true, // Use conditional rendering based on URL
+      fullWidth: false,
+      showOnMobile: true,
+      showOnDesktop: true
+    },
+    
+    // Content sections to display
+    sections: {
+      hero: true,
+      description: true,
+      features: true,
+      locations: true,
+      amenities: true,
+      investment: true
+    },
+    
+    // Custom styling overrides
+    customStyles: {
+      containerClass: 'five-bhk-flats-wrapper',
+      enableAnimations: true,
+      theme: 'exclusive'
+    }
+  },
   
   // Future content configurations can be added here
   // example: luxuryApartments: { ... }

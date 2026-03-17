@@ -21,6 +21,12 @@ import UpcomingProjects from "../../content-data/projectsstatus/UpcomingProjects
 import NewLaunchProjects from "../../content-data/projectsstatus/NewLaunchProjects";
 import UnderConstruction from "../../content-data/projectsstatus/UnderConstruction";
 import ReadyToMove from "../../content-data/projectsstatus/ReadyToMove";
+// Import BHK content files
+import OneBhkFlatsGurgaon from "../../content-data/bhk/OneBhkFlatsGurgaon";
+import TwoBhkFlatsGurgaon from "../../content-data/bhk/TwoBhkFlatsGurgaon";
+import ThreeBhkFlatsGurgaon from "../../content-data/bhk/ThreeBhkFlatsGurgaon";
+import FourBhkFlatsGurgaon from "../../content-data/bhk/FourBhkFlatsGurgaon";
+import FiveBhkFlatsGurgaon from "../../content-data/bhk/FiveBhkFlatsGurgaon";
 import { shouldDisplayContent, getContentSettings, shouldShowConfiguredContent } from "../../content-data/config";
 import { staticData } from "../../ProjectTypes/config/staticData";
 import { getPageDataFromURL } from "../../ProjectTypes/config/staticDataExample";
@@ -2491,6 +2497,13 @@ const GlobalFilterTemplate = ({
               </div>
             </div>
           </div>
+
+          {/* BHK Content Components - Render based on BHK type */}
+          {bhkType === '1' && <OneBhkFlatsGurgaon />}
+          {bhkType === '2' && <TwoBhkFlatsGurgaon />}
+          {bhkType === '3' && <ThreeBhkFlatsGurgaon />}
+          {bhkType === '4' && <FourBhkFlatsGurgaon />}
+          {bhkType === '5' && <FiveBhkFlatsGurgaon />}
 
           {/* FAQ Section for SEO - Full Width */}
           <div className="mt-12 sm:mt-16">

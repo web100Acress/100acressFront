@@ -895,11 +895,8 @@ const Home = () => {
   }, [activeFilter, memoizedProjects, path]);
 
   useEffect(() => {
-    // Defer AOS to prevent blocking initial render
-    const timer = setTimeout(() => {
-      AOS.init();
-    }, 1000);
-    return () => clearTimeout(timer);
+    // Initialize AOS immediately for better CSS loading
+    AOS.init();
   }, []);
 
   useEffect(() => {
@@ -909,14 +906,10 @@ const Home = () => {
 
   }, [activeFilter]);
 
-  // Fast loading state - hide skeleton quickly
+  // Fast loading state - hide skeleton immediately
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsFirstLoad(false);
-      setIsContentReady(true);
-    }, 50); // Ultra fast - 50ms
-
-    return () => clearTimeout(timer);
+    setIsFirstLoad(false);
+    setIsContentReady(true);
   }, []);
 
   useEffect(() => {

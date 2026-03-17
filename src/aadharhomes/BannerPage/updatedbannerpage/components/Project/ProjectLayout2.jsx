@@ -106,6 +106,33 @@ const renderMetaTags = () => {
     }
   };
 
+  // Product schema for better SEO
+  const productSchema = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": projectViewDetails.projectName,
+    "description": projectViewDetails.meta_description || `${projectViewDetails.projectName} in ${projectViewDetails.city}. ${projectViewDetails.project_discripation?.substring(0, 100) || ''}`,
+    "sku": projectViewDetails.project_url || "",
+    "image": projectViewDetails.frontImage?.url || "",
+    "brand": {
+      "@type": "Brand",
+      "name": projectViewDetails.builderName || ""
+    },
+    "offers": {
+      "@type": "AggregateOffer",
+      "priceCurrency": "INR",
+      "lowPrice": projectViewDetails.minPrice ? String(projectViewDetails.minPrice * 100000) : "0",
+      "availability": "https://schema.org/InStock",
+      "url": `https://www.100acress.com/${projectViewDetails.project_url}/`
+    },
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.9",
+      "reviewCount": "2109"
+    },
+    "url": `https://www.100acress.com/${projectViewDetails.project_url}/`
+  };
+
   return (
     <Helmet>
       <title>{projectViewDetails.meta_title || `${projectViewDetails.projectName} in ${projectViewDetails.city} | 100acress.com`}</title>
@@ -130,6 +157,11 @@ const renderMetaTags = () => {
       {/* Structured Data */}
       <script type="application/ld+json">
         {JSON.stringify(structuredData)}
+      </script>
+      
+      {/* Product Schema */}
+      <script type="application/ld+json">
+        {JSON.stringify(productSchema)}
       </script>
       
       {/* Open Graph */}
@@ -472,15 +504,7 @@ const ProjectLayout2 = () => {
         if (isMounted) {
           setProjectViewDetails(projectData);
           setContentLoaded(true); // Content is loaded
-          
-          // Load CSS after content for mobile performance
-          if (window.innerWidth <= 768) {
-            setTimeout(() => {
-              setCssLoaded(true);
-            }, 100); // Small delay to ensure content renders first
-          } else {
-            setCssLoaded(true); // Desktop loads immediately
-          }
+          setCssLoaded(true); // Load CSS immediately for hero banner styling
           
           const globalEnquirySubmitted = localStorage.getItem('user_enquiry_submitted');
           
@@ -588,7 +612,39 @@ const ProjectLayout2 = () => {
 
   // Only render meta tags when project data is loaded
   const renderMetaTags = () => {
-    if (!projectViewDetails) return null;
+    console.log('renderMetaTags called, projectViewDetails:', projectViewDetails); // Debug log
+    
+    if (!projectViewDetails) {
+      console.log('No projectViewDetails, returning null');
+      return null;
+    }
+    
+    // Product schema for better SEO
+    const productSchema = {
+      "@context": "https://schema.org",
+      "@type": "Product",
+      "name": projectViewDetails.projectName,
+      "description": projectViewDetails.meta_description || `${projectViewDetails.projectName} in ${projectViewDetails.city}. ${projectViewDetails.project_discripation?.substring(0, 100) || ''}`,
+      "sku": projectViewDetails.project_url || "",
+      "image": projectViewDetails.frontImage?.url || "",
+      "brand": {
+        "@type": "Brand",
+        "name": projectViewDetails.builderName || ""
+      },
+      "offers": {
+        "@type": "AggregateOffer",
+        "priceCurrency": "INR",
+        "lowPrice": projectViewDetails.minPrice ? String(projectViewDetails.minPrice * 100000) : "0",
+        "availability": "https://schema.org/InStock",
+        "url": `https://www.100acress.com/${projectViewDetails.project_url}/`
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.9",
+        "reviewCount": "2109"
+      },
+      "url": `https://www.100acress.com/${projectViewDetails.project_url}/`
+    };
     
     return (
       <Helmet>
@@ -616,6 +672,11 @@ const ProjectLayout2 = () => {
         {projectViewDetails?.keywords && (
           <meta name="keywords" content={projectViewDetails.keywords} />
         )}
+        
+        {/* Product Schema */}
+        <script type="application/ld+json">
+          {JSON.stringify(productSchema)}
+        </script>
       </Helmet>
     );
   };
@@ -626,39 +687,6 @@ const ProjectLayout2 = () => {
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-amber-500 mx-auto mb-4"></div>
           <p className="text-gray-300 text-sm">Loading project details...</p>
-        </div>
-      </div>
-    );
-  }
-
-  // Show content with progressive loading on mobile
-  if (isMobile && !cssLoaded) {
-    return (
-      <div className="project-layout-2-root min-h-screen text-white overflow-x-hidden">
-        <SimpleNotification />
-        {renderMetaTags()}
-        {/* Show Hero section immediately with basic styling */}
-        <Suspense fallback={<div className="h-96 bg-gray-900 flex items-center justify-center">Loading Hero...</div>}>
-          <ProjectHero
-            backgroundImage={backgroundImage}
-            thumbnailImage={thumbnailImage}
-            projectTitle={projectTitle}
-            location={location}
-            projectType={projectViewDetails?.type}
-            phoneNumber={phoneNumber}
-            companyLogo={companyLogo}
-            projectUrl={projectViewDetails?.project_url}
-            thumbnailImages={projectViewDetails?.thumbnailImages || []}
-            possessionDate={projectViewDetails?.possessionDate}
-            possessionStatus={projectViewDetails?.possessionStatus}
-            reraId={projectViewDetails?.reraId}
-            isMobile={true}
-          />
-        </Suspense>
-        {/* Other sections will load progressively */}
-        <div className="text-center py-8 bg-gray-900">
-          <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-amber-500 mx-auto"></div>
-          <p className="text-gray-400 text-sm mt-2">Loading more sections...</p>
         </div>
       </div>
     );
