@@ -7,6 +7,7 @@ import GlobalFilterTemplate from "../../../Components/GlobalFilterTemplate/Globa
 import { projectTypeConfigs } from "../../config/pageConfigs";
 import { staticData } from "../../config/staticData";
 import Navbar from "../../../aadharhomes/navbar/Navbar";
+import BhkHero from "../../../content-data/bhk/components/BhkHero";
 
 const BhkFlatsGurgaon = ({ bhkType }) => {
   const { getAllProjects } = Api_Service();
@@ -114,7 +115,109 @@ const BhkFlatsGurgaon = ({ bhkType }) => {
     );
   }
 
-  const bhkConfig = staticData.bhk[bhkType] || staticData.bhk['1'];
+  // Fallback BHK configuration since staticData.bhk was removed
+  const getBhkConfig = (bhkType) => {
+    const configs = {
+      '1': {
+        title: '1 BHK Flats in Gurgaon | Verified Listings',
+        metaTitle: 'Buy 1BHK Flats in Gurgaon for Modern Lifestyle Living',
+        description: 'Find budget-friendly 1 BHK flats in Gurgaon starting from ₹30 Lakhs. Perfect for bachelors and small families.',
+        h1: '1 BHK Flats in Gurgaon - Your Perfect Affordable Home',
+        subtitle: '',
+        keywords: '1 BHK flats gurgaon, 1 bedroom apartments gurgaon, affordable flats gurgaon',
+        canonical: 'https://www.100acress.com/1-bhk-flats-in-gurgaon/',
+        faqs: [
+          {
+            question: "What is the average price of a 1 BHK flat in Gurgaon?",
+            answer: "The price of a 1 BHK flat in Gurgaon ranges from ₹35 lakh to ₹5 crore in 2026."
+          },
+          {
+            question: "Are 1BHK flats in Gurgaon suitable for rental income?",
+            answer: "Yes, they attract young professionals, students, and couples, ensuring steady rental demand."
+          }
+        ]
+      },
+      '2': {
+        title: '2 BHK Flats in Gurgaon | Spacious Family Apartments',
+        metaTitle: '2 BHK Flats in Gurgaon for Comfortable living',
+        // description: 'Looking for 2 BHK flats in Gurgaon? Explore budget and luxury apartments in top areas.',
+        h1: '2 BHK Flats in Gurgaon - Perfect Family Living Spaces',
+        subtitle: '',
+        keywords: '2 BHK flats gurgaon, 2 bedroom apartments gurgaon, family flats gurgaon',
+        canonical: 'https://www.100acress.com/2-bhk-flats-in-gurgaon/',
+        faqs: [
+          {
+            question: "What is the price of a 2 BHK flat in Gurgaon?",
+            answer: "Prices usually start from ₹65 lakh and can go up to ₹5 crore depending on sector and builder."
+          },
+          {
+            question: "Is buying a 2 BHK flat in Gurgaon a good investment?",
+            answer: "Yes, Gurgaon offers strong rental demand, infrastructure growth, and good resale value."
+          }
+        ]
+      },
+      '3': {
+        title: '3 BHK Flats in Gurgaon | Luxury Family Apartments',
+        metaTitle: '3 BHK Flats in Gurgaon | Buy Verified Apartments',
+        description: 'Buy spacious 3 BHK flats in Gurgaon with modern amenities and great connectivity.',
+        h1: '3 BHK Flats in Gurgaon - Premium Family Living Experience',
+        subtitle: '',
+        keywords: '3 BHK flats gurgaon, 3 bedroom apartments gurgaon, luxury flats gurgaon',
+        canonical: 'https://www.100acress.com/3-bhk-flats-in-gurgaon/',
+        faqs: [
+          {
+            question: "Which are the best locations to buy a 3 BHK flat in Gurgaon?",
+            answer: "Popular areas include Golf Course Road, Sohna Road, Dwarka Expressway, and New Gurgaon."
+          },
+          {
+            question: "What is the average price of a 3 BHK flat in Gurgaon?",
+            answer: "Prices usually range from ₹3 Cr to ₹10 Cr, depending on location and amenities."
+          }
+        ]
+      },
+      '4': {
+        title: '4 BHK Flats in Gurgaon | Premium Apartments',
+        metaTitle: '4 BHK Flats in Gurgaon | Luxury Apartments',
+        description: 'Find exclusive 4 BHK flats in Gurgaon offering large spaces and premium amenities.',
+        h1: '4 BHK Flats in Gurgaon - Exclusive Luxury Residences',
+        subtitle: '',
+        keywords: '4 BHK flats gurgaon, 4 bedroom apartments gurgaon, luxury 4BHK gurgaon',
+        canonical: 'https://www.100acress.com/4-bhk-flats-in-gurgaon/',
+        faqs: [
+          {
+            question: "Are 4 BHK flats suitable for work-from-home families?",
+            answer: "Yes, extra rooms provide space for home offices, guest rooms, or study areas."
+          },
+          {
+            question: "What is the price of a 4 BHK flat in Gurgaon?",
+            answer: "Prices usually start at ₹7 Cr and can exceed ₹20 Cr depending on location and amenities."
+          }
+        ]
+      },
+      '5': {
+        title: '5 BHK Flats in Gurgaon | Modern Family Living',
+        metaTitle: '5 BHK Flats in Gurgaon | Luxury Homes in Prime Locations',
+        description: 'Browse the best 5 BHK flats in Gurgaon with spacious design and premium amenities.',
+        h1: '5 BHK Flats in Gurgaon - The Pinnacle of Luxury Living',
+        subtitle: '',
+        keywords: '5 BHK flats gurgaon, 5 bedroom apartments gurgaon, ultra-luxury flats gurgaon',
+        canonical: 'https://www.100acress.com/5-bhk-flats-in-gurgaon/',
+        faqs: [
+          {
+            question: "What is the price of a 5 BHK flat in Gurgaon?",
+            answer: "5 BHK flat in Gurgaon is priced starting at ₹10 Cr on Sohna Road & Dwarka Expressway."
+          },
+          {
+            question: "Is a 5 BHK flat in Gurgaon a good investment in 2026?",
+            answer: "Yes, a 5 BHK property delivers a ₹1.5–4 lakh/month rental yield with strong appreciation."
+          }
+        ]
+      }
+    };
+    return configs[bhkType] || configs['1'];
+  };
+
+  const bhkConfig = getBhkConfig(bhkType);
   
   // Debug logging
   console.log('bhkType prop:', bhkType);
@@ -228,6 +331,17 @@ const BhkFlatsGurgaon = ({ bhkType }) => {
           {JSON.stringify(generateFAQData())}
         </script>
       </Helmet>
+
+      {/* BHK Hero Section */}
+      <BhkHero 
+        bhkType={bhkType}
+        title={customConfig.title}
+        subtitle={customConfig.description}
+        onExplore={() => window.open('https://www.100acress.com/projects/upcoming/', '_blank')}
+        onContact={() => window.open('https://www.100acress.com/contact', '_blank')}
+        onSearch={(query) => console.log('Search for:', query)}
+        onFilterChange={(key, value) => console.log('Filter change:', key, value)}
+      />
 
       <GlobalFilterTemplate
         key={location.pathname}

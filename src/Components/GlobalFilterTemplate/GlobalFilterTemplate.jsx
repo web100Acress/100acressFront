@@ -15,6 +15,7 @@ import FilterBar from "../../Pages/ProjectStatusSearch/FilterBar";
 import ProjectCard from "../../Pages/ProjectStatusSearch/ProjectCard";
 import CompareBar from "../../Pages/ProjectStatusSearch/CompareBar";
 import FAQAccordion from "../../Pages/ProjectStatusSearch/FAQAccordion";
+import BrandedHero from "../../content-data/branded/components/BrandedHero";
 import GlobalLoadingButton from "../GlobalLoadingButton";
 import BrandedResidences from "../../content-data/branded/BrandedResidences";
 import UpcomingProjects from "../../content-data/projectsstatus/UpcomingProjects";
@@ -100,6 +101,12 @@ const GlobalFilterTemplate = ({
   const getProjectStatus = () => {
     const path = location.pathname;
     console.log('Current path:', path);
+
+    // Check for BHK flats pages - these should return null since they're not status pages
+    if (path.includes('-bhk-flats-in-gurgaon')) {
+      console.log('Detected BHK flats page - no project status');
+      return null;
+    }
 
     // Check for senior living specifically
     if (path.includes('/projects/senior-living/')) {
@@ -1250,16 +1257,28 @@ const GlobalFilterTemplate = ({
       {/* Navbar */}
       <Navbar />
 
-      {/* Hero Section */}
-      <Hero
-        title={currentConfig.title}
-        subtitle={currentConfig.subtitle || currentConfig.description}
-        onSearch={handleSearch}
-        onFilterChange={handleFilterChange}
-        filters={filters}
-        projectStatus={projectStatus}
-        pageType={pageType}
-      />
+      {/* Hero Section - Use BrandedHero for branded residences, regular Hero for others */}
+      {location.pathname.includes('/branded-residences') ? (
+        <BrandedHero 
+          title={currentConfig.title}
+          subtitle={currentConfig.subtitle || currentConfig.description}
+          onSearch={handleSearch}
+          onFilterChange={handleFilterChange}
+          filters={filters}
+        />
+      ) : (
+        !location.pathname.includes('-bhk-flats-in-gurgaon') && (
+          <Hero
+            title={currentConfig.title}
+            subtitle={currentConfig.subtitle || currentConfig.description}
+            onSearch={handleSearch}
+            onFilterChange={handleFilterChange}
+            filters={filters}
+            projectStatus={projectStatus}
+            pageType={pageType}
+          />
+        )
+      )}
 
       {/* Section Separator */}
       <div className="bg-gradient-to-r from-gray-50 to-gray-100 h-1"></div>
@@ -2505,20 +2524,6 @@ const GlobalFilterTemplate = ({
           {bhkType === '4' && <FourBhkFlatsGurgaon />}
           {bhkType === '5' && <FiveBhkFlatsGurgaon />}
 
-          {/* FAQ Section for SEO - Full Width */}
-          <div className="mt-12 sm:mt-16">
-            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-6 sm:mb-8 text-center px-3">
-              Frequently Asked Questions
-            </h2>
-            <div className="max-w-4xl mx-auto px-3 sm:px-4">
-              <div className="border border-gray-200 rounded-lg overflow-hidden">
-                <FAQAccordion
-                  projectStatus={projectStatus}
-                  customFAQs={currentConfig.faqs}
-                />
-              </div>
-            </div>
-          </div>
         </div>
       </div>
 

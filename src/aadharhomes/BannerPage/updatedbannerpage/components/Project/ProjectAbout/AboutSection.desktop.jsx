@@ -73,6 +73,27 @@ const AboutSectionDesktop = ({ projectName, description, imageUrl, onShowCallbac
               )}
             </div>
 
+            {/* Read More/Read Less Button */}
+            {(description || true) && (
+              <button 
+                onClick={() => setExpanded(!expanded)}
+                className="about-section-read-more-btn"
+              >
+                {expanded ? 'Read Less' : 'Read More'}
+                <svg 
+                  width="12" 
+                  height="12" 
+                  viewBox="0 0 24 24" 
+                  fill="none" 
+                  stroke="currentColor" 
+                  strokeWidth="2" 
+                  className={`about-section-read-more-icon ${expanded ? 'expanded' : ''}`}
+                >
+                  <polyline points="6,9 12,15 18,9"></polyline>
+                </svg>
+              </button>
+            )}
+
             {/* Buttons Row - Download Brochure and Get Details */}
             <div className="about-section-buttons-row">
               <button
@@ -101,13 +122,13 @@ const AboutSectionDesktop = ({ projectName, description, imageUrl, onShowCallbac
                 </div>
               </button>
               
-              <button 
+              {/* <button 
                 onClick={onShowCallback}
                 className="about-section-get-details"
                 aria-label={`Get details for ${projectName || 'this project'}`}
               >
                 Get Details
-              </button>
+              </button> */}
             </div>
           </div>
         </div>

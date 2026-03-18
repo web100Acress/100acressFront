@@ -228,26 +228,46 @@
 .about-section-description.collapsed {
   display: -webkit-box;
   -webkit-line-clamp: 6;
+  line-clamp: 6;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  line-clamp: 6;
 }
 
-/* Read more button */
-.about-section-read-more {
-  margin-top: 0.25rem;
-}
-
-.about-section-read-more-button {
-  color: #fbbf24;
-  font-size: 0.875rem;
-  font-weight: 600;
-  text-decoration: underline;
-  text-underline-offset: 0.25rem;
+/* Read More/Less Button */
+.about-section-read-more-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
   background: none;
   border: none;
+  color: #facc15;
+  font-size: 0.875rem;
+  font-weight: 500;
   cursor: pointer;
-  transition: color 0.2s;
+  padding: 0.5rem 0;
+  margin-top: 0.5rem;
+  transition: all 0.3s ease;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.about-section-read-more-btn:hover {
+  color: #fde047;
+  gap: 0.75rem;
+}
+
+.about-section-read-more-icon {
+  transition: transform 0.3s ease;
+}
+
+.about-section-read-more-icon.expanded {
+  transform: rotate(180deg);
+}
+
+@media (min-width: 768px) {
+  .about-section-read-more-btn {
+    font-size: 1rem;
+  }
 }
 
 .about-section-read-more-button:hover {
@@ -391,7 +411,7 @@
 .about-section-download-btn {
   position: relative;
   background: linear-gradient(to right, #eab308, #f59e0b, #eab308);
-  color: #000000;
+  color: #ffffff;
   padding: 0.625rem 1.5rem;
   border-radius: 9999px;
   font-weight: 500;

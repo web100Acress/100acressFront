@@ -109,15 +109,15 @@ const sections = [
   // Removed separate "Career Applications" card - merged into Career
 
 
-  {
-    name: 'Contact Cards',
-    api: '/api/contact-cards/count',
-    link: '/admin/contact-cards',
-    gradientClass: 'bg-light-slate-gradient',
-    icon: <Building size={32} className="card-icon" />,
-    description: 'Contact cards management.',
-    shadowClass: 'shadow-light-slate'
-  },
+  // {
+  //   name: 'Contact Cards',
+  //   api: '/api/contact-cards/count',
+  //   link: '/admin/contact-cards',
+  //   gradientClass: 'bg-light-slate-gradient',
+  //   icon: <Building size={32} className="card-icon" />,
+  //   description: 'Contact cards management.',
+  //   shadowClass: 'shadow-light-slate'
+  // },
 
   {
     name: 'Project Filter Order',
