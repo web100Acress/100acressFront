@@ -8,7 +8,7 @@ import { showToast } from "../Utils/toastUtils";
 const Projects = () => {
   const [viewAll, setViewAll] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [rowsPerPage] = useState(100);
+  const [rowsPerPage] = useState(500);
   const [searchTerm, setSearchTerm] = useState("");
 
   // Additional filters
@@ -66,7 +66,7 @@ const Projects = () => {
         const tokenRaw = localStorage.getItem("myToken") || "";
         const token = tokenRaw.replace(/^"|"$/g, "").replace(/^Bearer\s+/i, "");
         const res = await axios.get(
-          `${base}/project/viewAll/data?sort=-createdAt`,
+          `${base}/project/all-projects`,
           {
             headers: {
               "Content-Type": "application/json",
