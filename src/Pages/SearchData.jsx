@@ -84,8 +84,50 @@ const SearchData = () => {
   const [fallbackLoading, setFallbackLoading] = useState(false);
   const [sortBy, setSortBy] = useState(""); // price_low_high | price_high_low
   const [likedProperties, setLikedProperties] = useState(new Set()); // Track liked properties
+  
+  // Infinite scroll states
+  const [isLoading, setIsLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [allSearchData, setAllSearchData] = useState([]);
+  const [displayedCount, setDisplayedCount] = useState(20); // Initial display count
 
   const isEmptySearch = !key1 && !key2;
+
+  // Infinite scroll handler
+  const handleScroll = () => {
+    if (isLoading || !hasMore) return;
+    
+    const scrollHeight = document.documentElement.scrollHeight;
+    const scrollTop = document.documentElement.scrollTop;
+    const clientHeight = document.documentElement.clientHeight;
+    
+    if (scrollTop + clientHeight >= scrollHeight - 1000) { // Load 1000px before bottom
+      loadMoreProperties();
+    }
+  };
+
+  const loadMoreProperties = () => {
+    if (isLoading || !hasMore) return;
+    
+    setIsLoading(true);
+    const nextCount = Math.min(displayedCount + 20, allSearchData.length);
+    
+    setTimeout(() => {
+      setDisplayedCount(nextCount);
+      setSearchData(allSearchData.slice(0, nextCount));
+      setIsLoading(false);
+      
+      if (nextCount >= allSearchData.length) {
+        setHasMore(false);
+      }
+    }, 500); // Simulate loading delay
+  };
+
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [isLoading, hasMore, displayedCount, allSearchData]);
 
   useEffect(() => {
     console.log('SearchData useEffect triggered:', {
@@ -105,12 +147,35 @@ const SearchData = () => {
       try {
         if (isEmptySearch) {
           console.log('Empty search detected, fetching all projects...');
-          const allProjectsRes = await searchApi.get(
-            "/project/viewAll/data"
-          );
-          console.log('All projects API response:', allProjectsRes.data);
+          // Fetch all projects with pagination to get complete data
+          let allProjectsArr = [];
+          let page = 1;
+          let hasMore = true;
           
-          let allProjectsArr = (allProjectsRes.data.data || []).map((item) => ({
+          while (hasMore && page <= 10) { // Limit to 10 pages for safety
+            try {
+              const allProjectsRes = await searchApi.get(
+                `/project/viewAll/data?page=${page}&limit=100`
+              );
+              
+              const pageData = allProjectsRes.data.data || [];
+              if (pageData.length === 0) {
+                hasMore = false;
+              } else {
+                allProjectsArr = allProjectsArr.concat(pageData);
+                console.log(`Fetched page ${page}: ${pageData.length} projects`);
+                page++;
+                hasMore = pageData.length === 100; // Continue if we got a full page
+              }
+            } catch (error) {
+              console.error(`Error fetching page ${page}:`, error);
+              hasMore = false;
+            }
+          }
+          
+          console.log('All projects API response total:', allProjectsArr.length);
+          
+          let processedProjects = allProjectsArr.map((item) => ({
             projectName: item.projectName,
             project_url: item.project_url,
             frontImage: item.frontImage,
@@ -124,13 +189,13 @@ const SearchData = () => {
             sourceType: "project",
           }));
           
-          console.log('Processed all projects:', allProjectsArr.length);
-          allProjectsArr = allProjectsArr.sort(() => Math.random() - 0.5);
+          console.log('Processed all projects:', processedProjects.length);
+          processedProjects = processedProjects.sort(() => Math.random() - 0.5);
           
           console.log('Setting state for empty search...');
           setBuySearchData([]);
           setRentSearchData([]);
-          setSearchData(allProjectsArr);
+          setSearchData(processedProjects);
           setIsFallbackMode(true);
           console.log('Empty search state update completed');
           return;
@@ -138,17 +203,48 @@ const SearchData = () => {
 
         console.log('Non-empty search, fetching from all endpoints...');
 
+        // Fetch projects with pagination for comprehensive search - Get 200+ properties
+        let projectsData = [];
+        try {
+          // Fetch first page quickly for initial display
+          const firstPageRes = await searchApi.get(`/project/viewAll/data?page=1&limit=100`);
+          const firstPageData = firstPageRes.data.data || [];
+          projectsData = projectsData.concat(firstPageData);
+          console.log(`Quick load: ${firstPageData.length} projects ready for display`);
+          
+          // Continue fetching to reach 200+ properties
+          let page = 2;
+          let hasMore = true;
+          while (hasMore && page <= 10) { // Fetch up to 10 pages = 1000 properties
+            const projectsPageRes = await searchApi.get(`/project/viewAll/data?page=${page}&limit=100`);
+            const pageData = projectsPageRes.data.data || [];
+            if (pageData.length === 0) {
+              hasMore = false;
+            } else {
+              projectsData = projectsData.concat(pageData);
+              console.log(`Background fetch page ${page}: ${pageData.length} projects (Total: ${projectsData.length})`);
+              page++;
+              hasMore = pageData.length === 100;
+              
+              // Stop if we have enough properties (200+ exact matches will be filtered later)
+              if (projectsData.length >= 1000) break;
+            }
+          }
+          console.log(`Complete fetch: ${projectsData.length} total projects for search`);
+        } catch (error) {
+          console.error('Error fetching projects for search:', error);
+        }
+
         // Always fetch from all endpoints for comprehensive search
-        const [rentResult, saleResult, projectsResult] = await Promise.allSettled([
+        const [rentResult, saleResult] = await Promise.allSettled([
           searchApi.get("/property/rent/viewall"),
           searchApi.get("/property/buy/ViewAll"), // Note: capital V for buy endpoint
-          searchApi.get("/project/viewAll/data")
         ]);
 
         console.log('API Results:', {
           rent: rentResult,
           sale: saleResult,
-          projects: projectsResult
+          projects: { status: 'fulfilled', data: { data: projectsData } }
         });
 
         // Debug: Log raw API responses
@@ -170,12 +266,7 @@ const SearchData = () => {
           console.error('Sale API Error:', saleResult.reason);
         }
 
-        if (projectsResult.status === "fulfilled") {
-          console.log('Projects API Raw Response:', projectsResult.value?.data);
-          console.log('Projects Data Path:', projectsResult.value?.data?.data);
-        } else {
-          console.error('Projects API Error:', projectsResult.reason);
-        }
+        console.log('Projects Data:', projectsData.length, 'items');
 
         let localRentArr = rentResult.status === "fulfilled"
           ? (rentResult.value?.data?.rentaldata || []).map((item) => ({
@@ -193,21 +284,19 @@ const SearchData = () => {
             }))
           : [];
 
-        let localSearchArr = projectsResult.status === "fulfilled"
-          ? (projectsResult.value?.data?.data || []).map((item) => ({
-              projectName: item.projectName,
-              project_url: item.project_url,
-              frontImage: item.frontImage,
-              price: item.price,
-              type: item.type,
-              projectAddress: item.projectAddress,
-              city: item.city,
-              state: item.state,
-              minPrice: item.minPrice,
-              maxPrice: item.maxPrice,
-              sourceType: "project",
-            }))
-          : [];
+        let localSearchArr = projectsData.map((item) => ({
+          projectName: item.projectName,
+          project_url: item.project_url,
+          frontImage: item.frontImage,
+          price: item.price,
+          type: item.type,
+          projectAddress: item.projectAddress,
+          city: item.city,
+          state: item.state,
+          minPrice: item.minPrice,
+          maxPrice: item.maxPrice,
+          sourceType: "project",
+        }));
 
         console.log('Processed data:', {
           rentals: localRentArr.length,
@@ -215,18 +304,50 @@ const SearchData = () => {
           projects: localSearchArr.length
         });
 
-        // Filter results based on search term
+        // Filter results based on search term - Enhanced for comprehensive matching
         const searchTerm = key.toLowerCase().trim();
         
         // Split search term into individual words for more flexible matching
         const searchWords = searchTerm ? searchTerm.split(/\s+/).filter(word => word.length > 0) : [];
+        
+        // Extract numbers from search term for price/area matching
+        const searchNumbers = searchTerm.match(/\d+/g) || [];
+        
+        // Helper function to create comprehensive searchable text
+        const createSearchableText = (item) => {
+          const fields = [
+            item.projectName || item.propertyName || '',
+            item.projectAddress || item.address || '',
+            item.city || '',
+            item.state || '',
+            item.builderName || item.developer || '',
+            item.type || item.propertyType || '',
+            item.project_Status || item.status || '',
+            item.project_url || '',
+            item.description || item.project_discripation || '',
+            item.AboutDeveloper || '',
+            item.Amenities || '',
+            item.projectReraNo || '',
+            // Include numbers for price/area matching
+            (item.minPrice || '').toString(),
+            (item.maxPrice || '').toString(),
+            (item.totalLandArea || '').toString(),
+            (item.totalUnit || '').toString(),
+            (item.bhkType || '').toString(),
+            // Include location details
+            item.sector || item.location || '',
+            item.pincode || ''
+          ];
+          
+          return fields.join(' ').toLowerCase();
+        };
 
-        // Helper function to calculate relevance score
+        // Helper function to calculate enhanced relevance score
         const calculateRelevance = (item, searchableText) => {
-          const text = searchableText.toLowerCase();
+          const text = searchableText;
           let score = 0;
           
-          // Get property name for exact match checking (check multiple possible fields)
+          // Get property name for exact match checking
           const propertyName = (
             item.propertyName || 
             item.projectName || 
@@ -236,23 +357,54 @@ const SearchData = () => {
           
           // Exact match gets highest score
           if (propertyName === searchTerm) {
-            score += 1000;
+            score += 2000;
           }
           // Starts with search term gets high score
           else if (propertyName.startsWith(searchTerm)) {
-            score += 500;
+            score += 1000;
           }
           // Contains exact phrase gets medium-high score
           else if (text.includes(searchTerm)) {
-            score += 250;
+            score += 500;
           }
+          
+          // Bonus for matching individual words in order
+          if (searchWords.length > 1) {
+            const consecutiveMatches = searchWords.filter((word, index) => 
+              text.includes(word) && (index === 0 || text.includes(searchWords[index - 1]))
+            ).length;
+            score += consecutiveMatches * 100;
+          }
+          
           // All words match gets medium score
           else if (searchWords.every(word => text.includes(word))) {
-            score += 100;
+            score += 250;
           }
           // Some words match gets lower score
           else if (searchWords.some(word => text.includes(word))) {
-            score += 50;
+            score += 100;
+          }
+          
+          // Bonus for matching numbers (price, area, etc.)
+          if (searchNumbers.length > 0) {
+            const itemNumbers = (text.match(/\d+/g) || []).map(n => parseInt(n));
+            const numberMatches = searchNumbers.filter(searchNum => 
+              itemNumbers.some(itemNum => Math.abs(itemNum - parseInt(searchNum)) <= 100)
+            ).length;
+            score += numberMatches * 50;
+          }
+          
+          // Bonus for city/state matching
+          if (item.city && searchTerm.includes(item.city.toLowerCase())) {
+            score += 150;
+          }
+          if (item.state && searchTerm.includes(item.state.toLowerCase())) {
+            score += 100;
+          }
+          
+          // Bonus for builder/developer matching
+          if (item.builderName && text.includes(item.builderName.toLowerCase())) {
+            score += 75;
           }
           
           return score;
@@ -265,28 +417,9 @@ const SearchData = () => {
         };
 
         if (searchTerm) {
-
-          // Filter and score rental properties
+          // Enhanced filtering for rental properties with comprehensive matching
           localRentArr = localRentArr.filter((item) => {
-            const searchableText = [
-              item.propertyName,
-              item.projectName,
-              item.postProperty?.propertyName,
-              item.builderName,
-              item.type,
-              item.propertyType,
-              item.address,
-              item.projectAddress,
-              item.postProperty?.address,
-              item.city,
-              item.postProperty?.city,
-              item.state,
-              item.postProperty?.state,
-              item.descripation,
-              item.description,
-              item.title,
-              item.name
-            ].filter(Boolean).join(' ');
+            const searchableText = createSearchableText(item);
             const matches = matchesSearch(searchableText);
             if (matches) {
               item._relevanceScore = calculateRelevance(item, searchableText);
@@ -294,27 +427,9 @@ const SearchData = () => {
             return matches;
           }).sort((a, b) => (b._relevanceScore || 0) - (a._relevanceScore || 0));
 
-          // Filter and score sale properties
+          // Enhanced filtering for sale properties with comprehensive matching
           localBuyArr = localBuyArr.filter((item) => {
-            const searchableText = [
-              item.propertyName,
-              item.projectName,
-              item.postProperty?.propertyName,
-              item.builderName,
-              item.type,
-              item.propertyType,
-              item.address,
-              item.projectAddress,
-              item.postProperty?.address,
-              item.city,
-              item.postProperty?.city,
-              item.state,
-              item.postProperty?.state,
-              item.descripation,
-              item.description,
-              item.title,
-              item.name
-            ].filter(Boolean).join(' ');
+            const searchableText = createSearchableText(item);
             const matches = matchesSearch(searchableText);
             if (matches) {
               item._relevanceScore = calculateRelevance(item, searchableText);
@@ -322,29 +437,255 @@ const SearchData = () => {
             return matches;
           }).sort((a, b) => (b._relevanceScore || 0) - (a._relevanceScore || 0));
 
-          // Filter and score projects
+          // Enhanced filtering for projects with comprehensive matching
           localSearchArr = localSearchArr.filter((item) => {
-            const searchableText = [
-              item.projectName,
-              item.builderName,
-              item.type,
-              item.projectAddress,
-              item.city,
-              item.state,
-              item.project_discripation,
-              item.description,
-              item.title,
-              item.name
-            ].filter(Boolean).join(' ');
+            const searchableText = createSearchableText(item);
             const matches = matchesSearch(searchableText);
             if (matches) {
               item._relevanceScore = calculateRelevance(item, searchableText);
             }
             return matches;
           }).sort((a, b) => (b._relevanceScore || 0) - (a._relevanceScore || 0));
+
+          // Check if we have exact keyword matches (high relevance scores)
+          const hasExactMatches = 
+            localSearchArr.some(item => (item._relevanceScore || 0) >= 1000) ||
+            localRentArr.some(item => (item._relevanceScore || 0) >= 1000) ||
+            localBuyArr.some(item => (item._relevanceScore || 0) >= 1000);
+
+          console.log(`🔍 Keyword Match Check: ${hasExactMatches ? 'EXACT MATCHES FOUND - Showing all results' : 'No exact matches - Showing exactly 200 results'}`);
+
+          if (!hasExactMatches) {
+            // No exact matches - show exactly 200 results (mandatory)
+            const totalExactMatches = localSearchArr.length + localBuyArr.length + localRentArr.length;
+            
+            if (totalExactMatches === 0) {
+              // No matches at all - show top 200 projects by default
+              localSearchArr = projectsData.slice(0, 200).map((item) => ({
+                projectName: item.projectName,
+                project_url: item.project_url,
+                frontImage: item.frontImage,
+                price: item.price,
+                type: item.type,
+                projectAddress: item.projectAddress,
+                city: item.city,
+                state: item.state,
+                minPrice: item.minPrice,
+                maxPrice: item.maxPrice,
+                sourceType: "project",
+                _relevanceScore: 1, // Low score for default results
+              }));
+              console.log(`📊 No matches found - Showing top 200 projects by default`);
+            } else {
+              // Some matches but not exact - pad results to reach exactly 200
+              const needed = 200 - totalExactMatches;
+              const additionalProjects = projectsData
+                .filter(item => !localSearchArr.some(match => 
+                  (match.projectName || match.propertyName) === (item.projectName || item.propertyName)
+                ))
+                .slice(0, needed)
+                .map((item) => ({
+                  projectName: item.projectName,
+                  project_url: item.project_url,
+                  frontImage: item.frontImage,
+                  price: item.price,
+                  type: item.type,
+                  projectAddress: item.projectAddress,
+                  city: item.city,
+                  state: item.state,
+                  minPrice: item.minPrice,
+                  maxPrice: item.maxPrice,
+                  sourceType: "project",
+                  _relevanceScore: 1, // Low score for filler results
+                }));
+              
+              localSearchArr = [...localSearchArr, ...additionalProjects];
+              console.log(`📊 Padding results: ${totalExactMatches} matches + ${additionalProjects.length} filler = ${localSearchArr.length + localBuyArr.length + localRentArr.length} total`);
+            }
+          } else {
+            // Show all matching properties/projects when keywords match
+            console.log(`🎯 Showing all matches: ${localSearchArr.length} projects, ${localBuyArr.length} sales, ${localRentArr.length} rentals`);
+          }
+
+          // Add related projects based on city, builder, and type - Enhanced for 200+ properties
+          const addRelatedProjects = (mainResults, allProjects, limit = 50) => {
+            if (mainResults.length === 0) return [];
+            
+            const mainCities = [...new Set(mainResults.map(item => item.city).filter(Boolean))];
+            const mainBuilders = [...new Set(mainResults.map(item => item.builderName).filter(Boolean))];
+            const mainTypes = [...new Set(mainResults.map(item => item.type).filter(Boolean))];
+            const mainStates = [...new Set(mainResults.map(item => item.state).filter(Boolean))];
+            const mainPriceRanges = mainResults.map(item => {
+              const avgPrice = ((item.minPrice || 0) + (item.maxPrice || 0)) / 2;
+              return avgPrice > 0 ? Math.floor(avgPrice / 2) * 2 : null; // Group by 2Cr ranges
+            }).filter(Boolean);
+            
+            const related = allProjects
+              .filter(item => {
+                // Exclude already shown projects
+                const isAlreadyShown = mainResults.some(main => 
+                  (main.projectName || main.propertyName) === (item.projectName || item.propertyName)
+                );
+                if (isAlreadyShown) return false;
+                
+                let relevanceScore = 0;
+                
+                // High relevance: Same city and builder
+                if (item.city && mainCities.includes(item.city) && 
+                    item.builderName && mainBuilders.includes(item.builderName)) {
+                  relevanceScore += 100;
+                }
+                // High relevance: Same city and type
+                else if (item.city && mainCities.includes(item.city) && 
+                         item.type && mainTypes.includes(item.type)) {
+                  relevanceScore += 80;
+                }
+                // Medium relevance: Same city
+                else if (item.city && mainCities.includes(item.city)) {
+                  relevanceScore += 60;
+                }
+                // Medium relevance: Same builder
+                else if (item.builderName && mainBuilders.includes(item.builderName)) {
+                  relevanceScore += 50;
+                }
+                // Medium relevance: Same type
+                else if (item.type && mainTypes.includes(item.type)) {
+                  relevanceScore += 40;
+                }
+                // Low relevance: Same state
+                else if (item.state && mainStates.includes(item.state)) {
+                  relevanceScore += 30;
+                }
+                // Low relevance: Similar price range
+                else if (mainPriceRanges.length > 0) {
+                  const itemAvgPrice = ((item.minPrice || 0) + (item.maxPrice || 0)) / 2;
+                  const itemPriceRange = itemAvgPrice > 0 ? Math.floor(itemAvgPrice / 2) * 2 : null;
+                  if (itemPriceRange && mainPriceRanges.includes(itemPriceRange)) {
+                    relevanceScore += 20;
+                  }
+                }
+                
+                // Only include if it has some relevance
+                if (relevanceScore > 0) {
+                  item._relatedRelevanceScore = relevanceScore;
+                  return true;
+                }
+                
+                return false;
+              })
+              .map(item => {
+                item._relevanceScore = Math.max(item._relatedRelevanceScore || 10, 10); // Ensure minimum score
+                item._isRelated = true;
+                return item;
+              })
+              .sort((a, b) => (b._relatedRelevanceScore || 0) - (a._relatedRelevanceScore || 0))
+              .slice(0, limit);
+            
+            return related;
+          };
+
+          // Add related projects to each category - unlimited when exact matches found
+          const relatedRentals = hasExactMatches ? 
+            addRelatedProjects(localRentArr, localRentArr, 999) : 
+            addRelatedProjects(localRentArr, localRentArr, 30);
+          const relatedSales = hasExactMatches ? 
+            addRelatedProjects(localBuyArr, localBuyArr, 999) : 
+            addRelatedProjects(localBuyArr, localBuyArr, 30);
+          const relatedProjects = hasExactMatches ? 
+            addRelatedProjects(localSearchArr, localSearchArr, 999) : 
+            addRelatedProjects(localSearchArr, localSearchArr, 80);
+
+          // Also add cross-category related projects
+          const addCrossCategoryRelated = (mainResults, otherCategoryProjects, limit = 20) => {
+            if (mainResults.length === 0) return [];
+            
+            const mainCities = [...new Set(mainResults.map(item => item.city).filter(Boolean))];
+            const mainBuilders = [...new Set(mainResults.map(item => item.builderName || item.developer).filter(Boolean))];
+            
+            return otherCategoryProjects
+              .filter(item => {
+                const isAlreadyShown = mainResults.some(main => 
+                  (main.projectName || main.propertyName) === (item.projectName || item.propertyName)
+                );
+                if (isAlreadyShown) return false;
+                
+                return (
+                  (item.city && mainCities.includes(item.city)) ||
+                  (item.builderName && mainBuilders.includes(item.builderName)) ||
+                  (item.developer && mainBuilders.includes(item.developer))
+                );
+              })
+              .map(item => {
+                item._relevanceScore = 5; // Lower score for cross-category
+                item._isRelated = true;
+                item._isCrossCategory = true;
+                return item;
+              })
+              .slice(0, limit);
+          };
+
+          // Add cross-category suggestions - unlimited when exact matches found
+          const crossCategoryRentals = addCrossCategoryRelated(localSearchArr, localRentArr, hasExactMatches ? 999 : 15);
+          const crossCategorySales = addCrossCategoryRelated(localSearchArr, localBuyArr, hasExactMatches ? 999 : 15);
+          const crossCategoryProjects = addCrossCategoryRelated(localRentArr, localSearchArr, hasExactMatches ? 999 : 10);
+
+          // Combine all results - Exact matches first, then related
+          let allCombinedResults = [
+            ...localSearchArr.filter(item => !item._isRelated), // Exact matches first
+            ...relatedProjects, // Then related projects
+            ...crossCategorySales // Then cross-category
+          ];
+
+          // If exact matches found but total results are still limited, add more projects
+          if (hasExactMatches && allCombinedResults.length < 100) {
+            const additionalProjects = projectsData
+              .filter(item => !allCombinedResults.some(result => 
+                (result.projectName || result.propertyName) === (item.projectName || item.propertyName)
+              ))
+              .slice(0, 200 - allCombinedResults.length)
+              .map((item) => ({
+                projectName: item.projectName,
+                project_url: item.project_url,
+                frontImage: item.frontImage,
+                price: item.price,
+                type: item.type,
+                projectAddress: item.projectAddress,
+                city: item.city,
+                state: item.state,
+                minPrice: item.minPrice,
+                maxPrice: item.maxPrice,
+                sourceType: "project",
+                _relevanceScore: 1, // Low score for additional projects
+                _isRelated: true,
+              }));
+            
+            allCombinedResults = [...allCombinedResults, ...additionalProjects];
+            console.log(`📈 Added ${additionalProjects.length} more projects to reach ${allCombinedResults.length} total results`);
+          }
+
+          console.log('Combined results:', {
+            exactMatches: localSearchArr.filter(item => !item._isRelated).length,
+            relatedProjects: relatedProjects.length,
+            crossCategory: crossCategorySales.length,
+            total: allCombinedResults.length
+          });
+
+          // Set up infinite scroll data
+          setAllSearchData(allCombinedResults);
+          setDisplayedCount(Math.min(20, allCombinedResults.length));
+          setSearchData(allCombinedResults.slice(0, 20));
+          setHasMore(allCombinedResults.length > 20);
+          
+          // Show summary in console for debugging
+          console.log(`🎯 Search Results: ${localSearchArr.filter(item => !item._isRelated).length} exact matches + ${relatedProjects.length + crossCategorySales.length} related properties = ${allCombinedResults.length} total`);
+          
+          // Update other categories with combined results
+          localRentArr = [...localRentArr.filter(item => !item._isRelated), ...relatedRentals, ...crossCategoryProjects];
+          localBuyArr = [...localBuyArr.filter(item => !item._isRelated), ...relatedSales, ...crossCategoryRentals];
         }
 
-        setSearchData(localSearchArr);
+        // Only update other categories, searchData is handled by infinite scroll
+        setBuySearchData(localBuyArr);
         setRentSearchData(localRentArr);
         console.log('Search Results Summary:', {
           searchTerm,
@@ -352,12 +693,18 @@ const SearchData = () => {
           totalBeforeFilter: {
             rentals: rentResult.status === "fulfilled" ? (rentResult.value?.data?.rentaldata || []).length : 0,
             sales: saleResult.status === "fulfilled" ? (saleResult.value?.data?.ResaleData || saleResult.value?.data?.saledata || saleResult.value?.data?.buydata || []).length : 0,
-            projects: projectsResult.status === "fulfilled" ? (projectsResult.value?.data?.data || []).length : 0
+            projects: projectsData.length
           },
           totalAfterFilter: {
             rentals: localRentArr.length,
             sales: localBuyArr.length,
             projects: localSearchArr.length
+          },
+          relatedResults: {
+            rentals: localRentArr.filter(item => item._isRelated).length,
+            sales: localBuyArr.filter(item => item._isRelated).length,
+            projects: localSearchArr.filter(item => item._isRelated).length,
+            crossCategory: [...localRentArr, ...localBuyArr, ...localSearchArr].filter(item => item._isCrossCategory).length
           },
           isEmptySearch
         });
@@ -555,18 +902,44 @@ const SearchData = () => {
   }, [key, key3, isEmptySearch]);
 
   const combinedSearchData = useMemo(() => {
+    // Separate by source type for prioritization
+    const projects = (searchData || []).filter(item => item.sourceType === 'project');
+    const resale = (buySearchData || []).filter(item => item.sourceType === 'buy');
+    const rentals = (rentSearchData || []).filter(item => item.sourceType === 'rent');
+    
+    // Combine in priority order: Projects → Resale → Rentals
     const combined = [
-      ...(searchData || []),
-      ...(rentSearchData || []),
-      ...(buySearchData || []),
+      ...projects,
+      ...resale,
+      ...rentals
     ];
     
-    // Sort by relevance score if available (from search filtering)
-    return combined.sort((a, b) => {
+    // Sort by relevance score within each category
+    const sorted = combined.sort((a, b) => {
       const scoreA = a._relevanceScore || 0;
       const scoreB = b._relevanceScore || 0;
+      
+      // First sort by source type priority
+      const priorityOrder = { 'project': 3, 'buy': 2, 'rent': 1 };
+      const priorityA = priorityOrder[a.sourceType] || 0;
+      const priorityB = priorityOrder[b.sourceType] || 0;
+      
+      if (priorityA !== priorityB) {
+        return priorityB - priorityA; // Higher priority first
+      }
+      
+      // Then sort by relevance score within same category
       return scoreB - scoreA;
     });
+    
+    // Log priority breakdown
+    const projectCount = sorted.filter(item => item.sourceType === 'project').length;
+    const resaleCount = sorted.filter(item => item.sourceType === 'buy').length;
+    const rentalCount = sorted.filter(item => item.sourceType === 'rent').length;
+    
+    console.log(`🏆 Priority Order: ${projectCount} Projects → ${resaleCount} Resale → ${rentalCount} Rentals`);
+    
+    return sorted;
   }, [searchData, rentSearchData, buySearchData]);
 
   const filteredFallbackProjects = useMemo(() => {
@@ -909,7 +1282,7 @@ const SearchData = () => {
       {/* Mobile Floating Filter Button - Bottom Right */}
       <button
         onClick={() => setShowFilters(!showFilters)}
-        className="md:hidden fixed bottom-24 right-6 z-50 w-14 h-14 bg-red-500 text-white rounded-full flex items-center justify-center shadow-2xl hover:bg-red-600 hover:scale-110 transition-all duration-300"
+        className="md:hidden fixed bottom-24 right-6 z-50 w-14 h-14 bg-red-500 text-white rounded-full flex items-center justify-center shadow-2xl hover:bg-red-600 hover:scale-110 transition-all duration-300 mb-36"
         aria-label="Toggle Filters"
       >
         {showFilters ? (
@@ -1075,6 +1448,33 @@ const SearchData = () => {
                       </div>
                     </div>
 
+                    {/* Related Property Badge */}
+                    {property._isRelated && (
+                      <div className="absolute top-3 left-3 z-[3] ml-20">
+                        {/* <div className={`${property._isCrossCategory ? 'bg-blue-500' : 'bg-green-500'} text-white rounded-full px-2 py-1 shadow-md border border-white/20 flex items-center gap-1`}>
+                          <FiFilter className="w-2.5 h-2.5" />
+                          <span className="text-[8px] font-bold">
+                            {property._isCrossCategory ? 'RELATED' : 'SIMILAR'}
+                          </span>
+                        </div> */}
+                      </div>
+                    )}
+
+                    {/* Priority Type Badge */}
+                    <div className="absolute top-3 right-12 z-[3]">
+                      {/* <div className={`${
+                        propertyType === 'project' ? 'bg-purple-600' : 
+                        propertyType === 'buy' ? 'bg-orange-500' : 
+                        'bg-blue-600'
+                      } text-white rounded-full px-2 py-1 shadow-md border border-white/20 flex items-center gap-1`}>
+                        <span className="text-[7px] font-bold">
+                          {propertyType === 'project' ? 'PROJECT' : 
+                           propertyType === 'buy' ? 'RESALE' : 
+                           'RENTAL'}
+                        </span>
+                      </div> */}
+                    </div>
+
                     {/* Wishlist Button */}
                     <button
                       onClick={(e) => {
@@ -1171,6 +1571,25 @@ const SearchData = () => {
                 </div>
               );
             })}
+          
+          {/* Loading Indicator for Infinite Scroll */}
+          {isLoading && hasMore && (
+            <div className="flex justify-center items-center py-8">
+              <div className="flex flex-col items-center gap-3">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-500"></div>
+                <p className="text-sm text-gray-600 font-medium">Loading more properties...</p>
+              </div>
+            </div>
+          )}
+          
+          {/* End of Results Indicator */}
+          {!hasMore && allSearchData.length > 20 && (
+            <div className="text-center py-6 border-t border-gray-200">
+              <p className="text-sm text-gray-500">
+                Showing {Math.min(displayedCount, allSearchData.length)} of {allSearchData.length} properties
+              </p>
+            </div>
+          )}
           </div>
         ) : (
           <div className="text-center py-16">

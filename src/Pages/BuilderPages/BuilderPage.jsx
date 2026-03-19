@@ -197,26 +197,26 @@ const BUILDER_INFO = {
 const BUILDER_QUERIES = {
   'shapoorji-pallonji': 'Shapoorji Pallonji',
   'satya-group': 'Satya Group',
-  'signature-global': 'Signature Global',
-  'm3m-india': 'M3M India',
-  'dlf-homes': 'DLF',
-  'experion-developers': 'Experion Developers',
-  'elan-group': 'Elan Group',
-  'bptp-limited': 'BPTP',
   'adani-realty': 'Adani Realty',
-  'smartworld-developers': 'Smartworld Developers',
-  'trevoc-group': 'Trevoc Group',
-  'indiabulls-real-estate': 'Indiabulls Real Estate',
-  'central-park': 'Central Park',
-  'emaar-properties': 'Emaar Properties',
-  'godrej-properties': 'Godrej Properties',
-  'whiteland': 'Whiteland Corporation',
+  'm3m-india': 'M3M India',
+  'emaar-india': 'Emaar India',
+  'experion-developers': 'Experion Developers',
+  'signature-global': 'Signature Global',
+  'dlf-homes': 'DLF Homes',
+  'whiteland': 'whiteland',
   'aipl': 'AIPL',
-  'birla-estate': 'Birla Estate',
-  'sobha-developers': 'Sobha Developers',
+  'elan-group': 'Elan Group',
+  'bptp-limited': 'BPTP LTD',
+  'trevoc-group': 'Trevoc Group',
+  'indiabulls-real-estate': 'Indiabulls',
+  'smartworld-developers': 'Smartworld',
+  'central-park': 'Central Park',
+  'godrej-properties': 'Godrej Properties',
+  'birla-estate': 'Birla Estates',
+  'sobha-developers': 'Sobha',
   'trump-towers': 'Trump Towers',
-  'puri-developers': 'Puri Developers',
-  'aarize-developers': 'Aarize Developers',
+  'puri-developers': 'Puri Constructions',
+  'aarize-developers': 'Aarize Group',
   'max-estates': 'Max Estates',
   'danube-properties': 'Danube Properties',
   'bnw-properties': 'BNW Developments',
@@ -226,7 +226,7 @@ const BUILDER_QUERIES = {
   'nakheel-properties': 'Nakheel Properties',
   'meraas-properties': 'Meraas Properties',
   'aldar-properties': 'Aldar Properties',
-  'omniyat-properties': 'Omniyat Properties'
+  'omniyat-properties': 'Omniyat Properties',
 };
 
 // Canonical display names for builder brands (for titles/meta)
@@ -460,6 +460,7 @@ const BuilderPage = React.memo(() => {
   const Trevoc = useSelector(store => store?.builder?.trevoc);
   const IndiaBulls = useSelector(store => store?.builder?.indiabulls);
   const centralpark = useSelector(store => store?.builder?.centralpark);
+  console.log(`📊 [CentralParkDebug] centralpark data from Redux:`, centralpark);
   const emaarindia = useSelector(store => store?.builder?.emaarindia);
   const godrej = useSelector(store => store?.builder?.godrej);
   const whiteland = useSelector(store => store?.builder?.whiteland);
@@ -524,6 +525,7 @@ const BuilderPage = React.memo(() => {
     'omniyat-properties': omniyatBuilder
   };
   const builderProjects = buildersData[builderName] || [];
+  console.log(`📊 [BuilderPageDebug] builderName: ${builderName}, builderProjects:`, builderProjects);
 
   const filteredBuilderProjects = builderName === 'birla-estate'
     ? (builderProjects || []).filter(
@@ -786,33 +788,60 @@ const BuilderPage = React.memo(() => {
                 </div>
                 <div className="lg:col-span-7">
                   <div className={`${view === 'grid' ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4' : 'space-y-3'}`}>
-                    {visibleProjects?.map((item, index) => (
-                      <ProjectCard
-                        key={item._id || item.id || index}
-                        project={item}
-                        view={view}
-                        onExplore={onExplore}
-                        onFavorite={onFavorite}
-                        onShare={handleShare}
-                        isFav={isFavorite(item._id || item.id || item.slug)}
-                      />
-                    ))}
+                    {orderedProjects?.length > 0 ? (
+                      orderedProjects?.map((item, index) => (
+                        <ProjectCard
+                          key={item._id || item.id || index}
+                          project={item}
+                          view={view}
+                          onExplore={onExplore}
+                          onFavorite={onFavorite}
+                          onShare={handleShare}
+                          isFav={isFavorite(item._id || item.id || item.slug)}
+                        />
+                      ))
+                    ) : (
+                      <div className="col-span-full text-center py-8">
+                        <div className="text-gray-400 text-4xl mb-2">🏢</div>
+                        <p className="text-gray-500">
+                          {loading ? 'Loading projects...' : `No projects found for ${displayName}`}
+                        </p>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
             ) : (
               <div className={`${view === 'grid' ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4' : 'space-y-3'}`}>
-                {visibleProjects?.map((item, index) => (
-                  <ProjectCard
-                    key={item._id || item.id || index}
-                    project={item}
-                    view={view}
-                    onExplore={onExplore}
-                    onFavorite={onFavorite}
-                    onShare={handleShare}
-                    isFav={isFavorite(item._id || item.id || item.slug)}
-                  />
-                ))}
+                {orderedProjects?.length > 0 ? (
+                  orderedProjects?.map((item, index) => (
+                    <ProjectCard
+                      key={item._id || item.id || index}
+                      project={item}
+                      view={view}
+                      onExplore={onExplore}
+                      onFavorite={onFavorite}
+                      onShare={handleShare}
+                      isFav={isFavorite(item._id || item.id || item.slug)}
+                    />
+                  ))
+                ) : (
+                  <div className="col-span-full text-center py-12">
+                    <div className="text-gray-400 text-6xl mb-4">🏢</div>
+                    <h3 className="text-xl font-semibold text-gray-700 mb-2">No Projects Found</h3>
+                    <p className="text-gray-500">
+                      {loading ? 'Loading projects...' : `There are currently no projects available for ${displayName}.`}
+                    </p>
+                    {!loading && (
+                      <button
+                        onClick={() => window.location.href = '/'}
+                        className="mt-4 px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                      >
+                        Explore Other Projects
+                      </button>
+                    )}
+                  </div>
+                )}
               </div>
             )}
           </div>

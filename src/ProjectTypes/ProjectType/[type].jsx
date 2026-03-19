@@ -127,11 +127,11 @@ const projectTypeConfigs = {
     }
   },
   "senior-living": {
-    title: "Senior living in Gurgaon",
-    description: "Explore senior living communities in Gurgaon with tailored amenities, comfort, and care-focused living.",
-    metaTitle: "Senior living in Gurgaon | 100Acress",
-    metaDescription: "Discover premium senior living communities in Gurgaon. Find your dream senior living home with detailed information, pricing, and location details. Your trusted partner for senior living investment.",
-    keywords: "senior living gurgaon, senior living communities, retirement homes, care living, senior apartments, elderly care, assisted living",
+    title: "Senior Living in Gurgaon with Safe Best Retirement Homes",
+    description: "Explore senior living in Gurgaon designed for safety, comfort, and independent lifestyles. Peaceful communities with healthcare access and daily support.",
+    metaTitle: "Senior Living in Gurgaon with Safe Best Retirement Homes",
+    metaDescription: "Explore senior living in Gurgaon designed for safety, comfort, and independent lifestyles. Peaceful communities with healthcare access and daily support.",
+    keywords: "Senior Living In Gurgaon, senior living projects in gurgaon, senior living apartments in gurgaon, antara senior living in gurgaon, senior citizen assisted living in gurgaon, senior living in gurgaon india, luxury senior living in gurgaon, senior citizen living in gurgaon, senior citizen assisted living in gurgaon, luxury senior living in gurgaon, antara senior living in gurgaon, Best senior living communities in Gurgaon with healthcare facilities, What are the different types of senior living options available in Gurgaon?, Affordable senior living options in Gurgaon with meal services, How much does independent senior living typically cost in Gurgaon?, Top-rated assisted living services for elderly in Gurgaon, Compare top-rated assisted living facilities in Gurgaon., How to choose a senior living home in Gurgaon based on amenities, List senior care homes in Sector 57 Gurgaon with medical support., Senior living complexes in Gurgaon offering recreational activities, What amenities should I look for in a retirement community in Gurgaon?",
     canonical: "https://www.100acress.com/projects/senior-living/",
     query: "seniorliving",
     reduxKey: "seniorliving",
@@ -150,7 +150,7 @@ const projectTypeConfigs = {
              project.projectName?.toLowerCase().includes('retirement') ||
              project.description?.toLowerCase().includes('retirement');
     }
-  }
+  },
 };
 
 const ProjectTypePage = () => {
@@ -428,6 +428,68 @@ const ProjectTypePage = () => {
     };
   };
 
+  // Generate FAQ schema for senior living
+  const generateFAQSchema = () => {
+    if (projectType !== 'senior-living') {
+      return null;
+    }
+
+    return {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What types of senior living options are available in Gurgaon?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Gurgaon offers diverse senior living models including Independent Living for active seniors, Assisted Living for daily support, and Memory Care facilities. Leading projects such as Antara and Silverglades provide tailored amenities ranging from luxury apartments to specialized care units."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Do senior living communities in Gurgaon provide 24/7 medical facilities?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, premium senior living communities in Gurgaon offer 24/7 medical support including on-call doctors, trained nursing staff, emergency panic buttons, and ambulance services. Many projects also have partnerships with top multi-specialty hospitals for immediate assistance."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the average cost of retirement homes in Gurgaon?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The cost of senior living in Gurgaon varies based on amenities and luxury levels. Independent living options typically start from around ₹33,399 to ₹1,13,000 per month, while premium developments such as Antara Senior Living may require a property investment starting from ₹5.17 crore to ₹7.84 crore depending on the configuration."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What safety features are essential in a safe retirement home?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A safe retirement home should include senior-friendly architecture such as anti-skid flooring, grab rails, wide doorways, and wheelchair accessibility. Important security features include 24/7 CCTV surveillance, gated entry, and rapid emergency response systems to ensure total peace of mind."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Are meals and housekeeping included in Gurgaon senior living?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Most senior living communities in Gurgaon offer all-inclusive packages. This covers nutritious dietician-approved meals, professional housekeeping, and laundry services, ensuring a hassle-free and comfortable lifestyle for all residents."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How to choose the best senior living home in Gurgaon?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "To find the best senior living in Gurgaon, prioritize healthcare quality, staff-to-resident ratio, and proximity to hospitals. Explore projects like Pioneer Advait or Aura The Aerth 79 and schedule a site visit to check the community vibe firsthand."
+          }
+        }
+      ]
+    };
+  };
+
   return (
     <>
       <Helmet>
@@ -454,12 +516,19 @@ const ProjectTypePage = () => {
         <script type="application/ld+json">
           {JSON.stringify(generateProjectStructuredData())}
         </script>
+        
+        {/* FAQ Schema for Senior Living */}
+        {generateFAQSchema() && (
+          <script type="application/ld+json">
+            {JSON.stringify(generateFAQSchema())}
+          </script>
+        )}
       </Helmet>
 
       <ProjectTypeTemplate
         title={config.title}
         description={config.description}
-        faqs={getStaticData('projectTypes', projectType)?.faqs || []}
+        faqs={getStaticData('projectTypes', projectType)?.faqs || getStaticData(projectType)?.faqs || []}
         projects={paginatedData}
         filteredData={filteredData}
         currentPage={currentPage}

@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import './desktopFloorPlan.css';
 
 const DesktopFloorPlan = ({ floorPlans = [], bhkDetails = [], onShowCallback = () => {}, projectName = '' }) => {
   const [isImageUnlocked, setIsImageUnlocked] = useState(false);
@@ -62,9 +63,9 @@ const DesktopFloorPlan = ({ floorPlans = [], bhkDetails = [], onShowCallback = (
   }
 
   return (
-    <section className="py-10 bg-black text-white relative overflow-hidden">
+    <section className="desktop-floorplan-section" style={{ paddingTop: '120px', zIndex: 1, position: 'relative' }}>
       {/* Background decorative lines */}
-      <div className="absolute top-0 right-0 -z-0 opacity-20">
+      <div className="desktop-floorplan-bg-decoration">
         <svg width="800" height="600" viewBox="0 0 800 600" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M800 0C700 150 600 200 400 200S100 250 0 400V600h800V0z" fill="url(#grad)"/>
           <defs>
@@ -76,54 +77,56 @@ const DesktopFloorPlan = ({ floorPlans = [], bhkDetails = [], onShowCallback = (
         </svg>
       </div>
 
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 z-10 relative">
-        <div className="text-center mb-8">
-          <h3 className="text-white text-3xl md:text-4xl font-bold leading-tight mb-3">
+      <div className="desktop-floorplan-container">
+        <div className="desktop-floorplan-header">
+          <h3 className="desktop-floorplan-title">
             Floor Plan{projectName ? ` of ${projectName}` : ''}
           </h3>
-          <div className="w-24 h-1 bg-gradient-to-r from-amber-600 to-amber-500 rounded-full mx-auto mt-4 animate-pulse"></div>
-          <p className="text-gray-300 text-sm mt-4 max-w-2xl mx-auto">
+          <div className="desktop-floorplan-accent-line"></div>
+          <p className="desktop-floorplan-subtitle">
             Choose your ideal home configuration & explore detailed layouts
           </p>
         </div>
 
-        <div className="bg-gray-800/30 p-8 rounded-2xl border border-gray-700/50 backdrop-blur-sm">
-          <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 items-start">
+        <div className="desktop-floorplan-content-wrapper">
+          <div className="desktop-floorplan-grid">
             {/* Left Side: Immersive Floor Plan Preview (70% width) */}
-            <div className="lg:col-span-4 relative">
-              <div className="relative group overflow-hidden rounded-2xl bg-gradient-to-br from-gray-900/50 to-gray-800/50 shadow-2xl">
+            <div className="desktop-floorplan-preview">
+              <div className="desktop-floorplan-preview-container">
                 {/* Floor Plan Image */}
-                <div className="relative h-[600px] overflow-hidden">
+                <div className="desktop-floorplan-image-container">
                   <img 
                     src={floorPlans[currentIndex]?.url} 
                     alt={`Floor plan ${currentIndex + 1} for ${bhkDetails[currentIndex]?.bhk_type || 'Project'}`}
                     loading="lazy"
                     decoding="async"
-                    className={`w-full h-full object-contain transition-all duration-1000 transform group-hover:scale-105 ${
-                      isImageUnlocked ? '' : 'blur-lg'
+                    className={`desktop-floorplan-image ${
+                      isImageUnlocked ? '' : 'blurred'
                     }`}
+                    crossOrigin="anonymous"
+                    performance="high"
                   />
                   
                   {/* Premium Glassmorphism Overlay with Vignette */}
                   {!isImageUnlocked && (
-                    <div className="absolute inset-0 bg-gradient-to-br from-black/90 via-black/70 to-black/90 backdrop-blur-md flex items-center justify-center">
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/50 pointer-events-none"></div>
-                      <div className="absolute inset-0 bg-gradient-to-l from-black/30 via-transparent to-black/30 pointer-events-none"></div>
-                      <div className="absolute inset-0 bg-gradient-to-r from-black/30 via-transparent to-black/30 pointer-events-none"></div>
+                    <div className="desktop-floorplan-overlay">
+                      <div className="desktop-floorplan-overlay-vignette-1"></div>
+                      <div className="desktop-floorplan-overlay-vignette-2"></div>
+                      <div className="desktop-floorplan-overlay-vignette-3"></div>
                       
-                      <div className="relative z-10 text-center space-y-8 px-8">
-                        <div className="space-y-4">
-                          <h4 className="text-white text-3xl md:text-4xl font-bold mb-4 leading-tight">
+                      <div className="desktop-floorplan-overlay-content">
+                        <div>
+                          <h4 className="desktop-floorplan-overlay-title">
                             Unlock Detailed Floor Plans
                           </h4>
-                          <p className="text-gray-200 text-lg max-w-lg mx-auto">
+                          <p className="desktop-floorplan-overlay-description">
                             Get exclusive access to detailed layouts, dimensions & specifications
                           </p>
                         </div>
                         
                         <button
                           onClick={handleGetDetails}
-                          className="bg-gradient-to-r from-amber-500 via-amber-600 to-amber-700 text-black font-bold py-4 px-8 rounded-full shadow-2xl hover:shadow-amber-500/25 transform hover:scale-105 transition-all duration-300 flex items-center justify-center gap-3 mx-auto"
+                          className="desktop-floorplan-unlock-button"
                         >
                           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -137,23 +140,23 @@ const DesktopFloorPlan = ({ floorPlans = [], bhkDetails = [], onShowCallback = (
                 </div>
 
                 {/* Navigation Controls */}
-                <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex items-center gap-2 bg-black/60 backdrop-blur-md rounded-full px-4 py-2">
+                <div className="desktop-floorplan-navigation">
                   <button
                     onClick={goToPrevious}
-                    className="p-2 bg-white/10 hover:bg-white/20 rounded-full transition-colors duration-300"
+                    className="desktop-floorplan-nav-button"
                   >
-                    <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                     </svg>
                   </button>
-                  <span className="text-white text-sm font-medium mx-3">
+                  <span className="desktop-floorplan-nav-counter">
                     {currentIndex + 1} / {floorPlans.length}
                   </span>
                   <button
                     onClick={goToNext}
-                    className="p-2 bg-white/10 hover:bg-white/20 rounded-full transition-colors duration-300"
+                    className="desktop-floorplan-nav-button"
                   >
-                    <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                     </svg>
                   </button>
@@ -162,13 +165,13 @@ const DesktopFloorPlan = ({ floorPlans = [], bhkDetails = [], onShowCallback = (
             </div>
 
             {/* Right Side: BHK Configuration Cards (30% width) */}
-            <div className="lg:col-span-1">
-              <div className="space-y-4">
-                <h4 className="text-white font-bold text-lg mb-4">Available Configurations</h4>
+            <div className="desktop-floorplan-configurations">
+              <div>
+                <h4 className="desktop-floorplan-configurations-title">Available Configurations</h4>
                 
                 <div 
                   ref={scrollContainerRef}
-                  className="space-y-3 max-h-[500px] overflow-y-auto scrollbar-hide"
+                  className="desktop-floorplan-cards-container"
                   onKeyDown={handleKeyDown}
                   tabIndex={0}
                 >
@@ -178,27 +181,23 @@ const DesktopFloorPlan = ({ floorPlans = [], bhkDetails = [], onShowCallback = (
                       onClick={() => { setCurrentIndex(index); setIsTransitioning(true); setTimeout(() => setIsTransitioning(false), 400); }}
                       onMouseEnter={() => setHoveredIndex(index)}
                       onMouseLeave={() => setHoveredIndex(null)}
-                      className={`p-4 rounded-xl border cursor-pointer transition-all duration-300 ${
-                        index === currentIndex
-                          ? 'bg-gradient-to-r from-amber-600/20 to-amber-700/20 border-amber-500/50 shadow-lg shadow-amber-500/20 scale-105'
-                          : 'bg-gray-800/50 border-gray-700/50 hover:bg-gray-700/70 hover:border-gray-600/50 hover:scale-102'
+                      className={`desktop-floorplan-bhk-card ${
+                        index === currentIndex ? 'selected' : ''
                       }`}
                     >
-                      <div className="text-center">
-                        <div className="text-white font-bold text-lg mb-2">
+                      <div className="desktop-floorplan-bhk-card-content">
+                        <div className="desktop-floorplan-bhk-type">
                           {bhk.bhk_type}
                         </div>
-                        <div className="text-gray-300 text-sm mb-3">
+                        <div className="desktop-floorplan-bhk-area">
                           {bhk.bhk_Area && (
                             <span>
                               {bhk.bhk_Area}
                             </span>
                           )}
                         </div>
-                        <div className={`text-xs font-medium px-3 py-1 rounded-full inline-block ${
-                          index === currentIndex
-                            ? 'bg-amber-500 text-black'
-                            : 'bg-gray-700 text-gray-300'
+                        <div className={`desktop-floorplan-bhk-status ${
+                          index === currentIndex ? 'selected' : ''
                         }`}>
                           {index === currentIndex ? 'SELECTED' : 'SELECT'}
                         </div>
@@ -211,16 +210,6 @@ const DesktopFloorPlan = ({ floorPlans = [], bhkDetails = [], onShowCallback = (
           </div>
         </div>
       </div>
-
-      <style jsx>{`
-        .scrollbar-hide {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
-        }
-        .scrollbar-hide::-webkit-scrollbar {
-          display: none;
-        }
-      `}</style>
     </section>
   );
 };

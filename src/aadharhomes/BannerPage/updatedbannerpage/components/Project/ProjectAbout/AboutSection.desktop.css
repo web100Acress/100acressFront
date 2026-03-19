@@ -1,0 +1,508 @@
+/* About Section Desktop Component Styles */
+
+/* Main section container */
+.about-section-desktop {
+  position: relative;
+  width: 100%;
+  margin: 0 auto;
+  max-width: 80rem;
+  padding: 3rem 1rem 2rem;
+  z-index: 1;
+}
+
+/* Luxury Rounded Card Container */
+.about-section-card {
+  position: relative;
+  border-radius: 1rem;
+  overflow: hidden;
+  border: 1px solid rgba(146, 64, 14, 0.3);
+  background: #25526f;
+  /* box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4); */
+}
+
+/* Circular golden ambient accents */
+.about-section-accent-top {
+  position: absolute;
+  top: -6rem;
+  right: -6rem;
+  width: 20rem;
+  height: 20rem;
+  border-radius: 50%;
+  background: linear-gradient(to bottom right, rgba(250, 204, 21, 0.1), rgba(250, 204, 21, 0), transparent);
+  filter: blur(4rem);
+  pointer-events: none;
+}
+
+.about-section-accent-bottom {
+  position: absolute;
+  bottom: -8rem;
+  left: -6rem;
+  width: 24rem;
+  height: 24rem;
+  border-radius: 50%;
+  background: linear-gradient(to top right, rgba(250, 204, 21, 0.1), transparent, transparent);
+  filter: blur(4rem);
+  pointer-events: none;
+}
+
+/* Main content grid */
+.about-section-content {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 2rem;
+  align-items: center;
+  padding: 2.5rem;
+}
+
+@media (min-width: 768px) {
+  .about-section-content {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+    padding: 2.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .about-section-content {
+    padding: 2.5rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .about-section-content {
+    padding: 2.5rem;
+  }
+}
+
+/* Left Column - Text Content */
+.about-section-text-column {
+  position: relative;
+  order: 1;
+}
+
+@media (min-width: 768px) {
+  .about-section-text-column {
+    order: 2;
+  }
+}
+
+/* Geometric Diamond Pattern Background */
+.about-section-diamond-pattern {
+  position: absolute;
+  inset: -1rem;
+  opacity: 0.03;
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .about-section-diamond-pattern {
+    display: block;
+  }
+}
+
+/* Soft Spotlight Effect */
+.about-section-spotlight {
+  position: absolute;
+  top: -1.5rem;
+  left: 0;
+  width: 18rem;
+  height: 18rem;
+  background: radial-gradient(circle, rgba(250, 204, 21, 0.15), rgba(250, 204, 21, 0), transparent);
+  border-radius: 50%;
+  filter: blur(3rem);
+}
+
+/* Thin golden diagonal borders */
+.about-section-diagonal-border-top {
+  position: absolute;
+  top: -0.5rem;
+  left: -1.5rem;
+  width: 66.66%;
+  height: 1px;
+  background: linear-gradient(to right, transparent, rgba(250, 204, 21, 0.7), transparent);
+  transform: rotate(12deg);
+  pointer-events: none;
+}
+
+.about-section-diagonal-border-bottom {
+  position: absolute;
+  bottom: -0.5rem;
+  right: -1.5rem;
+  width: 66.66%;
+  height: 1px;
+  background: linear-gradient(to right, transparent, rgba(250, 204, 21, 0.7), transparent);
+  transform: rotate(-12deg);
+  pointer-events: none;
+}
+
+/* Content wrapper */
+.about-section-text-content {
+  position: relative;
+  z-index: 10;
+}
+
+/* Section title */
+.about-section-title {
+  color: #fbbf24;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 1rem;
+}
+
+/* Main heading */
+.about-section-heading {
+  color: #ffffff;
+  font-size: 1.875rem;
+  line-height: 1.2;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+@media (min-width: 768px) {
+  .about-section-heading {
+    font-size: 2.25rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .about-section-heading {
+    font-size: 3rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .about-section-heading {
+    font-size: 3.125rem;
+  }
+}
+
+.about-section-heading:hover {
+  filter: brightness(1.2);
+}
+
+/* Gold underline */
+.about-section-underline {
+  margin-top: 0.5rem;
+  height: 3px;
+  border-radius: 9999px;
+  width: 7rem;
+  background: linear-gradient(to right, #fbbf24, #f59e0b, #fbbf24);
+  background-size: 200% 100%;
+  animation: shimmer 3s ease-in-out infinite;
+}
+
+@media (min-width: 640px) {
+  .about-section-underline {
+    width: 9rem;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -100% 0;
+  }
+  100% {
+    background-position: 100% 0;
+  }
+}
+
+/* Description text */
+.about-section-description {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.875rem;
+  line-height: 1.6;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+@media (min-width: 768px) {
+  .about-section-description {
+    font-size: 1rem;
+  }
+}
+
+.about-section-description.collapsed {
+  display: -webkit-box;
+  -webkit-line-clamp: 6;
+  line-clamp: 6;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Read More/Less Button */
+.about-section-read-more-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: none;
+  border: none;
+  color: #facc15;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0.5rem 0;
+  margin-top: 0.5rem;
+  transition: all 0.3s ease;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.about-section-read-more-btn:hover {
+  color: #fde047;
+  gap: 0.75rem;
+}
+
+.about-section-read-more-icon {
+  transition: transform 0.3s ease;
+}
+
+.about-section-read-more-icon.expanded {
+  transform: rotate(180deg);
+}
+
+@media (min-width: 768px) {
+  .about-section-read-more-btn {
+    font-size: 1rem;
+  }
+}
+
+.about-section-read-more-button:hover {
+  color: #fde047;
+}
+
+/* Get details button */
+.about-section-get-details {
+  margin-top: 1rem;
+  background-color: #eab308;
+  color: #000000;
+  font-weight: 600;
+  padding: 0.625rem 1.25rem;
+  border-radius: 0.375rem;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  /* box-shadow: 0 10px 15px -3px rgba(250, 204, 21, 0.1); */
+}
+
+.about-section-get-details:hover {
+  background-color: #ca8a04;
+}
+
+/* Right Column - Image */
+.about-section-image-column {
+  position: relative;
+  order: 2;
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .about-section-image-column {
+    order: 1;
+  }
+}
+
+.about-section-image-container {
+  position: relative;
+  width: 100%;
+  height: 16.25rem;
+}
+
+@media (min-width: 640px) {
+  .about-section-image-container {
+    height: 18.75rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .about-section-image-container {
+    height: 21.25rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .about-section-image-container {
+    height: 23.75rem;
+  }
+}
+
+/* Image frame */
+.about-section-image-frame {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  border-radius: 0;
+  overflow: hidden;
+  border: 1px solid rgba(250, 204, 21, 0.3);
+  /* box-shadow: 0 10px 40px rgba(250, 204, 21, 0.1); */
+}
+
+@media (min-width: 768px) {
+  .about-section-image-frame {
+    border-radius: 1.75rem;
+  }
+}
+
+.about-section-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1);
+  transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.about-section-image:hover {
+  transform: scale(1.05);
+}
+
+/* Image overlay */
+.about-section-image-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom right, rgba(0, 0, 0, 0.1), transparent, rgba(146, 64, 14, 0.2));
+  pointer-events: none;
+}
+
+/* Animation classes */
+.animate-fade-up {
+  animation: fadeUp 0.8s ease-out forwards;
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Diamond pattern */
+.diamond-pattern {
+  background-image: 
+    linear-gradient(45deg, rgba(250, 204, 21, 0.1) 25%, transparent 25%),
+    linear-gradient(-45deg, rgba(250, 204, 21, 0.1) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, rgba(250, 204, 21, 0.1) 75%),
+    linear-gradient(-45deg, transparent 75%, rgba(250, 204, 21, 0.1) 75%);
+  background-size: 20px 20px;
+  background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+}
+
+/* Buttons Row Container */
+.about-section-buttons-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .about-section-buttons-row {
+    flex-direction: row;
+  }
+}
+
+/* Download Brochure Button */
+.about-section-download-btn {
+  position: relative;
+  background: linear-gradient(to right, #eab308, #f59e0b, #eab308);
+  color: #ffffff;
+  padding: 0.625rem 1.5rem;
+  border-radius: 9999px;
+  font-weight: 500;
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 10px 15px -3px rgba(234, 179, 8, 0.1);
+}
+
+.about-section-download-btn:hover {
+  /* background: linear-gradient(to right, #fde047, #fbbf24, #fde047); */
+  transform: scale(1.02);
+  /* box-shadow: 0 8px 20px rgba(234, 179, 8, 0.2); */
+}
+
+.about-section-download-btn:active {
+  transform: scale(0.98);
+}
+
+/* Download button glow effect */
+.about-section-download-btn-glow {
+  position: absolute;
+  inset: 0;
+  /* background: linear-gradient(to right, #fbbf24, #fde047); */
+  border-radius: 9999px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: -10;
+  filter: blur(4px);
+}
+
+.about-section-download-btn:hover .about-section-download-btn-glow {
+  opacity: 1;
+}
+
+/* Download button content */
+.about-section-download-btn-content {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.about-section-download-btn-icon {
+  width: 12px;
+  height: 12px;
+}
+
+.about-section-download-btn-text {
+  font-weight: 500;
+  letter-spacing: 0.025em;
+}
+
+/* Get Details Button - updated for flex layout */
+.about-section-get-details {
+  margin-top: 0; /* Remove margin since it's in flex row */
+  background-color: #eab308;
+  color: #000000;
+  font-weight: 600;
+  padding: 0.625rem 1.25rem;
+  border-radius: 0.375rem;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  flex: 1; /* Take remaining space in row */
+}
+
+.about-section-get-details:hover {
+  background-color: #ca8a04;
+}
+
+/* Responsive adjustments */
+@media (max-width: 767px) {
+  .about-section-desktop {
+    padding: 1rem 0.75rem;
+  }
+  
+  .about-section-content {
+    padding: 1rem;
+  }
+  
+  .about-section-heading {
+    font-size: 1.5rem;
+  }
+  
+  .about-section-description {
+    font-size: 0.8rem;
+  }
+}

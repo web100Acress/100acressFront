@@ -79,7 +79,7 @@ const InsightsNewsDesktop = () => {
     return `${minutes} min`;
   };
 
-  const blogLink = (id) => `/insights/blog/${id}`;
+  const blogLink = (id) => `/insights/blog/${id}/`;
 
   const CardSkeleton = () => (
     <div className="bg-white rounded-3xl border border-gray-100 p-5 animate-pulse flex gap-6">

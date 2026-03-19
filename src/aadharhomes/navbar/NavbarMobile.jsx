@@ -116,6 +116,7 @@ export default function NavbarMobile({
                   alt="100acress"
                   className="mobile-menu-logo"
                   loading="lazy"
+                  crossOrigin="anonymous"
                 />
               </div>
               <button

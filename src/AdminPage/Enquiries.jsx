@@ -18,6 +18,14 @@ const Enquiries = () => {
   const [total, setTotal] = useState(0);
   const [includeDeletedExport, setIncludeDeletedExport] = useState(false);
   const [showDeleted, setShowDeleted] = useState(false);
+  
+  // Date range states for export
+  const [exportDateRange, setExportDateRange] = useState({
+    startDate: '',
+    endDate: '',
+    useDateRange: false
+  });
+  const [showDateRangeModal, setShowDateRangeModal] = useState(false);
 
   const [selectedIds, setSelectedIds] = useState([]);
   const [filterStatus, setFilterStatus] = useState("all"); // all, verified, unverified
@@ -185,16 +193,29 @@ const Enquiries = () => {
       if (selectedIds.length > 0) {
         showToast.info(`Exporting ${selectedIds.length} selected enquiries...`);
       } else {
-        showToast.info('Exporting all enquiries...');
-        setSelectedIds([]); // Clear selection after export
-        return;
+        showToast.info('Exporting enquiries...');
       }
 
-      // Prepare the request with selected IDs
-      const queryParams = new URLSearchParams({
-        includeDeleted: includeDeletedExport ? 1 : 0,
-        selectedIds: selectedIds.join(',')
-      });
+      // Prepare the request parameters
+      const queryParams = new URLSearchParams();
+      
+      // Add selected IDs if any
+      if (selectedIds.length > 0) {
+        queryParams.append('selectedIds', selectedIds.join(','));
+      }
+      
+      // Add deleted flag
+      queryParams.append('includeDeleted', includeDeletedExport ? 1 : 0);
+      
+      // Add date range if enabled
+      if (exportDateRange.useDateRange) {
+        if (exportDateRange.startDate) {
+          queryParams.append('startDate', exportDateRange.startDate);
+        }
+        if (exportDateRange.endDate) {
+          queryParams.append('endDate', exportDateRange.endDate);
+        }
+      }
 
       const response = await fetch(`${base}/userViewAll/dowloadData?${queryParams}`, {
         method: 'GET',
@@ -236,9 +257,18 @@ const Enquiries = () => {
       const link = document.createElement('a');
       link.href = url;
 
-      const fileName = contentDisposition
-        ? contentDisposition.split('filename=')[1]?.replace(/"/g, '')
-        : `selected_enquiries_${selectedIds.length}_${new Date().toISOString().slice(0, 10)}.xlsx`;
+      // Generate filename based on export type
+      let fileName = '';
+      if (selectedIds.length > 0) {
+        fileName = `selected_enquiries_${selectedIds.length}`;
+      } else if (exportDateRange.useDateRange) {
+        const start = exportDateRange.startDate || 'all';
+        const end = exportDateRange.endDate || 'all';
+        fileName = `enquiries_${start}_to_${end}`;
+      } else {
+        fileName = 'all_enquiries';
+      }
+      fileName += `_${new Date().toISOString().slice(0, 10)}.xlsx`;
 
       link.download = fileName;
       document.body.appendChild(link);
@@ -247,17 +277,20 @@ const Enquiries = () => {
       window.URL.revokeObjectURL(url);
 
       setDownloadProgress(0);
-      showToast.success(`Successfully exported ${selectedIds.length} selected enquiries!`);
+      
+      const exportCount = selectedIds.length > 0 ? selectedIds.length : 'filtered';
+      showToast.success(`Successfully exported ${exportCount} enquiries!`);
 
       // Clear selection after successful download
       setSelectedIds([]);
+      setShowDateRangeModal(false);
 
     } catch (error) {
       console.error('Error downloading the file:', error);
-      showToast.error("Error downloading selected enquiries. Please try again.");
+      showToast.error("Error downloading enquiries. Please try again.");
       setDownloadProgress(0);
     }
-  }
+  };
 
   return (
     <div className="bg-gray-50 dark:bg-gray-900 dark:text-gray-100 min-h-screen flex">
@@ -296,23 +329,186 @@ const Enquiries = () => {
                 </button>
               </>
             )}
-            {downloadProgress > 0 ?
-              <button
-                className="download-button download-in-progress"
-              >
-                <ClipLoader color="#C13B44" size={20} />
-                <span className="download-progress-text">{downloadProgress}%</span>
-              </button>
-              :
-              <button
-                className={`download-button ${selectedIds.length > 0 ? 'download-selected' : 'download-ready'}`}
-                onClick={downloadExelFile}
-                disabled={data.length === 0}
-              >
-                {selectedIds.length > 0 ? `Export Selected (${selectedIds.length})📥` : 'Export All📥'}
-              </button>
-            }
+            <div className="download-section">
+            {downloadProgress > 0 ? (
+              <div className="download-progress-container">
+                <button className="download-button downloading" disabled>
+                  <ClipLoader color="#ffffff" size={18} />
+                  <span className="download-progress-text">Exporting... {downloadProgress}%</span>
+                </button>
+                <div className="progress-bar">
+                  <div 
+                    className="progress-fill" 
+                    style={{ width: `${downloadProgress}%` }}
+                  ></div>
+                </div>
+              </div>
+            ) : (
+              <div className="export-buttons-container">
+                <button
+                  className={`export-button ${selectedIds.length > 0 ? 'export-selected' : 'export-date-range'}`}
+                  onClick={() => setShowDateRangeModal(true)}
+                  disabled={data.length === 0}
+                >
+                  <span className="button-icon">
+                    {selectedIds.length > 0 ? '✓' : '📅'}
+                  </span>
+                  <span className="button-text">
+                    {selectedIds.length > 0 ? `Selected (${selectedIds.length})` : 'Date Range'}
+                  </span>
+                  <span className="button-arrow">→</span>
+                </button>
+                
+                <button
+                  className="export-button export-all"
+                  onClick={() => {
+                    setExportDateRange({ startDate: '', endDate: '', useDateRange: false });
+                    downloadExelFile();
+                  }}
+                  disabled={data.length === 0}
+                >
+                  <span className="button-icon">📊</span>
+                  <span className="button-text">All Data</span>
+                  <span className="button-arrow">→</span>
+                </button>
+              </div>
+            )}
           </div>
+          </div>
+
+          {/* Date Range Modal */}
+          {showDateRangeModal && (
+            <div className="date-range-modal-overlay">
+              <div className="date-range-modal">
+                <div className="modal-header">
+                  <h3>📊 Export Enquiries</h3>
+                  <button 
+                    className="modal-close-btn"
+                    onClick={() => setShowDateRangeModal(false)}
+                  >
+                    ✕
+                  </button>
+                </div>
+                
+                <div className="date-range-form">
+                  {/* Date Range Toggle */}
+                  <div className="form-group toggle-group">
+                    <div className="toggle-container">
+                      <input
+                        type="checkbox"
+                        id="dateRangeToggle"
+                        checked={exportDateRange.useDateRange}
+                        onChange={(e) => setExportDateRange({
+                          ...exportDateRange,
+                          useDateRange: e.target.checked
+                        })}
+                      />
+                      <label htmlFor="dateRangeToggle" className="toggle-label">
+                        <span className="toggle-text">📅 Filter by Date Range</span>
+                        <span className="toggle-description">Export enquiries from specific period</span>
+                      </label>
+                    </div>
+                  </div>
+
+                  {/* Date Fields */}
+                  {exportDateRange.useDateRange && (
+                    <div className="date-fields-container">
+                      <div className="date-field-group">
+                        <label className="date-label">
+                          📅 From Date
+                        </label>
+                        <input
+                          type="date"
+                          className="date-input"
+                          value={exportDateRange.startDate}
+                          onChange={(e) => setExportDateRange({
+                            ...exportDateRange,
+                            startDate: e.target.value
+                          })}
+                          max={new Date().toISOString().split('T')[0]}
+                        />
+                      </div>
+                      
+                      <div className="date-field-group">
+                        <label className="date-label">
+                          📅 To Date
+                        </label>
+                        <input
+                          type="date"
+                          className="date-input"
+                          value={exportDateRange.endDate}
+                          onChange={(e) => setExportDateRange({
+                            ...exportDateRange,
+                            endDate: e.target.value
+                          })}
+                          max={new Date().toISOString().split('T')[0]}
+                          min={exportDateRange.startDate}
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Options */}
+                  <div className="options-section">
+                    <div className="form-group option-group">
+                      <label className="option-label">
+                        <input
+                          type="checkbox"
+                          checked={includeDeletedExport}
+                          onChange={(e) => setIncludeDeletedExport(e.target.checked)}
+                          className="option-checkbox"
+                        />
+                        <span className="option-text">
+                          🗑️ Include Deleted Enquiries
+                        </span>
+                        <span className="option-description">
+                          Export enquiries that have been deleted
+                        </span>
+                      </label>
+                    </div>
+                  </div>
+
+                  {/* Export Summary */}
+                  <div className="export-summary">
+                    <div className="summary-item">
+                      <span className="summary-label">Export Type:</span>
+                      <span className="summary-value">
+                        {selectedIds.length > 0 
+                          ? `Selected (${selectedIds.length})` 
+                          : exportDateRange.useDateRange 
+                            ? 'Date Range Filtered' 
+                            : 'All Enquiries'
+                        }
+                      </span>
+                    </div>
+                    {exportDateRange.useDateRange && (
+                      <div className="summary-item">
+                        <span className="summary-label">Date Range:</span>
+                        <span className="summary-value">
+                          {exportDateRange.startDate || 'Start'} - {exportDateRange.endDate || 'End'}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <div className="modal-actions">
+                  <button
+                    className="btn-cancel"
+                    onClick={() => setShowDateRangeModal(false)}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    className="btn-export"
+                    onClick={downloadExelFile}
+                  >
+                    📥 Export Now
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="table-container" style={{ marginBottom: '1rem' }}>
@@ -847,5 +1043,552 @@ const enquiryStyles = `
   background: #fff7ed;
   color: #b45309;
   border: 1px solid #fed7aa;
+}
+
+/* Export buttons container */
+.export-buttons-container {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+/* Perfect Export Buttons */
+.export-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 2px solid;
+  position: relative;
+  overflow: hidden;
+  min-width: 140px;
+  justify-content: space-between;
+}
+
+.export-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.button-icon {
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+}
+
+.button-text {
+  flex: 1;
+  text-align: center;
+  font-weight: 600;
+}
+
+.button-arrow {
+  font-size: 1.1rem;
+  transition: transform 0.3s ease;
+}
+
+.export-button:hover .button-arrow {
+  transform: translateX(2px);
+}
+
+/* Date Range Button */
+.export-date-range {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-color: #667eea;
+  color: white;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.export-date-range:hover:not(:disabled) {
+  background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.export-date-range:active {
+  transform: translateY(-1px);
+}
+
+/* Selected Button */
+.export-selected {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  border-color: #f093fb;
+  color: white;
+  box-shadow: 0 4px 15px rgba(240, 147, 251, 0.3);
+}
+
+.export-selected:hover:not(:disabled) {
+  background: linear-gradient(135deg, #e879f9 0%, #ec4899 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(240, 147, 251, 0.4);
+}
+
+.export-selected:active {
+  transform: translateY(-1px);
+}
+
+/* All Data Button */
+.export-all {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  border-color: #4facfe;
+  color: white;
+  box-shadow: 0 4px 15px rgba(79, 172, 254, 0.3);
+}
+
+.export-all:hover:not(:disabled) {
+  background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(79, 172, 254, 0.4);
+}
+
+.export-all:active {
+  transform: translateY(-1px);
+}
+
+/* Progress Container */
+.download-progress-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.download-button.downloading {
+  background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+  border: 2px solid #f97316;
+  color: white;
+  padding: 0.75rem 1.25rem;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  font-weight: 600;
+  box-shadow: 0 4px 15px rgba(249, 115, 22, 0.3);
+}
+
+.download-progress-text {
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+/* Progress Bar */
+.progress-bar {
+  width: 100%;
+  height: 6px;
+  background-color: #e5e7eb;
+  border-radius: 3px;
+  overflow: hidden;
+  position: relative;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #f97316 0%, #ea580c 100%);
+  border-radius: 3px;
+  transition: width 0.3s ease;
+  position: relative;
+}
+
+.progress-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* Button Shine Effect */
+.export-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.export-button:hover::before {
+  left: 100%;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .export-buttons-container {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .export-button {
+    width: 100%;
+    min-width: auto;
+    justify-content: center;
+    gap: 0.75rem;
+  }
+  
+  .button-text {
+    flex: none;
+  }
+  
+  .button-arrow {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .export-button {
+    padding: 0.625rem 1rem;
+    font-size: 0.8rem;
+  }
+  
+  .button-icon {
+    width: 18px;
+    height: 18px;
+    font-size: 0.9rem;
+  }
+}
+
+/* Date Range Modal Styles */
+.date-range-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+}
+
+.date-range-modal {
+  background: white;
+  border-radius: 16px;
+  width: 90%;
+  max-width: 520px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 2rem 1rem 2rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.modal-header h3 {
+  margin: 0;
+  color: #1f2937;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.modal-close-btn {
+  background: none;
+  border: none;
+  font-size: 1.25rem;
+  color: #6b7280;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.modal-close-btn:hover {
+  background-color: #f3f4f6;
+  color: #374151;
+}
+
+.date-range-form {
+  padding: 1.5rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* Toggle Group */
+.toggle-group {
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.toggle-container {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.toggle-container input[type="checkbox"] {
+  width: 1.25rem;
+  height: 1.25rem;
+  accent-color: #3b82f6;
+  margin-top: 0.125rem;
+}
+
+.toggle-label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  cursor: pointer;
+  margin: 0;
+}
+
+.toggle-text {
+  font-weight: 500;
+  color: #1f2937;
+  font-size: 0.95rem;
+}
+
+.toggle-description {
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+/* Date Fields */
+.date-fields-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.date-field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.date-label {
+  font-weight: 500;
+  color: #374151;
+  font-size: 0.875rem;
+}
+
+.date-input {
+  padding: 0.625rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  color: #1f2937;
+  background-color: white;
+  transition: all 0.2s;
+}
+
+.date-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.date-input:hover {
+  border-color: #9ca3af;
+}
+
+/* Options Section */
+.options-section {
+  background-color: #fefce8;
+  border: 1px solid #fde68a;
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.option-group {
+  margin: 0;
+}
+
+.option-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  cursor: pointer;
+  margin: 0;
+}
+
+.option-checkbox {
+  width: 1.125rem;
+  height: 1.125rem;
+  accent-color: #f59e0b;
+  margin-top: 0.125rem;
+}
+
+.option-text {
+  font-weight: 500;
+  color: #1f2937;
+  font-size: 0.9rem;
+}
+
+.option-description {
+  color: #6b7280;
+  font-size: 0.8rem;
+}
+
+/* Export Summary */
+.export-summary {
+  background-color: #f0f9ff;
+  border: 1px solid #bae6fd;
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.summary-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+}
+
+.summary-item:not(:last-child) {
+  border-bottom: 1px solid #e0f2fe;
+}
+
+.summary-label {
+  font-weight: 500;
+  color: #0c4a6e;
+  font-size: 0.875rem;
+}
+
+.summary-value {
+  font-weight: 600;
+  color: #0369a1;
+  font-size: 0.875rem;
+}
+
+/* Modal Actions */
+.modal-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+  padding: 1rem 2rem 1.5rem 2rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.btn-cancel,
+.btn-export {
+  padding: 0.625rem 1.25rem;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid;
+}
+
+.btn-cancel {
+  background-color: white;
+  color: #6b7280;
+  border-color: #d1d5db;
+}
+
+.btn-cancel:hover {
+  background-color: #f9fafb;
+  border-color: #9ca3af;
+  color: #374151;
+}
+
+.btn-export {
+  background-color: #3b82f6;
+  color: white;
+  border-color: #3b82f6;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-export:hover {
+  background-color: #2563eb;
+  border-color: #2563eb;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.btn-export:active {
+  transform: translateY(0);
+}
+
+.btn-export:disabled {
+  background-color: #9ca3af;
+  border-color: #9ca3af;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .date-range-modal {
+    width: 95%;
+    max-width: none;
+    margin: 1rem;
+  }
+  
+  .modal-header {
+    padding: 1.25rem 1.5rem 1rem 1.5rem;
+  }
+  
+  .date-range-form {
+    padding: 1.25rem 1.5rem;
+  }
+  
+  .date-fields-container {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+  
+  .modal-actions {
+    padding: 1rem 1.5rem 1.25rem 1.5rem;
+    flex-direction: column-reverse;
+  }
+  
+  .btn-cancel,
+  .btn-export {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .export-buttons-container {
+    flex-direction: column;
+  }
+  
+  .export-buttons-container .download-button {
+    width: 100%;
+  }
 }
 `;

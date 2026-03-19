@@ -1,4 +1,5 @@
 import React from 'react';
+import './AmenitiesSection.mobile.css';
 
 const AmenitiesSectionMobile = ({ amenities = [] }) => {
   // Default amenities if none provided
@@ -24,34 +25,34 @@ const AmenitiesSectionMobile = ({ amenities = [] }) => {
   const amenitiesList = amenities.length > 0 ? amenities : defaultAmenities;
 
   return (
-    <section className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6">
+    <section className="amenities-section-mobile">
       {/* Mobile Section Header */}
-      <div className="text-center mb-6">
-        <h2 className="text-amber-400 text-xs font-semibold uppercase tracking-wider mb-2">
+      <div className="amenities-section-mobile-header">
+        <h2 className="amenities-section-mobile-subtitle">
           AMENITIES
         </h2>
-        <h3 className="text-white text-2xl md:text-3xl font-bold leading-tight mb-3 max-w-3xl mx-auto">
+        <h3 className="amenities-section-mobile-title">
           Premium Lifestyle Features
         </h3>
-        <div className="w-16 h-0.5 bg-gradient-to-r from-amber-600 to-amber-500 rounded-full mx-auto mt-2"></div>
+        <div className="amenities-section-mobile-accent-line"></div>
       </div>
 
       {/* Mobile-Optimized Card Container */}
-      <div className="relative rounded-xl overflow-hidden bg-gradient-to-br from-gray-900 via-black to-gray-800 shadow-[0_15px_40px_rgba(0,0,0,0.4)] border border-amber-900/30">
+      <div className="amenities-section-mobile-card-container">
         
         {/* Mobile accent line */}
-        <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-amber-600 via-amber-500 to-amber-700"></div>
+        <div className="amenities-section-mobile-card-accent-line"></div>
         
-        <div className="relative p-4 sm:p-6">
+        <div className="amenities-section-mobile-card-content">
           
           {/* Mobile Amenities Grid */}
-          <div className="grid grid-cols-2 gap-3 sm:gap-4">
+          <div className="amenities-section-mobile-amenities-grid">
             {amenitiesList.map((amenity, idx) => (
               <div 
                 key={idx} 
-                className="bg-transparent border border-amber-500/40 rounded-lg p-3 flex items-center gap-2 hover:border-amber-400 hover:bg-amber-500/5 transition-all duration-300 group"
+                className="amenities-section-mobile-amenity-item"
               >
-                <div className="flex-shrink-0">
+                <div className="amenities-section-mobile-amenity-icon">
                   <svg 
                     className="w-4 h-4 text-amber-400 group-hover:text-amber-300 transition-colors duration-300" 
                     fill="currentColor" 
@@ -60,7 +61,7 @@ const AmenitiesSectionMobile = ({ amenities = [] }) => {
                     <path d={amenity.icon} />
                   </svg>
                 </div>
-                <h3 className="text-white font-semibold text-base md:text-lg leading-snug">
+                <h3 className="amenities-section-mobile-amenity-name">
                   {amenity.name}
                 </h3>
               </div>
@@ -68,8 +69,8 @@ const AmenitiesSectionMobile = ({ amenities = [] }) => {
           </div>
 
           {/* Mobile Footer Note */}
-          <div className="mt-6 text-center">
-            <p className="text-gray-400 text-xs">
+          <div className="amenities-section-mobile-footer-note">
+            <p className="amenities-section-mobile-footer-note-text">
               Experience luxury living with world-class amenities
             </p>
           </div>

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Api_Service from '../../../../../../Redux/utils/Api_Service';
 import { motion } from 'framer-motion';
+import './RelatedProjects.desktop.css';
 
 const RelatedProjectsDesktop = ({ builderName = "", currentProjectUrl = "", onShowCallback = () => {} }) => {
   const [builderProjects, setBuilderProjects] = useState([]);
@@ -74,57 +75,45 @@ const RelatedProjectsDesktop = ({ builderName = "", currentProjectUrl = "", onSh
   };
 
   return (
-    <section className="py-8 md:py-10 lg:py-12  text-white relative overflow-hidden">
+    <section className="related-projects-desktop">
       {/* Animated Background Elements */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-full opacity-5">
-          <div className="absolute top-1/3 left-1/4 w-96 h-96 bg-gradient-to-br from-amber-500 to-amber-600 rounded-full blur-3xl animate-float"></div>
-          <div className="absolute bottom-1/3 right-1/4 w-80 h-80 bg-gradient-to-tl from-amber-400 to-amber-500 rounded-full blur-3xl animate-float animation-delay-2000"></div>
+      <div className="related-projects-desktop-background">
+        <div className="related-projects-desktop-background-overlay">
+          <div className="related-projects-desktop-float-1"></div>
+          <div className="related-projects-desktop-float-2"></div>
         </div>
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-amber-500/3 to-transparent"></div>
+        <div className="related-projects-desktop-gradient-overlay"></div>
       </div>
 
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
+      <div className="related-projects-desktop-content">
         {/* Premium Section Header */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-4 md:mb-12"
+          className="related-projects-desktop-header"
         >
-          {/* <motion.div 
-            className="inline-flex items-center justify-center w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-amber-500 to-amber-600 rounded-full mb-4"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <svg className="w-8 h-8 md:w-10 md:h-10 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-            </svg>
-          </motion.div> */}
-          {/* <h2 className="text-amber-400 text-sm md:text-base font-semibold uppercase tracking-[0.2em] mb-2">
-            RELATED PROJECTS
-          </h2> */}
-          <h3 className="text-white text-xl md:text-2xl lg:text-3xl font-bold leading-tight mb-4 max-w-4xl mx-auto">
+          <h3 className="related-projects-desktop-title">
            Other Projects by {builderName}
           </h3>
-          <div className="w-24 h-1 bg-gradient-to-r from-amber-600 via-amber-500 to-amber-400 rounded-full mx-auto"></div>
+          <div className="related-projects-desktop-accent-line"></div>
         </motion.div>
 
         {loading ? (
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="flex justify-center items-center py-12"
+            className="related-projects-desktop-loading"
           >
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-500"></div>
+            <div className="related-projects-desktop-spinner"></div>
           </motion.div>
         ) : error ? (
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="text-center py-12"
+            className="related-projects-desktop-error"
           >
-            <p className="text-gray-400">Unable to load related projects</p>
+            <p className="related-projects-desktop-error-text">Unable to load related projects</p>
           </motion.div>
         ) : (
           <>
@@ -133,7 +122,7 @@ const RelatedProjectsDesktop = ({ builderName = "", currentProjectUrl = "", onSh
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-8"
+              className="related-projects-desktop-grid"
             >
               {projectsToShow.map((project, index) => (
                 <motion.div 
@@ -141,85 +130,77 @@ const RelatedProjectsDesktop = ({ builderName = "", currentProjectUrl = "", onSh
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.1 * index }}
-                  className="group cursor-pointer"
+                  className="related-projects-desktop-card"
                   onClick={() => handleProjectClick(project)}
                 >
-                  <div className="relative">
-                    {/* Glow Effect */}
-                    <div className="absolute -inset-1 bg-gradient-to-r from-amber-600 to-amber-400 rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-500"></div>
-                    
-                    <div className="relative bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 rounded-2xl border border-gray-700/50 backdrop-blur-sm overflow-hidden hover:border-amber-500/30 transition-all duration-300">
-                      
-                      {/* Project Image */}
-                      <div className="aspect-[5/4] bg-gradient-to-br from-gray-800 to-gray-900 overflow-hidden">
-                        {project.thumbnailImage?.url ? (
-                          <img
-                            src={project.thumbnailImage.url}
-                            alt={project.projectName}
-                            fetchpriority="high"
-                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                          />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center">
-                            <div className="w-16 h-16 bg-gradient-to-br from-amber-500 to-amber-600 rounded-full flex items-center justify-center">
-                              <svg className="w-8 h-8 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                              </svg>
-                            </div>
-                          </div>
-                        )}
-                        
-                        {/* Overlay */}
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <div className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 group">
+                    <div className="relative">
+                      <div className="w-full h-28 lg:h-32">
+                        <img
+                          src={project.thumbnailImage?.url || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?q=80&w=1400&auto=format&fit=crop'}
+                          alt={`${project.projectName} property thumbnail`}
+                          fetchpriority="high"
+                          crossOrigin="anonymous"
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="p-2">
+                      <div className="font-bold text-sm text-white mb-0 line-clamp-1">
+                        {project.projectName}
                       </div>
 
-                      {/* Project Details */}
-                      <div className="p-3">
-                        <h4 
-                          className={`text-white font-bold text-sm mb-1 group-hover:text-amber-400 transition-colors duration-300 cursor-pointer ${
-                            isProjectNameExpanded(index) ? '' : 'truncate'
-                          }`}
-                          onClick={(e) => toggleProjectName(index, e)}
-                          title={project.projectName}
-                        >
-                          {project.projectName}
-                        </h4>
-                        
-                        <div className="flex items-start space-x-1 mb-0">
-                          <svg className="w-3 h-3 text-amber-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                          </svg>
-                          <p className="text-gray-400 text-xs truncate">
-                            {project.projectAddress}, {project.city}
-                          </p>
-                        </div>
+                      <p className="text-xs text-gray-600 mb-1">
+                        {project.type || 'Residential'}
+                      </p>
 
-                        {/* Price Range */}
-                        <div className="flex items-center space-x-1 mb-1">
-                          {!project?.minPrice && !project?.maxPrice ? (
-                            <p className="text-yellow-400 font-bold text-sm">₹ Reveal Soon</p>
-                          ) : (
-                            <p className="text-yellow-400 font-bold text-sm">
-                              <span className="mr-1">₹</span>
-                              {project.minPrice < 1 ? (
-                                <span>{(project.minPrice * 100).toFixed(2)} L</span>
+                      <div className="flex items-start mb-1">
+                        <svg className="w-4 h-4 text-gray-400 mt-0.5 mr-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
+                        </svg>
+                        <p className="text-sm text-gray-500 line-clamp-2">
+                          {project.projectAddress || `${project.city}, ${project.state}`}
+                        </p>
+                      </div>
+
+                      <div className="bg-[#f5f5f5] rounded-lg py-0 px-0 mt-0 min-h-[24px] flex items-center">
+                        <div className="flex justify-between items-center w-full">
+                          <div className="text-center flex mt-0 items-center justify-center flex-1 flex-col">
+                            <p className="text-xs text-[#222] mb-0 pt-2 font-bold">Launch Price</p>
+                            <p className="font-bold text-[#006169] text-sm">
+                              {!project?.minPrice && !project?.maxPrice ? (
+                                <span>₹ Reveal Soon</span>
                               ) : (
-                                <span>{project.minPrice} Cr </span>
+                                <>
+                                  <span className="text-xs">₹</span>
+                                  {project.minPrice < 1 ? (
+                                    <span>{(project.minPrice * 10000000).toLocaleString('en-IN')}</span>
+                                  ) : (
+                                    <span>{parseFloat(project.minPrice).toFixed(2)} Cr</span>
+                                  )}
+                                </>
                               )}
-                              - {project.maxPrice} Cr
                             </p>
-                          )}
+                          </div>
                         </div>
-
-                        {/* View Details Button */}
-                        <button 
-                          onClick={() => handleProjectClick(project)}
-                          className="w-full bg-gradient-to-r from-amber-600 to-amber-500 text-black font-semibold py-1.5 px-3 rounded-lg hover:from-amber-500 hover:to-amber-400 transition-all duration-300 transform group-hover:scale-105 shadow-lg hover:shadow-amber-500/30 text-xs"
-                        >
-                          View Details
-                        </button>
                       </div>
+                    </div>
+
+                    <div className="px-2 pb-2">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          // WhatsApp functionality can be added here
+                          console.log('WhatsApp clicked for:', project.projectName);
+                        }}
+                        className="w-full bg-[#e9f7f0] text-[#249f62] py-2.5 px-4 rounded-lg font-medium flex items-center justify-center gap-2 transition-colors duration-200"
+                      >
+                        <svg className="w-5 h-5 fill-[#249f62]" viewBox="0 0 24 24">
+                          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.885 3.690" />
+                        </svg>
+                        WhatsApp
+                      </button>
                     </div>
                   </div>
                 </motion.div>
@@ -231,7 +212,7 @@ const RelatedProjectsDesktop = ({ builderName = "", currentProjectUrl = "", onSh
               <motion.div 
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="text-center text-gray-400 mt-8"
+                className="related-projects-desktop-empty"
               >
                 No related projects found for {builderName}.
               </motion.div>
@@ -243,15 +224,15 @@ const RelatedProjectsDesktop = ({ builderName = "", currentProjectUrl = "", onSh
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.4 }}
-                className="text-center mt-8"
+                className="related-projects-desktop-view-all"
               >
                 <button
                   onClick={() => setShowAllProjects(!showAllProjects)}
-                  className="inline-flex items-center space-x-2 bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 text-black font-bold px-8 py-3 rounded-lg border-2 border-yellow-400 shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 transform"
+                  className="related-projects-desktop-view-all-btn"
                 >
                   <span>{showAllProjects ? 'Show Less' : 'View All Projects'}</span>
                   <svg 
-                    className={`w-4 h-4 transition-transform duration-300 ${showAllProjects ? 'rotate-180' : ''}`} 
+                    className={`related-projects-desktop-view-all-icon ${showAllProjects ? 'rotate-180' : ''}`} 
                     fill="none" 
                     stroke="currentColor" 
                     viewBox="0 0 24 24"
@@ -264,20 +245,6 @@ const RelatedProjectsDesktop = ({ builderName = "", currentProjectUrl = "", onSh
           </>
         )}
       </div>
-
-      {/* Scoped styles for this component */}
-      <style>{`
-        @keyframes float {
-          0%, 100% { transform: translateY(0) translateX(0); }
-          50% { transform: translateY(-10px) translateX(5px); }
-        }
-        .animate-float {
-          animation: float 15s ease-in-out infinite;
-        }
-        .animation-delay-2000 {
-          animation-delay: 2s;
-        }
-      `}</style>
     </section>
   );
 };

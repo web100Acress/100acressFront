@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import Footer from "../../../../../Home/Footer/CrimsonEleganceFooter";
 import { PaginationControls, BlogPaginationControls } from "../../create/desktop/BlogManagement";
 import { Helmet } from "react-helmet";
@@ -32,8 +32,8 @@ const getSlug = (title) =>
 
 // Prefer slug-based blog link with fallback to legacy title/id route
 const blogLink = (blog) => {
-  if (blog?.slug) return `/blog/${blog.slug}`;
-  return `/blog/${getSlug(blog.blog_Title)}/${blog._id}`;
+  if (blog?.slug) return `/blog/${blog.slug}/`;
+  return `/blog/${getSlug(blog.blog_Title)}/${blog._id}/`;
 };
 
 // Funnel SVG icon
@@ -44,6 +44,7 @@ const FunnelIcon = () => (
 );
 
 const Blogging = () => {
+  const location = useLocation();
   const [allBlogs, setAllBlogs] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [postsPerPage] = useState(100);
@@ -52,6 +53,7 @@ const Blogging = () => {
   const [sort, setSort] = useState("latest");
   const [loading, setLoading] = useState(false);
   const [showMobileFilters, setShowMobileFilters] = useState(false);
+  const [activeCategory, setActiveCategory] = useState(null);
 
   // Safe image fallback
   const FALLBACK_IMG = "/Images/blog.avif";
@@ -61,6 +63,13 @@ const Blogging = () => {
       e.target.src = FALLBACK_IMG;
     }
   };
+
+  // Handle category parameter from URL
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const categoryParam = params.get('category');
+    setActiveCategory(categoryParam);
+  }, [location.search]);
 
   // Fetch blogs with proper pagination
   useEffect(() => {
@@ -80,11 +89,29 @@ const Blogging = () => {
           params.search = search.trim();
         }
 
+        // Add category parameter if there's an active category
+        if (activeCategory && activeCategory.trim()) {
+          params.category = activeCategory.trim();
+        }
+
+        console.log('Fetching blogs with params:', params);
+        console.log('Active category:', activeCategory);
+
         const response = await api.get(`blog/view`, { params });
 
         if (response?.data) {
           const { data: blogs, totalPages: total } = response.data;
-          setAllBlogs(Array.isArray(blogs) ? blogs : []);
+          console.log('API response blogs count:', blogs?.length || 0);
+          console.log('Sample blog categories:', blogs?.slice(0, 3).map(b => ({ title: b.blog_Title, category: b.blog_Category })));
+
+          // If API doesn't support category filtering, filter manually
+          let filteredBlogs = Array.isArray(blogs) ? blogs : [];
+          if (activeCategory && activeCategory.trim()) {
+            filteredBlogs = filteredBlogs.filter(blog => blog.blog_Category === activeCategory);
+            console.log('Manual filtered blogs count:', filteredBlogs.length);
+          }
+
+          setAllBlogs(filteredBlogs);
           setTotalPages(total || 1);
         } else {
           setAllBlogs([]);
@@ -99,7 +126,7 @@ const Blogging = () => {
       }
     };
     fetchBlogs();
-  }, [currentPage, postsPerPage, search]);
+  }, [currentPage, postsPerPage, search, sort, activeCategory]);
 
   // Featured blog: by ID, then isFeatured, then first
   const featuredBlog = useMemo(() =>

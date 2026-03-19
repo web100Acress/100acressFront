@@ -201,24 +201,110 @@ const ProjectEdit = () => {
   // Fetch all project builders for dropdown
   useEffect(() => {
     const fetchProjectBuilders = async () => {
-      try {
-        const res = await api.get('/project/viewAll/data?sort=-createdAt');
-        if (res.data?.data) {
-          // Extract unique builder names and sort them
-          const uniqueBuilders = [...new Set(
-            res.data.data
-              .map(project => project.builderName)
-              .filter(Boolean) // Remove any null/undefined values
-          )].sort();
+    try {
+      setLoading(true);
 
-          setBuilderOptions(uniqueBuilders);
-        }
-      } catch (error) {
-        console.error("Error fetching project builders:", error);
-        // Fallback: set empty array
-        setBuilderOptions([]);
+      // Check localStorage cache first
+      const cachedBuilders = localStorage.getItem('adminBuilderOptions');
+      const cacheTimestamp = localStorage.getItem('adminBuilderTimestamp');
+      const now = Date.now();
+      const CACHE_TTL = 10 * 60 * 1000; // 10 minutes cache
+      
+      if (cachedBuilders && cacheTimestamp && (now - parseInt(cacheTimestamp) < CACHE_TTL)) {
+        console.log('📦 Loading builders from cache');
+        const builders = JSON.parse(cachedBuilders);
+        setBuilderOptions(builders);
+        setLoading(false);
+        return builders;
       }
-    };
+
+      console.log('🔍 Fetching builders with optimized approach...');
+      let builders = [];
+      
+      // Try pagination first - MUCH FASTER
+      try {
+        let page = 1;
+        let hasMore = true;
+        const builderSet = new Set();
+        
+        while (hasMore && page <= 5) { // Increase to 5 pages for more builders
+          const res = await api.get(`project/viewAll/data?page=${page}&limit=100`);
+          if (res?.data?.data) {
+            res.data.data.forEach(project => {
+              if (project.builderName) {
+                builderSet.add(project.builderName);
+              }
+            });
+            console.log(`📄 Builder Page ${page}: Found ${builderSet.size} builders`);
+            hasMore = res.data.data.length === 100;
+            page++;
+          } else {
+            hasMore = false;
+          }
+        }
+        
+        builders = Array.from(builderSet).sort();
+        console.log('👷‍♂️ Builders from pagination:', builders.length);
+        
+        // If we got enough builders from pagination, don't try all-projects
+        if (builders.length >= 50) {
+          console.log('✅ Got sufficient builders from pagination, skipping all-projects');
+        } else {
+          throw new Error('Not enough builders from pagination');
+        }
+      } catch (paginatedError) {
+        console.log('❌ Pagination insufficient, trying all-projects with timeout...');
+        
+        // Fallback: Try all-projects with SHORTER timeout
+        const timeoutPromise = new Promise((_, reject) => 
+          setTimeout(() => reject(new Error('Timeout')), 5000) // Reduced to 5 seconds
+        );
+        
+        try {
+          const res = await Promise.race([
+            api.get('project/viewAll/data?page=1&limit=100'),
+            timeoutPromise
+          ]);
+          
+          if (res.data?.data) {
+            builders = [...new Set(
+              res.data.data
+                .map(project => project.builderName)
+                .filter(Boolean)
+            )].sort();
+            console.log('👷‍♂️ Builders from all-projects:', builders.length);
+          }
+        } catch (timeoutError) {
+          console.log('⏰ All-projects timeout, using fallback...');
+          builders = [
+            'DLF', 'Godrej Properties', 'Tata Housing', 'Mahindra Lifespaces',
+            'Prestige Group', 'Brigade Group', 'Sobha Limited', 'Omaxe Limited',
+            'Ansal API', 'Emaar India', 'Unitech', 'JP Infra', 'ATS Group',
+            'Raheja Developers', 'Parsvnath Developers', 'Amrapali Group', 'Supertech'
+          ];
+        }
+      }
+
+      setBuilderOptions(builders);
+      
+      // Save to cache
+      localStorage.setItem('adminBuilderOptions', JSON.stringify(builders));
+      localStorage.setItem('adminBuilderTimestamp', now.toString());
+      console.log('💾 Builders cached to localStorage');
+      
+      return builders;
+
+    } catch (error) {
+      console.error("Error fetching builders:", error);
+      // Final fallback
+      const fallbackBuilders = ['DLF', 'Godrej Properties', 'Tata Housing'];
+      setBuilderOptions(fallbackBuilders);
+      return fallbackBuilders;
+    } finally {
+      setLoading(false);
+    }
+  };
+
     fetchProjectBuilders();
   }, []);
 
@@ -289,55 +375,97 @@ const ProjectEdit = () => {
     try {
       setLoadingCities(true);
 
-      // Fetch from multiple sources to get comprehensive city list
-      const [projectsResponse, propertiesResponse] = await Promise.allSettled([
-        api.get("project/viewAll/data?sort=-createdAt&limit=1000"),
-        api.get("postPerson/propertyoneEdit/all?limit=1000")
-      ]);
-
-      let allCities = [];
-
-      // Extract cities from projects
-      if (projectsResponse.status === 'fulfilled' && projectsResponse.value?.data?.data) {
-        const projectCities = projectsResponse.value.data.data
-          .map(project => project.city)
-          .filter(Boolean);
-        allCities.push(...projectCities);
+      // Check localStorage cache first
+      const cachedCities = localStorage.getItem('projectEditCities');
+      const cacheTimestamp = localStorage.getItem('projectEditCitiesTimestamp');
+      const now = Date.now();
+      const CACHE_TTL = 10 * 60 * 1000; // 10 minutes cache
+      
+      if (cachedCities && cacheTimestamp && (now - parseInt(cacheTimestamp) < CACHE_TTL)) {
+        console.log('📦 Loading cities from cache (ProjectEdit)');
+        const cities = JSON.parse(cachedCities);
+        setCitiesList(cities);
+        setFilteredCities(cities);
+        setLoadingCities(false);
+        return cities;
       }
 
-      // Extract cities from properties
-      if (propertiesResponse.status === 'fulfilled' && propertiesResponse.value?.data?.data) {
-        const propertyCities = propertiesResponse.value.data.data
-          .map(property => property.city)
-          .filter(Boolean);
-        allCities.push(...propertyCities);
+      console.log('🔍 Fetching cities with optimized approach (ProjectEdit)...');
+      let cities = [];
+      
+      // Try pagination first for faster loading
+      try {
+        let page = 1;
+        let hasMore = true;
+        const citySet = new Set();
+        
+        while (hasMore && page <= 3) { // Limit to first 3 pages for speed
+          const response = await api.get(`project/viewAll/data?page=${page}&limit=100`);
+          if (response?.data?.data) {
+            response.data.data.forEach(project => {
+              if (project.city) {
+                citySet.add(project.city);
+              }
+            });
+            console.log(`📄 City Page ${page}: Found ${citySet.size} cities`);
+            hasMore = response.data.data.length === 100;
+            page++;
+          } else {
+            hasMore = false;
+          }
+        }
+        
+        cities = Array.from(citySet).sort();
+        console.log('🏙️ Cities from pagination:', cities.length);
+      } catch (paginatedError) {
+        console.log('❌ Pagination failed, trying all-projects...');
+        
+        // Fallback: Try all-projects with timeout
+        const timeoutPromise = new Promise((_, reject) => 
+          setTimeout(() => reject(new Error('Timeout')), 8000) // 8 second timeout
+        );
+        
+        try {
+          const response = await Promise.race([
+            api.get("project/viewAll/data?page=1&limit=100"),
+            timeoutPromise
+          ]);
+          
+          if (response?.data?.data) {
+            cities = [...new Set(
+              response.data.data
+                .map(project => project.city)
+                .filter(Boolean)
+            )].sort();
+            console.log('🏙️ Cities from all-projects:', cities.length);
+          }
+        } catch (timeoutError) {
+          console.log('⏰ Using hardcoded cities fallback...');
+          cities = [
+            'Gurgaon', 'Delhi', 'Noida', 'Mumbai', 'Bangalore', 'Pune', 
+            'Chennai', 'Hyderabad', 'Kolkata', 'Ahmedabad', 'Jaipur', 'Chandigarh',
+            'Faridabad', 'Ghaziabad', 'Lucknow', 'Indore', 'Bhopal', 'Coimbatore'
+          ];
+        }
       }
 
-      // Get unique cities and sort them
-      const uniqueCities = [...new Set(allCities)].sort();
-
-      console.log(`Fetched ${uniqueCities.length} unique cities from backend`);
-      setCitiesList(uniqueCities);
-      setFilteredCities(uniqueCities);
-      return uniqueCities;
+      setCitiesList(cities);
+      setFilteredCities(cities);
+      
+      // Save to cache
+      localStorage.setItem('projectEditCities', JSON.stringify(cities));
+      localStorage.setItem('projectEditCitiesTimestamp', now.toString());
+      console.log('💾 Cities cached to localStorage (ProjectEdit)');
+      
+      return cities;
 
     } catch (error) {
       console.error("Error fetching cities:", error);
-      // Fallback to just projects if properties API fails
-      try {
-        const { data } = await api.get("project/viewAll/data?sort=-createdAt");
-        if (data?.data) {
-          const uniqueCities = [...new Set(
-            data.data.map(project => project.city).filter(Boolean)
-          )].sort();
-          setCitiesList(uniqueCities);
-          setFilteredCities(uniqueCities);
-          return uniqueCities;
-        }
-      } catch (fallbackError) {
-        console.error("Fallback city fetch also failed:", fallbackError);
-      }
-      return [];
+      // Fallback cities
+      const fallbackCities = ['Gurgaon', 'Delhi', 'Noida'];
+      setCitiesList(fallbackCities);
+      setFilteredCities(fallbackCities);
+      return fallbackCities;
     } finally {
       setLoadingCities(false);
     }

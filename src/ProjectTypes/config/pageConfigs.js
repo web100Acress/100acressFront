@@ -1,5 +1,5 @@
 // Page configurations for different filter page types
-import { getStaticData, getFAQData, getTrustBoosters } from './staticData.jsx';
+import { staticData, getStaticData, getFAQData, getTrustBoosters } from './staticData.jsx';
 
 export const pageConfigs = {
   // City Page Configuration
@@ -258,8 +258,8 @@ export const projectTypeConfigs = {
     }
   },
   "senior-living": {
-    title: "Senior Living in Gurgaon",
-    description: "Explore senior living communities in Gurgaon with tailored amenities, comfort, and care-focused living.",
+    title: "Senior Living in Gurgaon with Safe Best Retirement Homes",
+    description: "Explore senior living in Gurgaon designed for safety, comfort, and independent lifestyles. Peaceful communities with healthcare access and daily support.",
     query: "seniorliving",
     reduxKey: "seniorliving",
     canonical: "https://www.100acress.com/projects/senior-living/",
@@ -294,28 +294,64 @@ export const projectTypeConfigs = {
 // Status configurations for project status pages
 export const statusConfigs = {
   upcoming: {
-    title: "UpComing Projects in Gurgaon",
-    description: "Explore best upcoming projects in Gurgaon with modern amenities. Find residential & commercial spaces customized to your lifestyle. Visit 100acress today!",
+    ...staticData.status.upcoming,
     badgeColor: "bg-blue-500",
     badgeText: "Upcoming"
   },
   underconstruction: {
-    title: "Under Construction Projects in Gurgaon",
-    description: "Under Construction Properties in Gurgaon include commercial and residential projects that will meet various requirements. These developments are equipped with modern amenities, great places close to business areas, as well as extensive green spaces. They're designed to meet the ever-changing demands of urban dwellers who want peace, convenience, and a vibrant lifestyle.",
+    ...staticData.status.underconstruction,
     badgeColor: "bg-orange-500",
     badgeText: "Under Construction"
   },
   readytomove: {
-    title: "Ready To Move Projects",
-    description: "Explore ready to move properties in Gurgaon with modern amenities. Find residential & commercial spaces ready for immediate possession.",
+    ...staticData.status.readytomove,
     badgeColor: "bg-green-500",
     badgeText: "Ready to Move"
   },
   newlaunch: {
-    title: "Projects in New Launch",
-    description: "Explore new launch projects in Gurgaon with modern amenities. Find the latest residential & commercial spaces.",
+    ...staticData.status.newlaunch,
     badgeColor: "bg-purple-500",
     badgeText: "New Launch"
+  },
+  brandedresidences: {
+    title: "Branded Residences in Gurgaon",
+    description: "Discover premium branded residences in Gurgaon offering luxury living with world-class amenities and exclusive lifestyle features.",
+    badgeColor: "bg-indigo-500",
+    badgeText: "Branded Residence",
+    faqs: [
+      {
+        question: "What are branded residences?",
+        answer: "Branded residences are luxury homes developed with global brands, offering premium design, exclusive amenities, and professionally managed services."
+      },
+      {
+        question: "Why are branded residences popular in India?",
+        answer: "They offer luxury living, trusted brand value, premium amenities, and better property management compared to regular residential projects."
+      },
+      {
+        question: "Are branded residences a good investment?",
+        answer: "Yes, branded residences often attract premium buyers and tenants, helping maintain strong resale value and rental demand."
+      },
+      {
+        question: "How are branded residences different from luxury apartments?",
+        answer: "Branded residences involve global brand partnerships, offering curated design, exclusive services, and a lifestyle experience beyond typical luxury apartments."
+      },
+      {
+        question: "Do branded residences offer hotel-style services?",
+        answer: "Many branded residences provide services like concierge, housekeeping, valet parking, and private club access."
+      },
+      {
+        question: "Are branded residences more expensive than normal properties?",
+        answer: "Yes, they usually cost more due to brand association, premium design, exclusive amenities, and luxury lifestyle services."
+      },
+      {
+        question: "Who should buy branded residences?",
+        answer: "High-net-worth buyers, NRIs, and investors seeking luxury living, global brand standards, and long-term investment potential."
+      },
+      {
+        question: "Are branded residences available in Gurgaon?",
+        answer: "Yes, Gurgaon offers several branded residence projects by leading developers in prime locations with luxury amenities."
+      }
+    ]
   }
 };
 

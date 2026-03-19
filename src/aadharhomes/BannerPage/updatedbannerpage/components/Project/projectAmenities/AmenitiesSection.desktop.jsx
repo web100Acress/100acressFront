@@ -1,4 +1,5 @@
 import React from 'react';
+import './AmenitiesSection.desktop.css';
 
 const AmenitiesSectionDesktop = ({ amenities = [] }) => {
   // Default amenities if none provided
@@ -24,34 +25,34 @@ const AmenitiesSectionDesktop = ({ amenities = [] }) => {
   const amenitiesList = amenities.length > 0 ? amenities : defaultAmenities;
 
   return (
-    <section className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+    <section className="amenities-section-desktop">
       {/* Desktop Section Header */}
-      <div className="text-center mb-8">
-        <h2 className="text-amber-400 text-sm font-semibold uppercase tracking-widest mb-3">
+      <div className="amenities-section-desktop-header">
+        <h2 className="amenities-section-desktop-subtitle">
           AMENITIES
         </h2>
-        <h3 className="text-white text-2xl md:text-3xl font-bold leading-tight mb-2">
+        <h3 className="amenities-section-desktop-title">
           Premium Lifestyle Features
         </h3>
-        <div className="w-20 h-1 bg-gradient-to-r from-amber-600 to-amber-500 rounded-full mx-auto mt-2"></div>
+        <div className="amenities-section-desktop-accent-line"></div>
       </div>
 
       {/* Desktop Luxury Card Container */}
-      <div className="relative rounded-2xl overflow-hidden bg-gradient-to-br from-gray-900 via-black to-gray-800 shadow-[0_20px_60px_rgba(0,0,0,0.4)] border border-amber-900/30">
+      <div className="amenities-section-desktop-card-container">
         
         {/* Desktop accent line */}
-        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-600 via-amber-500 to-amber-700"></div>
+        <div className="amenities-section-desktop-card-accent-line"></div>
         
-        <div className="relative p-6 sm:p-8 lg:p-10">
+        <div className="amenities-section-desktop-card-content">
           
           {/* Desktop Amenities Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="amenities-section-desktop-amenities-grid">
             {amenitiesList.map((amenity, idx) => (
               <div 
                 key={idx} 
-                className="bg-transparent border-2 border-amber-500/60 rounded-lg p-3 flex items-center gap-2.5 hover:border-amber-400 hover:bg-amber-500/5 transition-all duration-300 group"
+                className="amenities-section-desktop-amenity-item"
               >
-                <div className="flex-shrink-0">
+                <div className="amenities-section-desktop-amenity-icon">
                   <svg 
                     className="w-5 h-5 text-amber-400 group-hover:text-amber-300 transition-colors duration-300" 
                     fill="currentColor" 
@@ -60,7 +61,7 @@ const AmenitiesSectionDesktop = ({ amenities = [] }) => {
                     <path d={amenity.icon} />
                   </svg>
                 </div>
-                <h3 className="text-white text-sm md:text-base font-medium">
+                <h3 className="amenities-section-desktop-amenity-name">
                   {amenity.name}
                 </h3>
               </div>
@@ -68,8 +69,8 @@ const AmenitiesSectionDesktop = ({ amenities = [] }) => {
           </div>
 
           {/* Desktop Footer Note */}
-          <div className="mt-8 text-center">
-            <p className="text-gray-400 text-sm">
+          <div className="amenities-section-desktop-footer-note">
+            <p className="amenities-section-desktop-footer-note-text">
               Experience luxury living with world-class amenities designed for your comfort and convenience
             </p>
           </div>
