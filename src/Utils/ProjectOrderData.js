@@ -247,14 +247,35 @@ const fetchProjectData = async () => {
   }
 
   const api = (await import('../config/apiClient')).default;
-  const response = await api.get('/project/viewAll/data');
+  const limit = 100; // backend max per page
   
-  if (response.data && response.data.data) {
-    cachedProjectData = response.data.data;
-    lastFetchTime = now;
-    return cachedProjectData;
+  // Fetch first page to get total count
+  const firstRes = await api.get(`/project/viewAll/data?page=1&limit=${limit}`);
+  const extractRows = (payload) => {
+    if (Array.isArray(payload?.data)) return payload.data;
+    if (Array.isArray(payload?.data?.data)) return payload.data.data;
+    if (Array.isArray(payload)) return payload;
+    return [];
+  };
+  const firstRows = extractRows(firstRes.data);
+  
+  const total = typeof firstRes.data?.pagination?.totalItems === 'number'
+    ? firstRes.data.pagination.totalItems
+    : (typeof firstRes.data?.meta?.total === 'number' ? firstRes.data.meta.total : firstRows.length);
+  const totalPages = Math.max(1, Math.ceil(total / limit));
+
+  let allRows = [...firstRows];
+  if (totalPages > 1) {
+    for (let page = 2; page <= totalPages; page += 1) {
+      const pageRes = await api.get(`/project/viewAll/data?page=${page}&limit=${limit}`);
+      const pageRows = extractRows(pageRes.data);
+      allRows = allRows.concat(pageRows);
+    }
   }
-  return [];
+  
+  cachedProjectData = allRows;
+  lastFetchTime = now;
+  return cachedProjectData;
 };
 
 export const getBrandedResidences = async () => {

@@ -14,28 +14,28 @@ const structuredData = {
 };
 
 const WHY_INVEST = [
-  { icon: '⏰', title: 'Immediate Possession', text: 'Move in immediately without waiting—perfect for urgent housing needs of professionals in IT companies and MNCs.' },
-  { icon: '🛡️', title: 'No Construction Risk', text: 'Eliminate delays, cost overruns, and construction uncertainties with fully completed homes ready for occupancy.' },
-  { icon: '🏗️', title: 'Established Infrastructure', text: 'Fully developed roads, electricity, water supply, and community facilities ensure immediate comfortable living.' },
-  { icon: '💰', title: 'Immediate Rental Income', text: 'Start earning rental income from day one—ideal for investors seeking steady cash flow.' },
-  { icon: '👁️', title: 'What You See Is What You Get', text: 'Physically inspect the apartment, check construction quality, and experience the actual space before purchase.' },
-  { icon: '📋', title: 'RERA Compliance', text: 'Most projects are RERA registered with all approvals in place, providing legal security and transparency.' },
+  { title: 'Immediate Possession', text: 'Move in right away — no waiting for construction completion or project delays.' },
+  { title: 'What You See Is What You Get', text: 'Physical inspection possible, actual construction quality visible, no surprises.' },
+  { title: 'Established Infrastructure', text: 'Developed roads, utilities, schools, hospitals, and retail already in place.' },
+  { title: 'Rental Income Ready', text: 'Start earning rental income immediately — perfect for investors seeking quick returns.' },
+  { title: 'Transparent Pricing', text: 'No hidden costs, clear final price, and no escalation clauses or construction-linked payments.' },
+  { title: 'RERA Compliance', text: 'Most projects are RERA registered with all approvals in place, providing legal security and transparency.' },
 ];
 
 const LOCATIONS = [
-  { icon: '🏢', title: 'Cyber City & MG Road', text: 'Premium corporate hub with luxury ready homes, excellent connectivity, and high rental demand from professionals.' },
-  { icon: '⛳', title: 'Golf Course Road', text: 'Upscale residential area with premium projects, luxury amenities, and proximity to international schools and hospitals.' },
-  { icon: '🛣️', title: 'Dwarka Expressway', text: 'Fast-growing corridor offering excellent connectivity to Delhi and IGI Airport—ideal for frequent travelers.' },
-  { icon: '🏙️', title: 'Sector 56, 57, 58', text: 'Well-established sectors with good social infrastructure and easy access to metro stations and commercial centers.' },
+  { title: 'Dwarka Expressway', text: 'Ready projects with excellent connectivity to Delhi, IGI Airport, and business hubs.' },
+  { title: 'New Gurgaon', text: 'Affordable ready-to-move options in developed sectors with good social infrastructure.' },
+  { title: 'Golf Course Road', text: 'Premium ready properties in Gurgaon most sought-after address with luxury amenities.' },
+  { title: 'Sohna Road', text: 'Budget-friendly ready apartments with good connectivity and developing surroundings.' },
 ];
 
 const AMENITIES = [
-  { icon: '🏊', title: 'Swimming Pool', desc: 'Fully functional swimming facilities' },
-  { icon: '💪', title: 'Modern Gym', desc: 'Equipped fitness center' },
-  { icon: '🌳', title: 'Landscaped Gardens', desc: 'Beautiful green spaces' },
-  { icon: '🎮', title: 'Clubhouse', desc: 'Community and recreation center' },
-  { icon: '🛡️', title: '24×7 Security', desc: 'Complete security systems' },
-  { icon: '⚡', title: 'Power Backup', desc: 'Uninterrupted electricity' }
+  { title: 'Swimming Pool', desc: 'Fully functional swimming facilities' },
+  { title: 'Modern Gym', desc: 'Equipped fitness center' },
+  { title: 'Landscaped Gardens', desc: 'Beautiful green spaces' },
+  { title: 'Clubhouse', desc: 'Community and recreation center' },
+  { title: '24×7 Security', desc: 'Complete security systems' },
+  { title: 'Power Backup', desc: 'Uninterrupted electricity' }
 ];
 
 const styles = `
@@ -48,6 +48,7 @@ const styles = `
     max-width: 1400px;
     margin: 0 auto;
     padding: 0 24px 48px;
+    font-size: 1.1rem;
   }
 
   .rtm-hero {
@@ -60,14 +61,13 @@ const styles = `
     gap: 24px;
     color: #fff;
   }
-  .rtm-hero-icon { font-size: 56px; flex-shrink: 0; }
   .rtm-hero h1 {
     font-family: 'DM Serif Display', serif;
     font-size: 2.2rem;
-    margin: 0 0 12px;
-    line-height: 1.2;
+    margin: 0 0 8px;
+    line-height: 1.25;
   }
-  .rtm-hero p { margin: 0; font-size: 1.1rem; color: #b0bcd4; line-height: 1.6; }
+  .rtm-hero p { margin: 0; font-size: 1.1rem; color: #b0bcd4; line-height: 1.55; }
 
   .rtm-text-block {
     background: #fff;
@@ -77,11 +77,14 @@ const styles = `
     margin-bottom: 40px;
     line-height: 1.7;
   }
-  .rtm-text-block h2 {
+  .rtm-section-title {
     font-family: 'DM Serif Display', serif;
     font-size: 1.6rem;
     color: #1a1a2e;
-    margin: 0 0 20px;
+    margin: 0 0 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
   }
   .rtm-text-block p {
     margin-bottom: 18px;
@@ -119,13 +122,8 @@ const styles = `
     transition: box-shadow 0.2s;
   }
   .rtm-card:hover { box-shadow: 0 4px 18px rgba(15,52,96,.1); }
-  .rtm-icon-box {
-    width: 48px; height: 48px; border-radius: 12px;
-    background: #eef2ff; display: flex; align-items: center;
-    justify-content: center; font-size: 24px; flex-shrink: 0;
-  }
-  .rtm-card h4 { margin: 0 0 4px; font-size: 1rem; font-weight: 600; color: #1a1a2e; }
-  .rtm-card p  { margin: 0; font-size: 0.9rem; color: #5a6480; line-height: 1.5; }
+  .rtm-why-card h4 { margin: 0 0 4px; font-size: 1.1rem; font-weight: 600; color: #1a1a2e; }
+  .rtm-why-card p { margin: 0; font-size: 1rem; color: #5a6480; line-height: 1.5; }
 
   .rtm-loc-grid {
     display: grid;
@@ -141,9 +139,8 @@ const styles = `
     transition: box-shadow 0.2s;
   }
   .rtm-loc-card:hover { box-shadow: 0 4px 14px rgba(15,52,96,.1); }
-  .rtm-loc-card .loc-icon { font-size: 28px; margin-bottom: 10px; }
-  .rtm-loc-card h4 { margin: 0 0 6px; font-size: 1rem; font-weight: 600; color: #1a1a2e; }
-  .rtm-loc-card p  { margin: 0; font-size: 0.9rem; color: #5a6480; line-height: 1.5; }
+  .rtm-loc-card h4 { margin: 0 0 4px; font-size: 1.1rem; font-weight: 600; color: #1a1a2e; }
+  .rtm-loc-card p { margin: 0; font-size: 1rem; color: #5a6480; line-height: 1.45; }
 
   .rtm-amenity-grid {
     display: grid;
@@ -160,9 +157,8 @@ const styles = `
     transition: box-shadow 0.2s;
   }
   .rtm-amenity-card:hover { box-shadow: 0 4px 12px rgba(15,52,96,.08); }
-  .rtm-amenity-card .am-icon { font-size: 28px; margin-bottom: 8px; }
-  .rtm-amenity-card h4 { margin: 0 0 4px; font-size: 0.9rem; font-weight: 600; color: #1a1a2e; }
-  .rtm-amenity-card p  { margin: 0; font-size: 0.8rem; color: #5a6480; }
+  .rtm-amenity-card h4 { margin: 0 0 4px; font-size: 1.1rem; font-weight: 600; color: #1a1a2e; }
+  .rtm-amenity-card p { margin: 0; font-size: 1rem; color: #5a6480; }
 
   /* Invest cards */
   .rtm-invest-grid {
@@ -253,7 +249,7 @@ const ReadyToMove = () => {
       <div className="rtm-root">
         {/* HERO */}
         <div className="rtm-hero">
-          <div className="rtm-hero-icon">🏠</div>
+          <div className="rtm-hero-icon"></div>
           <div>
             <h1>Ready to Move Projects in Gurgaon 2026</h1>
             <p>
@@ -354,17 +350,17 @@ const ReadyToMove = () => {
         {/* INVEST CARDS */}
         <div className="rtm-invest-grid">
           <div className="rtm-invest-card rtm-ic-blue">
-            <div className="inv-icon">⏰</div>
+            <div className="inv-icon"></div>
             <h4>Immediate Possession</h4>
             <p>Shift in immediately without any waiting period.</p>
           </div>
           <div className="rtm-invest-card rtm-ic-green">
-            <div className="inv-icon">🏗️</div>
+            <div className="inv-icon"></div>
             <h4>No Risk</h4>
             <p>Fully constructed and ready—zero construction delays.</p>
           </div>
           <div className="rtm-invest-card rtm-ic-purple">
-            <div className="inv-icon">💰</div>
+            <div className="inv-icon"></div>
             <h4>Rental Income</h4>
             <p>Start earning rental income from day one.</p>
           </div>
@@ -372,12 +368,12 @@ const ReadyToMove = () => {
 
         {/* CTA */}
         <div className="rtm-cta">
-          <h3>🤝 Why Choose 100acress for Ready to Move Projects?</h3>
+          <h3> Why Choose 100acress for Ready to Move Projects?</h3>
           <p>
             100acress offers verified ready to move projects in Gurgaon with transparent pricing and complete documentation. We provide detailed property information, site visits, and expert guidance to help you find your perfect home.
           </p>
           <a href="https://www.100acress.com/projects/ready-to-move/" aria-label="Explore ready to move projects in Gurgaon">
-            🏠 Explore Ready Homes
+            Explore Ready Homes
           </a>
         </div>
       </div>

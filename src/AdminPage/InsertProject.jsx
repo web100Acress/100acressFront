@@ -81,56 +81,165 @@ const InsertProject = () => {
   // Function to fetch states from backend
   const fetchStatesFromBackend = async () => {
     try {
-      const { data } = await getStates();
-      if (data?.data) {
-        const states = data.data.map(item => item.name);
+      // Check localStorage cache first
+      const cachedStates = localStorage.getItem('insertProjectStates');
+      const cacheTimestamp = localStorage.getItem('insertProjectStatesTimestamp');
+      const now = Date.now();
+      const CACHE_TTL = 10 * 60 * 1000; // 10 minutes cache
+      
+      if (cachedStates && cacheTimestamp && (now - parseInt(cacheTimestamp) < CACHE_TTL)) {
+        console.log('📦 Loading states from cache (InsertProject)');
+        const states = JSON.parse(cachedStates);
         setStatesList(states);
         setFilteredStates(states);
         return states;
       }
-      return [];
+
+      console.log('🔍 Fetching states with optimized approach (InsertProject)...');
+      let states = [];
+      
+      // Try API first
+      try {
+        const { data } = await getStates();
+        if (data?.data) {
+          states = data.data.map(item => item.name).sort();
+          console.log('🗺️ States from API:', states.length);
+        }
+      } catch (apiError) {
+        console.log('❌ API failed, using pagination fallback...');
+        
+        // Fallback: Try pagination
+        try {
+          let page = 1;
+          let hasMore = true;
+          const stateSet = new Set();
+          
+          while (hasMore && page <= 3) { // Limit to first 3 pages for speed
+            const response = await api.get(`project/viewAll/data?page=${page}&limit=100`);
+            if (response?.data?.data) {
+              response.data.data.forEach(project => {
+                if (project.state) {
+                  stateSet.add(project.state);
+                }
+              });
+              console.log(`📄 State Page ${page}: Found ${stateSet.size} states`);
+              hasMore = response.data.data.length === 100;
+              page++;
+            } else {
+              hasMore = false;
+            }
+          }
+          
+          states = Array.from(stateSet).sort();
+          console.log('🗺️ States from pagination:', states.length);
+        } catch (paginatedError) {
+          console.log('⏰ Using hardcoded states fallback...');
+          states = [
+            'Haryana', 'Delhi', 'Uttar Pradesh', 'Maharashtra', 'Karnataka', 
+            'Tamil Nadu', 'Telangana', 'West Bengal', 'Gujarat', 'Rajasthan', 'Punjab'
+          ];
+        }
+      }
+
+      setStatesList(states);
+      setFilteredStates(states);
+      
+      // Save to cache
+      localStorage.setItem('insertProjectStates', JSON.stringify(states));
+      localStorage.setItem('insertProjectStatesTimestamp', now.toString());
+      console.log('💾 States cached to localStorage (InsertProject)');
+      
+      return states;
     } catch (error) {
       console.error("Error fetching states:", error);
-      // Fallback to existing project data if API fails
-      const response = await api.get("project/viewAll/data?sort=-createdAt");
-      if (response?.data?.data) {
-        const uniqueStates = [...new Set(
-          response.data.data
-            .map(project => project.state)
-            .filter(Boolean)
-        )].sort();
-        setStatesList(uniqueStates);
-        setFilteredStates(uniqueStates);
-        return uniqueStates;
-      }
-      return [];
+      // Fallback states
+      const fallbackStates = ['Haryana', 'Delhi', 'Uttar Pradesh'];
+      setStatesList(fallbackStates);
+      setFilteredStates(fallbackStates);
+      return fallbackStates;
     }
   };
   const fetchCitiesFromBackend = async () => {
     try {
-      const { data } = await getCities();
-      if (data?.data) {
-        const cities = data.data.map(item => item.name);
+      // Check localStorage cache first
+      const cachedCities = localStorage.getItem('insertProjectCities');
+      const cacheTimestamp = localStorage.getItem('insertProjectCitiesTimestamp');
+      const now = Date.now();
+      const CACHE_TTL = 10 * 60 * 1000; // 10 minutes cache
+      
+      if (cachedCities && cacheTimestamp && (now - parseInt(cacheTimestamp) < CACHE_TTL)) {
+        console.log('📦 Loading cities from cache (InsertProject)');
+        const cities = JSON.parse(cachedCities);
         setCitiesList(cities);
         setFilteredCities(cities);
+        setLoadingCities(false);
         return cities;
       }
-      return [];
+
+      console.log('🔍 Fetching cities with optimized approach (InsertProject)...');
+      let cities = [];
+      
+      // Try API first
+      try {
+        const { data } = await getCities();
+        if (data?.data) {
+          cities = data.data.map(item => item.name).sort();
+          console.log('🏙️ Cities from API:', cities.length);
+        }
+      } catch (apiError) {
+        console.log('❌ API failed, using pagination fallback...');
+        
+        // Fallback: Try pagination
+        try {
+          let page = 1;
+          let hasMore = true;
+          const citySet = new Set();
+          
+          while (hasMore && page <= 3) { // Limit to first 3 pages for speed
+            const response = await api.get(`project/viewAll/data?page=${page}&limit=100`);
+            if (response?.data?.data) {
+              response.data.data.forEach(project => {
+                if (project.city) {
+                  citySet.add(project.city);
+                }
+              });
+              console.log(`📄 City Page ${page}: Found ${citySet.size} cities`);
+              hasMore = response.data.data.length === 100;
+              page++;
+            } else {
+              hasMore = false;
+            }
+          }
+          
+          cities = Array.from(citySet).sort();
+          console.log('🏙️ Cities from pagination:', cities.length);
+        } catch (paginatedError) {
+          console.log('⏰ Using hardcoded cities fallback...');
+          cities = [
+            'Gurgaon', 'Delhi', 'Noida', 'Mumbai', 'Bangalore', 'Pune', 
+            'Chennai', 'Hyderabad', 'Kolkata', 'Ahmedabad', 'Jaipur', 'Chandigarh'
+          ];
+        }
+      }
+
+      setCitiesList(cities);
+      setFilteredCities(cities);
+      
+      // Save to cache
+      localStorage.setItem('insertProjectCities', JSON.stringify(cities));
+      localStorage.setItem('insertProjectCitiesTimestamp', now.toString());
+      console.log('💾 Cities cached to localStorage (InsertProject)');
+      
+      return cities;
     } catch (error) {
       console.error("Error fetching cities:", error);
-      // Fallback to existing project data if API fails
-      const response = await api.get("project/viewAll/data?sort=-createdAt");
-      if (response?.data?.data) {
-        const uniqueCities = [...new Set(
-          response.data.data
-            .map(project => project.city)
-            .filter(Boolean)
-        )].sort();
-        setCitiesList(uniqueCities);
-        setFilteredCities(uniqueCities);
-        return uniqueCities;
-      }
-      return [];
+      // Fallback cities
+      const fallbackCities = ['Gurgaon', 'Delhi', 'Noida'];
+      setCitiesList(fallbackCities);
+      setFilteredCities(fallbackCities);
+      return fallbackCities;
+    } finally {
+      setLoadingCities(false);
     }
   };
 
@@ -158,23 +267,97 @@ const InsertProject = () => {
   // Function to fetch builders from backend
   const fetchBuildersFromBackend = async () => {
     try {
-      const { data } = await api.get("project/viewAll/data?sort=-createdAt");
-      if (data?.data) {
-        // Extract unique builder names and sort them
-        const uniqueBuilders = [...new Set(
-          data.data
-            .map(project => project.builderName)
-            .filter(Boolean) // Remove any null/undefined values
-        )].sort();
-        setBuildersList(uniqueBuilders);
-        setFilteredBuilders(uniqueBuilders);
-        return uniqueBuilders;
+      // Check localStorage cache first
+      const cachedBuilders = localStorage.getItem('insertProjectBuilders');
+      const cacheTimestamp = localStorage.getItem('insertProjectBuildersTimestamp');
+      const now = Date.now();
+      const CACHE_TTL = 10 * 60 * 1000; // 10 minutes cache
+      
+      if (cachedBuilders && cacheTimestamp && (now - parseInt(cacheTimestamp) < CACHE_TTL)) {
+        console.log('📦 Loading builders from cache (InsertProject)');
+        const builders = JSON.parse(cachedBuilders);
+        setBuildersList(builders);
+        setFilteredBuilders(builders);
+        setLoadingBuilders(false);
+        return builders;
       }
-      return [];
+
+      console.log('🔍 Fetching builders with optimized approach (InsertProject)...');
+      let builders = [];
+      
+      // Try pagination first for faster loading
+      try {
+        let page = 1;
+        let hasMore = true;
+        const builderSet = new Set();
+        
+        while (hasMore && page <= 3) { // Limit to first 3 pages for speed
+          const response = await api.get(`project/viewAll/data?page=${page}&limit=100`);
+          if (response?.data?.data) {
+            response.data.data.forEach(project => {
+              if (project.builderName) {
+                builderSet.add(project.builderName);
+              }
+            });
+            console.log(`📄 Page ${page}: Found ${builderSet.size} builders`);
+            hasMore = response.data.data.length === 100;
+            page++;
+          } else {
+            hasMore = false;
+          }
+        }
+        
+        builders = Array.from(builderSet).sort();
+        console.log('👷‍♂️ Builders from pagination:', builders.length);
+      } catch (paginatedError) {
+        console.log('❌ Pagination failed, trying fallback...');
+        
+        // Fallback: Try with timeout
+        const timeoutPromise = new Promise((_, reject) => 
+          setTimeout(() => reject(new Error('Timeout')), 8000) // 8 second timeout
+        );
+        
+        try {
+          const response = await Promise.race([
+            api.get("project/viewAll/data?sort=-createdAt"),
+            timeoutPromise
+          ]);
+          
+          if (response?.data?.data) {
+            builders = [...new Set(
+              response.data.data
+                .map(project => project.builderName)
+                .filter(Boolean)
+            )].sort();
+            console.log('👷‍♂️ Builders from fallback:', builders.length);
+          }
+        } catch (timeoutError) {
+          console.log('⏰ Using hardcoded builders fallback...');
+          builders = [
+            'DLF', 'Godrej Properties', 'Tata Housing', 'Mahindra Lifespaces',
+            'Prestige Group', 'Brigade Group', 'Sobha Limited', 'Omaxe Limited',
+            'Ansal API', 'Emaar India', 'Unitech', 'JP Infra', 'ATS Group'
+          ];
+        }
+      }
+
+      setBuildersList(builders);
+      setFilteredBuilders(builders);
+      
+      // Save to cache
+      localStorage.setItem('insertProjectBuilders', JSON.stringify(builders));
+      localStorage.setItem('insertProjectBuildersTimestamp', now.toString());
+      console.log('💾 Builders cached to localStorage (InsertProject)');
+      
+      return builders;
     } catch (error) {
       console.error("Error fetching builders:", error);
-      showToast.error(showToast.errorMessages.loadingError);
-      return [];
+      showToast.error('Failed to load builders');
+      // Fallback builders
+      const fallbackBuilders = ['DLF', 'Godrej Properties', 'Tata Housing'];
+      setBuildersList(fallbackBuilders);
+      setFilteredBuilders(fallbackBuilders);
+      return fallbackBuilders;
     } finally {
       setLoadingBuilders(false);
     }

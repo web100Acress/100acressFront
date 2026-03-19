@@ -2483,39 +2483,7 @@ const GlobalFilterTemplate = ({
             </>
           )}
 
-          {/* Trust Boosters Section */}
-          <div className="mt-12 sm:mt-16 py-8 sm:py-12">
-            <div className="max-w-6xl mx-auto px-3 sm:px-4 md:px-6">
-              <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-6 sm:mb-8 text-center">
-                Why Choose 100acress?
-              </h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8">
-                <div className="text-center group hover:scale-105 transition-all duration-300">
-                  <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
-                    <span className="text-2xl">🛡️</span>
-                  </div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">RERA Approved</h3>
-                  <p className="text-gray-600 text-sm">All our projects are RERA registered ensuring legal compliance and transparency</p>
-                </div>
-
-                <div className="text-center group hover:scale-105 transition-all duration-300">
-                  <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:rotate-12 transition-transform duration-300">
-                    <span className="text-2xl">🏆</span>
-                  </div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Trusted Partners</h3>
-                  <p className="text-gray-600 text-sm">Working with top developers like DLF, M3M, Sobha, and Signature Global</p>
-                </div>
-
-                <div className="text-center group hover:scale-105 transition-all duration-300">
-                  <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-orange-600 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:rotate-12 transition-transform duration-300">
-                    <span className="text-2xl">🏠</span>
-                  </div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Premium Properties</h3>
-                  <p className="text-gray-600 text-sm">Handpicked luxury properties with modern amenities and prime locations</p>
-                </div>
-              </div>
-            </div>
-          </div>
+          
 
           {/* BHK Content Components - Render based on BHK type */}
           {bhkType === '1' && <OneBhkFlatsGurgaon />}

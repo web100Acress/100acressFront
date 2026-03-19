@@ -16,33 +16,31 @@ const structuredData = {
 };
 
 const WHY_POINTS = [
-  { icon: '🏢', title: 'Corporate Boom', text: 'Hundreds of MNCs and a growing workforce keep housing demand high — exactly where buyers find opportunity.' },
-  { icon: '🛣️', title: 'Infrastructure Growth', text: 'Dwarka Expressway, Delhi–Mumbai Expressway, and expanding metro lines make New Gurgaon sectors highly accessible.' },
-  { icon: '📈', title: 'High ROI', text: 'Premium townships, better air quality in South Gurgaon, and consistent appreciation make it a smart investment in 2026.' },
+  { title: 'Corporate Boom', text: 'Hundreds of MNCs and a growing workforce keep housing demand high — exactly where buyers find opportunity.' },
+  { title: 'Infrastructure Growth', text: 'Dwarka Expressway, Delhi–Mumbai Expressway, and expanding metro lines make New Gurgaon sectors highly accessible.' },
+  { title: 'High ROI', text: 'Premium townships, better air quality in South Gurgaon, and consistent appreciation make it a smart investment in 2026.' },
 ];
 
 const LOCATIONS = [
-  { icon: '🏢', title: 'Dwarka Expressway', text: 'Seamless connectivity to Delhi, IGI Airport & NH-48.' },
-  { icon: '🌳', title: 'New Gurgaon (Sec 82–95)', text: 'Planned roads, calm surroundings & strong appreciation.' },
-  { icon: '⛳', title: 'Golf Course Ext. Road', text: 'Upscale towers, reputed schools & social infrastructure.' },
-  { icon: '🎓', title: 'Sohna Road', text: 'Budget-friendly options; top schools keep demand steady.' },
+  { title: 'Dwarka Expressway', text: 'One of the fastest-growing residential corridors, offering seamless connectivity to Delhi, IGI Airport, and NH-48.' },
+  { title: 'New Gurgaon (Sectors 82–95)', text: 'Planned roads, calm surroundings & strong appreciation. A family-friendly pocket that keeps delivering.' },
+  { title: 'Golf Course Extension Road', text: 'Premium lifestyle without the premium price tag. Upscale residential towers, reputable schools, and established social infrastructure make it perfect for buyers balancing their lives.' },
+  { title: 'Sohna Road', text: 'A value-driven corridor offering budget-friendly and mid-range studio to 1 BHK apartments. Leading educational institutions keep this location consistently popular among end-users and investors alike.' },
 ];
 
 const AMENITIES = [
-  'Clubhouse & swimming pool',
-  'Gymnasium & wellness zones',
-  'Landscaped gardens & jogging tracks',
-  "Children's play area & sport courts",
-  '24/7 security with smart access',
+  'Fully equipped clubhouse and swimming pool',
+  'Gymnasium and dedicated wellness zones',
+  'Landscaped green gardens with jogging tracks',
+  'Children\'s play areas and multi-sport courts',
+  'Round-the-clock security with smart access systems',
 ];
 
 const CHECKLIST = [
-  { label: 'Verify RERA', detail: 'Protects your money and ensures builder accountability.' },
-  { label: 'Check Carpet Area', detail: 'Match brochure claims against real ventilation and floor layout.' },
-  { label: 'Visit the Site', detail: 'Road access, schools, markets and metro proximity affect future value.' },
-  { label: 'Buy Early-Stage', detail: 'Early projects offer best pricing; ready-to-move for quick possession.' },
-  { label: "Builder's Track Record", detail: 'Review past projects and customer ratings before committing.' },
-  { label: 'Legal Documents', detail: 'Confirm sale deed and all property documents are legally valid.' },
+  { label: 'Check RERA First', detail: 'Never skip RERA verification it protects your money, ensures builder accountability, and keeps your investment 100% legally safe.' },
+  { label: 'Look Beyond the Brochure', detail: 'Check the real carpet area, ventilation, floor density, and amenities before you decide. What looks good on paper should hold up in reality.' },
+  { label: 'Visit Before You Commit', detail: 'A quick site visit reveals road access, nearby schools, markets, and metro connectivity things that directly impact your property\'s future value.' },
+  { label: 'Buy at the Right Time', detail: 'Early-stage projects in Gurgaon 2026 offer the best pricing. If you need faster possession, ready-to-move compact flats in Gurgaon are your smartest pick.' },
 ];
 
 const styles = `
@@ -55,6 +53,7 @@ const styles = `
     max-width: 1400px;
     margin: 0 auto;
     padding: 0 24px 48px;
+    font-size: 1.1rem;
   }
 
   /* ── HERO ── */
@@ -72,20 +71,20 @@ const styles = `
   .obg-hero h1 {
     font-family: 'DM Serif Display', serif;
     font-size: 2.2rem;
-    margin: 0 0 12px;
-    line-height: 1.2;
+    margin: 0 0 8px;
+    line-height: 1.25;
   }
-  .obg-hero p { margin: 0; font-size: 1.1rem; color: #b0bcd4; line-height: 1.6; }
+  .obg-hero p { margin: 0; font-size: 1.1rem; color: #b0bcd4; line-height: 1.55; }
 
   /* ── SECTION TITLE ── */
   .obg-section-title {
     font-family: 'DM Serif Display', serif;
     font-size: 1.6rem;
     color: #1a1a2e;
-    margin: 0 0 20px;
+    margin: 0 0 16px;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
   }
 
   /* ── WHY CARDS ── */
@@ -111,8 +110,8 @@ const styles = `
     background: #eef2ff; display: flex; align-items: center;
     justify-content: center; font-size: 26px; flex-shrink: 0;
   }
-  .obg-why-card h4 { margin: 0 0 6px; font-size: 1.05rem; font-weight: 600; color: #1a1a2e; }
-  .obg-why-card p { margin: 0; font-size: 0.95rem; color: #5a6480; line-height: 1.55; }
+  .obg-why-card h4 { margin: 0 0 4px; font-size: 1.1rem; font-weight: 600; color: #1a1a2e; }
+  .obg-why-card p { margin: 0; font-size: 1rem; color: #5a6480; line-height: 1.5; }
 
   /* ── LOCATIONS ── */
   .obg-loc-grid {
@@ -130,8 +129,8 @@ const styles = `
   }
   .obg-loc-card:hover { box-shadow: 0 4px 14px rgba(15,52,96,.1); }
   .obg-loc-card .loc-icon { font-size: 28px; margin-bottom: 10px; }
-  .obg-loc-card h4 { margin: 0 0 6px; font-size: 1rem; font-weight: 600; color: #1a1a2e; }
-  .obg-loc-card p { margin: 0; font-size: 0.9rem; color: #5a6480; line-height: 1.5; }
+  .obg-loc-card h4 { margin: 0 0 4px; font-size: 1.1rem; font-weight: 600; color: #1a1a2e; }
+  .obg-loc-card p { margin: 0; font-size: 1rem; color: #5a6480; line-height: 1.45; }
 
   /* ── TWO-COL LAYOUT ── */
   .obg-two-col {
@@ -150,21 +149,21 @@ const styles = `
   }
   .obg-box h4 {
     font-family: 'DM Serif Display', serif;
-    font-size: 1.15rem;
-    margin: 0 0 16px;
+    font-size: 1.3rem;
+    margin: 0 0 12px;
     color: #0f3460;
   }
 
   /* amenities list */
   .obg-amenity-list { list-style: none; padding: 0; margin: 0; }
   .obg-amenity-list li {
-    padding: 9px 0;
+    padding: 7px 0;
     border-bottom: 1px solid #f0f3fa;
-    font-size: 0.95rem;
+    font-size: 1.1rem;
     color: #3a4264;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
   }
   .obg-amenity-list li:last-child { border-bottom: none; }
   .obg-amenity-list li::before { content: '✓'; color: #22c55e; font-weight: 700; }
@@ -172,14 +171,14 @@ const styles = `
   /* checklist */
   .obg-checklist { list-style: none; padding: 0; margin: 0; }
   .obg-checklist li {
-    padding: 10px 0;
+    padding: 8px 0;
     border-bottom: 1px solid #f0f3fa;
-    font-size: 0.95rem;
+    font-size: 1.1rem;
     color: #3a4264;
-    line-height: 1.5;
+    line-height: 1.45;
   }
   .obg-checklist li:last-child { border-bottom: none; }
-  .obg-checklist li strong { display: block; font-size: 0.98rem; color: #1a1a2e; margin-bottom: 3px; }
+  .obg-checklist li strong { display: block; font-size: 1.15rem; color: #1a1a2e; margin-bottom: 2px; }
 
   /* ── INVEST CARDS ── */
   .obg-invest-grid {
@@ -237,7 +236,7 @@ const OneBhkFlatsGurgaon = () => {
     description: 'Find budget-friendly 1 BHK flats in Gurgaon starting from ₹30 Lakhs. Perfect for bachelors and small families. Explore 1 bedroom apartments with modern amenities in prime locations.',
     metaTitle: 'Buy 1BHK Flats in Gurgaon for Modern Lifestyle Living',
     metaDescription: 'Find budget-friendly 1 BHK flats in Gurgaon starting from ₹30 Lakhs. Perfect for bachelors and small families. Explore 1 bedroom apartments with modern amenities in prime locations.',
-    h1: '1 BHK Flats in Gurgaon - Your Perfect Affordable Home',
+    h1: 'Know More About 1BHK Flats',
     canonical: 'https://www.100acress.com/1-bhk-flats-in-gurgaon/',
     keywords: '1 BHK flats gurgaon, 1 bedroom apartments gurgaon, affordable flats gurgaon, bachelor apartments gurgaon, budget homes gurgaon, 1BHK properties gurgaon',
     heroTitle: '1 BHK Flats in Gurgaon - Your Perfect Affordable Home',
@@ -289,112 +288,63 @@ const OneBhkFlatsGurgaon = () => {
 
         {/* HERO */}
         <div className="obg-hero">
-          <div className="obg-hero-icon">🏠</div>
+          {/* <div className="obg-hero-icon">🏠</div> */}
           <div>
-            <h1>{pageData.h1}</h1>
+            <h1 style={{ textAlign: 'center' }}>{pageData.h1}</h1>
             <p>
-              Budget-friendly 1 BHK flats in Gurgaon with modern amenities,
-              excellent connectivity, and great investment potential.
-              Perfect for first-time buyers and young professionals.
+               Explore a range of 1 BHK flats in Gurgaon located in different parts of the city. These homes are a practical option for working professionals, couples, and small families. Many projects are close to offices, metro stations, and daily essentials to make everyday life more convenient. With options across several neighborhoods, these 1-bedroom apartments in Gurgaon offer a simple and comfortable way to live in the city.
             </p>
           </div>
         </div>
 
-        {/* WHY GURGAON */}
-        <h2 className="obg-section-title">🚀 Why Gurgaon Real Estate Keeps Growing</h2>
-        <div className="obg-why-grid">
-          {WHY_POINTS.map(({ icon, title, text }) => (
-            <div className="obg-why-card" key={title}>
-              <div className="obg-why-icon">{icon}</div>
-              <div>
-                <h4>{title}</h4>
-                <p>{text}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-
         {/* TOP LOCATIONS */}
-        <h2 className="obg-section-title">🏆 Top Locations to Buy in Gurgaon</h2>
+        <h2 className="obg-section-title">Top Locations for Buying a Good Flat in Gurgaon</h2>
         <div className="obg-loc-grid">
           {LOCATIONS.map(({ icon, title, text }) => (
             <div className="obg-loc-card" key={title}>
               <div className="loc-icon">{icon}</div>
-            <div className="obg-why-icon">{icon}</div>
-            <div>
               <h4>{title}</h4>
               <p>{text}</p>
             </div>
+          ))}
+        </div>
+
+        {/* AMENITIES + CHECKLIST */}
+        <div className="obg-two-col">
+          <div className="obg-box">
+            <h4>Best Amenities in 1 BHK Flats</h4>
+            <ul className="obg-amenity-list">
+              {AMENITIES.map(a => <li key={a}>{a}</li>)}
+            </ul>
           </div>
-        ))}
-      </div>
-
-      {/* TOP LOCATIONS */}
-      <h2 className="obg-section-title">🏆 Top Locations to Buy in Gurgaon</h2>
-      <div className="obg-loc-grid">
-        {LOCATIONS.map(({ icon, title, text }) => (
-          <div className="obg-loc-card" key={title}>
-            <div className="loc-icon">{icon}</div>
-            <h4>{title}</h4>
-            <p>{text}</p>
+          <div className="obg-box">
+            <h4>What to Check Before Buying a Flat in Gurgaon</h4>
+            <ul className="obg-checklist">
+              {CHECKLIST.map(({ label, detail }) => (
+                <li key={label}><strong>{label}</strong>{detail}</li>
+              ))}
+            </ul>
           </div>
-        ))}
+        </div>
+
+       
+  <FAQSection bhkType="1 BHK" />
+        {/* CTA */}
+        <div className="obg-cta">
+          <h3>Why Choose 100acress?</h3>
+          <p>
+            100acress lists only verified, RERA-approved 1 BHK flats in Gurgaon. We work with
+            reputed developers and provide expert guidance to help you invest with confidence.
+          </p>
+          <a href="https://www.100acress.com/projects/upcoming/" aria-label="Explore 1 BHK projects in Gurgaon">
+            Explore Premium Projects
+          </a>
+        </div>
+
+      
+
       </div>
-
-      {/* AMENITIES + CHECKLIST */}
-      <div className="obg-two-col">
-        <div className="obg-box">
-          <h4>✅ Amenities in 1 BHK Flats</h4>
-          <ul className="obg-amenity-list">
-            {AMENITIES.map(a => <li key={a}>{a}</li>)}
-          </ul>
-        </div>
-        <div className="obg-box">
-          <h4>📋 Before You Buy — Checklist</h4>
-          <ul className="obg-checklist">
-            {CHECKLIST.map(({ label, detail }) => (
-              <li key={label}><strong>{label}</strong>{detail}</li>
-            ))}
-          </ul>
-        </div>
-      </div>
-
-      {/* WHY INVEST */}
-      <h2 className="obg-section-title">🎯 Why Invest in 1 BHK Flats?</h2>
-      <div className="obg-invest-grid">
-        <div className="obg-invest-card obg-ic-blue">
-          <div className="inv-icon">🏠</div>
-          <h4>Affordable Luxury</h4>
-          <p>Premium amenities at competitive prices — best value in this segment.</p>
-        </div>
-        <div className="obg-invest-card obg-ic-green">
-          <div className="inv-icon">📈</div>
-          <h4>High ROI Potential</h4>
-          <p>Strong appreciation and rental yields in Gurgaon's booming market.</p>
-        </div>
-        <div className="obg-invest-card obg-ic-purple">
-          <div className="inv-icon">🚇</div>
-          <h4>Prime Connectivity</h4>
-          <p>Metro, highways, and expressways make daily commutes effortless.</p>
-        </div>
-      </div>
-
-      {/* CTA */}
-      <div className="obg-cta">
-        <h3>🤝 Why Choose 100acress?</h3>
-        <p>
-          100acress lists only verified, RERA-approved 1 BHK flats in Gurgaon. We work with
-          reputed developers and provide expert guidance to help you invest with confidence.
-        </p>
-        <a href="https://www.100acress.com/projects/upcoming/" aria-label="Explore 1 BHK projects in Gurgaon">
-          🏠 Explore Premium Projects
-        </a>
-      </div>
-
-      <FAQSection bhkType="1 BHK" />
-
-    </div>
-  </>
+    </>
   );
 };
 

@@ -57,7 +57,7 @@ const sections = [
   },
   {
     name: 'Projects',
-    api: '/project/all-projects',
+    api: '/project/viewAll/data?page=1&limit=1',
     link: '/Admin/Projects/property',
     gradientClass: 'bg-gray-gradient',
     icon: <MdBarChart size={32} className="card-icon" />,

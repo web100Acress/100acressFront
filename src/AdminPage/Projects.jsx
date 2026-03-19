@@ -8,7 +8,7 @@ import { showToast } from "../Utils/toastUtils";
 const Projects = () => {
   const [viewAll, setViewAll] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [rowsPerPage] = useState(500);
+  const [rowsPerPage] = useState(15); // Changed from 500 to 15 for better performance
   const [searchTerm, setSearchTerm] = useState("");
 
   // Additional filters
@@ -61,24 +61,81 @@ const Projects = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        // Check localStorage cache first
+        const cachedData = localStorage.getItem('adminProjectsData_v2');
+        const cacheTimestamp = localStorage.getItem('adminProjectsTimestamp_v2');
+        const now = Date.now();
+        const CACHE_TTL = 5 * 60 * 1000; // 5 minutes cache
+        
+        if (cachedData && cacheTimestamp && (now - parseInt(cacheTimestamp) < CACHE_TTL)) {
+          console.log('📦 Loading projects from cache');
+          const parsedData = JSON.parse(cachedData);
+          if (Array.isArray(parsedData) && parsedData.length > 0) {
+            const sortedRows = [...parsedData].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+            setViewAll(sortedRows);
+            showToast.success(`Loaded ${sortedRows.length} projects from cache!`);
+            return;
+          }
+        }
+
         showToast.loading('Loading projects...', { id: 'loadProjects' });
         const base = getApiBase();
         const tokenRaw = localStorage.getItem("myToken") || "";
         const token = tokenRaw.replace(/^"|"$/g, "").replace(/^Bearer\s+/i, "");
-        const res = await axios.get(
-          `${base}/project/all-projects`,
-          {
-            headers: {
-              "Content-Type": "application/json",
-              ...(token ? { Authorization: `Bearer ${token}` } : {}),
-            }
+        const limit = 100;
+        const headers = {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        };
+
+        const extractRows = (payload) => {
+          if (Array.isArray(payload?.data)) return payload.data;
+          if (Array.isArray(payload?.data?.data)) return payload.data.data;
+          if (Array.isArray(payload)) return payload;
+          return [];
+        };
+
+        const firstRes = await axios.get(`${base}/project/viewAll/data?page=1&limit=${limit}`, { headers });
+        const firstPayload = firstRes.data;
+        const firstRows = extractRows(firstPayload);
+
+        console.log('📦 Projects first page payload keys:', firstPayload && typeof firstPayload === 'object' ? Object.keys(firstPayload) : firstPayload);
+        console.log('📦 Projects first page rows:', firstRows.length);
+
+        const total = typeof firstPayload?.pagination?.totalItems === 'number'
+          ? firstPayload.pagination.totalItems
+          : (typeof firstPayload?.meta?.total === 'number' ? firstPayload.meta.total : firstRows.length);
+        const totalPages = Math.max(1, Math.ceil(total / limit));
+
+        // Progressive render: show first page immediately
+        if (firstRows.length > 0) {
+          const sortedFirstRows = [...firstRows].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+          setViewAll(sortedFirstRows);
+          setCurrentPage(1);
+        }
+
+        let allRows = [...firstRows];
+        if (totalPages > 1) {
+          for (let page = 2; page <= totalPages; page += 1) {
+            const pageRes = await axios.get(`${base}/project/viewAll/data?page=${page}&limit=${limit}`, { headers });
+            const pagePayload = pageRes.data;
+            const pageRows = extractRows(pagePayload);
+            allRows = allRows.concat(pageRows);
+
+            // Update progressively as we load pages
+            const partialSorted = [...allRows].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+            setViewAll(partialSorted);
           }
-        );
-        const payload = res.data;
-        const rows = Array.isArray(payload?.data) ? payload.data : (Array.isArray(payload) ? payload : []);
-        // Sort by creation date in descending order (newest first)
-        const sortedRows = [...rows].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        }
+
+        const sortedRows = [...allRows].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
         setViewAll(sortedRows);
+        setCurrentPage(1);
+        
+        // Save to localStorage cache
+        localStorage.setItem('adminProjectsData_v2', JSON.stringify(sortedRows));
+        localStorage.setItem('adminProjectsTimestamp_v2', now.toString());
+        console.log('💾 Projects cached to localStorage');
         
         showToast.dismiss('loadProjects');
         showToast.success(`Loaded ${sortedRows.length} projects successfully!`);

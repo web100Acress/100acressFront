@@ -1,5 +1,6 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
+import FAQSection from './FAQSection';
 
 const structuredData = {
   "@context": "https://schema.org",
@@ -14,32 +15,32 @@ const structuredData = {
 };
 
 const WHY_POINTS = [
-  { icon: '🏢', title: 'Corporate Boom', text: 'Hundreds of MNCs and a growing workforce keep housing demand high — exactly where buyers find opportunity.' },
-  { icon: '🛣️', title: 'Infrastructure Growth', text: 'Dwarka Expressway, Delhi–Mumbai Expressway, and expanding metro lines make New Gurgaon sectors highly accessible.' },
-  { icon: '📈', title: 'High ROI', text: 'Premium townships, better air quality in South Gurgaon, and consistent appreciation make it a smart investment in 2026.' },
+  { title: 'Corporate Boom', text: 'Hundreds of MNCs and a growing workforce keep housing demand high — exactly where buyers find opportunity.' },
+  { title: 'Infrastructure Growth', text: 'Dwarka Expressway, Delhi–Mumbai Expressway, and expanding metro lines make New Gurgaon sectors highly accessible.' },
+  { title: 'High ROI', text: 'Premium townships, better air quality in South Gurgaon, and consistent appreciation make it a smart investment in 2026.' },
 ];
 
 const LOCATIONS = [
-  { icon: '🏢', title: 'Dwarka Expressway', text: 'Seamless connectivity to Delhi, IGI Airport & NH-48.' },
-  { icon: '🌳', title: 'New Gurgaon (Sec 82–95)', text: 'Planned roads, calm surroundings & strong appreciation.' },
-  { icon: '⛳', title: 'Golf Course Ext. Road', text: 'Upscale towers, reputed schools & established social infrastructure.' },
-  { icon: '🎓', title: 'Sohna Road', text: 'Value-driven corridor popular with families and investors alike.' },
+  { title: 'Dwarka Expressway', text: 'One of the fastest-growing residential corridors, offering seamless connectivity to Delhi, IGI Airport, and NH-48.' },
+  { title: 'New Gurgaon (Sectors 82–95)', text: 'Planned roads, calm surroundings & strong appreciation. A family-friendly pocket that keeps delivering.' },
+  { title: 'Golf Course Extension Road', text: 'Premium lifestyle without the premium price tag. Upscale residential towers, reputable schools, and established social infrastructure make it perfect for buyers balancing their lives.' },
+  { title: 'Sohna Road', text: 'A value-driven corridor offering budget-friendly and mid-range studio to 3 BHK apartments. Leading educational institutions keep this location consistently popular among end-users and investors alike.' },
 ];
 
 const AMENITIES = [
-  'Fully equipped clubhouse & swimming pool',
-  'Modern gymnasium & yoga wellness zone',
-  'Landscaped gardens & jogging track',
-  "Safe children's play area & sports courts",
-  '24×7 smart security & CCTV surveillance',
-  'Covered parking & EV charging points',
+  'Fully Equipped Clubhouse & Swimming Pool',
+  'Modern Gymnasium & Yoga Wellness Zone',
+  'Landscaped Gardens & Jogging Track',
+  'Safe Children\'s Play Area & Sports Courts',
+  '24×7 Smart Security & CCTV Surveillance',
+  'Covered Parking & EV Charging Points',
 ];
 
 const CHECKLIST = [
-  { label: 'Check RERA First', detail: 'Protects your money, ensures builder accountability, and keeps your investment legally safe.' },
-  { label: 'Look Beyond the Brochure', detail: 'Verify carpet area, ventilation, floor density, and amenities — not just what looks good on paper.' },
-  { label: 'Visit Before You Commit', detail: 'Site visit reveals road access, schools, markets, and metro proximity — all affect future value.' },
-  { label: 'Buy at the Right Time', detail: 'Early-stage projects offer best pricing; ready-to-move suits buyers needing quick possession.' },
+  { label: 'Check RERA First', detail: 'Never skip RERA verification it protects your money, ensures builder accountability, and keeps your investment 100% legally safe.' },
+  { label: 'Look Beyond the Brochure', detail: 'Check the real carpet area, ventilation, floor density, and amenities before you decide. What looks good on paper should hold up in reality.' },
+  { label: 'Visit Before You Commit', detail: 'A quick site visit reveals road access, nearby schools, markets, and metro connectivity—things that directly impact your property\'s future value.' },
+  { label: 'Buy at the Right Time', detail: 'Early-stage projects in Gurgaon 2026 offer the best pricing. If you need faster possession, ready-to-move compact flats in Gurgaon are your smartest pick.' },
 ];
 
 const styles = `
@@ -52,6 +53,7 @@ const styles = `
     max-width: 1400px;
     margin: 0 auto;
     padding: 0 24px 48px;
+    font-size: 1.1rem;
   }
 
   .thbg-hero {
@@ -67,15 +69,15 @@ const styles = `
   .thbg-hero-icon { font-size: 48px; flex-shrink: 0; }
   .thbg-hero h1 {
     font-family: 'DM Serif Display', serif;
-    font-size: 1.75rem;
+    font-size: 2.2rem;
     margin: 0 0 8px;
     line-height: 1.25;
   }
-  .thbg-hero p { margin: 0; font-size: 0.95rem; color: #b0bcd4; line-height: 1.55; }
+  .thbg-hero p { margin: 0; font-size: 1.1rem; color: #b0bcd4; line-height: 1.55; }
 
   .thbg-section-title {
     font-family: 'DM Serif Display', serif;
-    font-size: 1.3rem;
+    font-size: 1.6rem;
     color: #1a1a2e;
     margin: 0 0 16px;
     display: flex;
@@ -105,8 +107,8 @@ const styles = `
     background: #eef2ff; display: flex; align-items: center;
     justify-content: center; font-size: 22px; flex-shrink: 0;
   }
-  .thbg-why-card h4 { margin: 0 0 4px; font-size: 0.9rem; font-weight: 600; color: #1a1a2e; }
-  .thbg-why-card p  { margin: 0; font-size: 0.82rem; color: #5a6480; line-height: 1.5; }
+  .thbg-why-card h4 { margin: 0 0 4px; font-size: 1.1rem; font-weight: 600; color: #1a1a2e; }
+  .thbg-why-card p  { margin: 0; font-size: 1rem; color: #5a6480; line-height: 1.5; }
 
   .thbg-loc-grid {
     display: grid;
@@ -123,8 +125,8 @@ const styles = `
   }
   .thbg-loc-card:hover { box-shadow: 0 4px 14px rgba(15,52,96,.1); }
   .thbg-loc-card .loc-icon { font-size: 24px; margin-bottom: 8px; }
-  .thbg-loc-card h4 { margin: 0 0 4px; font-size: 0.88rem; font-weight: 600; color: #1a1a2e; }
-  .thbg-loc-card p  { margin: 0; font-size: 0.8rem; color: #5a6480; line-height: 1.45; }
+  .thbg-loc-card h4 { margin: 0 0 4px; font-size: 1.1rem; font-weight: 600; color: #1a1a2e; }
+  .thbg-loc-card p  { margin: 0; font-size: 1rem; color: #5a6480; line-height: 1.45; }
 
   .thbg-two-col {
     display: grid;
@@ -142,7 +144,7 @@ const styles = `
   }
   .thbg-box h4 {
     font-family: 'DM Serif Display', serif;
-    font-size: 1rem;
+    font-size: 1.3rem;
     margin: 0 0 12px;
     color: #0f3460;
   }
@@ -151,7 +153,7 @@ const styles = `
   .thbg-amenity-list li {
     padding: 7px 0;
     border-bottom: 1px solid #f0f3fa;
-    font-size: 0.85rem;
+    font-size: 1.1rem;
     color: #3a4264;
     display: flex;
     align-items: center;
@@ -164,12 +166,12 @@ const styles = `
   .thbg-checklist li {
     padding: 8px 0;
     border-bottom: 1px solid #f0f3fa;
-    font-size: 0.83rem;
+    font-size: 1.1rem;
     color: #3a4264;
     line-height: 1.45;
   }
   .thbg-checklist li:last-child { border-bottom: none; }
-  .thbg-checklist li strong { display: block; font-size: 0.86rem; color: #1a1a2e; margin-bottom: 2px; }
+  .thbg-checklist li strong { display: block; font-size: 1.15rem; color: #1a1a2e; margin-bottom: 2px; }
 
   .thbg-invest-grid {
     display: grid;
@@ -258,33 +260,20 @@ const ThreeBhkFlatsGurgaon = () => (
 
       {/* HERO */}
       <div className="thbg-hero">
-        <div className="thbg-hero-icon">🏰</div>
+        <div className="thbg-hero-icon"></div>
         <div>
-          <h1>3 BHK Flats in Gurgaon 2026</h1>
+          <h1 style={{ textAlign: 'center' }}>Know More About 3 BHK Flats</h1>
           <p>
-            Verified, RERA-approved luxury 3-bedroom apartments for families who want space,
-            comfort, and convenience — top schools, hospitals, and connectivity all nearby.
+            Explore a city that has quietly become one of the best places to settle down with your family. 3 BHK flats in Gurgaon offer the right mix of space, comfort, and convenience, from good schools and hospitals to well-connected roads and markets. The city suits different budgets too, making it a practical choice for families who want a better lifestyle without moving too far from Delhi.
           </p>
         </div>
       </div>
 
-      {/* WHY GURGAON */}
-      <h2 className="thbg-section-title">🚀 Why Gurgaon Real Estate Keeps Growing</h2>
-      <div className="thbg-why-grid">
-        {WHY_POINTS.map(({ icon, title, text }) => (
-          <div className="thbg-why-card" key={title}>
-            <div className="thbg-why-icon">{icon}</div>
-            <div><h4>{title}</h4><p>{text}</p></div>
-          </div>
-        ))}
-      </div>
-
       {/* TOP LOCATIONS */}
-      <h2 className="thbg-section-title">🏆 Top Locations to Buy in Gurgaon</h2>
+      <h2 className="thbg-section-title">Top Locations for Buying a Good Flat in Gurgaon</h2>
       <div className="thbg-loc-grid">
-        {LOCATIONS.map(({ icon, title, text }) => (
+        {LOCATIONS.map(({ title, text }) => (
           <div className="thbg-loc-card" key={title}>
-            <div className="loc-icon">{icon}</div>
             <h4>{title}</h4>
             <p>{text}</p>
           </div>
@@ -294,13 +283,13 @@ const ThreeBhkFlatsGurgaon = () => (
       {/* AMENITIES + CHECKLIST */}
       <div className="thbg-two-col">
         <div className="thbg-box">
-          <h4>✅ Amenities in 3 BHK Flats</h4>
+          <h4>What Amenities Do You Get in a 3 BHK Flat in Gurgaon?</h4>
           <ul className="thbg-amenity-list">
             {AMENITIES.map(a => <li key={a}>{a}</li>)}
           </ul>
         </div>
         <div className="thbg-box">
-          <h4>📋 Before You Buy — Checklist</h4>
+          <h4>Key Things to Check Before Buying a Flat in Gurgaon</h4>
           <ul className="thbg-checklist">
             {CHECKLIST.map(({ label, detail }) => (
               <li key={label}><strong>{label}</strong>{detail}</li>
@@ -309,38 +298,20 @@ const ThreeBhkFlatsGurgaon = () => (
         </div>
       </div>
 
-      {/* WHY INVEST */}
-      <h2 className="thbg-section-title">🎯 Why Invest in 3 BHK Flats?</h2>
-      <div className="thbg-invest-grid">
-        <div className="thbg-invest-card thbg-ic-blue">
-          <div className="inv-icon">🚀</div>
-          <h4>Early Bird Pricing</h4>
-          <p>Exclusive pre-launch discounts and special payment plans on upcoming projects.</p>
-        </div>
-        <div className="thbg-invest-card thbg-ic-green">
-          <div className="inv-icon">📈</div>
-          <h4>High Growth Prospects</h4>
-          <p>Strong appreciation and premium returns in Gurgaon's booming luxury segment.</p>
-        </div>
-        <div className="thbg-invest-card thbg-ic-purple">
-          <div className="inv-icon">🔑</div>
-          <h4>Early Access</h4>
-          <p>Be the first to book premium 3 BHK properties at best available rates.</p>
-        </div>
-      </div>
+      {/* FAQ Section */}
+      <FAQSection bhkType="3 BHK" />
 
       {/* CTA */}
       <div className="thbg-cta">
-        <h3>🤝 Why Choose 100acress?</h3>
+        <h3>Why Choose 100acress?</h3>
         <p>
           100acress lists only verified, RERA-approved 3 BHK flats in Gurgaon. We work with
           reputed developers and provide expert guidance to help you invest with confidence.
         </p>
         <a href="https://www.100acress.com/projects/upcoming/" aria-label="Explore 3 BHK projects in Gurgaon">
-          🏠 Explore Premium Projects
+          Explore Premium Projects
         </a>
       </div>
-
     </div>
   </>
 );

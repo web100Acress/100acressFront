@@ -14,40 +14,43 @@ const structuredData = {
 };
 
 const WHY_INVEST = [
-  { icon: '🏘️', title: 'Wide Property Choices', text: 'Diverse range of housing options from smart 2 BHKs to expansive 4 BHK luxury residences.' },
-  { icon: '🚇', title: 'Infrastructure Growth', text: 'Improved road networks, metro connectivity, and new commercial hubs driving appreciation.' },
-  { icon: '📈', title: 'High Appreciation', text: 'Early investment in 2026 often results in better price appreciation by possession.' },
-  { icon: '💼', title: 'Strong Rental Demand', text: 'Gurgaon\'s corporate ecosystem ensures consistent rental demand across major locations.' },
-  { icon: '📋', title: 'RERA Registration', text: 'All listed upcoming projects are RERA-verified for transparency and legal safety.' },
-  { icon: '🏗️', title: 'Site Visit Advantage', text: 'Evaluate connectivity and future growth potential by visiting the project location early.' },
+  { title: 'Early Bird Pricing', text: 'Pre-launch and early-stage pricing offers maximum value compared to ready projects.' },
+  { title: 'Customization Options', text: 'Opportunity to select preferred floors, views, and sometimes customize layouts during construction.' },
+  { title: 'Maximum Appreciation', text: 'Highest potential returns as property value grows with construction progress and area development.' },
+  { title: 'Flexible Payment Plans', text: 'Construction-linked and subvention plans reduce financial burden and improve cash flow.' },
+  { title: 'Modern Infrastructure', text: 'Latest construction technology, better floor plans, and contemporary amenities.' },
+  { title: 'Site Visit Advantage', text: 'Evaluate connectivity and future growth potential by visiting the project location early.' },
 ];
 
 const LOCATIONS = [
-  { icon: '🛣️', title: 'Dwarka Expressway', text: 'Promising corridor with excellent connectivity to Delhi and IGI Airport — prime for luxury launches.' },
-  { icon: '🏙️', title: 'New Gurgaon', text: 'Planned infrastructure and peaceful surroundings — ideal for value-driven residential projects.' },
-  { icon: '⛳', title: 'Golf Course Ext. Road', text: 'Preferred for premium living, upscale apartments, and strong social infrastructure.' },
-  { icon: '🔄', title: 'Southern Peripheral Road', text: 'Connects key sectors and balances lifestyle comfort with significant investment growth.' },
+  { title: 'Dwarka Expressway', text: 'Fastest-growing corridor with excellent connectivity and multiple upcoming luxury projects.' },
+  { title: 'New Gurgaon', text: 'Emerging hub with numerous upcoming projects offering modern amenities at competitive prices.' },
+  { title: 'Southern Peripheral Road', text: 'Developing area with several upcoming projects and improving infrastructure connectivity.' },
+  { title: 'Golf Course Extension', text: 'Premium upcoming projects with luxury amenities and proximity to business districts.' },
 ];
 
 const AMENITIES = [
-  { icon: '🏊', title: 'Clubhouse & Pool', desc: 'Modern recreational facilities' },
-  { icon: '💪', title: 'Gym & Wellness', desc: 'State-of-the-art fitness equipment' },
-  { icon: '🌳', title: 'Landscaped Gardens', desc: 'Beautifully designed green spaces' },
-  { icon: '🏃', title: 'Jogging Tracks', desc: 'Dedicated tracks for exercise' },
-  { icon: '🎮', title: 'Play Areas', desc: 'Safe play zones for kids' },
-  { icon: '🛡️', title: '24×7 Security', desc: 'Advanced security systems' }
+  { title: 'Smart Home Features', desc: 'IoT-enabled living spaces' },
+  { title: 'Infinity Pool', desc: 'Luxury swimming facilities' },
+  { title: 'Modern Gym', desc: 'State-of-the-art fitness center' },
+  { title: 'Clubhouse', desc: 'Premium recreation center' },
+  { title: 'Landscaped Gardens', desc: 'Beautiful green spaces' },
+  { title: 'EV Charging', desc: 'Electric vehicle infrastructure' },
+  { title: '24×7 Security', desc: 'Advanced surveillance systems' },
+  { title: 'Power Backup', desc: 'Uninterrupted electricity supply' },
 ];
 
 const styles = `
   @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600&display=swap');
 
-  .upc-root {
+  .up-root {
     font-family: 'DM Sans', sans-serif;
     color: #1a1a2e;
     background: #f8f9fc;
     max-width: 1400px;
     margin: 0 auto;
     padding: 0 24px 48px;
+    font-size: 1.1rem;
   }
 
   .upc-hero {
@@ -60,14 +63,13 @@ const styles = `
     gap: 24px;
     color: #fff;
   }
-  .upc-hero-icon { font-size: 56px; flex-shrink: 0; }
-  .upc-hero h1 {
+  .up-hero h1 {
     font-family: 'DM Serif Display', serif;
     font-size: 2.2rem;
-    margin: 0 0 12px;
-    line-height: 1.2;
+    margin: 0 0 8px;
+    line-height: 1.25;
   }
-  .upc-hero p { margin: 0; font-size: 1.1rem; color: #b0bcd4; line-height: 1.6; }
+  .up-hero p { margin: 0; font-size: 1.1rem; color: #b0bcd4; line-height: 1.55; }
 
   .upc-text-block {
     background: #fff;
@@ -77,11 +79,14 @@ const styles = `
     margin-bottom: 40px;
     line-height: 1.7;
   }
-  .upc-text-block h2 {
+  .up-section-title {
     font-family: 'DM Serif Display', serif;
     font-size: 1.6rem;
     color: #1a1a2e;
-    margin: 0 0 20px;
+    margin: 0 0 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
   }
   .upc-text-block p {
     margin-bottom: 18px;
@@ -97,11 +102,7 @@ const styles = `
     font-size: 1.05rem;
     color: #5a6480;
   }
-  .upc-text-block strong {
-    color: #1a1a2e;
-  }
 
-  /* Grid layouts */
   .upc-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -119,13 +120,8 @@ const styles = `
     transition: box-shadow 0.2s;
   }
   .upc-card:hover { box-shadow: 0 4px 18px rgba(15,52,96,.1); }
-  .upc-icon-box {
-    width: 48px; height: 48px; border-radius: 12px;
-    background: #eef2ff; display: flex; align-items: center;
-    justify-content: center; font-size: 24px; flex-shrink: 0;
-  }
-  .upc-card h4 { margin: 0 0 4px; font-size: 1rem; font-weight: 600; color: #1a1a2e; }
-  .upc-card p  { margin: 0; font-size: 0.9rem; color: #5a6480; line-height: 1.5; }
+  .up-why-card h4 { margin: 0 0 4px; font-size: 1.1rem; font-weight: 600; color: #1a1a2e; }
+  .up-why-card p { margin: 0; font-size: 1rem; color: #5a6480; line-height: 1.5; }
 
   .upc-loc-grid {
     display: grid;
@@ -141,9 +137,8 @@ const styles = `
     transition: box-shadow 0.2s;
   }
   .upc-loc-card:hover { box-shadow: 0 4px 14px rgba(15,52,96,.1); }
-  .upc-loc-card .loc-icon { font-size: 28px; margin-bottom: 10px; }
-  .upc-loc-card h4 { margin: 0 0 6px; font-size: 1rem; font-weight: 600; color: #1a1a2e; }
-  .upc-loc-card p  { margin: 0; font-size: 0.9rem; color: #5a6480; line-height: 1.5; }
+  .up-loc-card h4 { margin: 0 0 4px; font-size: 1.1rem; font-weight: 600; color: #1a1a2e; }
+  .up-loc-card p { margin: 0; font-size: 1rem; color: #5a6480; line-height: 1.45; }
 
   .upc-amenity-grid {
     display: grid;
@@ -160,9 +155,8 @@ const styles = `
     transition: box-shadow 0.2s;
   }
   .upc-amenity-card:hover { box-shadow: 0 4px 12px rgba(15,52,96,.08); }
-  .upc-amenity-card .am-icon { font-size: 28px; margin-bottom: 8px; }
-  .upc-amenity-card h4 { margin: 0 0 4px; font-size: 0.9rem; font-weight: 600; color: #1a1a2e; }
-  .upc-amenity-card p  { margin: 0; font-size: 0.8rem; color: #5a6480; }
+  .up-amenity-card h4 { margin: 0 0 4px; font-size: 1.1rem; font-weight: 600; color: #1a1a2e; }
+  .up-amenity-card p { margin: 0; font-size: 1rem; color: #5a6480; }
 
   /* Invest cards */
   .upc-invest-grid {
@@ -341,17 +335,17 @@ const UpcomingProjects = () => {
         {/* INVEST CARDS */}
         <div className="upc-invest-grid">
           <div className="upc-invest-card upc-ic-blue">
-            <div className="inv-icon">🚀</div>
+            <div className="inv-icon"></div>
             <h4>Early Bird Pricing</h4>
             <p>Get exclusive pre-launch discounts and special payment plans.</p>
           </div>
           <div className="upc-invest-card upc-ic-green">
-            <div className="inv-icon">📈</div>
+            <div className="inv-icon"></div>
             <h4>High Growth</h4>
             <p>Premium returns on investment in Gurgaon's booming market.</p>
           </div>
           <div className="upc-invest-card upc-ic-purple">
-            <div className="inv-icon">🔑</div>
+            <div className="inv-icon"></div>
             <h4>Early Access</h4>
             <p>Be the first to book these premium future-ready properties.</p>
           </div>
@@ -359,13 +353,13 @@ const UpcomingProjects = () => {
 
         {/* CTA */}
         <div className="upc-cta">
-          <h3>🤝 Why Choose 100acress for Upcoming Projects in Gurgaon?</h3>
+          <h3>Why Choose 100acress for Upcoming Projects in Gurgaon?</h3>
           <p>
             100acress is a trusted real estate platform showcasing verified and RERA-approved upcoming projects.
             Reputed developers, accurate details, and expert guidance to help you decide.
           </p>
           <a href="https://www.100acress.com/projects/upcoming/" aria-label="Explore upcoming projects in Gurgaon">
-            🏠 Explore Premium Projects
+            Explore Premium Projects
           </a>
         </div>
       </div>

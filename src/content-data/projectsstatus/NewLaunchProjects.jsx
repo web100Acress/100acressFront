@@ -14,37 +14,37 @@ const structuredData = {
 };
 
 const WHY_INVEST = [
-  { icon: '💰', title: 'Attractive Launch Pricing', text: 'Early-stage properties are priced lower than ready-to-move options — excellent value for early investors.' },
-  { icon: '🏢', title: 'Contemporary Design', text: 'Efficient layouts, sustainable construction, and upgraded lifestyle features for modern living.' },
-  { icon: '📈', title: 'High Appreciation', text: 'Early investment yields better returns as the project develops and surrounding infrastructure improves.' },
-  { icon: '💳', title: 'Flexible Payments', text: 'Subvention schemes and flexible payment schedules make home ownership more affordable.' },
-  { icon: '🎯', title: 'Wider Unit Selection', text: 'Early buyers get first pick of floor plans, views, and configurations before premium units sell out.' },
-  { icon: '📋', title: 'RERA Protection', text: 'All listed projects are RERA-registered — transparency, timely delivery, and legal protection guaranteed.' },
+  { title: 'Attractive Launch Pricing', text: 'Early-stage properties are priced lower than ready-to-move options — excellent value for early investors.' },
+  { title: 'Contemporary Design', text: 'Efficient layouts, sustainable construction, and upgraded lifestyle features for modern living.' },
+  { title: 'High Appreciation', text: 'Early investment yields better returns as the project develops and surrounding infrastructure improves.' },
+  { title: 'Flexible Payments', text: 'Subvention schemes and flexible payment schedules make home ownership more affordable.' },
+  { title: 'Wider Unit Selection', text: 'Early buyers get first pick of floor plans, views, and configurations before premium units sell out.' },
+  { title: 'RERA Protection', text: 'All listed projects are RERA-registered — transparency, timely delivery, and legal protection guaranteed.' },
 ];
 
 const LOCATIONS = [
-  { icon: '🛣️', title: 'Dwarka Expressway', text: 'Excellent connectivity to Delhi & IGI Airport — ideal for professionals seeking modern strategic homes.' },
-  { icon: '🏙️', title: 'New Gurgaon', text: 'Planned infrastructure, green spaces, and affordable pricing for first-time buyers and investors.' },
-  { icon: '⛳', title: 'Golf Course Ext. Road', text: 'Luxury launches with premium amenities, upscale living, and proximity to schools and business districts.' },
-  { icon: '🔄', title: 'Southern Peripheral Road', text: 'Fast-developing area balancing affordability and connectivity — perfect for families and long-term investors.' },
+  { title: 'Dwarka Expressway', text: 'Excellent connectivity to Delhi & IGI Airport — ideal for professionals seeking modern strategic homes.' },
+  { title: 'New Gurgaon', text: 'Planned infrastructure, green spaces, and affordable pricing for first-time buyers and investors.' },
+  { title: 'Golf Course Ext. Road', text: 'Luxury launches with premium amenities, upscale living, and proximity to schools and business districts.' },
+  { title: 'Southern Peripheral Road', text: 'Fast-developing area balancing affordability and connectivity — perfect for families and long-term investors.' },
 ];
 
 const AMENITIES = [
-  { icon: '🏊', title: 'Infinity Pool', desc: 'Luxury swimming facilities' },
-  { icon: '💪', title: 'Smart Gym', desc: 'AI-equipped fitness center' },
-  { icon: '🌳', title: 'Sky Gardens', desc: 'Rooftop green spaces' },
-  { icon: '🎮', title: 'Clubhouse', desc: 'Modern recreation center' },
-  { icon: '🛡️', title: 'Smart Security', desc: 'AI-powered security systems' },
-  { icon: '⚡', title: 'Solar Power', desc: 'Sustainable energy solutions' },
-  { icon: '🚗', title: 'EV Charging', desc: 'Electric vehicle charging' },
-  { icon: '🏪', title: 'Retail Plaza', desc: 'On-site shopping complex' },
+  { title: 'Infinity Pool', desc: 'Luxury swimming facilities' },
+  { title: 'Smart Gym', desc: 'AI-equipped fitness center' },
+  { title: 'Sky Gardens', desc: 'Rooftop green spaces' },
+  { title: 'Clubhouse', desc: 'Modern recreation center' },
+  { title: 'Smart Security', desc: 'AI-powered security systems' },
+  { title: 'Solar Power', desc: 'Sustainable energy solutions' },
+  { title: 'EV Charging', desc: 'Electric vehicle charging' },
+  { title: 'Retail Plaza', desc: 'On-site shopping complex' },
 ];
 
 const EARLY_BOOKING = [
-  { icon: '🎁', title: 'Launch Discounts', text: 'Special launch pricing, festive offers, and additional discounts not available in later phases.' },
-  { icon: '🎯', title: 'Best Units First', text: 'Access premium units with better views, corner locations, and preferred floor levels.' },
-  { icon: '📈', title: 'Maximum Appreciation', text: 'Early investors see the highest appreciation as the project and surrounding infrastructure develops.' },
-  { icon: '🤝', title: 'Developer Deals', text: 'Exclusive partnership offers and direct developer pricing only available at launch stage.' },
+  { title: 'Launch Discounts', text: 'Special launch pricing, festive offers, and additional discounts not available in later phases.' },
+  { title: 'Best Units First', text: 'Access premium units with better views, corner locations, and preferred floor levels.' },
+  { title: 'Maximum Appreciation', text: 'Early investors see the highest appreciation as the project and surrounding infrastructure develops.' },
+  { title: 'Developer Deals', text: 'Exclusive partnership offers and direct developer pricing only available at launch stage.' },
 ];
 
 const styles = `
@@ -57,6 +57,7 @@ const styles = `
     max-width: 1400px;
     margin: 0 auto;
     padding: 0 24px 48px;
+    font-size: 1.1rem;
   }
 
   .nlp-hero {
@@ -94,7 +95,7 @@ const styles = `
   }
   .nlp-text-block p {
     margin-bottom: 18px;
-    font-size: 1.05rem;
+    font-size: 1.1rem;
     color: #5a6480;
   }
   .nlp-text-block ul {
@@ -103,7 +104,7 @@ const styles = `
   }
   .nlp-text-block li {
     margin-bottom: 10px;
-    font-size: 1.05rem;
+    font-size: 1.1rem;
     color: #5a6480;
   }
   .nlp-text-block strong {
@@ -128,13 +129,8 @@ const styles = `
     transition: box-shadow 0.2s;
   }
   .nlp-why-card:hover { box-shadow: 0 4px 18px rgba(15,52,96,.1); }
-  .nlp-why-icon {
-    width: 48px; height: 48px; border-radius: 12px;
-    background: #eef2ff; display: flex; align-items: center;
-    justify-content: center; font-size: 24px; flex-shrink: 0;
-  }
-  .nlp-why-card h4 { margin: 0 0 4px; font-size: 1rem; font-weight: 600; color: #1a1a2e; }
-  .nlp-why-card p  { margin: 0; font-size: 0.9rem; color: #5a6480; line-height: 1.5; }
+  .nlp-why-card h4 { margin: 0 0 4px; font-size: 1.1rem; font-weight: 600; color: #1a1a2e; }
+  .nlp-why-card p  { margin: 0; font-size: 1rem; color: #5a6480; line-height: 1.5; }
 
   /* Locations */
   .nlp-loc-grid {
@@ -151,9 +147,8 @@ const styles = `
     transition: box-shadow 0.2s;
   }
   .nlp-loc-card:hover { box-shadow: 0 4px 14px rgba(15,52,96,.1); }
-  .nlp-loc-card .loc-icon { font-size: 28px; margin-bottom: 10px; }
-  .nlp-loc-card h4 { margin: 0 0 6px; font-size: 1rem; font-weight: 600; color: #1a1a2e; }
-  .nlp-loc-card p  { margin: 0; font-size: 0.9rem; color: #5a6480; line-height: 1.5; }
+  .nlp-loc-card h4 { margin: 0 0 6px; font-size: 1.1rem; font-weight: 600; color: #1a1a2e; }
+  .nlp-loc-card p  { margin: 0; font-size: 1rem; color: #5a6480; line-height: 1.5; }
 
   /* Amenities */
   .nlp-amenity-grid {
@@ -171,9 +166,8 @@ const styles = `
     transition: box-shadow 0.2s;
   }
   .nlp-amenity-card:hover { box-shadow: 0 4px 12px rgba(15,52,96,.08); }
-  .nlp-amenity-card .am-icon { font-size: 28px; margin-bottom: 8px; }
-  .nlp-amenity-card h4 { margin: 0 0 4px; font-size: 0.9rem; font-weight: 600; color: #1a1a2e; }
-  .nlp-amenity-card p  { margin: 0; font-size: 0.8rem; color: #5a6480; }
+  .nlp-amenity-card h4 { margin: 0 0 4px; font-size: 1.1rem; font-weight: 600; color: #1a1a2e; }
+  .nlp-amenity-card p  { margin: 0; font-size: 1rem; color: #5a6480; }
 
   /* Early booking */
   .nlp-early-grid {
@@ -193,13 +187,8 @@ const styles = `
     transition: box-shadow 0.2s;
   }
   .nlp-early-card:hover { box-shadow: 0 4px 14px rgba(15,52,96,.1); }
-  .nlp-early-icon {
-    width: 48px; height: 48px; border-radius: 12px;
-    background: #fef3c7; display: flex; align-items: center;
-    justify-content: center; font-size: 24px; flex-shrink: 0;
-  }
-  .nlp-early-card h4 { margin: 0 0 4px; font-size: 1rem; font-weight: 600; color: #1a1a2e; }
-  .nlp-early-card p  { margin: 0; font-size: 0.9rem; color: #5a6480; line-height: 1.5; }
+  .nlp-early-card h4 { margin: 0 0 4px; font-size: 1.1rem; font-weight: 600; color: #1a1a2e; }
+  .nlp-early-card p  { margin: 0; font-size: 1rem; color: #5a6480; line-height: 1.5; }
 
   /* Invest cards */
   .nlp-invest-grid {
@@ -290,7 +279,7 @@ const NewLaunchProjects = () => (
 
       {/* HERO */}
       <div className="nlp-hero">
-        <div className="nlp-hero-icon">🚀</div>
+        <div className="nlp-hero-icon"></div>
         <div>
           <h1>New Launch Projects in Gurgaon 2026</h1>
           <p>
@@ -399,17 +388,17 @@ const NewLaunchProjects = () => (
       {/* INVEST CARDS */}
       <div className="nlp-invest-grid">
         <div className="nlp-invest-card nlp-ic-blue">
-          <div className="inv-icon">💰</div>
+          <div className="inv-icon"></div>
           <h4>Launch Pricing</h4>
           <p>Get the best early-bird deals before prices rise in later phases.</p>
         </div>
         <div className="nlp-invest-card nlp-ic-green">
-          <div className="inv-icon">🏢</div>
+          <div className="inv-icon"></div>
           <h4>Modern Design</h4>
           <p>Contemporary architecture, sustainable builds, and premium finishes.</p>
         </div>
         <div className="nlp-invest-card nlp-ic-purple">
-          <div className="inv-icon">📍</div>
+          <div className="inv-icon"></div>
           <h4>Prime Locations</h4>
           <p>Strategic corridors with excellent metro and highway connectivity.</p>
         </div>
@@ -417,12 +406,12 @@ const NewLaunchProjects = () => (
 
       {/* CTA */}
       <div className="nlp-cta">
-        <h3>🤝 Why Choose 100acress for New Launch Projects?</h3>
+        <h3>Why Choose 100acress for New Launch Projects?</h3>
         <p>
           100acress provides access to verified and RERA-approved new launch projects in Gurgaon, backed by trusted developers. With accurate information, professional insights, and personalized support, we simplify the property search process. Whether you are purchasing your first home or investing in new launch projects 2025, our platform helps you make confident and informed decisions.
         </p>
         <a href="https://www.100acress.com/projects/newlaunch/" aria-label="Explore new launch projects in Gurgaon">
-          🏠 Explore New Launches
+           Explore New Launches
         </a>
       </div>
 

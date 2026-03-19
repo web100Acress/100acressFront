@@ -15,16 +15,16 @@ const structuredData = {
 };
 
 const FEATURES = [
-  { icon: '🏗️', title: 'Global Partnerships', text: 'Collaboration with world-renowned design and lifestyle brands for unmatched quality.' },
-  { icon: '🎨', title: 'Design Excellence', text: 'Thoughtfully planned architecture and elegant interiors at every level of detail.' },
-  { icon: '⭐', title: 'Premium Living', text: 'High-quality construction paired with a refined, curated lifestyle experience.' },
-  { icon: '🏙️', title: 'Prime Locations', text: 'Developed in Gurugram and Noida — cities known for modern skylines and premium demand.' },
+  { title: 'Global Partnerships', text: 'Collaboration with world-renowned design and lifestyle brands for unmatched quality.' },
+  { title: 'Design Excellence', text: 'Thoughtfully planned architecture and elegant interiors at every level of detail.' },
+  { title: 'Premium Living', text: 'High-quality construction paired with a refined, curated lifestyle experience.' },
+  { title: 'Prime Locations', text: 'Developed in Gurugram and Noida — cities known for modern skylines and premium demand.' },
 ];
 
 const WHY_POINTS = [
-  { icon: '🤝', title: 'Brand-Backed Quality', text: 'Global brand associations ensure design consistency, construction standards, and lifestyle curation that conventional housing cannot match.' },
-  { icon: '📈', title: 'Strong Appreciation', text: 'Branded residences command a premium and hold value better — making them a smart long-term investment in India\'s top metros.' },
-  { icon: '🛎️', title: 'Exclusive Services', text: 'Residents enjoy premium concierge, curated amenities, and privacy-first living conditions designed around comfort and convenience.' },
+  { title: 'Brand-Backed Quality', text: 'Global brand associations ensure design consistency, construction standards, and lifestyle curation that conventional housing cannot match.' },
+  { title: 'Strong Appreciation', text: 'Branded residences command a premium and hold value better — making them a smart long-term investment in India\'s top metros.' },
+  { title: 'Exclusive Services', text: 'Residents enjoy premium concierge, curated amenities, and privacy-first living conditions designed around comfort and convenience.' },
 ];
 
 const CHECKLIST = [
@@ -41,9 +41,10 @@ const styles = `
     font-family: 'DM Sans', sans-serif;
     color: #1a1a2e;
     background: #f8f9fc;
-    max-width: 960px;
+    max-width: 1600px;
     margin: 0 auto;
-    padding: 0 16px 48px;
+    padding: 0 24px 48px;
+    font-size: 1.1rem;
   }
 
   .br-hero {
@@ -59,15 +60,15 @@ const styles = `
   .br-hero-icon { font-size: 48px; flex-shrink: 0; }
   .br-hero h1 {
     font-family: 'DM Serif Display', serif;
-    font-size: 1.75rem;
+    font-size: 2.2rem;
     margin: 0 0 8px;
     line-height: 1.25;
   }
-  .br-hero p { margin: 0; font-size: 0.95rem; color: #b0bcd4; line-height: 1.55; }
+  .br-hero p { margin: 0; font-size: 1.1rem; color: #b0bcd4; line-height: 1.55; }
 
   .br-section-title {
     font-family: 'DM Serif Display', serif;
-    font-size: 1.3rem;
+    font-size: 1.6rem;
     color: #1a1a2e;
     margin: 0 0 16px;
     display: flex;
@@ -90,9 +91,8 @@ const styles = `
     transition: box-shadow 0.2s;
   }
   .br-feature-card:hover { box-shadow: 0 4px 18px rgba(15,52,96,.1); }
-  .br-feature-card .feat-icon { font-size: 26px; margin-bottom: 10px; }
-  .br-feature-card h4 { margin: 0 0 4px; font-size: 0.9rem; font-weight: 600; color: #1a1a2e; }
-  .br-feature-card p  { margin: 0; font-size: 0.82rem; color: #5a6480; line-height: 1.5; }
+  .br-feature-card h4 { margin: 0 0 4px; font-size: 1.1rem; font-weight: 600; color: #1a1a2e; }
+  .br-feature-card p  { margin: 0; font-size: 1rem; color: #5a6480; line-height: 1.5; }
 
   /* Why cards */
   .br-why-grid {
@@ -117,8 +117,8 @@ const styles = `
     background: #eef2ff; display: flex; align-items: center;
     justify-content: center; font-size: 22px; flex-shrink: 0;
   }
-  .br-why-card h4 { margin: 0 0 4px; font-size: 0.9rem; font-weight: 600; color: #1a1a2e; }
-  .br-why-card p  { margin: 0; font-size: 0.82rem; color: #5a6480; line-height: 1.5; }
+  .br-why-card h4 { margin: 0 0 4px; font-size: 1.1rem; font-weight: 600; color: #1a1a2e; }
+  .br-why-card p  { margin: 0; font-size: 1rem; color: #5a6480; line-height: 1.5; }
 
   /* Checklist box */
   .br-box {
@@ -130,7 +130,7 @@ const styles = `
   }
   .br-box h4 {
     font-family: 'DM Serif Display', serif;
-    font-size: 1rem;
+    font-size: 1.3rem;
     margin: 0 0 12px;
     color: #0f3460;
   }
@@ -138,12 +138,12 @@ const styles = `
   .br-checklist li {
     padding: 8px 0;
     border-bottom: 1px solid #f0f3fa;
-    font-size: 0.83rem;
+    font-size: 1.1rem;
     color: #3a4264;
-    line-height: 1.45;
+    line-height: 1.5;
   }
   .br-checklist li:last-child { border-bottom: none; }
-  .br-checklist li strong { display: block; font-size: 0.86rem; color: #1a1a2e; margin-bottom: 2px; }
+  .br-checklist li strong { display: block; font-size: 1.15rem; color: #1a1a2e; margin-bottom: 2px; }
 
   /* CTA */
   .br-cta {
@@ -155,11 +155,11 @@ const styles = `
   }
   .br-cta h3 {
     font-family: 'DM Serif Display', serif;
-    font-size: 1.3rem;
+    font-size: 1.6rem;
     margin: 0 0 10px;
   }
   .br-cta p {
-    font-size: 0.9rem;
+    font-size: 1.05rem;
     color: #b0bcd4;
     line-height: 1.55;
     max-width: 560px;
@@ -172,7 +172,7 @@ const styles = `
     padding: 10px 24px;
     border-radius: 8px;
     font-weight: 600;
-    font-size: 0.9rem;
+    font-size: 1.05rem;
     text-decoration: none;
     transition: background 0.2s;
   }
@@ -194,7 +194,7 @@ const BrandedResidences = () => (
 
       {/* HERO */}
       <div className="br-hero">
-        <div className="br-hero-icon">🏅</div>
+        <div className="br-hero-icon"></div>
         <div>
           <h1>Branded Residences in India</h1>
           <p>
@@ -205,11 +205,10 @@ const BrandedResidences = () => (
       </div>
 
       {/* WHAT ARE BRANDED RESIDENCES */}
-      <h2 className="br-section-title">🏗️ What Are Branded Residences?</h2>
+      <h2 className="br-section-title">What Are Branded Residences?</h2>
       <div className="br-feature-grid">
-        {FEATURES.map(({ icon, title, text }) => (
+        {FEATURES.map(({ title, text }) => (
           <div className="br-feature-card" key={title}>
-            <div className="feat-icon">{icon}</div>
             <h4>{title}</h4>
             <p>{text}</p>
           </div>
@@ -217,11 +216,10 @@ const BrandedResidences = () => (
       </div>
 
       {/* WHY CHOOSE */}
-      <h2 className="br-section-title">🚀 Why Choose a Branded Residence?</h2>
+      <h2 className="br-section-title">Why Choose a Branded Residence?</h2>
       <div className="br-why-grid">
-        {WHY_POINTS.map(({ icon, title, text }) => (
+        {WHY_POINTS.map(({ title, text }) => (
           <div className="br-why-card" key={title}>
-            <div className="br-why-icon">{icon}</div>
             <div><h4>{title}</h4><p>{text}</p></div>
           </div>
         ))}
@@ -229,7 +227,7 @@ const BrandedResidences = () => (
 
       {/* CHECKLIST */}
       <div className="br-box">
-        <h4>📋 Before You Buy — Checklist</h4>
+        <h4>Before You Buy — Checklist</h4>
         <ul className="br-checklist">
           {CHECKLIST.map(({ label, detail }) => (
             <li key={label}><strong>{label}</strong>{detail}</li>
@@ -239,13 +237,13 @@ const BrandedResidences = () => (
 
       {/* CTA */}
       <div className="br-cta">
-        <h3>🤝 Why Choose 100acress?</h3>
+        <h3>Why Choose 100acress?</h3>
         <p>
           100acress lists only verified, RERA-approved branded residences across India's
           top cities. Expert guidance and reputed developer partnerships — invest with confidence.
         </p>
         <a href="https://www.100acress.com/projects/upcoming/" aria-label="Explore branded residence projects">
-          🏠 Explore Premium Projects
+          Explore Premium Projects
         </a>
       </div>
 

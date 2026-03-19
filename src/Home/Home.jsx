@@ -706,6 +706,55 @@ const Home = () => {
     ProjectinDelhi
   ]);
 
+  // Load cached data from localStorage on component mount
+  useEffect(() => {
+    try {
+      const cachedData = localStorage.getItem('homePageData');
+      if (cachedData) {
+        const parsedData = JSON.parse(cachedData);
+        const now = Date.now();
+        const CACHE_TTL = 30 * 60 * 1000; // 30 minutes cache
+        
+        // Check if cache is still valid
+        if (parsedData.timestamp && (now - parsedData.timestamp < CACHE_TTL)) {
+          console.log('📦 Loading home page data from cache');
+          // Set cached data to Redux store if API calls haven't been made yet
+          if (!dataLoaded.trending && parsedData.trending?.length > 0) {
+            // Dispatch cached data to Redux if needed
+          }
+        }
+      }
+    } catch (error) {
+      console.error('❌ Error loading cached data:', error);
+    }
+  }, []);
+
+  // Save data to localStorage when loaded
+  useEffect(() => {
+    if (Object.values(dataLoaded).some(loaded => loaded)) {
+      try {
+        const cacheData = {
+          timestamp: Date.now(),
+          trending: TrendingProjects,
+          featured: FeaturedProjects,
+          upcoming: UpcomingProjects,
+          commercial: CommercialProjects,
+          sco: SCOProjects,
+          affordable: AffordableProjects,
+          luxury: LuxuryAllProject,
+          budget: BudgetHomesProjects,
+          delhi: ProjectinDelhi,
+          brandedResidences: brandedResidencesProjects,
+          farmhouse: FarmhouseProjects
+        };
+        localStorage.setItem('homePageData', JSON.stringify(cacheData));
+        console.log('💾 Home page data cached to localStorage');
+      } catch (error) {
+        console.error('❌ Error caching data:', error);
+      }
+    }
+  }, [TrendingProjects, FeaturedProjects, UpcomingProjects, CommercialProjects, SCOProjects, AffordableProjects, LuxuryAllProject, BudgetHomesProjects, ProjectinDelhi, brandedResidencesProjects, FarmhouseProjects, dataLoaded]);
+
   const loadData = useCallback((filter) => {
 
     if (dataLoaded[filter]) return;

@@ -14,28 +14,25 @@ const structuredData = {
 };
 
 const WHY_INVEST = [
-  { icon: '💰', title: 'Lower Entry Cost', text: 'Under construction properties are generally priced lower than ready-to-move homes, making them affordable for first-time buyers.' },
-  { icon: '💳', title: 'Flexible Payment Plans', text: 'Construction-linked payment plans reduce financial pressure on buyers with staggered payments tied to construction milestones.' },
-  { icon: '📈', title: 'High Appreciation Potential', text: 'Early-stage investments often see significant value growth by possession, maximizing your returns on investment.' },
-  { icon: '🏗️', title: 'Modern Construction Standards', text: 'New projects follow updated building norms, safety standards, and sustainable practices for better quality living.' },
-  { icon: '💼', title: 'Strong Rental Demand', text: 'Proximity to IT parks, business centers, and metro routes ensures future rental income and high occupancy rates.' },
-  { icon: '🛡️', title: 'RERA Protection', text: 'Verified RERA-approved projects ensuring transparency, legal safety, and protection for your investment.' },
+  { title: 'Lower Entry Cost', text: 'Under construction properties are generally priced lower than ready-to-move homes, making them affordable for first-time buyers.' },
+  { title: 'Flexible Payment Plans', text: 'Construction-linked payment plans reduce financial pressure on buyers with staggered payments tied to construction milestones.' },
+  { title: 'High Appreciation Potential', text: 'Early-stage investments often see significant value growth by possession, maximizing your returns on investment.' },
 ];
 
 const LOCATIONS = [
-  { icon: '🛣️', title: 'Dwarka Expressway', text: 'A rapidly developing corridor offering excellent access to Delhi and IGI Airport, hosting several premium residential projects.' },
-  { icon: '🏙️', title: 'New Gurgaon', text: 'Offers planned sectors, wider roads, and lower congestion, making it ideal for families seeking future growth potential.' },
-  { icon: '⛳', title: 'Golf Course Extension Road', text: 'Known for luxury developments and high-end projects providing upscale living with easy access to social infrastructure.' },
-  { icon: '🔄', title: 'Southern Peripheral Road (SPR)', text: 'Connects major zones of Gurgaon and features several projects that balance lifestyle convenience and investment returns.' },
+  { title: 'Dwarka Expressway', text: 'Multiple under-construction projects with excellent connectivity and future growth potential.' },
+  { title: 'New Gurgaon', text: 'Emerging hub with numerous ongoing projects offering modern amenities at competitive prices.' },
+  { title: 'Southern Peripheral Road', text: 'Fast-developing corridor with several under-construction projects and improving infrastructure.' },
+  { title: 'Golf Course Extension', text: 'Premium under-construction projects with luxury amenities and proximity to business districts.' },
 ];
 
 const AMENITIES = [
-  { icon: '🏊', title: 'Clubhouse & Pool', desc: 'Modern recreational facilities for all ages' },
-  { icon: '💪', title: 'Equipped Gym', desc: 'State-of-the-art fitness and wellness facilities' },
-  { icon: '🌳', title: 'Landscaped Gardens', desc: 'Beautiful green spaces, walking tracks, and parks' },
-  { icon: '🎮', title: 'Children\'s Play Areas', desc: 'Dedicated safe play zones and sports amenities' },
-  { icon: '🛡️', title: '24×7 Security', desc: 'CCTV surveillance and smart security systems' },
-  { icon: '⚡', title: 'Power & Parking', desc: 'Uninterrupted power supply and ample dedicated parking' }
+  { title: 'Clubhouse & Pool', desc: 'Modern recreational facilities for all ages' },
+  { title: 'Equipped Gym', desc: 'State-of-the-art fitness and wellness facilities' },
+  { title: 'Landscaped Gardens', desc: 'Beautiful green spaces, walking tracks, and parks' },
+  { title: 'Children\'s Play Areas', desc: 'Dedicated safe play zones and sports amenities' },
+  { title: '24×7 Security', desc: 'CCTV surveillance and smart security systems' },
+  { title: 'Power & Parking', desc: 'Uninterrupted power supply and ample dedicated parking' }
 ];
 
 const styles = `
@@ -48,6 +45,7 @@ const styles = `
     max-width: 1400px;
     margin: 0 auto;
     padding: 0 24px 48px;
+    font-size: 1.1rem;
   }
 
   .uc-hero {
@@ -60,14 +58,13 @@ const styles = `
     gap: 24px;
     color: #fff;
   }
-  .uc-hero-icon { font-size: 56px; flex-shrink: 0; }
   .uc-hero h1 {
     font-family: 'DM Serif Display', serif;
     font-size: 2.2rem;
-    margin: 0 0 12px;
-    line-height: 1.2;
+    margin: 0 0 8px;
+    line-height: 1.25;
   }
-  .uc-hero p { margin: 0; font-size: 1.1rem; color: #b0bcd4; line-height: 1.6; }
+  .uc-hero p { margin: 0; font-size: 1.1rem; color: #b0bcd4; line-height: 1.55; }
 
   .uc-text-block {
     background: #fff;
@@ -77,11 +74,14 @@ const styles = `
     margin-bottom: 40px;
     line-height: 1.7;
   }
-  .uc-text-block h2 {
+  .uc-section-title {
     font-family: 'DM Serif Display', serif;
     font-size: 1.6rem;
     color: #1a1a2e;
-    margin: 0 0 20px;
+    margin: 0 0 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
   }
   .uc-text-block p {
     margin-bottom: 18px;
@@ -119,13 +119,8 @@ const styles = `
     transition: box-shadow 0.2s;
   }
   .uc-card:hover { box-shadow: 0 4px 18px rgba(15,52,96,.1); }
-  .uc-icon-box {
-    width: 48px; height: 48px; border-radius: 12px;
-    background: #eef2ff; display: flex; align-items: center;
-    justify-content: center; font-size: 24px; flex-shrink: 0;
-  }
-  .uc-card h4 { margin: 0 0 4px; font-size: 1rem; font-weight: 600; color: #1a1a2e; }
-  .uc-card p  { margin: 0; font-size: 0.9rem; color: #5a6480; line-height: 1.5; }
+  .uc-why-card h4 { margin: 0 0 4px; font-size: 1.1rem; font-weight: 600; color: #1a1a2e; }
+  .uc-why-card p { margin: 0; font-size: 1rem; color: #5a6480; line-height: 1.5; }
 
   .uc-loc-grid {
     display: grid;
@@ -141,9 +136,8 @@ const styles = `
     transition: box-shadow 0.2s;
   }
   .uc-loc-card:hover { box-shadow: 0 4px 14px rgba(15,52,96,.1); }
-  .uc-loc-card .loc-icon { font-size: 28px; margin-bottom: 10px; }
-  .uc-loc-card h4 { margin: 0 0 6px; font-size: 1rem; font-weight: 600; color: #1a1a2e; }
-  .uc-loc-card p  { margin: 0; font-size: 0.9rem; color: #5a6480; line-height: 1.5; }
+  .uc-loc-card h4 { margin: 0 0 4px; font-size: 1.1rem; font-weight: 600; color: #1a1a2e; }
+  .uc-loc-card p { margin: 0; font-size: 1rem; color: #5a6480; line-height: 1.45; }
 
   .uc-amenity-grid {
     display: grid;
@@ -160,9 +154,8 @@ const styles = `
     transition: box-shadow 0.2s;
   }
   .uc-amenity-card:hover { box-shadow: 0 4px 12px rgba(15,52,96,.08); }
-  .uc-amenity-card .am-icon { font-size: 28px; margin-bottom: 8px; }
-  .uc-amenity-card h4 { margin: 0 0 4px; font-size: 0.9rem; font-weight: 600; color: #1a1a2e; }
-  .uc-amenity-card p  { margin: 0; font-size: 0.8rem; color: #5a6480; }
+  .uc-amenity-card h4 { margin: 0 0 4px; font-size: 1.1rem; font-weight: 600; color: #1a1a2e; }
+  .uc-amenity-card p { margin: 0; font-size: 1rem; color: #5a6480; }
 
   /* Invest cards */
   .uc-invest-grid {
@@ -354,17 +347,17 @@ const UnderConstruction = () => {
         {/* INVEST CARDS */}
         <div className="uc-invest-grid">
           <div className="uc-invest-card uc-ic-blue">
-            <div className="inv-icon">💰</div>
+            <div className="inv-icon"></div>
             <h4>Lower Pricing</h4>
             <p>Get early-stage pricing and better value compared to ready-to-move homes.</p>
           </div>
           <div className="uc-invest-card uc-ic-green">
-            <div className="inv-icon">📈</div>
+            <div className="inv-icon"></div>
             <h4>High Appreciation</h4>
             <p>Maximum returns as construction progresses towards completion and handover.</p>
           </div>
           <div className="uc-invest-card uc-ic-purple">
-            <div className="inv-icon">💳</div>
+            <div className="inv-icon"></div>
             <h4>Flexible Payments</h4>
             <p>Construction-linked payment plans that align with the development schedule.</p>
           </div>
@@ -372,12 +365,12 @@ const UnderConstruction = () => {
 
         {/* CTA */}
         <div className="uc-cta">
-          <h3>🤝 Why Choose 100acress for Under Construction Projects?</h3>
+          <h3>Why Choose 100acress for Under Construction Projects?</h3>
           <p>
             100acress is a trusted real estate platform offering verified and RERA-approved under construction projects in Gurgaon. We collaborate with reputed developers and provide accurate project information, expert insights, and personalized assistance to help you make confident property decisions.
           </p>
           <a href="https://www.100acress.com/projects/underconstruction/" aria-label="Explore ongoing projects in Gurgaon">
-            🏠 Explore Ongoing Projects
+            Explore Ongoing Projects
           </a>
         </div>
       </div>

@@ -19,7 +19,7 @@ const FAQSection = ({ bhkType }) => {
       },
       {
         question: "What documents should be checked before buying a 1BHK flat?",
-        answer: "Check RERA registration, title deed, builder approvals, occupancy certificate, and bank approvals."
+        answer: "Verify a RERA registration, title deed, builder approvals, occupancy certificate, and bank approvals."
       },
       {
         question: "What amenities are available in 1BHK projects in Gurgaon?",
@@ -60,6 +60,14 @@ const FAQSection = ({ bhkType }) => {
       {
         question: "What amenities are available in 3 BHK flats in Gurgaon?",
         answer: "The top 3 BHK property projects in Gurgaon offer a clubhouse, pool, gym, jogging track, EV charging, 24x7 CCTV security, power backup, smart home tech, and landscaped greens."
+      },
+      {
+        question: "What are the top builders for 3 BHK flats in Gurgaon?",
+        answer: "Leading developers for 3 BHK flats in Gurgaon: DLF, M3M, Godrej Properties, Emaar, Signature Global, SOBHA, BPTP, Tata Housing, and Elan Group are known for quality builds, timely delivery & strong resale value."
+      },
+      {
+        question: "Is buying a 3 BHK flat in Gurgaon a good investment in 2026?",
+        answer: "Absolutely. A 3 BHK property in Gurgaon has seen 18–25% price appreciation. Metro expansion, Dwarka Expressway connectivity & corporate demand drive growth. Rental yields at 3–5% p.a. make it a smart buy in 2026."
       }
     ],
     '4 BHK': [
@@ -115,63 +123,30 @@ const FAQSection = ({ bhkType }) => {
   };
 
   return (
-    <div className="mt-10 mb-6">
-      <div className="flex items-center gap-3 mb-6">
-        <div className="bg-blue-600 w-8 h-8 rounded-lg flex items-center justify-center text-white shadow-md">
-          <span className="text-base">❓</span>
-        </div>
-        <h2 className="text-xl md:text-2xl font-bold text-gray-900 font-serif">
-          Frequently Asked Questions
-        </h2>
-      </div>
-
-      <div className="space-y-3">
-        {currentFaqs.map((faq, index) => (
-          <div 
-            key={index} 
-            className={`group rounded-xl border transition-all duration-300 ${
-              activeIndex === index 
-                ? 'bg-white border-blue-200 shadow-sm ring-1 ring-blue-50' 
-                : 'bg-gray-50/50 border-gray-100 hover:border-blue-100 hover:bg-white'
-            }`}
-          >
-            <button
-              className="w-full flex justify-between items-center text-left p-4 md:p-5 focus:outline-none"
-              onClick={() => toggleAccordion(index)}
-            >
-              <span className={`font-semibold text-sm md:text-base transition-colors duration-200 ${
-                activeIndex === index ? 'text-blue-700' : 'text-gray-800'
-              }`}>
-                {faq.question}
-              </span>
-              <div className={`flex-shrink-0 ml-3 w-6 h-6 rounded-full flex items-center justify-center transition-all duration-300 ${
-                activeIndex === index ? 'bg-blue-100 text-blue-600 rotate-180' : 'bg-gray-200/50 text-gray-500 group-hover:bg-blue-50 group-hover:text-blue-500'
-              }`}>
-                <svg 
-                  className="w-4 h-4" 
-                  fill="none" 
-                  viewBox="0 0 24 24" 
-                  stroke="currentColor"
-                  strokeWidth="3"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                </svg>
-              </div>
-            </button>
-            
+    <div className="faq-section">
+      <div className="faq-container">
+        <h2 className="faq-title">Frequently Asked Questions</h2>
+        <div className="faq-list">
+          {currentFaqs.map((faq, index) => (
             <div 
-              className={`overflow-hidden transition-all duration-300 ease-in-out ${
-                activeIndex === index ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
-              }`}
+              key={index} 
+              className={`faq-item ${activeIndex === index ? 'active' : ''}`}
             >
-              <div className="p-4 md:p-5 pt-0 text-gray-600 text-xs md:text-sm leading-relaxed border-t border-blue-50/50">
-                <p className="bg-blue-50/30 p-3 rounded-lg border border-blue-100/10">
-                  {faq.answer}
-                </p>
+              <button
+                className="faq-question"
+                onClick={() => toggleAccordion(index)}
+              >
+                <span>{faq.question}</span>
+                <span className="faq-icon">
+                  {activeIndex === index ? '−' : '+'}
+                </span>
+              </button>
+              <div className={`faq-answer ${activeIndex === index ? 'show' : ''}`}>
+                <p>{faq.answer}</p>
               </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );

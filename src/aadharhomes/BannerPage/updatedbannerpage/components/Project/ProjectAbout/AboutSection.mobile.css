@@ -1,4 +1,63 @@
-/* About Section Mobile Component Styles */
+/* Mobile Download Brochure Button */
+.about-section-mobile-download-btn {
+  position: relative;
+  background: linear-gradient(to right, #eab308, #f59e0b, #eab308);
+  color: #ffffff;
+  padding: 0.75rem 1.5rem;
+  border-radius: 9999px;
+  font-weight: 500;
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 10px 15px -3px rgba(234, 179, 8, 0.1);
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.about-section-mobile-download-btn:hover {
+  transform: scale(1.02);
+}
+
+.about-section-mobile-download-btn:active {
+  transform: scale(0.98);
+}
+
+/* Mobile download button glow effect */
+.about-section-mobile-download-btn-glow {
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: -10;
+  filter: blur(4px);
+}
+
+.about-section-mobile-download-btn:hover .about-section-mobile-download-btn-glow {
+  opacity: 1;
+}
+
+/* Mobile download button content */
+.about-section-mobile-download-btn-content {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.about-section-mobile-download-btn-icon {
+  width: 12px;
+  height: 12px;
+}
+
+.about-section-mobile-download-btn-text {
+  font-weight: 500;
+}
 
 /* Main section container */
 .about-section-mobile {
